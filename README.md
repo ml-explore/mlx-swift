@@ -1,2 +1,12 @@
 # mlx-swift
-Swift API for MLX
+Swift example for MLX
+
+Build with:
+
+```
+mkdir build
+cd build
+cmake .. -G Ninja
+ninja
+./example
+```
