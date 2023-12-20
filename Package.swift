@@ -73,8 +73,10 @@ let package = Package(
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
                 .define("METAL_PATH", to: "\"default.metallib\""),
-                
-                .unsafeFlags(["-std=gnu++17"])
+            ],
+            linkerSettings: [
+                .linkedFramework("Metal"),
+                .linkedFramework("Accelerate"),
             ],
             
             // run the plugin to build the metal shaders
