@@ -13,10 +13,12 @@ let package = Package(
 
     products: [
         .library(name: "Cmlx", targets: ["Cmlx"]),
+        .library(name: "Mlx", targets: ["Mlx"]),
         .plugin(
           name: "PrepareMetalShaders",
           targets: ["PrepareMetalShaders"]
         ),
+        .executable(name: "Example1", targets: ["Example1"]),
     ],
     dependencies: [
     ],
@@ -82,7 +84,16 @@ let package = Package(
             // run the plugin to build the metal shaders
             plugins: [.plugin(name: "PrepareMetalShaders")]
         ),
-        
+        .target(
+          name: "Mlx",
+          dependencies: ["Cmlx"]
+        ),
+        .executableTarget(
+            name: "Example1",
+            dependencies: ["Mlx"],
+            path: "Source/Examples",
+            sources: ["Example1.swift"]
+        ),
         .testTarget(
             name: "CmlxTests",
             dependencies: ["Cmlx"]
