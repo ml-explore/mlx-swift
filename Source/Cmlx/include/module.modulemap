@@ -1,0 +1,3 @@
+module Cmlx {
+       header "mlx.h"
+}

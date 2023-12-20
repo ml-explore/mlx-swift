@@ -15,8 +15,14 @@ FetchContent_Declare(
   GIT_TAG "main")
 FetchContent_MakeAvailable(mlxc)
 
-add_subdirectory(mlx)
+add_library(
+  Mlx STATIC
+  ${CMAKE_CURRENT_LIST_DIR}/Source/Mlx/array.swift
+  ${CMAKE_CURRENT_LIST_DIR}/Source/Mlx/device.swift
+  ${CMAKE_CURRENT_LIST_DIR}/Source/Mlx/stream.swift)
+target_include_directories(Mlx
+                           PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
+target_link_libraries(Mlx PRIVATE mlxc)
 
 add_executable(example example.swift)
-# target_include_directories(example PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Cmlx)
 target_link_libraries(example PRIVATE Mlx)
