@@ -77,6 +77,7 @@ let package = Package(
                 .define("METAL_PATH", to: "\"default.metallib\""),
             ],
             linkerSettings: [
+                .linkedFramework("Foundation"),
                 .linkedFramework("Metal"),
                 .linkedFramework("Accelerate"),
             ],
