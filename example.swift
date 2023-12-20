@@ -1,11 +1,8 @@
-import Cmlx
+import Mlx
 
-var data : [Float] = [2, 4, 6, 8]
-var shape : [Int32] = [2, 2]
-
-var arr = Cmlx.mlx_array_from_data(&data, &shape, 2, Cmlx.MLX_FLOAT32)
-var str = String(cString: Cmlx.mlx_tostring(UnsafeMutableRawPointer(arr)))
-
-print(str)
-
-Cmlx.mlx_free(UnsafeMutableRawPointer(arr))
+let data : [Int32] = [2, 4, 6, 8]
+let arr = Array(data, [2, 2])
+print(arr)
+print(arr.dtype())
+print(arr.shape())
+print(arr.asType(DType.int64))
