@@ -7,8 +7,8 @@ let package = Package(
     name: "mlx-swift",
     
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
+        .macOS(.v13),
+        .iOS(.v16),
     ],
 
     products: [
