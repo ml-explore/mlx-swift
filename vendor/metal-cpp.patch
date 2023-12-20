@@ -1,0 +1,24 @@
+diff --color -u -r /Users/dkoski/Downloads/metal-cpp/Foundation/NSBundle.hpp metal-cpp/Foundation/NSBundle.hpp
+--- /Users/dkoski/Downloads/metal-cpp/Foundation/NSBundle.hpp	2023-11-17 11:55:32
++++ metal-cpp/Foundation/NSBundle.hpp	2023-12-19 13:55:11
+@@ -52,7 +52,7 @@
+     Bundle*           init(const class String* pPath);
+     Bundle*           init(const class URL* pURL);
+ 
+-    class Array*      allBundles() const;
++    static Array*      allBundles();
+     class Array*      allFrameworks() const;
+ 
+     bool              load();
+@@ -170,9 +170,9 @@
+ 
+ //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+-_NS_INLINE NS::Array* NS::Bundle::allBundles() const
++_NS_INLINE NS::Array* NS::Bundle::allBundles()
+ {
+-    return Object::sendMessage<Array*>(this, _NS_PRIVATE_SEL(allBundles));
++    return Object::sendMessage<Array*>(_NS_PRIVATE_CLS(NSBundle), _NS_PRIVATE_SEL(allBundles));
+ }
+ 
+ //-------------------------------------------------------------------------------------------------------------------------------------------------------------
