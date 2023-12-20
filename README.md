@@ -1,8 +1,15 @@
 # mlx-swift
 Swift example for MLX
 
-Build with:
 
+## Installation
+
+With Swift Package Manager:
+```
+swift build -c release
+```
+
+With CMake:
 ```
 mkdir build
 cd build
