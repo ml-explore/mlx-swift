@@ -34,6 +34,9 @@ let package = Package(
             exclude: [
                 // exclude here -- it is part of the include directory (public api)
                 "mlx-c",
+                
+                // vendored library, include header only
+                "json",
 
                 // mlx files that are not part of the build
                 "mlx/ACKNOWLEDGMENTS.md",
@@ -70,7 +73,8 @@ let package = Package(
                 .headerSearchPath("mlx"),
                 .headerSearchPath("include/mlx-c"),
                 .headerSearchPath("metal-cpp"),
-                
+                .headerSearchPath("json/single_include/nlohmann"),
+
                 .define("ACCELERATE_NEW_LAPACK"),
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
