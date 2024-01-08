@@ -1,27 +1,27 @@
 import Cmlx
 
-public enum StreamOrDevice {
-    case `default`
-    case device(Device)
-    case stream(Stream)
+public struct StreamOrDevice {
     
-    public var stream: Stream {
-        switch self {
-        case .default:
-            Stream()
-        case .device(let device):
-            Stream.defaultStream(device)
-        case .stream(let stream):
-            stream
-        }
+    private let stream: Stream
+    
+    private init(_ stream: Stream) {
+        self.stream = stream
     }
     
-    @inlinable
-    func withStream<T>(body: (OpaquePointer) throws -> T) rethrows -> T {
-        let s = stream
-        return try withExtendedLifetime(s) {
-            try body(s.ctx)
-        }
+    public static var `default`: StreamOrDevice {
+        StreamOrDevice(Stream())
+    }
+    
+    public static func device(_ device: Device) -> StreamOrDevice {
+        StreamOrDevice(Stream.defaultStream(device))
+    }
+    
+    public static func stream(_ stream: Stream) -> StreamOrDevice {
+        StreamOrDevice(stream)
+    }
+    
+    var ctx: OpaquePointer {
+        stream.ctx
     }
 }
 
