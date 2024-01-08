@@ -16,13 +16,17 @@ public enum StreamOrDevice {
         }
     }
     
-    var ctx: OpaquePointer {
-        stream.ctx
+    @inlinable
+    func withStream<T>(body: (OpaquePointer) throws -> T) rethrows -> T {
+        let s = stream
+        return try withExtendedLifetime(s) {
+            try body(s.ctx)
+        }
     }
 }
 
 public final class Stream {
-    let ctx: OpaquePointer!
+    public let ctx: OpaquePointer!
     init(_ ctx_: mlx_stream) {
         ctx = ctx_
     }
