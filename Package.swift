@@ -89,20 +89,26 @@ let package = Package(
             // run the plugin to build the metal shaders
             plugins: [.plugin(name: "PrepareMetalShaders")]
         ),
+        .testTarget(
+            name: "CmlxTests",
+            dependencies: ["Cmlx"]
+        ),
+        
         .target(
           name: "Mlx",
           dependencies: ["Cmlx"]
         ),
+        .testTarget(
+            name: "MlxTests",
+            dependencies: ["Mlx"]
+        ),
+        
         .executableTarget(
             name: "Example1",
             dependencies: ["Mlx"],
             path: "Source/Examples",
             sources: ["Example1.swift"]
         ),
-        .testTarget(
-            name: "CmlxTests",
-            dependencies: ["Cmlx"]
-        )
     ],
     cxxLanguageStandard: .gnucxx17
 )
