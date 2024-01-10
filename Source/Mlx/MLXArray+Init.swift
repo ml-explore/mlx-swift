@@ -175,7 +175,7 @@ extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, Expr
     public convenience init(arrayLiteral elements: Int32...) {
         let ctx = elements.withUnsafeBufferPointer { ptr in
             let shape = [Int32(elements.count)]
-            return mlx_array_from_data(ptr.baseAddress!, shape, Int32(shape.count), Int.dtype.cmlxDtype)!
+            return mlx_array_from_data(ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)!
         }
         self.init(ctx)
     }

@@ -27,6 +27,11 @@ class MLXArrayInitTests : XCTestCase {
         assertSingleton(a, .float32)
     }
 
+    func testArrayCreationLiteralArray() {
+        let a: MLXArray = [20, 30, 40]
+        assertEqual(a, MLXArray([20, 30, 40].asInt32))
+    }
+
     func testArrayCreationArray1D() {
         let a = MLXArray([1, 2, 3])
         XCTAssertEqual(a.dtype, .int64)
