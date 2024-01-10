@@ -63,6 +63,23 @@ extension MLXArray {
         })
     }
     
+    /// Initalizer allowing creation of `MLXArray` from an array of `Double` values with
+    /// an optional shape.
+    ///
+    /// Note: this converts the types to `Float`, which is a type representable in `MLXArray`
+    ///
+    /// ```
+    /// let array = MLXArray(convert: [0.5, 0.9])
+    /// ```
+    public convenience init(convert value: [Double], _ shape: [Int]? = nil) {
+        shapePrecondition(shape: shape, count: value.count)
+        let floats = value.map { Float($0) }
+        self.init(floats.withUnsafeBufferPointer { ptr in
+            let shape = shape ?? [floats.count]
+            return mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, Float.dtype.cmlxDtype)
+        })
+    }
+
     /// Initalizer allowing creation of `MLXArray` from a sequence of `HasDType` values with
     /// an optional shape.
     ///
@@ -185,24 +202,16 @@ extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, Expr
 
 extension MLXArray {
     
-    static public func zeros(_ type: DType, _ shape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_zeros(shape.map { Int32($0) }, shape.count, type.cmlxDtype, stream.ctx))
-    }
-    
-    static public func zeros<T: HasDType>(_ type: T.Type, _ shape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
-        zeros(T.dtype, shape, stream: stream)
+    static public func zeros<T: HasDType>(_ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_zeros(shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx))
     }
     
     static public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_zeros_like(array.ctx, stream.ctx))
     }
 
-    static public func ones(_ type: DType, _ shape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_ones(shape.map { Int32($0) }, shape.count, type.cmlxDtype, stream.ctx))
-    }
-    
-    static public func ones<T: HasDType>(_ type: T.Type, _ shape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
-        ones(T.dtype, shape, stream: stream)
+    static public func ones<T: HasDType>(_ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_ones(shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx))
     }
 
     static public func ones(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {

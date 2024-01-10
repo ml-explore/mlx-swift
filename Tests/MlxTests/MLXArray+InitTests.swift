@@ -32,6 +32,13 @@ class MLXArrayInitTests : XCTestCase {
         assertEqual(a, MLXArray([20, 30, 40].asInt32))
     }
 
+    func testArrayCreationDoubleArray() {
+        // this transforms the array to [Float] and constructs (as a convenience)
+        let a = MLXArray(convert: [0.1, 0.5])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a[0].item(Float.self), 0.1, accuracy: 0.01)
+    }
+
     func testArrayCreationArray1D() {
         let a = MLXArray([1, 2, 3])
         XCTAssertEqual(a.dtype, .int64)
@@ -62,7 +69,7 @@ class MLXArrayInitTests : XCTestCase {
     }
 
     func testArrayCreationZeros() {
-        let a = MLXArray.zeros(Int32.self, [2, 4])
+        let a = MLXArray.zeros([2, 4], type: Int.self)
         XCTAssertEqual(a.dtype, .int32)
         XCTAssertEqual(a.count, 8)
         XCTAssertEqual(a.ndim, 2)
