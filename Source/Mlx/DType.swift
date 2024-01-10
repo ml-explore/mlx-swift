@@ -3,7 +3,7 @@ import Cmlx
 /// Enum wrapping `Cmlx.mlx_array_dtype`.
 ///
 /// This is typically not used directly, rather it is inferred from parameters that are ``HasDType``.
-public enum DType {
+public enum DType : Sendable, Hashable {
     case bool
     case uint8
     case uint16
