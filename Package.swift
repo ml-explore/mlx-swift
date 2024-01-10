@@ -37,6 +37,9 @@ let package = Package(
                 
                 // vendored library, include header only
                 "json",
+                
+                // vendored library, do not include driver
+                "gguf-tools/gguf-tools.c",
 
                 // mlx files that are not part of the build
                 "mlx/ACKNOWLEDGMENTS.md",
@@ -74,6 +77,7 @@ let package = Package(
                 .headerSearchPath("include/mlx-c"),
                 .headerSearchPath("metal-cpp"),
                 .headerSearchPath("json/single_include/nlohmann"),
+                .headerSearchPath("gguf-tools"),
 
                 .define("ACCELERATE_NEW_LAPACK"),
                 .define("_METAL_"),
