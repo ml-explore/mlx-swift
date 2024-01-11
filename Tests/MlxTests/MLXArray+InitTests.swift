@@ -8,7 +8,7 @@ class MLXArrayInitTests : XCTestCase {
 
     private func assertSingleton(_ array: MLXArray, _ dtype: DType) {
         XCTAssertEqual(array.dtype, dtype)
-        XCTAssertEqual(array.count, 1)
+        XCTAssertEqual(array.size, 1)
         XCTAssertEqual(array.ndim, 0)
     }
     
@@ -50,7 +50,7 @@ class MLXArrayInitTests : XCTestCase {
     func testArrayCreationRange() {
         let a = MLXArray(0 ..< 12, [3, 4])
         XCTAssertEqual(a.dtype, .int64)
-        XCTAssertEqual(a.count, 12)
+        XCTAssertEqual(a.size, 12)
         XCTAssertEqual(a.ndim, 2)
     }
     
@@ -70,8 +70,8 @@ class MLXArrayInitTests : XCTestCase {
 
     func testArrayCreationZeros() {
         let a = MLXArray.zeros([2, 4], type: Int.self)
-        XCTAssertEqual(a.dtype, .int32)
-        XCTAssertEqual(a.count, 8)
+        XCTAssertEqual(a.dtype, .int64)
+        XCTAssertEqual(a.size, 8)
         XCTAssertEqual(a.ndim, 2)
     }
     
