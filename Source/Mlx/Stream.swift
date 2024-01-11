@@ -31,19 +31,20 @@ public final class Stream {
         ctx = ctx_
     }
     public init() {
-        // TODO: does this work?  i am not sure on that mlx_free.  yes, a bunch of typedefs mean it is mlx_device_
-        let dDev = mlx_default_device()
+        let dDev = mlx_default_device()!
         ctx = mlx_default_stream(dDev)
-        mlx_free(UnsafeMutableRawPointer(dDev))
+        mlx_free(dDev)
     }
     public init(index: Int32, _ device: Device) {
         ctx = mlx_stream_new(index, device.ctx)
     }
+    
+    deinit {
+        mlx_free(ctx)
+    }
+
     // TODO: property?  get/set?
     static public func defaultStream(_ device: Device) -> Stream {
         return Stream(mlx_default_stream(device.ctx))
-    }
-    deinit {
-        Cmlx.mlx_free(UnsafeMutableRawPointer(ctx))
     }
 }

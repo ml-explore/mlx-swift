@@ -11,7 +11,7 @@ public final class MLXArray {
     }
     
     deinit {
-        Cmlx.mlx_free(UnsafeMutableRawPointer(ctx))
+        mlx_free(ctx)
     }
         
     /// Number of bytes per element

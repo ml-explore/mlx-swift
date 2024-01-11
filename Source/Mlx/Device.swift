@@ -30,6 +30,6 @@ public final class Device {
         mlx_set_default_device(dev.ctx)
     }
     deinit {
-        Cmlx.mlx_free(UnsafeMutableRawPointer(ctx))
+        mlx_free(ctx)
     }
 }

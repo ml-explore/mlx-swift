@@ -49,8 +49,8 @@ extension MLXArray {
     /// Replace the interior ctx (`mlx_array` pointer) with a new value
     @inline(__always)
     private func update(array: MLXArray) {
-        mlx_free(UnsafeMutableRawPointer(ctx))
-        mlx_retain(UnsafeMutableRawPointer(array.ctx))
+        mlx_free(ctx)
+        mlx_retain(array.ctx)
         self.ctx = array.ctx
     }
     
@@ -58,7 +58,7 @@ extension MLXArray {
     @inline(__always)
     private func update(ctx: OpaquePointer) {
         if ctx != self.ctx {
-            mlx_free(UnsafeMutableRawPointer(self.ctx))
+            mlx_free(self.ctx)
             self.ctx = ctx
         }
     }
@@ -176,7 +176,7 @@ extension MLXArray {
             let i = resolve(indices)
             let g = mlx_gather(ctx, i.map { $0.ctx }, i.count, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx)!
             defer {
-                mlx_free(UnsafeMutableRawPointer(g))
+                mlx_free(g)
             }
             
             // squeeze down any of the dimensions that were indexed
