@@ -79,6 +79,12 @@ extension MLXArray {
             return mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, Float.dtype.cmlxDtype)
         })
     }
+    
+    /// Unavailable init to redirect for initializing with a `[Double]`
+    @available(*, unavailable, renamed: "MLXArray(converting:shape:)", message: "Use MLXArray(converting: [1.0, 2.0, ...]) instead")
+    public convenience init(_ value: [Double], _ shape: [Int]? = nil) {
+        fatalError("unavailable")
+    }
 
     /// Initalizer allowing creation of `MLXArray` from a sequence of `HasDType` values with
     /// an optional shape.
