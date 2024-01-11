@@ -22,7 +22,7 @@ class MLXRandomTests : XCTestCase {
         
         // specify shape to broadcast
         let value = MLXRandom.uniform(0.0 ..< 10, [3], key: key)
-        let expected = MLXArray(convert: [9.65, 3.14, 6.33])
+        let expected = MLXArray(converting: [9.65, 3.14, 6.33])
         assertEqual(value, expected, atol: 0.01)
     }
 
@@ -32,7 +32,7 @@ class MLXRandomTests : XCTestCase {
         // give an array of bounds
         let value = MLXRandom.uniform([0, 10], [10, 100], key: key)
         
-        let expected = MLXArray(convert: [2.16, 82.37])
+        let expected = MLXArray(converting: [2.16, 82.37])
         assertEqual(value, expected, atol: 0.01)
     }
 
@@ -89,7 +89,7 @@ class MLXRandomTests : XCTestCase {
 
     func testBernoulliPArray() {
         let key = MLXRandom.key(0)
-        let array = MLXRandom.bernoulli(MLXArray(convert: [0.1, 0.5, 0.8]), key: key)
+        let array = MLXRandom.bernoulli(MLXArray(converting: [0.1, 0.5, 0.8]), key: key)
         let expected = MLXArray([false, true, true])
         assertEqual(array, expected)
     }
@@ -105,7 +105,7 @@ class MLXRandomTests : XCTestCase {
         
         // specify shape to broadcast
         let value = MLXRandom.truncatedNormal(0 ..< 0.5, [3], key: key)
-        let expected = MLXArray(convert: [0.48, 0.15, 0.30])
+        let expected = MLXArray(converting: [0.48, 0.15, 0.30])
         assertEqual(value, expected, atol: 0.01)
     }
 
@@ -113,9 +113,9 @@ class MLXRandomTests : XCTestCase {
         let key = MLXRandom.key(0)
         
         // give an array of bounds
-        let value = MLXRandom.truncatedNormal(MLXArray(convert: [0, 0.5]), MLXArray(convert: [0.5, 1]), key: key)
+        let value = MLXRandom.truncatedNormal(MLXArray(converting: [0, 0.5]), MLXArray(converting: [0.5, 1]), key: key)
         
-        let expected = MLXArray(convert: [0.10, 0.88])
+        let expected = MLXArray(converting: [0.10, 0.88])
         assertEqual(value, expected, atol: 0.01)
     }
 

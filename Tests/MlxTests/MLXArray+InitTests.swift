@@ -34,7 +34,7 @@ class MLXArrayInitTests : XCTestCase {
 
     func testArrayCreationDoubleArray() {
         // this transforms the array to [Float] and constructs (as a convenience)
-        let a = MLXArray(convert: [0.1, 0.5])
+        let a = MLXArray(converting: [0.1, 0.5])
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(a[0].item(Float.self), 0.1, accuracy: 0.01)
     }

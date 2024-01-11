@@ -5,7 +5,7 @@ import XCTest
 class MLXArrayTests : XCTestCase {
     
     func testArrayProperties() {
-        let a = MLXArray(convert: [3.5, 4.5, 5.5, 7.0, 9.4, 10.0], [2, 3, 1])
+        let a = MLXArray(converting: [3.5, 4.5, 5.5, 7.0, 9.4, 10.0], [2, 3, 1])
         
         XCTAssertEqual(a.itemSize, 4)
         XCTAssertEqual(a.size, 6)

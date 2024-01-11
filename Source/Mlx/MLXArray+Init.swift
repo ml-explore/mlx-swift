@@ -71,7 +71,7 @@ extension MLXArray {
     /// ```
     /// let array = MLXArray(convert: [0.5, 0.9])
     /// ```
-    public convenience init(convert value: [Double], _ shape: [Int]? = nil) {
+    public convenience init(converting value: [Double], _ shape: [Int]? = nil) {
         shapePrecondition(shape: shape, count: value.count)
         let floats = value.map { Float($0) }
         self.init(floats.withUnsafeBufferPointer { ptr in
