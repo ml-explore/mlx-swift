@@ -12,13 +12,16 @@ let package = Package(
     ],
 
     products: [
-        .library(name: "Cmlx", targets: ["Cmlx"]),
-        .library(name: "Mlx", targets: ["Mlx"]),
         .plugin(
           name: "PrepareMetalShaders",
           targets: ["PrepareMetalShaders"]
         ),
+        
+        .library(name: "Cmlx", targets: ["Cmlx"]),
+        .library(name: "Mlx", targets: ["Mlx"]),
+        
         .executable(name: "Example1", targets: ["Example1"]),
+        .executable(name: "Tutorial", targets: ["Tutorial"]),
     ],
     dependencies: [
     ],
@@ -112,6 +115,12 @@ let package = Package(
             dependencies: ["Mlx"],
             path: "Source/Examples",
             sources: ["Example1.swift"]
+        ),
+        .executableTarget(
+            name: "Tutorial",
+            dependencies: ["Mlx"],
+            path: "Source/Examples",
+            sources: ["Tutorial.swift"]
         ),
     ],
     cxxLanguageStandard: .gnucxx17

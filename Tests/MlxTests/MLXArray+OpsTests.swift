@@ -56,4 +56,10 @@ class MLXArrayOpsTests : XCTestCase {
         XCTAssertEqual(r.allTrue(), true)
     }
 
+    func testFunctions() {
+        let a = MLXArray(0 ..< 12, [4, 3])
+        
+        let r = a.square().sqrt().transpose().T()
+        assertEqual(a, r)
+    }
 }

@@ -198,6 +198,14 @@ public final class MLXArray {
             fatalError("Unable to get item() as \(type)")
         }
     }
+    
+    /// Evaluate the array.
+    ///
+    /// MLX is lazy and arrays are not fully realized until they are evaluated.  This method is typically
+    /// not needed as all reads ensure the contents are evaluated.
+    public func eval() {
+        mlx_array_eval(ctx)
+    }
 }
 
 extension MLXArray: CustomStringConvertible {

@@ -135,7 +135,7 @@ extension MLXArray {
             var broadcastShape = self.shape
             broadcastShape[0] = 1
             
-            let expanded = newValue.reshape(updateShape).broadcast(to: broadcastShape)
+            let expanded = newValue.reshape(updateShape).broadcast(to: broadcastShape.asInt32)
 
             let indices = [resolve(index, 0)]
             self.update(array: scatter(indices: indices, updates: expanded, axes: [0]))
