@@ -5,7 +5,7 @@ import Cmlx
 /// Broadcast a vector of arrays against one another.
 public func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArray] {
     let result = mlx_broadcast_arrays(arrays.map { $0.ctx }, arrays.count, stream.ctx)
-    defer { free(result.arrays) }
+    defer { mlx_vector_array_free(result) }
     
     return (0 ..< result.size).map { MLXArray(result.arrays[$0]!) }
 }

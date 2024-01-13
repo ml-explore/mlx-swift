@@ -26,7 +26,7 @@ public enum MLXRandom {
 
     /// Seed the global PRNG.
     ///
-    /// See also ``key(UInt64)``
+    /// See also ``key(_:)``
     public static func seed(_ seed: UInt64) {
         mlx_random_seed(seed)
     }
@@ -120,8 +120,8 @@ public enum MLXRandom {
     /// Generate random integers from the given interval.
     ///
     /// The values are sampled with equal probability from the integers in
-    /// half-open interval ``[low, high)``. The lower and upper bound can be
-    /// scalars or arrays and must be roadcastable to ``shape``.
+    /// half-open interval `[low, high)`. The lower and upper bound can be
+    /// scalars or arrays and must be roadcastable to `shape`.
     ///
     /// ```
     /// let key = MLXRandom.key(0)

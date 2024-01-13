@@ -62,4 +62,50 @@ class MLXArrayOpsTests : XCTestCase {
         let r = a.square().sqrt().transpose().T()
         assertEqual(a, r)
     }
+    
+    func testSplitEqual() {
+        let a = MLXArray(0 ..< 12, [4, 3])
+        
+        let s = a.split(parts: 2)
+        XCTAssertEqual(s[0].shape, [2, 3])
+        XCTAssertEqual(s[1].shape, [2, 3])
+    }
+    
+    func testSplitIndices() {
+        let a = MLXArray(0 ..< 12, [4, 3])
+        
+        let s = a.split(indices: [0, 3])
+        XCTAssertEqual(s[0].shape, [0, 3])
+        XCTAssertEqual(s[1].shape, [3, 3])
+        XCTAssertEqual(s[2].shape, [1, 3])
+    }
+    
+    func testFlatten() {
+        let a = MLXArray(0 ..< (8 * 4 * 3), [8, 4, 3])
+        
+        let f1 = a.flatten()
+        XCTAssertEqual(f1.shape, [8 * 4 * 3])
+        
+        let f2 = a.flatten(start: 1)
+        XCTAssertEqual(f2.shape, [8, 4 * 3])
+    }
+
+    public func testMoveAxis() {
+        let array = MLXArray(0 ..< 16, [2, 2, 2, 2])
+        
+        let r = array.moveAxis(source: 0, destination: 3)
+        
+        let expected = MLXArray([0, 8, 1, 9, 2, 10, 3, 11, 4, 12, 5, 13, 6, 14, 7, 15], [2, 2, 2, 2])
+        assertEqual(r, expected)
+    }
+    
+    public func testSwapAxes() {
+        let array = MLXArray(0 ..< 16, [2, 2, 2, 2])
+        
+        let r = array.swapAxes(0, 3)
+        
+        let expected = MLXArray([0, 8, 2, 10, 4, 12, 6, 14, 1, 9, 3, 11, 5, 13, 7, 15], [2, 2, 2, 2])
+        assertEqual(r, expected)
+    }
+
 }

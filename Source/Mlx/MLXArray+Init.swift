@@ -224,3 +224,21 @@ extension MLXArray {
         MLXArray(mlx_ones_like(array.ctx, stream.ctx))
     }
 }
+
+// MARK: - Factory Methods (Internal)
+
+extension MLXArray {
+    
+    /// Return an array of MLXArray from an `mlx_vector_array`.  The caller retains ownership
+    /// of the `mlx_vector_array` and its contents.
+    static func fromVector(_ vec: mlx_vector_array) -> [MLXArray] {
+        (0 ..< vec.size)
+            .map { index in
+                // transfer ownership to the result arrays
+                let ctx = vec.arrays[index]!
+                mlx_retain(ctx)
+                return MLXArray(ctx)
+            }
+    }
+    
+}
