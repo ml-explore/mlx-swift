@@ -34,7 +34,7 @@ extension MLXArray : Sequence {
     
     /// Return an iterator along axis 0:
     ///
-    /// ```
+    /// ```swift
     /// for row in array {
     ///     row...
     /// }
@@ -111,7 +111,7 @@ extension MLXArray {
     ///
     /// This provides access to the given index on axis 0.
     ///
-    /// ```
+    /// ```swift
     /// // print the contents of row 1
     /// print(array[1])
     ///
@@ -154,7 +154,7 @@ extension MLXArray {
     
     /// Multiple axis subscript.
     ///
-    /// ```
+    /// ```swift
     /// // print the contents of [1, 3]
     /// print(array[1, 3])
     ///

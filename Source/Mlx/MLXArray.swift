@@ -3,7 +3,8 @@ import Cmlx
 
 public final class MLXArray {
     
-    var ctx: OpaquePointer!
+    /// pointer to the mlx-c wrapper on `mlx::core::array`
+    var ctx: mlx_array
 
     /// initialize with the given +1 context (transfer ownership)
     init(_ ctx: mlx_array) {
@@ -19,7 +20,7 @@ public final class MLXArray {
     
     /// Total number of elements in the array
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     /// print(array.size)
     /// // 12
@@ -30,7 +31,7 @@ public final class MLXArray {
     ///
     /// For example, these would be equivalent:
     ///
-    /// ```
+    /// ```swift
     /// for row in array {
     ///     ...
     /// }
@@ -47,7 +48,7 @@ public final class MLXArray {
     
     /// Number of dimensions in the array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     /// print(array.ndim)
     /// // 2
@@ -56,7 +57,7 @@ public final class MLXArray {
     
     /// Data type of the elements in the array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     /// print(array.dtype)
     /// // .int64 (aka Int.dtype)
@@ -65,7 +66,7 @@ public final class MLXArray {
     
     /// Dimensions of the array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     /// print(array.shape)
     /// // [3, 4]
@@ -82,7 +83,7 @@ public final class MLXArray {
     /// It is a contract violation to call this on an array with more than one element
     /// or to read a type other than the `dtype`.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([3.5, 4.5])
     ///
     /// // 4.5
@@ -97,7 +98,7 @@ public final class MLXArray {
     /// It is a contract violation to call this on an array with more than one element
     /// or to read a type other than the `dtype`.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([3.5, 4.5])
     ///
     /// // 4.5
@@ -127,7 +128,7 @@ public final class MLXArray {
         
     /// Read a dimension of the array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     /// print(array.dim(1))
     /// // 4
@@ -140,7 +141,7 @@ public final class MLXArray {
     ///
     /// Convenience override for `Int32`.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     ///
     /// let index = Int32(1)

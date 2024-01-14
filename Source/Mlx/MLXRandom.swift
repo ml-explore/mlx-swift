@@ -51,7 +51,7 @@ public enum MLXRandom {
     /// The values are sampled uniformly in the range.  An optional shape can be used to broadcast into
     /// a larger array.  An optional `Key` can be specified to control the PRNG.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // create an array of shape [50] type Float values in the range 0 ..< 10
@@ -70,7 +70,7 @@ public enum MLXRandom {
     ///
     /// Specialization to make it easy to call with `Float`:
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
     /// ```
@@ -87,7 +87,7 @@ public enum MLXRandom {
     /// broadcastable to the optional `shape` (it will be the shape of the `lb`
     /// if not specified).
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate an array of two Float values, one in the range 0 ..< 10
@@ -104,7 +104,7 @@ public enum MLXRandom {
     /// Generate an array of random numbers using the optional shape.  The result
     /// will be of the given `type`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate a single Float with normal distribution
@@ -123,7 +123,7 @@ public enum MLXRandom {
     /// half-open interval `[low, high)`. The lower and upper bound can be
     /// scalars or arrays and must be roadcastable to `shape`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate a single random int
@@ -144,7 +144,7 @@ public enum MLXRandom {
     /// half-open interval `[lb, ub)`. The lower and upper bound can be
     /// scalars or arrays and must be roadcastable to `shape`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate an array of Int values, one in the range 0 ..< 10
@@ -163,7 +163,7 @@ public enum MLXRandom {
     /// scalars or arrays and must be roadcastable to `shape`.  The
     /// integer results will be of the given `type`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate an array of Int8 values, one in the range 0 ..< 10
@@ -180,7 +180,7 @@ public enum MLXRandom {
     /// The values are sampled from the bernoulli distribution with parameter `p` using the default value of 0.5.
     /// The result will be of size `shape`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate a single random Bool with p = 0.5
@@ -200,7 +200,7 @@ public enum MLXRandom {
     /// `p`. The parameter `p` must have a floating point type and
     /// must be broadcastable to `shape`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate a single random Bool with p = 0.8
@@ -223,7 +223,7 @@ public enum MLXRandom {
     /// An optional shape can be used to broadcast into
     /// a larger array.  An optional `Key` can be specified to control the PRNG.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // create an array of shape [50] type Float values in the range 0 ..< 10
@@ -245,7 +245,7 @@ public enum MLXRandom {
     ///
     /// Specialization to make it easy to call with `Float`:
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     /// let array = MLXRandom.truncatedNormal(0.5 ..< 1, [50], key: key)
     /// ```
@@ -261,7 +261,7 @@ public enum MLXRandom {
     /// on the domain `(lower, upper)`. The bounds `lower` and `upper`
     /// can be scalars or arrays and must be broadcastable to `shape`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate an array of two Float values, one in the range 0 ..< 10
@@ -278,7 +278,7 @@ public enum MLXRandom {
     /// The values are sampled from a standard Gumbel distribution
     /// which CDF `exp(-exp(-x))`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// // generate a single Float with Gumbel distribution
@@ -298,7 +298,7 @@ public enum MLXRandom {
     /// the result shape will be the same shape as `logits` with the `axis`
     /// dimension removed.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// let logits = MLXArray.zeros([5, 20])
@@ -322,7 +322,7 @@ public enum MLXRandom {
     /// The values are sampled from the categorical distribution specified by
     /// the unnormalized values in `logits`.
     ///
-    /// ```
+    /// ```swift
     /// let key = MLXRandom.key(0)
     ///
     /// let logits = MLXArray.zeros([5, 20])

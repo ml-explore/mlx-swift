@@ -11,11 +11,11 @@ extension MLXArray {
     
     /// Element-wise addition.
     ///
-    /// Add two arrays with numpy-style broadcasting semantics.
+    /// Add two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -28,11 +28,11 @@ extension MLXArray {
 
     /// Element-wise subtraction.
     ///
-    /// Subtract two arrays with numpy-style broadcasting semantics.
+    /// Subtract two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -49,7 +49,7 @@ extension MLXArray {
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let r = -a
     /// ```
@@ -62,7 +62,7 @@ extension MLXArray {
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     /// let r = !(a == b)
@@ -74,11 +74,11 @@ extension MLXArray {
 
     /// Element-wise multiplication.
     ///
-    /// Multiply two arrays with numpy-style broadcasting semantics.
+    /// Multiply two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -91,12 +91,11 @@ extension MLXArray {
     
     /// Element-wise power operation.
     ///
-    /// Raise the elements of `lhs` to the powers in elements of `rhs` with numpy-style
-    /// broadcasting semantics.
+    /// Raise the elements of `lhs` to the powers in elements of `rhs` with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -124,14 +123,14 @@ extension MLXArray {
     ///   2 dimensions.  The matrix dimensions for the matrix product are the last
     ///   two dimensions of each input.
     /// - All but the last two dimensions of each input are broadcast with one another using
-    ///   standard numpy-style broadcasting semantics.
+    ///   standard <doc:broadcasting>.
     ///
     /// Note: this is the same as the `@` operator in python.  `@` is not available as an operator in
     /// swift so we are using `***`.  You can also call it as a function: ``matmul(_:stream:)``.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray([1, 2, 3, 4], [2, 2])
     /// let b = MLXArray(converting: [-5.0, 37.5, 4, 7, 1, 0], [2, 3])
     ///
@@ -148,11 +147,11 @@ extension MLXArray {
 
     /// Element-wise division.
     ///
-    /// Divide two arrays with numpy-style broadcasting semantics.
+    /// Divide two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -165,13 +164,13 @@ extension MLXArray {
 
     /// Element-wise integer division..
     ///
-    /// Divide two arrays with numpy-style broadcasting semantics.
+    /// Divide two arrays with <doc:broadcasting>.
     ///
     /// If either array is a floating point type then it is equivalent to calling ``floor(stream:)`` after `/`.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -192,12 +191,11 @@ extension MLXArray {
 
     /// Element-wise remainder of division.
     ///
-    /// Computes the remainder of dividing `lhs` with `rhs` with numpy-style
-    /// broadcasting semantics.
+    /// Computes the remainder of dividing `lhs` with `rhs` with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     ///
     /// let r = a % 2
@@ -209,11 +207,11 @@ extension MLXArray {
 
     /// Element-wise equality.
     ///
-    /// Equality comparison on two arrays with numpy-style broadcasting semantics.
+    /// Equality comparison on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -233,11 +231,11 @@ extension MLXArray {
 
     /// Element-wise less than or equal.
     ///
-    /// Less than or equal on two arrays with numpy-style broadcasting semantics.
+    /// Less than or equal on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -252,11 +250,11 @@ extension MLXArray {
 
     /// Element-wise less greater than or equal.
     ///
-    /// Greater than or equal on two arrays with numpy-style broadcasting semantics.
+    /// Greater than or equal on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -271,11 +269,11 @@ extension MLXArray {
 
     /// Element-wise not equal.
     ///
-    /// Not equal on two arrays with numpy-style broadcasting semantics.
+    /// Not equal on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -290,11 +288,11 @@ extension MLXArray {
 
     /// Element-wise less than.
     ///
-    /// Less than on two arrays with numpy-style broadcasting semantics.
+    /// Less than on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -309,11 +307,11 @@ extension MLXArray {
 
     /// Element-wise greater than.
     ///
-    /// greater than on two arrays with numpy-style broadcasting semantics.
+    /// greater than on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -328,11 +326,11 @@ extension MLXArray {
 
     /// Element-wise logical and.
     ///
-    /// Logical and on two arrays with numpy-style broadcasting semantics.
+    /// Logical and on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -345,11 +343,11 @@ extension MLXArray {
 
     /// Element-wise logical or.
     ///
-    /// Logical or on two arrays with numpy-style broadcasting semantics.
+    /// Logical or on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
@@ -388,7 +386,7 @@ extension MLXArray {
     
     /// An `and` reduction over the given axes.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     ///
     /// // will produce a scalar MLXArray with false -- not all of the values are non-zero
@@ -401,33 +399,47 @@ extension MLXArray {
     /// let allRows2 = array.all(axis: 0)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``all(axis:keepDims:stream:)``
     /// - ``all(keepDims:stream:)``
     /// - ``allTrue(stream:)``
-    /// - ``any(axes:keepDims:stream:)``
     public func all(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_all_axes(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
     
     /// An `and` reduction over the given axes.
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``all(axes:keepDims:stream:)``
     /// - ``all(keepDims:stream:)``
     /// - ``allTrue(stream:)``
-    /// - ``any(axes:keepDims:stream:)``
     public func all(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_all_axis(ctx, axis.int32, keepDims, stream.ctx))
     }
 
     /// An `and` reduction over the given axes.
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``all(axes:keepDims:stream:)``
     /// - ``all(axis:keepDims:stream:)``
     /// - ``allTrue(stream:)``
-    /// - ``any(axes:keepDims:stream:)``
     public func all(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_all_all(ctx, keepDims, stream.ctx))
     }
@@ -436,15 +448,15 @@ extension MLXArray {
     ///
     /// The arrays are considered equal if:
     ///
-    /// ```
+    /// ```swift
     /// all(abs(a - b) <= (atol + rtol * abs(b)))
     /// ```
     ///
-    /// Note unlike ``arrayEqual(_:equalNAN:stream:)``, this function supports numpy-style broadcasting.
+    /// Note unlike ``arrayEqual(_:equalNAN:stream:)``, this function supports <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 4).sqrt()
     /// let b: MLXArray(0 ..< 4) ** 0.5
     ///
@@ -452,6 +464,12 @@ extension MLXArray {
     ///     ...
     /// }
     /// ```
+    ///
+    /// - Parameters:
+    ///     - other: array to compare to
+    ///     - rtol: relative tolerance (see discussion)
+    ///     - atol: absolute tolerance (see discussion)
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - ``arrayEqual(_:equalNAN:stream:)``
@@ -463,13 +481,13 @@ extension MLXArray {
     ///
     /// Equivalent to:
     ///
-    /// ```
+    /// ```swift
     /// let allTrue = array.all().item(Bool.self)
     /// ```
     ///
     /// Use this as:
     ///
-    /// ```
+    /// ```swift
     /// if (a < b || a.allClose(c)).allTrue() {
     ///     ...
     /// }
@@ -478,6 +496,7 @@ extension MLXArray {
     /// Note: this is equivalent to using an array in a boolean context in python.
     ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``all(axes:keepDims:stream:)``
     /// - ``any(axes:keepDims:stream:)``
     public func allTrue(stream: StreamOrDevice = .default) -> Bool {
@@ -494,7 +513,7 @@ extension MLXArray {
     
     /// An `or` reduction over the given axes.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     ///
     /// // will produce a scalar MLXArray with true -- some of the values are non-zero
@@ -507,10 +526,15 @@ extension MLXArray {
     /// let allRows2 = array.any(axis: 0)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``any(axis:keepDims:stream:)``
     /// - ``any(keepDims:stream:)``
-    /// - ``all(axes:keepDims:stream:)``
     /// - ``allTrue(stream:)``
     public func any(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_any(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
@@ -518,10 +542,15 @@ extension MLXArray {
     
     /// An `or` reduction over the given axes.
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``any(axes:keepDims:stream:)``
     /// - ``any(keepDims:stream:)``
-    /// - ``all(axes:keepDims:stream:)``
     /// - ``allTrue(stream:)``
     public func any(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_any(ctx, [axis.int32], 1, keepDims, stream.ctx))
@@ -529,10 +558,14 @@ extension MLXArray {
 
     /// An `or` reduction over the given axes.
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``any(axes:keepDims:stream:)``
     /// - ``any(axis:keepDims:stream:)``
-    /// - ``all(axes:keepDims:stream:)``
     /// - ``allTrue(stream:)``
     public func any(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_any_all(ctx, keepDims, stream.ctx))
@@ -540,12 +573,17 @@ extension MLXArray {
     
     /// Indices of the maximum values along the axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(4 ..< 16, [4, 3])
     ///
     /// // this will produce [3, 3, 3] -- the index in each column for the maximum value
     /// let i = array.argMax(axis=0)
     /// ```
+    ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - ``argMax(keepDims:stream:)``
@@ -556,12 +594,16 @@ extension MLXArray {
 
     /// Indices of the maximum value over the entire array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(4 ..< 16, [4, 3])
     ///
     /// // this will produce [11] -- the index in the flattened array of the largest value
     /// let i = array.argMax()
     /// ```
+    ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - ``argMax(axis:keepDims:stream:)``
@@ -572,12 +614,17 @@ extension MLXArray {
 
     /// Indices of the minimum values along the axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(4 ..< 16, [4, 3])
     ///
     /// // this will produce [0, 0, 0] -- the index in each column for the minimum value
     /// let i = array.argMin(axis=0)
     /// ```
+    ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - ``argMin(keepDims:stream:)``
@@ -588,12 +635,16 @@ extension MLXArray {
 
     /// Indices of the minimum value over the entire array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(4 ..< 16, [4, 3])
     ///
     /// // this will produce [0] -- the index in the flattened array of the smallest value
     /// let i = array.argMin()
     /// ```
+    ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - ``argMin(axis:keepDims:stream:)``
@@ -608,7 +659,7 @@ extension MLXArray {
     /// have the same shape and their values are equal. The arrays need not have
     /// the same type to be considered equal.
     ///
-    /// ```
+    /// ```swift
     /// let a1 = MLXArray([0, 1, 2, 3])
     /// let a2 = MLXArray([0.0, 1.0, 2.0, 3.0])
     ///
@@ -620,7 +671,7 @@ extension MLXArray {
     /// - ``allClose(_:rtol:atol:stream:)``
     /// - ``item(_:)``
     /// - ``allTrue(stream:)``
-    /// - ``==(lhs:rhs:)``
+    /// - ``MLXArray/==(lhs:rhs:)``
     public func arrayEqual(_ other: MLXArray, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_array_equal(ctx, other.ctx, equalNAN, stream.ctx))
     }
@@ -628,24 +679,14 @@ extension MLXArray {
     /// Element-wise cosine.
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func cos(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cos(ctx, stream.ctx))
     }
     
     /// Return the cumulative maximum of the elements along the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [[5, 8], [5, 9]] -- cumulative max along the columns
@@ -663,7 +704,7 @@ extension MLXArray {
 
     /// Return the cumulative maximum of the elements over the flattened array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5, 8, 8, 9]
@@ -684,7 +725,7 @@ extension MLXArray {
 
     /// Return the cumulative minimum of the elements along the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [[5, 8], [4, 8]] -- cumulative min along the columns
@@ -702,7 +743,7 @@ extension MLXArray {
 
     /// Return the cumulative minimum of the elements over the flattened array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5, 5, 4, 4]
@@ -722,7 +763,7 @@ extension MLXArray {
 
     /// Return the cumulative product of the elements along the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [[5, 8], [20, 72]] -- cumulative product along the columns
@@ -740,7 +781,7 @@ extension MLXArray {
 
     /// Return the cumulative product of the elements over the flattened array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5, 40, 160, 1440]
@@ -760,7 +801,7 @@ extension MLXArray {
 
     /// Return the cumulative sum of the elements along the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [[5, 8], [9, 17]] -- cumulative sum along the columns
@@ -778,7 +819,7 @@ extension MLXArray {
 
     /// Return the cumulative sum of the elements over the flattened array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5, 13, 17, 26]
@@ -799,16 +840,7 @@ extension MLXArray {
     /// Element-wise exponential.
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func exp(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_exp(ctx, stream.ctx))
     }
@@ -817,7 +849,7 @@ extension MLXArray {
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< (8 * 4 * 3), [8, 4, 3])
     ///
     /// // f1 is shape [8 * 4 * 3] = [96]
@@ -832,8 +864,7 @@ extension MLXArray {
     ///     - end: last dimension to flatten
     ///
     /// ### See Also
-    /// - ``reshape(_:stream:)``
-    /// - ``squeeze(axes:stream:)``
+    /// - <doc:shapes>
     public func flatten(start: Int = 0, end: Int = -1, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_flatten(ctx, start.int32, end.int32, stream.ctx))
     }
@@ -843,19 +874,20 @@ extension MLXArray {
     /// ### See Also
     /// - ``round(decimals:stream:)``
     /// - ``floorDivide(_:stream:)``
+    /// - <doc:element-wise>
     public func floor(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_floor(ctx, stream.ctx))
     }
 
     /// Element-wise integer division..
     ///
-    /// Divide two arrays with numpy-style broadcasting semantics.
+    /// Divide two arrays with <doc:broadcasting>.
     ///
     /// If either array is a floating point type then it is equivalent to calling ``floor(stream:)`` after `/`.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -865,6 +897,7 @@ extension MLXArray {
     /// ### See Also
     /// - ``/%(lhs:rhs:)``
     /// - ``floor(stream:)``
+    /// - <doc:element-wise>
     public func floorDivide(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_floor_divide(ctx, other.ctx, stream.ctx))
     }
@@ -872,17 +905,7 @@ extension MLXArray {
     /// Element-wise natural logarithm.
     /// 
     /// ### See Also
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    ///
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func log(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log(ctx, stream.ctx))
     }
@@ -893,14 +916,7 @@ extension MLXArray {
     /// - ``log(stream:)``
     /// - ``log10(stream:)``
     /// - ``log1p(stream:)``
-    ///
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func log2(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log2(ctx, stream.ctx))
     }
@@ -911,14 +927,7 @@ extension MLXArray {
     /// - ``log(stream:)``
     /// - ``log2(stream:)``
     /// - ``log1p(stream:)``
-    ///
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func log10(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log10(ctx, stream.ctx))
     }
@@ -929,14 +938,7 @@ extension MLXArray {
     /// - ``log(stream:)``
     /// - ``log2(stream:)``
     /// - ``log10(stream:)``
-    ///
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func log1p(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log1p(ctx, stream.ctx))
     }
@@ -945,17 +947,19 @@ extension MLXArray {
     ///
     /// The log-sum-exp reduction is a numerically stable version of:
     ///
-    /// ```
+    /// ```swift
     /// log(sum(exp(a), [axes]]))
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``logSumExp(axis:keepDims:stream:)``
     /// - ``logSumExp(keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func logSumExp(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_logsumexp(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -964,17 +968,19 @@ extension MLXArray {
     ///
     /// The log-sum-exp reduction is a numerically stable version of:
     ///
-    /// ```
+    /// ```swift
     /// log(sum(exp(a), axis))
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``logSumExp(axes:keepDims:stream:)``
     /// - ``logSumExp(keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func logSumExp(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_logsumexp(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -983,17 +989,18 @@ extension MLXArray {
     ///
     /// The log-sum-exp reduction is a numerically stable version of:
     ///
-    /// ```
+    /// ```swift
     /// log(sum(exp(a)))
     /// ```
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``logSumExp(axes:keepDims:stream:)``
     /// - ``logSumExp(axis:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func logSumExp(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_logsumexp_all(ctx, keepDims, stream.ctx))
     }
@@ -1011,11 +1018,11 @@ extension MLXArray {
     ///   2 dimensions.  The matrix dimensions for the matrix product are the last
     ///   two dimensions of each input.
     /// - All but the last two dimensions of each input are broadcast with one another using
-    ///   standard numpy-style broadcasting semantics.
+    ///   standard <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray([1, 2, 3, 4], [2, 2])
     /// let b = MLXArray(converting: [-5.0, 37.5, 4, 7, 1, 0], [2, 3])
     ///
@@ -1031,187 +1038,202 @@ extension MLXArray {
     
     /// A `max` reduction over the given axes.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5, 9]
     /// let result = array.max(axis=[0])
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``max(axis:keepDims:stream:)``
     /// - ``max(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func max(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_max(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
 
     /// A `max` reduction over the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [8, 9]
     /// let result = array.max(axis=1)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``max(axes:keepDims:stream:)``
     /// - ``max(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func max(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_max(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
 
     /// A `max` reduction over the entire array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [9]
     /// let result = array.max()
     /// ```
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``max(axes:keepDims:stream:)``
     /// - ``max(axis:keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func max(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_max_all(ctx, keepDims, stream.ctx))
     }
 
     /// A `mean` reduction over the given axes.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [4.5, 8.5]
     /// let result = array.mean(axis=[0])
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``mean(axis:keepDims:stream:)``
     /// - ``mean(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func mean(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_mean(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
 
     /// A `mean` reduction over the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [6.5, 6.5]
     /// let result = array.mean(axis=1)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``mean(axes:keepDims:stream:)``
     /// - ``mean(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func mean(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_mean(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
 
     /// A `mean` reduction over the entire array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [6.5]
     /// let result = array.mean()
     /// ```
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``mean(axes:keepDims:stream:)``
     /// - ``mean(axis:keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func mean(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_mean_all(ctx, keepDims, stream.ctx))
     }
 
     /// A `min` reduction over the given axes.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [4, 8]
     /// let result = array.min(axis=[0])
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``min(axis:keepDims:stream:)``
     /// - ``min(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
     public func min(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_min(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
 
     /// A `min` reduction over the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5, 4]
     /// let result = array.min(axis=1)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``min(axes:keepDims:stream:)``
     /// - ``min(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
     public func min(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_min(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
 
     /// A `min` reduction over the entire array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [5]
     /// let result = array.min()
     /// ```
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``min(axes:keepDims:stream:)``
     /// - ``min(axis:keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``product(axis:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
     public func min(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_min_all(ctx, keepDims, stream.ctx))
     }
     
     /// Move an axis to a new position.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 16, [2, 2, 2, 2])
     /// print(array)
     /// // array([[[[0, 1],
@@ -1236,7 +1258,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - ``transpose(axes:stream:)``
+    /// - <doc:shapes>
     /// - ``swapAxes(_:_:stream:)``
     public func moveAxis(source: Int, destination: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_moveaxis(ctx, source.int32, destination.int32, stream.ctx))
@@ -1244,12 +1266,11 @@ extension MLXArray {
     
     /// Element-wise power operation.
     ///
-    /// Raise the elements of `self` to the powers in elements of `other` with numpy-style
-    /// broadcasting semantics.
+    /// Raise the elements of `self` to the powers in elements of `other` with <doc:broadcasting>.
     ///
     /// For example:
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = MLXArray([4, 5, 6])
     ///
@@ -1258,6 +1279,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:element-wise>
     /// - ``**(lhs:rhs:)``
     public func pow(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_power(ctx, other.ctx, stream.ctx))
@@ -1265,60 +1287,65 @@ extension MLXArray {
     
     /// A `product` reduction over the given axes.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [20, 72]
     /// let result = array.product(axis=[0])
     /// ```
     ///
+    /// - Parameters:
+    ///     - axes: axes to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``product(axis:keepDims:stream:)``
     /// - ``product(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func product(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_prod(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
 
     /// A `product` reduction over the given axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [40, 36]
     /// let result = array.product(axis=1)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``product(axes:keepDims:stream:)``
     /// - ``product(keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func product(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_prod(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
 
     /// A `product` reduction over the entire array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray([5, 8, 4, 9], [2, 2])
     ///
     /// // result is [1440]
     /// let result = array.product()
     /// ```
     ///
+    /// - Parameters:
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``product(axes:keepDims:stream:)``
     /// - ``product(axis:keepDims:stream:)``
-    /// - ``logSumExp(axes:keepDims:stream:)``
-    /// - ``max(axes:keepDims:stream:)``
-    /// - ``mean(axes:keepDims:stream:)``
-    /// - ``min(axes:keepDims:stream:)``
     public func product(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_prod_all(ctx, keepDims, stream.ctx))
     }
@@ -1326,21 +1353,15 @@ extension MLXArray {
     /// Element-wise reciprocal.
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func reciprocal(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_reciprocal(ctx, stream.ctx))
     }
 
     /// Reshape an array while preserving the size.
+    ///
+    /// ### See Also
+    /// - <doc:shapes>
     public func reshape(_ newShape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_reshape(ctx, newShape.asInt32, newShape.count, stream.ctx))
     }
@@ -1349,7 +1370,7 @@ extension MLXArray {
     ///
     /// Roughly equivalent to:
     ///
-    /// ```
+    /// ```swift
     /// let array: MLXArray
     ///
     /// let s = 10 ** decimals
@@ -1357,6 +1378,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:element-wise>
     /// - ``floor(stream:)``
     public func round(decimals: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_round(ctx, decimals.int32, stream.ctx))
@@ -1365,15 +1387,7 @@ extension MLXArray {
     /// Element-wise reciprocal and square root.
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func rsqrt(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_rsqrt(ctx, stream.ctx))
     }
@@ -1381,27 +1395,34 @@ extension MLXArray {
     /// Element-wise sine.
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func sin(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sin(ctx, stream.ctx))
     }
     
-    /// Remove length one axes from an array.
+    /// Split an array into equal size pieces along a given axis.
+    ///
+    /// Splits the array into equal size pieces along a given axis and returns an array of `MLXArray`:
+    ///
+    /// ```swift
+    /// let array = MLXArray(0 ..< 12, (4, 3))
+    ///
+    /// let halves = array.split(2)
+    /// print(halves)
+    ///
+    /// [array([[0, 1, 2],
+    ///         [3, 4, 5]], dtype=int64),
+    ///  array([[6, 7, 8],
+    ///         [9, 10, 11]], dtype=int64)]
+    /// ```
     ///
     /// - Parameters:
     ///     - parts: array is split into that many sections of equal size. It is a fatal error if this is not possible
     ///     - axis: axis to split along
     ///
-    /// See also ``split(indices:axis:stream:)``
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``split(indices:axis:stream:)``
     public func split(parts: Int, axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
         let vec = mlx_split_equal_parts(ctx, parts.int32, axis.int32, stream.ctx)
         defer { mlx_vector_array_free(vec) }
@@ -1414,7 +1435,9 @@ extension MLXArray {
     ///     - indices: the indices of the start of each subarray along the given axis
     ///     - axis: axis to split along
     ///
-    /// See also ``split(parts:axis:stream:)``
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``split(parts:axis:stream:)``
     public func split(indices: [Int], axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
         let vec = mlx_split(ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)
         defer { mlx_vector_array_free(vec) }
@@ -1424,16 +1447,7 @@ extension MLXArray {
     /// Element-wise square root
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``square(stream:)``
+    /// - <doc:element-wise>
     public func sqrt(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sqrt(ctx, stream.ctx))
     }
@@ -1441,16 +1455,7 @@ extension MLXArray {
     /// Element-wise square.
     ///
     /// ### See Also
-    /// - ``cos(stream:)``
-    /// - ``exp(stream:)``
-    /// - ``log(stream:)``
-    /// - ``log2(stream:)``
-    /// - ``log10(stream:)``
-    /// - ``log1p(stream:)``
-    /// - ``reciprocal(stream:)``
-    /// - ``rsqrt(stream:)``
-    /// - ``sin(stream:)``
-    /// - ``sqrt(stream:)``
+    /// - <doc:element-wise>
     public func square(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_square(ctx, stream.ctx))
     }
@@ -1461,8 +1466,9 @@ extension MLXArray {
     ///     - axes: axes to remove
     ///
     /// ### See Also
-    /// - ``flatten(start:end:stream:)``
-    /// - ``reshape(_:stream:)``
+    /// - <doc:shapes>
+    /// - ``squeeze(axis:stream:)``
+    /// - ``squeeze(stream:)``
     public func squeeze(axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze(ctx, axes.asInt32, axes.count, stream.ctx))
     }
@@ -1473,9 +1479,9 @@ extension MLXArray {
     ///     - axis: axis to remove
     ///
     /// ### See Also
-    /// - ``flatten(start:end:stream:)``
-    /// - ``reshape(_:stream:)``
+    /// - <doc:shapes>
     /// - ``squeeze(axes:stream:)``
+    /// - ``squeeze(stream:)``
     public func squeeze(axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze(ctx, [axis.int32], 1, stream.ctx))
     }
@@ -1483,9 +1489,9 @@ extension MLXArray {
     /// Remove all length one axes from an array.
     ///
     /// ### See Also
-    /// - ``flatten(start:end:stream:)``
-    /// - ``reshape(_:stream:)``
+    /// - <doc:shapes>
     /// - ``squeeze(axes:stream:)``
+    /// - ``squeeze(axis:stream:)``
     public func squeeze(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze_all(ctx, stream.ctx))
     }
@@ -1495,8 +1501,10 @@ extension MLXArray {
     /// - Parameters:
     ///     - axes: axes to reduce over
     ///     - keepDims: if `true` keep the reduces axes as singleton dimensions
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``sum(axis:keepDims:stream:)``
     /// - ``sum(keepDims:stream:)``
     public func sum(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1507,9 +1515,11 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true` keep the reduces axis as singleton dimensions
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``sum(axes:keepDims:stream:)``
     /// - ``sum(keepDims:stream:)``
     public func sum(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1519,9 +1529,11 @@ extension MLXArray {
     /// Sum reduce the array over all axes.
     ///
     /// - Parameters:
-    ///     - keepDims: if `true` keep the reduces axes as singleton dimensions
+    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``sum(axes:keepDims:stream:)``
     /// - ``sum(axis:keepDims:stream:)``
     public func sum(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1530,7 +1542,7 @@ extension MLXArray {
     
     /// Swap two axes of an array.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 16, [2, 2, 2, 2])
     /// print(array)
     /// // array([[[[0, 1],
@@ -1555,8 +1567,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - ``transpose(axes:stream:)``
-    /// - ``moveAxis(source:destination:stream:)``
+    /// - <doc:shapes>
     public func swapAxes(_ axis1: Int, _ axis2: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_swapaxes(ctx, axis1.int32, axis2.int32, stream.ctx))
     }
@@ -1565,7 +1576,7 @@ extension MLXArray {
     ///
     /// The elements are taken from `indices` along the specified axis.
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(0 ..< 12, [3, 4])
     ///
     /// /// produces a [3, 2] result with the index 0 and 2 columns from the array
@@ -1592,11 +1603,9 @@ extension MLXArray {
     ///     - axes: Specifies the source axis for each axis in the new array
     ///
     /// ### See Also
+    /// - <doc:shapes>
     /// - ``transpose(axis:stream:)``
     /// - ``transpose(stream:)``
-    /// - ``moveAxis(source:destination:stream:)``
-    /// - ``transpose(axes:stream:)``
-    /// - ``swapAxes(_:_:stream:)``
     public func transpose(axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_transpose(ctx, axes.asInt32, axes.count, stream.ctx))
     }
@@ -1606,11 +1615,9 @@ extension MLXArray {
     /// This swaps the position of the first dimension with the given axis.
     ///
     /// ### See Also
+    /// - <doc:shapes>
     /// - ``transpose(axes:stream:)``
     /// - ``transpose(stream:)``
-    /// - ``moveAxis(source:destination:stream:)``
-    /// - ``transpose(axes:stream:)``
-    /// - ``swapAxes(_:_:stream:)``
     public func transpose(axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_transpose(ctx, [axis.int32], 1, stream.ctx))
     }
@@ -1620,11 +1627,9 @@ extension MLXArray {
     /// With no axes specified this will reverse the axes in the array.
     ///
     /// ### See Also
+    /// - <doc:shapes>
     /// - ``transpose(axes:stream:)``
     /// - ``transpose(axis:stream:)``
-    /// - ``moveAxis(source:destination:stream:)``
-    /// - ``transpose(axes:stream:)``
-    /// - ``swapAxes(_:_:stream:)``
     public func transpose(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_transpose_all(ctx, stream.ctx))
     }
@@ -1644,6 +1649,7 @@ extension MLXArray {
     ///     - ddof: the divisor to compute the variance is `N - ddof`
     ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``variance(axis:keepDims:ddof:stream:)``
     /// - ``variance(keepDims:ddof:stream:)``
     public func variance(axes: [Int], keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1657,8 +1663,8 @@ extension MLXArray {
     ///     - keepDims: if `true` keep the reduces axis as singleton dimensions
     ///     - ddof: the divisor to compute the variance is `N - ddof`
     ///
-    ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``variance(axes:keepDims:ddof:stream:)``
     /// - ``variance(keepDims:ddof:stream:)``
     public func variance(axis: Int, keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1673,6 +1679,7 @@ extension MLXArray {
     ///
     ///
     /// ### See Also
+    /// - <doc:reduction>
     /// - ``variance(axes:keepDims:ddof:stream:)``
     /// - ``variance(axis:keepDims:ddof:stream:)``
     public func variance(keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {

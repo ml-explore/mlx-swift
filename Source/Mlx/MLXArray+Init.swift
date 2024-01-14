@@ -12,7 +12,7 @@ extension MLXArray {
     
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(7)
     /// ```
     public convenience init(_ value: Int32) {
@@ -21,7 +21,7 @@ extension MLXArray {
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Bool`.
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(true)
     /// ```
     public convenience init(_ value: Bool) {
@@ -30,7 +30,7 @@ extension MLXArray {
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Float`.
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(35.1)
     /// ```
     public convenience init(_ value: Float) {
@@ -39,7 +39,7 @@ extension MLXArray {
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value.
     ///
-    /// ```
+    /// ```swift
     /// let a = MLXArray(UInt64(7))
     /// ```
     public convenience init<T: HasDType>(_ value: T) {
@@ -51,7 +51,7 @@ extension MLXArray {
     /// Initalizer allowing creation of `MLXArray` from an array of `HasDType` values with
     /// an optional shape.
     ///
-    /// ```
+    /// ```swift
     /// let linear = MLXArray([0, 1, 2, 3])
     /// let twoByTwo = MLXArray([0, 1, 2, 3], [2, 2])
     /// ```
@@ -68,7 +68,7 @@ extension MLXArray {
     ///
     /// Note: this converts the types to `Float`, which is a type representable in `MLXArray`
     ///
-    /// ```
+    /// ```swift
     /// let array = MLXArray(convert: [0.5, 0.9])
     /// ```
     public convenience init(converting value: [Double], _ shape: [Int]? = nil) {
@@ -89,7 +89,7 @@ extension MLXArray {
     /// Initalizer allowing creation of `MLXArray` from a sequence of `HasDType` values with
     /// an optional shape.
     ///
-    /// ```
+    /// ```swift
     /// let ramp = MLXArray(0 ..< 64)
     /// let square = MLXArray(0 ..< 64, [8, 8])
     /// ```
@@ -105,7 +105,7 @@ extension MLXArray {
     /// Initalizer allowing creation of `MLXArray` from a buffer of `HasDType` values with
     /// an optional shape.
     ///
-    /// ```
+    /// ```swift
     /// let image = vImage.PixelBuffer
     /// let array = image.withUnsafeBufferPointer { ptr in
     ///     MLXArray(ptr, [64, 64, 4])
@@ -120,7 +120,7 @@ extension MLXArray {
     /// Initalizer allowing creation of `MLXArray` from a `UnsafeRawBufferPointer` filled
     /// with bytes of `HasDType` values with an optional shape.
     ///
-    /// ```
+    /// ```swift
     /// let ptr: UnsafeRawBufferPointer
     /// let array = MLXArray(ptr, [2, 3], type: Int32.self)
     /// ```
@@ -132,7 +132,7 @@ extension MLXArray {
     /// Initalizer allowing creation of `MLXArray` from a `Data` filled with bytes of `HasDType` values with
     /// an optional shape.
     ///
-    /// ```
+    /// ```swift
     /// let data: Data
     /// let array = MLXArray(data, [2, 3], type: Int32.self)
     /// ```
@@ -153,7 +153,7 @@ extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, Expr
     
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a literal.
     ///
-    /// ```
+    /// ```swift
     /// let a: MLXArray = 7
     /// ```
     ///
@@ -164,7 +164,7 @@ extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, Expr
     
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a literal.
     ///
-    /// ```
+    /// ```swift
     /// let a: MLXArray = false
     /// ```
     ///
@@ -175,7 +175,7 @@ extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, Expr
     
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a literal.
     ///
-    /// ```
+    /// ```swift
     /// let a: MLXArray = 35.1
     /// ```
     ///
@@ -186,13 +186,13 @@ extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, Expr
     
     /// Initalizer allowing creation of 1d `MLXArray` from an array literal.
     ///
-    /// ```
+    /// ```swift
     /// let a: MLXArray = [1, 2, 3]
     /// ```
     ///
     /// This is convenient for methods that have `MLXArray` parameters:
     ///
-    /// ```
+    /// ```swift
     /// print(array.take([1, 2, 3], axis: 0))
     /// ```
     public convenience init(arrayLiteral elements: Int32...) {
