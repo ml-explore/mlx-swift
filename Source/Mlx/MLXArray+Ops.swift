@@ -474,7 +474,7 @@ extension MLXArray {
     /// ### See Also
     /// - ``arrayEqual(_:equalNAN:stream:)``
     public func allClose(_ other: MLXArray, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_allclose(self.ctx, other.ctx, rtol, atol, stream.ctx))
+        MLXArray(mlx_allclose(ctx, other.ctx, rtol, atol, stream.ctx))
     }
     
     /// Return `true` if all contents are `true` (in the mlx-sense where true is != 0).
@@ -500,15 +500,7 @@ extension MLXArray {
     /// - ``all(axes:keepDims:stream:)``
     /// - ``any(axes:keepDims:stream:)``
     public func allTrue(stream: StreamOrDevice = .default) -> Bool {
-        if self.ndim > 1 || self.dtype != .bool {
-            let all = mlx_all_all(ctx, false, stream.ctx)!
-            let bool = mlx_array_item_bool(all)
-            mlx_free(all)
-            return bool
-        } else {
-            let bool = mlx_array_item_bool(ctx)
-            return bool
-        }
+        Mlx.allTrue(self, stream: stream)
     }
     
     /// An `or` reduction over the given axes.
