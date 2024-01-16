@@ -223,6 +223,43 @@ extension MLXArray {
     static public func ones(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_ones_like(array.ctx, stream.ctx))
     }
+    
+    static public func eye<T: HasDType>(_ n: Int, m: Int? = nil, k: Int = 0, type: T.Type = Float.self, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_eye(n.int32, (m ?? n).int32, k.int32, T.dtype.cmlxDtype, stream.ctx))
+    }
+    
+    static public func full<T: HasDType>(_ shape: [Int], values: MLXArray, type: T.Type, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_full(shape.asInt32, shape.count, values.ctx, T.dtype.cmlxDtype, stream.ctx))
+    }
+    
+    static public func full(_ shape: [Int], values: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_full(shape.asInt32, shape.count, values.ctx, values.dtype.cmlxDtype, stream.ctx))
+    }
+
+    static public func identity<T: HasDType>(_ n: Int, type: T.Type = Float.self, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_identity(n.int32, T.dtype.cmlxDtype, stream.ctx))
+    }
+    
+    static public func linspace<T: HasDType>(_ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default) -> MLXArray where T : BinaryInteger {
+        MLXArray(mlx_linspace(Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx))
+    }
+    
+    static public func linspace<T: HasDType>(_ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default) -> MLXArray where T : BinaryFloatingPoint {
+        MLXArray(mlx_linspace(Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx))
+    }
+
+    static public func `repeat`(_ array: MLXArray, repeats: Int, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_repeat(array.ctx, repeats.int32, axis.int32, stream.ctx))
+    }
+    
+    static public func `repeat`(_ array: MLXArray, repeats: Int, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_repeat_all(array.ctx, repeats.int32, stream.ctx))
+    }
+
+    static public func triangle<T: HasDType>(_ n: Int, m: Int? = nil, k: Int = 0, type: T.Type = Float.self, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_tri(n.int32, (m ?? n).int32, k.int32, T.dtype.cmlxDtype, stream.ctx))
+    }
+    
 }
 
 // MARK: - Factory Methods (Internal)

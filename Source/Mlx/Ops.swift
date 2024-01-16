@@ -13,11 +13,6 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 
 // MARK: - Public Ops
 
-/// Element-wise absolute value.
-public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_abs(array.ctx, stream.ctx))
-}
-
 /// An `and` reduction over the given axes.
 ///
 /// ```swift
@@ -1105,7 +1100,7 @@ public func split(_ array: MLXArray, parts: Int, axis: Int = 0, stream: StreamOr
 /// - <doc:shapes>
 /// - ``split(parts:axis:stream:)``
 public func split(_ array: MLXArray, indices: [Int], axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
-    let vec = mlx_split(array.ctx,  indices.asInt32, indices.count, axis.int32, stream.ctx)
+    let vec = mlx_split(array.ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)
     defer { mlx_vector_array_free(vec) }
     return MLXArray.fromVector(vec)
 }
@@ -1257,7 +1252,7 @@ public func swapAxes(_ array: MLXArray, _ axis1: Int, _ axis2: Int, stream: Stre
 /// ### See Also
 /// - ``take(_:stream:)``
 public func take(_ array: MLXArray, _ indices: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_take(array.ctx,  indices.ctx, axis.int32, stream.ctx))
+    MLXArray(mlx_take(array.ctx, indices.ctx, axis.int32, stream.ctx))
 }
 
 /// Take elements from flattened 1-D array.
@@ -1265,7 +1260,7 @@ public func take(_ array: MLXArray, _ indices: MLXArray, axis: Int, stream: Stre
 /// ### See Also
 /// - ``take(_:axis:stream:)``
 public func take(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_take_all(array.ctx,  indices.ctx, stream.ctx))
+    MLXArray(mlx_take_all(array.ctx, indices.ctx, stream.ctx))
 }
 
 /// Transpose the dimensions of the array.
