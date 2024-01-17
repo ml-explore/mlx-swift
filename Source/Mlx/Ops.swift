@@ -710,7 +710,7 @@ enum LoadError : Error {
     case unableToOpen(URL, String)
 }
 
-/// Load array from a binary file in ``.npy``format.
+/// Load array from a binary file in `.npy`format.
 ///
 /// - Parameters:
 ///     - url: URL of file to load

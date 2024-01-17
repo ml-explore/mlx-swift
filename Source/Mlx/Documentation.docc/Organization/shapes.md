@@ -5,6 +5,9 @@ Shape is a term to describe the number and size of the dimensions of an N dimens
 ``MLXArray`` is an N dimensional array.  The number of dimensions is described by ``MLXArray/ndim``
 and the size of each dimension can be examined with ``MLXArray/dim(_:)-ywch`` or ``MLXArray/shape``.
 
+Some of these functions can manipulate the shape without changing the contents while others 
+will moves rows and columns as they modify the shape.
+
 ## Topics
 
 ### MLXArray Shape Methods (Same Size)
@@ -15,6 +18,12 @@ and ``MLXArray/shape`` of the dimensions without changing the number of elements
 - ``MLXArray/flatten(start:end:stream:)``
 - ``MLXArray/reshape(_:stream:)``
 - ``MLXArray/squeeze(axes:stream:)``
+- ``expandDimensions(_:axes:stream:)``
+- ``asStrided(_:_:strides:offset:stream:)``
+
+- ``flatten(_:start:end:stream:)``
+- ``reshape(_:_:stream:)``
+- ``squeeze(_:axes:stream:)``
 
 ### MLXArray Shape Methods (Change Size)
 
@@ -28,7 +37,14 @@ These methods manipulate the shape and contents of the array:
 
 ### Free Functions To Manipulate Shapes
 
-TODO
-
-- ``MLXArray/flatten(start:end:stream:)``
-
+- ``asStrided(_:_:strides:offset:stream:)``
+- ``concatenate(_:axis:stream:)``
+- ``expandDimensions(_:axes:stream:)``
+- ``moveAxis(_:source:destination:stream:)``
+- ``pad(_:width:value:stream:)``
+- ``pad(_:widths:value:stream:)``
+- ``split(_:indices:axis:stream:)``
+- ``split(_:parts:axis:stream:)``
+- ``stack(_:axis:stream:)``
+- ``swapAxes(_:_:_:stream:)``
+- ``transpose(_:axes:stream:)``
