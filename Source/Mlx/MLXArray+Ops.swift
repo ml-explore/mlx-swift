@@ -21,6 +21,10 @@ extension MLXArray {
     ///
     /// let r = a + b + 7
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:binary-arithmetic>
+    /// - ``add(_:_:stream:)``
     public static func +(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
@@ -38,6 +42,10 @@ extension MLXArray {
     ///
     /// let r = a - b - 7
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:binary-arithmetic>
+    /// - ``subtract(_:_:stream:)``
     public static func -(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
@@ -53,6 +61,9 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let r = -a
     /// ```
+    ///
+    /// ### See Also
+    /// - ``negative(_:stream:)``
     public static prefix func -(lhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_negative(lhs.ctx, s.ctx))
@@ -67,6 +78,10 @@ extension MLXArray {
     /// let b = a + 1
     /// let r = !(a == b)
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``logicalNot(_:stream:)``
     public static prefix func !(lhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_not(lhs.ctx, s.ctx))
@@ -84,6 +99,12 @@ extension MLXArray {
     ///
     /// let r = a * b * 7
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:binary-arithmetic>
+    /// - ``multiply(_:_:stream:)``
+    /// - ``matmul(_:stream:)``
+    /// - ``matmul(_:_:stream:)``
     public static func *(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
@@ -104,7 +125,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:binary-arithmetic>
     /// - ``pow(_:stream:)``
+    /// - ``pow(_:_:stream:)``
     public static func **(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
@@ -139,7 +162,10 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:binary-arithmetic>
     /// - ``matmul(_:stream:)``
+    /// - ``matmul(_:_:stream:)``
+    /// - ``multiply(_:_:stream:)``
     public static func ***(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_matmul(lhs.ctx, rhs.ctx, s.ctx))
@@ -157,6 +183,11 @@ extension MLXArray {
     ///
     /// let r = a / b / 7
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:binary-arithmetic>
+    /// - ``divide(_:_:stream:)``
+    /// - ``floorDivide(_:_:stream:)``
     public static func /(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
@@ -182,7 +213,9 @@ extension MLXArray {
     /// is also available as a method.
     ///
     /// ### See Also
+    /// - <doc:binary-arithmetic>
     /// - ``floorDivide(_:stream:)``
+    /// - ``floorDivide(_:_:stream:)``
     /// - ``floor(stream:)``
     public static func /%(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
@@ -200,6 +233,10 @@ extension MLXArray {
     ///
     /// let r = a % 2
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:binary-arithmetic>
+    /// - ``remainder(_:_:stream:)``
     public static func %(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
@@ -215,15 +252,17 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a == b).allTrue() {
+    /// if (a == b).allTrue() {
     ///     ...
     /// }
     /// ```
     ///
     /// ### See Also
+    /// - <doc:logical>
     /// - ``allClose(_:rtol:atol:stream:)``
     /// - ``arrayEqual(_:equalNAN:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``allClose(_:_:rtol:atol:stream:)``
     public static func ==(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -239,10 +278,14 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a <= b).allTrue() {
+    /// if (a <= b).allTrue() {
     ///     ...
     /// }
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``lessEqual(_:_:stream:)``
     public static func <=(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -258,10 +301,14 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a >= b).allTrue() {
+    /// if (a >= b).allTrue() {
     ///     ...
     /// }
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``greaterEqual(_:_:stream:)``
     public static func >=(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -277,10 +324,14 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a != b).allTrue() {
+    /// if (a != b).allTrue() {
     ///     ...
     /// }
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``notEqual(_:_:stream:)``
     public static func !=(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -296,10 +347,14 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a < b).allTrue() {
+    /// if (a < b).allTrue() {
     ///     ...
     /// }
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``less(_:_:stream:)``
     public static func <(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
@@ -307,7 +362,7 @@ extension MLXArray {
 
     /// Element-wise greater than.
     ///
-    /// greater than on two arrays with <doc:broadcasting>.
+    /// Greater than on two arrays with <doc:broadcasting>.
     ///
     /// For example:
     ///
@@ -315,10 +370,14 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a > b).allTrue() {
+    /// if (a > b).allTrue() {
     ///     ...
     /// }
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``greater(_:_:stream:)``
     public static func >(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
@@ -334,8 +393,11 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a < b) && ((a + 1) > b)
+    /// if (a < b) && ((a + 1) > b)
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
     public static func &&(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_and(lhs.ctx, rhs.ctx, s.ctx))
@@ -351,8 +413,11 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if r = (a < b) || ((a + 1) > b)
+    /// if (a < b) || ((a + 1) > b)
     /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
     public static func ||(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_or(lhs.ctx, rhs.ctx, s.ctx))
@@ -409,6 +474,7 @@ extension MLXArray {
     /// - ``all(axis:keepDims:stream:)``
     /// - ``all(keepDims:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``all(_:axes:keepDims:stream:)``
     public func all(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_all_axes(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -425,6 +491,7 @@ extension MLXArray {
     /// - ``all(axes:keepDims:stream:)``
     /// - ``all(keepDims:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``all(_:axes:keepDims:stream:)``
     public func all(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_all_axis(ctx, axis.int32, keepDims, stream.ctx))
     }
@@ -440,6 +507,7 @@ extension MLXArray {
     /// - ``all(axes:keepDims:stream:)``
     /// - ``all(axis:keepDims:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``all(_:axes:keepDims:stream:)``
     public func all(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_all_all(ctx, keepDims, stream.ctx))
     }
@@ -452,7 +520,7 @@ extension MLXArray {
     /// all(abs(a - b) <= (atol + rtol * abs(b)))
     /// ```
     ///
-    /// Note unlike ``arrayEqual(_:equalNAN:stream:)``, this function supports <doc:broadcasting>.
+    /// Note: unlike ``arrayEqual(_:equalNAN:stream:)``, this function supports <doc:broadcasting>.
     ///
     /// For example:
     ///
@@ -472,7 +540,9 @@ extension MLXArray {
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:logical>
     /// - ``arrayEqual(_:equalNAN:stream:)``
+    /// - ``arrayEqual(_:_:equalNAN:stream:)``
     public func allClose(_ other: MLXArray, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_allclose(ctx, other.ctx, rtol, atol, stream.ctx))
     }
@@ -499,6 +569,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``all(axes:keepDims:stream:)``
     /// - ``any(axes:keepDims:stream:)``
+    /// - ``allTrue(_:stream:)``
     public func allTrue(stream: StreamOrDevice = .default) -> Bool {
         Mlx.allTrue(self, stream: stream)
     }
@@ -528,6 +599,7 @@ extension MLXArray {
     /// - ``any(axis:keepDims:stream:)``
     /// - ``any(keepDims:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``any(_:axes:keepDims:stream:)``
     public func any(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_any(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -544,6 +616,7 @@ extension MLXArray {
     /// - ``any(axes:keepDims:stream:)``
     /// - ``any(keepDims:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``any(_:axes:keepDims:stream:)``
     public func any(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_any(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -559,6 +632,7 @@ extension MLXArray {
     /// - ``any(axes:keepDims:stream:)``
     /// - ``any(axis:keepDims:stream:)``
     /// - ``allTrue(stream:)``
+    /// - ``any(_:axes:keepDims:stream:)``
     public func any(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_any_all(ctx, keepDims, stream.ctx))
     }
@@ -578,8 +652,10 @@ extension MLXArray {
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:indexes>
     /// - ``argMax(keepDims:stream:)``
     /// - ``argMin(axis:keepDims:stream:)``
+    /// - ``argMax(_:axis:keepDims:stream:)``
     public func argMax(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_argmax(ctx, axis.int32, keepDims, stream.ctx))
     }
@@ -598,8 +674,10 @@ extension MLXArray {
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:indexes>
     /// - ``argMax(axis:keepDims:stream:)``
     /// - ``argMin(axis:keepDims:stream:)``
+    /// - ``argMax(_:axis:keepDims:stream:)``
     public func argMax(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_argmax_all(ctx, keepDims, stream.ctx))
     }
@@ -619,8 +697,10 @@ extension MLXArray {
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:indexes>
     /// - ``argMin(keepDims:stream:)``
     /// - ``argMax(axis:keepDims:stream:)``
+    /// - ``argMin(_:axis:keepDims:stream:)``
     public func argMin(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_argmin(ctx, axis.int32, keepDims, stream.ctx))
     }
@@ -639,8 +719,10 @@ extension MLXArray {
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
+    /// - <doc:indexes>
     /// - ``argMin(axis:keepDims:stream:)``
     /// - ``argMax(axis:keepDims:stream:)``
+    /// - ``argMin(_:axis:keepDims:stream:)``
     public func argMin(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_argmin_all(ctx, keepDims, stream.ctx))
     }
@@ -660,10 +742,11 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:logical>
     /// - ``allClose(_:rtol:atol:stream:)``
-    /// - ``item(_:)``
     /// - ``allTrue(stream:)``
-    /// - ``MLXArray/==(lhs:rhs:)``
+    /// - ``MLXArray/==(_:_:)`
+    /// - ``arrayEqual(_:_:equalNAN:stream:)``
     public func arrayEqual(_ other: MLXArray, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_array_equal(ctx, other.ctx, equalNAN, stream.ctx))
     }
@@ -672,6 +755,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``cos(_:stream:)``
     public func cos(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cos(ctx, stream.ctx))
     }
@@ -686,10 +770,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cummax(reverse:inclusive:stream:)``
-    /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cumsum(axis:reverse:inclusive:stream:)``
+    /// - ``cummax(_:axis:reverse:inclusive:stream:)``
     public func cummax(axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cummax(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -704,11 +787,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cummax(axis:reverse:inclusive:stream:)``
-    /// - ``cummax(reverse:inclusive:stream:)``
-    /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cumsum(axis:reverse:inclusive:stream:)``
+    /// - ``cummax(_:axis:reverse:inclusive:stream:)``
     public func cummax(reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
@@ -725,10 +806,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cummin(reverse:inclusive:stream:)``
-    /// - ``cummax(axis:reverse:inclusive:stream:)``
-    /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cumsum(axis:reverse:inclusive:stream:)``
+    /// - ``cummin(_:axis:reverse:inclusive:stream:)``
     public func cummin(axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cummin(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -743,10 +823,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cummax(axis:reverse:inclusive:stream:)``
-    /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cumsum(axis:reverse:inclusive:stream:)``
+    /// - ``cummin(_:axis:reverse:inclusive:stream:)``
     public func cummin(reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
@@ -763,10 +842,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cumprod(reverse:inclusive:stream:)``
-    /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cummax(axis:reverse:inclusive:stream:)``
-    /// - ``cumsum(axis:reverse:inclusive:stream:)``
+    /// - ``cumprod(_:axis:reverse:inclusive:stream:)``
     public func cumprod(axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cumprod(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -781,10 +859,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cummax(axis:reverse:inclusive:stream:)``
-    /// - ``cumsum(axis:reverse:inclusive:stream:)``
+    /// - ``cumprod(_:axis:reverse:inclusive:stream:)``
     public func cumprod(reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
@@ -801,10 +878,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cumsum(reverse:inclusive:stream:)``
-    /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cummax(axis:reverse:inclusive:stream:)``
+    /// - ``cumsum(_:axis:reverse:inclusive:stream:)``
     public func cumsum(axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cumsum(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -819,10 +895,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
+    /// - <doc:cumulative>
     /// - ``cumsum(axis:reverse:inclusive:stream:)``
-    /// - ``cumprod(axis:reverse:inclusive:stream:)``
-    /// - ``cummin(axis:reverse:inclusive:stream:)``
-    /// - ``cummax(axis:reverse:inclusive:stream:)``
+    /// - ``cumsum(_:axis:reverse:inclusive:stream:)``
     public func cumsum(reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
@@ -833,6 +908,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``exp(_:stream:)``
     public func exp(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_exp(ctx, stream.ctx))
     }
@@ -857,6 +933,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:shapes>
+    /// - ``flatten(_:start:end:stream:)``
     public func flatten(start: Int = 0, end: Int = -1, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_flatten(ctx, start.int32, end.int32, stream.ctx))
     }
@@ -864,9 +941,10 @@ extension MLXArray {
     /// Element-wise floor.
     ///
     /// ### See Also
+    /// - <doc:element-wise>
     /// - ``round(decimals:stream:)``
     /// - ``floorDivide(_:stream:)``
-    /// - <doc:element-wise>
+    /// - ``floor(_:stream:)``
     public func floor(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_floor(ctx, stream.ctx))
     }
@@ -887,9 +965,10 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - ``/%(lhs:rhs:)``
-    /// - ``floor(stream:)``
     /// - <doc:element-wise>
+    /// - ``/%(_:_:)``
+    /// - ``floor(stream:)``
+    /// - ``floorDivide(_:_:stream:)``
     public func floorDivide(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_floor_divide(ctx, other.ctx, stream.ctx))
     }
@@ -898,6 +977,7 @@ extension MLXArray {
     /// 
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``log(_:stream:)``
     public func log(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log(ctx, stream.ctx))
     }
@@ -905,10 +985,11 @@ extension MLXArray {
     /// Element-wise base-2 logarithm.
     ///
     /// ### See Also
+    /// - <doc:element-wise>
     /// - ``log(stream:)``
     /// - ``log10(stream:)``
     /// - ``log1p(stream:)``
-    /// - <doc:element-wise>
+    /// - ``log2(_:stream:)``
     public func log2(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log2(ctx, stream.ctx))
     }
@@ -916,10 +997,11 @@ extension MLXArray {
     /// Element-wise base-10 logarithm.
     ///
     /// ### See Also
+    /// - <doc:element-wise>
     /// - ``log(stream:)``
     /// - ``log2(stream:)``
     /// - ``log1p(stream:)``
-    /// - <doc:element-wise>
+    /// - ``log10(_:stream:)``
     public func log10(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log10(ctx, stream.ctx))
     }
@@ -927,10 +1009,11 @@ extension MLXArray {
     /// Element-wise natural log of one plus the array.
     ///
     /// ### See Also
+    /// - <doc:element-wise>
     /// - ``log(stream:)``
     /// - ``log2(stream:)``
     /// - ``log10(stream:)``
-    /// - <doc:element-wise>
+    /// - ``log1p(_:stream:)``
     public func log1p(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log1p(ctx, stream.ctx))
     }
@@ -952,6 +1035,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``logSumExp(axis:keepDims:stream:)``
     /// - ``logSumExp(keepDims:stream:)``
+    /// - ``logSumExp(_:axes:keepDims:stream:)``
     public func logSumExp(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_logsumexp(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -973,6 +1057,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``logSumExp(axes:keepDims:stream:)``
     /// - ``logSumExp(keepDims:stream:)``
+    /// - ``logSumExp(_:axes:keepDims:stream:)``
     public func logSumExp(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_logsumexp(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -993,6 +1078,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``logSumExp(axes:keepDims:stream:)``
     /// - ``logSumExp(axis:keepDims:stream:)``
+    /// - ``logSumExp(_:axes:keepDims:stream:)``
     public func logSumExp(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_logsumexp_all(ctx, keepDims, stream.ctx))
     }
@@ -1023,7 +1109,9 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - ``***(lhs:rhs:)``
+    /// - <doc:binary-arithmetic>
+    /// - ``***(_:_:)``
+    /// - ``matmul(_:_:stream:)``
     public func matmul(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_matmul(ctx, other.ctx, stream.ctx))
     }
@@ -1046,6 +1134,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``max(axis:keepDims:stream:)``
     /// - ``max(keepDims:stream:)``
+    /// - ``max(_:axes:keepDims:stream:)``
     public func max(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_max(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -1068,6 +1157,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``max(axes:keepDims:stream:)``
     /// - ``max(keepDims:stream:)``
+    /// - ``max(_:axes:keepDims:stream:)``
     public func max(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_max(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -1089,6 +1179,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``max(axes:keepDims:stream:)``
     /// - ``max(axis:keepDims:stream:)``
+    /// - ``max(_:axes:keepDims:stream:)``
     public func max(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_max_all(ctx, keepDims, stream.ctx))
     }
@@ -1111,6 +1202,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``mean(axis:keepDims:stream:)``
     /// - ``mean(keepDims:stream:)``
+    /// - ``mean(_:axes:keepDims:stream:)``
     public func mean(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_mean(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -1133,6 +1225,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``mean(axes:keepDims:stream:)``
     /// - ``mean(keepDims:stream:)``
+    /// - ``mean(_:axes:keepDims:stream:)``
     public func mean(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_mean(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -1154,6 +1247,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``mean(axes:keepDims:stream:)``
     /// - ``mean(axis:keepDims:stream:)``
+    /// - ``mean(_:axes:keepDims:stream:)``
     public func mean(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_mean_all(ctx, keepDims, stream.ctx))
     }
@@ -1176,6 +1270,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``min(axis:keepDims:stream:)``
     /// - ``min(keepDims:stream:)``
+    /// - ``min(_:axes:keepDims:stream:)``
     public func min(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_min(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -1198,6 +1293,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``min(axes:keepDims:stream:)``
     /// - ``min(keepDims:stream:)``
+    /// - ``min(_:axes:keepDims:stream:)``
     public func min(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_min(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -1219,6 +1315,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``min(axes:keepDims:stream:)``
     /// - ``min(axis:keepDims:stream:)``
+    /// - ``min(_:axes:keepDims:stream:)``
     public func min(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_min_all(ctx, keepDims, stream.ctx))
     }
@@ -1252,6 +1349,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:shapes>
     /// - ``swapAxes(_:_:stream:)``
+    /// - ``moveAxis(_:source:destination:stream:)``
     public func moveAxis(source: Int, destination: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_moveaxis(ctx, source.int32, destination.int32, stream.ctx))
     }
@@ -1272,7 +1370,9 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
-    /// - ``**(lhs:rhs:)``
+    /// - <doc:binary-arithmetic>
+    /// - ``**(_:_:)``
+    /// - ``pow(_:_:stream:)``
     public func pow(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_power(ctx, other.ctx, stream.ctx))
     }
@@ -1295,6 +1395,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``product(axis:keepDims:stream:)``
     /// - ``product(keepDims:stream:)``
+    /// - ``product(_:axes:keepDims:stream:)``
     public func product(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_prod(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -1317,6 +1418,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``product(axes:keepDims:stream:)``
     /// - ``product(keepDims:stream:)``
+    /// - ``product(_:axes:keepDims:stream:)``
     public func product(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_prod(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -1338,6 +1440,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``product(axes:keepDims:stream:)``
     /// - ``product(axis:keepDims:stream:)``
+    /// - ``product(_:axes:keepDims:stream:)``
     public func product(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_prod_all(ctx, keepDims, stream.ctx))
     }
@@ -1346,6 +1449,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``reciprocal(_:stream:)``
     public func reciprocal(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_reciprocal(ctx, stream.ctx))
     }
@@ -1354,6 +1458,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:shapes>
+    /// - ``reshape(_:_:stream:)``
     public func reshape(_ newShape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_reshape(ctx, newShape.asInt32, newShape.count, stream.ctx))
     }
@@ -1372,6 +1477,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:element-wise>
     /// - ``floor(stream:)``
+    /// - ``round(_:decimals:stream:)``
     public func round(decimals: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_round(ctx, decimals.int32, stream.ctx))
     }
@@ -1380,6 +1486,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``sqrt(_:stream:)``
     public func rsqrt(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_rsqrt(ctx, stream.ctx))
     }
@@ -1388,6 +1495,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``sin(_:stream:)``
     public func sin(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sin(ctx, stream.ctx))
     }
@@ -1415,6 +1523,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:shapes>
     /// - ``split(indices:axis:stream:)``
+    /// - ``split(_:parts:axis:stream:)``
     public func split(parts: Int, axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
         let vec = mlx_split_equal_parts(ctx, parts.int32, axis.int32, stream.ctx)
         defer { mlx_vector_array_free(vec) }
@@ -1430,6 +1539,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:shapes>
     /// - ``split(parts:axis:stream:)``
+    /// - ``split(_:indices:axis:stream:)``
     public func split(indices: [Int], axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
         let vec = mlx_split(ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)
         defer { mlx_vector_array_free(vec) }
@@ -1440,6 +1550,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``sqrt(_:stream:)``
     public func sqrt(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sqrt(ctx, stream.ctx))
     }
@@ -1448,6 +1559,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:element-wise>
+    /// - ``square(_:stream:)``
     public func square(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_square(ctx, stream.ctx))
     }
@@ -1461,6 +1573,7 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``squeeze(axis:stream:)``
     /// - ``squeeze(stream:)``
+    /// - ``squeeze(_:axes:stream:)``
     public func squeeze(axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze(ctx, axes.asInt32, axes.count, stream.ctx))
     }
@@ -1474,6 +1587,7 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``squeeze(axes:stream:)``
     /// - ``squeeze(stream:)``
+    /// - ``squeeze(_:axes:stream:)``
     public func squeeze(axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze(ctx, [axis.int32], 1, stream.ctx))
     }
@@ -1484,6 +1598,7 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``squeeze(axes:stream:)``
     /// - ``squeeze(axis:stream:)``
+    /// - ``squeeze(_:axes:stream:)``
     public func squeeze(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze_all(ctx, stream.ctx))
     }
@@ -1499,6 +1614,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``sum(axis:keepDims:stream:)``
     /// - ``sum(keepDims:stream:)``
+    /// - ``sum(_:axes:keepDims:stream:)``
     public func sum(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sum(ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -1514,6 +1630,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``sum(axes:keepDims:stream:)``
     /// - ``sum(keepDims:stream:)``
+    /// - ``sum(_:axes:keepDims:stream:)``
     public func sum(axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sum(ctx, [axis.int32], 1, keepDims, stream.ctx))
     }
@@ -1528,6 +1645,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``sum(axes:keepDims:stream:)``
     /// - ``sum(axis:keepDims:stream:)``
+    /// - ``sum(_:axes:keepDims:stream:)``
     public func sum(keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sum_all(ctx, keepDims, stream.ctx))
     }
@@ -1560,6 +1678,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:shapes>
+    /// - ``swapAxes(_:_:_:stream:)``
     public func swapAxes(_ axis1: Int, _ axis2: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_swapaxes(ctx, axis1.int32, axis2.int32, stream.ctx))
     }
@@ -1577,6 +1696,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - ``take(_:stream:)``
+    /// - ``take(_:_:axis:stream:)``
     public func take(_ indices: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_take(ctx, indices.ctx, axis.int32, stream.ctx))
     }
@@ -1585,6 +1705,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - ``take(_:axis:stream:)``
+    /// - ``take(_:_:axis:stream:)``
     public func take(_ indices: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_take_all(ctx, indices.ctx, stream.ctx))
     }
@@ -1598,6 +1719,7 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``transpose(axis:stream:)``
     /// - ``transpose(stream:)``
+    /// - ``transpose(_:axes:stream:)``
     public func transpose(axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_transpose(ctx, axes.asInt32, axes.count, stream.ctx))
     }
@@ -1610,6 +1732,7 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``transpose(axes:stream:)``
     /// - ``transpose(stream:)``
+    /// - ``transpose(_:axes:stream:)``
     public func transpose(axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_transpose(ctx, [axis.int32], 1, stream.ctx))
     }
@@ -1622,6 +1745,7 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``transpose(axes:stream:)``
     /// - ``transpose(axis:stream:)``
+    /// - ``transpose(_:axes:stream:)``
     public func transpose(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_transpose_all(ctx, stream.ctx))
     }
@@ -1644,6 +1768,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``variance(axis:keepDims:ddof:stream:)``
     /// - ``variance(keepDims:ddof:stream:)``
+    /// - ``variance(_:axes:keepDims:ddof:stream:)``
     public func variance(axes: [Int], keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_var(ctx, axes.asInt32, axes.count, keepDims, ddof.int32, stream.ctx))
     }
@@ -1659,6 +1784,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``variance(axes:keepDims:ddof:stream:)``
     /// - ``variance(keepDims:ddof:stream:)``
+    /// - ``variance(_:axes:keepDims:ddof:stream:)``
     public func variance(axis: Int, keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_var(ctx, [axis.int32], 1, keepDims, ddof.int32, stream.ctx))
     }
@@ -1674,6 +1800,7 @@ extension MLXArray {
     /// - <doc:reduction>
     /// - ``variance(axes:keepDims:ddof:stream:)``
     /// - ``variance(axis:keepDims:ddof:stream:)``
+    /// - ``variance(_:axes:keepDims:ddof:stream:)``
     public func variance(keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_var_all(ctx, keepDims, ddof.int32, stream.ctx))
     }
