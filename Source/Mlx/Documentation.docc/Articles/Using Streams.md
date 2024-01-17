@@ -19,3 +19,6 @@ let a = MLXRandom.uniform([100, 100], stream: .cpu)
 // produced on gpu
 let b = MLXRandom.uniform([100, 100], stream: .gpu)
 ```
+
+The parameter is of type ``StreamOrDevice`` and can be initialized with
+a stream, device, or some defaults like ``StreamOrDevice/gpu``.

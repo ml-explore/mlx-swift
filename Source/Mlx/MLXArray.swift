@@ -211,12 +211,6 @@ public final class MLXArray {
 
 extension MLXArray: CustomStringConvertible {
     public var description: String {
-        if let cDsc = Cmlx.mlx_tostring(UnsafeMutableRawPointer(ctx)) {
-            defer { free(cDsc) }
-            return String(cString: cDsc)
-        } else {
-            return String(describing: type(of: self))
-        }
+        describeMLX(ctx) ?? String(describing: type(of: self))
     }
 }
-

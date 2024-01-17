@@ -1,6 +1,25 @@
 import Cmlx
 
-public struct StreamOrDevice {
+/// Parameter type for all MLX operations.
+///
+/// Use this to control where operations are evaluated:
+///
+/// ```swift
+/// // produced on cpu
+/// let a = MLXRandom.uniform([100, 100], stream: .cpu)
+///
+/// // produced on gpu
+/// let b = MLXRandom.uniform([100, 100], stream: .gpu)
+/// ```
+///
+/// If omitted it will use the ``default``, which will be ``Device/gpu`` unless
+/// set otherwise.
+///
+/// ### See Also
+/// - <doc:Using-Streams>
+/// - ``Stream``
+/// - ``Device``
+public struct StreamOrDevice : CustomStringConvertible {
     
     private let stream: Stream
     
@@ -8,6 +27,10 @@ public struct StreamOrDevice {
         self.stream = stream
     }
     
+    /// The default stream on the default device.
+    ///
+    /// This will be ``Device/gpu`` unless ``Device/setDefault(device:)``
+    /// sets it otherwise.
     public static var `default`: StreamOrDevice {
         StreamOrDevice(Stream())
     }
@@ -16,6 +39,12 @@ public struct StreamOrDevice {
         StreamOrDevice(Stream.defaultStream(device))
     }
     
+    /// The ``Stream/defaultStream(_:)`` on the ``Device/cpu``
+    public static let cpu = device(.cpu)
+    
+    /// The ``Stream/defaultStream(_:)`` on the ``Device/gpu``
+    public static let gpu = device(.gpu)
+
     public static func stream(_ stream: Stream) -> StreamOrDevice {
         StreamOrDevice(stream)
     }
@@ -23,18 +52,27 @@ public struct StreamOrDevice {
     var ctx: OpaquePointer {
         stream.ctx
     }
+    
+    public var description: String {
+        stream.description
+    }
 }
 
+/// ### See Also
+/// - <doc:Using-Streams>
+/// - ``StreamOrDevice``
 public final class Stream {
     public let ctx: OpaquePointer!
     init(_ ctx_: mlx_stream) {
         ctx = ctx_
     }
+    
     public init() {
         let dDev = mlx_default_device()!
         ctx = mlx_default_stream(dDev)
         mlx_free(dDev)
     }
+    
     public init(index: Int32, _ device: Device) {
         ctx = mlx_stream_new(index, device.ctx)
     }
@@ -43,8 +81,13 @@ public final class Stream {
         mlx_free(ctx)
     }
 
-    // TODO: property?  get/set?
     static public func defaultStream(_ device: Device) -> Stream {
         return Stream(mlx_default_stream(device.ctx))
+    }
+}
+
+extension Stream: CustomStringConvertible {
+    public var description: String {
+        describeMLX(ctx) ?? String(describing: type(of: self))
     }
 }
