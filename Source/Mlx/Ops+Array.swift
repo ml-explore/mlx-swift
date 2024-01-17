@@ -332,7 +332,7 @@ public func arrayEqual(_ array: MLXArray, _ other: MLXArray, equalNAN: Bool = fa
 /// Element-wise cosine.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/cos(stream:)``
 public func cos(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_cos(array.ctx,  stream.ctx))
@@ -485,7 +485,7 @@ public func cumsum(_ array: MLXArray, reverse: Bool = false, inclusive: Bool = f
 /// Element-wise exponential.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/exp(stream:)``
 public func exp(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_exp(array.ctx,  stream.ctx))
@@ -521,7 +521,7 @@ public func flatten(_ array: MLXArray, start: Int = 0, end: Int = -1, stream: St
 /// Element-wise floor.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``round(_:decimals:stream:)``
 /// - ``floorDivide(_:_:stream:)``
 /// - ``ceil(_:stream:)``
@@ -546,7 +546,7 @@ public func floor(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// ```
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``floor(_:stream:)``
 public func floorDivide(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_floor_divide(array.ctx,  other.ctx, stream.ctx))
@@ -555,7 +555,7 @@ public func floorDivide(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDe
 /// Element-wise natural logarithm.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/log(stream:)``
 public func log(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_log(array.ctx,  stream.ctx))
@@ -564,7 +564,7 @@ public func log(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// Element-wise base-2 logarithm.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``log(_:stream:)``
 /// - ``log10(_:stream:)``
 /// - ``log1p(_:stream:)``
@@ -576,7 +576,7 @@ public func log2(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// Element-wise base-10 logarithm.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``log(_:stream:)``
 /// - ``log2(_:stream:)``
 /// - ``log1p(_:stream:)``
@@ -588,7 +588,7 @@ public func log10(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// Element-wise natural log of one plus the array.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``log(_:stream:)``
 /// - ``log2(_:stream:)``
 /// - ``log10(_:stream:)``
@@ -696,7 +696,7 @@ public func logSumExp(_ array: MLXArray, keepDims: Bool = false, stream: StreamO
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 /// - ``multiply(_:_:stream:)``
 /// - ``MLXArray/matmul(_:stream:)``
 public func matmul(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
@@ -965,8 +965,8 @@ public func moveAxis(_ array: MLXArray, source: Int, destination: Int, stream: S
 /// ```
 ///
 /// ### See Also
-/// - <doc:element-wise>
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
+/// - <doc:arithmetic>
 /// - ``MLXArray/pow(_:stream:)``
 public func pow(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_power(array.ctx,  other.ctx, stream.ctx))
@@ -1046,7 +1046,7 @@ public func product(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrD
 /// Element-wise reciprocal.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/reciprocal(stream:)``
 public func reciprocal(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_reciprocal(array.ctx,  stream.ctx))
@@ -1073,7 +1073,7 @@ public func reshape(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevice
 /// ```
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``floor(_:stream:)``
 /// - ``MLXArray/round(decimals:stream:)``
 public func round(_ array: MLXArray, decimals: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1083,7 +1083,7 @@ public func round(_ array: MLXArray, decimals: Int = 0, stream: StreamOrDevice =
 /// Element-wise reciprocal and square root.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/rsqrt(stream:)``
 public func rsqrt(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_rsqrt(array.ctx,  stream.ctx))
@@ -1092,7 +1092,7 @@ public func rsqrt(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// Element-wise sine.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/sin(stream:)``
 public func sin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sin(array.ctx,  stream.ctx))
@@ -1149,7 +1149,7 @@ public func split(_ array: MLXArray, indices: [Int], axis: Int = 0, stream: Stre
 /// Element-wise square root
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/sqrt(stream:)``
 public func sqrt(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sqrt(array.ctx,  stream.ctx))
@@ -1158,7 +1158,7 @@ public func sqrt(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// Element-wise square.
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``MLXArray/square(stream:)``
 public func square(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_square(array.ctx,  stream.ctx))

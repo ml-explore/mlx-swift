@@ -18,7 +18,7 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_abs(array.ctx, stream.ctx))
 }
@@ -33,7 +33,7 @@ public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 /// - ``MLXArray/+(_:_:)``
 public func add(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_add(a.ctx, b.ctx, stream.ctx))
@@ -46,7 +46,7 @@ public func add(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default)
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``cos(_:stream:)``
 public func acos(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_arccos(array.ctx, stream.ctx))
@@ -59,7 +59,7 @@ public func acos(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``cosh(_:stream:)``
 public func acosh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_arccosh(array.ctx, stream.ctx))
@@ -72,7 +72,7 @@ public func acosh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``sin(_:stream:)``
 public func asin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_arcsin(array.ctx, stream.ctx))
@@ -85,7 +85,7 @@ public func asin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``sinh(_:stream:)``
 public func asinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_arcsinh(array.ctx, stream.ctx))
@@ -98,7 +98,7 @@ public func asinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``tan(_:stream:)``
 public func atan(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_arctan(array.ctx, stream.ctx))
@@ -111,7 +111,7 @@ public func atan(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``tanh(_:stream:)``
 public func atanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_arctanh(array.ctx, stream.ctx))
@@ -276,7 +276,7 @@ public func broadcast(_ array: MLXArray, to shape: [Int], stream: StreamOrDevice
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``floor(_:stream:)``
 public func ceil(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_ceil(array.ctx, stream.ctx))
@@ -291,6 +291,7 @@ public func ceil(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
+/// - <doc:arithmetic>
 /// - ``clip(_:max:stream:)``
 public func clip(_ array: MLXArray, min: MLXArray, max: MLXArray? = nil, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_clip(array.ctx, min.ctx, max?.ctx, stream.ctx))
@@ -304,6 +305,7 @@ public func clip(_ array: MLXArray, min: MLXArray, max: MLXArray? = nil, stream:
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
+/// - <doc:arithmetic>
 /// - ``clip(_:min:max:stream:)``
 public func clip(_ array: MLXArray, max: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_clip(array.ctx, nil, max.ctx, stream.ctx))
@@ -470,7 +472,7 @@ public func convolve(_ a: MLXArray, _ b: MLXArray, mode: ConvolveMode, stream: S
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``cos(_:stream:)``
 public func cosh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_cosh(array.ctx, stream.ctx))
@@ -508,7 +510,7 @@ public func dequantize(_ w: MLXArray, scales: MLXArray, biases: MLXArray, groupS
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 public func divide(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_divide(a.ctx, b.ctx, stream.ctx))
 }
@@ -549,7 +551,7 @@ public func equal(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defaul
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``erfInverse(_:stream:)``
 public func erf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_erf(array.ctx, stream.ctx))
@@ -565,7 +567,7 @@ public func erf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``erf(_:stream:)``
 public func erfInverse(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_erfinv(array.ctx, stream.ctx))
@@ -742,7 +744,7 @@ public func load(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 public func logAddExp(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_logaddexp(a.ctx, b.ctx, stream.ctx))
 }
@@ -762,7 +764,7 @@ public func logAddExp(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .de
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - <doc:logical>
 public func logicalNot(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_logical_not(array.ctx, stream.ctx))
@@ -779,7 +781,7 @@ public func logicalNot(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 /// - ``minimum(_:_:stream:)``
 public func maximum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_maximum(a.ctx, b.ctx, stream.ctx))
@@ -796,7 +798,7 @@ public func maximum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defa
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 /// - ``maximum(_:_:stream:)``
 public func minimum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_minimum(a.ctx, b.ctx, stream.ctx))
@@ -821,7 +823,7 @@ public func minimum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defa
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 public func multiply(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_multiply(a.ctx, b.ctx, stream.ctx))
 }
@@ -842,7 +844,7 @@ public func multiply(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .def
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 public func negative(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_negative(array.ctx, stream.ctx))
 }
@@ -1011,12 +1013,12 @@ public func quantizedMatmul(_ x: MLXArray, _ w: MLXArray, scales: MLXArray, bias
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 public func remainder(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_remainder(a.ctx, b.ctx, stream.ctx))
 }
 
-/// Save array to a binary file in ``.npy``format.
+/// Save array to a binary file in `.npy`format.
 ///
 /// - Parameters:
 ///     - a: array to save
@@ -1048,7 +1050,7 @@ public func save(_ a: MLXArray, url: URL, stream: StreamOrDevice = .default) thr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 public func sigmoid(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sigmoid(array.ctx, stream.ctx))
 }
@@ -1060,7 +1062,7 @@ public func sigmoid(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 public func sign(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sign(array.ctx, stream.ctx))
 }
@@ -1072,7 +1074,7 @@ public func sign(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 /// - ``sin(_:stream:)``
 public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sinh(array.ctx, stream.ctx))
@@ -1091,6 +1093,7 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
+/// - <doc:arithmetic>
 /// - ``softMax(_:axis:stream:)``
 /// - ``softMax(_:stream:)``
 public func softMax(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
@@ -1110,6 +1113,7 @@ public func softMax(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .de
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
+/// - <doc:arithmetic>
 /// - ``softMax(_:axes:stream:)``
 /// - ``softMax(_:stream:)``
 public func softMax(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1203,7 +1207,7 @@ public func stopGradient(_ array: MLXArray, stream: StreamOrDevice = .default) -
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:binary-arithmetic>
+/// - <doc:arithmetic>
 public func subtract(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_subtract(a.ctx, b.ctx, stream.ctx))
 }
@@ -1245,7 +1249,7 @@ public func takeAlong(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDe
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 public func tan(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_tan(array.ctx, stream.ctx))
 }
@@ -1257,7 +1261,7 @@ public func tan(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - <doc:element-wise>
+/// - <doc:arithmetic>
 public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_tanh(array.ctx, stream.ctx))
 }

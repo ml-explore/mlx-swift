@@ -23,7 +23,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``add(_:_:stream:)``
     public static func +(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
@@ -44,7 +44,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``subtract(_:_:stream:)``
     public static func -(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
@@ -101,7 +101,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``multiply(_:_:stream:)``
     /// - ``matmul(_:stream:)``
     /// - ``matmul(_:_:stream:)``
@@ -125,7 +125,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``pow(_:stream:)``
     /// - ``pow(_:_:stream:)``
     public static func **(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
@@ -162,7 +162,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``matmul(_:stream:)``
     /// - ``matmul(_:_:stream:)``
     /// - ``multiply(_:_:stream:)``
@@ -185,7 +185,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``divide(_:_:stream:)``
     /// - ``floorDivide(_:_:stream:)``
     public static func /(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
@@ -213,7 +213,7 @@ extension MLXArray {
     /// is also available as a method.
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``floorDivide(_:stream:)``
     /// - ``floorDivide(_:_:stream:)``
     /// - ``floor(stream:)``
@@ -235,7 +235,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``remainder(_:_:stream:)``
     public static func %(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
@@ -754,7 +754,7 @@ extension MLXArray {
     /// Element-wise cosine.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``cos(_:stream:)``
     public func cos(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_cos(ctx, stream.ctx))
@@ -907,7 +907,7 @@ extension MLXArray {
     /// Element-wise exponential.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``exp(_:stream:)``
     public func exp(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_exp(ctx, stream.ctx))
@@ -941,7 +941,7 @@ extension MLXArray {
     /// Element-wise floor.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``round(decimals:stream:)``
     /// - ``floorDivide(_:stream:)``
     /// - ``floor(_:stream:)``
@@ -965,7 +965,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``/%(_:_:)``
     /// - ``floor(stream:)``
     /// - ``floorDivide(_:_:stream:)``
@@ -976,7 +976,7 @@ extension MLXArray {
     /// Element-wise natural logarithm.
     /// 
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``log(_:stream:)``
     public func log(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_log(ctx, stream.ctx))
@@ -985,7 +985,7 @@ extension MLXArray {
     /// Element-wise base-2 logarithm.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``log(stream:)``
     /// - ``log10(stream:)``
     /// - ``log1p(stream:)``
@@ -997,7 +997,7 @@ extension MLXArray {
     /// Element-wise base-10 logarithm.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``log(stream:)``
     /// - ``log2(stream:)``
     /// - ``log1p(stream:)``
@@ -1009,7 +1009,7 @@ extension MLXArray {
     /// Element-wise natural log of one plus the array.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``log(stream:)``
     /// - ``log2(stream:)``
     /// - ``log10(stream:)``
@@ -1109,7 +1109,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
     /// - ``***(_:_:)``
     /// - ``matmul(_:_:stream:)``
     public func matmul(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1369,8 +1369,8 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:element-wise>
-    /// - <doc:binary-arithmetic>
+    /// - <doc:arithmetic>
+    /// - <doc:arithmetic>
     /// - ``**(_:_:)``
     /// - ``pow(_:_:stream:)``
     public func pow(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1448,7 +1448,7 @@ extension MLXArray {
     /// Element-wise reciprocal.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``reciprocal(_:stream:)``
     public func reciprocal(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_reciprocal(ctx, stream.ctx))
@@ -1475,7 +1475,7 @@ extension MLXArray {
     /// ```
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``floor(stream:)``
     /// - ``round(_:decimals:stream:)``
     public func round(decimals: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1485,7 +1485,7 @@ extension MLXArray {
     /// Element-wise reciprocal and square root.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``sqrt(_:stream:)``
     public func rsqrt(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_rsqrt(ctx, stream.ctx))
@@ -1494,7 +1494,7 @@ extension MLXArray {
     /// Element-wise sine.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``sin(_:stream:)``
     public func sin(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sin(ctx, stream.ctx))
@@ -1549,7 +1549,7 @@ extension MLXArray {
     /// Element-wise square root
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``sqrt(_:stream:)``
     public func sqrt(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_sqrt(ctx, stream.ctx))
@@ -1558,7 +1558,7 @@ extension MLXArray {
     /// Element-wise square.
     ///
     /// ### See Also
-    /// - <doc:element-wise>
+    /// - <doc:arithmetic>
     /// - ``square(_:stream:)``
     public func square(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_square(ctx, stream.ctx))
