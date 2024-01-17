@@ -1,6 +1,8 @@
 import Foundation
 import Cmlx
 
+// Operations that are also instance methods on MLXArray
+
 // MARK: - Public Ops
 
 /// An `and` reduction over the given axes.
