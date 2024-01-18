@@ -1467,13 +1467,36 @@ extension MLXArray {
 
     /// Reshape an array while preserving the size.
     ///
+    /// ```swift
+    /// let array = MLXArray(0 ..< 12)
+    ///
+    /// let r = array.reshape([4, 3])
+    /// ```
+    ///
     /// ### See Also
     /// - <doc:shapes>
-    /// - ``reshape(_:_:stream:)``
+    /// - ``reshape(_:stream:)-2ja7s``
+    /// - ``reshape(_:_:stream:)-8p51j``
     public func reshape(_ newShape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_reshape(ctx, newShape.asInt32, newShape.count, stream.ctx))
     }
-    
+        
+    /// Reshape an array while preserving the size.
+    ///
+    /// ```swift
+    /// let array = MLXArray(0 ..< 12)
+    ///
+    /// let r = array.reshape(4, 3)
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``reshape(_:_:stream:)-8p51j``
+    /// - ``reshape(_:stream:)-uxps``
+    public func reshape(_ newShape: Int..., stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_reshape(ctx, newShape.asInt32, newShape.count, stream.ctx))
+    }
+        
     /// Round to the given number of decimals.
     ///
     /// Roughly equivalent to:

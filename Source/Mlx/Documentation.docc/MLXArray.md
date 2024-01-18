@@ -10,7 +10,7 @@ Some methods allow you to manipulate the shape of the array.  These methods chan
 and ``MLXArray/shape`` of the dimensions without changing the number of elements or contents of the array:
 
 - ``MLXArray/flatten(start:end:stream:)``
-- ``MLXArray/reshape(_:stream:)``
+- ``MLXArray/reshape(_:stream:)-uxps``
 - ``MLXArray/squeeze(axes:stream:)``
 
 ### MLXArray Shape Methods (Change Size)

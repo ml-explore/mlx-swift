@@ -1067,10 +1067,33 @@ public func reciprocal(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 
 /// Reshape an array while preserving the size.
 ///
+/// ```swift
+/// let array = MLXArray(0 ..< 12)
+///
+/// let r = reshape(array, [4, 3])
+/// ```
+///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshape(_:stream:)``
+/// - ``MLXArray/reshape(_:stream:)-uxps``
+/// - ``reshape(_:_:stream:)-7llxg``
 public func reshape(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_reshape(array.ctx,  newShape.asInt32, newShape.count, stream.ctx))
+}
+
+/// Reshape an array while preserving the size.
+///
+/// ```swift
+/// let array = MLXArray(0 ..< 12)
+///
+/// let r = reshape(array, 4, 3)
+/// ```
+///
+/// ### See Also
+/// - <doc:shapes>
+/// - ``MLXArray/reshape(_:stream:)-uxps``
+/// - ``reshape(_:_:stream:)-8p51j``
+public func reshape(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_reshape(array.ctx,  newShape.asInt32, newShape.count, stream.ctx))
 }
 
