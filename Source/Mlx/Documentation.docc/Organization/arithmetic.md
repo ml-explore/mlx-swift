@@ -46,6 +46,7 @@ let r = log(a)
 
 ### MLXArray Element-wise Arithmetic Functions
 
+- ``MLXArray/abs(stream:)``
 - ``MLXArray/cos(stream:)``
 - ``MLXArray/exp(stream:)``
 - ``MLXArray/floor(stream:)``

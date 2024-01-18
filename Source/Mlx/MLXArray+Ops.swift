@@ -449,6 +449,17 @@ extension MLXArray {
 
 extension MLXArray {
     
+    /// Element-wise absolute value.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    public func abs(stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_abs(ctx, stream.ctx))
+    }
+
     /// An `and` reduction over the given axes.
     ///
     /// ```swift
@@ -1753,8 +1764,8 @@ extension MLXArray {
     /// Transpose the dimensions of the array.
     ///
     /// Cover for ``transpose(stream:)``
-    public func T(stream: StreamOrDevice = .default) -> MLXArray {
-        transpose(stream: stream)
+    public var T: MLXArray {
+        transpose()
     }
     
     /// Compute the variance(s) over the given axes

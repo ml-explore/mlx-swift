@@ -11,18 +11,6 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
     return (0 ..< result.size).map { MLXArray(result.arrays[$0]!) }
 }
 
-/// Element-wise absolute value.
-///
-/// - Parameters:
-///     - array: input array
-///     - stream: stream or device to evaluate on
-///
-/// ### See Also
-/// - <doc:arithmetic>
-public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_abs(array.ctx, stream.ctx))
-}
-
 /// Element-wise addition.
 ///
 /// Add two arrays with <doc:broadcasting>.

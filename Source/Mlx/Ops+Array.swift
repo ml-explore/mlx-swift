@@ -5,6 +5,19 @@ import Cmlx
 
 // MARK: - Public Ops
 
+/// Element-wise absolute value.
+///
+/// - Parameters:
+///     - array: input array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``MLXArray/abs(stream:)``
+public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_abs(array.ctx, stream.ctx))
+}
+
 /// An `and` reduction over the given axes.
 ///
 /// ```swift
