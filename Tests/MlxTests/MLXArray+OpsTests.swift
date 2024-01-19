@@ -23,8 +23,8 @@ class MLXArrayOpsTests : XCTestCase {
         let a = MLXArray([1, 2, 3, 4], [2, 2])
         let b = MLXArray(converting: [-5.0, 37.5, 4, 7, 1, 0], [2, 3])
 
-        // (a * 5)^2 matmul b
-        let r = (a * 5) ** 2 *** b
+        // (a * 5)^2 @ b
+        let r = ((a * 5) ** 2).matmul(b)
         
         // make sure everything got hooked up
         XCTAssertEqual(r.shape, [2, 3])
@@ -36,7 +36,7 @@ class MLXArrayOpsTests : XCTestCase {
         let a = MLXArray([1, 2, 3])
         
         // in python: (a // 2) / 0.5
-        let r = (a /% 2) / 0.5
+        let r = a.floorDivide(2) / 0.5
         
         // make sure everything got hooked up
         XCTAssertEqual(r.shape, [3])
@@ -59,7 +59,7 @@ class MLXArrayOpsTests : XCTestCase {
     func testFunctions() {
         let a = MLXArray(0 ..< 12, [4, 3])
         
-        let r = a.square().sqrt().transpose().T()
+        let r = a.square().sqrt().transpose().T
         assertEqual(a, r)
     }
     
@@ -107,5 +107,5 @@ class MLXArrayOpsTests : XCTestCase {
         let expected = MLXArray([0, 8, 2, 10, 4, 12, 6, 14, 1, 9, 3, 11, 5, 13, 7, 15], [2, 2, 2, 2])
         assertEqual(r, expected)
     }
-
+    
 }

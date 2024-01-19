@@ -78,6 +78,20 @@ public final class MLXArray {
         return (0 ..< ndim).map { Int(cShape[$0]) }
     }
     
+    /// Strides of the array.
+    ///
+    /// ```swift
+    /// let array = MLXArray(0 ..< 12, [3, 4])
+    /// print(array.strides)
+    /// // [4, 1]
+    /// ```
+    public var strides: [Int] {
+        let ndim = mlx_array_ndim(ctx)
+        guard ndim > 0 else { return [] }
+        let strides = mlx_array_strides(ctx)!
+        return (0 ..< ndim).map { Int(strides[$0]) }
+    }
+    
     /// Return the scalar value of the array.
     ///
     /// It is a contract violation to call this on an array with more than one element
@@ -134,7 +148,7 @@ public final class MLXArray {
     /// // 4
     /// ```
     public func dim(_ dim: Int) -> Int {
-        Int(mlx_array_dim(ctx, dim.int32))
+        Int(mlx_array_dim(ctx, Mlx.resolve(axis: dim, ndim: mlx_array_ndim(ctx)).int32))
     }
     
     /// Read a dimension of the array.
@@ -149,7 +163,7 @@ public final class MLXArray {
     /// // 4
     /// ```
     public func dim(_ dim: Int32) -> Int32 {
-        mlx_array_dim(ctx, dim)
+        mlx_array_dim(ctx, Mlx.resolve(axis: Int(dim), ndim: mlx_array_ndim(ctx)).int32)
     }
     
     public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {

@@ -4,8 +4,6 @@ import Cmlx
 // MARK: - Operations
 
 infix operator ** : BitwiseShiftPrecedence
-infix operator *** : MultiplicationPrecedence
-infix operator /% : MultiplicationPrecedence
 
 extension MLXArray {
     
@@ -30,6 +28,12 @@ extension MLXArray {
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func +<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise subtraction.
     ///
     /// Subtract two arrays with <doc:broadcasting>.
@@ -48,6 +52,12 @@ extension MLXArray {
     /// - ``subtract(_:_:stream:)``
     public static func -(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
+        return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func -<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -110,6 +120,12 @@ extension MLXArray {
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
     
+    public static func *<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise power operation.
     ///
     /// Raise the elements of `lhs` to the powers in elements of `rhs` with <doc:broadcasting>.
@@ -133,42 +149,10 @@ extension MLXArray {
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    /// Matrix multiplication.
-    ///
-    /// Perform the (possibly batched) matrix multiplication of two arrays. This function supports
-    /// broadcasting for arrays with more than two dimensions.
-    ///
-    /// - If the first array is 1-D then a 1 is prepended to its shape to make it
-    ///   a matrix. Similarly if the second array is 1-D then a 1 is appended to its
-    ///   shape to make it a matrix. In either case the singleton dimension is removed
-    ///   from the result.
-    /// - A batched matrix multiplication is performed if the arrays have more than
-    ///   2 dimensions.  The matrix dimensions for the matrix product are the last
-    ///   two dimensions of each input.
-    /// - All but the last two dimensions of each input are broadcast with one another using
-    ///   standard <doc:broadcasting>.
-    ///
-    /// Note: this is the same as the `@` operator in python.  `@` is not available as an operator in
-    /// swift so we are using `***`.  You can also call it as a function: ``matmul(_:stream:)``.
-    ///
-    /// For example:
-    ///
-    /// ```swift
-    /// let a = MLXArray([1, 2, 3, 4], [2, 2])
-    /// let b = MLXArray(converting: [-5.0, 37.5, 4, 7, 1, 0], [2, 3])
-    ///
-    /// // produces a [2, 3] result
-    /// let r = a *** b
-    /// ```
-    ///
-    /// ### See Also
-    /// - <doc:arithmetic>
-    /// - ``matmul(_:stream:)``
-    /// - ``matmul(_:_:stream:)``
-    /// - ``multiply(_:_:stream:)``
-    public static func ***(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func **<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        return MLXArray(mlx_matmul(lhs.ctx, rhs.ctx, s.ctx))
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
     /// Element-wise division.
@@ -193,33 +177,10 @@ extension MLXArray {
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    /// Element-wise integer division..
-    ///
-    /// Divide two arrays with <doc:broadcasting>.
-    ///
-    /// If either array is a floating point type then it is equivalent to calling ``floor(stream:)`` after `/`.
-    ///
-    /// For example:
-    ///
-    /// ```swift
-    /// let a = MLXArray(0 ..< 12, [4, 3])
-    /// let b = MLXArray([4, 5, 6])
-    ///
-    /// let r = a /% b
-    /// ```
-    ///
-    /// Note: this is the same as the `//` operator in python.  We can't use `//` as an operator in
-    /// swift (it means comment to end of line!) so we use `/%`.  ``floorDivide(_:stream:)``
-    /// is also available as a method.
-    ///
-    /// ### See Also
-    /// - <doc:arithmetic>
-    /// - ``floorDivide(_:stream:)``
-    /// - ``floorDivide(_:_:stream:)``
-    /// - ``floor(stream:)``
-    public static func /%(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func /<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        return MLXArray(mlx_floor_divide(lhs.ctx, rhs.ctx, s.ctx))
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
     /// Element-wise remainder of division.
@@ -239,6 +200,12 @@ extension MLXArray {
     /// - ``remainder(_:_:stream:)``
     public static func %(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
+        return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func %<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
         return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -977,7 +944,6 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``/%(_:_:)``
     /// - ``floor(stream:)``
     /// - ``floorDivide(_:_:stream:)``
     public func floorDivide(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
@@ -1121,7 +1087,6 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``***(_:_:)``
     /// - ``matmul(_:_:stream:)``
     public func matmul(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_matmul(ctx, other.ctx, stream.ctx))
@@ -1636,7 +1601,7 @@ extension MLXArray {
     public func squeeze(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_squeeze_all(ctx, stream.ctx))
     }
-
+    
     /// Sum reduce the array over the given axes.
     ///
     /// - Parameters:

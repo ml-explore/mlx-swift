@@ -15,6 +15,25 @@ class MLXArrayIndexingTests : XCTestCase {
         assertEqual(s, MLXArray(64 ..< 128, [8, 8]))
     }
     
+    func testArraySubscriptIntAxis() {
+        let a = MLXArray(0 ..< 512, [8, 8, 8])
+        let s = a[1, axis: -1]
+        XCTAssertEqual(s.ndim, 2)
+        XCTAssertEqual(s.shape, [8, 8])
+        
+        // array([[1, 9, 17, ..., 41, 49, 57],
+        //        [65, 73, 81, ..., 105, 113, 121],
+        //        [129, 137, 145, ..., 169, 177, 185],
+        //        ...,
+        //        [321, 329, 337, ..., 361, 369, 377],
+        //        [385, 393, 401, ..., 425, 433, 441],
+        //        [449, 457, 465, ..., 489, 497, 505]], dtype=int64)
+
+        XCTAssertEqual(s[0, 0].item(Int.self), 1)
+        XCTAssertEqual(s[0, 1].item(Int.self), 9)
+        XCTAssertEqual(s[0, 2].item(Int.self), 17)
+    }
+
     func testArraySubscriptIntArray() {
         // squeeze output dimensions as needed
         let a = MLXArray(0 ..< 512, [8, 8, 8])
@@ -190,4 +209,110 @@ class MLXArrayIndexingTests : XCTestCase {
             assertEqual(r, expected)
         }
     }
+    
+    public func testStridedBy2() {
+        let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
+        
+        let r = a[stride: 2, axis: -1]
+        let expected = MLXArray(Array(stride(from: 0, to: 2 * 3 * 4, by: 2)), [2, 3, 2])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedBy2Offset() {
+        let a = MLXArray(0 ..< (2 * 3 * 5), [2, 3, 5])
+        
+        let r = a[from: 1, stride: 2, axis: -1]
+        let expected = MLXArray([1, 3, 6, 8, 11, 13, 16, 18, 21, 23, 26, 28], [2, 3, 2])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative1Last() {
+        let a = MLXArray(0 ..< 6, [2, 3])
+        
+        let r = a[stride: -1, axis: -1]
+        let expected = MLXArray([2, 1, 0, 5, 4, 3], [2, 3])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative1First() {
+        let a = MLXArray(0 ..< 6, [2, 3])
+        
+        let r = a[stride: -1, axis: 0]
+        let expected = MLXArray([3, 4, 5, 0, 1, 2], [2, 3])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative1SecondOffset() {
+        let a = MLXArray(0 ..< (2 * 3 * 5), [2, 3, 5])
+
+        let r = a[from: 1, stride: -1, axis: 1]
+        let expected = MLXArray([5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 20, 21, 22, 23, 24, 15, 16, 17, 18, 19], [2, 2, 5])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative1LastOffset() {
+        let a = MLXArray(0 ..< (2 * 3 * 5), [2, 3, 5])
+
+        let r = a[from: 1, stride: -1, axis: -1]
+        let expected = MLXArray([1, 0, 6, 5, 11, 10, 16, 15, 21, 20, 26, 25], [2, 3, 2])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative2SecondOffset() {
+        let a = MLXArray(0 ..< (2 * 5 * 3), [2, 5, 3])
+
+        let r = a[from: 1, stride: -2, axis: 1]
+        let expected = MLXArray([3, 4, 5, 18, 19, 20], [2, 1, 3])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative2Last() {
+        let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
+        
+        let r = a[stride: -2, axis: -1]
+        
+        // reverse order, stride by 2
+        //
+        // array([[[3, 1],
+        //         [7, 5],
+        //         [11, 9]],
+        //        [[15, 13],
+        //         [19, 17],
+        //         [23, 21]]], dtype=int64)
+
+        let expected = MLXArray([3, 1, 7, 5, 11, 9, 15, 13, 19, 17, 23, 21], [2, 3, 2])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative2First() {
+        let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
+        
+        let r = a[stride: -2, axis: 0]
+        
+        // last row
+        //
+        // array([[[12, 13, 14, 15],
+        //         [16, 17, 18, 19],
+        //         [20, 21, 22, 23]]], dtype=int64)
+
+        let expected = MLXArray([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], [1, 3, 4])
+        assertEqual(r, expected)
+    }
+
+    public func testStridedByNegative2SecondSet() {
+        let a = MLXArray(Int32(0) ..< (2 * 3 * 4), [2, 3, 4])
+        
+        a[stride: -2, axis: 1] = [99, 88, 77, 66]
+
+        // array([[[99, 88, 77, 66],
+        //         [4, 5, 6, 7],
+        //         [99, 88, 77, 66]],
+        //        [[99, 88, 77, 66],
+        //         [16, 17, 18, 19],
+        //         [99, 88, 77, 66]]], dtype=int64)
+
+        let expected = MLXArray([99, 88, 77, 66, 4, 5, 6, 7, 99, 88, 77, 66, 99, 88, 77, 66, 16, 17, 18, 19, 99, 88, 77, 66], [2, 3, 4])
+        assertEqual(a, expected)
+    }
+
 }

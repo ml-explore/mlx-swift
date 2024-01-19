@@ -147,7 +147,7 @@ public func allClose(_ array: MLXArray, _ other: MLXArray, rtol: Double = 1e-5, 
 /// - ``any(_:axes:keepDims:stream:)``
 /// - ``MLXArray/allTrue(stream:)``
 public func allTrue(_ array: MLXArray, stream: StreamOrDevice = .default) -> Bool {
-    if array.ndim > 1 || array.dtype != .bool {
+    if array.size > 1 || array.dtype != .bool {
         let all = mlx_all_all(array.ctx,  false, stream.ctx)!
         let bool = mlx_array_item_bool(all)
         mlx_free(all)

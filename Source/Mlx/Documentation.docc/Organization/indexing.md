@@ -54,6 +54,28 @@ let sorted = array[sortIndexes]
 
 More complex forms are also available if multiple arrays are passed.
 
+In python you can index using slices with strides, e.g. to access only the even
+numbered elements:
+
+```python
+# access strided contents of array
+evens = array[..., ::2]
+```
+
+You can accomplish something similar with the swift API:
+
+```
+let array = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
+
+// array([[[0, 2],
+//         [4, 6],
+//         [8, 10]],
+//        [[12, 14],
+//         [16, 18],
+//         [20, 22]]], dtype=int64)
+let evens = a[stride: 2, axis: -1]
+```
+
 ## Topics
 
 ### Subscript Functions
@@ -62,6 +84,9 @@ More complex forms are also available if multiple arrays are passed.
 - ``MLXArray/subscript(_:stream:)-4cvvk``
 - ``MLXArray/subscript(_:stream:)-1gwn3``
 - ``MLXArray/subscript(_:stream:)-8x0dh``
+- ``MLXArray/subscript(_:axis:stream:)-o7u6``
+- ``MLXArray/subscript(_:axis:stream:)-9hr7x``
+- ``MLXArray/subscript(from:to:stride:axis:stream:)``
 
 ### Related Functions
 

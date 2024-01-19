@@ -6,9 +6,16 @@ import Cmlx
 /// Broadcast a vector of arrays against one another.
 func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArray] {
     let result = mlx_broadcast_arrays(arrays.map { $0.ctx }, arrays.count, stream.ctx)
+    
+    // free the result when done
     defer { mlx_vector_array_free(result) }
     
-    return (0 ..< result.size).map { MLXArray(result.arrays[$0]!) }
+    return (0 ..< result.size).map { index in
+        // take a +1 on each array
+        let ctx = result.arrays[index]!
+        mlx_retain(ctx)
+        return MLXArray(ctx)
+    }
 }
 
 /// Element-wise addition.
@@ -967,6 +974,11 @@ public func partition(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .def
 public func quantize(_ w: MLXArray, groupSize: Int = 64, bits: Int = 4, stream: StreamOrDevice = .default) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray) {
     let result = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)
     defer { mlx_vector_array_free(result) }
+    
+    // take a +1 on each array
+    for i in 0 ..< 3 {
+        mlx_retain(result.arrays[i]!)
+    }
     
     return (MLXArray(result.arrays[0]!), MLXArray(result.arrays[1]!), MLXArray(result.arrays[2]!))
 }

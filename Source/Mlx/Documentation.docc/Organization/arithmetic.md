@@ -22,6 +22,10 @@ let a = MLXArray(0 ..< 12, [4, 3])
 let r = log(a)
 ```
 
+> There are two operators from python that are not supported (as operators) in
+swift: `@` (``matmul(_:_:stream:)``) and `//` (``floorDivide(_:_:stream:)``).  Please
+use the methods on `MLXArray` or the free functions.
+
 ## Topics
 
 ### MLXArray Operators
@@ -32,9 +36,6 @@ let r = log(a)
 - ``MLXArray/!(_:)``
 - ``MLXArray/*(_:_:)``
 - ``MLXArray/**(_:_:)``
-- ``MLXArray/***(_:_:)``
-- ``MLXArray/%(_:_:)``
-- ``MLXArray//%(_:_:)``
 - ``MLXArray/==(_:_:)``
 - ``MLXArray/!=(_:_:)``
 - ``MLXArray/<(_:_:)``
