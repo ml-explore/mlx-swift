@@ -22,6 +22,7 @@ let package = Package(
         
         .executable(name: "Example1", targets: ["Example1"]),
         .executable(name: "Tutorial", targets: ["Tutorial"]),
+        .executable(name: "LlamaMLXBench", targets: ["LlamaMLXBench"]),
     ],
     dependencies: [
     ],
@@ -121,6 +122,12 @@ let package = Package(
             dependencies: ["Mlx"],
             path: "Source/Examples",
             sources: ["Tutorial.swift"]
+        ),
+        .executableTarget(
+            name: "LlamaMLXBench",
+            dependencies: ["Mlx"],
+            path: "Source/Examples",
+            sources: ["LlamaMLXBench.swift"]
         ),
     ],
     cxxLanguageStandard: .gnucxx17
