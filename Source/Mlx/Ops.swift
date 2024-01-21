@@ -5,17 +5,13 @@ import Cmlx
 
 /// Broadcast a vector of arrays against one another.
 func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArray] {
-    let result = mlx_broadcast_arrays(arrays.map { $0.ctx }, arrays.count, stream.ctx)
+    let vector_array = new_mlx_vector_array(arrays)
+    defer { mlx_free(vector_array) }
     
-    // free the result when done
-    defer { mlx_vector_array_free(result) }
+    let result = mlx_broadcast_arrays(vector_array, stream.ctx)!
+    defer { mlx_free(result) }
     
-    return (0 ..< result.size).map { index in
-        // take a +1 on each array
-        let ctx = result.arrays[index]!
-        mlx_retain(ctx)
-        return MLXArray(ctx)
-    }
+    return mlx_vector_array_values(result)
 }
 
 /// Element-wise addition.
@@ -316,7 +312,10 @@ public func clip(_ array: MLXArray, max: MLXArray, stream: StreamOrDevice = .def
 /// ### See Also
 /// - <doc:shapes>
 public func concatenate(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_concatenate(arrays.map { $0.ctx }, arrays.count, axis.int32, stream.ctx))
+    let vector_array = new_mlx_vector_array(arrays)
+    defer { mlx_free(vector_array) }
+    
+    return MLXArray(mlx_concatenate(vector_array, axis.int32, stream.ctx))
 }
 
 /// 1D convolution over an input with several channels.
@@ -718,7 +717,7 @@ public func load(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray
     let path = url.path(percentEncoded: false)
     if let fp = fopen(path, "r") {
         defer { fclose(fp) }
-        return MLXArray(mlx_load(fp, stream.ctx))
+        return MLXArray(mlx_load_file(fp, stream.ctx))
 
     } else {
         let message = String(cString: strerror(errno))
@@ -972,15 +971,11 @@ public func partition(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .def
 /// - ``dequantize(_:scales:biases:groupSize:bits:stream:)``
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
 public func quantize(_ w: MLXArray, groupSize: Int = 64, bits: Int = 4, stream: StreamOrDevice = .default) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray) {
-    let result = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)
-    defer { mlx_vector_array_free(result) }
+    let result = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)!
+    defer { mlx_free(result) }
     
-    // take a +1 on each array
-    for i in 0 ..< 3 {
-        mlx_retain(result.arrays[i]!)
-    }
-    
-    return (MLXArray(result.arrays[0]!), MLXArray(result.arrays[1]!), MLXArray(result.arrays[2]!))
+    let arrays = mlx_vector_array_values(result)
+    return (arrays[0], arrays[1], arrays[2])
 }
 
 /// Perform the matrix multiplication with the quantized matrix `w`. The
@@ -1032,7 +1027,7 @@ public func save(_ a: MLXArray, url: URL, stream: StreamOrDevice = .default) thr
     let path = url.path(percentEncoded: false)
     if let fp = fopen(path, "w") {
         defer { fclose(fp) }
-        mlx_save(fp, a.ctx)
+        mlx_save_file(fp, a.ctx)
         
     } else {
         let message = String(cString: strerror(errno))
@@ -1173,7 +1168,9 @@ public func sort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// ### See Also
 /// - <doc:shapes>
 public func stack(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_stack(arrays.map { $0.ctx }, arrays.count, axis.int32, stream.ctx))
+    let vector_array = new_mlx_vector_array(arrays)
+    defer { mlx_free(vector_array) }
+    return MLXArray(mlx_stack(vector_array, axis.int32, stream.ctx))
 }
 
 /// Stop gradients from being computed.

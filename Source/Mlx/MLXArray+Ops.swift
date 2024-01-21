@@ -401,7 +401,10 @@ extension MLXArray {
     }
         
     func scatter(indices: [MLXArray], updates: MLXArray, axes: [Int32], stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_scatter(ctx, indices.map { $0.ctx }, indices.count, updates.ctx, axes, axes.count, stream.ctx))
+        let vector_array = new_mlx_vector_array(indices)
+        defer { mlx_free(vector_array) }
+        
+        return MLXArray(mlx_scatter(ctx, vector_array, updates.ctx, axes, axes.count, stream.ctx))
     }
 
     // varaiant with [Int32] argument
@@ -1524,9 +1527,9 @@ extension MLXArray {
     /// - ``split(indices:axis:stream:)``
     /// - ``split(_:parts:axis:stream:)``
     public func split(parts: Int, axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
-        let vec = mlx_split_equal_parts(ctx, parts.int32, axis.int32, stream.ctx)
-        defer { mlx_vector_array_free(vec) }
-        return MLXArray.fromVector(vec)
+        let vec = mlx_split_equal_parts(ctx, parts.int32, axis.int32, stream.ctx)!
+        defer { mlx_free(vec) }
+        return mlx_vector_array_values(vec)
     }
 
     /// Split an array along a given axis.
@@ -1540,9 +1543,9 @@ extension MLXArray {
     /// - ``split(parts:axis:stream:)``
     /// - ``split(_:indices:axis:stream:)``
     public func split(indices: [Int], axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
-        let vec = mlx_split(ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)
-        defer { mlx_vector_array_free(vec) }
-        return MLXArray.fromVector(vec)
+        let vec = mlx_split(ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)!
+        defer { mlx_free(vec) }
+        return mlx_vector_array_values(vec)
     }
 
     /// Element-wise square root

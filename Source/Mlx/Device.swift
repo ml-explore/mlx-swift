@@ -69,6 +69,6 @@ public final class Device {
 
 extension Device: CustomStringConvertible {
     public var description: String {
-        describeMLX(ctx) ?? String(describing: type(of: self))
+        mlx_describe(ctx) ?? String(describing: type(of: self))
     }
 }

@@ -88,6 +88,6 @@ public final class Stream {
 
 extension Stream: CustomStringConvertible {
     public var description: String {
-        describeMLX(ctx) ?? String(describing: type(of: self))
+        mlx_describe(ctx) ?? String(describing: type(of: self))
     }
 }

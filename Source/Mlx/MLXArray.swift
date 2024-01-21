@@ -225,6 +225,6 @@ public final class MLXArray {
 
 extension MLXArray: CustomStringConvertible {
     public var description: String {
-        describeMLX(ctx) ?? String(describing: type(of: self))
+        mlx_describe(ctx) ?? String(describing: type(of: self))
     }
 }

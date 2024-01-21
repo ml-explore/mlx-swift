@@ -208,7 +208,10 @@ extension MLXArray {
             
             // gather the data -- this will be in the same dimensions as the source
             let i = resolve(indices)
-            let g = mlx_gather(ctx, i.map { $0.ctx }, i.count, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx)!
+            let i_vector_array = new_mlx_vector_array(i)
+            defer { mlx_free(i_vector_array) }
+
+            let g = mlx_gather(ctx, i_vector_array, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx)!
             defer {
                 mlx_free(g)
             }
@@ -323,8 +326,11 @@ extension MLXArray {
             // shape of the result is based on the shape of the broadcast inputs
             // and padded by any remaining dimensions in the array
             let resultShape = arrayIndices[0].shape.asInt32 + arange(indices.count, self.ndim).map { dim($0) }
+            
+            let arrayIndices_vec = new_mlx_vector_array(arrayIndices)
+            defer { mlx_free(arrayIndices_vec) }
 
-            return MLXArray(mlx_gather(ctx, arrayIndices.map { $0.ctx }, indices.count, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx)).reshape(resultShape)
+            return MLXArray(mlx_gather(ctx, arrayIndices_vec, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx)).reshape(resultShape)
         }
         set {
             // see mlx_set_item_nd

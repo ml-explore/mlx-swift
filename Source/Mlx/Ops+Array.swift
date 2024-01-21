@@ -1160,9 +1160,9 @@ public func sin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// - ``split(_:indices:axis:stream:)``
 /// - ``MLXArray/split(parts:axis:stream:)``
 public func split(_ array: MLXArray, parts: Int, axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
-    let vec = mlx_split_equal_parts(array.ctx,  parts.int32, axis.int32, stream.ctx)
-    defer { mlx_vector_array_free(vec) }
-    return MLXArray.fromVector(vec)
+    let vec = mlx_split_equal_parts(array.ctx,  parts.int32, axis.int32, stream.ctx)!
+    defer { mlx_free(vec) }
+    return mlx_vector_array_values(vec)
 }
 
 /// Split an array along a given axis.
@@ -1177,9 +1177,9 @@ public func split(_ array: MLXArray, parts: Int, axis: Int = 0, stream: StreamOr
 /// - ``split(_:parts:axis:stream:)``
 /// - ``MLXArray/split(indices:axis:stream:)``
 public func split(_ array: MLXArray, indices: [Int], axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
-    let vec = mlx_split(array.ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)
-    defer { mlx_vector_array_free(vec) }
-    return MLXArray.fromVector(vec)
+    let vec = mlx_split(array.ctx, indices.asInt32, indices.count, axis.int32, stream.ctx)!
+    defer { mlx_free(vec) }
+    return mlx_vector_array_values(vec)
 }
 
 /// Element-wise square root

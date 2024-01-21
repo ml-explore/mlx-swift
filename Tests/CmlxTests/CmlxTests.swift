@@ -10,15 +10,20 @@ class CmlxTests : XCTestCase {
     
     func testMinimal() throws {
         // smoke test making sure we can build, link & call C api
+        //
+        // note: there are convenience wrappers in Mlx + the entire
+        // wrapping of the API in swift
+        
         var data: [Float] = [1, 2, 3, 4, 5, 6]
         var shape: [Int32] = [2, 3]
         
         let arr = mlx_array_from_data(&data, &shape, 2, MLX_FLOAT32)!
         
-        if let cStr = mlx_tostring(UnsafeMutableRawPointer(arr)) {
-            print(String(cString: cStr))
-            free(cStr)
-        }
+        let str = mlx_tostring(UnsafeMutableRawPointer(arr))!
+        defer { mlx_free(UnsafeMutableRawPointer(str)) }
+        let description = String(cString: mlx_string_data(str))
+        
+        print(description)
         
         mlx_free(UnsafeMutableRawPointer(arr))
     }
