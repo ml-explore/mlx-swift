@@ -6,7 +6,7 @@ struct LlamaMLXBench {
     static func measure(model: LlamaEncoderLayer, x: MLXArray, cache: (MLXArray, MLXArray)) -> Int {
         for _ in 0 ..< 5 {
             let (y, c) = model(x, mask: nil, cache: cache)
-            eval(y, c.0, c.1)
+            eval(y, c)
         }
         
         let start = Date.timeIntervalSinceReferenceDate
@@ -40,7 +40,7 @@ struct LlamaMLXBench {
             MLXRandom.normal([1, H, C, D / H], type: Float.self),
             MLXRandom.normal([1, H, C, D / H], type: Float.self)
         )
-        eval(x, cache.0, cache.1)
+        eval(x, cache)
         
         let t = measure(model: layer, x: x, cache: cache)
         
