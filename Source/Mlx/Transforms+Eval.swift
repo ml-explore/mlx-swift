@@ -4,7 +4,7 @@ import Cmlx
 /// Evaluate one or more `MLXArray`
 ///
 /// ### See Also
-/// - <doc:Lazy-Evaluation>
+/// - <doc:lazy-evaluation>
 public func eval(_ arrays: MLXArray...) {
     let vector_array = new_mlx_vector_array(arrays)
     mlx_eval(vector_array)
@@ -14,7 +14,7 @@ public func eval(_ arrays: MLXArray...) {
 /// Evaluate one or more `MLXArray`
 ///
 /// ### See Also
-/// - <doc:Lazy-Evaluation>
+/// - <doc:lazy-evaluation>
 public func eval(_ arrays: [MLXArray]) {
     let vector_array = new_mlx_vector_array(arrays)
     mlx_eval(vector_array)
@@ -40,7 +40,7 @@ public func eval(_ arrays: [MLXArray]) {
 /// Other structured types may be supported -- check the implementation.
 ///
 /// ### See Also
-/// - <doc:Lazy-Evaluation>
+/// - <doc:lazy-evaluation>
 public func eval(_ values: Any...) {
     var arrays = [MLXArray]()
     
