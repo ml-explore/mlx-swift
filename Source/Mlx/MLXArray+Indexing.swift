@@ -53,17 +53,9 @@ extension MLXArray : Sequence {
 
 extension MLXArray {
     
-    /// Replace the interior ctx (`mlx_array` pointer) with a new value
-    @inline(__always)
-    private func update(array: MLXArray) {
-        mlx_free(ctx)
-        mlx_retain(array.ctx)
-        self.ctx = array.ctx
-    }
-    
     /// Replace the interior ctx (`mlx_array` pointer) with a new value by transferring ownership
     @inline(__always)
-    private func update(ctx: OpaquePointer) {
+    func update(ctx: OpaquePointer) {
         if ctx != self.ctx {
             mlx_free(self.ctx)
             self.ctx = ctx
@@ -146,7 +138,7 @@ extension MLXArray {
             let expanded = newValue.reshape(updateShape).broadcast(to: broadcastShape.asInt32)
 
             let indices = [resolve(index: index, axis: 0)]
-            self.update(array: scatter(indices: indices, updates: expanded, axes: [0]))
+            self.update(scatter(indices: indices, updates: expanded, axes: [0]))
         }
     }
 
@@ -172,7 +164,7 @@ extension MLXArray {
             let expanded = newValue.reshape(updateShape).broadcast(to: broadcastShape.asInt32)
 
             let indices = [resolve(index: index, axis: axis)]
-            self.update(array: scatter(indices: indices, updates: expanded, axes: [axis.int32]))
+            self.update(scatter(indices: indices, updates: expanded, axes: [axis.int32]))
         }
     }
     
@@ -236,7 +228,7 @@ extension MLXArray {
                    
             let i = resolve(indices)
             let axes = arange(indices.count)
-            self.update(array: scatter(indices: i, updates: update, axes: axes))
+            self.update(scatter(indices: i, updates: update, axes: axes))
         }
     }
     
@@ -303,7 +295,7 @@ extension MLXArray {
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    
             let axes = arange(ranges.count)
-            self.update(array: scatter(indices: arrayIndices, updates: update, axes: axes))
+            self.update(scatter(indices: arrayIndices, updates: update, axes: axes))
         }
     }
         
@@ -348,7 +340,7 @@ extension MLXArray {
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    
             let axes = arange(indices.count)
-            self.update(array: scatter(indices: arrayIndices, updates: update, axes: axes))
+            self.update(scatter(indices: arrayIndices, updates: update, axes: axes))
         }
     }
     
@@ -494,7 +486,7 @@ extension MLXArray {
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    
             let axes = arange(axis + 1)
-            self.update(array: scatter(indices: arrayIndices, updates: update, axes: axes))
+            self.update(scatter(indices: arrayIndices, updates: update, axes: axes))
         }
     }
 

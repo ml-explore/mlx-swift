@@ -34,6 +34,12 @@ extension MLXArray {
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func +<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        let lhs = MLXArray(lhs)
+        return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise subtraction.
     ///
     /// Subtract two arrays with <doc:broadcasting>.
@@ -58,6 +64,12 @@ extension MLXArray {
     public static func -<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = MLXArray(rhs)
+        return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func -<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        let lhs = MLXArray(lhs)
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -126,6 +138,12 @@ extension MLXArray {
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func *<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        let lhs = MLXArray(lhs)
+        return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise power operation.
     ///
     /// Raise the elements of `lhs` to the powers in elements of `rhs` with <doc:broadcasting>.
@@ -155,6 +173,12 @@ extension MLXArray {
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func **<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        let lhs = MLXArray(lhs)
+        return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise division.
     ///
     /// Divide two arrays with <doc:broadcasting>.
@@ -180,6 +204,12 @@ extension MLXArray {
     public static func /<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = MLXArray(rhs)
+        return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func /<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        let lhs = MLXArray(lhs)
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -235,6 +265,12 @@ extension MLXArray {
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func ==<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise less than or equal.
     ///
     /// Less than or equal on two arrays with <doc:broadcasting>.
@@ -255,6 +291,12 @@ extension MLXArray {
     /// - ``lessEqual(_:_:stream:)``
     public static func <=(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
+        return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func <=<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
         return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -281,6 +323,12 @@ extension MLXArray {
         return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func >=<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise not equal.
     ///
     /// Not equal on two arrays with <doc:broadcasting>.
@@ -301,6 +349,12 @@ extension MLXArray {
     /// - ``notEqual(_:_:stream:)``
     public static func !=(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
+        return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func !=<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
         return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -327,6 +381,12 @@ extension MLXArray {
         return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    public static func <<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
+        return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
     /// Element-wise greater than.
     ///
     /// Greater than on two arrays with <doc:broadcasting>.
@@ -347,6 +407,12 @@ extension MLXArray {
     /// - ``greater(_:_:stream:)``
     public static func >(lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
+        return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    public static func ><T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+        let s = StreamOrDevice.default
+        let rhs = MLXArray(rhs)
         return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
     }
 

@@ -221,6 +221,13 @@ public final class MLXArray {
     public func eval() {
         mlx_array_eval(ctx)
     }
+    
+    /// Replace the contents with a reference to a new array.
+    public func update(_ array: MLXArray) {
+        mlx_retain(array.ctx)
+        mlx_free(ctx)
+        self.ctx = array.ctx
+    }
 }
 
 extension MLXArray: CustomStringConvertible {
