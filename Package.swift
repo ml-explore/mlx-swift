@@ -23,6 +23,10 @@ let package = Package(
         .executable(name: "Example1", targets: ["Example1"]),
         .executable(name: "Tutorial", targets: ["Tutorial"]),
         .executable(name: "LlamaMLXBench", targets: ["LlamaMLXBench"]),
+        
+        // tool to generate grad() variants
+        .executable(name: "GenerateGrad", targets: ["GenerateGrad"]),
+
     ],
     dependencies: [
     ],
@@ -129,6 +133,13 @@ let package = Package(
             path: "Source/Examples",
             sources: ["LlamaMLXBench.swift"]
         ),
+        
+        .executableTarget(
+            name: "GenerateGrad",
+            path: "Source/Tools",
+            sources: ["GenerateGrad.swift"]
+        ),
+
     ],
     cxxLanguageStandard: .gnucxx17
 )

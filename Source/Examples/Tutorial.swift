@@ -74,11 +74,22 @@ struct Tutorial {
     }
     
     static func automaticDifferentiation() {
-        func f(_ x: MLXArray) -> MLXArray {
+        func fn(_ x: MLXArray) -> MLXArray {
             x.square()
         }
         
-        // TODO continue here
+        let gradFn = grad(fn)
+        
+        let x = MLXArray(1.5)
+        let dfdx = gradFn(x)
+        print(dfdx)
+
+        assert(dfdx.item() == Float(2 * 1.5))
+        
+        let df2dx2 = grad(grad(fn))(x)
+        print(df2dx2)
+
+        assert(df2dx2.item() == Float(2))
     }
     
     static func main() {
