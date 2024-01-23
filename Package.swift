@@ -3,6 +3,16 @@
 
 import PackageDescription
 
+let optimize = false
+
+var extraCFlags = [CSetting]()
+var extraCXXFlags = [CXXSetting]()
+
+if optimize {
+    extraCFlags.append(.unsafeFlags(["-O3"]))
+    extraCXXFlags.append(.unsafeFlags(["-O3"]))
+}
+
 let package = Package(
     name: "mlx-swift",
     
@@ -78,7 +88,7 @@ let package = Package(
             cSettings: [
                 .headerSearchPath("mlx"),
                 .headerSearchPath("include/mlx-c"),
-            ],
+            ] + extraCFlags,
             
             cxxSettings: [
                 .headerSearchPath("mlx"),
@@ -91,7 +101,7 @@ let package = Package(
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
                 .define("METAL_PATH", to: "\"default.metallib\""),
-            ],
+            ] + extraCXXFlags,
             linkerSettings: [
                 .linkedFramework("Foundation"),
                 .linkedFramework("Metal"),
