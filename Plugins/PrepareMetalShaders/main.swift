@@ -19,21 +19,24 @@ struct PrepareMetalShaders: BuildToolPlugin {
     
     /// pattern to rewrite
     private let include = try! Regex("#include \"mlx/backend/metal/kernels/([^\"]*)\"")
-    
+
     func transformIncludes(url: URL) throws {
         let contents = try String(contentsOf: url, encoding: .utf8)
         
         let new: String
+
+        // need to transform
+        // #include "mlx/backend/metal/kernels/steel/gemm/transforms.h"
+        //
+        // into
+        // #include "../../steel/gemm/transforms.h"
         
-        if url.path().hasSuffix("gemm/conv.h") {
-            // special handling for this file because it includes files from the parent directory
-            new = contents
-                .replacing(include, with: { "#include \"../\($0[1].substring ?? "")\"" })
-        } else {
-            new = contents
-                .replacing(include, with: { "#include \"\($0[1].substring ?? "")\"" })
-        }
+        let pathUnderKernels = url.pathComponents.drop { $0 != "output" }.dropLast()
         
+        let rootPath = Array(repeating: "..", count: pathUnderKernels.count - 1).joined(separator: "/") + ((pathUnderKernels.count - 1 == 0) ? "" : "/")
+        
+        new = contents
+            .replacing(include, with: { "#include \"\(rootPath)\($0[1].substring ?? "")\"" })
         
         try new.write(to: url, atomically: true, encoding: .utf8)
     }
@@ -53,6 +56,25 @@ struct PrepareMetalShaders: BuildToolPlugin {
             try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
             try FileManager.default.copyItem(at: source, to: destination)
             
+            // the builder won't find metal kernels in subdirectories, so move them to the top
+            if let enumerator = FileManager.default.enumerator(at: destination, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
+                for case let url as URL in enumerator {
+                    let isRegularFile = try url.resourceValues(forKeys:[.isRegularFileKey]).isRegularFile ?? false
+                    guard isRegularFile else {
+                        continue
+                    }
+
+                    if url.deletingLastPathComponent().lastPathComponent == "output" {
+                        // still in the top directory
+                        continue
+                    }
+                    
+                    if url.pathExtension == "metal" {
+                        try FileManager.default.moveItem(at: url, to: destination.appending(component: url.lastPathComponent))
+                    }
+                }
+            }
+
             // foreach file, transform the #includes
             if let enumerator = FileManager.default.enumerator(at: destination, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
                 for case let url as URL in enumerator {
