@@ -12,7 +12,7 @@ let r = a > b || !(b < c)
 These can be used for control flow, though consider <doc:lazy-evaluation> when doing this:
 
 ```swift
-if (a < b).allTrue() {
+if (a < b).all().item() {
     ...
 }
 ```
@@ -33,7 +33,6 @@ if (a < b).allTrue() {
 
 ### MLXArray Logical Functions
 
-- ``MLXArray/allTrue(stream:)``
 - ``MLXArray/all(axes:keepDims:stream:)``
 - ``MLXArray/any(axes:keepDims:stream:)``
 - ``MLXArray/allClose(_:rtol:atol:stream:)``
@@ -43,7 +42,6 @@ if (a < b).allTrue() {
 
 - ``all(_:axes:keepDims:stream:)``
 - ``allClose(_:_:rtol:atol:stream:)``
-- ``allTrue(_:stream:)``
 - ``any(_:axes:keepDims:stream:)``
 - ``arrayEqual(_:_:equalNAN:stream:)``
 - ``equal(_:_:stream:)``

@@ -107,9 +107,6 @@ let identity = MLXArray.identity(5)
 
 ### MLXArray Literal Initializers
 
-- ``MLXArray/init(floatLiteral:)``
-- ``MLXArray/init(booleanLiteral:)``
-- ``MLXArray/init(integerLiteral:)``
 - ``MLXArray/init(arrayLiteral:)``
 
 ### MLXArray Scalar Initializers
@@ -127,6 +124,7 @@ let identity = MLXArray.identity(5)
 - ``MLXArray/init(converting:_:)``
 - ``MLXArray/init(_:_:type:)-22a1g``
 - ``MLXArray/init(_:_:type:)-7rglc``
+- ``MLXArray/init(_:dtype:)``
 
 ### MLXArray Factory Methods
 
@@ -142,4 +140,20 @@ let identity = MLXArray.identity(5)
 - ``MLXArray/linspace(_:_:count:stream:)-1m270``
 - ``MLXArray/repeat(_:count:axis:stream:)``
 - ``MLXArray/repeat(_:count:stream:)``
-- ``MLXArray/triangle(_:m:k:type:stream:)``
+- ``MLXArray/tri(_:m:k:type:stream:)``
+
+### MLXArray Factory Free Methods
+
+- ``MLX/zeros(_:type:stream:)``
+- ``MLX/zeros(like:stream:)``
+- ``MLX/ones(_:type:stream:)``
+- ``MLX/ones(like:stream:)``
+- ``MLX/eye(_:m:k:type:stream:)``
+- ``MLX/full(_:values:type:stream:)``
+- ``MLX/full(_:values:stream:)``
+- ``MLX/identity(_:type:stream:)``
+- ``MLX/linspace(_:_:count:stream:)-32sbl``
+- ``MLX/linspace(_:_:count:stream:)-1m270``
+- ``MLX/repeat(_:count:axis:stream:)``
+- ``MLX/repeat(_:count:stream:)``
+- ``MLX/tri(_:m:k:type:stream:)``

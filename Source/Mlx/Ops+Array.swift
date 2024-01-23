@@ -43,7 +43,6 @@ public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// - <doc:reduction>
 /// - ``all(_:axis:keepDims:stream:)``
 /// - ``all(_:keepDims:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/all(axes:keepDims:stream:)``
 public func all(_ array: MLXArray, axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_all_axes(array.ctx,  axes.asInt32, axes.count, keepDims, stream.ctx))
@@ -61,7 +60,6 @@ public func all(_ array: MLXArray, axes: [Int], keepDims: Bool = false, stream: 
 /// - <doc:reduction>
 /// - ``all(_:axes:keepDims:stream:)``
 /// - ``all(_:keepDims:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/all(axes:keepDims:stream:)``
 public func all(_ array: MLXArray, axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_all_axis(array.ctx,  axis.int32, keepDims, stream.ctx))
@@ -78,7 +76,6 @@ public func all(_ array: MLXArray, axis: Int, keepDims: Bool = false, stream: St
 /// - <doc:reduction>
 /// - ``all(_:axes:keepDims:stream:)``
 /// - ``all(_:axis:keepDims:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/all(axes:keepDims:stream:)``
 public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_all_all(array.ctx,  keepDims, stream.ctx))
@@ -100,7 +97,7 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// let a = MLXArray(0 ..< 4).sqrt()
 /// let b: MLXArray(0 ..< 4) ** 0.5
 ///
-/// if a.allClose(b).allTrue() {
+/// if a.allClose(b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -119,44 +116,6 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 public func allClose<T: ScalarOrArray>(_ array: MLXArray, _ other: T, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
     let other = other.asMLXArray(dtype: array.dtype)
     return MLXArray(mlx_allclose(array.ctx, other.ctx, rtol, atol, stream.ctx))
-}
-
-/// Return `true` if all contents are `true` (in the mlx-sense where true is != 0).
-///
-/// Equivalent to:
-///
-/// ```swift
-/// let allTrue = array.all().item(Bool.self)
-/// ```
-///
-/// Use this as:
-///
-/// ```swift
-/// if (a < b || a.allClose(c)).allTrue() {
-///     ...
-/// }
-/// ```
-///
-/// Note: this is equivalent to using an array in a boolean context in python.
-///
-/// - Parameters:
-///     - array: input array
-///
-/// ### See Also
-/// - <doc:reduction>
-/// - ``all(_:axes:keepDims:stream:)``
-/// - ``any(_:axes:keepDims:stream:)``
-/// - ``MLXArray/allTrue(stream:)``
-public func allTrue(_ array: MLXArray, stream: StreamOrDevice = .default) -> Bool {
-    if array.size > 1 || array.dtype != .bool {
-        let all = mlx_all_all(array.ctx,  false, stream.ctx)!
-        let bool = mlx_array_item_bool(all)
-        mlx_free(all)
-        return bool
-    } else {
-        let bool = mlx_array_item_bool(array.ctx)
-        return bool
-    }
 }
 
 /// An `or` reduction over the given axes.
@@ -184,7 +143,6 @@ public func allTrue(_ array: MLXArray, stream: StreamOrDevice = .default) -> Boo
 /// - <doc:reduction>
 /// - ``any(_:axis:keepDims:stream:)``
 /// - ``any(_:keepDims:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/any(axes:keepDims:stream:)``
 public func any(_ array: MLXArray, axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_any(array.ctx,  axes.asInt32, axes.count, keepDims, stream.ctx))
@@ -202,7 +160,6 @@ public func any(_ array: MLXArray, axes: [Int], keepDims: Bool = false, stream: 
 /// - <doc:reduction>
 /// - ``any(_:axes:keepDims:stream:)``
 /// - ``any(_:keepDims:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/any(axes:keepDims:stream:)``
 public func any(_ array: MLXArray, axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_any(array.ctx,  [axis.int32], 1, keepDims, stream.ctx))
@@ -219,7 +176,6 @@ public func any(_ array: MLXArray, axis: Int, keepDims: Bool = false, stream: St
 /// - <doc:reduction>
 /// - ``any(_:axes:keepDims:stream:)``
 /// - ``any(_:axis:keepDims:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/any(axes:keepDims:stream:)``
 public func any(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_any_all(array.ctx,  keepDims, stream.ctx))
@@ -336,7 +292,6 @@ public func argMin(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 /// ### See Also
 /// - <doc:logical>
 /// - ``allClose(_:_:rtol:atol:stream:)``
-/// - ``allTrue(_:stream:)``
 /// - ``MLXArray/==(_:_:)``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func arrayEqual<T: ScalarOrArray>(_ array: MLXArray, _ other: T, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {

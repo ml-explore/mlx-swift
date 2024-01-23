@@ -523,7 +523,7 @@ public func divide<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: S
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a == b).allTrue() {
+/// if (a == b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -611,7 +611,7 @@ public func expandDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDevic
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a > b).allTrue() {
+/// if (a > b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -638,7 +638,7 @@ public func greater<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: 
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a >= b).allTrue() {
+/// if (a >= b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -665,7 +665,7 @@ public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, str
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a < b).allTrue() {
+/// if (a < b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -692,7 +692,7 @@ public func less<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: Str
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a <= b).allTrue() {
+/// if (a <= b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -866,8 +866,8 @@ public func negative(_ array: MLXArray, stream: StreamOrDevice = .default) -> ML
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// // equivalent to if (a != b).allTrue() {
-/// if notEqual(a, b).allTrue() {
+/// // equivalent to if (a != b).all().item() {
+/// if notEqual(a, b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -1345,6 +1345,8 @@ public func triu(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .defaul
 /// The condition and input arrays must be the same shape or <doc:broadcasting>
 /// with each another.
 ///
+/// > ``which(_:_:_:stream:)`` may be easier to use (`where` is a Swift keyword).
+///
 /// - Parameters:
 ///     - condition: condition array
 ///     - a: input selected from where condiiton is non-zero or `true`
@@ -1353,7 +1355,27 @@ public func triu(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .defaul
 ///
 /// ### See Also
 /// - <doc:logical>
+/// - ``which(_:_:_:stream:)``
 public func `where`<A: ScalarOrArray, B: ScalarOrArray>(_ condition: MLXArray, _ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_where(condition.ctx, a.ctx, b.ctx, stream.ctx))
+}
+
+/// Alias for ``where(_:_:_:stream:)`` -- select from `x` or `y` according to `condition`.
+///
+/// The condition and input arrays must be the same shape or <doc:broadcasting>
+/// with each another.
+///
+/// - Parameters:
+///     - condition: condition array
+///     - a: input selected from where condiiton is non-zero or `true`
+///     - b: input selected from where condiiton is zero or `false`
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:logical>
+/// - ``where(_:_:_:stream:)``
+public func which<A: ScalarOrArray, B: ScalarOrArray>(_ condition: MLXArray, _ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
     let (a, b) = toArrays(a, b)
     return MLXArray(mlx_where(condition.ctx, a.ctx, b.ctx, stream.ctx))
 }

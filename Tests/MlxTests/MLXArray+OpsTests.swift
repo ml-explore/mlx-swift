@@ -53,7 +53,17 @@ class MLXArrayOpsTests : XCTestCase {
         XCTAssertEqual(r.shape, [3])
         XCTAssertEqual(r.dtype, .bool)
         XCTAssertEqual(r.all().item(Bool.self), true)
-        XCTAssertEqual(r.allTrue(), true)
+        XCTAssertEqual(r.all().item(), true)
+    }
+
+    func testOpsLogicalBoolContext() {
+        let a = MLXArray([1, 2, 3])
+        
+        if (a < (a + 1)).all().item() {
+            // expected
+        } else {
+            XCTFail("should be true")
+        }
     }
 
     func testFunctions() {
