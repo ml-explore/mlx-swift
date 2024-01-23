@@ -42,7 +42,7 @@ public class Linear : Module {
         super.init()
     }
     
-    public override func describeParameters(_ indent: Int) -> String {
+    public override func describeExtra(_ indent: Int) -> String {
         "(inputDimensions=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
     
@@ -71,7 +71,7 @@ public class Bilinear : Module {
         super.init()
     }
     
-    public override func describeParameters(_ indent: Int) -> String {
+    public override func describeExtra(_ indent: Int) -> String {
         "(inputDimensions1=\(weight.dim(2)), inputDimensions2=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
     

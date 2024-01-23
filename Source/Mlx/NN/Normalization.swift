@@ -11,7 +11,7 @@ public class RMSNorm : Module {
         super.init()
     }
     
-    public override func describeParameters(_ indent: Int) -> String {
+    public override func describeExtra(_ indent: Int) -> String {
         "(dimensions=\(weight.dim(0)), eps=\(self.eps))"
     }
     

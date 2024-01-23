@@ -3,24 +3,32 @@ import Mlx
 
 @main
 struct LlamaMLXBench {
-    static func measure(model: LlamaEncoderLayer, x: MLXArray, cache: (MLXArray, MLXArray)) -> Int {
-        for _ in 0 ..< 5 {
-            let (y, c) = model(x, mask: nil, cache: cache)
-            eval(y, c)
-        }
+    static func measure(model: LlamaEncoderLayer, x: MLXArray, cache: (MLXArray, MLXArray)) -> TimeInterval {
+        var y = x
+        var c = cache
         
-        let start = Date.timeIntervalSinceReferenceDate
-        var rs = [MLXArray]()
-        for _ in 0 ..< 5 {
-            let (y, c) = model(x, mask: nil, cache: cache)
-            rs.append(y)
-            rs.append(c.0)
-            rs.append(c.1)
+        for _ in 0 ..< 32 {
+            (y, c) = model(y, mask: nil, cache: c)
         }
-        eval(rs)
+        eval(y, c)
+
+        let start = Date.timeIntervalSinceReferenceDate
+        y = x
+        c = cache
+        for _ in 0 ..< 32 {
+            (y, c) = model(y, mask: nil, cache: c)
+        }
+        eval(y, c)
         let end = Date.timeIntervalSinceReferenceDate
         
-        return Int((end - start) * 1000 / 5)
+        if y.dtype != x.dtype {
+            print("Unexpected dtype in y: \(y.dtype)")
+        }
+        if c.0.dtype != x.dtype {
+            print("Unexpected dtype in c: \(c.0.dtype)")
+        }
+
+        return (end - start) * 1000
     }
     
     static func main() {
@@ -28,25 +36,25 @@ struct LlamaMLXBench {
         let D = 4096
         let F = 43 * 256
         let C = 1000
+        let type = Float16.self
 
-        // TODO: set dtype as float16
-        
         let layer = LlamaEncoderLayer(dimensions: D, mlpDimensions: F, numHeads: H)
-        
+        layer.apply { array in
+            array.asType(type)
+        }
+                
         // TODO: keys not used?  perhaps should be used in 3 calls below?
         let keys = MLXRandom.split(key: MLXRandom.key(0), into: 3)
-        let x = MLXRandom.normal([1, 1, D], type: Float.self)
+        let x = MLXRandom.normal([1, 1, D], type: type)
         let cache = (
-            MLXRandom.normal([1, H, C, D / H], type: Float.self),
-            MLXRandom.normal([1, H, C, D / H], type: Float.self)
+            MLXRandom.normal([1, H, C, D / H], type: type),
+            MLXRandom.normal([1, H, C, D / H], type: type)
         )
         eval(x, cache)
         
         let t = measure(model: layer, x: x, cache: cache)
-        
-        print("Time per layer per token: \(t) ms")
-        print("Lower bound total time per token: \(t * 32) ms")
 
+        print("Time: \(t) ms")
     }
 }
 
