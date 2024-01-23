@@ -30,7 +30,7 @@ class MLXRandomTests : XCTestCase {
         let key = MLXRandom.key(0)
         
         // give an array of bounds
-        let value = MLXRandom.uniform([0, 10], [10, 100], key: key)
+        let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
         
         let expected = MLXArray(converting: [2.16, 82.37])
         assertEqual(value, expected, atol: 0.01)
@@ -52,7 +52,7 @@ class MLXRandomTests : XCTestCase {
     func testRandIntMultiple() {
         let key = MLXRandom.key(0)
         
-        let value = MLXRandom.randInt([0, 10], [10, 100], key: key)
+        let value = MLXRandom.randInt(low: [0, 10], high: [10, 100], key: key)
         
         let expected: [Int32] = [2, 82]
         assertEqual(value, MLXArray(expected))
@@ -61,7 +61,7 @@ class MLXRandomTests : XCTestCase {
     func testRandIntMultipleType() {
         let key = MLXRandom.key(0)
         
-        let value = MLXRandom.randInt([0, 10], [10, 100], type: Int8.self, key: key)
+        let value = MLXRandom.randInt(low: [0, 10], high: [10, 100], type: Int8.self, key: key)
         
         let expected: [Int8] = [2, 82]
         assertEqual(value, MLXArray(expected))
@@ -113,7 +113,7 @@ class MLXRandomTests : XCTestCase {
         let key = MLXRandom.key(0)
         
         // give an array of bounds
-        let value = MLXRandom.truncatedNormal(MLXArray(converting: [0, 0.5]), MLXArray(converting: [0.5, 1]), key: key)
+        let value = MLXRandom.truncatedNormal(low: MLXArray(converting: [0, 0.5]), high: MLXArray(converting: [0.5, 1]), key: key)
         
         let expected = MLXArray(converting: [0.10, 0.88])
         assertEqual(value, expected, atol: 0.01)

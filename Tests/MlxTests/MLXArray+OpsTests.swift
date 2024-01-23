@@ -36,7 +36,7 @@ class MLXArrayOpsTests : XCTestCase {
         let a = MLXArray([1, 2, 3])
         
         // in python: (a // 2) / 0.5
-        let r = a.floorDivide(2) / 0.5
+        let r = a.floorDivide(2) / Float(0.5)
         
         // make sure everything got hooked up
         XCTAssertEqual(r.shape, [3])
@@ -106,6 +106,14 @@ class MLXArrayOpsTests : XCTestCase {
         
         let expected = MLXArray([0, 8, 2, 10, 4, 12, 6, 14, 1, 9, 3, 11, 5, 13, 7, 15], [2, 2, 2, 2])
         assertEqual(r, expected)
+    }
+    
+    public func testPromotionTests() {
+        // expect that adding a scalar will not promote to a larger type
+        let x = MLXArray.ones([10], type: Float16.self)
+        
+        XCTAssertEqual((x * 15.5).dtype, .float16)
+        XCTAssertEqual((15.5 * x).dtype, .float16)
     }
     
 }

@@ -116,8 +116,9 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// - <doc:logical>
 /// - ``arrayEqual(_:_:equalNAN:stream:)``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
-public func allClose(_ array: MLXArray, _ other: MLXArray, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_allclose(array.ctx, other.ctx, rtol, atol, stream.ctx))
+public func allClose<T: ScalarOrArray>(_ array: MLXArray, _ other: T, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
+    let other = other.asMLXArray(dtype: array.dtype)
+    return MLXArray(mlx_allclose(array.ctx, other.ctx, rtol, atol, stream.ctx))
 }
 
 /// Return `true` if all contents are `true` (in the mlx-sense where true is != 0).
@@ -338,8 +339,9 @@ public func argMin(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 /// - ``allTrue(_:stream:)``
 /// - ``MLXArray/==(_:_:)``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
-public func arrayEqual(_ array: MLXArray, _ other: MLXArray, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_array_equal(array.ctx,  other.ctx, equalNAN, stream.ctx))
+public func arrayEqual<T: ScalarOrArray>(_ array: MLXArray, _ other: T, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+    let other = other.asMLXArray(dtype: array.dtype)
+    return MLXArray(mlx_array_equal(array.ctx,  other.ctx, equalNAN, stream.ctx))
 }
 
 /// Element-wise cosine.
@@ -561,8 +563,9 @@ public func floor(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``floor(_:stream:)``
-public func floorDivide(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_floor_divide(array.ctx,  other.ctx, stream.ctx))
+public func floorDivide<T: ScalarOrArray>(_ array: MLXArray, _ other: T, stream: StreamOrDevice = .default) -> MLXArray {
+    let other = other.asMLXArray(dtype: array.dtype)
+    return MLXArray(mlx_floor_divide(array.ctx,  other.ctx, stream.ctx))
 }
 
 /// Element-wise natural logarithm.
@@ -983,6 +986,16 @@ public func moveAxis(_ array: MLXArray, source: Int, destination: Int, stream: S
 /// - ``MLXArray/pow(_:stream:)``
 public func pow(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_power(array.ctx,  other.ctx, stream.ctx))
+}
+
+public func pow<T: ScalarOrArray>(_ array: MLXArray, _ other: T, stream: StreamOrDevice = .default) -> MLXArray {
+    let other = other.asMLXArray(dtype: array.dtype)
+    return pow(array, other, stream: stream)
+}
+
+public func pow<T: ScalarOrArray>(_ array: T, _ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    let array = other.asMLXArray(dtype: other.dtype)
+    return pow(array, other, stream: stream)
 }
 
 /// A `product` reduction over the given axes.

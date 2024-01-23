@@ -6,27 +6,6 @@ class MLXArrayInitTests : XCTestCase {
     
     // MARK: - Creation
 
-    private func assertSingleton(_ array: MLXArray, _ dtype: DType) {
-        XCTAssertEqual(array.dtype, dtype)
-        XCTAssertEqual(array.size, 1)
-        XCTAssertEqual(array.ndim, 0)
-    }
-    
-    func testArrayCreationLiteralInt32() {
-        let a: MLXArray = 3
-        assertSingleton(a, .int32)
-    }
-
-    func testArrayCreationLiteralBool() {
-        let a: MLXArray = true
-        assertSingleton(a, .bool)
-    }
-
-    func testArrayCreationLiteralFloat() {
-        let a: MLXArray = 3.5
-        assertSingleton(a, .float32)
-    }
-
     func testArrayCreationLiteralArray() {
         let a: MLXArray = [20, 30, 40]
         assertEqual(a, MLXArray([20, 30, 40].asInt32))

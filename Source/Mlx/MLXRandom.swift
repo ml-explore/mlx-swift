@@ -113,11 +113,12 @@ public enum MLXRandom {
     ///
     /// // generate an array of two Float values, one in the range 0 ..< 10
     /// // and one in the range 10 ..< 100
-    /// let value = MLXRandom.uniform([0, 10], [10, 100], key: key)
+    /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
     /// ```
-    public static func uniform<T>(_ lb: MLXArray, _ ub: MLXArray, _ shape: [Int]? = nil, type: T.Type = Float.self, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
-        let shape = shape ?? lb.shape
-        return MLXArray(mlx_random_uniform(lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
+    public static func uniform<T>(low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
+        let (low, high) = toArrays(low, high)
+        let shape = shape ?? low.shape
+        return MLXArray(mlx_random_uniform(low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
     }
 
     /// Generate normally distributed random numbers.
@@ -170,11 +171,12 @@ public enum MLXRandom {
     ///
     /// // generate an array of Int values, one in the range 0 ..< 10
     /// // and one in the range 10 ..< 100
-    /// let array = MLXRandom.randInt([0, 10], [10, 100], key: key)
+    /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], key: key)
     /// ```
-    public static func randInt(_ lb: MLXArray, _ ub: MLXArray, _ shape: [Int]? = nil, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray {
-        let shape = shape ?? lb.shape
-        return MLXArray(mlx_random_randint(lb.ctx, ub.ctx, shape.asInt32, shape.count, lb.dtype.cmlxDtype, key?.ctx, stream.ctx))
+    public static func randInt(low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray {
+        let (low, high) = toArrays(low, high)
+        let shape = shape ?? low.shape
+        return MLXArray(mlx_random_randint(low.ctx, high.ctx, shape.asInt32, shape.count, low.dtype.cmlxDtype, key?.ctx, stream.ctx))
     }
 
     /// Generate random integers from the given interval.
@@ -189,11 +191,12 @@ public enum MLXRandom {
     ///
     /// // generate an array of Int8 values, one in the range 0 ..< 10
     /// // and one in the range 10 ..< 100
-    /// let array = MLXRandom.randInt([0, 10], [10, 100], type: Int8.self, key: key)
+    /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], type: Int8.self, key: key)
     /// ```
-    public static func randInt<T>(_ lb: MLXArray, _ ub: MLXArray, _ shape: [Int]? = nil, type: T.Type, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray where T: HasDType, T: BinaryInteger {
-        let shape = shape ?? lb.shape
-        return MLXArray(mlx_random_randint(lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
+    public static func randInt<T>(low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray where T: HasDType, T: BinaryInteger {
+        let (low, high) = toArrays(low, high)
+        let shape = shape ?? low.shape
+        return MLXArray(mlx_random_randint(low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
     }
 
     /// Generate Bernoulli random values.
@@ -233,7 +236,8 @@ public enum MLXRandom {
     /// // generate an array of [3] Bool with the given p values
     /// let array = MLXRandom.bernoulli(MLXArray(convert: [0.1, 0.5, 0.8]), key: key)
     /// ```
-    public static func bernoulli(_ p: MLXArray, _ shape: [Int]? = nil, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray {
+    public static func bernoulli(_ p: ScalarOrArray, _ shape: [Int]? = nil, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray {
+        let p = p.asMLXArray(dtype: .float32)
         let shape = shape ?? p.shape
         return MLXArray(mlx_random_bernoulli(p.ctx, shape.asInt32, shape.count, key?.ctx, stream.ctx))
     }
@@ -289,9 +293,10 @@ public enum MLXRandom {
     /// // and one in the range 10 ..< 100
     /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
     /// ```
-    public static func truncatedNormal<T>(_ lb: MLXArray, _ ub: MLXArray, _ shape: [Int]? = nil, type: T.Type = Float.self, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
-        let shape = shape ?? lb.shape
-        return MLXArray(mlx_random_truncated_normal(lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
+    public static func truncatedNormal<T>(low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self, key: Key? = nil, stream: StreamOrDevice = .default) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
+        let (low, high) = toArrays(low, high)
+        let shape = shape ?? low.shape
+        return MLXArray(mlx_random_truncated_normal(low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
     }
 
     /// Sample from the standard Gumbel distribution.

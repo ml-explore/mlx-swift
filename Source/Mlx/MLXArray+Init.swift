@@ -60,6 +60,97 @@ extension MLXArray {
         })
     }
     
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value
+    /// with a conversion to a given ``DType``.
+    ///
+    /// ```swift
+    /// let a = MLXArray(7.5, dtype: .float16)
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``ScalarOrArray``
+    public convenience init<T: HasDType>(_ value: T, dtype: DType) {
+        if T.dtype == dtype {
+            // matching dtypes, no coercion
+            switch type(of: value) {
+            case is Int32.Type:
+                self.init(value as! Int32)
+            case is Bool.Type:
+                self.init(value as! Bool)
+            case is Float32.Type:
+                self.init(value as! Float32)
+            default:
+                self.init(withUnsafePointer(to: value) { ptr in
+                    mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
+                })
+            }
+        } else {
+            if let v = value as? (any BinaryFloatingPoint) {
+                // Floatish-ish source
+                switch dtype {
+                case .bool:
+                    self.init(!v.isZero)
+                case .uint8:
+                    self.init(UInt8(v))
+                case .uint16:
+                    self.init(UInt16(v))
+                case .uint32:
+                    self.init(UInt32(v))
+                case .uint64:
+                    self.init(UInt64(v))
+                case .int8:
+                    self.init(Int8(v))
+                case .int16:
+                    self.init(Int16(v))
+                case .int32:
+                    self.init(Int32(v))
+                case .int64:
+                    self.init(Int64(v))
+                case .float16:
+                    self.init(Float16(v))
+                case .float32:
+                    self.init(Float32(v))
+                case .bfloat16, .complex64:
+                    fatalError("dtype \(dtype) not supported")
+                }
+                
+            } else if let v = value as? (any BinaryInteger) {
+                // Int-ish source
+                switch dtype {
+                case .bool:
+                    self.init(Int(v) != 0)
+                case .uint8:
+                    self.init(UInt8(v))
+                case .uint16:
+                    self.init(UInt16(v))
+                case .uint32:
+                    self.init(UInt32(v))
+                case .uint64:
+                    self.init(UInt64(v))
+                case .int8:
+                    self.init(Int8(v))
+                case .int16:
+                    self.init(Int16(v))
+                case .int32:
+                    self.init(Int32(v))
+                case .int64:
+                    self.init(Int64(v))
+                case .float16:
+                    self.init(Float16(v))
+                case .float32:
+                    self.init(Float32(v))
+                case .bfloat16, .complex64:
+                    fatalError("dtype \(dtype) not supported")
+                }
+                
+            } else {
+                // e.g. Bool -> Int
+                fatalError("unable to coerce \(T.dtype) to \(dtype)")
+            }
+        }
+    }
+    
     /// Initalizer allowing creation of `MLXArray` from an array of `HasDType` values with
     /// an optional shape.
     ///
@@ -179,50 +270,16 @@ extension MLXArray {
 
 // MARK: - Expressible by literals
 
-extension MLXArray: ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral, ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
+extension MLXArray:  ExpressibleByArrayLiteral {
     
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a literal.
-    ///
-    /// ```swift
-    /// let a: MLXArray = 7
-    /// ```
-    ///
-    /// This is convenient for calling methods that take `MLXArray` parameters using literals.
-    ///
-    /// ### See Also
-    /// - <doc:initialization>
-    public convenience init(integerLiteral value: Int32) {
-        self.init(mlx_array_from_int(value))
-    }
-    
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a literal.
-    ///
-    /// ```swift
-    /// let a: MLXArray = false
-    /// ```
-    ///
-    /// This is convenient for calling methods that take `MLXArray` parameters using literals.
-    ///
-    /// ### See Also
-    /// - <doc:initialization>
-    public convenience init(booleanLiteral value: Bool) {
-        self.init(mlx_array_from_bool(value))
-    }
-    
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a literal.
-    ///
-    /// ```swift
-    /// let a: MLXArray = 35.1
-    /// ```
-    ///
-    /// This is convenient for calling methods that take `MLXArray` parameters using literals.
-    ///
-    /// ### See Also
-    /// - <doc:initialization>
-    public convenience init(floatLiteral value: Float) {
-        self.init(mlx_array_from_float(value))
-    }
-    
+    // Note: MLXArray does not implement ExpressibleByFloatLiteral etc. because
+    // we want to create arrays in the context of the other arrays.  For example:
+    //
+    // let x = MLXArray(1.5, dtype: .float16)
+    // let r = x + 2.5
+    //
+    // We expect r to have a dtype of float16.  See ``ScalarOrArray``.
+        
     /// Initalizer allowing creation of 1d `MLXArray` from an array literal.
     ///
     /// ```swift

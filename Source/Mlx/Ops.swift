@@ -26,8 +26,9 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``MLXArray/+(_:_:)``
-public func add(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_add(a.ctx, b.ctx, stream.ctx))
+public func add<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_add(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise inverse cosine.
@@ -426,7 +427,9 @@ public enum ConvolveMode {
 /// - <doc:convolution>
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
-public func convolve(_ a: MLXArray, _ b: MLXArray, mode: ConvolveMode, stream: StreamOrDevice = .default) -> MLXArray {
+public func convolve<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, mode: ConvolveMode, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    
     precondition(a.ndim == 1, "inputs must be 1d (a)")
     precondition(b.ndim == 1, "inputs must be 1d (b)")
     
@@ -505,8 +508,9 @@ public func dequantize(_ w: MLXArray, scales: MLXArray, biases: MLXArray, groupS
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func divide(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_divide(a.ctx, b.ctx, stream.ctx))
+public func divide<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_divide(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise equality.
@@ -531,8 +535,9 @@ public func divide(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defau
 ///
 /// ### See Also
 /// - <doc:logical>
-public func equal(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_equal(a.ctx, b.ctx, stream.ctx))
+public func equal<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_equal(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise error function.
@@ -618,8 +623,9 @@ public func expandDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDevic
 ///
 /// ### See Also
 /// - <doc:logical>
-public func greater(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_greater(a.ctx, b.ctx, stream.ctx))
+public func greater<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_greater(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise less greater than or equal.
@@ -644,8 +650,9 @@ public func greater(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defa
 ///
 /// ### See Also
 /// - <doc:logical>
-public func greaterEqual(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_greater_equal(a.ctx, b.ctx, stream.ctx))
+public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_greater_equal(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise less than.
@@ -670,8 +677,9 @@ public func greaterEqual(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = 
 ///
 /// ### See Also
 /// - <doc:logical>
-public func less(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_less(a.ctx, b.ctx, stream.ctx))
+public func less<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_less(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise less than or equal.
@@ -696,8 +704,9 @@ public func less(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default
 ///
 /// ### See Also
 /// - <doc:logical>
-public func lessEqual(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_less_equal(a.ctx, b.ctx, stream.ctx))
+public func lessEqual<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_less_equal(a.ctx, b.ctx, stream.ctx))
 }
 
 enum LoadError : Error {
@@ -739,8 +748,9 @@ public func load(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func logAddExp(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_logaddexp(a.ctx, b.ctx, stream.ctx))
+public func logAddExp<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_logaddexp(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise logical not.
@@ -777,8 +787,9 @@ public func logicalNot(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``minimum(_:_:stream:)``
-public func maximum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_maximum(a.ctx, b.ctx, stream.ctx))
+public func maximum<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_maximum(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise minimum.
@@ -794,8 +805,9 @@ public func maximum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defa
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``maximum(_:_:stream:)``
-public func minimum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_minimum(a.ctx, b.ctx, stream.ctx))
+public func minimum<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_minimum(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise multiplication.
@@ -818,8 +830,9 @@ public func minimum(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defa
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func multiply(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_multiply(a.ctx, b.ctx, stream.ctx))
+public func multiply<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_multiply(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise negation.
@@ -866,8 +879,9 @@ public func negative(_ array: MLXArray, stream: StreamOrDevice = .default) -> ML
 ///
 /// ### See Also
 /// - <doc:logical>
-public func notEqual(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_not_equal(a.ctx, b.ctx, stream.ctx))
+public func notEqual<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_not_equal(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Pad an array with a constant value.
@@ -882,11 +896,12 @@ public func notEqual(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .def
 /// ### See Also
 /// - <doc:shapes>
 /// - ``pad(_:widths:value:stream:)``
-public func pad(_ array: MLXArray, width: IntOrPair, value: MLXArray = 0, stream: StreamOrDevice = .default) -> MLXArray {
+public func pad(_ array: MLXArray, width: IntOrPair, value: MLXArray? = nil, stream: StreamOrDevice = .default) -> MLXArray {
     let ndim = array.ndim
     let axes = Array(Int32(0) ..< Int32(ndim))
     let lowPads = (0 ..< ndim).map { _ in width.first.int32 }
     let highPads = (0 ..< ndim).map { _ in width.second.int32 }
+    let value = value ?? MLXArray(0, dtype: array.dtype)
 
     return MLXArray(mlx_pad(array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, stream.ctx))
 }
@@ -902,11 +917,12 @@ public func pad(_ array: MLXArray, width: IntOrPair, value: MLXArray = 0, stream
 /// ### See Also
 /// - <doc:shapes>
 /// - ``pad(_:width:value:stream:)``
-public func pad(_ array: MLXArray, widths: [IntOrPair], value: MLXArray = 0, stream: StreamOrDevice = .default) -> MLXArray {
+public func pad(_ array: MLXArray, widths: [IntOrPair], value: MLXArray? = nil, stream: StreamOrDevice = .default) -> MLXArray {
     let ndim = array.ndim
     let axes = Array(Int32(0) ..< Int32(ndim))
     let lowPads = widths.map { $0.first.int32 }
     let highPads = widths.map { $0.second.int32 }
+    let value = value ?? MLXArray(0, dtype: array.dtype)
 
     return MLXArray(mlx_pad(array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, stream.ctx))
 }
@@ -1009,8 +1025,9 @@ public func quantizedMatmul(_ x: MLXArray, _ w: MLXArray, scales: MLXArray, bias
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func remainder(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_remainder(a.ctx, b.ctx, stream.ctx))
+public func remainder<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_remainder(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Save array to a binary file in `.npy`format.
@@ -1205,8 +1222,9 @@ public func stopGradient(_ array: MLXArray, stream: StreamOrDevice = .default) -
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func subtract(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_subtract(a.ctx, b.ctx, stream.ctx))
+public func subtract<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_subtract(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Take values along an axis at the specified indices.
@@ -1335,7 +1353,8 @@ public func triu(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .defaul
 ///
 /// ### See Also
 /// - <doc:logical>
-public func `where`(_ condition: MLXArray, _ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_where(condition.ctx, a.ctx, b.ctx, stream.ctx))
+public func `where`<A: ScalarOrArray, B: ScalarOrArray>(_ condition: MLXArray, _ a: A, _ b: B, stream: StreamOrDevice = .default) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_where(condition.ctx, a.ctx, b.ctx, stream.ctx))
 }
 

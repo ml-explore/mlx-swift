@@ -7,6 +7,18 @@ infix operator ** : BitwiseShiftPrecedence
 
 extension MLXArray {
     
+    // Note: each of the operators needs three overloads.  Ideally we could write:
+    //
+    // func +(ScalarOrArray, ScalarOrArray) -> MLXArray
+    //
+    // but there are a couple problems:
+    // - this would be ambiguous with e.g. +(Int, Int)
+    // - the operator on MLXArray has to have one parameter that is MLXArray
+    //
+    // so we need +(MLXArray, ScalarOrArray) and +(ScalarOrArray, MLXArray).
+    // If we have two MLXArrays, it is ambiguous which one to call so we also
+    // need +(MLXArray, MLXArray).
+    
     /// Element-wise addition.
     ///
     /// Add two arrays with <doc:broadcasting>.
@@ -28,15 +40,15 @@ extension MLXArray {
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func +<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func +<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func +<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+    public static func +<T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = MLXArray(lhs)
+        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -61,15 +73,15 @@ extension MLXArray {
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func -<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func -<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func -<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+    public static func -<T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = MLXArray(lhs)
+        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -132,15 +144,15 @@ extension MLXArray {
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
     
-    public static func *<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func *<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func *<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+    public static func *<T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = MLXArray(lhs)
+        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -167,15 +179,15 @@ extension MLXArray {
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func **<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func **<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func **<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+    public static func **<T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = MLXArray(lhs)
+        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -201,15 +213,15 @@ extension MLXArray {
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func /<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func /<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func /<T: HasDType>(lhs: T, rhs: MLXArray) -> MLXArray {
+    public static func /<T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = MLXArray(lhs)
+        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -233,9 +245,9 @@ extension MLXArray {
         return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func %<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func %<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -265,9 +277,9 @@ extension MLXArray {
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func ==<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func ==<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -294,9 +306,9 @@ extension MLXArray {
         return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func <=<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func <=<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -323,9 +335,9 @@ extension MLXArray {
         return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func >=<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func >=<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -352,9 +364,9 @@ extension MLXArray {
         return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func !=<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func !=<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -381,9 +393,9 @@ extension MLXArray {
         return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func <<T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func <<T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -410,9 +422,9 @@ extension MLXArray {
         return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func ><T: HasDType>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func ><T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
-        let rhs = MLXArray(rhs)
+        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -590,8 +602,9 @@ extension MLXArray {
     /// - <doc:logical>
     /// - ``arrayEqual(_:equalNAN:stream:)``
     /// - ``arrayEqual(_:_:equalNAN:stream:)``
-    public func allClose(_ other: MLXArray, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_allclose(ctx, other.ctx, rtol, atol, stream.ctx))
+    public func allClose<T: ScalarOrArray>(_ other: T, rtol: Double = 1e-5, atol: Double = 1e-8, stream: StreamOrDevice = .default) -> MLXArray {
+        let other = other.asMLXArray(dtype: self.dtype)
+        return MLXArray(mlx_allclose(ctx, other.ctx, rtol, atol, stream.ctx))
     }
     
     /// Return `true` if all contents are `true` (in the mlx-sense where true is != 0).
@@ -794,8 +807,9 @@ extension MLXArray {
     /// - ``allTrue(stream:)``
     /// - ``MLXArray/==(_:_:)`
     /// - ``arrayEqual(_:_:equalNAN:stream:)``
-    public func arrayEqual(_ other: MLXArray, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_array_equal(ctx, other.ctx, equalNAN, stream.ctx))
+    public func arrayEqual<T: ScalarOrArray>(_ other: T, equalNAN: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+        let other = other.asMLXArray(dtype: self.dtype)
+        return MLXArray(mlx_array_equal(ctx, other.ctx, equalNAN, stream.ctx))
     }
 
     /// Element-wise cosine.
@@ -1015,8 +1029,9 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``floor(stream:)``
     /// - ``floorDivide(_:_:stream:)``
-    public func floorDivide(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_floor_divide(ctx, other.ctx, stream.ctx))
+    public func floorDivide<T: ScalarOrArray>(_ other: T, stream: StreamOrDevice = .default) -> MLXArray {
+        let other = other.asMLXArray(dtype: self.dtype)
+        return MLXArray(mlx_floor_divide(ctx, other.ctx, stream.ctx))
     }
 
     /// Element-wise natural logarithm.
@@ -1418,8 +1433,9 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``**(_:_:)``
     /// - ``pow(_:_:stream:)``
-    public func pow(_ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_power(ctx, other.ctx, stream.ctx))
+    public func pow<T: ScalarOrArray>(_ other: T, stream: StreamOrDevice = .default) -> MLXArray {
+        let other = other.asMLXArray(dtype: self.dtype)
+        return MLXArray(mlx_power(ctx, other.ctx, stream.ctx))
     }
     
     /// A `product` reduction over the given axes.

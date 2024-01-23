@@ -155,7 +155,7 @@ class MLXArrayIndexingTests : XCTestCase {
 
     func testArrayMutateSingleIndex() {
         let a = MLXArray((0 ..< 12).asInt32, [3, 4])
-        a[1] = 77
+        a[1] = [77]
         
         let expected = MLXArray([0, 1, 2, 3, 77, 77, 77, 77, 8, 9, 10, 11].asInt32, [3, 4])
         assertEqual(a, expected)
@@ -165,13 +165,13 @@ class MLXArrayIndexingTests : XCTestCase {
         let a = MLXArray((0 ..< 20).asInt32, [2, 2, 5])
         
         // broadcast to a row
-        a[1, 0] = 77
+        a[1, 0] = MLXArray(77, dtype: .int32)
         
         // assign to a row
         a[0, 0] = MLXArray([55, 66, 77, 88, 99].asInt32)
 
         // single element
-        a[0, 1, 3] = 123
+        a[0, 1, 3] = MLXArray(123, dtype: .int32)
         
         let expected = MLXArray([55, 66, 77, 88, 99, 5, 6, 7, 123, 9, 77, 77, 77, 77, 77, 15, 16, 17, 18, 19].asInt32, [2, 2, 5])
         assertEqual(a, expected)
@@ -181,7 +181,7 @@ class MLXArrayIndexingTests : XCTestCase {
         let a = MLXArray((0 ..< 20).asInt32, [2, 2, 5])
         
         // write using slices -- this ends up covering two elements
-        a[0..<1, 1..<2, 2..<4] = 88
+        a[0..<1, 1..<2, 2..<4] = [88]
                 
         let expected = MLXArray([0, 1, 2, 3, 4, 5, 6, 88, 88, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].asInt32, [2, 2, 5])
         assertEqual(a, expected)

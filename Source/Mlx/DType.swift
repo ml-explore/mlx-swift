@@ -55,16 +55,31 @@ public enum DType : Sendable, Hashable {
         case .complex64: MLX_COMPLEX64
         }
     }
+    
+    public var isFloatingPoint: Bool {
+        switch self {
+        case .float16, .float32, .bfloat16, .complex64: true
+        default: false
+        }
+    }
 }
 
 /// Protocol for types that can provide a ``DType``
 ///
 /// This is used to extract the ``DType`` for values pass in to ``MLXArray`` implicitly
 /// where possible.
-public protocol HasDType {
+///
+/// See also ``ScalarOrArray``.
+public protocol HasDType : ScalarOrArray {
     
     /// Return the type's ``DType``
     static var dtype: DType { get }
+}
+
+extension HasDType {
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        MLXArray(self, dtype: dtype ?? Self.dtype)
+    }
 }
 
 extension Bool : HasDType {
@@ -103,7 +118,86 @@ extension UInt64 : HasDType {
 
 extension Float16 : HasDType {
     static public var dtype: DType { .float16 }
+    
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        let dtype = dtype ?? Self.dtype
+        return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
+    }
 }
 extension Float32 : HasDType {
     static public var dtype: DType { .float32 }
+    
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        let dtype = dtype ?? Self.dtype
+        return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
+    }
+}
+
+/// Protocol for promoting a value (e.g. a scalar) to an MLXArray.
+public protocol ScalarOrArray {
+    /// Convert to ``MLXArray`` using the optional suggested ``DType``.
+    ///
+    /// If the receiver is a scalar this should consider the `dtype` when producing
+    /// an `MLXArray`.  For example:
+    ///
+    /// ```swift
+    /// let x = MLXArray(1.5, dtype: .float16)
+    ///
+    /// // the 2.5 is expected to conform to the .float16 of the other
+    /// // argument and r will be a .float16 result.
+    /// let r = x + 2.5
+    /// ```
+    ///
+    /// See also ``toArrays(_:_:)``
+    func asMLXArray(dtype: DType?) -> MLXArray
+}
+
+extension Double : ScalarOrArray {
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        MLXArray(Float(self), dtype: dtype ?? .float32)
+    }
+}
+
+extension MLXArray : ScalarOrArray {
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        self
+    }
+}
+
+extension Array : ScalarOrArray where Element: HasDType {
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        MLXArray(self).asType(dtype ?? Element.dtype)
+    }
+}
+
+/// Convert two ``ScalarOrArray`` into ``MLXArray``.
+///
+/// This is used when taking two arguments that might be scalars:
+///
+/// ```swift
+/// func maximum<A: ScalarOrArray, B: ScalarOrArray>(_ a: A, _ b: B) -> MLXArray {
+///     let (a, b) = toArrays(a, b)
+///     return MLXArray(mlx_maximum(a.ctx, b.ctx, stream.ctx))
+/// }
+/// ```
+///
+/// Four cases:
+/// - If both a and b are arrays leave their types alone
+/// - If a is an array but b is not, treat b as a weak python type
+/// - If b is an array but a is not, treat a as a weak python type
+/// - If neither is an array convert to arrays but leave their types alone
+///
+/// See also ``ScalarOrArray``.
+public func toArrays<T1: ScalarOrArray, T2: ScalarOrArray>(_ a: T1, _ b: T2) -> (MLXArray, MLXArray) {
+    if let a = a as? MLXArray {
+        if let b = b as? MLXArray {
+            return (a, b)
+        } else {
+            return (a, b.asMLXArray(dtype: a.dtype))
+        }
+    } else if let b = b as? MLXArray {
+        return (a.asMLXArray(dtype: b.dtype), b)
+    } else {
+        return (a.asMLXArray(dtype: nil), b.asMLXArray(dtype: nil))
+    }
 }
