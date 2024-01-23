@@ -23,7 +23,7 @@ public class RMSNorm : Module {
         // This way we prefer underflow over overflow which is controlled with
         // the parameter epsilon anyway.
         
-        let S = 1 / MLXArray(x.dim(-1)) ** 0.5
+        let S = 1.0 / sqrt(Float(x.dim(-1)))
         
         var n = (x * S).square().sum(axis: -1, keepDims: true)
         n = rsqrt(n + eps)
