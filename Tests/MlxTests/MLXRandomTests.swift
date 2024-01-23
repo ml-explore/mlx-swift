@@ -1,12 +1,13 @@
 import Foundation
 import XCTest
-@testable import MLX
+import MLX
+@testable import MLXRandom
 
 class MLXRandomTests : XCTestCase {
     
     func testSplit() {
         let key = MLXRandom.key(0)
-        let keys = key.split(into: 4)
+        let keys = split(key: key, into: 4)
         
         XCTAssertEqual(keys.count, 4)
     }

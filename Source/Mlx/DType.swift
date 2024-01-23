@@ -38,7 +38,7 @@ public enum DType : Sendable, Hashable {
         }
     }
     
-    var cmlxDtype: mlx_array_dtype {
+    public var cmlxDtype: mlx_array_dtype {
         switch self {
         case .bool: MLX_BOOL
         case .uint8: MLX_UINT8

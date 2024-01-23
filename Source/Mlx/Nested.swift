@@ -98,7 +98,7 @@ public struct NestedDictionary<Key: Hashable, Element> : CustomStringConvertible
     public var isEmpty: Bool { contents.isEmpty }
     public var count: Int { contents.count }
 
-    func asItem() -> NestedItem<Key, Element> {
+    public func asItem() -> NestedItem<Key, Element> {
         .dictionary(contents)
     }
     

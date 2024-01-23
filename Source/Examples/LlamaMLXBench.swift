@@ -1,5 +1,7 @@
 import Foundation
 import MLX
+import MLXRandom
+import MLXNN
 
 @main
 struct LlamaMLXBench {

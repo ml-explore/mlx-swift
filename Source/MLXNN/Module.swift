@@ -1,10 +1,5 @@
 import Foundation
-
-// Module
-// Linear
-// RoPE
-// RMSNorm
-// treemap -- used to apply a dtype to parameters
+import MLX
 
 public typealias ModuleParameters = NestedDictionary<String, MLXArray>
 

@@ -22,14 +22,20 @@ let package = Package(
     ],
 
     products: [
+        // main targets
+        .library(name: "MLX", targets: ["MLX"]),
+        .library(name: "MLXRandom", targets: ["MLXRandom"]),
+        .library(name: "MLXNN", targets: ["MLXNN"]),
+
+        // build support & back end
         .plugin(
           name: "PrepareMetalShaders",
           targets: ["PrepareMetalShaders"]
         ),
         
         .library(name: "Cmlx", targets: ["Cmlx"]),
-        .library(name: "MLX", targets: ["MLX"]),
         
+        // examples
         .executable(name: "Example1", targets: ["Example1"]),
         .executable(name: "Tutorial", targets: ["Tutorial"]),
         .executable(name: "LlamaMLXBench", targets: ["LlamaMLXBench"]),
@@ -117,12 +123,21 @@ let package = Package(
         ),
         
         .target(
-          name: "MLX",
-          dependencies: ["Cmlx"]
+            name: "MLX",
+            dependencies: ["Cmlx"]
         ),
+        .target(
+            name: "MLXRandom",
+            dependencies: ["MLX"]
+        ),
+        .target(
+            name: "MLXNN",
+            dependencies: ["MLX", "MLXRandom"]
+        ),
+        
         .testTarget(
             name: "MLXTests",
-            dependencies: ["MLX"]
+            dependencies: ["MLX", "MLXRandom", "MLXNN"]
         ),
         
         .executableTarget(
@@ -139,7 +154,7 @@ let package = Package(
         ),
         .executableTarget(
             name: "LlamaMLXBench",
-            dependencies: ["MLX"],
+            dependencies: ["MLX", "MLXRandom", "MLXNN"],
             path: "Source/Examples",
             sources: ["LlamaMLXBench.swift"]
         ),

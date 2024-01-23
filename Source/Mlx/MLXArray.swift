@@ -3,11 +3,13 @@ import Cmlx
 
 public final class MLXArray {
     
-    /// pointer to the mlx-c wrapper on `mlx::core::array`
-    var ctx: mlx_array
+    /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
+    public var ctx: mlx_array
 
-    /// initialize with the given +1 context (transfer ownership)
-    init(_ ctx: mlx_array) {
+    /// Initialize with the given +1 context (transfer ownership).
+    ///
+    /// This initializer is for `Cmlx` interoperation.
+    public init(_ ctx: mlx_array) {
         self.ctx = ctx
     }
     

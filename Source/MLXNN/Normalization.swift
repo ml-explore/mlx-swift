@@ -1,4 +1,5 @@
 import Foundation
+import MLX
 
 public class RMSNorm : Module {
     

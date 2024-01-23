@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
-@testable import MLX
+import MLX
+@testable import MLXNN
 
 class ModuleTests : XCTestCase {
     

@@ -1,4 +1,5 @@
 import Foundation
+import MLX
 
 public func relu(_ x: MLXArray) -> MLXArray {
     maximum(x, 0)

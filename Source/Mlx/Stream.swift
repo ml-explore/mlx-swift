@@ -49,7 +49,8 @@ public struct StreamOrDevice : CustomStringConvertible {
         StreamOrDevice(stream)
     }
     
-    var ctx: OpaquePointer {
+    /// Internal context -- used with Cmlx calls.
+    public var ctx: OpaquePointer {
         stream.ctx
     }
     
