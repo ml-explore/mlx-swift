@@ -631,7 +631,7 @@ extension MLXArray {
     /// - ``any(axes:keepDims:stream:)``
     /// - ``allTrue(_:stream:)``
     public func allTrue(stream: StreamOrDevice = .default) -> Bool {
-        Mlx.allTrue(self, stream: stream)
+        MLX.allTrue(self, stream: stream)
     }
     
     /// An `or` reduction over the given axes.

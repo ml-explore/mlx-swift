@@ -1,5 +1,5 @@
 import Foundation
-import Mlx
+import MLX
 
 /// mlx-swift tutorial based on:
 /// https://github.com/ml-explore/mlx/blob/main/examples/cpp/tutorial.cpp

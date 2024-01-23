@@ -1,4 +1,4 @@
-#  ``Mlx``
+#  ``MLX``
 
 MLX is a NumPy-like array framework designed for efficient and flexible machine
 learning on Apple silicon, brought to you by Apple machine learning research.

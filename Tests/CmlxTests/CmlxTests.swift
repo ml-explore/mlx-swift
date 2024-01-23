@@ -11,7 +11,7 @@ class CmlxTests : XCTestCase {
     func testMinimal() throws {
         // smoke test making sure we can build, link & call C api
         //
-        // note: there are convenience wrappers in Mlx + the entire
+        // note: there are convenience wrappers in MLX + the entire
         // wrapping of the API in swift
         
         var data: [Float] = [1, 2, 3, 4, 5, 6]

@@ -145,7 +145,7 @@ extension MLXArray {
     public subscript(index: Int, axis axis: Int, stream stream: StreamOrDevice = .default) -> MLXArray {
         get {
             // see mlx_get_item_int
-            let axis = Mlx.resolve(axis: axis, ndim: ndim)
+            let axis = MLX.resolve(axis: axis, ndim: ndim)
             return take(resolve(index: index, axis: axis), axis: axis, stream: stream)
         }
         set {
@@ -157,7 +157,7 @@ extension MLXArray {
             let updateShape = Array(newValue.shape.trimmingPrefix { $0 == 1 })
 
             // this is the shape we will set via broadcast.
-            let axis = Mlx.resolve(axis: axis, ndim: ndim)
+            let axis = MLX.resolve(axis: axis, ndim: ndim)
             var broadcastShape = self.shape
             broadcastShape[axis] = 1
             
@@ -222,7 +222,7 @@ extension MLXArray {
             let broadcastShape = arange(indices.count, self.ndim).map { dim($0) }
             
             // extended to the dimensions of the array
-            let updateShape = Mlx.ones(indices.count) + broadcastShape
+            let updateShape = MLX.ones(indices.count) + broadcastShape
             
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    
@@ -277,20 +277,20 @@ extension MLXArray {
             for (i, r) in ranges.enumerated() {
                 let (lower, upper) = resolve(r, i)
                 let indices = arange(lower, upper)
-                var indexShape = Mlx.ones(ranges.count).map { Int($0) }
+                var indexShape = MLX.ones(ranges.count).map { Int($0) }
                 indexShape[i] = indices.count
                 arrayIndices.append(MLXArray(indices, indexShape))
             }
             
             // conform the shapes to each other
-            arrayIndices = Mlx.broadcast(arrays: arrayIndices)
+            arrayIndices = MLX.broadcast(arrays: arrayIndices)
             
             // the shape of the broadcast value
             let broadcastShape = arrayIndices[0].shape.asInt32 + arange(ranges.count, self.ndim).map { dim($0) }
             
             // compute the scatter shape
             var updateShape = broadcastShape
-            updateShape.insert(contentsOf: Mlx.ones(ranges.count), at: arrayIndices[0].ndim)
+            updateShape.insert(contentsOf: MLX.ones(ranges.count), at: arrayIndices[0].ndim)
             
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    
@@ -313,7 +313,7 @@ extension MLXArray {
                 $0 < indices.count ? 1 : dim($0)
             }
 
-            let arrayIndices = Mlx.broadcast(arrays: indices)
+            let arrayIndices = MLX.broadcast(arrays: indices)
 
             // shape of the result is based on the shape of the broadcast inputs
             // and padded by any remaining dimensions in the array
@@ -328,14 +328,14 @@ extension MLXArray {
             // see mlx_set_item_nd
             
             // conform the shapes to each other
-            let arrayIndices = Mlx.broadcast(arrays: indices)
+            let arrayIndices = MLX.broadcast(arrays: indices)
             
             // the shape of the broadcast value
             let broadcastShape = arrayIndices[0].shape.asInt32 + arange(indices.count, self.ndim).map { dim($0) }
             
             // compute the scatter shape
             var updateShape = broadcastShape
-            updateShape.insert(contentsOf: Mlx.ones(indices.count), at: arrayIndices[0].ndim)
+            updateShape.insert(contentsOf: MLX.ones(indices.count), at: arrayIndices[0].ndim)
             
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    
@@ -356,7 +356,7 @@ extension MLXArray {
                 strides.append(1)
             }
 
-            let axis = Mlx.resolve(axis: axis, ndim: ndim)
+            let axis = MLX.resolve(axis: axis, ndim: ndim)
             let (lower, upper) = resolve(range, axis)
             starts[axis] = lower
             stops[axis] = upper
@@ -366,7 +366,7 @@ extension MLXArray {
         }
         set {
             // this is [0 ..., 0 ..., range] where the number of full range leading expressions
-            let axis = Mlx.resolve(axis: axis, ndim: ndim)
+            let axis = MLX.resolve(axis: axis, ndim: ndim)
             let prefix: [any RangeExpression<Int>] = (0 ..< axis).map { 0 ..< dim($0) }
             
             self[prefix + [range], stream: stream] = newValue
@@ -415,7 +415,7 @@ extension MLXArray {
             }
 
             // update the one we are striding over
-            let axis = Mlx.resolve(axis: axis, ndim: ndim)
+            let axis = MLX.resolve(axis: axis, ndim: ndim)
             
             if stride > 0 {
                 starts[axis] = Int32(from ?? 0)
@@ -437,11 +437,11 @@ extension MLXArray {
             var arrayIndices = [MLXArray]()
             
             // add full range slices up to the axis
-            let axis = Mlx.resolve(axis: axis, ndim: ndim)
+            let axis = MLX.resolve(axis: axis, ndim: ndim)
             
             for i in 0 ..< axis {
                 let indices = arange(0, dim(i))
-                var indexShape = Mlx.ones(axis + 1).map { Int($0) }
+                var indexShape = MLX.ones(axis + 1).map { Int($0) }
                 indexShape[i] = indices.count
                 arrayIndices.append(MLXArray(indices, indexShape))
             }
@@ -468,20 +468,20 @@ extension MLXArray {
 
             // build the indices for the slice -- this is different than the Range<T>
             // indices because of the stride
-            var indexShape = Mlx.ones(axis + 1).map { Int($0) }
+            var indexShape = MLX.ones(axis + 1).map { Int($0) }
             let indices = Array(Swift.stride(from: start.int32, to: end.int32, by: stride))
             indexShape[axis] = indices.count
             arrayIndices.append(MLXArray(indices, indexShape))
             
             // conform the shapes to each other
-            arrayIndices = Mlx.broadcast(arrays: arrayIndices)
+            arrayIndices = MLX.broadcast(arrays: arrayIndices)
             
             // the shape of the broadcast value
             let broadcastShape = arrayIndices[0].shape.asInt32 + arange(axis + 1, self.ndim).map { dim($0) }
             
             // compute the scatter shape
             var updateShape = broadcastShape
-            updateShape.insert(contentsOf: Mlx.ones(axis + 1), at: arrayIndices[0].ndim)
+            updateShape.insert(contentsOf: MLX.ones(axis + 1), at: arrayIndices[0].ndim)
             
             let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
                    

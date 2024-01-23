@@ -11,7 +11,7 @@ struct GenerateGrad {
     ///
     /// Either:
     /// - run this and paste the output into `Transforms+Grad.swift`
-    /// - or `swift run GenerateGrad > Sources/Mlx/Transforms+Grad.swift`
+    /// - or `swift run GenerateGrad > Sources/MLX/Transforms+Grad.swift`
     static func main() {
         print(
             """

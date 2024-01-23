@@ -1,5 +1,5 @@
 import XCTest
-import Mlx
+import MLX
 
 /// assert two arrays have the same shape and contents
 func assertEqual(_ array1: MLXArray, _ array2: MLXArray, rtol: Double = 1e-5, atol: Double = 1e-8, file: StaticString = #filePath, line: UInt = #line) {

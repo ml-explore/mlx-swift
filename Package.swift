@@ -28,7 +28,7 @@ let package = Package(
         ),
         
         .library(name: "Cmlx", targets: ["Cmlx"]),
-        .library(name: "Mlx", targets: ["Mlx"]),
+        .library(name: "MLX", targets: ["MLX"]),
         
         .executable(name: "Example1", targets: ["Example1"]),
         .executable(name: "Tutorial", targets: ["Tutorial"]),
@@ -117,29 +117,29 @@ let package = Package(
         ),
         
         .target(
-          name: "Mlx",
+          name: "MLX",
           dependencies: ["Cmlx"]
         ),
         .testTarget(
-            name: "MlxTests",
-            dependencies: ["Mlx"]
+            name: "MLXTests",
+            dependencies: ["MLX"]
         ),
         
         .executableTarget(
             name: "Example1",
-            dependencies: ["Mlx"],
+            dependencies: ["MLX"],
             path: "Source/Examples",
             sources: ["Example1.swift"]
         ),
         .executableTarget(
             name: "Tutorial",
-            dependencies: ["Mlx"],
+            dependencies: ["MLX"],
             path: "Source/Examples",
             sources: ["Tutorial.swift"]
         ),
         .executableTarget(
             name: "LlamaMLXBench",
-            dependencies: ["Mlx"],
+            dependencies: ["MLX"],
             path: "Source/Examples",
             sources: ["LlamaMLXBench.swift"]
         ),

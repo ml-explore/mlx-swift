@@ -1,5 +1,5 @@
 import Foundation
-import Mlx
+import MLX
 
 @main
 struct Example1 {

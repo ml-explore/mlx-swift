@@ -15,17 +15,17 @@ FetchContent_Declare(
   GIT_TAG "main")
 FetchContent_MakeAvailable(mlxc)
 
-# Mlx lib
+# MLX lib
 add_library(
-  Mlx STATIC
-  ${CMAKE_CURRENT_LIST_DIR}/Source/Mlx/Array.swift
-  ${CMAKE_CURRENT_LIST_DIR}/Source/Mlx/Device.swift
-  ${CMAKE_CURRENT_LIST_DIR}/Source/Mlx/Stream.swift)
-target_include_directories(Mlx
+  MLX STATIC
+  ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/Array.swift
+  ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/Device.swift
+  ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/Stream.swift)
+target_include_directories(MLX
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
-target_link_libraries(Mlx PRIVATE mlxc)
+target_link_libraries(MLX PRIVATE mlxc)
 
 # Examples
 add_executable(example1
                ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)
-target_link_libraries(example1 PRIVATE Mlx)
+target_link_libraries(example1 PRIVATE MLX)

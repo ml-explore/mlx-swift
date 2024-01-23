@@ -148,7 +148,7 @@ public final class MLXArray {
     /// // 4
     /// ```
     public func dim(_ dim: Int) -> Int {
-        Int(mlx_array_dim(ctx, Mlx.resolve(axis: dim, ndim: mlx_array_ndim(ctx)).int32))
+        Int(mlx_array_dim(ctx, MLX.resolve(axis: dim, ndim: mlx_array_ndim(ctx)).int32))
     }
     
     /// Read a dimension of the array.
@@ -163,7 +163,7 @@ public final class MLXArray {
     /// // 4
     /// ```
     public func dim(_ dim: Int32) -> Int32 {
-        mlx_array_dim(ctx, Mlx.resolve(axis: Int(dim), ndim: mlx_array_ndim(ctx)).int32)
+        mlx_array_dim(ctx, MLX.resolve(axis: Int(dim), ndim: mlx_array_ndim(ctx)).int32)
     }
     
     public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {

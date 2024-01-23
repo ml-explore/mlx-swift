@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import Mlx
+@testable import MLX
 
 class MLXArrayIndexingTests : XCTestCase {
     
