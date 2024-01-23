@@ -45,12 +45,11 @@ struct LlamaMLXBench {
             array.asType(type)
         }
                 
-        // TODO: keys not used?  perhaps should be used in 3 calls below?
         let keys = MLXRandom.split(key: MLXRandom.key(0), into: 3)
-        let x = MLXRandom.normal([1, 1, D], type: type)
+        let x = MLXRandom.normal([1, 1, D], type: type, key: keys[0])
         let cache = (
-            MLXRandom.normal([1, H, C, D / H], type: type),
-            MLXRandom.normal([1, H, C, D / H], type: type)
+            MLXRandom.normal([1, H, C, D / H], type: type, key: keys[1]),
+            MLXRandom.normal([1, H, C, D / H], type: type, key: keys[2])
         )
         eval(x, cache)
         
