@@ -763,8 +763,9 @@ public func lessEqual<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_less_equal(a.ctx, b.ctx, stream.ctx))
 }
 
-enum LoadError: Error {
+enum LoadSaveError: Error {
     case unableToOpen(URL, String)
+    case unknownExtension(String)
 }
 
 /// Load array from a binary file in `.npy`format.
@@ -774,17 +775,70 @@ enum LoadError: Error {
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``save(_:url:stream:)``
-public func load(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray {
+/// - ``loadArrays(url:stream:)``
+/// - ``save(array:url:stream:)``
+/// - ``save(arrays:url:stream:)``
+public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
+    
     if let fp = fopen(path, "r") {
         defer { fclose(fp) }
-        return MLXArray(mlx_load_file(fp, stream.ctx))
+
+        switch url.pathExtension {
+        case "npy":
+            return MLXArray(mlx_load_file(fp, stream.ctx))
+            
+        default:
+            throw LoadSaveError.unknownExtension(url.pathExtension)
+        }
 
     } else {
         let message = String(cString: strerror(errno))
-        throw LoadError.unableToOpen(url, message)
+        throw LoadSaveError.unableToOpen(url, message)
+    }
+}
+
+/// Load dictionary of ``MLXArray`` from a ``gguf`` or ``safetensors`` file.
+///
+/// - Parameters:
+///     - url: URL of file to load
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``loadArray(url:stream:)``
+/// - ``save(array:url:stream:)``
+/// - ``save(arrays:url:stream:)``
+public func loadArrays(url: URL, stream: StreamOrDevice = .default) throws -> [String:MLXArray] {
+    precondition(url.isFileURL)
+    let path = url.path(percentEncoded: false)
+    
+    switch url.pathExtension {
+    case "gguf":
+        let filename = mlx_string_new(path.cString(using: .utf8))!
+        defer { mlx_free(filename) }
+        
+        let mlx_map = mlx_load_gguf(filename, stream.ctx)!
+        defer { mlx_free(mlx_map) }
+        
+        return mlx_map_values(mlx_map)
+
+    case "safetensors":
+        if let fp = fopen(path, "r") {
+            defer { fclose(fp) }
+            
+            let mlx_map = mlx_load_safetensors_file(fp, stream.ctx)!
+            defer { mlx_free(mlx_map) }
+            
+            return mlx_map_values(mlx_map)
+
+        } else {
+            let message = String(cString: strerror(errno))
+            throw LoadSaveError.unableToOpen(url, message)
+        }
+        
+    default:
+        throw LoadSaveError.unknownExtension(url.pathExtension)
     }
 }
 
@@ -1121,17 +1175,66 @@ public func remainder<A: ScalarOrArray, B: ScalarOrArray>(
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``load(url:stream:)``
-public func save(_ a: MLXArray, url: URL, stream: StreamOrDevice = .default) throws {
+/// - ``save(arrays:url:stream:)``
+/// - ``loadArray(url:stream:)``
+/// - ``loadArrays(url:stream:)``
+public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) throws {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
     if let fp = fopen(path, "w") {
         defer { fclose(fp) }
-        mlx_save_file(fp, a.ctx)
-
+        
+        switch url.pathExtension {
+        case "npy":
+            mlx_save_file(fp, array.ctx)
+                        
+        default:
+            throw LoadSaveError.unknownExtension(url.pathExtension)
+        }
     } else {
         let message = String(cString: strerror(errno))
-        throw LoadError.unableToOpen(url, message)
+        throw LoadSaveError.unableToOpen(url, message)
+    }
+}
+
+/// Save dictionary of arrays in ``gguf`` or ``safetensors`` format.
+///
+/// - Parameters:
+///     - a: array to save
+///     - url: URL of file to load
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``save(arrays:url:stream:)``
+/// - ``loadArray(url:stream:)``
+/// - ``loadArrays(url:stream:)``
+public func save(arrays: [String:MLXArray], url: URL, stream: StreamOrDevice = .default) throws {
+    precondition(url.isFileURL)
+    let path = url.path(percentEncoded: false)
+    
+    let mlx_map = new_mlx_map(arrays)
+    defer { mlx_free(mlx_map) }
+    
+    switch url.pathExtension {
+    case "gguf":
+        let filename = mlx_string_new(path.cString(using: .utf8))!
+        defer { mlx_free(filename) }
+        
+        mlx_save_gguf(filename, mlx_map)
+
+    case "safetensors":
+        if let fp = fopen(path, "r") {
+            defer { fclose(fp) }
+            
+            mlx_save_safetensors_file(fp, mlx_map)
+
+        } else {
+            let message = String(cString: strerror(errno))
+            throw LoadSaveError.unableToOpen(url, message)
+        }
+        
+    default:
+        throw LoadSaveError.unknownExtension(url.pathExtension)
     }
 }
 
