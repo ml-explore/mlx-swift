@@ -1773,6 +1773,10 @@ extension MLXArray {
         MLXArray(mlx_transpose(ctx, axes.asInt32, axes.count, stream.ctx))
     }
 
+    public func transpose(_ axes: Int..., stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_transpose(ctx, axes.asInt32, axes.count, stream.ctx))
+    }
+
     /// Transpose the dimensions of the array.
     ///
     /// This swaps the position of the first dimension with the given axis.

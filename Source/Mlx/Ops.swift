@@ -348,10 +348,10 @@ public func conv1d(_ array: MLXArray, _ weight: MLXArray, stride: Int = 1, paddi
 /// conv2d(input, weights, stride: 3, padding: [2, 2], padding: .init((2, 3)))
 /// ```
 public struct IntOrPair : ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
-    let values: (Int, Int)
+    public let values: (Int, Int)
     
-    var first: Int { values.0 }
-    var second: Int { values.1 }
+    public var first: Int { values.0 }
+    public var second: Int { values.1 }
     
     public init(integerLiteral value: Int) {
         self.values = (value, value)

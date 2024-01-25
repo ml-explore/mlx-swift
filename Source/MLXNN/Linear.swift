@@ -3,7 +3,7 @@ import MLX
 import MLXRandom
 
 /// A placeholder identity operator that is argument-insensitive.
-public class Identity : Module {
+public class Identity : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         x
     }
@@ -27,10 +27,14 @@ public class Identity : Module {
 /// W = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions])
 /// b = MLXRandom.uniform(-scale ..< scale, [outputDimensions])
 /// ```
-public class Linear : Module {
-    
+public class Linear : Module, UnaryModel {
+
     let weight: MLXArray
     let bias: MLXArray?
+    
+    public var shape: (Int, Int) {
+        (weight.dim(0), weight.dim(1))
+    }
 
     /// See ``Linear``
     public init(_ inputDimensions: Int, _ outputDimensions: Int, bias: Bool = true) {
@@ -42,6 +46,11 @@ public class Linear : Module {
             self.bias = nil
         }
         super.init()
+    }
+    
+    internal init(weight: MLXArray, bias: MLXArray? = nil) {
+        self.weight = weight
+        self.bias = bias
     }
     
     public override func describeExtra(_ indent: Int) -> String {

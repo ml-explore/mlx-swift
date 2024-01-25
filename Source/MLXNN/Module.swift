@@ -3,77 +3,6 @@ import MLX
 
 public typealias ModuleParameters = NestedDictionary<String, MLXArray>
 
-public enum ModuleItem {
-    case parameters(MLXArray)
-    case array([ModuleItem])
-    case dictionary([AnyHashable:ModuleItem])
-    case module(Module)
-    case other(Any)
-    
-    public init(_ value: Any) {
-        switch value {
-        case let v as MLXArray:
-            self = .parameters(v)
-        case let v as Module:
-            self = .module(v)
-        case let v as [Any]:
-            self = .array(v.map { ModuleItem($0) })
-        case let v as [AnyHashable:Any]:
-            let d = Dictionary(uniqueKeysWithValues: v.map { ($0.key, ModuleItem($0.value))})
-            self = .dictionary(d)
-        default:
-            self = .other(value)
-        }
-    }
-}
-
-@propertyWrapper struct UserDefaultsBacked<Value> {
-    var wrappedValue: Value {
-        get {
-            let value = storage.value(forKey: key) as? Value
-            return value ?? defaultValue
-        }
-        set {
-            storage.setValue(newValue, forKey: key)
-        }
-    }
-
-    private let key: String
-    private let defaultValue: Value
-    private let storage: UserDefaults
-
-    init(wrappedValue defaultValue: Value,
-         key: String,
-         storage: UserDefaults = .standard) {
-        self.defaultValue = defaultValue
-        self.key = key
-        self.storage = storage
-    }
-}
-
-@propertyWrapper public class Property<T> {
-    var value: T
-    let key: String?
-
-    public var wrappedValue: T {
-        get {
-            value
-        }
-        set {
-            value = newValue
-        }
-    }
-    
-    public init(wrappedValue defaultValue: T, key: String? = nil) {
-        self.value = defaultValue
-        self.key = key
-        
-        if unwrapProperty(self) == nil {
-            fatalError("Unable to apply @Property to \(T.self)")
-        }
-    }
-}
-
 open class Module {
     
     var training = false
@@ -87,16 +16,8 @@ open class Module {
         
         let m = Mirror(reflecting: self)
         for c in m.children {
-            var label = c.label
-            var value = c.value
-            
-            if let (nl, nv) = unwrapProperty(value) {
-                label = nl ?? label
-                value = nv
-            }
-            
-            if let label {
-                result[label] = ModuleItem(value)
+            if let (key, value) = ModuleItem.fromMirror(c) {
+                result[key] = value
             }
         }
         
@@ -119,11 +40,7 @@ open class Module {
             return ""
         }
     }
-    
-}
-
-extension Module {
-    
+        
     public func filterMap<Result>(
         filter: (Module, String, ModuleItem) -> Bool,
         map: (ModuleItem) -> Result? = { $0 },
@@ -222,6 +139,10 @@ extension Module {
         filterMap(filter: Self.filterValidChild, map: Self.mapModule, isLeaf: Self.isLeafModule)
     }
     
+    public func leafModules() -> NestedDictionary<String, Module> {
+        filterMap(filter: Self.filterValidChild, map: Self.mapModule, isLeaf: Self.isLeafModuleNoChildren)
+    }
+    
     public func update(parameters: ModuleParameters) {
         
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) {
@@ -271,6 +192,77 @@ extension Module {
     ) {
         update(parameters: mapParameters(map: map))
     }
+    
+    public func update(modules: NestedDictionary<String, Module>) throws {
+        
+        func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
+            if case .none = value {
+                return
+            }
+            
+            // item: representation of the module properties
+            // value: nested dictionary structure
+            //
+            // match them up and apply the MLXArrays from value -> item
+            
+            switch (item, value) {
+            case (.parameters, .value):
+                fatalError("Unable to set \(key) on \(self): parameters (MLXArray) cannot be updated with a Module")
+                
+            case (.array, .array(let values)):
+                // e.g. @ModuleInfo var modules = [ Linear(), Linear() ]
+                var newModules = [Module]()
+                for item in values {
+                    switch item {
+                    case.value(let module):
+                        newModules.append(module)
+                    default:
+                        throw UpdateError.unableToCollectModulesFromContainer(base: String(describing: type(of: self)), key: key)
+                    }
+                }
+                
+                try MLXNN.update(module: self, key: key, newModules)
+
+            case (.dictionary, .dictionary(let values)):
+                // e.g. @ModuleInfo var modules = [ "a": Linear(), "b": Linear() ]
+
+                var newModules = [String:Module]()
+                for item in values {
+                    switch item.value {
+                    case.value(let module):
+                        newModules[item.key] = module
+                    default:
+                        throw UpdateError.unableToCollectModulesFromContainer(base: String(describing: type(of: self)), key: key)
+                    }
+                }
+                
+                try MLXNN.update(module: self, key: key, newModules)
+
+            case (.module, .value(let newModule)):
+                try MLXNN.update(module: self, key: key, newModule)
+                                
+            case (.module(let module), .dictionary(let values)):
+                try module.update(modules: NestedDictionary(values: values))
+
+            default:
+                fatalError("Unable to set \(key) on \(self): \(item) not compatible with \(value)")
+            }
+        }
+        
+        for (key, item) in items() {
+            if let value = modules[key] {
+                try apply(key: key, item, value)
+            }
+        }
+    }
+    
+    public func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) {
+        // TODO: implement
+    }
+    
+    public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) {
+        // TODO: implement
+    }
 }
 
 extension Module : CustomStringConvertible {
@@ -299,6 +291,10 @@ extension Module : CustomStringConvertible {
     public var description: String {
         description(0)
     }
+}
+
+public protocol UnaryModel {
+    func callAsFunction(_ x: MLXArray) -> MLXArray
 }
 
 // MARK: - Filters and Maps
@@ -372,28 +368,185 @@ extension Module {
         }
     }
 
+    static public let isLeafModuleNoChildren = { (module: Module, key: String, item: ModuleItem) in
+        switch item {
+        case .module(let m): m.children().isEmpty
+        case .parameters, .array, .dictionary, .other: false
+        }
+    }
+
+}
+
+// MARK: - items() support
+
+public enum ModuleItem {
+    case parameters(MLXArray)
+    case array([ModuleItem])
+    case dictionary([AnyHashable:ModuleItem])
+    case module(Module)
+    case other(Any)
+    
+    public init(_ value: Any) {
+        switch value {
+        case let v as MLXArray:
+            self = .parameters(v)
+        case let v as Module:
+            self = .module(v)
+        case let v as [Any]:
+            self = .array(v.map { ModuleItem($0) })
+        case let v as [AnyHashable:Any]:
+            let d = Dictionary(uniqueKeysWithValues: v.map { ($0.key, ModuleItem($0.value))})
+            self = .dictionary(d)
+        default:
+            self = .other(value)
+        }
+    }
+    
+    public static func fromMirror(_ c: Mirror.Child) -> (String, ModuleItem)? {
+        var label = c.label
+        var value = c.value
+        
+        // handle @PropertyInfo, @ModuleInfo.  Fall back to the
+        // normal label, dropping the leading _.  E.g. @PropertyInfo var items
+        // has a label of `_items`
+        if let (nl, nv) = unwrapProperty(value) {
+            label = nl ?? label?.dropFirst().description
+            value = nv
+        }
+        if let (nl, nv) = unwrapModule(value) {
+            label = nl ?? label?.dropFirst().description
+            value = nv
+        }
+        
+        if let label {
+            return (label, ModuleItem(value))
+        } else {
+            return nil
+        }
+    }
+}
+
+@propertyWrapper public class ParameterInfo<T> {
+    var value: T
+    let key: String?
+
+    public var wrappedValue: T {
+        get {
+            value
+        }
+        set {
+            value = newValue
+        }
+    }
+    
+    public init(wrappedValue defaultValue: T, key: String? = nil) {
+        self.value = defaultValue
+        self.key = key
+        
+        if unwrapProperty(self) == nil {
+            fatalError("Unable to apply @ParameterInfo to \(T.self)")
+        }
+    }
+}
+
+private protocol TypeErasedSetter {
+    func updateModule(_ value: Any) throws
+}
+
+@propertyWrapper public class ModuleInfo<T> : TypeErasedSetter {
+    var module: T
+    let key: String?
+
+    public var wrappedValue: T {
+        get {
+            module
+        }
+        set {
+            module = newValue
+        }
+    }
+    
+    public init(wrappedValue defaultValue: T, key: String? = nil) {
+        self.module = defaultValue
+        self.key = key
+        
+        if unwrapModule(self) == nil {
+            fatalError("Unable to apply @ModuleInfo to \(T.self)")
+        }
+    }
+    
+    func updateModule(_ value: Any) throws {
+        if let value = value as? T {
+            self.wrappedValue = value
+        } else {
+            throw UpdateError.unableToCast
+        }
+    }
 }
 
 // MARK: - Private Functions
+
+enum UpdateError : Error {
+    case unableToCollectModulesFromContainer(base: String, key: String)
+    case keyNotFound(base: String, key: String)
+    case needModuleInfo(String)
+    case unableToSet(String)
+    case unableToCast
+}
+
+private func matches(key: String, _ c: Mirror.Child) -> Bool {
+    if key == c.label {
+        return true
+    }
+    
+    if let (label, _) = unwrapProperty(c.value) {
+        // match vs the configured key or the label without the leading _
+        return key == label ?? String((c.label ?? "").dropFirst())
+    }
+    if let (label, _) = unwrapModule(c.value) {
+        return key == label ?? String((c.label ?? "").dropFirst())
+    }
+    
+    return false
+}
+
+private func update(module: Module, key: String, _ value: Any) throws {
+    let m = Mirror(reflecting: module)
+    for c in m.children {
+        if matches(key: key, c) {
+            if let (_, _, setter) = isModuleInfo(c.value) {
+                do {
+                    try setter.updateModule(value)
+                    return
+                } catch {
+                    throw UpdateError.needModuleInfo("Unable to set modules for \(String(describing: type(of: module))).\(key) -- maybe type mismatch: \(String(describing: type(of: value)))")
+                }
+            } else {
+                throw UpdateError.needModuleInfo("Unable to get @ModuleInfo for \(String(describing: type(of: module))).\(key) -- must be wrapped to receive updates")
+            }
+        }
+    }
+    throw UpdateError.keyNotFound(base: String(describing: type(of: module)), key: key)
+}
 
 private func unwrapProperty(_ property: Any) -> (String?, Any)? {
     let label: String?
     let value: Any
     
     switch property {
-    case let p as Property<MLXArray>:
+    case let p as ParameterInfo<MLXArray>:
         label = p.key
         value = p.value
-    case let p as Property<(MLXArray, MLXArray)>:
+    case let p as ParameterInfo<(MLXArray, MLXArray)>:
         label = p.key
         value = p.value
-    case let p as Property<(MLXArray, MLXArray, MLXArray)>:
+    case let p as ParameterInfo<(MLXArray, MLXArray, MLXArray)>:
         label = p.key
         value = p.value
-    case let p as Property<[MLXArray]>:
+    case let p as ParameterInfo<[MLXArray]>:
         label = p.key
         value = p.value
-    case let p as Property<[String:MLXArray]>:
+    case let p as ParameterInfo<[String:MLXArray]>:
         label = p.key
         value = p.value
     default:
@@ -401,5 +554,25 @@ private func unwrapProperty(_ property: Any) -> (String?, Any)? {
     }
     
     return (label, value)
+}
+
+private func isModuleInfo(_ property: Any) -> (String?, Any, TypeErasedSetter)? {
+    let m = Mirror(reflecting: property)
+    let c = m.children.map { $0 }
+    
+    if c.count == 2 && c[0].label == "module" && c[1].label == "key" {
+        if let setter = property as? TypeErasedSetter {
+            return (c[1].value as? String, c[0].value, setter)
+        }
+    }
+    return nil
+}
+
+private func unwrapModule(_ property: Any) -> (String?, Any)? {
+    if let (key, value, _) = isModuleInfo(property) {
+        return (key, value)
+    }
+    
+    return nil
 }
 

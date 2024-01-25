@@ -1,7 +1,7 @@
 import Foundation
 import MLX
 
-final public class RoPE : Module {
+final public class RoPE : Module, UnaryModel {
 
     let dimensions: Int
     let traditional: Bool
@@ -73,9 +73,8 @@ final public class RoPE : Module {
         
         return rx
     }
-
     
-    public func callAsFunction(_ x: MLXArray, offset: Int = 0) -> MLXArray {
+    public func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray {
         let shape = x.shape
         let x = x.reshape(-1, shape[shape.endIndex - 2], shape[shape.endIndex - 1])
         let N = x.dim(1) + offset
@@ -87,6 +86,10 @@ final public class RoPE : Module {
         let rx = f(costheta, sintheta, x)
         
         return rx.reshape(shape)
+    }
+    
+    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+        callAsFunction(x, offset: 0)
     }
 }
 

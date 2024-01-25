@@ -1,7 +1,7 @@
 import Foundation
 import MLX
 
-public class RMSNorm : Module {
+public class RMSNorm : Module, UnaryModel {
     
     let weight: MLXArray
     let eps: Float

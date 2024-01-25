@@ -79,7 +79,7 @@ public func hardSwish(_ x: MLXArray) -> MLXArray {
     return x * minimum(maxXPlus3, 6) / 6
 }
 
-public class GLU : Module {
+public class GLU : Module, UnaryModel {
     let axis: Int
     
     public init(axis: Int = -1) {
@@ -92,55 +92,55 @@ public class GLU : Module {
     }
 }
 
-public class Sigmoid : Module {
+public class Sigmoid : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         sigmoid(x)
     }
 }
 
-public class Mish : Module {
+public class Mish : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         mish(x)
     }
 }
 
-public class ReLU : Module {
+public class ReLU : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         relu(x)
     }
 }
 
-public class LeakyReLU : Module {
+public class LeakyReLU : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         leakyRelu(x)
     }
 }
 
-public class Relu6 : Module {
+public class Relu6 : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         relu6(x)
     }
 }
 
-public class SoftMax : Module {
+public class SoftMax : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         softMax(x)
     }
 }
 
-public class SoftPlus : Module {
+public class SoftPlus : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         softPlus(x)
     }
 }
 
-public class SoftSign : Module {
+public class SoftSign : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         softSign(x)
     }
 }
 
-public class CELU : Module {
+public class CELU : Module, UnaryModel {
     let alpha: Float
     
     public init(alpha: Float = 1.0) {
@@ -153,25 +153,25 @@ public class CELU : Module {
     }
 }
 
-public class SiLU : Module {
+public class SiLU : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         silu(x)
     }
 }
 
-public class LogSoftMax : Module {
+public class LogSoftMax : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         logSoftMax(x)
     }
 }
 
-public class LogSigmoid : Module {
+public class LogSigmoid : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         logSigmoid(x)
     }
 }
 
-public class PReLU : Module {
+public class PReLU : Module, UnaryModel {
     
     let weight: MLXArray
     
@@ -185,7 +185,7 @@ public class PReLU : Module {
     }
 }
 
-public class GELU : Module {
+public class GELU : Module, UnaryModel {
     
     public enum Approximation {
         case none
@@ -215,7 +215,7 @@ public class GELU : Module {
 /// Applies the hyperbolic tangent function
 ///
 /// See ``tanh(_:stream:)``
-public class Tanh : Module {
+public class Tanh : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         tanh(x)
     }
@@ -224,7 +224,7 @@ public class Tanh : Module {
 /// Applies the hardswish function, element-wise.
 ///
 /// See ``hardSwish(_:)``
-public class HardSwish : Module {
+public class HardSwish : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         hardSwish(x)
     }
@@ -236,7 +236,7 @@ public class HardSwish : Module {
 /// to 1 if the input is greater than a specified threshold, and 0 otherwise.
 ///
 /// See ``step(_:threshold:)``
-public class Step : Module {
+public class Step : Module, UnaryModel {
     
     let threshold: Float
     
@@ -253,7 +253,7 @@ public class Step : Module {
 /// Applies the Scaled Exponential Linear Unit.
 ///
 /// See ``selu(_:)``.
-public class SELU : Module {
+public class SELU : Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         selu(x)
     }

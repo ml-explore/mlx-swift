@@ -1334,6 +1334,10 @@ public func transpose(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .
     MLXArray(mlx_transpose(array.ctx,  axes.asInt32, axes.count, stream.ctx))
 }
 
+public func transpose(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_transpose(array.ctx,  axes.asInt32, axes.count, stream.ctx))
+}
+
 /// Transpose the dimensions of the array.
 ///
 /// This swaps the position of the first dimension with the given axis.
