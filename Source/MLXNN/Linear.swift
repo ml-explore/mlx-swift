@@ -95,19 +95,19 @@ public class Bilinear: Module {
         let in1 = weight.dim(2)
         let in2 = weight.dim(1)
         let xShape = x1.shape.dropLast()
-        let x1 = x1.reshape(-1, in1)
-        let x2 = x2.reshape(-1, 1, in2)
+        let x1 = x1.reshaped(-1, in1)
+        let x2 = x2.reshaped(-1, 1, in2)
 
         // perform the bilinear transform
         var y: MLXArray
-        let w = weight.reshape(out * in2, in1)
+        let w = weight.reshaped(out * in2, in1)
         y = x1.matmul(w.T)
-        y = y.reshape(-1, out, in2).swapAxes(-2, -1)
+        y = y.reshaped(-1, out, in2).swappedAxes(-2, -1)
         y = x2.matmul(y)
-        y = y.squeeze(axis: 1)
+        y = y.squeezed(axis: 1)
 
         // reset the shape
-        y = y.reshape(xShape + [out])
+        y = y.reshaped(xShape + [out])
 
         if let bias {
             y = y + bias

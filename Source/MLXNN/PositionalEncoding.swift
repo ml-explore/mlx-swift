@@ -35,7 +35,7 @@ final public class RoPE: Module, UnaryModel {
         let D = key.D / 2
         let positions = MLXArray(key.offset ..< key.N).asType(key.dtype) * key.scale
         let freqs = exp(-MLXArray(0 ..< D).asType(key.dtype)) * (log(key.base) / Float(D))
-        let theta = positions.reshape(-1, 1) * freqs.reshape(1, -1)
+        let theta = positions.reshaped(-1, 1) * freqs.reshaped(1, -1)
 
         let result = (cos(theta), sin(theta))
         cache[key] = result
@@ -52,9 +52,9 @@ final public class RoPE: Module, UnaryModel {
 
         let rx: MLXArray
         if self.dimensions < x.dim(-1) {
-            rx = concatenate([rx1, rx2, x[self.dimensions..., axis: -1]], axis: -1)
+            rx = concatenated([rx1, rx2, x[self.dimensions..., axis: -1]], axis: -1)
         } else {
-            rx = concatenate([rx1, rx2], axis: -1)
+            rx = concatenated([rx1, rx2], axis: -1)
         }
         return rx
     }
@@ -70,15 +70,15 @@ final public class RoPE: Module, UnaryModel {
             fatalError("RoPE doesn't implement partial traditional application")
         }
 
-        let rx = concatenate(
-            [expandDimensions(rx1, axis: -1), expandDimensions(rx2, axis: -1)], axis: -1)
+        let rx = concatenated(
+            [expandedDimensions(rx1, axis: -1), expandedDimensions(rx2, axis: -1)], axis: -1)
 
         return rx
     }
 
     public func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray {
         let shape = x.shape
-        let x = x.reshape(-1, shape[shape.endIndex - 2], shape[shape.endIndex - 1])
+        let x = x.reshaped(-1, shape[shape.endIndex - 2], shape[shape.endIndex - 1])
         let N = x.dim(1) + offset
 
         let key = Key(N: N, D: dimensions, offset: offset, base: base, scale: scale, dtype: x.dtype)
@@ -87,7 +87,7 @@ final public class RoPE: Module, UnaryModel {
         let f = traditional ? traditionalRope : rope
         let rx = f(costheta, sintheta, x)
 
-        return rx.reshape(shape)
+        return rx.reshaped(shape)
     }
 
     public func callAsFunction(_ x: MLXArray) -> MLXArray {

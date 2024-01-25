@@ -48,17 +48,17 @@ class NestedTests : XCTestCase {
     func testFlatten1() {
         let v: NestedItem<String, Int> = .array([.array([.array([.value(10)])])])
         
-        let f = v.flatten()
+        let f = v.flattened()
         XCTAssertEqual(f.description, #"[("0.0.0", 10)]"#)
         
-        let uf = NestedItem<String, Int>.unflatten(f)
+        let uf = NestedItem<String, Int>.unflattened(f)
         XCTAssertEqual(uf, v)
     }
 
     func testFlatten() {
         let n = newNested()
-        let f = n.flatten()
-        let n2 = NestedDictionary<String, Int>.unflatten(f)
+        let f = n.flattened()
+        let n2 = NestedDictionary<String, Int>.unflattened(f)
         XCTAssertEqual(n, n2)
     }
 

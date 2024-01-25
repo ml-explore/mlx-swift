@@ -518,10 +518,10 @@ public func exp(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// let a = MLXArray(0 ..< (8 * 4 * 3), [8, 4, 3])
 ///
 /// // f1 is shape [8 * 4 * 3] = [96]
-/// let f1 = a.flatten()
+/// let f1 = a.flattened()
 ///
 /// // f2 is [8, 4 * 3] = [8, 12]
-/// let f2 = a.flatten(start: 1)
+/// let f2 = a.flattened(start: 1)
 /// ```
 ///
 /// - Parameters:
@@ -532,8 +532,8 @@ public func exp(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/flatten(start:end:stream:)``
-public func flatten(
+/// - ``MLXArray/flattened(start:end:stream:)``
+public func flattened(
     _ array: MLXArray, start: Int = 0, end: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(mlx_flatten(array.ctx, start.int32, end.int32, stream.ctx))
@@ -978,7 +978,7 @@ public func min(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// //         [[12, 13],
 /// //          [14, 15]]]], dtype=int64)
 ///
-/// let r = array.moveAxis(source: 0, destination: 3)
+/// let r = array.movedAxis(source: 0, destination: 3)
 /// print(r)
 /// // array([[[[0, 8],
 /// //          [1, 9]],
@@ -992,9 +992,9 @@ public func min(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``swapAxes(_:_:_:stream:)``
-/// - ``MLXArray/moveAxis(source:destination:stream:)``
-public func moveAxis(
+/// - ``swappedAxes(_:_:_:stream:)``
+/// - ``MLXArray/movedAxis(source:destination:stream:)``
+public func movedAxis(
     _ array: MLXArray, source: Int, destination: Int, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(mlx_moveaxis(array.ctx, source.int32, destination.int32, stream.ctx))
@@ -1128,14 +1128,14 @@ public func reciprocal(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 /// ```swift
 /// let array = MLXArray(0 ..< 12)
 ///
-/// let r = reshape(array, [4, 3])
+/// let r = reshaped(array, [4, 3])
 /// ```
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshape(_:stream:)-uxps``
-/// - ``reshape(_:_:stream:)-7llxg``
-public func reshape(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevice = .default)
+/// - ``MLXArray/reshaped(_:stream:)-uxps``
+/// - ``reshaped(_:_:stream:)-7llxg``
+public func reshaped(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_reshape(array.ctx, newShape.asInt32, newShape.count, stream.ctx))
@@ -1146,14 +1146,14 @@ public func reshape(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevice
 /// ```swift
 /// let array = MLXArray(0 ..< 12)
 ///
-/// let r = reshape(array, 4, 3)
+/// let r = reshaped(array, 4, 3)
 /// ```
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshape(_:stream:)-uxps``
-/// - ``reshape(_:_:stream:)-8p51j``
-public func reshape(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevice = .default)
+/// - ``MLXArray/reshaped(_:stream:)-uxps``
+/// - ``reshaped(_:_:stream:)-8p51j``
+public func reshaped(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_reshape(array.ctx, newShape.asInt32, newShape.count, stream.ctx))
@@ -1276,10 +1276,10 @@ public func square(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``squeeze(_:axis:stream:)``
-/// - ``squeeze(_:stream:)``
-/// - ``MLXArray/squeeze(axes:stream:)``
-public func squeeze(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
+/// - ``squeezed(_:axis:stream:)``
+/// - ``squeezed(_:stream:)``
+/// - ``MLXArray/squeezed(axes:stream:)``
+public func squeezed(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_squeeze(array.ctx, axes.asInt32, axes.count, stream.ctx))
 }
 
@@ -1291,10 +1291,10 @@ public func squeeze(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .de
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``squeeze(_:axes:stream:)``
-/// - ``squeeze(_:stream:)``
-/// - ``MLXArray/squeeze(axes:stream:)``
-public func squeeze(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
+/// - ``squeezed(_:axes:stream:)``
+/// - ``squeezed(_:stream:)``
+/// - ``MLXArray/squeezed(axes:stream:)``
+public func squeezed(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_squeeze(array.ctx, [axis.int32], 1, stream.ctx))
 }
 
@@ -1302,10 +1302,10 @@ public func squeeze(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .defa
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``squeeze(_:axes:stream:)``
-/// - ``squeeze(_:axis:stream:)``
-/// - ``MLXArray/squeeze(axes:stream:)``
-public func squeeze(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+/// - ``squeezed(_:axes:stream:)``
+/// - ``squeezed(_:axis:stream:)``
+/// - ``MLXArray/squeezed(axes:stream:)``
+public func squeezed(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_squeeze_all(array.ctx, stream.ctx))
 }
 
@@ -1379,7 +1379,7 @@ public func sum(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// //         [[12, 13],
 /// //          [14, 15]]]], dtype=int64)
 ///
-/// let r = array.swapAxes(2, 1)
+/// let r = array.swappedAxes(2, 1)
 /// print(r)
 /// // array([[[[0, 8],
 /// //          [2, 10]],
@@ -1393,8 +1393,8 @@ public func sum(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/swapAxes(_:_:stream:)``
-public func swapAxes(
+/// - ``MLXArray/swappedAxes(_:_:stream:)``
+public func swappedAxes(
     _ array: MLXArray, _ axis1: Int, _ axis2: Int, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(mlx_swapaxes(array.ctx, axis1.int32, axis2.int32, stream.ctx))
@@ -1439,15 +1439,15 @@ public func take(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice 
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``transpose(_:axis:stream:)``
-/// - ``transpose(_:stream:)``
-/// - ``MLXArray/transpose(axes:stream:)``
-public func transpose(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray
+/// - ``transposed(_:axis:stream:)``
+/// - ``transposed(_:stream:)``
+/// - ``MLXArray/transposed(axes:stream:)``
+public func transposed(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray
 {
     MLXArray(mlx_transpose(array.ctx, axes.asInt32, axes.count, stream.ctx))
 }
 
-public func transpose(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice = .default)
+public func transposed(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_transpose(array.ctx, axes.asInt32, axes.count, stream.ctx))
@@ -1459,10 +1459,10 @@ public func transpose(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice 
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``transpose(_:axes:stream:)``
-/// - ``transpose(_:stream:)``
-/// - ``MLXArray/transpose(axes:stream:)``
-public func transpose(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
+/// - ``transposed(_:axes:stream:)``
+/// - ``transposed(_:stream:)``
+/// - ``MLXArray/transposed(axes:stream:)``
+public func transposed(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_transpose(array.ctx, [axis.int32], 1, stream.ctx))
 }
 
@@ -1472,18 +1472,18 @@ public func transpose(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .de
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``transpose(_:axes:stream:)``
-/// - ``transpose(_:axis:stream:)``
-/// - ``MLXArray/transpose(axes:stream:)``
-public func transpose(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+/// - ``transposed(_:axes:stream:)``
+/// - ``transposed(_:axis:stream:)``
+/// - ``MLXArray/transposed(axes:stream:)``
+public func transposed(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_transpose_all(array.ctx, stream.ctx))
 }
 
 /// Transpose the dimensions of the array.
 ///
-/// Cover for ``transpose(_:stream:)``
+/// Cover for ``transposed(_:stream:)``
 public func T(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    transpose(array, stream: stream)
+    transposed(array, stream: stream)
 }
 
 /// Compute the variance(s) over the given axes

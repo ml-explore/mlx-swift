@@ -10,7 +10,7 @@ class OpsTests : XCTestCase {
         
         // this uses [4, 1] as the strides
         let b = asStrided(a, [3, 4])
-        assertEqual(b, a.reshape([3, 4]))
+        assertEqual(b, a.reshaped([3, 4]))
         
         let c = asStrided(a, [3, 4], strides: [4, 1])
         assertEqual(b, c)
@@ -21,7 +21,7 @@ class OpsTests : XCTestCase {
         let a = MLXArray(0 ..< 12, [4, 3])
         
         let b = asStrided(a, [3, 4], strides: [1, 3])
-        assertEqual(b, a.transpose())
+        assertEqual(b, a.transposed())
     }
 
     func testAsStridedOffset() {

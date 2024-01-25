@@ -26,7 +26,7 @@ public class QuantizedLinear: Linear {
         self.groupSize = groupSize
         self.bits = bits
 
-        let (quantizedWeight, scales, biases) = MLX.quantize(
+        let (quantizedWeight, scales, biases) = MLX.quantized(
             weight, groupSize: groupSize, bits: bits)
 
         self.scales = scales

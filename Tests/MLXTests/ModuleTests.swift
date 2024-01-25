@@ -233,7 +233,7 @@ class ModuleTests : XCTestCase {
     func testLeafModules() {
         let m = newStructureModule()
         let modules = m.leafModules()
-        let v = Dictionary(uniqueKeysWithValues: modules.flatten())
+        let v = Dictionary(uniqueKeysWithValues: modules.flattened())
         
         XCTAssertEqual(v.count, 6)
         XCTAssertEqual(Set(v.keys), Set(["child", "interior2.children.1", "leaf", "interior2.children.0", "interior1.child", "nonWrappedChild"]))
@@ -243,7 +243,7 @@ class ModuleTests : XCTestCase {
         let m = newStructureModule()
         // only the modules attached to the top level
         let modules = m.children()
-        let v = Dictionary(uniqueKeysWithValues: modules.flatten())
+        let v = Dictionary(uniqueKeysWithValues: modules.flattened())
         
         XCTAssertEqual(v.count, 5)
         XCTAssertEqual(Set(v.keys), Set(["child", "interior2", "leaf", "interior1", "nonWrappedChild"]))
@@ -335,8 +335,6 @@ class ModuleTests : XCTestCase {
         
         let m = M()
         QuantizedLinear.quantize(model: m)
-        
-        let keypath: ReferenceWritableKeyPath<C, Linear> = \.child
         
         XCTAssertTrue(m.module.child is QuantizedLinear)
     }

@@ -92,15 +92,15 @@ public class LlamaAttention : Module {
         let B = queries.dim(0)
         let L = queries.dim(1)
         
-        queries = queries.reshape(B, L, numHeads, -1).transpose(axes: [0, 2, 1, 3])
-        keys = keys.reshape(B, L, numHeads, -1).transpose(axes: [0, 2, 1, 3])
-        values = values.reshape(B, L, numHeads, -1).transpose(axes: [0, 2, 1, 3])
+        queries = queries.reshaped(B, L, numHeads, -1).transposed(axes: [0, 2, 1, 3])
+        keys = keys.reshaped(B, L, numHeads, -1).transposed(axes: [0, 2, 1, 3])
+        values = values.reshaped(B, L, numHeads, -1).transposed(axes: [0, 2, 1, 3])
 
         if let (keyCache, valueCache) = cache {
             queries = rope(queries, offset: keyCache.dim(2))
             keys = rope(keys, offset: keyCache.dim(2))
-            keys = concatenate([keyCache, keys], axis: 2)
-            values = concatenate([valueCache, values], axis: 2)
+            keys = concatenated([keyCache, keys], axis: 2)
+            values = concatenated([valueCache, values], axis: 2)
         } else {
             queries = rope(queries)
             keys = rope(keys)
@@ -108,12 +108,12 @@ public class LlamaAttention : Module {
         
         // Dimensions are [batch x num heads x sequence x hidden dim]
         let scale = MLXArray(sqrt(1 / Float(queries.dim(-1)))).asType(queries.dtype)
-        var scores = (queries * scale).matmul(keys.transpose(axes: [0, 1, 3, 2]))
+        var scores = (queries * scale).matmul(keys.transposed(axes: [0, 1, 3, 2]))
         if let mask {
            scores = scores + mask
         }
         scores = softMax(scores, axis: -1)
-        let valuesHat = scores.matmul(values).transpose(axes: [0, 2, 1, 3]).reshape(B, L, -1)
+        let valuesHat = scores.matmul(values).transposed(axes: [0, 2, 1, 3]).reshaped(B, L, -1)
         
         return (outProjection(valuesHat), (keys, values))
     }

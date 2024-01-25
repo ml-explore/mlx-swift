@@ -69,7 +69,7 @@ class MLXArrayOpsTests : XCTestCase {
     func testFunctions() {
         let a = MLXArray(0 ..< 12, [4, 3])
         
-        let r = a.square().sqrt().transpose().T
+        let r = a.square().sqrt().transposed().T
         assertEqual(a, r)
     }
     
@@ -93,17 +93,17 @@ class MLXArrayOpsTests : XCTestCase {
     func testFlatten() {
         let a = MLXArray(0 ..< (8 * 4 * 3), [8, 4, 3])
         
-        let f1 = a.flatten()
+        let f1 = a.flattened()
         XCTAssertEqual(f1.shape, [8 * 4 * 3])
         
-        let f2 = a.flatten(start: 1)
+        let f2 = a.flattened(start: 1)
         XCTAssertEqual(f2.shape, [8, 4 * 3])
     }
 
     public func testMoveAxis() {
         let array = MLXArray(0 ..< 16, [2, 2, 2, 2])
         
-        let r = array.moveAxis(source: 0, destination: 3)
+        let r = array.movedAxis(source: 0, destination: 3)
         
         let expected = MLXArray([0, 8, 1, 9, 2, 10, 3, 11, 4, 12, 5, 13, 6, 14, 7, 15], [2, 2, 2, 2])
         assertEqual(r, expected)
@@ -112,7 +112,7 @@ class MLXArrayOpsTests : XCTestCase {
     public func testSwapAxes() {
         let array = MLXArray(0 ..< 16, [2, 2, 2, 2])
         
-        let r = array.swapAxes(0, 3)
+        let r = array.swappedAxes(0, 3)
         
         let expected = MLXArray([0, 8, 2, 10, 4, 12, 6, 14, 1, 9, 3, 11, 5, 13, 7, 15], [2, 2, 2, 2])
         assertEqual(r, expected)

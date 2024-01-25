@@ -79,7 +79,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible
         }
     }
 
-    public func flatten(prefix: String? = nil) -> [(String, Element)] {
+    public func flattened(prefix: String? = nil) -> [(String, Element)] {
         func newPrefix(_ i: CustomStringConvertible) -> String {
             if let prefix {
                 return "\(prefix).\(i)"
@@ -94,22 +94,22 @@ public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible
             return [(prefix ?? "", element)]
         case .array(let array):
             return array.enumerated().flatMap { (index, value) in
-                value.flatten(prefix: newPrefix(index))
+                value.flattened(prefix: newPrefix(index))
             }
         case .dictionary(let dictionary):
             return dictionary.flatMap { (key, value) in
-                value.flatten(prefix: newPrefix(String(describing: key)))
+                value.flattened(prefix: newPrefix(String(describing: key)))
             }
         }
     }
 
-    public static func unflatten(_ tree: [(Key, Element)]) -> NestedItem<Key, Element>
+    public static func unflattened(_ tree: [(Key, Element)]) -> NestedItem<Key, Element>
     where Key == String {
         if tree.isEmpty {
             return .dictionary([:])
         }
 
-        return unflattenRecurse(tree)
+        return unflattenedRecurse(tree)
     }
 
     private enum UnflattenKind {
@@ -126,7 +126,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible
         }
     }
 
-    private static func unflattenRecurse(_ tree: [(String, Element)]) -> NestedItem<String, Element>
+    private static func unflattenedRecurse(_ tree: [(String, Element)]) -> NestedItem<String, Element>
     {
         if tree.count == 1 && tree[0].0 == "" {
             return .value(tree[0].1)
@@ -153,13 +153,13 @@ public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible
 
             var result = [NestedItem<String, Element>](repeating: .none, count: maxIndex + 1)
             for (index, value) in items {
-                result[index] = unflattenRecurse(value)
+                result[index] = unflattenedRecurse(value)
             }
             return .array(result)
         case .dictionary:
             var result = [String: NestedItem<String, Element>]()
             for (key, value) in children {
-                result[key] = unflattenRecurse(value)
+                result[key] = unflattenedRecurse(value)
             }
             return .dictionary(result)
         }
@@ -279,13 +279,13 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
         }
     }
 
-    public func flatten() -> [(String, Element)] {
-        contents.flatMap { key, value in value.flatten(prefix: String(describing: key)) }
+    public func flattened() -> [(String, Element)] {
+        contents.flatMap { key, value in value.flattened(prefix: String(describing: key)) }
     }
 
-    static public func unflatten(_ flat: [(Key, Element)]) -> NestedDictionary<String, Element>
+    static public func unflattened(_ flat: [(Key, Element)]) -> NestedDictionary<String, Element>
     where Key == String {
-        switch NestedItem.unflatten(flat) {
+        switch NestedItem.unflattened(flat) {
         case .dictionary(let values):
             return NestedDictionary(values: values)
         default:

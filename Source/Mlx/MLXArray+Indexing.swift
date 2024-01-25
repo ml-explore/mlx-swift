@@ -136,10 +136,10 @@ extension MLXArray {
             var broadcastShape = self.shape
             broadcastShape[0] = 1
 
-            let expanded = newValue.reshape(updateShape).broadcast(to: broadcastShape.asInt32)
+            let expanded = newValue.reshaped(updateShape).broadcast(to: broadcastShape.asInt32)
 
             let indices = [resolve(index: index, axis: 0)]
-            self.update(scatter(indices: indices, updates: expanded, axes: [0]))
+            self.update(scattered(indices: indices, updates: expanded, axes: [0]))
         }
     }
 
@@ -164,10 +164,10 @@ extension MLXArray {
             var broadcastShape = self.shape
             broadcastShape[axis] = 1
 
-            let expanded = newValue.reshape(updateShape).broadcast(to: broadcastShape.asInt32)
+            let expanded = newValue.reshaped(updateShape).broadcast(to: broadcastShape.asInt32)
 
             let indices = [resolve(index: index, axis: axis)]
-            self.update(scatter(indices: indices, updates: expanded, axes: [axis.int32]))
+            self.update(scattered(indices: indices, updates: expanded, axes: [axis.int32]))
         }
     }
 
@@ -228,11 +228,11 @@ extension MLXArray {
             // extended to the dimensions of the array
             let updateShape = MLX.ones(indices.count) + broadcastShape
 
-            let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
+            let update = newValue.broadcast(to: broadcastShape).reshaped(updateShape)
 
             let i = resolve(indices)
             let axes = arange(indices.count)
-            self.update(scatter(indices: i, updates: update, axes: axes))
+            self.update(scattered(indices: i, updates: update, axes: axes))
         }
     }
 
@@ -304,10 +304,10 @@ extension MLXArray {
             var updateShape = broadcastShape
             updateShape.insert(contentsOf: MLX.ones(ranges.count), at: arrayIndices[0].ndim)
 
-            let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
+            let update = newValue.broadcast(to: broadcastShape).reshaped(updateShape)
 
             let axes = arange(ranges.count)
-            self.update(scatter(indices: arrayIndices, updates: update, axes: axes))
+            self.update(scattered(indices: arrayIndices, updates: update, axes: axes))
         }
     }
 
@@ -339,7 +339,7 @@ extension MLXArray {
                 mlx_gather(
                     ctx, arrayIndices_vec, axes, axes.count, sliceSizes, sliceSizes.count,
                     stream.ctx)
-            ).reshape(resultShape)
+            ).reshaped(resultShape)
         }
         set {
             // see mlx_set_item_nd
@@ -355,10 +355,10 @@ extension MLXArray {
             var updateShape = broadcastShape
             updateShape.insert(contentsOf: MLX.ones(indices.count), at: arrayIndices[0].ndim)
 
-            let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
+            let update = newValue.broadcast(to: broadcastShape).reshaped(updateShape)
 
             let axes = arange(indices.count)
-            self.update(scatter(indices: arrayIndices, updates: update, axes: axes))
+            self.update(scattered(indices: arrayIndices, updates: update, axes: axes))
         }
     }
 
@@ -512,10 +512,10 @@ extension MLXArray {
             var updateShape = broadcastShape
             updateShape.insert(contentsOf: MLX.ones(axis + 1), at: arrayIndices[0].ndim)
 
-            let update = newValue.broadcast(to: broadcastShape).reshape(updateShape)
+            let update = newValue.broadcast(to: broadcastShape).reshaped(updateShape)
 
             let axes = arange(axis + 1)
-            self.update(scatter(indices: arrayIndices, updates: update, axes: axes))
+            self.update(scattered(indices: arrayIndices, updates: update, axes: axes))
         }
     }
 

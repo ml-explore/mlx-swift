@@ -137,7 +137,7 @@ public func atanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// ### See Also
 /// - <doc:indexes>
 /// - ``argPartition(_:kth:stream:)``
-/// - ``partition(_:kth:axis:stream:)``
+/// - ``partitioned(_:kth:axis:stream:)``
 public func argPartition(_ array: MLXArray, kth: Int, axis: Int, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -156,7 +156,7 @@ public func argPartition(_ array: MLXArray, kth: Int, axis: Int, stream: StreamO
 /// ### See Also
 /// - <doc:indexes>
 /// - ``argPartition(_:kth:axis:stream:)``
-/// - ``partition(_:kth:axis:stream:)``
+/// - ``partitioned(_:kth:axis:stream:)``
 public func argPartition(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .default) -> MLXArray
 {
     MLXArray(mlx_argpartition_all(array.ctx, kth.int32, stream.ctx))
@@ -327,7 +327,7 @@ public func clip(_ array: MLXArray, max: MLXArray, stream: StreamOrDevice = .def
 ///
 /// ### See Also
 /// - <doc:shapes>
-public func concatenate(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default)
+public func concatenated(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     let vector_array = new_mlx_vector_array(arrays)
@@ -472,8 +472,8 @@ public func convolve<A: ScalarOrArray, B: ScalarOrArray>(
             weight.ctx, [weight.dim(0) - 1].asInt32, 1, [-weight.dim(0) - 1].asInt32, 1, [-1], 1,
             stream.ctx))
 
-    weight = weight.reshape([1, -1, 1], stream: stream)
-    input = input.reshape([1, -1, 1], stream: stream)
+    weight = weight.reshaped([1, -1, 1], stream: stream)
+    input = input.reshaped([1, -1, 1], stream: stream)
 
     let weightSize = weight.size
     var padding = 0
@@ -490,7 +490,7 @@ public func convolve<A: ScalarOrArray, B: ScalarOrArray>(
             let padLeft = weightSize / 2
             let padRight = max(0, padLeft / 2 - 1)
 
-            input = pad(input, widths: [0, [padLeft, padRight], 0], stream: stream)
+            input = padded(input, widths: [0, [padLeft, padRight], 0], stream: stream)
         }
     }
 
@@ -517,9 +517,9 @@ public func cosh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.dequantize.html)
 ///
 /// ### See Also
-/// - ``quantize(_:groupSize:bits:stream:)``
+/// - ``quantized(_:groupSize:bits:stream:)``
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
-public func dequantize(
+public func dequantized(
     _ w: MLXArray, scales: MLXArray, biases: MLXArray, groupSize: Int = 64, bits: Int = 4,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -623,8 +623,8 @@ public func erfInverse(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``expandDimensions(_:axis:stream:)``
-public func expandDimensions(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default)
+/// - ``expandedDimensions(_:axis:stream:)``
+public func expandedDimensions(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_expand_dims(array.ctx, axes.asInt32, axes.count, stream.ctx))
@@ -640,8 +640,8 @@ public func expandDimensions(_ array: MLXArray, axes: [Int], stream: StreamOrDev
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``expandDimensions(_:axes:stream:)``
-public func expandDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default)
+/// - ``expandedDimensions(_:axes:stream:)``
+public func expandedDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_expand_dims(array.ctx, [axis.int32], 1, stream.ctx))
@@ -1013,8 +1013,8 @@ public func notEqual<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``pad(_:widths:value:stream:)``
-public func pad(
+/// - ``paddded(_:widths:value:stream:)``
+public func paddded(
     _ array: MLXArray, width: IntOrPair, value: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
@@ -1037,8 +1037,8 @@ public func pad(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``pad(_:width:value:stream:)``
-public func pad(
+/// - ``paddded(_:width:value:stream:)``
+public func padded(
     _ array: MLXArray, widths: [IntOrPair], value: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1068,9 +1068,9 @@ public func pad(
 ///
 /// ### See Also
 /// - <doc:sorting>
-/// - ``partition(_:kth:stream:)``
+/// - ``partitioned(_:kth:stream:)``
 /// - ``argPartition(_:kth:axis:stream:)``
-public func partition(_ array: MLXArray, kth: Int, axis: Int, stream: StreamOrDevice = .default)
+public func partitioned(_ array: MLXArray, kth: Int, axis: Int, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_partition(array.ctx, kth.int32, axis.int32, stream.ctx))
@@ -1092,9 +1092,9 @@ public func partition(_ array: MLXArray, kth: Int, axis: Int, stream: StreamOrDe
 ///
 /// ### See Also
 /// - <doc:sorting>
-/// - ``partition(_:kth:axis:stream:)``
+/// - ``partitioned(_:kth:axis:stream:)``
 /// - ``argPartition(_:kth:axis:stream:)``
-public func partition(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .default) -> MLXArray {
+public func partitioned(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_partition_all(array.ctx, kth.int32, stream.ctx))
 }
 
@@ -1105,15 +1105,15 @@ public func partition(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .def
 /// `group_size`. In particular, the rows of `w` are divided into groups of
 /// size `group_size` which are quantized together.
 ///
-/// > `quantize` currently only supports 2D inputs with dimensions which are multiples of 32
+/// > `quantized` currently only supports 2D inputs with dimensions which are multiples of 32
 ///
 /// For details, please see
 /// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html)
 ///
 /// ### See Also
-/// - ``dequantize(_:scales:biases:groupSize:bits:stream:)``
+/// - ``dequantized(_:scales:biases:groupSize:bits:stream:)``
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
-public func quantize(
+public func quantized(
     _ w: MLXArray, groupSize: Int = 64, bits: Int = 4, stream: StreamOrDevice = .default
 ) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray) {
     let result = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)!
@@ -1129,8 +1129,8 @@ public func quantize(
 /// unsigned 32 bit integer.
 ///
 /// ### See Also
-/// - ``dequantize(_:scales:biases:groupSize:bits:stream:)``
-/// - ``quantize(_:groupSize:bits:stream:)``
+/// - ``dequantized(_:scales:biases:groupSize:bits:stream:)``
+/// - ``quantized(_:groupSize:bits:stream:)``
 public func quantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray, transpose: Bool = true,
     groupSize: Int = 64, bits: Int = 4, stream: StreamOrDevice = .default
@@ -1346,9 +1346,9 @@ public func softMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 ///
 /// ### See Also
 /// - <doc:sorting>
-/// - ``sort(_:stream:)``
+/// - ``sorted(_:stream:)``
 /// - ``argSort(_:axis:stream:)``
-public func sort(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
+public func sorted(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sort(array.ctx, axis.int32, stream.ctx))
 }
 
@@ -1360,9 +1360,9 @@ public func sort(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default
 ///
 /// ### See Also
 /// - <doc:sorting>
-/// - ``sort(_:axis:stream:)``
+/// - ``sorted(_:axis:stream:)``
 /// - ``argSort(_:axis:stream:)``
-public func sort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+public func sorted(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sort_all(array.ctx, stream.ctx))
 }
 
@@ -1370,7 +1370,7 @@ public func sort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///
 /// ### See Also
 /// - <doc:shapes>
-public func stack(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default)
+public func stacked(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     let vector_array = new_mlx_vector_array(arrays)
@@ -1447,7 +1447,7 @@ public func takeAlong(
 public func takeAlong(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    let array = array.reshape([-1], stream: stream)
+    let array = array.reshaped([-1], stream: stream)
     return MLXArray(mlx_take_along_axis(array.ctx, indices.ctx, 0, stream.ctx))
 }
 
