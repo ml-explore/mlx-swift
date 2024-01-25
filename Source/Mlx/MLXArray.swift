@@ -1,8 +1,8 @@
-import Foundation
 import Cmlx
+import Foundation
 
 public final class MLXArray {
-    
+
     /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
     public var ctx: mlx_array
 
@@ -12,14 +12,14 @@ public final class MLXArray {
     public init(_ ctx: mlx_array) {
         self.ctx = ctx
     }
-    
+
     deinit {
         mlx_free(ctx)
     }
-        
+
     /// Number of bytes per element
     public var itemSize: Int { mlx_array_itemsize(ctx) }
-    
+
     /// Total number of elements in the array
     ///
     /// ```swift
@@ -28,7 +28,7 @@ public final class MLXArray {
     /// // 12
     /// ```
     public var size: Int { mlx_array_size(ctx) }
-    
+
     /// Number of elements in the 0th dimension.
     ///
     /// For example, these would be equivalent:
@@ -44,10 +44,10 @@ public final class MLXArray {
     /// }
     /// ```
     public var count: Int { dim(0) }
-    
+
     /// Number of bytes in the array.
     public var nbytes: Int { mlx_array_nbytes(ctx) }
-    
+
     /// Number of dimensions in the array.
     ///
     /// ```swift
@@ -56,7 +56,7 @@ public final class MLXArray {
     /// // 2
     /// ```
     public var ndim: Int { mlx_array_ndim(ctx) }
-    
+
     /// Data type of the elements in the array.
     ///
     /// ```swift
@@ -65,7 +65,7 @@ public final class MLXArray {
     /// // .int64 (aka Int.dtype)
     /// ```
     public var dtype: DType { DType(mlx_array_get_dtype(ctx)) }
-    
+
     /// Dimensions of the array.
     ///
     /// ```swift
@@ -79,7 +79,7 @@ public final class MLXArray {
         let cShape = mlx_array_shape(ctx)!
         return (0 ..< ndim).map { Int(cShape[$0]) }
     }
-    
+
     /// Strides of the array.
     ///
     /// ```swift
@@ -93,7 +93,7 @@ public final class MLXArray {
         let strides = mlx_array_strides(ctx)!
         return (0 ..< ndim).map { Int(strides[$0]) }
     }
-    
+
     /// Return the scalar value of the array.
     ///
     /// It is a contract violation to call this on an array with more than one element
@@ -108,7 +108,7 @@ public final class MLXArray {
     public func item<T: HasDType>() -> T {
         item(T.self)
     }
-    
+
     /// Return the scalar value of the array.
     ///
     /// It is a contract violation to call this on an array with more than one element
@@ -122,7 +122,7 @@ public final class MLXArray {
     /// ```
     public func item<T: HasDType>(_ type: T.Type) -> T {
         precondition(T.dtype == self.dtype, "\(T.dtype) != \(self.dtype)")
-        
+
         switch type {
         case is Bool.Type: return mlx_array_item_bool(ctx) as! T
         case is UInt8.Type: return mlx_array_item_uint8(ctx) as! T
@@ -141,7 +141,7 @@ public final class MLXArray {
             fatalError("Unable to get item() as \(type)")
         }
     }
-        
+
     /// Read a dimension of the array.
     ///
     /// ```swift
@@ -152,7 +152,7 @@ public final class MLXArray {
     public func dim(_ dim: Int) -> Int {
         Int(mlx_array_dim(ctx, MLX.resolve(axis: dim, ndim: mlx_array_ndim(ctx)).int32))
     }
-    
+
     /// Read a dimension of the array.
     ///
     /// Convenience override for `Int32`.
@@ -167,30 +167,30 @@ public final class MLXArray {
     public func dim(_ dim: Int32) -> Int32 {
         mlx_array_dim(ctx, MLX.resolve(axis: Int(dim), ndim: mlx_array_ndim(ctx)).int32)
     }
-    
+
     public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {
         guard type != self.dtype else { return self }
         return MLXArray(mlx_astype(ctx, type.cmlxDtype, stream.ctx))
     }
-    
+
     public func asType<T: HasDType>(_ type: T.Type, stream: StreamOrDevice = .default) -> MLXArray {
         asType(T.dtype, stream: stream)
     }
-    
+
     /// Return the contents as a single contiguous 1d `Swift.Array`.
     ///
     /// Note: because the number of dimensions is dynamic, this cannot produce a multi-dimensional
     /// array.
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
         precondition(T.dtype == self.dtype, "\(T.dtype) != \(self.dtype)")
-        
+
         // make sure the contents are realized
         mlx_array_eval(ctx)
 
         func convert(_ ptr: UnsafePointer<T>) -> [T] {
             Array(UnsafeBufferPointer(start: ptr, count: self.size))
         }
-        
+
         switch type {
         case is Bool.Type: return convert(mlx_array_data_bool(ctx) as! UnsafePointer<T>)
         case is UInt8.Type: return convert(mlx_array_data_uint8(ctx) as! UnsafePointer<T>)
@@ -215,7 +215,7 @@ public final class MLXArray {
             fatalError("Unable to get item() as \(type)")
         }
     }
-    
+
     /// Evaluate the array.
     ///
     /// MLX is lazy and arrays are not fully realized until they are evaluated.  This method is typically
@@ -223,7 +223,7 @@ public final class MLXArray {
     public func eval() {
         mlx_array_eval(ctx)
     }
-    
+
     /// Replace the contents with a reference to a new array.
     public func update(_ array: MLXArray) {
         mlx_retain(array.ctx)

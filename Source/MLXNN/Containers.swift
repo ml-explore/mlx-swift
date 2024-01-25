@@ -1,10 +1,10 @@
 import Foundation
 import MLX
 
-public class Sequential : Module, UnaryModel {
-    
+public class Sequential: Module, UnaryModel {
+
     let layers: [UnaryModel]
-    
+
     public init(layers: [UnaryModel]) {
         self.layers = layers
     }
@@ -42,37 +42,38 @@ public class Sequential : Module, UnaryModel {
 
 @resultBuilder
 public struct SequentialBuilder {
-    
+
     public static func buildArray(_ array: [UnaryModel]) -> [UnaryModel] {
         array
     }
-    
+
     public static func buildArray(_ value: [[UnaryModel]]) -> [UnaryModel] {
         value.flatMap { $0 }
     }
-    
+
     public static func buildExpression(_ value: UnaryModel) -> [UnaryModel] {
         [value]
     }
-    
-    public static func buildPartialBlock(accumulated: [UnaryModel], next: [UnaryModel]) -> [UnaryModel] {
+
+    public static func buildPartialBlock(accumulated: [UnaryModel], next: [UnaryModel])
+        -> [UnaryModel]
+    {
         accumulated + next
     }
-    
+
     public static func buildPartialBlock(first: [UnaryModel]) -> [UnaryModel] {
         first
     }
-    
+
     public static func buildEither(first: [UnaryModel]) -> [UnaryModel] {
         first
     }
-    
+
     public static func buildEither(second: [UnaryModel]) -> [UnaryModel] {
         second
     }
-    
+
     public static func buildOptional(_ component: [UnaryModel]?) -> [UnaryModel] {
         [Identity()]
     }
 }
-

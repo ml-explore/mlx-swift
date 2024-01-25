@@ -3,21 +3,21 @@ import Foundation
 class Cache<Key: Hashable, Element> {
 
     let queue = DispatchQueue(label: "Cache")
-    
+
     let maxSize: Int
-    
+
     struct Entry {
         let value: Element
         let serial: Int
     }
-    
-    var contents = [Key:Entry]()
+
+    var contents = [Key: Entry]()
     var serial = 0
-    
+
     init(maxSize: Int = 10) {
         self.maxSize = maxSize
     }
-    
+
     subscript(key: Key) -> Element? {
         get {
             queue.sync {
@@ -34,7 +34,7 @@ class Cache<Key: Hashable, Element> {
                     }
                     contents[key] = Entry(value: newValue, serial: serial)
                     serial += 1
-                    
+
                     // if too large, remove oldest
                     if contents.count > maxSize {
                         let minKey = contents.min { lhs, rhs in

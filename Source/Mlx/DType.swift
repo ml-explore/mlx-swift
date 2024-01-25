@@ -3,7 +3,7 @@ import Cmlx
 /// Enum wrapping `Cmlx.mlx_array_dtype`.
 ///
 /// This is typically not used directly, rather it is inferred from parameters that are ``HasDType``.
-public enum DType : Sendable, Hashable {
+public enum DType: Sendable, Hashable {
     case bool
     case uint8
     case uint16
@@ -17,7 +17,7 @@ public enum DType : Sendable, Hashable {
     case float32
     case bfloat16
     case complex64
-    
+
     init(_ cmlxDtype: mlx_array_dtype) {
         switch cmlxDtype {
         case MLX_BOOL: self = .bool
@@ -37,7 +37,7 @@ public enum DType : Sendable, Hashable {
             fatalError("Unsupported dtype: \(cmlxDtype)")
         }
     }
-    
+
     public var cmlxDtype: mlx_array_dtype {
         switch self {
         case .bool: MLX_BOOL
@@ -55,7 +55,7 @@ public enum DType : Sendable, Hashable {
         case .complex64: MLX_COMPLEX64
         }
     }
-    
+
     public var isFloatingPoint: Bool {
         switch self {
         case .float16, .float32, .bfloat16, .complex64: true
@@ -70,8 +70,8 @@ public enum DType : Sendable, Hashable {
 /// where possible.
 ///
 /// See also ``ScalarOrArray``.
-public protocol HasDType : ScalarOrArray {
-    
+public protocol HasDType: ScalarOrArray {
+
     /// Return the type's ``DType``
     static var dtype: DType { get }
 }
@@ -82,51 +82,51 @@ extension HasDType {
     }
 }
 
-extension Bool : HasDType {
+extension Bool: HasDType {
     static public var dtype: DType { .bool }
 }
 
-extension Int : HasDType {
+extension Int: HasDType {
     static public var dtype: DType { .int64 }
 }
 
-extension Int8 : HasDType {
+extension Int8: HasDType {
     static public var dtype: DType { .int8 }
 }
-extension Int16 : HasDType {
+extension Int16: HasDType {
     static public var dtype: DType { .int16 }
 }
-extension Int32 : HasDType {
+extension Int32: HasDType {
     static public var dtype: DType { .int32 }
 }
-extension Int64 : HasDType {
+extension Int64: HasDType {
     static public var dtype: DType { .int64 }
 }
 
-extension UInt8 : HasDType {
+extension UInt8: HasDType {
     static public var dtype: DType { .uint8 }
 }
-extension UInt16 : HasDType {
+extension UInt16: HasDType {
     static public var dtype: DType { .uint16 }
 }
-extension UInt32 : HasDType {
+extension UInt32: HasDType {
     static public var dtype: DType { .uint32 }
 }
-extension UInt64 : HasDType {
+extension UInt64: HasDType {
     static public var dtype: DType { .uint64 }
 }
 
-extension Float16 : HasDType {
+extension Float16: HasDType {
     static public var dtype: DType { .float16 }
-    
+
     public func asMLXArray(dtype: DType?) -> MLXArray {
         let dtype = dtype ?? Self.dtype
         return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
     }
 }
-extension Float32 : HasDType {
+extension Float32: HasDType {
     static public var dtype: DType { .float32 }
-    
+
     public func asMLXArray(dtype: DType?) -> MLXArray {
         let dtype = dtype ?? Self.dtype
         return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
@@ -152,19 +152,19 @@ public protocol ScalarOrArray {
     func asMLXArray(dtype: DType?) -> MLXArray
 }
 
-extension Double : ScalarOrArray {
+extension Double: ScalarOrArray {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         MLXArray(Float(self), dtype: dtype ?? .float32)
     }
 }
 
-extension MLXArray : ScalarOrArray {
+extension MLXArray: ScalarOrArray {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         self
     }
 }
 
-extension Array : ScalarOrArray where Element: HasDType {
+extension Array: ScalarOrArray where Element: HasDType {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         MLXArray(self).asType(dtype ?? Element.dtype)
     }
@@ -188,7 +188,8 @@ extension Array : ScalarOrArray where Element: HasDType {
 /// - If neither is an array convert to arrays but leave their types alone
 ///
 /// See also ``ScalarOrArray``.
-public func toArrays<T1: ScalarOrArray, T2: ScalarOrArray>(_ a: T1, _ b: T2) -> (MLXArray, MLXArray) {
+public func toArrays<T1: ScalarOrArray, T2: ScalarOrArray>(_ a: T1, _ b: T2) -> (MLXArray, MLXArray)
+{
     if let a = a as? MLXArray {
         if let b = b as? MLXArray {
             return (a, b)

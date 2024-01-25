@@ -3,7 +3,7 @@ import MLX
 import MLXRandom
 
 /// A placeholder identity operator that is argument-insensitive.
-public class Identity : Module, UnaryModel {
+public class Identity: Module, UnaryModel {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         x
     }
@@ -27,11 +27,11 @@ public class Identity : Module, UnaryModel {
 /// W = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions])
 /// b = MLXRandom.uniform(-scale ..< scale, [outputDimensions])
 /// ```
-public class Linear : Module, UnaryModel {
+public class Linear: Module, UnaryModel {
 
     let weight: MLXArray
     let bias: MLXArray?
-    
+
     public var shape: (Int, Int) {
         (weight.dim(0), weight.dim(1))
     }
@@ -47,16 +47,16 @@ public class Linear : Module, UnaryModel {
         }
         super.init()
     }
-    
+
     internal init(weight: MLXArray, bias: MLXArray? = nil) {
         self.weight = weight
         self.bias = bias
     }
-    
+
     public override func describeExtra(_ indent: Int) -> String {
         "(inputDimensions=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
-    
+
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         var result = x.matmul(weight.T)
         if let bias {
@@ -66,14 +66,17 @@ public class Linear : Module, UnaryModel {
     }
 }
 
-public class Bilinear : Module {
-    
+public class Bilinear: Module {
+
     let weight: MLXArray
     let bias: MLXArray?
- 
-    public init(_ inputDimensions1: Int, _ inputDimensions2: Int, _ outputDimensions: Int, bias: Bool = true) {
+
+    public init(
+        _ inputDimensions1: Int, _ inputDimensions2: Int, _ outputDimensions: Int, bias: Bool = true
+    ) {
         let scale = sqrt(1.0 / Float(inputDimensions1))
-        self.weight = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions2, inputDimensions1])
+        self.weight = MLXRandom.uniform(
+            -scale ..< scale, [outputDimensions, inputDimensions2, inputDimensions1])
         if bias {
             self.bias = MLXRandom.uniform(-scale ..< scale, [outputDimensions])
         } else {
@@ -81,11 +84,11 @@ public class Bilinear : Module {
         }
         super.init()
     }
-    
+
     public override func describeExtra(_ indent: Int) -> String {
         "(inputDimensions1=\(weight.dim(2)), inputDimensions2=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
-    
+
     public func callAsFunction(_ x1: MLXArray, _ x2: MLXArray) -> MLXArray {
         // normalize shapes
         let out = weight.dim(0)
@@ -102,14 +105,13 @@ public class Bilinear : Module {
         y = y.reshape(-1, out, in2).swapAxes(-2, -1)
         y = x2.matmul(y)
         y = y.squeeze(axis: 1)
-        
+
         // reset the shape
         y = y.reshape(xShape + [out])
-        
+
         if let bias {
             y = y + bias
         }
         return y
     }
 }
-

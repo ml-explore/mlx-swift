@@ -1,5 +1,5 @@
-import Foundation
 import Cmlx
+import Foundation
 
 @inline(__always)
 func mlx_free(_ ptr: OpaquePointer) {

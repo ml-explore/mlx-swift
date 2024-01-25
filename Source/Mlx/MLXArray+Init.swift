@@ -1,5 +1,5 @@
-import Foundation
 import Cmlx
+import Foundation
 
 private func shapePrecondition(shape: [Int]?, count: Int) {
     if let shape {
@@ -9,7 +9,7 @@ private func shapePrecondition(shape: [Int]?, count: Int) {
 }
 
 extension MLXArray {
-    
+
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
     ///
     /// ```swift
@@ -55,11 +55,12 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     public convenience init<T: HasDType>(_ value: T) {
-        self.init(withUnsafePointer(to: value) { ptr in
-            mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
-        })
+        self.init(
+            withUnsafePointer(to: value) { ptr in
+                mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
+            })
     }
-    
+
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value
     /// with a conversion to a given ``DType``.
     ///
@@ -81,9 +82,10 @@ extension MLXArray {
             case is Float32.Type:
                 self.init(value as! Float32)
             default:
-                self.init(withUnsafePointer(to: value) { ptr in
-                    mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
-                })
+                self.init(
+                    withUnsafePointer(to: value) { ptr in
+                        mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
+                    })
             }
         } else {
             if let v = value as? (any BinaryFloatingPoint) {
@@ -114,7 +116,7 @@ extension MLXArray {
                 case .bfloat16, .complex64:
                     fatalError("dtype \(dtype) not supported")
                 }
-                
+
             } else if let v = value as? (any BinaryInteger) {
                 // Int-ish source
                 switch dtype {
@@ -143,14 +145,14 @@ extension MLXArray {
                 case .bfloat16, .complex64:
                     fatalError("dtype \(dtype) not supported")
                 }
-                
+
             } else {
                 // e.g. Bool -> Int
                 fatalError("unable to coerce \(T.dtype) to \(dtype)")
             }
         }
     }
-    
+
     /// Initalizer allowing creation of `MLXArray` from an array of `HasDType` values with
     /// an optional shape.
     ///
@@ -163,12 +165,14 @@ extension MLXArray {
     /// - <doc:initialization>
     public convenience init<T: HasDType>(_ value: [T], _ shape: [Int]? = nil) {
         shapePrecondition(shape: shape, count: value.count)
-        self.init(value.withUnsafeBufferPointer { ptr in
-            let shape = shape ?? [value.count]
-            return mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
-        })
+        self.init(
+            value.withUnsafeBufferPointer { ptr in
+                let shape = shape ?? [value.count]
+                return mlx_array_from_data(
+                    ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
+            })
     }
-    
+
     /// Initalizer allowing creation of `MLXArray` from an array of `Double` values with
     /// an optional shape.
     ///
@@ -183,14 +187,19 @@ extension MLXArray {
     public convenience init(converting value: [Double], _ shape: [Int]? = nil) {
         shapePrecondition(shape: shape, count: value.count)
         let floats = value.map { Float($0) }
-        self.init(floats.withUnsafeBufferPointer { ptr in
-            let shape = shape ?? [floats.count]
-            return mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, Float.dtype.cmlxDtype)
-        })
+        self.init(
+            floats.withUnsafeBufferPointer { ptr in
+                let shape = shape ?? [floats.count]
+                return mlx_array_from_data(
+                    ptr.baseAddress!, shape.asInt32, shape.count.int32, Float.dtype.cmlxDtype)
+            })
     }
-    
+
     /// Unavailable init to redirect for initializing with a `[Double]`
-    @available(*, unavailable, renamed: "MLXArray(converting:shape:)", message: "Use MLXArray(converting: [1.0, 2.0, ...]) instead")
+    @available(
+        *, unavailable, renamed: "MLXArray(converting:shape:)",
+        message: "Use MLXArray(converting: [1.0, 2.0, ...]) instead"
+    )
     public convenience init(_ value: [Double], _ shape: [Int]? = nil) {
         fatalError("unavailable")
     }
@@ -205,15 +214,18 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    public convenience init<S: Sequence>(_ sequence: S, _ shape: [Int]? = nil) where S.Element: HasDType {
+    public convenience init<S: Sequence>(_ sequence: S, _ shape: [Int]? = nil)
+    where S.Element: HasDType {
         let value = Array(sequence)
         shapePrecondition(shape: shape, count: value.count)
-        self.init(value.withUnsafeBufferPointer { ptr in
-            let shape = shape ?? [value.count]
-            return mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, S.Element.dtype.cmlxDtype)
-        })
+        self.init(
+            value.withUnsafeBufferPointer { ptr in
+                let shape = shape ?? [value.count]
+                return mlx_array_from_data(
+                    ptr.baseAddress!, shape.asInt32, shape.count.int32, S.Element.dtype.cmlxDtype)
+            })
     }
-    
+
     /// Initalizer allowing creation of `MLXArray` from a buffer of `HasDType` values with
     /// an optional shape.
     ///
@@ -229,9 +241,11 @@ extension MLXArray {
     public convenience init<T: HasDType>(_ ptr: UnsafeBufferPointer<T>, _ shape: [Int]? = nil) {
         shapePrecondition(shape: shape, count: ptr.count)
         let shape = shape ?? [ptr.count]
-        self.init(mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype))
+        self.init(
+            mlx_array_from_data(
+                ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype))
     }
-    
+
     /// Initalizer allowing creation of `MLXArray` from a `UnsafeRawBufferPointer` filled
     /// with bytes of `HasDType` values with an optional shape.
     ///
@@ -242,7 +256,9 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    public convenience init<T: HasDType>(_ ptr: UnsafeRawBufferPointer, _ shape: [Int]? = nil, type: T.Type) {
+    public convenience init<T: HasDType>(
+        _ ptr: UnsafeRawBufferPointer, _ shape: [Int]? = nil, type: T.Type
+    ) {
         let buffer = ptr.assumingMemoryBound(to: type)
         self.init(buffer, shape)
     }
@@ -258,20 +274,22 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     public convenience init<T: HasDType>(_ data: Data, _ shape: [Int]? = nil, type: T.Type) {
-        self.init(data.withUnsafeBytes { ptr in
-            let buffer = ptr.assumingMemoryBound(to: type)
-            shapePrecondition(shape: shape, count: buffer.count)
-            let shape = shape ?? [buffer.count]
-            return mlx_array_from_data(ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
-        })
+        self.init(
+            data.withUnsafeBytes { ptr in
+                let buffer = ptr.assumingMemoryBound(to: type)
+                shapePrecondition(shape: shape, count: buffer.count)
+                let shape = shape ?? [buffer.count]
+                return mlx_array_from_data(
+                    ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
+            })
     }
 
 }
 
 // MARK: - Expressible by literals
 
-extension MLXArray:  ExpressibleByArrayLiteral {
-    
+extension MLXArray: ExpressibleByArrayLiteral {
+
     // Note: MLXArray does not implement ExpressibleByFloatLiteral etc. because
     // we want to create arrays in the context of the other arrays.  For example:
     //
@@ -279,7 +297,7 @@ extension MLXArray:  ExpressibleByArrayLiteral {
     // let r = x + 2.5
     //
     // We expect r to have a dtype of float16.  See ``ScalarOrArray``.
-        
+
     /// Initalizer allowing creation of 1d `MLXArray` from an array literal.
     ///
     /// ```swift
@@ -297,9 +315,9 @@ extension MLXArray:  ExpressibleByArrayLiteral {
     public convenience init(arrayLiteral elements: Int32...) {
         let ctx = elements.withUnsafeBufferPointer { ptr in
             let shape = [Int32(elements.count)]
-            return mlx_array_from_data(ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)!
+            return mlx_array_from_data(
+                ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)!
         }
         self.init(ctx)
     }
 }
-

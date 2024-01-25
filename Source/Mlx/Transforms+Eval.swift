@@ -1,5 +1,5 @@
-import Foundation
 import Cmlx
+import Foundation
 
 /// Evaluate one or more `MLXArray`
 ///
@@ -43,11 +43,11 @@ public func eval(_ arrays: [MLXArray]) {
 /// - <doc:lazy-evaluation>
 public func eval(_ values: Any...) {
     var arrays = [MLXArray]()
-    
+
     for item in values {
         collect(item, into: &arrays)
     }
-    
+
     eval(arrays)
 }
 
@@ -56,11 +56,11 @@ public func eval(_ values: Any...) {
 /// See ``eval(_:)``
 public func eval(_ values: [Any]) {
     var arrays = [MLXArray]()
-    
+
     for item in values {
         collect(item, into: &arrays)
     }
-    
+
     eval(arrays)
 }
 
@@ -74,7 +74,7 @@ private func collect(_ item: Any, into arrays: inout [MLXArray]) {
         for item in v {
             collect(item, into: &arrays)
         }
-    case let v as [AnyHashable:Any]:
+    case let v as [AnyHashable: Any]:
         for item in v.values {
             collect(item, into: &arrays)
         }
