@@ -12,19 +12,17 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
     class ValueAndGradContainer {
         
         let valueAndGrad: mlx_closure_value_and_grad
-        let closure: mlx_closure
         
-        init(_ valueAndGrad: mlx_closure_value_and_grad, _ closure: mlx_closure) {
+        init(_ valueAndGrad: mlx_closure_value_and_grad) {
             self.valueAndGrad = valueAndGrad
-            self.closure = closure
         }
         
         deinit {
             mlx_free(valueAndGrad)
-            mlx_free(closure)
         }
         
         func callAsFunction(_ arrays: [MLXArray]) -> [MLXArray] {
+            print("callAsFunction")
             let input_vector = new_mlx_vector_array(arrays)
             defer { mlx_free(input_vector) }
             
@@ -41,7 +39,9 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
     }
     
     let valueAndGrad = mlx_value_and_grad(closure, argumentNumbers.asInt32, argumentNumbers.count)!
-    let container = ValueAndGradContainer(valueAndGrad, closure)
+    mlx_free(closure)
+    
+    let container = ValueAndGradContainer(valueAndGrad)
     
     return { [container] (arrays: [MLXArray]) in
         container(arrays)
@@ -56,10 +56,6 @@ private func new_mlx_closure(_ f: @escaping ([MLXArray]) -> [MLXArray]) -> mlx_c
         
         init(_ f: @escaping ([MLXArray]) -> [MLXArray]) {
             self.f = f
-        }
-        
-        static func free(_ pointer: UnsafeMutableRawPointer?) {
-            Unmanaged<ClosureCaptureState>.fromOpaque(pointer!).release()
         }
     }
 
