@@ -1,6 +1,24 @@
 import Foundation
 
-public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible {
+public protocol IndentedDescription: CustomStringConvertible {
+    func description(indent: Int) -> String
+}
+
+extension IndentedDescription {
+    public var description: String {
+        description(indent: 0)
+    }
+}
+
+public func indentedDescription(_ value: Any, _ indent: Int) -> String {
+    if let value = value as? IndentedDescription {
+        return value.description(indent: indent)
+    } else {
+        return String(describing: value)
+    }
+}
+
+public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     case none
     case value(Element)
     case array([NestedItem<Key, Element>])
@@ -165,7 +183,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible
         }
     }
 
-    public func description(_ indent: Int) -> String {
+    public func description(indent: Int) -> String {
         let indentString = String(repeating: " ", count: indent)
 
         let d =
@@ -174,27 +192,27 @@ public indirect enum NestedItem<Key: Hashable, Element>: CustomStringConvertible
                 "none"
 
             case .value(let element):
-                String(describing: element)
+                indentedDescription(element, indent + 2)
 
             case .array(let array):
-                "[\n" + indentString + "  "
-                    + array.map { $0.description(indent + 2) }.joined(
-                        separator: ",\n\(indentString)  ") + "\n" + indentString + "]"
+                "[\n" + indentString + "  " +
+                array.map {
+                    indentedDescription($0, indent + 2)
+                }
+                .joined(separator: ",\n\(indentString)  ") +
+                "\n" + indentString + "]"
 
             case .dictionary(let dictionary):
-                "[\n" + indentString + "  "
-                    + dictionary
-                    .sorted { lhs, rhs in String(describing: lhs.key) < String(describing: rhs.key)
-                    }
-                    .map { "\($0.key): \($0.value.description(indent + 2))" }.joined(
-                        separator: ",\n\(indentString)  ") + "\n" + indentString + "]"
+                "[\n" + indentString + "  " +
+                dictionary
+                    .sorted { lhs, rhs in String(describing: lhs.key) < String(describing: rhs.key) }
+                    .map {
+                        "\($0.key): \(indentedDescription($0.value, indent + 2))"
+                    }.joined(separator: ",\n\(indentString)  ") +
+                "\n" + indentString + "]"
             }
 
         return d
-    }
-
-    public var description: String {
-        description(0)
     }
 }
 
@@ -292,6 +310,12 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
             fatalError()
         }
     }
+    
+    static public func unflattened(_ flat: [Key:Element]) -> NestedDictionary<String, Element>
+    where Key == String {
+        unflattened(flat.map { $0 })
+    }
+
 }
 
 extension NestedDictionary: Equatable where Element: Equatable {

@@ -272,9 +272,10 @@ open class Module {
     }
 }
 
-extension Module: CustomStringConvertible {
+extension Module: IndentedDescription {
 
-    public func description(_ indent: Int) -> String {
+    public func description(indent: Int) -> String {
+        print("\(type(of: self)) \(indent)")
         var result = ""
 
         result += "\(String(describing: type(of: self)))\(describeExtra(indent))"
@@ -287,16 +288,12 @@ extension Module: CustomStringConvertible {
 
             result += " {\n"
             for (key, value) in kv {
-                result += "\(indentString)  \(key): \(value.description(indent + 2)),\n"
+                result += "\(indentString)  \(key): \(indentedDescription(value, indent + 2)),\n"
             }
             result += "\(indentString)}"
         }
 
         return result
-    }
-
-    public var description: String {
-        description(0)
     }
 }
 
