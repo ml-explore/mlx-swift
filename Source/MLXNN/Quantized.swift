@@ -78,6 +78,6 @@ public class QuantizedLinear: Linear {
             Self.from(linear: m, groupSize: groupSize, bits: bits)
         }
 
-        try! model.update(modules: updates)
+        model.update(modules: updates)
     }
 }
