@@ -812,31 +812,22 @@ public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLX
 public func loadArrays(url: URL, stream: StreamOrDevice = .default) throws -> [String:MLXArray] {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
+    let filename = mlx_string_new(path.cString(using: .utf8))!
+    defer { mlx_free(filename) }
     
+
     switch url.pathExtension {
     case "gguf":
-        let filename = mlx_string_new(path.cString(using: .utf8))!
-        defer { mlx_free(filename) }
-        
         let mlx_map = mlx_load_gguf(filename, stream.ctx)!
         defer { mlx_free(mlx_map) }
         
         return mlx_map_values(mlx_map)
 
     case "safetensors":
-        if let fp = fopen(path, "r") {
-            defer { fclose(fp) }
-            
-            let mlx_map = mlx_load_safetensors_file(fp, stream.ctx)!
-            defer { mlx_free(mlx_map) }
-            
-            return mlx_map_values(mlx_map)
-
-        } else {
-            let message = String(cString: strerror(errno))
-            throw LoadSaveError.unableToOpen(url, message)
-        }
+        let mlx_map = mlx_load_safetensors(filename, stream.ctx)!
+        defer { mlx_free(mlx_map) }
         
+        return mlx_map_values(mlx_map)
     default:
         throw LoadSaveError.unknownExtension(url.pathExtension)
     }
