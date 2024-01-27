@@ -1,3 +1,5 @@
+// Copyright © 2024 Apple Inc.
+
 import Foundation
 
 public protocol IndentedDescription: CustomStringConvertible {

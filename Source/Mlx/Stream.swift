@@ -1,3 +1,5 @@
+// Copyright © 2024 Apple Inc.
+
 import Cmlx
 
 /// Parameter type for all MLX operations.
