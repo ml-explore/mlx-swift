@@ -109,8 +109,10 @@ extension MLXArray {
                     self.init(Int32(v))
                 case .int64:
                     self.init(Int64(v))
+#if !arch(x86_64)
                 case .float16:
                     self.init(Float16(v))
+#endif
                 case .float32:
                     self.init(Float32(v))
                 case .bfloat16, .complex64:
@@ -138,8 +140,10 @@ extension MLXArray {
                     self.init(Int32(v))
                 case .int64:
                     self.init(Int64(v))
+#if !arch(x86_64)
                 case .float16:
                     self.init(Float16(v))
+#endif
                 case .float32:
                     self.init(Float32(v))
                 case .bfloat16, .complex64:

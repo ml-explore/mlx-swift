@@ -116,6 +116,7 @@ extension UInt64: HasDType {
     static public var dtype: DType { .uint64 }
 }
 
+#if !arch(x86_64)
 extension Float16: HasDType {
     static public var dtype: DType { .float16 }
 
@@ -124,6 +125,7 @@ extension Float16: HasDType {
         return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
     }
 }
+#endif
 extension Float32: HasDType {
     static public var dtype: DType { .float32 }
 
