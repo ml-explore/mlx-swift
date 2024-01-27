@@ -490,12 +490,12 @@ public enum ModuleItem {
 }
 
 @propertyWrapper public class ParameterInfo<T> {
-    var value: T!
+    var value: T?
     let key: String?
 
     public var wrappedValue: T {
         get {
-            value
+            value!
         }
         set {
             value = newValue
@@ -526,12 +526,12 @@ private protocol TypeErasedSetter {
 }
 
 @propertyWrapper public class ModuleInfo<T>: TypeErasedSetter {
-    var module: T!
+    var module: T?
     let key: String?
 
     public var wrappedValue: T {
         get {
-            module
+            module!
         }
         set {
             module = newValue
