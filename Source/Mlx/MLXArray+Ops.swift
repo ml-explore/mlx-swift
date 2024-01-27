@@ -1,11 +1,13 @@
 import Cmlx
 import Foundation
 
-// MARK: - Operations
-
 infix operator ** : BitwiseShiftPrecedence
+infix operator .&& : LogicalConjunctionPrecedence
+infix operator .|| : LogicalDisjunctionPrecedence
 
 extension MLXArray {
+
+    // MARK: - Arithmetic Operators
 
     // Note: each of the operators needs three overloads.  Ideally we could write:
     //
@@ -101,24 +103,6 @@ extension MLXArray {
     public static prefix func - (lhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_negative(lhs.ctx, s.ctx))
-    }
-
-    /// Unary element-wise logical not.
-    ///
-    /// For example:
-    ///
-    /// ```swift
-    /// let a = MLXArray(0 ..< 12, [4, 3])
-    /// let b = a + 1
-    /// let r = !(a == b)
-    /// ```
-    ///
-    /// ### See Also
-    /// - <doc:logical>
-    /// - ``logicalNot(_:stream:)``
-    public static prefix func ! (lhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        return MLXArray(mlx_logical_not(lhs.ctx, s.ctx))
     }
 
     /// Element-wise multiplication.
@@ -250,6 +234,26 @@ extension MLXArray {
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
     }
+    
+    // MARK: - Logical Operators
+
+    /// Unary element-wise logical not.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// let a = MLXArray(0 ..< 12, [4, 3])
+    /// let b = a + 1
+    /// let r = .!(a == b)
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:logical>
+    /// - ``logicalNot(_:stream:)``
+    public static prefix func .! (lhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        return MLXArray(mlx_logical_not(lhs.ctx, s.ctx))
+    }
 
     /// Element-wise equality.
     ///
@@ -261,7 +265,7 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a == b).all().item() {
+    /// if (a .== b).all().item() {
     ///     ...
     /// }
     /// ```
@@ -271,12 +275,12 @@ extension MLXArray {
     /// - ``allClose(_:rtol:atol:stream:)``
     /// - ``arrayEqual(_:equalNAN:stream:)``
     /// - ``allClose(_:_:rtol:atol:stream:)``
-    public static func == (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .== (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func == <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func .== <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -292,7 +296,7 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a <= b).all().item() {
+    /// if (a .<= b).all().item() {
     ///     ...
     /// }
     /// ```
@@ -300,12 +304,12 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:logical>
     /// - ``lessEqual(_:_:stream:)``
-    public static func <= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .<= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func <= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func .<= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -321,7 +325,7 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a >= b).all().item() {
+    /// if (a .>= b).all().item() {
     ///     ...
     /// }
     /// ```
@@ -329,12 +333,12 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:logical>
     /// - ``greaterEqual(_:_:stream:)``
-    public static func >= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .>= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func >= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func .>= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -350,7 +354,7 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a != b).all().item() {
+    /// if (a .!= b).all().item() {
     ///     ...
     /// }
     /// ```
@@ -358,12 +362,12 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:logical>
     /// - ``notEqual(_:_:stream:)``
-    public static func != (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .!= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func != <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func .!= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -379,7 +383,7 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a < b).all().item() {
+    /// if (a .< b).all().item() {
     ///     ...
     /// }
     /// ```
@@ -387,12 +391,12 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:logical>
     /// - ``less(_:_:stream:)``
-    public static func < (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .< (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func < <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func .< <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
@@ -408,7 +412,7 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a > b).all().item() {
+    /// if (a .> b).all().item() {
     ///     ...
     /// }
     /// ```
@@ -416,12 +420,12 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:logical>
     /// - ``greater(_:_:stream:)``
-    public static func > (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .> (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
     }
 
-    public static func > <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+    public static func .> <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
@@ -437,12 +441,12 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a < b) && ((a + 1) > b)
+    /// if (a .< b) .&& ((a + 1) .> b)
     /// ```
     ///
     /// ### See Also
     /// - <doc:logical>
-    public static func && (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .&& (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_and(lhs.ctx, rhs.ctx, s.ctx))
     }
@@ -457,14 +461,238 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a < b) || ((a + 1) > b)
+    /// if (a .< b) .|| ((a + 1) .> b)
     /// ```
     ///
     /// ### See Also
     /// - <doc:logical>
-    public static func || (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+    public static func .|| (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_or(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+}
+
+extension MLXArray {
+    
+    // MARK: - Logical Operator Deprecations
+
+    // deprecations to help users find the right names.
+    
+    // variant that returns MLXArray
+    
+    @available(
+        *, unavailable, renamed: ".!",
+        message: "See the article on logical operations for more info."
+    )
+    public static prefix func ! (lhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".==",
+        message: "See the article on logical operations for more info."
+    )
+    public static func == (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".==",
+        message: "See the article on logical operations for more info."
+    )
+    public static func == <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<=",
+        message: "See the article on logical operations for more info."
+    )
+    public static func <= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<=",
+        message: "See the article on logical operations for more info."
+    )
+    public static func <= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>=",
+        message: "See the article on logical operations for more info."
+    )
+    public static func >= (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>=",
+        message: "See the article on logical operations for more info."
+    )
+    public static func >= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".!=",
+        message: "See the article on logical operations for more info."
+    )
+    public static func != (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".!=",
+        message: "See the article on logical operations for more info."
+    )
+    public static func != <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<",
+        message: "See the article on logical operations for more info."
+    )
+    public static func < (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<",
+        message: "See the article on logical operations for more info."
+    )
+    public static func < <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>",
+        message: "See the article on logical operations for more info."
+    )
+    public static func > (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>",
+        message: "See the article on logical operations for more info."
+    )
+    public static func > <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".&&",
+        message: "See the article on logical operations for more info."
+    )
+    public static func && (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".||",
+        message: "See the article on logical operations for more info."
+    )
+    public static func || (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        fatalError("unavailable")
+    }
+
+    // variant that returns bool
+    
+    @available(
+        *, unavailable, renamed: ".!",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static prefix func ! (lhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".==",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func == (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".==",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func == <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<=",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func <= (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<=",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func <= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>=",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func >= (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>=",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func >= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".!=",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func != (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".!=",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func != <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func < (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".<",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func < <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func > (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".>",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func > <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".&&",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func && (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
+    }
+    @available(
+        *, unavailable, renamed: ".||",
+        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+    )
+    public static func || (lhs: MLXArray, rhs: MLXArray) -> Bool {
+        fatalError("unavailable")
     }
 
 }

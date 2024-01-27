@@ -63,7 +63,7 @@ public class MultiHeadAttention: Module {
 
     public static func createAdditiveCausalMask(_ n: Int, dtype: DType = .float32) -> MLXArray {
         let indices = MLXArray(0 ..< n)
-        var mask = expandedDimensions(indices, axis: 1) < expandedDimensions(indices, axis: 0)
+        var mask = expandedDimensions(indices, axis: 1) .< expandedDimensions(indices, axis: 0)
         mask = mask.asType(dtype) * -1e9
         return mask
     }

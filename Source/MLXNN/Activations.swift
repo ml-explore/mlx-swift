@@ -14,7 +14,7 @@ public func logSoftMax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
 }
 
 public func elu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
-    MLX.where(x > 0, x, alpha * (exp(x) - 1))
+    MLX.where(x .> 0, x, alpha * (exp(x) - 1))
 }
 
 public func relu6(_ x: MLXArray) -> MLXArray {
@@ -59,7 +59,7 @@ public func glu(_ x: MLXArray, axis: Int = -1) -> MLXArray {
 }
 
 public func step(_ x: MLXArray, threshold: Float = 0.0) -> MLXArray {
-    MLX.where(x > threshold, 1, 0)
+    MLX.where(x .> threshold, 1, 0)
 }
 
 public func selu(_ x: MLXArray) -> MLXArray {

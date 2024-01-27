@@ -47,7 +47,7 @@ class MLXArrayOpsTests : XCTestCase {
     func testOpsLogical() {
         let a = MLXArray([1, 2, 3])
         
-        let r = (a < (a + 1))
+        let r = (a .< (a + 1))
         
         // make sure everything got hooked up
         XCTAssertEqual(r.shape, [3])
@@ -59,7 +59,7 @@ class MLXArrayOpsTests : XCTestCase {
     func testOpsLogicalBoolContext() {
         let a = MLXArray([1, 2, 3])
         
-        if (a < (a + 1)).all().item() {
+        if (a .< (a + 1)).all().item() {
             // expected
         } else {
             XCTFail("should be true")
