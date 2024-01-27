@@ -68,7 +68,7 @@ private func collect(_ item: Any, into arrays: inout [MLXArray]) {
     switch item {
     case let v as NestedDictionary<String, MLXArray>:
         arrays.append(contentsOf: v.flattened().map { $0.1 })
-        
+
     case let v as MLXArray:
         arrays.append(v)
     case let v as [MLXArray]:

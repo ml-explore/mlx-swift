@@ -234,7 +234,7 @@ extension MLXArray {
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
     }
-    
+
     // MARK: - Logical Operators
 
     /// Unary element-wise logical not.
@@ -474,13 +474,13 @@ extension MLXArray {
 }
 
 extension MLXArray {
-    
+
     // MARK: - Logical Operator Deprecations
 
     // deprecations to help users find the right names.
-    
+
     // variant that returns MLXArray
-    
+
     @available(
         *, unavailable, renamed: ".!",
         message: "See the article on logical operations for more info."
@@ -588,108 +588,123 @@ extension MLXArray {
     }
 
     // variant that returns bool
-    
+
     @available(
         *, unavailable, renamed: ".!",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static prefix func ! (lhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".==",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func == (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".==",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func == <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".<=",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func <= (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".<=",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func <= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".>=",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func >= (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".>=",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func >= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".!=",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func != (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".!=",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func != <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".<",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func < (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".<",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func < <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".>",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func > (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".>",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func > <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".&&",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func && (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
     }
     @available(
         *, unavailable, renamed: ".||",
-        message: "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
+        message:
+            "See the article on logical operations for more info and the article on lazy evaluation for cautions of using this in a boolean context."
     )
     public static func || (lhs: MLXArray, rhs: MLXArray) -> Bool {
         fatalError("unavailable")
@@ -2021,7 +2036,8 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:shapes>
     /// - ``swappedAxes(_:_:_:stream:)``
-    public func swappedAxes(_ axis1: Int, _ axis2: Int, stream: StreamOrDevice = .default) -> MLXArray
+    public func swappedAxes(_ axis1: Int, _ axis2: Int, stream: StreamOrDevice = .default)
+        -> MLXArray
     {
         MLXArray(mlx_swapaxes(ctx, axis1.int32, axis2.int32, stream.ctx))
     }

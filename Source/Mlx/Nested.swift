@@ -144,8 +144,9 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
         }
     }
 
-    private static func unflattenedRecurse(_ tree: [(String, Element)]) -> NestedItem<String, Element>
-    {
+    private static func unflattenedRecurse(_ tree: [(String, Element)]) -> NestedItem<
+        String, Element
+    > {
         if tree.count == 1 && tree[0].0 == "" {
             return .value(tree[0].1)
         }
@@ -195,21 +196,20 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
                 indentedDescription(element, indent + 2)
 
             case .array(let array):
-                "[\n" + indentString + "  " +
-                array.map {
-                    indentedDescription($0, indent + 2)
-                }
-                .joined(separator: ",\n\(indentString)  ") +
-                "\n" + indentString + "]"
+                "[\n" + indentString + "  "
+                    + array.map {
+                        indentedDescription($0, indent + 2)
+                    }
+                    .joined(separator: ",\n\(indentString)  ") + "\n" + indentString + "]"
 
             case .dictionary(let dictionary):
-                "[\n" + indentString + "  " +
-                dictionary
-                    .sorted { lhs, rhs in String(describing: lhs.key) < String(describing: rhs.key) }
+                "[\n" + indentString + "  "
+                    + dictionary
+                    .sorted { lhs, rhs in String(describing: lhs.key) < String(describing: rhs.key)
+                    }
                     .map {
                         "\($0.key): \(indentedDescription($0.value, indent + 2))"
-                    }.joined(separator: ",\n\(indentString)  ") +
-                "\n" + indentString + "]"
+                    }.joined(separator: ",\n\(indentString)  ") + "\n" + indentString + "]"
             }
 
         return d
@@ -310,8 +310,8 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
             fatalError()
         }
     }
-    
-    static public func unflattened(_ flat: [Key:Element]) -> NestedDictionary<String, Element>
+
+    static public func unflattened(_ flat: [Key: Element]) -> NestedDictionary<String, Element>
     where Key == String {
         unflattened(flat.map { $0 })
     }

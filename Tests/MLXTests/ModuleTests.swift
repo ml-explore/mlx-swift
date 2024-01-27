@@ -1,12 +1,13 @@
 import Foundation
-import XCTest
 import MLX
+import XCTest
+
 @testable import MLXNN
 
-class ModuleTests : XCTestCase {
-    
+class ModuleTests: XCTestCase {
+
     func newTestModule() -> Module {
-        class ChildTestModule : Module {
+        class ChildTestModule: Module {
             let p = MLXArray([100, 200])
             let i = 10
             let a = [
@@ -14,23 +15,23 @@ class ModuleTests : XCTestCase {
                 MLXArray([400, 500]),
             ]
             let d = [
-                "key": MLXArray([1, 2]),
+                "key": MLXArray([1, 2])
             ]
         }
-        
-        class TestModule : Module {
+
+        class TestModule: Module {
             let p = MLXArray([100, 200])
-            
+
             @ModuleInfo(key: "alternateChild")
             var child = ChildTestModule()
-            
+
             let d = [
                 "a": ChildTestModule(),
                 "b": ChildTestModule(),
             ]
-            
+
             let topLevelParam = 50.0
-            
+
             @ParameterInfo(key: "alternateNameArray")
             var topLevelArrayOfParams = [
                 MLXArray([200, 300]),
@@ -38,16 +39,16 @@ class ModuleTests : XCTestCase {
             ]
             @ParameterInfo(key: "alternateNameDict")
             var topLevelDictionaryOfParams = [
-                "key": MLXArray([1, 2]),
+                "key": MLXArray([1, 2])
             ]
         }
-        
+
         return TestModule()
     }
-    
+
     func testModuleDescription() {
         let m = newTestModule()
-        
+
         let expected =
             """
             TestModule(topLevelParam=50.0) {
@@ -66,7 +67,7 @@ class ModuleTests : XCTestCase {
     func testNested() {
         let m = newTestModule()
         let v = m.filterMap(filter: Module.filterAll)
-        
+
         let expected =
             """
             [
@@ -124,12 +125,12 @@ class ModuleTests : XCTestCase {
 
     func testModuleItems() {
         let m = newTestModule()
-        
+
         // all the ivars from TestModule
         let t = m.items()
-        
+
         XCTAssertEqual(t.count, 6)
-        
+
         for (k, v) in t {
             switch (k, v) {
             case ("p", .parameters): break
@@ -146,16 +147,16 @@ class ModuleTests : XCTestCase {
 
     func testModuleParameters() {
         let m = newTestModule()
-        
+
         let p = m.parameters()
         XCTAssertEqual(p.count, 5)
-        
+
         for (k, v) in p {
             switch (k, v) {
             case ("p", .value): break
             case ("alternateNameArray", .array): break
             case ("alternateNameDict", .dictionary): break
-                
+
             case ("d", .dictionary): break
             case ("alternateChild", .dictionary): break
             default:
@@ -163,13 +164,13 @@ class ModuleTests : XCTestCase {
             }
         }
     }
-    
+
     func testChildren() {
         let m = newTestModule()
-        
+
         let c = m.children()
         XCTAssertEqual(c.count, 2)
-        
+
         for (k, v) in c {
             switch (k, v) {
             case ("alternateChild", .value): break
@@ -179,7 +180,7 @@ class ModuleTests : XCTestCase {
             }
         }
     }
-    
+
     func testSequentialBuilder() {
         let b = Bool.random()
         let s = Sequential {
@@ -197,46 +198,51 @@ class ModuleTests : XCTestCase {
     }
 
     func newStructureModule() -> Module {
-        
-        class Leaf : Module {
+
+        class Leaf: Module {
         }
 
-        class InteriorSingle : Module {
+        class InteriorSingle: Module {
             @ModuleInfo
             var child = Linear(10, 10)
         }
 
-        class InteriorMultiple : Module {
+        class InteriorMultiple: Module {
             @ModuleInfo
             var children = [
                 Linear(10, 10),
                 Linear(10, 10),
             ]
         }
-        
-        class StructureModel : Module {
+
+        class StructureModel: Module {
             let parameters = MLXArray(10)
-            
+
             let leaf = Leaf()
             let interior1 = InteriorSingle()
             let interior2 = InteriorMultiple()
-            
+
             @ModuleInfo
             var child = Linear(10, 10)
-            
+
             var nonWrappedChild = Linear(10, 10)
         }
-        
+
         return StructureModel()
     }
-    
+
     func testLeafModules() {
         let m = newStructureModule()
         let modules = m.leafModules()
         let v = Dictionary(uniqueKeysWithValues: modules.flattened())
-        
+
         XCTAssertEqual(v.count, 6)
-        XCTAssertEqual(Set(v.keys), Set(["child", "interior2.children.1", "leaf", "interior2.children.0", "interior1.child", "nonWrappedChild"]))
+        XCTAssertEqual(
+            Set(v.keys),
+            Set([
+                "child", "interior2.children.1", "leaf", "interior2.children.0", "interior1.child",
+                "nonWrappedChild",
+            ]))
     }
 
     func testChildren2() {
@@ -244,18 +250,19 @@ class ModuleTests : XCTestCase {
         // only the modules attached to the top level
         let modules = m.children()
         let v = Dictionary(uniqueKeysWithValues: modules.flattened())
-        
+
         XCTAssertEqual(v.count, 5)
-        XCTAssertEqual(Set(v.keys), Set(["child", "interior2", "leaf", "interior1", "nonWrappedChild"]))
+        XCTAssertEqual(
+            Set(v.keys), Set(["child", "interior2", "leaf", "interior1", "nonWrappedChild"]))
     }
-    
+
     func testUpdateModuleSameType() throws {
         // set a single module with same type
         let m = newStructureModule()
         var u = NestedDictionary<String, Module>()
         u["child"] = .value(Linear(4, 4))
         try m.update(modules: u)
-        
+
         let modules = m.children()
         if let child = modules["child"], let child = child.unwrap() as? Linear {
             // make sure it was updated
@@ -271,7 +278,7 @@ class ModuleTests : XCTestCase {
         var u = NestedDictionary<String, Module>()
         u["child"] = .value(QuantizedLinear(256, 256))
         try m.update(modules: u)
-        
+
         let modules = m.children()
         if let child = modules["child"], let child = child.unwrap() as? QuantizedLinear {
             // make sure it was updated
@@ -286,14 +293,14 @@ class ModuleTests : XCTestCase {
         let m = newStructureModule()
         var u = NestedDictionary<String, Module>()
         u["interior2"] = .dictionary([
-            "children" : .array([
+            "children": .array([
                 .value(Linear(5, 5)),
                 .value(Linear(5, 5)),
                 .value(Linear(5, 5)),
             ])
         ])
         try m.update(modules: u)
-        
+
         let modules = m.children()
         if let interior2 = modules["interior2"], let interior2 = interior2.unwrap() as? Module {
             let modules = interior2.children()
@@ -307,13 +314,13 @@ class ModuleTests : XCTestCase {
             XCTFail("interior2 is nil")
         }
     }
-    
+
     func testUpdateModuleNotWrapped() throws {
         // a module that doesn't have @ModuleInfo
         let m = newStructureModule()
         var u = NestedDictionary<String, Module>()
         u["nonWrappedChild"] = .value(Linear(4, 4))
-        
+
         do {
             try m.update(modules: u)
             XCTFail("should have thrown")
@@ -323,19 +330,19 @@ class ModuleTests : XCTestCase {
     }
 
     func testQuantize() throws {
-        class C : Module {
+        class C: Module {
             @ModuleInfo
             var child = Linear(256, 256)
-            
+
             var other = Sigmoid()
         }
-        class M : Module {
+        class M: Module {
             let module = C()
         }
-        
+
         let m = M()
         QuantizedLinear.quantize(model: m)
-        
+
         XCTAssertTrue(m.module.child is QuantizedLinear)
     }
 

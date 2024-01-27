@@ -117,14 +117,14 @@ extension UInt64: HasDType {
 }
 
 #if !arch(x86_64)
-extension Float16: HasDType {
-    static public var dtype: DType { .float16 }
+    extension Float16: HasDType {
+        static public var dtype: DType { .float16 }
 
-    public func asMLXArray(dtype: DType?) -> MLXArray {
-        let dtype = dtype ?? Self.dtype
-        return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
+        public func asMLXArray(dtype: DType?) -> MLXArray {
+            let dtype = dtype ?? Self.dtype
+            return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : Self.dtype)
+        }
     }
-}
 #endif
 extension Float32: HasDType {
     static public var dtype: DType { .float32 }

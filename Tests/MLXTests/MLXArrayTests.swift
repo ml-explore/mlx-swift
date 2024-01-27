@@ -1,12 +1,13 @@
 import Foundation
 import XCTest
+
 @testable import MLX
 
-class MLXArrayTests : XCTestCase {
-    
+class MLXArrayTests: XCTestCase {
+
     func testArrayProperties() {
         let a = MLXArray(converting: [3.5, 4.5, 5.5, 7.0, 9.4, 10.0], [2, 3, 1])
-        
+
         XCTAssertEqual(a.itemSize, 4)
         XCTAssertEqual(a.size, 6)
         XCTAssertEqual(a.count, 2)
@@ -15,7 +16,7 @@ class MLXArrayTests : XCTestCase {
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(a.shape, [2, 3, 1])
     }
-    
+
     func testArrayRead() {
         let a = MLXArray(0 ..< 12, [4, 3])
 

@@ -1,9 +1,9 @@
 import Foundation
-import XCTest
 import MLX
+import XCTest
 
-class NestedTests : XCTestCase {
-    
+class NestedTests: XCTestCase {
+
     static let defaultValues = [10, 1, 2, 1, 2, 3, 10, 20, 30]
 
     func newNested(values: [Int] = defaultValues) -> NestedDictionary<String, Int> {
@@ -23,21 +23,21 @@ class NestedTests : XCTestCase {
         ])
         return result
     }
-    
+
     func testCollection() {
         let n = newNested()
         XCTAssertEqual(n.count, 4)
         XCTAssertEqual(Set(n.keys), Set(["value", "array1", "array2", "dictionary"]))
     }
- 
+
     func testMapValues() {
         let n = newNested()
         let incremented = n.mapValues { $0 + 1 }
         let expected = newNested(values: Self.defaultValues.map { $0 + 1 })
-        
+
         XCTAssertEqual(incremented, expected)
     }
-    
+
     func testCompactMapValues() {
         let n = newNested()
         let trimmed = n.compactMapValues { $0 % 2 == 1 ? $0 : nil }
@@ -47,10 +47,10 @@ class NestedTests : XCTestCase {
 
     func testFlatten1() {
         let v: NestedItem<String, Int> = .array([.array([.array([.value(10)])])])
-        
+
         let f = v.flattened()
         XCTAssertEqual(f.description, #"[("0.0.0", 10)]"#)
-        
+
         let uf = NestedItem<String, Int>.unflattened(f)
         XCTAssertEqual(uf, v)
     }

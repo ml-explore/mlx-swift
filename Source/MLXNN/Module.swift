@@ -144,24 +144,24 @@ open class Module {
         filterMap(
             filter: Self.filterValidChild, map: Self.mapModule, isLeaf: Self.isLeafModuleNoChildren)
     }
-    
-    public struct Verify : OptionSet {
+
+    public struct Verify: OptionSet {
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
-        
+
         public let rawValue: Int
-        
+
         static public let noUnusedKeys = Verify(rawValue: 1 << 0)
-        
+
         static public let all = Verify(rawValue: -1)
         static public let none = Verify([])
     }
-    
+
     public func update(parameters: ModuleParameters) {
         try! update(parameters: parameters, verify: .none)
     }
-    
+
     public func update(parameters: ModuleParameters, verify: Verify) throws {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
@@ -205,9 +205,10 @@ open class Module {
                 try apply(key: key, item, value)
             }
         }
-        
+
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
-            throw UpdateError.unhandledKeys(base: String(describing: type(of: self)), keys: processed.sorted())
+            throw UpdateError.unhandledKeys(
+                base: String(describing: type(of: self)), keys: processed.sorted())
         }
     }
 
@@ -217,7 +218,7 @@ open class Module {
     ) {
         update(parameters: mapParameters(map: map))
     }
-    
+
     public func update(modules: NestedDictionary<String, Module>) {
         try! update(modules: modules, verify: .none)
     }
@@ -246,7 +247,7 @@ open class Module {
                 //      - replace the array
                 // - var modules: [TransformerBlock]
                 //      - recurse into
-                
+
                 switch values.first {
                 case .value:
                     // update array
@@ -269,16 +270,17 @@ open class Module {
                         switch (i, v) {
                         case (.module(let m), .dictionary(let d)):
                             try m.update(modules: NestedDictionary(values: d), verify: verify)
-                            
+
                         default:
                             throw UpdateError.mismatchedContainers(
                                 base: String(describing: type(of: self)), key: key)
                         }
                     }
                 default:
-                    fatalError("Unexpected structure for \(key) on \(self): not @ModuleInfo var modules = [...]")
+                    fatalError(
+                        "Unexpected structure for \(key) on \(self): not @ModuleInfo var modules = [...]"
+                    )
                 }
-                
 
             case (.dictionary, .dictionary(let values)):
                 // e.g. @ModuleInfo var modules = [ "a": Linear(), "b": Linear() ]
@@ -314,9 +316,10 @@ open class Module {
                 try apply(key: key, item, value)
             }
         }
-        
+
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
-            throw UpdateError.unhandledKeys(base: String(describing: type(of: self)), keys: processed.sorted())
+            throw UpdateError.unhandledKeys(
+                base: String(describing: type(of: self)), keys: processed.sorted())
         }
     }
 
@@ -510,11 +513,11 @@ public enum ModuleItem {
             fatalError("Unable to apply @ParameterInfo to \(T.self)")
         }
     }
-    
+
     public init(key: String? = nil) {
         self.value = nil
         self.key = key
-        
+
         if unwrapProperty(self) == nil {
             fatalError("Unable to apply @ParameterInfo to \(T.self)")
         }
@@ -546,16 +549,16 @@ private protocol TypeErasedSetter {
             fatalError("Unable to apply @ModuleInfo to \(T.self)")
         }
     }
-    
+
     public init(key: String? = nil) {
         self.module = nil
         self.key = key
-        
+
         if unwrapModule(self) == nil {
             fatalError("Unable to apply @ModuleInfo to \(T.self)")
         }
     }
-    
+
     func updateModule(_ value: Any) throws {
         if let value = value as? T {
             self.wrappedValue = value
@@ -595,7 +598,7 @@ private func matches(key: String, _ c: Mirror.Child) -> Bool {
 
 private func update(module: Module, key: String, _ value: Any) throws {
     var found = false
-    
+
     try mirrorUpToModule(module: module) { c in
         if matches(key: key, c) {
             if let (_, _, setter) = isModuleInfo(c.value) {
@@ -673,7 +676,8 @@ private enum MirrorAction {
     case next
 }
 
-private func mirrorUpToModule(module: Module, visit: (Mirror.Child) throws -> MirrorAction) rethrows {
+private func mirrorUpToModule(module: Module, visit: (Mirror.Child) throws -> MirrorAction) rethrows
+{
     var m = Mirror(reflecting: module)
     repeat {
         for c in m.children {
@@ -682,7 +686,7 @@ private func mirrorUpToModule(module: Module, visit: (Mirror.Child) throws -> Mi
             case .next: break
             }
         }
-        
+
         if let s = m.superclassMirror {
             m = s
         } else {

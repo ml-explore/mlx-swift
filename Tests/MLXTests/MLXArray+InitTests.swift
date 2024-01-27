@@ -1,9 +1,10 @@
 import Foundation
 import XCTest
+
 @testable import MLX
 
-class MLXArrayInitTests : XCTestCase {
-    
+class MLXArrayInitTests: XCTestCase {
+
     // MARK: - Creation
 
     func testArrayCreationLiteralArray() {
@@ -25,21 +26,21 @@ class MLXArrayInitTests : XCTestCase {
         XCTAssertEqual(a.ndim, 1)
         XCTAssertEqual(a.dim(0), 3)
     }
-    
+
     func testArrayCreationRange() {
         let a = MLXArray(0 ..< 12, [3, 4])
         XCTAssertEqual(a.dtype, .int64)
         XCTAssertEqual(a.size, 12)
         XCTAssertEqual(a.ndim, 2)
     }
-    
+
     func testArrayCreationClosedRange() {
         let a = MLXArray(Int16(3) ... Int16(6))
         XCTAssertEqual(a.dtype, .int16)
         XCTAssertEqual(a.count, 4)
         XCTAssertEqual(a.ndim, 1)
     }
-    
+
     func testArrayCreationStride() {
         let a = MLXArray(stride(from: Float(0.5), to: Float(1.5), by: Float(0.1)))
         XCTAssertEqual(a.dtype, .float32)
@@ -53,14 +54,14 @@ class MLXArrayInitTests : XCTestCase {
         XCTAssertEqual(a.size, 8)
         XCTAssertEqual(a.ndim, 2)
     }
-    
+
     func testData() {
         let data = Data([1, 2, 3, 4])
         let a = MLXArray(data, [2, 2], type: UInt8.self)
         let expected = MLXArray(UInt8(1) ... 4, [2, 2])
         assertEqual(a, expected)
     }
-    
+
     func testUnsafeRawPointer() {
         let data = Data([1, 2, 3, 4])
         let a = data.withUnsafeBytes { ptr in

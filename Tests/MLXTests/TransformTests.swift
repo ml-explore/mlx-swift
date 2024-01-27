@@ -1,8 +1,9 @@
 import Foundation
 import XCTest
+
 @testable import MLX
 
-class TransformTests : XCTestCase {
+class TransformTests: XCTestCase {
 
     func testEval() {
         // eval various structures
@@ -20,7 +21,7 @@ class TransformTests : XCTestCase {
             ("foo", (a, a)),
             ("bar", (a, a)),
         ]
-        
+
         eval(a, b, c, d, e)
     }
 
@@ -28,11 +29,11 @@ class TransformTests : XCTestCase {
         func fn(_ x: MLXArray) -> MLXArray {
             x.square()
         }
-        
+
         let x = MLXArray(1.5)
 
         let gradFn = grad(fn)
-        
+
         // derivative of x^2 is 2*x
         let dfdx = gradFn(x)
         XCTAssertEqual(dfdx.item(), Float(2 * 1.5))

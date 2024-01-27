@@ -134,9 +134,9 @@ public final class MLXArray {
         case is Int32.Type: return mlx_array_item_int32(ctx) as! T
         case is Int64.Type: return mlx_array_item_int64(ctx) as! T
         case is Int.Type: return Int(mlx_array_item_int64(ctx)) as! T
-#if !arch(x86_64)
-        case is Float16.Type: return mlx_array_item_float16(ctx) as! T
-#endif
+        #if !arch(x86_64)
+            case is Float16.Type: return mlx_array_item_float16(ctx) as! T
+        #endif
         case is Float32.Type: return mlx_array_item_float32(ctx) as! T
         case is Float.Type: return mlx_array_item_float32(ctx) as! T
         default:
@@ -210,9 +210,9 @@ public final class MLXArray {
             return bufferPointer.withMemoryRebound(to: Int.self) { buffer in
                 Array(buffer) as! [T]
             }
-#if !arch(x86_64)
-        case is Float16.Type: return convert(mlx_array_data_float16(ctx) as! UnsafePointer<T>)
-#endif
+        #if !arch(x86_64)
+            case is Float16.Type: return convert(mlx_array_data_float16(ctx) as! UnsafePointer<T>)
+        #endif
         case is Float32.Type: return convert(mlx_array_data_float32(ctx) as! UnsafePointer<T>)
         case is Float.Type: return convert(mlx_array_data_float32(ctx) as! UnsafePointer<T>)
         default:

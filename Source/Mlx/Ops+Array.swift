@@ -1279,7 +1279,8 @@ public func square(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 /// - ``squeezed(_:axis:stream:)``
 /// - ``squeezed(_:stream:)``
 /// - ``MLXArray/squeezed(axes:stream:)``
-public func squeezed(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
+public func squeezed(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray
+{
     MLXArray(mlx_squeeze(array.ctx, axes.asInt32, axes.count, stream.ctx))
 }
 
@@ -1442,7 +1443,8 @@ public func take(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice 
 /// - ``transposed(_:axis:stream:)``
 /// - ``transposed(_:stream:)``
 /// - ``MLXArray/transposed(axes:stream:)``
-public func transposed(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray
+public func transposed(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default)
+    -> MLXArray
 {
     MLXArray(mlx_transpose(array.ctx, axes.asInt32, axes.count, stream.ctx))
 }
@@ -1462,7 +1464,8 @@ public func transposed(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice
 /// - ``transposed(_:axes:stream:)``
 /// - ``transposed(_:stream:)``
 /// - ``MLXArray/transposed(axes:stream:)``
-public func transposed(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
+public func transposed(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray
+{
     MLXArray(mlx_transpose(array.ctx, [axis.int32], 1, stream.ctx))
 }
 

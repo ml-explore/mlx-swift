@@ -15,7 +15,7 @@ if optimize {
 
 let package = Package(
     name: "mlx-swift",
-    
+
     platforms: [
         .macOS(.v13),
         .iOS(.v16),
@@ -29,23 +29,22 @@ let package = Package(
 
         // build support & back end
         .plugin(
-          name: "PrepareMetalShaders",
-          targets: ["PrepareMetalShaders"]
+            name: "PrepareMetalShaders",
+            targets: ["PrepareMetalShaders"]
         ),
-        
+
         .library(name: "Cmlx", targets: ["Cmlx"]),
-        
+
         // examples
         .executable(name: "Example1", targets: ["Example1"]),
         .executable(name: "Tutorial", targets: ["Tutorial"]),
         .executable(name: "LlamaMLXBench", targets: ["LlamaMLXBench"]),
-        
+
         // tool to generate grad() variants
         .executable(name: "GenerateGrad", targets: ["GenerateGrad"]),
 
     ],
-    dependencies: [
-    ],
+    dependencies: [],
     targets: [
         // plugin to help build the metal shaders
         .plugin(
@@ -58,10 +57,10 @@ let package = Package(
             exclude: [
                 // exclude here -- it is part of the include directory (public api)
                 "mlx-c",
-                
+
                 // vendored library, include header only
                 "json",
-                
+
                 // vendored library, do not include driver
                 "gguf-tools/gguf-tools.c",
 
@@ -86,16 +85,16 @@ let package = Package(
                 // opt-out of these backends (using metal)
                 "mlx/mlx/backend/no_metal",
                 "mlx/mlx/backend/accelerate",
-                
+
                 // see PrepareMetalShaders -- don't build the kernels in place
                 "mlx/mlx/backend/metal/kernels",
             ],
-            
+
             cSettings: [
                 .headerSearchPath("mlx"),
                 .headerSearchPath("include/mlx-c"),
             ] + extraCFlags,
-            
+
             cxxSettings: [
                 .headerSearchPath("mlx"),
                 .headerSearchPath("include/mlx-c"),
@@ -113,7 +112,7 @@ let package = Package(
                 .linkedFramework("Metal"),
                 .linkedFramework("Accelerate"),
             ],
-            
+
             // run the plugin to build the metal shaders
             plugins: [.plugin(name: "PrepareMetalShaders")]
         ),
@@ -121,7 +120,7 @@ let package = Package(
             name: "CmlxTests",
             dependencies: ["Cmlx"]
         ),
-        
+
         .target(
             name: "MLX",
             dependencies: ["Cmlx"]
@@ -134,12 +133,12 @@ let package = Package(
             name: "MLXNN",
             dependencies: ["MLX", "MLXRandom"]
         ),
-        
+
         .testTarget(
             name: "MLXTests",
             dependencies: ["MLX", "MLXRandom", "MLXNN"]
         ),
-        
+
         .executableTarget(
             name: "Example1",
             dependencies: ["MLX"],
@@ -158,7 +157,7 @@ let package = Package(
             path: "Source/Examples",
             sources: ["LlamaMLXBench.swift"]
         ),
-        
+
         .executableTarget(
             name: "GenerateGrad",
             path: "Source/Tools",
