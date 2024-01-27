@@ -34,7 +34,7 @@ final public class RoPE: Module, UnaryModel {
 
         let D = key.D / 2
         let positions = MLXArray(key.offset ..< key.N).asType(key.dtype) * key.scale
-        let freqs = exp(-MLXArray(0 ..< D).asType(key.dtype)) * (log(key.base) / Float(D))
+        let freqs = exp(-MLXArray(0 ..< D).asType(key.dtype) * (log(key.base) / Float(D)))
         let theta = positions.reshaped(-1, 1) * freqs.reshaped(1, -1)
 
         let result = (cos(theta), sin(theta))
