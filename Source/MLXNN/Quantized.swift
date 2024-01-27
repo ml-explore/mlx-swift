@@ -80,4 +80,29 @@ public class QuantizedLinear: Linear {
 
         model.update(modules: updates)
     }
+    
+    static public func fromDiscardingParameters(linear: Module, groupSize: Int = 64, bits: Int = 4) -> QuantizedLinear?
+    {
+        guard let linear = linear as? Linear else { return nil }
+        
+        let weight = MLXArray.zeros(like: linear.weight)
+        let bias = linear.bias == nil ? nil : MLXArray.zeros(like: linear.bias!)
+
+        return QuantizedLinear(
+            weight: weight, bias: bias, groupSize: groupSize, bits: bits)
+    }
+
+    static public func quantizeDiscardingParameters(
+        model: Module,
+        groupSize: Int = 64,
+        bits: Int = 4,
+        predicate: (Module) -> Bool = { $0 is Linear }
+    ) {
+        let updates = model.leafModules().compactMapValues { m -> Module? in
+            Self.fromDiscardingParameters(linear: m, groupSize: groupSize, bits: bits)
+        }
+
+        model.update(modules: updates)
+    }
+
 }
