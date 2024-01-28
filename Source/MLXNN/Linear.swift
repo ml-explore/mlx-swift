@@ -5,7 +5,7 @@ import MLX
 import MLXRandom
 
 /// A placeholder identity operator that is argument-insensitive.
-public class Identity: Module, UnaryModel {
+public class Identity: Module, UnaryLayer {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         x
     }
@@ -29,7 +29,46 @@ public class Identity: Module, UnaryModel {
 /// W = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions])
 /// b = MLXRandom.uniform(-scale ..< scale, [outputDimensions])
 /// ```
-public class Linear: Module, UnaryModel {
+///
+/// ## Using In A Module
+///
+/// > Use `@ModuleInfo` with all your `Linear` module uses so that ``Module/update(modules:verify:)`` can
+/// replace the modules, e.g. via ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``.
+///
+/// For example:
+///
+/// ```swift
+/// public class FeedForward : Module {
+///
+///     @ModuleInfo var w1: Linear
+///     @ModuleInfo var w2: Linear
+///     @ModuleInfo var w3: Linear
+///
+///     public init(_ args: Configuration) {
+///         self.w1 = Linear(args.dimensions, args.hiddenDimensions, bias: false)
+///         self.w2 = Linear(args.hiddenDimensions, args.dimensions, bias: false)
+///         self.w3 = Linear(args.dimensions, args.hiddenDimensions, bias: false)
+///     }
+/// ```
+///
+/// If a `key` is needed (to change the parameters key for ``Module/parameters()``) here is the
+/// way to initialize the ivar:
+///
+/// ```swift
+/// public class Example : Module {
+///
+///     @ModuleInfo(key: "weights_1") var w1: Linear
+///
+///     public init() {
+///         self._w1.wrappedValue = Linear(10, 20, bias: false)
+///     }
+/// ```
+///
+/// ### See Also
+/// - <doc:custom-layers>
+/// - ``QuantizedLinear``
+/// - ``Bilinear``
+public class Linear: Module, UnaryLayer {
 
     let weight: MLXArray
     let bias: MLXArray?
@@ -37,8 +76,15 @@ public class Linear: Module, UnaryModel {
     public var shape: (Int, Int) {
         (weight.dim(0), weight.dim(1))
     }
-
-    /// See ``Linear``
+    
+    /// Applies an affine transformation to the input.
+    ///
+    /// Please see discussion in ``Module``.
+    ///
+    /// - Parameters:
+    ///   - inputDimensions: number of input dimensions
+    ///   - outputDimensions: number of output dimensions
+    ///   - bias: if `true` this layer will apply a bias
     public init(_ inputDimensions: Int, _ outputDimensions: Int, bias: Bool = true) {
         let scale = sqrt(1.0 / Float(inputDimensions))
         self.weight = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions])
@@ -68,6 +114,30 @@ public class Linear: Module, UnaryModel {
     }
 }
 
+/// Applies a bilinear transformation to the inputs.
+///
+/// Concretely:
+///
+/// ```swift
+/// y = x1.matmul(w.T)
+/// y = x2.matmul(y)
+/// y = y + b
+/// ```
+///
+/// where `w` has shape `[outputDimensions, inputDimensions2, inputDimensions1]` and `b` has
+/// shape `[outputDimensions]`.
+///
+/// The values are initialized from the uniform distribution:
+///
+/// ```swift
+/// scale = sqrt(1.0 / inputDimensions)
+/// W = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions2, inputDimensions1])
+/// b = MLXRandom.uniform(-scale ..< scale, [outputDimensions])
+/// ```
+///
+/// ### See Also
+/// - <doc:custom-layers>
+/// - ``Linear``
 public class Bilinear: Module {
 
     let weight: MLXArray

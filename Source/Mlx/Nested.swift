@@ -299,8 +299,12 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
         }
     }
 
-    public func flattened() -> [(String, Element)] {
-        contents.flatMap { key, value in value.flattened(prefix: String(describing: key)) }
+    public func flattened(prefix: String? = nil) -> [(String, Element)] {
+        contents.flatMap { key, value in
+            let keyString = String(describing: key)
+            let keyPrefix = prefix == nil ? keyString : "\(prefix!).\(keyString)"
+            return value.flattened(prefix: keyPrefix)
+        }
     }
 
     static public func unflattened(_ flat: [(Key, Element)]) -> NestedDictionary<String, Element>

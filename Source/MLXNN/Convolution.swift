@@ -4,13 +4,33 @@ import Foundation
 import MLX
 import MLXRandom
 
-public class Conv1d: Module, UnaryModel {
+/// Applies a 1-dimensional convolution over the multi-channel input sequence.
+///
+/// ### See Also
+/// - ``Conv2d``
+/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
+public class Conv1d: Module, UnaryLayer {
 
     let weight: MLXArray
     let bias: MLXArray?
     let padding: Int
     let stride: Int
-
+    
+    /// Applies a 1-dimensional convolution over the multi-channel input sequence.
+    ///
+    /// The channels are expected to be last i.e. the input shape should be `NLC` where:
+    ///
+    /// - `N` is the batch dimension
+    /// - `L` is the sequence length
+    /// - `C` is the number of input channels
+    ///
+    /// - Parameters:
+    ///   - inputChannels: number of input channels (`C` from the discussion)
+    ///   - outputChannels: number of output channels
+    ///   - kernelSize: size of the convolution filters
+    ///   - stride: stride when applying the filter
+    ///   - padding: many positions to 0-pad the input with
+    ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
         outputChannels: Int,
@@ -37,13 +57,34 @@ public class Conv1d: Module, UnaryModel {
     }
 }
 
-public class Conv2d: Module, UnaryModel {
+/// Applies a 2-dimensional convolution over the multi-channel input image.
+///
+/// ### See Also
+/// - ``Conv1d``
+/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
+public class Conv2d: Module, UnaryLayer {
 
     let weight: MLXArray
     let bias: MLXArray?
     let padding: (Int, Int)
     let stride: (Int, Int)
 
+    /// Applies a 2-dimensional convolution over the multi-channel input image.
+    ///
+    /// The channels are expected to be last i.e. the input shape should be `NHWC` where:
+    ///
+    /// - `N` is the batch dimension
+    /// - `H` is the input image height
+    /// - `W` is the input image width
+    /// - `C` is the number of input channels
+    /// 
+    /// - Parameters:
+    ///   - inputChannels: number of input channels (`C` from the discussion)
+    ///   - outputChannels: number of output channels
+    ///   - kernelSize: size of the convolution filters
+    ///   - stride: stride when applying the filter
+    ///   - padding: many positions to 0-pad the input with
+    ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
         outputChannels: Int,

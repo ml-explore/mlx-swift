@@ -36,14 +36,14 @@ use the methods on `MLXArray` or the free functions.
 - ``MLXArray/!(_:)``
 - ``MLXArray/*(_:_:)``
 - ``MLXArray/**(_:_:)``
-- ``MLXArray/==(_:_:)``
-- ``MLXArray/!=(_:_:)``
-- ``MLXArray/<(_:_:)``
-- ``MLXArray/<=(_:_:)``
-- ``MLXArray/>(_:_:)``
-- ``MLXArray/>=(_:_:)``
-- ``MLXArray/&&(_:_:)``
-- ``MLXArray/||(_:_:)``
+- ``MLXArray/.==(_:_:)``
+- ``MLXArray/.!=(_:_:)``
+- ``MLXArray/.<(_:_:)``
+- ``MLXArray/.<=(_:_:)``
+- ``MLXArray/.>(_:_:)``
+- ``MLXArray/.>=(_:_:)``
+- ``MLXArray/.&&(_:_:)``
+- ``MLXArray/.||(_:_:)``
 
 ### MLXArray Element-wise Arithmetic Functions
 
@@ -96,7 +96,9 @@ use the methods on `MLXArray` or the free functions.
 - ``multiply(_:_:stream:)``
 - ``negative(_:stream:)``
 - ``notEqual(_:_:stream:)``
-- ``pow(_:_:stream:)``
+- ``pow(_:_:stream:)-7pe7j``
+- ``pow(_:_:stream:)-49xi0``
+- ``pow(_:_:stream:)-8ie9c``
 - ``reciprocal(_:stream:)``
 - ``remainder(_:_:stream:)``
 - ``round(_:decimals:stream:)``

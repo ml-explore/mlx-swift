@@ -4,7 +4,12 @@ import Foundation
 import MLX
 import MLXRandom
 
-class Dropout: Module, UnaryModel {
+/// Randomly zero a portion of the elements during training.
+///
+/// The remaining elements are multiplied with `1 / (1-p)` where
+/// `p` is the probability of zeroing an element. This is done so the
+/// expected value of a given element will remain the same.
+class Dropout: Module, UnaryLayer {
 
     let p1: Float
 
@@ -23,7 +28,24 @@ class Dropout: Module, UnaryModel {
     }
 }
 
-class Dropout2d: Module, UnaryModel {
+/// Apply 2D channel-wise dropout during training.
+///
+/// Randomly zero out entire channels independently with probability `p`.
+/// This layer expects the channels to be last, i.e. the input shape should be
+/// `NWHC` or `WHC` where:`N` is the batch dimension,`H` is the input
+/// image height,`W` is the input image width, and`C` is the number of
+/// input channels
+///
+/// The remaining channels are scaled by `1 / (1-p)` to
+/// maintain the expected value of each element. Unlike traditional dropout,
+/// which zeros individual entries, this layer zeros entire channels. This is
+/// beneficial for early convolution layers where adjacent pixels are
+/// correlated. In such case, traditional dropout may not effectively
+/// regularize activations. For more details, see [1].
+///
+/// [1]: Thompson, J., Goroshin, R., Jain, A., LeCun, Y. and Bregler C., 2015.
+/// Efficient Object Localization Using Convolutional Networks. CVPR 2015.
+class Dropout2d: Module, UnaryLayer {
 
     let p1: Float
 
@@ -53,7 +75,20 @@ class Dropout2d: Module, UnaryModel {
     }
 }
 
-class Dropout3d: Module, UnaryModel {
+/// Apply 3D channel-wise dropout during training.
+///
+/// Randomly zero out entire channels independently with probability `p`.
+/// This layer expects the channels to be last, i.e., the input shape should be
+/// `NDHWC` or `DHWC` where: `N` is the batch dimension, `D` is the depth,
+/// `H` is the input image height, `W` is the input image width, and `C` is
+/// the number of input channels.
+///
+/// The remaining channels are scaled by `1 / (1-p)` to
+/// maintain the expected value of each element. Unlike traditional dropout,
+/// which zeros individual entries, this layer zeros entire channels. This is
+/// often beneficial for convolutional layers processing 3D data, like in
+/// medical imaging or video processing.
+class Dropout3d: Module, UnaryLayer {
 
     let p1: Float
 

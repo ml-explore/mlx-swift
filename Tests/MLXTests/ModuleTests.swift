@@ -257,13 +257,26 @@ class ModuleTests: XCTestCase {
         XCTAssertEqual(
             Set(v.keys), Set(["child", "interior2", "leaf", "interior1", "nonWrappedChild"]))
     }
+    
+    func testVisitModule() {
+        let m = newStructureModule()
+        var collect = [String:String]()
+        
+        m.visit { key, m in
+            collect[key] = String(describing: type(of: m))
+        }
+        
+        XCTAssertEqual(collect.count, 9)
+        XCTAssertEqual(collect[""], "StructureModel")
+        XCTAssertEqual(collect["interior2.children.1"], "Linear")
+    }
 
     func testUpdateModuleSameType() throws {
         // set a single module with same type
         let m = newStructureModule()
         var u = NestedDictionary<String, Module>()
         u["child"] = .value(Linear(4, 4))
-        try m.update(modules: u)
+        m.update(modules: u)
 
         let modules = m.children()
         if let child = modules["child"], let child = child.unwrap() as? Linear {
@@ -279,7 +292,7 @@ class ModuleTests: XCTestCase {
         let m = newStructureModule()
         var u = NestedDictionary<String, Module>()
         u["child"] = .value(QuantizedLinear(256, 256))
-        try m.update(modules: u)
+        m.update(modules: u)
 
         let modules = m.children()
         if let child = modules["child"], let child = child.unwrap() as? QuantizedLinear {
@@ -301,7 +314,7 @@ class ModuleTests: XCTestCase {
                 .value(Linear(5, 5)),
             ])
         ])
-        try m.update(modules: u)
+        m.update(modules: u)
 
         let modules = m.children()
         if let interior2 = modules["interior2"], let interior2 = interior2.unwrap() as? Module {
@@ -324,7 +337,7 @@ class ModuleTests: XCTestCase {
         u["nonWrappedChild"] = .value(Linear(4, 4))
 
         do {
-            try m.update(modules: u)
+            try m.update(modules: u, verify: .all)
             XCTFail("should have thrown")
         } catch {
             print("Expected: \(error)")

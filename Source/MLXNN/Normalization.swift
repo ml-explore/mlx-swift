@@ -3,7 +3,17 @@
 import Foundation
 import MLX
 
-public class RMSNorm: Module, UnaryModel {
+/// Applies Root Mean Square normalization [1] to the inputs.
+///
+/// Concretely:
+///
+/// ```swift
+/// MLX.rsqrt((x * S).square().sum() + eps)
+/// ```
+///
+/// ### See Also
+/// - [https://arxiv.org/abs/1910.07467](https://arxiv.org/abs/1910.07467)
+public class RMSNorm: Module, UnaryLayer {
 
     let weight: MLXArray
     let eps: Float

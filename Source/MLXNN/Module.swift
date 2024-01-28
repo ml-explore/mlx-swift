@@ -5,6 +5,56 @@ import MLX
 
 public typealias ModuleParameters = NestedDictionary<String, MLXArray>
 
+/// Base class for building neural networks with MLX.
+///
+/// All the layers provided in <doc:layers> subclass this class and
+/// your models should do the same.
+///
+/// A `Module` can contain other `Module` instances or `MLXArray`
+/// instances in structures of `Array` and `Dictionary`. The `Module`
+/// then allows recursively extracting all the `MLXArray` instances
+/// using ``parameters()``
+///
+/// In addition, the `Module` has the concept of trainable and non trainable
+/// parameters (called "frozen"). When using `valueAndGrad()` or `grad()`
+/// the gradients are returned only with respect to the trainable parameters.
+/// All arrays in a module are trainable unless they are added in the "frozen"
+/// set by calling ``freeze(recursive:keys:strict:)``
+///
+/// ```swift
+/// import MLX
+/// import MLXNN
+///
+/// class MyMLP : Module, UnaryLayer {
+///     let inProjection: Linear
+///     let outProjection: Linear
+///
+///     init(inputDimensions: Int, outputDimensions: Int, hiddenDimensions: Int = 16) {
+///         self.inProjection = Linear(inputDimensions, hiddenDimensions)
+///         sel.outProjection = Linear(hiddenDimensions, outputDimensions)
+///     }
+///
+///     func callAsFunction(_ x: MLXArray) -> MLXArray {
+///         var x = inProjection(x)
+///         x = maximum(x, 0)
+///         return outProjection(x)
+///     }
+/// }
+///
+/// let model = MyMLP(inputDimensions: 2, outputDimensions: 1)
+///
+/// // All the model parameters are created but since MLX is lazy by
+/// // default, they are not evaluated yet. Calling `eval` actually
+/// // allocates memory and initializes the parameters.
+/// eval(model.parameters())
+///
+/// // and projecting a value through the model:
+/// let input: MLXArray ...
+/// let result = model(input)
+/// ```
+///
+/// ### See Also
+/// - <doc:custom-layers>
 open class Module {
 
     var training = false
@@ -12,7 +62,7 @@ open class Module {
 
     public init() {
     }
-
+    
     public func items() -> [String: ModuleItem] {
         var result = [String: ModuleItem]()
 
@@ -147,24 +197,24 @@ open class Module {
             filter: Self.filterValidChild, map: Self.mapModule, isLeaf: Self.isLeafModuleNoChildren)
     }
 
-    public struct Verify: OptionSet {
+    public struct VerifyUpdate: OptionSet {
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
 
         public let rawValue: Int
 
-        static public let noUnusedKeys = Verify(rawValue: 1 << 0)
+        static public let noUnusedKeys = VerifyUpdate(rawValue: 1 << 0)
 
-        static public let all = Verify(rawValue: -1)
-        static public let none = Verify([])
+        static public let all = VerifyUpdate(rawValue: -1)
+        static public let none = VerifyUpdate([])
     }
 
     public func update(parameters: ModuleParameters) {
         try! update(parameters: parameters, verify: .none)
     }
 
-    public func update(parameters: ModuleParameters, verify: Verify) throws {
+    public func update(parameters: ModuleParameters, verify: VerifyUpdate) throws {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
             if case .none = value {
@@ -210,7 +260,7 @@ open class Module {
 
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
             throw UpdateError.unhandledKeys(
-                base: String(describing: type(of: self)), keys: processed.sorted())
+                base: describeType(self), keys: processed.sorted())
         }
     }
 
@@ -225,7 +275,7 @@ open class Module {
         try! update(modules: modules, verify: .none)
     }
 
-    public func update(modules: NestedDictionary<String, Module>, verify: Verify) throws {
+    public func update(modules: NestedDictionary<String, Module>, verify: VerifyUpdate) throws {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
@@ -260,7 +310,7 @@ open class Module {
                             newModules.append(module)
                         default:
                             throw UpdateError.unableToCollectModulesFromContainer(
-                                base: String(describing: type(of: self)), key: key)
+                                base: describeType(self), key: key)
                         }
                     }
 
@@ -275,7 +325,7 @@ open class Module {
 
                         default:
                             throw UpdateError.mismatchedContainers(
-                                base: String(describing: type(of: self)), key: key)
+                                base: describeType(self), key: key)
                         }
                     }
                 default:
@@ -294,7 +344,7 @@ open class Module {
                         newModules[item.key] = module
                     default:
                         throw UpdateError.unableToCollectModulesFromContainer(
-                            base: String(describing: type(of: self)), key: key)
+                            base: describeType(self), key: key)
                     }
                 }
 
@@ -321,16 +371,88 @@ open class Module {
 
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
             throw UpdateError.unhandledKeys(
-                base: String(describing: type(of: self)), keys: processed.sorted())
+                base: describeType(self), keys: processed.sorted())
         }
     }
 
-    public func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) {
-        // TODO: implement
+    public func visit(modules visitor: (String, Module) throws -> Void) rethrows {
+        var stack = [(String, Module)]()
+        stack.append(("", self))
+        
+        while !stack.isEmpty {
+            let (prefix, module) = stack.removeLast()
+            try visitor(prefix, module)
+            
+            stack.append(contentsOf: module.children().flattened(prefix: prefix.isEmpty ? nil : prefix))
+        }
+    }
+    
+    public func modules() -> [Module] {
+        var result = [Module]()
+        visit {
+            result.append($1)
+        }
+        return result
     }
 
-    public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) {
-        // TODO: implement
+    public func namedModules() -> [(String, Module)] {
+        var result = [(String, Module)]()
+        visit {
+            result.append(($0, $1))
+        }
+        return result
+    }
+    
+    private func freezeVisitor(keys: [String]? = nil, strict: Bool = false, update: @escaping (Module, [String]) -> Void) -> (String, Module) throws -> Void {
+        func visit(key: String, module: Module) throws {
+            lazy var localKeys: [String] = { module.filterMap(filter: Self.filterLocalParameters).flattened().map { $0.0 } }()
+            
+            if strict, let keys {
+                let localKeys = Set(localKeys)
+                for key in keys {
+                    if !localKeys.contains(key) {
+                        throw UpdateError.keyNotFound(base: describeType(self), key: key)
+                    }
+                }
+            }
+            
+            update(module, keys ?? localKeys)
+        }
+        
+        return visit(key:module:)
+    }
+
+    
+    public func freeze(recursive: Bool = true, keys: [String]? = nil) {
+        try! freeze(recursive: recursive, keys: keys, strict: false)
+    }
+
+    public func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
+        let visitor = freezeVisitor(keys: keys, strict: strict) {
+            $0.noGrad.formUnion($1)
+        }
+        
+        if recursive {
+            try self.visit(modules: visitor)
+        } else {
+            try visitor("", self)
+        }
+    }
+
+    public func unfreeze(recursive: Bool = true, keys: [String]? = nil) {
+        try! unfreeze(recursive: recursive, keys: keys, strict: false)
+    }
+
+    public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
+        let visitor = freezeVisitor(keys: keys, strict: strict) {
+            $0.noGrad.subtract($1)
+        }
+        
+        if recursive {
+            try self.visit(modules: visitor)
+        } else {
+            try visitor("", self)
+        }
     }
 }
 
@@ -340,7 +462,7 @@ extension Module: IndentedDescription {
         print("\(type(of: self)) \(indent)")
         var result = ""
 
-        result += "\(String(describing: type(of: self)))\(describeExtra(indent))"
+        result += "\(describeType(self))\(describeExtra(indent))"
 
         let children = self.children()
 
@@ -359,7 +481,10 @@ extension Module: IndentedDescription {
     }
 }
 
-public protocol UnaryModel {
+/// A `Layer` (``Module`` subclass) that can be evaluated as a _unary function_.
+///
+/// This provides ``callAsFunction(_:)`` with a single `MLXArray` input and a single `MLXArray` output.
+public protocol UnaryLayer {
     func callAsFunction(_ x: MLXArray) -> MLXArray
 }
 
@@ -382,6 +507,13 @@ extension Module {
         switch item {
         case .parameters, .array, .dictionary, .module: !key.hasPrefix("_")
         default: false
+        }
+    }
+
+    static public let filterLocalParameters = { (module: Module, key: String, item: ModuleItem) in
+        switch item {
+        case .parameters, .array, .dictionary: !key.hasPrefix("_")
+        case .other, .module: false
         }
     }
 
@@ -447,6 +579,8 @@ extension Module {
 
 // MARK: - items() support
 
+
+/// An item (instance variable) in a ``Module``.
 public enum ModuleItem {
     case parameters(MLXArray)
     case array([ModuleItem])
@@ -610,19 +744,19 @@ private func update(module: Module, key: String, _ value: Any) throws {
                     return .stop
                 } catch {
                     throw UpdateError.needModuleInfo(
-                        "Unable to set modules for \(String(describing: type(of: module))).\(key) -- maybe type mismatch: \(String(describing: type(of: value)))"
+                        "Unable to set modules for \(describeType(module)).\(key) -- maybe type mismatch: \(describeType(value)))"
                     )
                 }
             } else {
                 throw UpdateError.needModuleInfo(
-                    "Unable to get @ModuleInfo for \(String(describing: type(of: module))).\(key) -- must be wrapped to receive updates"
+                    "Unable to get @ModuleInfo for \(describeType(module)).\(key) -- must be wrapped to receive updates"
                 )
             }
         }
         return .next
     }
     if !found {
-        throw UpdateError.keyNotFound(base: String(describing: type(of: module)), key: key)
+        throw UpdateError.keyNotFound(base: describeType(module), key: key)
     }
 }
 
@@ -695,4 +829,8 @@ private func mirrorUpToModule(module: Module, visit: (Mirror.Child) throws -> Mi
             break
         }
     } while m.subjectType != Module.self
+}
+
+private func describeType<T>(_ value: T) -> String {
+    String(describing: type(of: value))
 }

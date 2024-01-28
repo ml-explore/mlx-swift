@@ -2,6 +2,9 @@
 
 import Foundation
 
+/// Simple cache for holding prepared MLXArrays, etc.
+///
+/// See ``RoPE``
 class Cache<Key: Hashable, Element> {
 
     let queue = DispatchQueue(label: "Cache")
@@ -27,6 +30,7 @@ class Cache<Key: Hashable, Element> {
             }
         }
         set {
+            // store the key, value pair keeping the count <= maxSize
             queue.sync {
                 if let newValue {
                     // handle wrap on the serial number

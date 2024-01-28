@@ -4,6 +4,24 @@ import Foundation
 import MLX
 import MLXRandom
 
+/// Applies an affine transformation to the input using a quantized weight matrix.
+///
+/// It is the quantized equivalent of ``Linear``.  For now its
+/// parameters are frozen and will not be included in any gradient computation
+/// but this will probably change in the future.
+///
+/// QuantizedLinear also provides several useful static to convert linear
+/// layers to QuantizedLinear layers.
+///
+/// - ``from(linear:groupSize:bits:)`` -- returns a `QuantizedLinear` that applies the same
+///   linear transformation up to the quantization error
+/// - ``quantize(model:groupSize:bits:predicate:)`` -- swaps all the linear layers of the module
+///     with `QuantizedLinear` ones
+///
+/// Please see the disucssion in ``Linear`` for considerations when replacing layers.
+///
+/// ### See Also
+/// - ``init(weight:bias:groupSize:bits:)``
 public class QuantizedLinear: Linear {
 
     let groupSize: Int
@@ -12,6 +30,16 @@ public class QuantizedLinear: Linear {
     let scales: MLXArray
     let biases: MLXArray
 
+    /// Applies an affine transformation to the input using a quantized weight matrix.
+    ///
+    /// This is the quantized version of ``Linear``.  Typically this is used via ``quantize(model:groupSize:bits:predicate:)``.
+    ///
+    /// - Parameters:
+    ///   - inputDimensions: number of input dimensions
+    ///   - outputDimensions: number of output dimensions
+    ///   - bias: if `true` this layer will apply a bias
+    ///   - groupSize: The group size to use for the quantized weight
+    ///   - bits: The bit width to use for the quantized weight
     public convenience init(
         _ inputDimensions: Int, _ outputDimensions: Int, bias: Bool = true, groupSize: Int = 64,
         bits: Int = 4
@@ -41,8 +69,8 @@ public class QuantizedLinear: Linear {
 
     public override func unfreeze(
         recursive: Bool = true, keys: [String]? = nil, strict: Bool = false
-    ) {
-        super.unfreeze(recursive: recursive, keys: keys, strict: strict)
+    ) throws {
+        try super.unfreeze(recursive: recursive, keys: keys, strict: strict)
         self.freeze(recursive: false)
     }
 
@@ -61,15 +89,28 @@ public class QuantizedLinear: Linear {
         }
         return x
     }
-
-    static public func from(linear: Module, groupSize: Int = 64, bits: Int = 4) -> QuantizedLinear?
+    
+    /// Returns a QuantizedLinear layer that applies the same linear transformation up to the quantization error.
+    ///
+    /// - Parameters:
+    ///   - linear: a `Linear` layer
+    ///   - groupSize: The group size to use for the quantized weight
+    ///   - bits: The bit width to use for the quantized weight
+    /// - Returns: a new `QuantizedLayer`
+    static public func from(linear: Linear, groupSize: Int = 64, bits: Int = 4) -> QuantizedLinear
     {
-        guard let linear = linear as? Linear else { return nil }
-
-        return QuantizedLinear(
-            weight: linear.weight, bias: linear.bias, groupSize: groupSize, bits: bits)
+        QuantizedLinear(weight: linear.weight, bias: linear.bias, groupSize: groupSize, bits: bits)
     }
-
+    
+    /// Replace ``Linear`` layers with `QuantizedLinear`.
+    ///
+    /// Please see the disucssion in ``Linear`` for considerations when replacing layers.
+    ///
+    /// - Parameters:
+    ///   - model: the model to update
+    ///   - groupSize: The group size to use for the quantized weight
+    ///   - bits: The bit width to use for the quantized weight
+    ///   - predicate: optional predicate for identifying layers to change -- default finds all `Linear` layers
     static public func quantize(
         model: Module,
         groupSize: Int = 64,
@@ -77,35 +118,10 @@ public class QuantizedLinear: Linear {
         predicate: (Module) -> Bool = { $0 is Linear }
     ) {
         let updates = model.leafModules().compactMapValues { m -> Module? in
-            Self.from(linear: m, groupSize: groupSize, bits: bits)
+            guard let linear = m as? Linear else { return nil }
+            return Self.from(linear: linear, groupSize: groupSize, bits: bits)
         }
 
         model.update(modules: updates)
     }
-
-    static public func fromDiscardingParameters(linear: Module, groupSize: Int = 64, bits: Int = 4)
-        -> QuantizedLinear?
-    {
-        guard let linear = linear as? Linear else { return nil }
-
-        let weight = MLXArray.zeros(like: linear.weight)
-        let bias = linear.bias == nil ? nil : MLXArray.zeros(like: linear.bias!)
-
-        return QuantizedLinear(
-            weight: weight, bias: bias, groupSize: groupSize, bits: bits)
-    }
-
-    static public func quantizeDiscardingParameters(
-        model: Module,
-        groupSize: Int = 64,
-        bits: Int = 4,
-        predicate: (Module) -> Bool = { $0 is Linear }
-    ) {
-        let updates = model.leafModules().compactMapValues { m -> Module? in
-            Self.fromDiscardingParameters(linear: m, groupSize: groupSize, bits: bits)
-        }
-
-        model.update(modules: updates)
-    }
-
 }

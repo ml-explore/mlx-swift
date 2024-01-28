@@ -3,19 +3,58 @@
 import Foundation
 import MLX
 
-public class Sequential: Module, UnaryModel {
+/// A layer that calls the passed ``UnaryModel`` in order.
+///
+/// `Sequential` can be constructed either with an array of layers or using a ``SequentialBuilder``:
+///
+/// ```swift
+/// // a nonsensical Sequential layer, but it demonstrates how
+/// // to constructuct something with an interesting structure
+/// let b = Bool.random()
+/// let s = Sequential {
+///     Tanh()
+///     if b {
+///         Tanh()
+///     } else {
+///         Sigmoid()
+///     }
+///     for _ in 0 ..< 3 {
+///         Linear(10, 20)
+///     }
+/// }
+/// ```
+///
+/// produces:
+///
+/// ```swift
+/// Sequential {
+///   layers: [
+///     Tanh,
+///     Sigmoid,
+///     Linear(inputDimensions=10, outputDimensions=20, bias=true),
+///     Linear(inputDimensions=10, outputDimensions=20, bias=true),
+///     Linear(inputDimensions=10, outputDimensions=20, bias=true)
+///   ],
+/// }
+/// ```
+public class Sequential: Module, UnaryLayer {
 
-    let layers: [UnaryModel]
+    let layers: [UnaryLayer]
 
-    public init(layers: [UnaryModel]) {
+    public init(layers: [UnaryLayer]) {
         self.layers = layers
     }
 
-    public init(layers: UnaryModel...) {
+    public init(layers: UnaryLayer...) {
         self.layers = layers
     }
 
+    /// A convenient way to write code that builds a Sequential layer:
+    ///
     /// ```swift
+    /// // a nonsensical Sequential layer, but it demonstrates how
+    /// // to constructuct something with an interesting structure
+    /// let b = Bool.random()
     /// let s = Sequential {
     ///     Tanh()
     ///     if b {
@@ -28,9 +67,22 @@ public class Sequential: Module, UnaryModel {
     ///     }
     /// }
     /// ```
-    public init(@SequentialBuilder layers: () -> [UnaryModel]) {
+    ///
+    /// produces:
+    ///
+    /// ```swift
+    /// Sequential {
+    ///   layers: [
+    ///     Tanh,
+    ///     Sigmoid,
+    ///     Linear(inputDimensions=10, outputDimensions=20, bias=true),
+    ///     Linear(inputDimensions=10, outputDimensions=20, bias=true),
+    ///     Linear(inputDimensions=10, outputDimensions=20, bias=true)
+    ///   ],
+    /// }
+    /// ```
+    public init(@SequentialBuilder layers: () -> [UnaryLayer]) {
         self.layers = layers()
-        print(self.layers)
     }
 
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
@@ -42,40 +94,43 @@ public class Sequential: Module, UnaryModel {
     }
 }
 
+/// A way to build ``Sequential``.
+///
+/// See ``Sequential/init(layers:)-8205i``
 @resultBuilder
 public struct SequentialBuilder {
 
-    public static func buildArray(_ array: [UnaryModel]) -> [UnaryModel] {
+    public static func buildArray(_ array: [UnaryLayer]) -> [UnaryLayer] {
         array
     }
 
-    public static func buildArray(_ value: [[UnaryModel]]) -> [UnaryModel] {
+    public static func buildArray(_ value: [[UnaryLayer]]) -> [UnaryLayer] {
         value.flatMap { $0 }
     }
 
-    public static func buildExpression(_ value: UnaryModel) -> [UnaryModel] {
+    public static func buildExpression(_ value: UnaryLayer) -> [UnaryLayer] {
         [value]
     }
 
-    public static func buildPartialBlock(accumulated: [UnaryModel], next: [UnaryModel])
-        -> [UnaryModel]
+    public static func buildPartialBlock(accumulated: [UnaryLayer], next: [UnaryLayer])
+        -> [UnaryLayer]
     {
         accumulated + next
     }
 
-    public static func buildPartialBlock(first: [UnaryModel]) -> [UnaryModel] {
+    public static func buildPartialBlock(first: [UnaryLayer]) -> [UnaryLayer] {
         first
     }
 
-    public static func buildEither(first: [UnaryModel]) -> [UnaryModel] {
+    public static func buildEither(first: [UnaryLayer]) -> [UnaryLayer] {
         first
     }
 
-    public static func buildEither(second: [UnaryModel]) -> [UnaryModel] {
+    public static func buildEither(second: [UnaryLayer]) -> [UnaryLayer] {
         second
     }
 
-    public static func buildOptional(_ component: [UnaryModel]?) -> [UnaryModel] {
+    public static func buildOptional(_ component: [UnaryLayer]?) -> [UnaryLayer] {
         [Identity()]
     }
 }

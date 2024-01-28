@@ -3,7 +3,15 @@
 import Foundation
 import MLX
 
-final public class RoPE: Module, UnaryModel {
+/// Implements the rotary positional encoding.
+///
+/// The traditional implementation rotates consecutive pairs of elements in the
+/// feature dimension while the default implementation rotates pairs with
+/// stride half the feature dimensions for efficiency.
+///
+/// For more details see _RoFormer: Enhanced Transformer with Rotary Position
+/// Embedding_ ([https://arxiv.org/abs/2104.09864](https://arxiv.org/abs/2104.09864))
+final public class RoPE: Module, UnaryLayer {
 
     let dimensions: Int
     let traditional: Bool
@@ -19,8 +27,16 @@ final public class RoPE: Module, UnaryModel {
         let dtype: DType
     }
 
+    // a cache of pre-computed (cos(theta), sin(theta)) by key
     static let cache = Cache<Key, (MLXArray, MLXArray)>()
-
+    
+    /// Initialize ``RoPE``.
+    ///
+    /// - Parameters:
+    ///   - dimensions: The feature dimensions to be rotated. If the input feature is larger than dims then the rest is left unchanged
+    ///   - traditional: If `true` choose the traditional implementation which is slightly less efficient
+    ///   - base: The base used to compute angular frequency for each dimension in the positional encodings
+    ///   - scale: scale used to scale the positions
     public init(dimensions: Int, traditional: Bool = false, base: Float = 10_000, scale: Float = 1)
     {
         self.dimensions = dimensions
@@ -92,6 +108,7 @@ final public class RoPE: Module, UnaryModel {
         return rx.reshaped(shape)
     }
 
+    /// Evaluate with `offset` of `0`.
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         callAsFunction(x, offset: 0)
     }

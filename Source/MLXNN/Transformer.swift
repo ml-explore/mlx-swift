@@ -7,10 +7,10 @@ public class MultiHeadAttention: Module {
 
     let numHeads: Int
 
-    let queryProjection: Linear
-    let keyProjection: Linear
-    let valueProjection: Linear
-    let outProjection: Linear
+    @ModuleInfo(key: "query_proj") var queryProjection: Linear
+    @ModuleInfo(key: "key_proj") var keyProjection: Linear
+    @ModuleInfo(key: "value_proj") var valueProjection: Linear
+    @ModuleInfo(key: "out_proj") var outProjection: Linear
 
     public init(
         dimensions: Int,
@@ -31,10 +31,11 @@ public class MultiHeadAttention: Module {
         let valueOutputDimensions = valueOutputDimensions ?? dimensions
 
         self.numHeads = numHeads
-        self.queryProjection = Linear(queryInputDimensions, dimensions, bias: bias)
-        self.keyProjection = Linear(keyInputDimensions, dimensions, bias: bias)
-        self.valueProjection = Linear(valueInputDimensions, valueDimensions, bias: bias)
-        self.outProjection = Linear(valueDimensions, valueOutputDimensions, bias: bias)
+        
+        self._queryProjection.wrappedValue = Linear(queryInputDimensions, dimensions, bias: bias)
+        self._keyProjection.wrappedValue = Linear(keyInputDimensions, dimensions, bias: bias)
+        self._valueProjection.wrappedValue = Linear(valueInputDimensions, valueDimensions, bias: bias)
+        self._outProjection.wrappedValue = Linear(valueDimensions, valueOutputDimensions, bias: bias)
     }
 
     public func callAsFunction(
