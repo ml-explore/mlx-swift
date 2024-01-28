@@ -9,7 +9,11 @@ import MLXRandom
 /// The remaining elements are multiplied with `1 / (1-p)` where
 /// `p` is the probability of zeroing an element. This is done so the
 /// expected value of a given element will remain the same.
-class Dropout: Module, UnaryLayer {
+///
+/// ### See Also
+/// - ``Dropout2d``
+/// - ``Dropout3d``
+public class Dropout: Module, UnaryLayer {
 
     let p1: Float
 
@@ -45,7 +49,11 @@ class Dropout: Module, UnaryLayer {
 ///
 /// [1]: Thompson, J., Goroshin, R., Jain, A., LeCun, Y. and Bregler C., 2015.
 /// Efficient Object Localization Using Convolutional Networks. CVPR 2015.
-class Dropout2d: Module, UnaryLayer {
+///
+/// ### See Also
+/// - ``Dropout``
+/// - ``Dropout3d``
+public class Dropout2d: Module, UnaryLayer {
 
     let p1: Float
 
@@ -88,7 +96,11 @@ class Dropout2d: Module, UnaryLayer {
 /// which zeros individual entries, this layer zeros entire channels. This is
 /// often beneficial for convolutional layers processing 3D data, like in
 /// medical imaging or video processing.
-class Dropout3d: Module, UnaryLayer {
+///
+/// ### See Also
+/// - ``Dropout``
+/// - ``Dropout2d``
+public class Dropout3d: Module, UnaryLayer {
 
     let p1: Float
 

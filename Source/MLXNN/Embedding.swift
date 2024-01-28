@@ -23,6 +23,7 @@ public class Embedding: Module, UnaryLayer {
         self.weight = MLXRandom.normal([embeddingCount, dimensions]) * scale
     }
 
+    /// Describe the shape of the `weight`.
     public override func describeExtra(_ indent: Int) -> String {
         weight.shape.description
     }

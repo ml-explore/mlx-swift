@@ -24,6 +24,7 @@ public class RMSNorm: Module, UnaryLayer {
         super.init()
     }
 
+    /// Describe `dimensions` and `eps`.
     public override func describeExtra(_ indent: Int) -> String {
         "(dimensions=\(weight.dim(0)), eps=\(self.eps))"
     }

@@ -1,11 +1,30 @@
-# layers
+# Layers
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Built-in layers.
 
-## Overview
+`MLXNN` provides a number of built-in layers that can be used to build models.  
+See also <doc:activations> for Activation Layers and <doc:custom-layers> for examples of their use
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+## Topics
 
-### Section header
+### Unary Layers
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+Layers that provide an interface that takes a single MLXArray and produces a single MLXArray.
+These can be used with ``Sequential``.
+
+- ``Conv1d``
+- ``Conv2d``
+- ``Dropout``
+- ``Dropout2d``
+- ``Dropout3d``
+- ``Embedding``
+- ``Identity``
+- ``Linear``
+- ``QuantizedLinear``
+- ``RMSNorm``
+- ``Sequential``
+
+### Other Layers
+
+- ``Bilinear``
+- ``MultiHeadAttention``

@@ -335,7 +335,7 @@ public func hardSwish(_ x: MLXArray) -> MLXArray {
 
 /// Applies the gated linear unit function.
 ///
-/// This function splits the ``axis`` dimension of the input into two halves
+/// This function splits the `axis` dimension of the input into two halves
 /// (`a` and `b`) and applies `a * sigmoid(b)`.
 ///
 /// ### See Also

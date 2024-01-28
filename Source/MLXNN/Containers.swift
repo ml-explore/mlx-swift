@@ -3,7 +3,7 @@
 import Foundation
 import MLX
 
-/// A layer that calls the passed ``UnaryModel`` in order.
+/// A layer that calls the passed ``UnaryLayer`` in order.
 ///
 /// `Sequential` can be constructed either with an array of layers or using a ``SequentialBuilder``:
 ///
@@ -96,7 +96,7 @@ public class Sequential: Module, UnaryLayer {
 
 /// A way to build ``Sequential``.
 ///
-/// See ``Sequential/init(layers:)-8205i``
+/// See ``Sequential/init(layers:)-43yu
 @resultBuilder
 public struct SequentialBuilder {
 

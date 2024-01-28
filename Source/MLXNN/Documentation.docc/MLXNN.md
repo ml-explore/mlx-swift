@@ -1,13 +1,40 @@
-# Activation Functions and Layers
+# ``MLXNN``
 
-Built-in activation functions and layers.
+## Overview
 
-`MLXNN` provides a number of activation functions and modules.  The modules
-simply wrap the functions, though some like ``GELU`` provide some settings
-that select between different functions.  Others, like ``CELU`` encapsulate parameters
-such as `alpha`.
+Two places to read to get started are:
+
+- <doc:custom-layers>
+- ``Module``
 
 ## Topics
+
+### Base Classes and Interfaces
+
+- ``Module``
+- ``UnaryLayer``
+
+### Unary Layers
+
+Layers that provide an interface that takes a single MLXArray and produces a single MLXArray.
+These can be used with ``Sequential``.
+
+- ``Conv1d``
+- ``Conv2d``
+- ``Dropout``
+- ``Dropout2d``
+- ``Dropout3d``
+- ``Embedding``
+- ``Identity``
+- ``Linear``
+- ``QuantizedLinear``
+- ``RMSNorm``
+- ``Sequential``
+
+### Other Layers
+
+- ``Bilinear``
+- ``MultiHeadAttention``
 
 ### Activation Free Functions
 

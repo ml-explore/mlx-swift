@@ -135,10 +135,10 @@ class ModuleTests: XCTestCase {
 
         for (k, v) in t {
             switch (k, v) {
-            case ("p", .parameters): break
-            case ("alternateChild", .module): break
+            case ("p", .value(.parameters)): break
+            case ("alternateChild", .value(.module)): break
             case ("d", .dictionary): break
-            case ("topLevelParam", .other): break
+            case ("topLevelParam", .value(.other)): break
             case ("alternateNameArray", .array): break
             case ("alternateNameDict", .dictionary): break
             default:
