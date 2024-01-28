@@ -26,7 +26,6 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
         }
 
         func callAsFunction(_ arrays: [MLXArray]) -> [MLXArray] {
-            print("callAsFunction")
             let input_vector = new_mlx_vector_array(arrays)
             defer { mlx_free(input_vector) }
 
