@@ -88,3 +88,20 @@ cmake .. -G Ninja
 ninja
 ./example
 ```
+
+## Limitations
+
+`mlx-swift` currently has a subset of the `mlx` functionality.
+Everything for doing inference is available and the rest are coming soon.
+
+Here is what is missing:
+
+- [fft](https://ml-explore.github.io/mlx/build/html/python/fft.html) package
+- [transforms](https://ml-explore.github.io/mlx/build/html/python/fft.html) package -- `eval()` and `grad()` **are** available
+- [linalg](https://ml-explore.github.io/mlx/build/html/python/linalg.html) package
+- [some NN](https://ml-explore.github.io/mlx/build/html/python/nn.html) layers
+- [optimizers](https://ml-explore.github.io/mlx/build/html/python/optimizers.html) package
+
+Please check out the documentation!
+
+[**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
