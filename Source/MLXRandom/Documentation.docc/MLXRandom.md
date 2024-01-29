@@ -24,3 +24,10 @@ which will yield the same pseudo random number at each iteration.
 
 Following [JAX’s PRNG design](https://jax.readthedocs.io/en/latest/jep/263-prng.html) we use a
 splittable version of Threefry, which is a counter-based PRNG.
+
+## Other MLX Packages
+
+- [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
+- [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
+
+- [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)

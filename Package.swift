@@ -45,7 +45,10 @@ let package = Package(
         .executable(name: "GenerateGrad", targets: ["GenerateGrad"]),
 
     ],
-    dependencies: [],
+    dependencies: [
+        // docc builder
+        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main"),
+    ],
     targets: [
         // plugin to help build the metal shaders
         .plugin(

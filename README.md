@@ -1,15 +1,26 @@
 # mlx-swift
 Swift example for MLX
 
+## Documentation
+
+See the documentation at:
+
+- [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
+- [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
+- [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
+
+- [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
+
+## Building
 
 ``MLX`` is meant to be built and run from XCode or SwiftPM.  A CMake install is also provided. 
 
-## XCode
+### XCode
 
 In XCode you can add `https://github.com/ml-explore/mlx-swift` as a package
 dependency and link `MLX`, `MLXNN` and `MLXRandom` as needed.
 
-## SwiftPM
+### SwiftPM
 
 To use ``MLX`` with swiftpm you can add this to your `Package.swift`:
 
@@ -31,7 +42,7 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 XCode.
 
 
-## CMake
+### CMake
 
 With CMake:
 ```

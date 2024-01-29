@@ -30,6 +30,14 @@ memory. Operations on MLX arrays can be performed on any of the supported
 device types without performing data copies. Currently supported device types
 are the CPU and GPU.
 
+## Other MLX Packages
+
+- [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
+- [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
+
+- [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
+
+
 ## Topics
 
 ### MLX

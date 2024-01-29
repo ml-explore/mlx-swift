@@ -7,6 +7,13 @@ Two places to read to get started are:
 - <doc:custom-layers>
 - ``Module``
 
+## Other MLX Packages
+
+- [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
+- [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
+
+- [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
+
 ## Topics
 
 ### Base Classes and Interfaces
