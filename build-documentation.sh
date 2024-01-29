@@ -11,8 +11,6 @@ then
     fi
 fi
 
-cd ..
-
 export DOCC_JSON_PRETTYPRINT=YES
 
 for x in MLX MLXRandom MLXNN; do
@@ -21,7 +19,7 @@ for x in MLX MLXRandom MLXNN; do
 	generate-documentation \
 	--fallback-bundle-identifier mlx.swift.`echo $x | tr A-Z a-z` \
 	--target $x \
-	--output-path ./docs/build/$x \
+	--output-path ./docs/$x \
 	--emit-digest \
 	--disable-indexing \
 	--transform-for-static-hosting \
