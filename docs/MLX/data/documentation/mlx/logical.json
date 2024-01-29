@@ -1,0 +1,3025 @@
+{
+  "abstract" : [
+    {
+      "text" : "Evaluating logical operations on MLXArray.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "Logical Operators"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " has a number of logical operators, instance methods and free functions.  Single or",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "multiple arrayscan be combined using these operators:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let r = a > b || !(b < c)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "These can be used for control flow, though consider ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " when doing this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "if (a < b).all().item() {",
+            "    ...",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting"
+      ],
+      "title" : "MLXArray"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!(_:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.==(_:_:)-56m0a",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.==(_:_:)-79hbc",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!=(_:_:)-mbw0",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!=(_:_:)-gkdj",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-9rzup",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-54ivt",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-2a0s9",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-6vb92",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-fwi1",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-2v86b",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-2gqml",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-6zxj9",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.&&(_:_:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.__(_:_:)"
+      ],
+      "title" : "MLXArray Operators"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/all(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/any(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/arrayEqual(_:equalNAN:stream:)"
+      ],
+      "title" : "MLXArray Logical Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/all(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arrayEqual(_:_:equalNAN:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/equal(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/greater(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/greaterEqual(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/less(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lessEqual(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logicalNot(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/notEqual(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/where(_:_:_:stream:)"
+      ],
+      "title" : "Logical Free Functions"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/logical"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.!(_:)": {
+  "abstract" : [
+    {
+      "text" : "Unary element-wise logical not.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".!"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".!(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.!(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.!=(_:_:)-gkdj": {
+  "abstract" : [
+    {
+      "text" : "Element-wise not equal with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".!="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!=(_:_:)-gkdj",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".!=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.!=(_:_:)-gkdj"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.!=(_:_:)-mbw0": {
+  "abstract" : [
+    {
+      "text" : "Element-wise not equal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".!="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!=(_:_:)-mbw0",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".!=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.!=(_:_:)-mbw0"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.&&(_:_:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise logical and.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".&&"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.&&(_:_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".&&(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.&&(_:_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.==(_:_:)-56m0a": {
+  "abstract" : [
+    {
+      "text" : "Element-wise equality.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".=="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.==(_:_:)-56m0a",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".==(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.==(_:_:)-56m0a"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.==(_:_:)-79hbc": {
+  "abstract" : [
+    {
+      "text" : "Element-wise equality with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".=="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.==(_:_:)-79hbc",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".==(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.==(_:_:)-79hbc"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._(_:_:)-2v86b": {
+  "abstract" : [
+    {
+      "text" : "Element-wise greater than with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".>"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-2v86b",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".>(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-2v86b"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._(_:_:)-54ivt": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less than with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".<"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-54ivt",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".<(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-54ivt"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._(_:_:)-9rzup": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less than.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".<"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-9rzup",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".<(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-9rzup"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._(_:_:)-fwi1": {
+  "abstract" : [
+    {
+      "text" : "Element-wise greater than.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".>"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._(_:_:)-fwi1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".>(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-fwi1"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._=(_:_:)-2a0s9": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less than or equal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".<="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-2a0s9",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".<=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-2a0s9"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._=(_:_:)-2gqml": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less greater than or equal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".>="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-2gqml",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".>=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-2gqml"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._=(_:_:)-6vb92": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less than or equal with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".<="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-6vb92",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".<=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-6vb92"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/._=(_:_:)-6zxj9": {
+  "abstract" : [
+    {
+      "text" : "Element-wise greater than or equal with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".>="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/._=(_:_:)-6zxj9",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".>=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-6zxj9"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/.__(_:_:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise logical or.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : ".||"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.__(_:_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : ".||(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/'.__(_:_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/all(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "and",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "all"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/all(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "all(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/all(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/allClose(_:rtol:atol:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Approximate comparison of two arrays.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "allClose"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "rtol"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "atol"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "allClose(_:rtol:atol:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/any(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "or",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "any"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/any(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "any(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/any(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/arrayEqual(_:equalNAN:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Array equality check.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "arrayEqual"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "equalNAN"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/arrayEqual(_:equalNAN:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "arrayEqual(_:equalNAN:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/arrayequal(_:equalnan:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/ScalarOrArray": {
+  "abstract" : [
+    {
+      "text" : "Protocol for promoting a value (e.g. a scalar) to an MLXArray.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ScalarOrArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ScalarOrArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ScalarOrArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/scalarorarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/all(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "and",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "all"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/all(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "all(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/all(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/allClose(_:_:rtol:atol:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Approximate comparison of two arrays.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "allClose"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "rtol"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "atol"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "allClose(_:_:rtol:atol:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/any(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "or",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "any"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "any(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/any(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
+  "abstract" : [
+    {
+      "text" : "MLX supports a wide range of binary arithmetic operators.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Arithmetic",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/arithmetic"
+},
+"doc://mlx.swift.mlx/documentation/MLX/arrayEqual(_:_:equalNAN:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Array equality check.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "arrayEqual"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "equalNAN"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arrayEqual(_:_:equalNAN:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "arrayEqual(_:_:equalNAN:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/arrayequal(_:_:equalnan:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/convolution": {
+  "abstract" : [
+    {
+      "text" : "Convolution operations.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Convolution",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/convolution"
+},
+"doc://mlx.swift.mlx/documentation/MLX/cumulative": {
+  "abstract" : [
+    {
+      "text" : "Operations that produce a cumulative result.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Cumulative Operations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/cumulative"
+},
+"doc://mlx.swift.mlx/documentation/MLX/equal(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise equality.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "equal"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/equal(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "equal(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/equal(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/greater(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise greater than.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "greater"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/greater(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "greater(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/greater(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/greaterEqual(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less greater than or equal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "greaterEqual"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/greaterEqual(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "greaterEqual(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/greaterequal(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/indexes": {
+  "abstract" : [
+    {
+      "text" : "Functions to produce and consume array indexes.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Indexes",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/indexes"
+},
+"doc://mlx.swift.mlx/documentation/MLX/indexing": {
+  "abstract" : [
+    {
+      "text" : "Array subscripts.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Indexing",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/indexing"
+},
+"doc://mlx.swift.mlx/documentation/MLX/initialization": {
+  "abstract" : [
+    {
+      "text" : "Creating MLXArrays.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Initialization",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/initialization"
+},
+"doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
+  "abstract" : [
+    {
+      "text" : "Computation in ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " is lazy.  Understand when the graph is evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Lazy Evaluation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/lazy-evaluation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/less(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less than.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "less"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/less(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "less(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/less(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/lessEqual(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise less than or equal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "lessEqual"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lessEqual(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "lessEqual(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/lessequal(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/logicalNot(_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise logical not.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "logicalNot"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logicalNot(_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "logicalNot(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/logicalnot(_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/notEqual(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Element-wise not equal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "notEqual"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/notEqual(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "notEqual(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/notequal(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/reduction": {
+  "abstract" : [
+    {
+      "text" : "Reduction or aggregation functions.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Reduction Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/reduction"
+},
+"doc://mlx.swift.mlx/documentation/MLX/shapes": {
+  "abstract" : [
+    {
+      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Shapes",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/shapes"
+},
+"doc://mlx.swift.mlx/documentation/MLX/sorting": {
+  "abstract" : [
+    {
+      "text" : "Sorting and partitioning values and indices.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Sorting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/sorting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/where(_:_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Select from ",
+      "type" : "text"
+    },
+    {
+      "code" : "x",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " or ",
+      "type" : "text"
+    },
+    {
+      "code" : "y",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " according to ",
+      "type" : "text"
+    },
+    {
+      "code" : "condition",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "`where`"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "A"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "B"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/where(_:_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "where(_:_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/where(_:_:_:stream:)"
+}
+}
+}

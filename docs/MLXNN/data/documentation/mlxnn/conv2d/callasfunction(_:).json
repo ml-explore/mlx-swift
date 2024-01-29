@@ -1,0 +1,251 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "UnaryLayer.callAsFunction(_:)",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d\/callAsFunction(_:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:5MLXNN6Conv2dC14callAsFunctiony3MLX8MLXArrayCAGF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "callAsFunction"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Convolution.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Convolution.swift#L106"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Instance Method",
+    "symbolKind" : "method",
+    "title" : "callAsFunction(_:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "callAsFunction"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "x"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : ") -> "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/conv2d\/callasfunction(_:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv2d": {
+  "abstract" : [
+    {
+      "text" : "Applies a 2-dimensional convolution over the multi-channel input image.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Conv2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Conv2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Conv2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv2d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv2d/callAsFunction(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "callAsFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d\/callAsFunction(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "callAsFunction(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv2d\/callasfunction(_:)"
+}
+}
+}

@@ -1,0 +1,1502 @@
+{
+  "abstract" : [
+    {
+      "text" : "Applies an affine transformation to the input.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:5MLXNN6LinearC",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "Linear"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "Linear"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Linear.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Linear.swift#L71"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Class",
+    "symbolKind" : "class",
+    "title" : "Linear"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "class"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "Linear"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Concretely:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "matmul(x, W) + b"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "where ",
+              "type" : "text"
+            },
+            {
+              "code" : "W",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " has shape ",
+              "type" : "text"
+            },
+            {
+              "code" : "[inputDimensions, outputDimensions]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "b",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " has",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "shape ",
+              "type" : "text"
+            },
+            {
+              "code" : "[outputDimensions]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The values are initialized from the uniform distribution:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "scale = sqrt(1.0 \/ inputDimensions)",
+            "W = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions])",
+            "b = MLXRandom.uniform(-scale ..< scale, [outputDimensions])"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Using-In-A-Module",
+          "level" : 2,
+          "text" : "Using In A Module",
+          "type" : "heading"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Use ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "@ModuleInfo",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " with all your ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "Linear",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " module uses so that ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : " can",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "replace the modules, e.g. via ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear\/quantize(model:groupSize:bits:predicate:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ".",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public class FeedForward : Module {",
+            "",
+            "    @ModuleInfo var w1: Linear",
+            "    @ModuleInfo var w2: Linear",
+            "    @ModuleInfo var w3: Linear",
+            "",
+            "    public init(_ args: Configuration) {",
+            "        self.w1 = Linear(args.dimensions, args.hiddenDimensions, bias: false)",
+            "        self.w2 = Linear(args.hiddenDimensions, args.dimensions, bias: false)",
+            "        self.w3 = Linear(args.dimensions, args.hiddenDimensions, bias: false)",
+            "    }"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If a ",
+              "type" : "text"
+            },
+            {
+              "code" : "key",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is needed (to change the parameters key for ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/parameters()",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ") here is the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "way to initialize the ivar:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public class Example : Module {",
+            "",
+            "    @ModuleInfo(key: \"weights_1\") var w1: Linear",
+            "",
+            "    public init() {",
+            "        self._w1.wrappedValue = Linear(10, 20, bias: false)",
+            "    }"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module"
+      ],
+      "kind" : "relationships",
+      "title" : "Inherits From",
+      "type" : "inheritsFrom"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear"
+      ],
+      "kind" : "relationships",
+      "title" : "Inherited By",
+      "type" : "inheritedBy"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
+        "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout2d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout3d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Embedding",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential"
+      ],
+      "title" : "Unary Layers"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/init(_:_:bias:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/shape"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/callAsFunction(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/describeExtra(_:)"
+      ],
+      "title" : "Instance Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/linear"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/3MLX19IndentedDescriptionP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
+  "title" : "MLX.IndentedDescription",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear": {
+  "abstract" : [
+    {
+      "text" : "Applies a bilinear transformation to the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Bilinear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Bilinear"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Bilinear",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/bilinear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d": {
+  "abstract" : [
+    {
+      "text" : "Applies a 1-dimensional convolution over the multi-channel input sequence.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Conv1d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Conv1d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Conv1d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv1d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv2d": {
+  "abstract" : [
+    {
+      "text" : "Applies a 2-dimensional convolution over the multi-channel input image.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Conv2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Conv2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Conv2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv2d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Dropout": {
+  "abstract" : [
+    {
+      "text" : "Randomly zero a portion of the elements during training.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Dropout"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Dropout"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Dropout",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/dropout"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Dropout2d": {
+  "abstract" : [
+    {
+      "text" : "Apply 2D channel-wise dropout during training.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Dropout2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Dropout2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Dropout2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/dropout2d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Dropout3d": {
+  "abstract" : [
+    {
+      "text" : "Apply 3D channel-wise dropout during training.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Dropout3d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout3d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Dropout3d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Dropout3d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/dropout3d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Embedding": {
+  "abstract" : [
+    {
+      "text" : "Implements a simple lookup table that maps each input integer to a high-dimensional vector.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Embedding"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Embedding",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Embedding"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Embedding",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/embedding"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Identity": {
+  "abstract" : [
+    {
+      "text" : "A placeholder identity operator that is argument-insensitive.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Identity"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Identity"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Identity",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/identity"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear": {
+  "abstract" : [
+    {
+      "text" : "Applies an affine transformation to the input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Linear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Linear"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Linear",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/callAsFunction(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "callAsFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/callAsFunction(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "callAsFunction(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear\/callasfunction(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/describeExtra(_:)": {
+  "abstract" : [
+    {
+      "text" : "Describe the ",
+      "type" : "text"
+    },
+    {
+      "code" : "inputDimensions",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "outputDimensions",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "describeExtra"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/describeExtra(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "describeExtra(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear\/describeextra(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/init(_:_:bias:)": {
+  "abstract" : [
+    {
+      "text" : "Applies an affine transformation to the input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/init(_:_:bias:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:_:bias:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear\/init(_:_:bias:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/shape": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "shape"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/shape",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "shape",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear\/shape"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
+  "abstract" : [
+    {
+      "text" : "Base class for building neural networks with MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Module",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/parameters()": {
+  "abstract" : [
+    {
+      "text" : "Return a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary<String, MLXArray>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " for all parameters in the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "model (all layers).",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/parameters()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "parameters()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/parameters()"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(modules:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the child modules of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided replacements.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "modules"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13ModuleChilrena",
+      "text" : "ModuleChilren"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(modules:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(modules:verify:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/QuantizedLinear": {
+  "abstract" : [
+    {
+      "text" : "Applies an affine transformation to the input using a quantized weight matrix.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "QuantizedLinear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "QuantizedLinear"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "QuantizedLinear",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/quantizedlinear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/QuantizedLinear/quantize(model:groupSize:bits:predicate:)": {
+  "abstract" : [
+    {
+      "text" : "Replace ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " layers with ",
+      "type" : "text"
+    },
+    {
+      "code" : "QuantizedLinear",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "quantize"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "groupSize"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "bits"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "predicate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear\/quantize(model:groupSize:bits:predicate:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "quantize(model:groupSize:bits:predicate:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/quantizedlinear\/quantize(model:groupsize:bits:predicate:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/RMSNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies Root Mean Square normalization [1] to the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RMSNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RMSNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RMSNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/rmsnorm"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Sequential": {
+  "abstract" : [
+    {
+      "text" : "A layer that calls the passed ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in order.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Sequential"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Sequential"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Sequential",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequential"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/UnaryLayer": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "Layer",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " subclass) that can be evaluated as a ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "unary function",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "UnaryLayer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/unarylayer"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/custom-layers": {
+  "abstract" : [
+    {
+      "text" : "Creating custom modules using ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXNN",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Creating Modules",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/custom-layers"
+},
+"doc://mlx.swift.mlxnn/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+}
+}
+}

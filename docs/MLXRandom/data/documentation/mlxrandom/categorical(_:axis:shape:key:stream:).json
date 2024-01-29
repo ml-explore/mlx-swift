@@ -1,0 +1,534 @@
+{
+  "abstract" : [
+    {
+      "text" : "Sample from a categorical distribution.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9MLXRandom11categorical_4axis5shape3key6stream3MLX8MLXArrayCAI_SiSaySiGSgAISgAG14StreamOrDeviceVtF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "categorical"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "shape"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXRandom"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Random.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L354"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Function",
+    "symbolKind" : "func",
+    "title" : "categorical(_:axis:shape:key:stream:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "categorical"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "logits"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "axis"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : " = -1, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "shape"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : "]? = nil, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "key"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : "? = nil, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "stream"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+              "text" : "StreamOrDevice"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .default) -> "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "kind" : "parameters",
+      "parameters" : [
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "The ",
+                  "type" : "text"
+                },
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "unnormalized",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "emphasis"
+                },
+                {
+                  "text" : " categorical distribution(s).",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "logits"
+        }
+      ]
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The values are sampled from the categorical distribution specified by",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the unnormalized values in ",
+              "type" : "text"
+            },
+            {
+              "code" : "logits",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".   If the ",
+              "type" : "text"
+            },
+            {
+              "code" : "shape",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is not specified",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the result shape will be the same shape as ",
+              "type" : "text"
+            },
+            {
+              "code" : "logits",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " with the ",
+              "type" : "text"
+            },
+            {
+              "code" : "axis",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "dimension removed.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let key = MLXRandom.key(0)",
+            "",
+            "let logits = MLXArray.zeros([5, 20])",
+            "",
+            "\/\/ produces MLXArray of UInt32 shape [5]",
+            "let result = MLXRandom.categorical(logits, key: key)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom": {
+  "abstract" : [
+    {
+      "text" : "Collection of functions related to random number generation.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXRandom",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/categorical(_:axis:shape:key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Sample from a categorical distribution.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "categorical"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "shape"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "categorical(_:axis:shape:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)"
+}
+}
+}

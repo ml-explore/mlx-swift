@@ -1,0 +1,649 @@
+{
+  "abstract" : [
+    {
+      "text" : "Generate values from a truncated normal distribution.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9MLXRandom15truncatedNormal__4type3key6stream3MLX8MLXArrayCSnyxG_SaySiGq_mAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSLRzAfNR_SBR_r0_lF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "truncatedNormal"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "R"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sn",
+        "text" : "Range"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "R"
+      },
+      {
+        "kind" : "text",
+        "text" : ">, ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXRandom"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Random.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L261"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Function",
+    "symbolKind" : "func",
+    "title" : "truncatedNormal(_:_:type:key:stream:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "truncatedNormal"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "genericParameter",
+              "text" : "R"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "genericParameter",
+              "text" : "T"
+            },
+            {
+              "kind" : "text",
+              "text" : ">("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "range"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Sn",
+              "text" : "Range"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "R"
+            },
+            {
+              "kind" : "text",
+              "text" : ">, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "shape"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : "] = [], "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "type"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "T"
+            },
+            {
+              "kind" : "text",
+              "text" : ".Type = Float.self, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "key"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : "? = nil, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "stream"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+              "text" : "StreamOrDevice"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .default) -> "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "where"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "R"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8HasDTypeP",
+              "text" : "HasDType"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "R"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:SL",
+              "text" : "Comparable"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "T"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8HasDTypeP",
+              "text" : "HasDType"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "T"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:SB",
+              "text" : "BinaryFloatingPoint"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The values are sampled from the truncated normal distribution in the range.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "An optional shape can be used to broadcast into",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "a larger array.  An optional ",
+              "type" : "text"
+            },
+            {
+              "code" : "Key",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " can be specified to control the PRNG.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let key = MLXRandom.key(0)",
+            "",
+            "\/\/ create an array of shape [50] type Float values in the range 0 ..< 10",
+            "let array = MLXRandom.truncatedNormal(0 ..< 10, [50], key: key)",
+            "",
+            "\/\/ same, but in range 0.5 ..< 1",
+            "let array = MLXRandom.truncatedNormal(0.5 ..< 1, [50], key: key)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "See-also",
+          "level" : 3,
+          "text" : "See also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/jax.readthedocs.io\/en\/latest\/_modules\/jax\/_src\/random.html#truncated_normal",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-8vjij"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom": {
+  "abstract" : [
+    {
+      "text" : "Collection of functions related to random number generation.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXRandom",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(_:_:type:key:stream:)-8vjij": {
+  "abstract" : [
+    {
+      "text" : "Generate values from a truncated normal distribution.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "truncatedNormal"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "R"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sn",
+      "text" : "Range"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "R"
+    },
+    {
+      "kind" : "text",
+      "text" : ">, ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "type"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ".Type, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "truncatedNormal(_:_:type:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-8vjij"
+},
+"https://jax.readthedocs.io/en/latest/_modules/jax/_src/random.html#truncated_normal": {
+  "identifier" : "https:\/\/jax.readthedocs.io\/en\/latest\/_modules\/jax\/_src\/random.html#truncated_normal",
+  "title" : "JAX Documentation",
+  "titleInlineContent" : [
+    {
+      "text" : "JAX Documentation",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/jax.readthedocs.io\/en\/latest\/_modules\/jax\/_src\/random.html#truncated_normal"
+}
+}
+}

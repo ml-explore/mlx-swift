@@ -1,0 +1,315 @@
+{
+  "abstract" : [
+    {
+      "text" : "Return an iterator along axis 0:",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/Sequence-Implementations"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/makeIterator()"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "MLX",
+    "externalID" : "s:3MLX8MLXArrayC12makeIteratorAC0bD0VyF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "makeIterator"
+      },
+      {
+        "kind" : "text",
+        "text" : "() -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC0B8IteratorV",
+        "text" : "MLXArrayIterator"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "MLXArray+Indexing.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Indexing.swift#L51"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Instance Method",
+    "symbolKind" : "method",
+    "title" : "makeIterator()"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "makeIterator"
+            },
+            {
+              "kind" : "text",
+              "text" : "() -> "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : "."
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/MLXArrayIterator",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC0B8IteratorV",
+              "text" : "MLXArrayIterator"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "code" : [
+            "for row in array {",
+            "    row...",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/mlxarray\/makeiterator()"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/MLXArrayIterator": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArrayIterator"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/MLXArrayIterator",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArrayIterator"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray.MLXArrayIterator",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/mlxarrayiterator"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/Sequence-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/Sequence-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Sequence Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/sequence-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/makeIterator()": {
+  "abstract" : [
+    {
+      "text" : "Return an iterator along axis 0:",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "makeIterator"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC0B8IteratorV",
+      "text" : "MLXArrayIterator"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/makeIterator()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "makeIterator()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/makeiterator()"
+}
+}
+}

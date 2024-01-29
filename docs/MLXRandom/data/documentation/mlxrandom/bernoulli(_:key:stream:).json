@@ -1,0 +1,373 @@
+{
+  "abstract" : [
+    {
+      "text" : "Generate Bernoulli random values.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9MLXRandom9bernoulli_3key6stream3MLX8MLXArrayCSaySiG_AGSgAE14StreamOrDeviceVtF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "bernoulli"
+      },
+      {
+        "kind" : "text",
+        "text" : "(["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXRandom"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Random.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L209"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Function",
+    "symbolKind" : "func",
+    "title" : "bernoulli(_:key:stream:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "bernoulli"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "shape"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : "] = [], "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "key"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : "? = nil, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "stream"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+              "text" : "StreamOrDevice"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .default) -> "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The values are sampled from the bernoulli distribution with parameter ",
+              "type" : "text"
+            },
+            {
+              "code" : "p",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " using the default value of 0.5.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "The result will be of size ",
+              "type" : "text"
+            },
+            {
+              "code" : "shape",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let key = MLXRandom.key(0)",
+            "",
+            "\/\/ generate a single random Bool with p = 0.5",
+            "let value = MLXRandom.bernoulli(key: key).item(Bool.self)",
+            "",
+            "\/\/ generate an array of shape [50, 2] of random Bool",
+            "let array = MLXRandom.bernoulli([50, 2], key: key)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxrandom\/bernoulli(_:key:stream:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom": {
+  "abstract" : [
+    {
+      "text" : "Collection of functions related to random number generation.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXRandom",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/bernoulli(_:key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Generate Bernoulli random values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bernoulli"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bernoulli(_:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/bernoulli(_:key:stream:)"
+}
+}
+}

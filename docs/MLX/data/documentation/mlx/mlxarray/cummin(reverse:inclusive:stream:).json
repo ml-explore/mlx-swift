@@ -1,0 +1,1318 @@
+{
+  "abstract" : [
+    {
+      "text" : "Return the cumulative minimum of the elements over the flattened array.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
+      ],
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummin(reverse:inclusive:stream:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "MLX",
+    "externalID" : "s:3MLX8MLXArrayC6cummin7reverse9inclusive6streamACSb_SbAA14StreamOrDeviceVtF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "cummin"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "reverse"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "inclusive"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "MLXArray+Ops.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1207"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Instance Method",
+    "symbolKind" : "method",
+    "title" : "cummin(reverse:inclusive:stream:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "cummin"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "reverse"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Sb",
+              "text" : "Bool"
+            },
+            {
+              "kind" : "text",
+              "text" : " = false, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "inclusive"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Sb",
+              "text" : "Bool"
+            },
+            {
+              "kind" : "text",
+              "text" : " = false, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "stream"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+              "text" : "StreamOrDevice"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .default) -> "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "code" : [
+            "let array = MLXArray([5, 8, 4, 9], [2, 2])",
+            "",
+            "\/\/ result is [5, 5, 4, 4]",
+            "let result = array.cummin()"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummin(axis:reverse:inclusive:stream:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cummin(_:axis:reverse:inclusive:stream:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummax(axis:reverse:inclusive:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummax(reverse:inclusive:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummin(axis:reverse:inclusive:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumprod(axis:reverse:inclusive:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumprod(reverse:inclusive:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumsum(axis:reverse:inclusive:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumsum(reverse:inclusive:stream:)"
+      ],
+      "title" : "Cumulative Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/mlxarray\/cummin(reverse:inclusive:stream:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cummax(axis:reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative maximum of the elements along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cummax"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummax(axis:reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cummax(axis:reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cummax(axis:reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cummax(reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative maximum of the elements over the flattened array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cummax"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummax(reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cummax(reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cummax(reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cummin(axis:reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative minimum of the elements along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cummin"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummin(axis:reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cummin(axis:reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cummin(axis:reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cummin(reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative minimum of the elements over the flattened array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cummin"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cummin(reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cummin(reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cummin(reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cumprod(axis:reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative product of the elements along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cumprod"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumprod(axis:reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cumprod(axis:reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cumprod(axis:reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cumprod(reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative product of the elements over the flattened array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cumprod"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumprod(reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cumprod(reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cumprod(reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cumsum(axis:reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative sum of the elements along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cumsum"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumsum(axis:reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cumsum(axis:reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cumsum(axis:reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/cumsum(reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative sum of the elements over the flattened array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cumsum"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumsum(reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cumsum(reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/cumsum(reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
+  "abstract" : [
+    {
+      "text" : "Parameter type for all MLX operations.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StreamOrDevice",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice"
+},
+"doc://mlx.swift.mlx/documentation/MLX/cummin(_:axis:reverse:inclusive:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Return the cumulative minimum of the elements along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cummin"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reverse"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inclusive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cummin(_:axis:reverse:inclusive:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cummin(_:axis:reverse:inclusive:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/cummin(_:axis:reverse:inclusive:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/cumulative": {
+  "abstract" : [
+    {
+      "text" : "Operations that produce a cumulative result.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Cumulative Operations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/cumulative"
+}
+}
+}

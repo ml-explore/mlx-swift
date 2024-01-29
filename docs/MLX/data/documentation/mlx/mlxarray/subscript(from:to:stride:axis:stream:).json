@@ -1,0 +1,1261 @@
+{
+  "abstract" : [
+    {
+      "text" : "Indexing using a stride.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(from:to:stride:axis:stream:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "MLX",
+    "externalID" : "s:3MLX8MLXArrayC4from2to6stride4axis6streamACSiSg_AIS2iAA14StreamOrDeviceVtcip",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "subscript"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "from"
+      },
+      {
+        "kind" : "text",
+        "text" : " _: "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "to"
+      },
+      {
+        "kind" : "text",
+        "text" : " _: "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stride"
+      },
+      {
+        "kind" : "text",
+        "text" : " _: "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : " _: "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : " _: "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "MLXArray+Indexing.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Indexing.swift#L427"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Instance Subscript",
+    "symbolKind" : "subscript",
+    "title" : "subscript(from:to:stride:axis:stream:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "subscript"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "from"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "from"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : "? = nil, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "to"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "to"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : "? = nil, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "stride"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "stride"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "axis"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "axis"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
+            },
+            {
+              "kind" : "text",
+              "text" : " = -1, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "stream"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "stream"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+              "text" : "StreamOrDevice"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .default) -> "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : " { "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "get"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "set"
+            },
+            {
+              "kind" : "text",
+              "text" : " }"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This method supports strided access, similar to python:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "# access strided contents of array",
+            "evens = array[..., ::2]"
+          ],
+          "syntax" : "python",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "can be done in swift with:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let array = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])",
+            "",
+            "\/\/ array([[[0, 2],",
+            "\/\/         [4, 6],",
+            "\/\/         [8, 10]],",
+            "\/\/        [[12, 14],",
+            "\/\/         [16, 18],",
+            "\/\/         [20, 22]]], dtype=int64)",
+            "let evens = a[stride: 2, axis: -1]"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/asStrided(_:_:strides:offset:stream:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-od5g",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-7n5nw",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-82jwt",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-1a84u",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-8a2s7",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-4z56f",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:axis:stream:)-1jy5n",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:axis:stream:)-79psf"
+      ],
+      "title" : "Subscript Functions"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/mlxarray\/subscript(from:to:stride:axis:stream:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:axis:stream:)-1jy5n": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:axis:stream:)-1jy5n",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:axis:stream:)-1jy5n"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:axis:stream:)-79psf": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SX",
+      "text" : "RangeExpression"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ">, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:axis:stream:)-79psf",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:axis:stream:)-79psf"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-1a84u": {
+  "abstract" : [
+    {
+      "text" : "Multiple axis subscript.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-1a84u",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-1a84u"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-4z56f": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SX",
+      "text" : "RangeExpression"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ">..., "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-4z56f",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-4z56f"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-7n5nw": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "..., "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-7n5nw",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-7n5nw"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-82jwt": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "..., "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-82jwt",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-82jwt"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-8a2s7": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SX",
+      "text" : "RangeExpression"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ">], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-8a2s7",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-8a2s7"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-od5g": {
+  "abstract" : [
+    {
+      "text" : "Single index subscript.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-od5g",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-od5g"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(from:to:stride:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Indexing using a stride.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "from"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "to"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stride"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(from:to:stride:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(from:to:stride:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/subscript(from:to:stride:axis:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
+  "abstract" : [
+    {
+      "text" : "Parameter type for all MLX operations.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StreamOrDevice",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice"
+},
+"doc://mlx.swift.mlx/documentation/MLX/asStrided(_:_:strides:offset:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Create a view into the array with the given shape and strides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asStrided"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "strides"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "offset"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/asStrided(_:_:strides:offset:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asStrided(_:_:strides:offset:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/asstrided(_:_:strides:offset:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/indexing": {
+  "abstract" : [
+    {
+      "text" : "Array subscripts.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Indexing",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/indexing"
+}
+}
+}

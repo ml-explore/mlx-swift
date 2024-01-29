@@ -1,0 +1,589 @@
+{
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:5MLXNN18MultiHeadAttentionC",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "MultiHeadAttention"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "MultiHeadAttention"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Transformer.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L6"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Class",
+    "symbolKind" : "class",
+    "title" : "MultiHeadAttention"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "class"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "MultiHeadAttention"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module"
+      ],
+      "kind" : "relationships",
+      "title" : "Inherits From",
+      "type" : "inheritsFrom"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
+        "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear"
+      ],
+      "title" : "Other Layers"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)"
+      ],
+      "title" : "Instance Methods"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/createAdditiveCausalMask(_:dtype:)"
+      ],
+      "title" : "Type Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/multiheadattention"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/3MLX19IndentedDescriptionP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
+  "title" : "MLX.IndentedDescription",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear": {
+  "abstract" : [
+    {
+      "text" : "Applies a bilinear transformation to the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Bilinear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Bilinear"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Bilinear",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/bilinear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
+  "abstract" : [
+    {
+      "text" : "Base class for building neural networks with MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Module",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MultiHeadAttention"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MultiHeadAttention"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MultiHeadAttention",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/callAsFunction(_:keys:values:mask:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "callAsFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keys"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "values"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "mask"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "callAsFunction(_:keys:values:mask:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/callasfunction(_:keys:values:mask:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/createAdditiveCausalMask(_:dtype:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "createAdditiveCausalMask"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/createAdditiveCausalMask(_:dtype:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "createAdditiveCausalMask(_:dtype:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/createadditivecausalmask(_:dtype:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "numHeads"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "queryInputDimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keyInputDimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "valueInputDimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "valueDimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "valueOutputDimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)"
+},
+"doc://mlx.swift.mlxnn/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+}
+}
+}

@@ -1,0 +1,324 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "HasDType.dtype",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Int8",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Int8\/HasDType-Implementations"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Int8\/dtype"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "Swift",
+    "externalID" : "s:s4Int8V3MLXE5dtypeAC5DTypeOvpZ",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "static"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "keyword",
+        "text" : "var"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "dtype"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX5DTypeO",
+        "text" : "DType"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX",
+        "relatedModules" : [
+          "Swift"
+        ]
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "DType.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L96"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Type Property",
+    "symbolKind" : "property",
+    "title" : "dtype"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "static"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "var"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "dtype"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX5DTypeO",
+              "text" : "DType"
+            },
+            {
+              "kind" : "text",
+              "text" : " { "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "get"
+            },
+            {
+              "kind" : "text",
+              "text" : " }"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/swift\/int8\/dtype"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType": {
+  "abstract" : [
+    {
+      "text" : "Enum wrapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "Cmlx.mlx_array_dtype",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "DType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "DType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "DType",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Swift": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "Swift",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/swift"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Swift/Int8": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "extension"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "preciseIdentifier" : "s:s4Int8V",
+      "text" : "Int8"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Int8",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Int8"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Int8",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/swift\/int8"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Swift/Int8/HasDType-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Int8\/HasDType-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "HasDType Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/swift\/int8\/hasdtype-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Swift/Int8/dtype": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Int8\/dtype",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dtype",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/swift\/int8\/dtype"
+}
+}
+}

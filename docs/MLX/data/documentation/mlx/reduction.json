@@ -1,0 +1,2202 @@
+{
+  "abstract" : [
+    {
+      "text" : "Reduction or aggregation functions.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "Reduction Functions"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "MLX has a number of functions to reduce or aggregate data in ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "These functions typically work over one or more axes, though there are",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "overloads where the axis can be omitted and the work occurs on the entire array.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let array = MLXArray(0 ..< 12, [4, 3])",
+            "",
+            "\/\/ scalar array with the sum of all the values",
+            "let totalSum = array.sum()",
+            "",
+            "\/\/ array with the sum of the colums",
+            "let columnSum = array.sum(axis: 0)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See also ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+              "isActive" : true,
+              "type" : "reference"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting"
+      ],
+      "title" : "MLXArray"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/all(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/any(axes:keepDims:stream:)"
+      ],
+      "title" : "MLXArray Logical Reduction Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/logSumExp(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/product(axis:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/max(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/mean(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/min(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/sum(axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/variance(axes:keepDims:ddof:stream:)"
+      ],
+      "title" : "MLXArray Aggregating Reduction Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/all(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:axes:keepDims:stream:)"
+      ],
+      "title" : "Logical Reduction Free Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logSumExp(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/product(_:axis:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/max(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/mean(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/min(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sum(_:axes:keepDims:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/variance(_:axes:keepDims:ddof:stream:)"
+      ],
+      "title" : "Aggregating Reduction Free Functions"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/reduction"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/all(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "and",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "all"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/all(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "all(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/all(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/any(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "or",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "any"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/any(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "any(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/any(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/logSumExp(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "log-sum-exp",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "logSumExp"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/logSumExp(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "logSumExp(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/logsumexp(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/max(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "max",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "max"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/max(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "max(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/max(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/mean(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "mean",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mean"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/mean(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mean(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/mean(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/min(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "min",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "min"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/min(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "min(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/min(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/product(axis:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "product",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "product"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/product(axis:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "product(axis:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/product(axis:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/sum(axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Sum reduce the array over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "sum"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/sum(axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "sum(axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/sum(axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/variance(axes:keepDims:ddof:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Compute the variance(s) over the given axes",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "variance"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ddof"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/variance(axes:keepDims:ddof:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "variance(axes:keepDims:ddof:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/variance(axes:keepdims:ddof:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/all(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "and",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "all"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/all(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "all(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/all(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/any(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "or",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "any"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "any(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/any(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
+  "abstract" : [
+    {
+      "text" : "MLX supports a wide range of binary arithmetic operators.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Arithmetic",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/arithmetic"
+},
+"doc://mlx.swift.mlx/documentation/MLX/convolution": {
+  "abstract" : [
+    {
+      "text" : "Convolution operations.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Convolution",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/convolution"
+},
+"doc://mlx.swift.mlx/documentation/MLX/cumulative": {
+  "abstract" : [
+    {
+      "text" : "Operations that produce a cumulative result.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Cumulative Operations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/cumulative"
+},
+"doc://mlx.swift.mlx/documentation/MLX/indexes": {
+  "abstract" : [
+    {
+      "text" : "Functions to produce and consume array indexes.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Indexes",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/indexes"
+},
+"doc://mlx.swift.mlx/documentation/MLX/indexing": {
+  "abstract" : [
+    {
+      "text" : "Array subscripts.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Indexing",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/indexing"
+},
+"doc://mlx.swift.mlx/documentation/MLX/initialization": {
+  "abstract" : [
+    {
+      "text" : "Creating MLXArrays.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Initialization",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/initialization"
+},
+"doc://mlx.swift.mlx/documentation/MLX/logSumExp(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "log-sum-exp",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "logSumExp"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logSumExp(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "logSumExp(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/logsumexp(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/logical": {
+  "abstract" : [
+    {
+      "text" : "Evaluating logical operations on MLXArray.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Logical Operators",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/logical"
+},
+"doc://mlx.swift.mlx/documentation/MLX/max(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "max",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "max"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/max(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "max(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/max(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/mean(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "mean",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mean"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/mean(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mean(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mean(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/min(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "min",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "min"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/min(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "min(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/min(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/product(_:axis:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "product",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " reduction over the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "product"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/product(_:axis:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "product(_:axis:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/product(_:axis:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/shapes": {
+  "abstract" : [
+    {
+      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Shapes",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/shapes"
+},
+"doc://mlx.swift.mlx/documentation/MLX/sorting": {
+  "abstract" : [
+    {
+      "text" : "Sorting and partitioning values and indices.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Sorting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/sorting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/sum(_:axes:keepDims:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Sum reduce the array over the given axes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "sum"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sum(_:axes:keepDims:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "sum(_:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/sum(_:axes:keepdims:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/variance(_:axes:keepDims:ddof:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Compute the variance(s) over the given axes",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "variance"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ddof"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/variance(_:axes:keepDims:ddof:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "variance(_:axes:keepDims:ddof:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/variance(_:axes:keepdims:ddof:stream:)"
+}
+}
+}

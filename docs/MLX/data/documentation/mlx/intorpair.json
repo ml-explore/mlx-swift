@@ -1,0 +1,491 @@
+{
+  "abstract" : [
+    {
+      "text" : "Parameter for convolutions allowing single integers or arrays.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:3MLX9IntOrPairV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "IntOrPair"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "IntOrPair"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Ops.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L375"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "IntOrPair"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "IntOrPair"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example the numeric parameters here:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "conv2d(input, weights, stride: 3, padding: [2, 2], padding: .init((2, 3)))"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/s25ExpressibleByArrayLiteralP",
+        "doc:\/\/mlx.swift.mlx\/s27ExpressibleByIntegerLiteralP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(_:)-4gcmc",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(_:)-78yd3",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(arrayLiteral:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(integerLiteral:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/first",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/second",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/values"
+      ],
+      "title" : "Instance Properties"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/intorpair"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair": {
+  "abstract" : [
+    {
+      "text" : "Parameter for convolutions allowing single integers or arrays.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "IntOrPair"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "IntOrPair"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "IntOrPair",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/first": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "first"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/first",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "first",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/first"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/init(_:)-4gcmc": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "(("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "))"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(_:)-4gcmc",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/init(_:)-4gcmc"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/init(_:)-78yd3": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "])"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(_:)-78yd3",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/init(_:)-78yd3"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/init(arrayLiteral:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "arrayLiteral"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "...)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(arrayLiteral:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(arrayLiteral:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/init(arrayliteral:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/init(integerLiteral:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "integerLiteral"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/init(integerLiteral:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(integerLiteral:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/init(integerliteral:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/second": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "second"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/second",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "second",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/second"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IntOrPair/values": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "values"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair\/values",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "values",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/intorpair\/values"
+},
+"doc://mlx.swift.mlx/s25ExpressibleByArrayLiteralP": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/s25ExpressibleByArrayLiteralP",
+  "title" : "Swift.ExpressibleByArrayLiteral",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/s27ExpressibleByIntegerLiteralP": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/s27ExpressibleByIntegerLiteralP",
+  "title" : "Swift.ExpressibleByIntegerLiteral",
+  "type" : "unresolvable"
+}
+}
+}

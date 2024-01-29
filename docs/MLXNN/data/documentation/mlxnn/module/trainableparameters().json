@@ -1,0 +1,1116 @@
+{
+  "abstract" : [
+    {
+      "text" : "Return a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary<String, MLXArray>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " for all trainable parameters in the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "model (all layers).",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/trainableParameters()"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:5MLXNN6ModuleC19trainableParameters3MLX16NestedDictionaryVySSAE8MLXArrayCGyF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "trainableParameters"
+      },
+      {
+        "kind" : "text",
+        "text" : "() -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+        "text" : "ModuleParameters"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Module.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L306"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Instance Method",
+    "symbolKind" : "method",
+    "title" : "trainableParameters()"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "trainableParameters"
+            },
+            {
+              "kind" : "text",
+              "text" : "() -> "
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+              "text" : "ModuleParameters"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This omits ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " (frozen) parameters.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/apply(filter:map:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/filterMap(filter:map:isLeaf:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/mapParameters(map:isLeaf:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/parameters()",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)"
+      ],
+      "title" : "Parameters"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/module\/trainableparameters()"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
+  "abstract" : [
+    {
+      "text" : "Base class for building neural networks with MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Module",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/apply(filter:map:)": {
+  "abstract" : [
+    {
+      "text" : "Apply a closure to the parameters in a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " recursively.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "apply"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "filter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10ModuleItema",
+      "text" : "ModuleItem"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "map"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/apply(filter:map:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "apply(filter:map:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/apply(filter:map:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/filterMap(filter:map:isLeaf:)": {
+  "abstract" : [
+    {
+      "text" : "Recursively filter and map the contents of the module and its children and produce a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "with the results.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "filterMap"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "filter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10ModuleItema",
+      "text" : "ModuleItem"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "map"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10ModuleItema",
+      "text" : "ModuleItem"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "isLeaf"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10ModuleItema",
+      "text" : "ModuleItem"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/filterMap(filter:map:isLeaf:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "filterMap(filter:map:isLeaf:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/filtermap(filter:map:isleaf:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/freeze(recursive:keys:strict:)": {
+  "abstract" : [
+    {
+      "text" : "Freeze the ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : "’s parameters or subset.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "freeze"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "recursive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keys"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "strict"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "freeze(recursive:keys:strict:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/freeze(recursive:keys:strict:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/mapParameters(map:isLeaf:)": {
+  "abstract" : [
+    {
+      "text" : "Apply a ",
+      "type" : "text"
+    },
+    {
+      "code" : "map",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to all parameters (",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue\/parameters(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ") in the module and its children.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mapParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "map"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "isLeaf"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10ModuleItema",
+      "text" : "ModuleItem"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/mapParameters(map:isLeaf:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mapParameters(map:isLeaf:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/mapparameters(map:isleaf:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/parameters()": {
+  "abstract" : [
+    {
+      "text" : "Return a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary<String, MLXArray>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " for all parameters in the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "model (all layers).",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/parameters()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "parameters()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/parameters()"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/trainableParameters()": {
+  "abstract" : [
+    {
+      "text" : "Return a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary<String, MLXArray>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " for all trainable parameters in the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "model (all layers).",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "trainableParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/trainableParameters()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "trainableParameters()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/trainableparameters()"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(parameters:)": {
+  "abstract" : [
+    {
+      "text" : "A non-throwing version of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(parameters:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(parameters:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(parameters:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the parameters of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided parameters.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(parameters:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(parameters:verify:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleParameters": {
+  "abstract" : [
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure of ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleparameters"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleValue/parameters(_:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " parameters value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue\/parameters(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ModuleValue.parameters(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/modulevalue\/parameters(_:)"
+}
+}
+}

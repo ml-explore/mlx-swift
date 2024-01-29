@@ -1,0 +1,810 @@
+{
+  "abstract" : [
+    {
+      "text" : "A way to build ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:5MLXNN17SequentialBuilderV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "SequentialBuilder"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "SequentialBuilder"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Containers.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Containers.swift#L101"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "SequentialBuilder"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "attribute",
+              "text" : "@resultBuilder"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "SequentialBuilder"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See ``Sequential\/init(layers:)-43yu",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildArray(_:)-876fs",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildArray(_:)-j82o",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildEither(first:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildEither(second:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildExpression(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildOptional(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildPartialBlock(accumulated:next:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildPartialBlock(first:)"
+      ],
+      "title" : "Type Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/sequentialbuilder"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Sequential": {
+  "abstract" : [
+    {
+      "text" : "A layer that calls the passed ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in order.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Sequential"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Sequential"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Sequential",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequential"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder": {
+  "abstract" : [
+    {
+      "text" : "A way to build ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SequentialBuilder"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SequentialBuilder"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SequentialBuilder",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildArray(_:)-876fs": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildArray(_:)-876fs",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildArray(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildarray(_:)-876fs"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildArray(_:)-j82o": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "([["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildArray(_:)-j82o",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildArray(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildarray(_:)-j82o"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildEither(first:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildEither"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "first"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildEither(first:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildEither(first:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildeither(first:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildEither(second:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildEither"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "second"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildEither(second:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildEither(second:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildeither(second:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildExpression(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildExpression"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildExpression(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildExpression(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildexpression(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildOptional(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildOptional"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildOptional(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildOptional(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildoptional(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildPartialBlock(accumulated:next:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildPartialBlock"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "accumulated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "next"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildPartialBlock(accumulated:next:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildPartialBlock(accumulated:next:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildpartialblock(accumulated:next:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder/buildPartialBlock(first:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buildPartialBlock"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "first"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder\/buildPartialBlock(first:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buildPartialBlock(first:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder\/buildpartialblock(first:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/UnaryLayer": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "Layer",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " subclass) that can be evaluated as a ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "unary function",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "UnaryLayer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/unarylayer"
+}
+}
+}

@@ -1,0 +1,2445 @@
+{
+  "abstract" : [
+    {
+      "text" : "Creating custom modules using ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXNN",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Creating Modules"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Neural-Networks",
+          "level" : 2,
+          "text" : "Neural Networks",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Writing arbitrarily complex neural networks in MLX can be done using only",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "valueAndGrad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".  However, this requires the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "user to write again and again the same simple neural network operations as well",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "as handle all the parameter state and initialization manually and explicitly.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " package solves this problem by providing an intuitive way of",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "composing neural network layers, initializing their parameters, freezing them",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "for finetuning and more.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "The-Module-Class",
+          "level" : 2,
+          "text" : "The Module Class",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The workhorse of any neural network library is the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " class. In",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "MLX the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " class is a container of ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " or",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " instances. Its main function is to provide a way to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "recursively ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "access",
+                  "type" : "text"
+                }
+              ],
+              "type" : "strong"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "update",
+                  "type" : "text"
+                }
+              ],
+              "type" : "strong"
+            },
+            {
+              "text" : " its parameters and those of its",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "submodules.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Creating a new ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " subclass from scratch looks like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ 1. Declare your class",
+            "\/\/ 2. Since this class takes a single MLXArray argument we can declare as UnaryLayer",
+            "public class FeedForward : Module, UnaryLayer {",
+            "    ",
+            "    \/\/ 3. Declare your sub-modules and parameters as needed",
+            "    \/\/ 4. See section on ModuleInfo\/ParameterInfo below",
+            "    @ModuleInfo var w1: Linear",
+            "    @ModuleInfo var w2: Linear",
+            "    @ModuleInfo var w3: Linear",
+            "    ",
+            "    \/\/ 5. Initialize your ivars",
+            "    public init(dimensions: Int, hiddenDimensions: Int, outputDimensions: Int) {",
+            "        self.w1 = Linear(dimensions, hiddenDimensions, bias: false)",
+            "        self.w2 = Linear(hiddenDimensions, dimensions, bias: false)",
+            "        self.w3 = Linear(dimensions, outputDimensions, bias: false)",
+            "    }",
+            "    ",
+            "    \/\/ 6. Provide the API to call it",
+            "    public func callAsFunction(_ x: MLXArray) -> MLXArray {",
+            "        w2(silu(w1(x)) * w3(x))",
+            "    }",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This will declare a ",
+              "type" : "text"
+            },
+            {
+              "code" : "FeedForward",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " layer similar to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mistral\/mistral.py",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This layer can be used:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let layer = FeedForward(dimensions: 20, hiddenDimensions: 64, outputDimensions: 20)",
+            "",
+            "let input: MLXArray",
+            "",
+            "\/\/ this calls the `callAsFunction()`",
+            "let output = layer(input)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See the ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Converting From Python",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : " section about other considerations when converting code.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Parameters",
+          "level" : 3,
+          "text" : "Parameters",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A parameter of a module is any public member of type ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " (its",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "name should not start with ",
+              "type" : "text"
+            },
+            {
+              "code" : "_",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : "). It can be arbitrarily nested in other",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " instances or ",
+              "type" : "text"
+            },
+            {
+              "code" : "[MLXArray]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "[String:MLXArray]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/parameters()",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " can be used to extract a ",
+              "type" : "text"
+            },
+            {
+              "code" : "NestedDictionary",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " (",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ") with all",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the parameters of a module and its submodules.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " can also keep track of “frozen” parameters. See the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " method for more details. ",
+              "type" : "text"
+            },
+            {
+              "code" : "valueAndGrad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the gradients returned will be with respect to these trainable parameters.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See the ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "ModuleInfo and ParameterInfo",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : " section for more information about using",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "these in swift.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Updating-the-Parameters",
+          "level" : 3,
+          "text" : "Updating the Parameters",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "MLX modules allow accessing and updating individual parameters. However, most",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "times we need to update large subsets of a module’s parameters. This action is",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "performed by ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Inspecting-Modules",
+          "level" : 3,
+          "text" : "Inspecting Modules",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The simplest way to see the model architecture is to print it. Following along with",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the above example, you can print the ",
+              "type" : "text"
+            },
+            {
+              "code" : "FeedForward",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " with:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "print(layer)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This will display:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "FeedForward {",
+            "  w1: Linear(inputDimensions=20, outputDimensions=64, bias=false),",
+            "  w2: Linear(inputDimensions=64, outputDimensions=20, bias=false),",
+            "  w3: Linear(inputDimensions=20, outputDimensions=20, bias=false),",
+            "}"
+          ],
+          "syntax" : null,
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To get more detailed information on the arrays in a ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " you can use",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/mapParameters(map:isLeaf:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".  For example to see the shapes of all the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "parameters from above:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "print(layer.mapParameters { $0.shape })"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "resulting in:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "[",
+            "  w1: [",
+            "    weight: [64, 20]",
+            "  ],",
+            "  w2: [",
+            "    weight: [20, 64]",
+            "  ],",
+            "  w3: [",
+            "    weight: [20, 20]",
+            "  ]",
+            "]"
+          ],
+          "syntax" : null,
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Value-and-Grad",
+          "level" : 3,
+          "text" : "Value and Grad",
+          "type" : "heading"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Note that this section is included but the functionality is not complete at the time of writing.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Using a ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " does not preclude using MLX’s high order function",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "transformations (",
+              "type" : "text"
+            },
+            {
+              "code" : "valueAndGrad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", ",
+              "type" : "text"
+            },
+            {
+              "code" : "grad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", etc.). However,",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "these function transformations assume pure functions, namely the parameters",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "should be passed as an argument to the function being transformed.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "There is an easy pattern to achieve that with MLX modules:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "var model: ...",
+            "",
+            "func f(parameters: ModuleParameters, _ x: MLXArray) -> MLXArray {",
+            "    model.update(parameters: parameters)",
+            "    return model(x)",
+            "}",
+            "",
+            "f(parameters: model.trainableParameters(), MLXArray.zeros([10]))"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "However, ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXNN\/valueAndGrad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " provides precisely this pattern and only",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "computes the gradients with respect to the trainable parameters of the model.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In detail:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "it wraps the passed function with a function that calls ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "to make sure the model is using the provided parameters.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "it calls ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "valueAndGrad()",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " to transform the function into a function",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "that also computes the gradients with respect to the passed parameters.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "it wraps the returned function with a function that passes the trainable",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "parameters as the first argument to the function returned by",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "valueAndGrad()",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "anchor" : "ModuleInfo-and-ParameterInfo",
+          "level" : 2,
+          "text" : "ModuleInfo and ParameterInfo",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " provide two important features for module",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "instance variables:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "both property wrappers allow replacement keys to be specified",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "the ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " allows ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " to replace the module",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Replacement keys are important because many times models and weights are defined",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "in terms of their python implementation.  For example",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mistral\/mistral.py",
+              "isActive" : true,
+              "overridingTitle" : "here is a definition of a module",
+              "overridingTitleInlineContent" : [
+                {
+                  "text" : "here is a definition of a module",
+                  "type" : "text"
+                }
+              ],
+              "type" : "reference"
+            },
+            {
+              "text" : ":",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "class TransformerBlock(nn.Module):",
+            "    def __init__(self, args: ModelArgs):",
+            "        super().__init__()",
+            "        self.n_heads = args.n_heads",
+            "        self.dim = args.dim",
+            "        self.attention = Attention(args)",
+            "        self.feed_forward = FeedForward(args=args)",
+            "        self.attention_norm = RMSNorm(args.dim, eps=args.norm_eps)",
+            "        self.ffn_norm = RMSNorm(args.dim, eps=args.norm_eps)",
+            "        self.args = args"
+          ],
+          "syntax" : "python",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The keys for modules and parameters are usually named after their instance variables,",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "but ",
+              "type" : "text"
+            },
+            {
+              "code" : "feed_forward",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " would not be a very Swifty variable name.  Instead we can use ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "supply a replacement key:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public class TransformerBlock : Module {",
+            "    ",
+            "    let attention: Attention",
+            "    ",
+            "    @ModuleInfo(key: \"feed_forward\") var feedForward: FeedForward",
+            "    @ModuleInfo(key: \"attention_norm\") var attentionNorm: RMSNorm",
+            "    @ModuleInfo(key: \"ffn_norm\") var ffnNorm: RMSNorm",
+            "",
+            "    public init(_ args: Configuration) {",
+            "        self.attention = Attention(args)",
+            "        self._feedForward.wrappedValue = FeedForward(args)",
+            "        self._attentionNorm.wrappedValue = RMSNorm(args.dimensions, eps: args.normEps)",
+            "        self._ffnNorm.wrappedValue = RMSNorm(args.dimensions, eps: args.normEps)",
+            "    }"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "All ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " modules should use a ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " so that ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear\/quantize(model:groupSize:bits:predicate:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " can replace them at runtime:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public class FeedForward : Module {",
+            "    ",
+            "    @ModuleInfo var w1: Linear",
+            "    @ModuleInfo var w2: Linear",
+            "    @ModuleInfo var w3: Linear",
+            "    ",
+            "    public init(_ args: Configuration) {",
+            "        self.w1 = Linear(args.dimensions, args.hiddenDimensions, bias: false)",
+            "        self.w2 = Linear(args.hiddenDimensions, args.dimensions, bias: false)",
+            "        self.w3 = Linear(args.dimensions, args.hiddenDimensions, bias: false)",
+            "    }"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The ",
+              "type" : "text"
+            },
+            {
+              "code" : "ModuleInfo",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " provides a hook for ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "replace the contents of ",
+              "type" : "text"
+            },
+            {
+              "code" : "w1",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", etc. with a new compatible ",
+              "type" : "text"
+            },
+            {
+              "code" : "Model",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " after it is created.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Note that ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is settable without any ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " – it has an ",
+              "type" : "text"
+            },
+            {
+              "code" : "update()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " method.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Converting-From-Python",
+          "level" : 2,
+          "text" : "Converting From Python",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Consider ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mlx_lm\/models\/llama.py",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ":",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "class RMSNorm(nn.Module):",
+            "    def __init__(self, dims: int, eps: float = 1e-5):",
+            "        super().__init__()",
+            "        self.weight = mx.ones((dims,))",
+            "        self.eps = eps",
+            "",
+            "    def _norm(self, x):",
+            "        return x * mx.rsqrt(x.square().mean(-1, keepdims=True) + self.eps)",
+            "",
+            "    def __call__(self, x):",
+            "        output = self._norm(x.astype(mx.float32)).astype(x.dtype)",
+            "        return self.weight * output"
+          ],
+          "syntax" : "python",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The straightforward conversion might look like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public class RMSNorm : Module {",
+            "    ",
+            "    \/\/ swift uses declared ivars rather than properties dynamically created in init",
+            "    let weight: MLXArray",
+            "    let eps: Float",
+            "",
+            "    public init(_ dimensions: Int, eps: Float = 1e-5) {",
+            "        self.weight = MLXArray.ones([dimensions])",
+            "        self.eps = eps",
+            "        super.init()",
+            "    }",
+            "",
+            "    \/\/ we can use `internal` (default) or `private` functions for internal implementation",
+            "    func norm(_ x: MLXArray) -> MLXArray {",
+            "        x * rsqrt(x.square().mean(axis: -1, keepDims: true) + self.eps)",
+            "    }",
+            "    ",
+            "    \/\/ this is the equivalent of the `__call__()` method from python and it",
+            "    \/\/ allows use like:",
+            "    \/\/",
+            "    \/\/ let result = norm(input)",
+            "    public func callAsFunction(_ x: MLXArray) -> MLXArray {",
+            "        let output = norm(x.asType(.float32)).asType(x.dtype)",
+            "        return weight * output",
+            "    }",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is another example that has parameters (",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") from the ",
+              "type" : "text"
+            },
+            {
+              "code" : "mlx.nn",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " package (both sans documentation):",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "class Linear(Module):",
+            "    def __init__(self, input_dims: int, output_dims: int, bias: bool = True) -> None:",
+            "        super().__init__()",
+            "        scale = math.sqrt(1.0 \/ input_dims)",
+            "        self.weight = mx.random.uniform(",
+            "            low=-scale,",
+            "            high=scale,",
+            "            shape=(output_dims, input_dims),",
+            "        )",
+            "        if bias:",
+            "            self.bias = mx.random.uniform(",
+            "                low=-scale,",
+            "                high=scale,",
+            "                shape=(output_dims,),",
+            "            )",
+            "",
+            "    def _extra_repr(self) -> str:",
+            "        return f\"input_dims={self.weight.shape[1]}, output_dims={self.weight.shape[0]}, bias={'bias' in self}\"",
+            "",
+            "    def __call__(self, x: mx.array) -> mx.array:",
+            "        x = x @ self.weight.T",
+            "        if \"bias\" in self:",
+            "            x = x + self.bias",
+            "        return x"
+          ],
+          "syntax" : "python",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "and the swift conversion:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public class Linear: Module, UnaryLayer {",
+            "",
+            "    let weight: MLXArray",
+            "    let bias: MLXArray?",
+            "",
+            "    public init(_ inputDimensions: Int, _ outputDimensions: Int, bias: Bool = true) {",
+            "        let scale = sqrt(1.0 \/ Float(inputDimensions))",
+            "        self.weight = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions])",
+            "        if bias {",
+            "            self.bias = MLXRandom.uniform(-scale ..< scale, [outputDimensions])",
+            "        } else {",
+            "            self.bias = nil",
+            "        }",
+            "        super.init()",
+            "    }",
+            "",
+            "    internal init(weight: MLXArray, bias: MLXArray? = nil) {",
+            "        self.weight = weight",
+            "        self.bias = bias",
+            "    }",
+            "",
+            "    public override func describeExtra(_ indent: Int) -> String {",
+            "        \"(inputDimensions=\\(weight.dim(1)), outputDimensions=\\(weight.dim(0)), bias=\\(bias == nil ? \"false\" : \"true\"))\"",
+            "    }",
+            "",
+            "    public func callAsFunction(_ x: MLXArray) -> MLXArray {",
+            "        var result = x.matmul(weight.T)",
+            "        if let bias {",
+            "            result = result + bias",
+            "        }",
+            "        return result",
+            "    }",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/custom-layers"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear": {
+  "abstract" : [
+    {
+      "text" : "Applies an affine transformation to the input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Linear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Linear"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Linear",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
+  "abstract" : [
+    {
+      "text" : "Base class for building neural networks with MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Module",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/freeze(recursive:keys:strict:)": {
+  "abstract" : [
+    {
+      "text" : "Freeze the ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : "’s parameters or subset.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "freeze"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "recursive"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keys"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "strict"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "freeze(recursive:keys:strict:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/freeze(recursive:keys:strict:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/mapParameters(map:isLeaf:)": {
+  "abstract" : [
+    {
+      "text" : "Apply a ",
+      "type" : "text"
+    },
+    {
+      "code" : "map",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to all parameters (",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue\/parameters(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ") in the module and its children.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mapParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "map"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "isLeaf"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10ModuleItema",
+      "text" : "ModuleItem"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/mapParameters(map:isLeaf:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mapParameters(map:isLeaf:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/mapparameters(map:isleaf:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/parameters()": {
+  "abstract" : [
+    {
+      "text" : "Return a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary<String, MLXArray>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " for all parameters in the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "model (all layers).",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/parameters()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "parameters()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/parameters()"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(modules:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the child modules of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided replacements.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "modules"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13ModuleChilrena",
+      "text" : "ModuleChilren"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(modules:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(modules:verify:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(parameters:)": {
+  "abstract" : [
+    {
+      "text" : "A non-throwing version of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(parameters:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(parameters:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(parameters:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the parameters of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided parameters.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(parameters:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(parameters:verify:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleInfo": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleInfo"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleInfo"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleinfo"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleParameters": {
+  "abstract" : [
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure of ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleparameters"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleValue/parameters(_:)": {
+  "abstract" : [
+    {
+      "text" : "An ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " parameters value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue\/parameters(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ModuleValue.parameters(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/modulevalue\/parameters(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ParameterInfo": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParameterInfo"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParameterInfo"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ParameterInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/parameterinfo"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/QuantizedLinear": {
+  "abstract" : [
+    {
+      "text" : "Applies an affine transformation to the input using a quantized weight matrix.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "QuantizedLinear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "QuantizedLinear"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "QuantizedLinear",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/quantizedlinear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/QuantizedLinear/quantize(model:groupSize:bits:predicate:)": {
+  "abstract" : [
+    {
+      "text" : "Replace ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " layers with ",
+      "type" : "text"
+    },
+    {
+      "code" : "QuantizedLinear",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "quantize"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "groupSize"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "bits"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "predicate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear\/quantize(model:groupSize:bits:predicate:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "quantize(model:groupSize:bits:predicate:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/quantizedlinear\/quantize(model:groupsize:bits:predicate:)"
+},
+"https://github.com/ml-explore/mlx-examples/blob/main/llms/mistral/mistral.py": {
+  "identifier" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mistral\/mistral.py",
+  "title" : "the layer in the Mistral Example",
+  "titleInlineContent" : [
+    {
+      "text" : "the layer in the Mistral Example",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mistral\/mistral.py"
+},
+"https://github.com/ml-explore/mlx-examples/blob/main/llms/mlx_lm/models/llama.py": {
+  "identifier" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mlx_lm\/models\/llama.py",
+  "title" : "this example from a Llama model",
+  "titleInlineContent" : [
+    {
+      "text" : "this example from a Llama model",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/github.com\/ml-explore\/mlx-examples\/blob\/main\/llms\/mlx_lm\/models\/llama.py"
+}
+}
+}

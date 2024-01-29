@@ -1,0 +1,872 @@
+{
+  "abstract" : [
+    {
+      "text" : "Parameter type for all MLX operations.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:3MLX14StreamOrDeviceV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "StreamOrDevice"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "StreamOrDevice"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Stream.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L24"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "StreamOrDevice"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "StreamOrDevice"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Use this to control where operations are evaluated:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ produced on cpu",
+            "let a = MLXRandom.uniform([100, 100], stream: .cpu)",
+            "",
+            "\/\/ produced on gpu",
+            "let b = MLXRandom.uniform([100, 100], stream: .gpu)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If omitted it will use the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/default",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ", which will be ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/gpu",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " unless",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "set otherwise.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/s23CustomStringConvertibleP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/ctx",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/description"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/cpu",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/default",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/gpu"
+      ],
+      "title" : "Type Properties"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/device(_:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/stream(_:)"
+      ],
+      "title" : "Type Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/streamordevice"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Device": {
+  "abstract" : [
+    {
+      "text" : "Representation of a Device in MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Device"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Device"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Device",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/device"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Device/cpu": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cpu"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6DeviceC",
+      "text" : "Device"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/cpu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cpu",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/device\/cpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Device/gpu": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "gpu"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6DeviceC",
+      "text" : "Device"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/gpu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "gpu",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/device\/gpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Stream": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Stream"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Stream"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Stream",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/stream"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Stream/defaultStream(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "defaultStream"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6DeviceC",
+      "text" : "Device"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6StreamC",
+      "text" : "Stream"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream\/defaultStream(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "defaultStream(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/stream\/defaultstream(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
+  "abstract" : [
+    {
+      "text" : "Parameter type for all MLX operations.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StreamOrDevice",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/cpu": {
+  "abstract" : [
+    {
+      "text" : "The ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream\/defaultStream(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " on the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/cpu",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cpu"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/cpu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cpu",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/cpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/ctx": {
+  "abstract" : [
+    {
+      "text" : "Internal context – used with Cmlx calls.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ctx"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:s13OpaquePointerV",
+      "text" : "OpaquePointer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/ctx",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ctx",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/ctx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/default": {
+  "abstract" : [
+    {
+      "text" : "The default stream on the default device.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "`default`"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/default",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "default",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/default"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/description": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "description"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/description",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "description",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/description"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/device(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "device"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6DeviceC",
+      "text" : "Device"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/device(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "device(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/device(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/gpu": {
+  "abstract" : [
+    {
+      "text" : "The ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream\/defaultStream(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " on the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/gpu",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "gpu"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/gpu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "gpu",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/gpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/stream(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6StreamC",
+      "text" : "Stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/stream(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stream(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/stream(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/using-streams": {
+  "abstract" : [
+    {
+      "text" : "Controlling where your computations are evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Using Streams",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/using-streams"
+},
+"doc://mlx.swift.mlx/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+}
+}
+}

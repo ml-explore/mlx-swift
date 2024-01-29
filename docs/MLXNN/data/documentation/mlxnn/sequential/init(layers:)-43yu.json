@@ -1,0 +1,435 @@
+{
+  "abstract" : [
+    {
+      "text" : "A convenient way to write code that builds a Sequential layer:",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential\/init(layers:)-43yu"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:5MLXNN10SequentialC6layersACSayAA10UnaryLayer_pGyXE_tcfc",
+    "fragments" : [
+      {
+        "kind" : "identifier",
+        "text" : "init"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "layers"
+      },
+      {
+        "kind" : "text",
+        "text" : ": () -> ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+        "text" : "UnaryLayer"
+      },
+      {
+        "kind" : "text",
+        "text" : "])"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Containers.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Containers.swift#L84"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Initializer",
+    "symbolKind" : "init",
+    "title" : "init(layers:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "init"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "attribute",
+              "text" : "@"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder",
+              "kind" : "attribute",
+              "preciseIdentifier" : "s:5MLXNN17SequentialBuilderV",
+              "text" : "SequentialBuilder"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "layers"
+            },
+            {
+              "kind" : "text",
+              "text" : ": () -> ["
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+              "text" : "UnaryLayer"
+            },
+            {
+              "kind" : "text",
+              "text" : "])"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "code" : [
+            "\/\/ a nonsensical Sequential layer, but it demonstrates how",
+            "\/\/ to constructuct something with an interesting structure",
+            "let b = Bool.random()",
+            "let s = Sequential {",
+            "    Tanh()",
+            "    if b {",
+            "        Tanh()",
+            "    } else {",
+            "        Sigmoid()",
+            "    }",
+            "    for _ in 0 ..< 3 {",
+            "        Linear(10, 20)",
+            "    }",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "produces:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "Sequential {",
+            "  layers: [",
+            "    Tanh,",
+            "    Sigmoid,",
+            "    Linear(inputDimensions=10, outputDimensions=20, bias=true),",
+            "    Linear(inputDimensions=10, outputDimensions=20, bias=true),",
+            "    Linear(inputDimensions=10, outputDimensions=20, bias=true)",
+            "  ],",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/sequential\/init(layers:)-43yu"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
+  "abstract" : [
+    {
+      "text" : "Base class for building neural networks with MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Module"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Module",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Sequential": {
+  "abstract" : [
+    {
+      "text" : "A layer that calls the passed ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in order.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Sequential"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Sequential"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Sequential",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequential"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Sequential/init(layers:)-43yu": {
+  "abstract" : [
+    {
+      "text" : "A convenient way to write code that builds a Sequential layer:",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "layers"
+    },
+    {
+      "kind" : "text",
+      "text" : ": () -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "])"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential\/init(layers:)-43yu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(layers:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequential\/init(layers:)-43yu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder": {
+  "abstract" : [
+    {
+      "text" : "A way to build ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SequentialBuilder"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SequentialBuilder",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SequentialBuilder"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SequentialBuilder",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequentialbuilder"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/UnaryLayer": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "Layer",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " subclass) that can be evaluated as a ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "unary function",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "UnaryLayer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/unarylayer"
+}
+}
+}

@@ -1,0 +1,591 @@
+{
+  "abstract" : [
+    {
+      "text" : "Controlling where your computations are evaluated.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Using Streams"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Specifying-the-Stream",
+          "level" : 2,
+          "text" : "Specifying the Stream",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "All operations (including random number generation) take an optional",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "argument ",
+              "type" : "text"
+            },
+            {
+              "code" : "stream",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ". The ",
+              "type" : "text"
+            },
+            {
+              "code" : "stream",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " specifies which",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "Stream",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " the operation should run on. If the stream is unspecified then",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the operation is run on the default stream of the default device:",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream\/defaultStream(_:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".  The ",
+              "type" : "text"
+            },
+            {
+              "code" : "stream",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " can also",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "be a ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " (e.g. ",
+              "type" : "text"
+            },
+            {
+              "code" : "stream: .cpu",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") in which case the operation is",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "run on the default stream of the provided device.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ produced on cpu",
+            "let a = MLXRandom.uniform([100, 100], stream: .cpu)",
+            "",
+            "\/\/ produced on gpu",
+            "let b = MLXRandom.uniform([100, 100], stream: .gpu)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The parameter is of type ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " and can be initialized with",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "a stream, device, or some defaults like ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/gpu",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Read more in ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory"
+      ],
+      "title" : "MLX"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/using-streams"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Device": {
+  "abstract" : [
+    {
+      "text" : "Representation of a Device in MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Device"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Device"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Device",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/device"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Device/gpu": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "gpu"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6DeviceC",
+      "text" : "Device"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/gpu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "gpu",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/device\/gpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Stream/defaultStream(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "defaultStream"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6DeviceC",
+      "text" : "Device"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX6StreamC",
+      "text" : "Stream"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream\/defaultStream(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "defaultStream(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/stream\/defaultstream(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
+  "abstract" : [
+    {
+      "text" : "Parameter type for all MLX operations.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StreamOrDevice",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice"
+},
+"doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice/gpu": {
+  "abstract" : [
+    {
+      "text" : "The ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream\/defaultStream(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " on the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device\/gpu",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "gpu"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice\/gpu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "gpu",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/streamordevice\/gpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/broadcasting": {
+  "abstract" : [
+    {
+      "text" : "How different size arrays can be used together.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Numpy Style Broadcasting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/broadcasting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/converting-python": {
+  "abstract" : [
+    {
+      "text" : "Common patterns from python and mapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function names.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Converting From Python",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/converting-python"
+},
+"doc://mlx.swift.mlx/documentation/MLX/install": {
+  "abstract" : [
+    {
+      "text" : "How to install and use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Installation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/install"
+},
+"doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
+  "abstract" : [
+    {
+      "text" : "Computation in ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " is lazy.  Understand when the graph is evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Lazy Evaluation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/lazy-evaluation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/unified-memory": {
+  "abstract" : [
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " takes advantage of the shared memory between the CPU and GPU.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Unified Memory",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/unified-memory"
+}
+}
+}

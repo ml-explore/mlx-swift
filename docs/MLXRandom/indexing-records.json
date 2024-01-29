@@ -1,0 +1,308 @@
+[
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Split a PRNG key into sub keys.  Discussion Array of MLXArray values.",
+    "summary" : "Split a PRNG key into sub keys.",
+    "title" : "split(key:into:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Sample from the standard Gumbel distribution.  Discussion The values are sampled from a standard Gumbel distribution which CDF exp(-exp(-x)). ",
+    "summary" : "Sample from the standard Gumbel distribution.",
+    "title" : "gumbel(_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate Bernoulli random values.  Discussion The values are sampled from the bernoulli distribution with parameter p using the default value of 0.5. The result will be of size shape. ",
+    "summary" : "Generate Bernoulli random values.",
+    "title" : "bernoulli(_:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Get a PRNG key from a seed.  Discussion Return a value that can be used as a PRNG key.",
+    "summary" : "Get a PRNG key from a seed.",
+    "title" : "key(_:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:type:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate uniformly distributed random numbers.  Discussion The values are sampled uniformly in the half-open interval [lb, ub). The lower and upper bound can be scalars or arrays and must be broadcastable to the optional shape (it will be the shape of the lb if not specified). ",
+    "summary" : "Generate uniformly distributed random numbers.",
+    "title" : "uniform(low:high:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate values from a truncated normal distribution.  Discussion The values are sampled from the truncated normal distribution on the domain (lower, upper). The bounds lower and upper can be scalars or arrays and must be broadcastable to shape. ",
+    "summary" : "Generate values from a truncated normal distribution.",
+    "title" : "truncatedNormal(low:high:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate random integers from the given interval.  Discussion The values are sampled with equal probability from the integers in half-open interval [lb, ub). The lower and upper bound can be scalars or arrays and must be roadcastable to shape.  The integer results will be of the given type. ",
+    "summary" : "Generate random integers from the given interval.",
+    "title" : "randInt(low:high:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Seed the global PRNG.  Discussion See also key(_:)",
+    "summary" : "Seed the global PRNG.",
+    "title" : "seed(_:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-4d6d2"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate uniformly distributed random numbers.  Discussion Specialization to make it easy to call with Float: ",
+    "summary" : "Generate uniformly distributed random numbers.",
+    "title" : "uniform(_:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion",
+      "See also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate values from a truncated normal distribution.  Discussion The values are sampled from the truncated normal distribution in the range. An optional shape can be used to broadcast into a larger array.  An optional Key can be specified to control the PRNG.  See also JAX Documentation",
+    "summary" : "Generate values from a truncated normal distribution.",
+    "title" : "truncatedNormal(_:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate values from a truncated normal distribution.  Discussion Specialization to make it easy to call with Float: ",
+    "summary" : "Generate values from a truncated normal distribution.",
+    "title" : "truncatedNormal(_:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-10gj2"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate uniformly distributed random numbers.  Discussion The values are sampled uniformly in the range.  An optional shape can be used to broadcast into a larger array.  An optional Key can be specified to control the PRNG. ",
+    "summary" : "Generate uniformly distributed random numbers.",
+    "title" : "uniform(_:_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate normally distributed random numbers.  Discussion Generate an array of random numbers using the optional shape.  The result will be of the given type. ",
+    "summary" : "Generate normally distributed random numbers.",
+    "title" : "normal(_:type:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:_:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate Bernoulli random values.  Discussion The values are sampled from the bernoulli distribution with parameter p. The parameter p must have a floating point type and must be broadcastable to shape. ",
+    "summary" : "Generate Bernoulli random values.",
+    "title" : "bernoulli(_:_:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate random integers from the given interval.  Discussion The values are sampled with equal probability from the integers in half-open interval [low, high). The lower and upper bound can be scalars or arrays and must be roadcastable to shape. ",
+    "summary" : "Generate random integers from the given interval.",
+    "title" : "randInt(_:_:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Sample from a categorical distribution.  The unnormalized categorical distribution(s). Discussion The values are sampled from the categorical distribution specified by the unnormalized values in logits. ",
+    "summary" : "Sample from a categorical distribution.",
+    "title" : "categorical(_:axis:count:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Generate random integers from the given interval.  Discussion The values are sampled with equal probability from the integers in half-open interval [lb, ub). The lower and upper bound can be scalars or arrays and must be roadcastable to shape. ",
+    "summary" : "Generate random integers from the given interval.",
+    "title" : "randInt(low:high:_:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Sample from a categorical distribution.  The unnormalized categorical distribution(s). Discussion The values are sampled from the categorical distribution specified by the unnormalized values in logits.   If the shape is not specified the result shape will be the same shape as logits with the axis dimension removed. ",
+    "summary" : "Sample from a categorical distribution.",
+    "title" : "categorical(_:axis:shape:key:stream:)"
+  },
+  {
+    "headings" : [
+      "Overview",
+      "Other MLX Packages"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Collection of functions related to random number generation. Overview Random sampling functions in MLX use an implicit global PRNG state by default. However, all functions take an optional key keyword argument for when more fine-grained control or explicit state management is needed. For example, you can generate random numbers with:  which will print a sequence of unique pseudo random numbers. Alternatively you can explicitly set the key:  which will yield the same pseudo random number at each iteration. Following JAX’s PRNG design we use a splittable version of Threefry, which is a counter-based PRNG. Other MLX Packages MLX MLXNN Python mlx",
+    "summary" : "Collection of functions related to random number generation.",
+    "title" : "MLXRandom"
+  }
+]

@@ -1,0 +1,270 @@
+{
+  "abstract" : [
+    {
+      "text" : "Seed the global PRNG.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9MLXRandom4seedyys6UInt64VF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "seed"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:s6UInt64V",
+        "text" : "UInt64"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXRandom"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Random.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L10"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Function",
+    "symbolKind" : "func",
+    "title" : "seed(_:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "seed"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "seed"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:s6UInt64V",
+              "text" : "UInt64"
+            },
+            {
+              "kind" : "text",
+              "text" : ")"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See also ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+              "isActive" : true,
+              "type" : "reference"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxrandom\/seed(_:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom": {
+  "abstract" : [
+    {
+      "text" : "Collection of functions related to random number generation.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXRandom",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/key(_:)": {
+  "abstract" : [
+    {
+      "text" : "Get a PRNG key from a seed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:s6UInt64V",
+      "text" : "UInt64"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "key(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/key(_:)"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/seed(_:)": {
+  "abstract" : [
+    {
+      "text" : "Seed the global PRNG.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "seed"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:s6UInt64V",
+      "text" : "UInt64"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "seed(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/seed(_:)"
+}
+}
+}

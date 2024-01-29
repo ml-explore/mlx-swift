@@ -1,0 +1,1875 @@
+{
+  "abstract" : [
+    {
+      "text" : "Built-in activation functions and layers.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/activations"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "Activation Functions and Layers"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "code" : "MLXNN",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " provides a number of activation functions and modules.  The modules",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "simply wrap the functions, though some like ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " provide some settings",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "that select between different functions.  Others, like ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " encapsulate parameters",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "such as ",
+              "type" : "text"
+            },
+            {
+              "code" : "alpha",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/celu(_:alpha:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/elu(_:alpha:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/gelu(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/geluApproximate(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/geluFastApproximate(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/glu(_:axis:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/hardSwish(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/leakyRelu(_:negativeSlope:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/logSigmoid(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/logSoftMax(_:axis:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/mish(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/prelu(_:alpha:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/relu(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/relu6(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/selu(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/silu(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/sigmoid(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softPlus(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softSign(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/step(_:threshold:)"
+      ],
+      "title" : "Activation Free Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/HardSwish",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LeakyReLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LogSigmoid",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LogSoftMax",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Mish",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SELU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SiLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sigmoid",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftMax",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftPlus",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftSign",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Step",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Tanh"
+      ],
+      "title" : "Activation Modules"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/activations"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/CELU": {
+  "abstract" : [
+    {
+      "text" : "Applies the Continuously Differentiable Exponential Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "CELU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "CELU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "CELU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/celu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU": {
+  "abstract" : [
+    {
+      "text" : "Applies the Gaussian Error Linear Units function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GELU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GELU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GELU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/gelu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GLU": {
+  "abstract" : [
+    {
+      "text" : "Applies the gated linear unit function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GLU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GLU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GLU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/glu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/HardSwish": {
+  "abstract" : [
+    {
+      "text" : "Applies the hardswish function, element-wise",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "HardSwish"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/HardSwish",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "HardSwish"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "HardSwish",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/hardswish"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LeakyReLU": {
+  "abstract" : [
+    {
+      "text" : "Applies the Leaky Rectified Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "LeakyReLU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LeakyReLU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "LeakyReLU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "LeakyReLU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/leakyrelu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LogSigmoid": {
+  "abstract" : [
+    {
+      "text" : "Applies the Log Sigmoid function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "LogSigmoid"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LogSigmoid",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "LogSigmoid"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "LogSigmoid",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/logsigmoid"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LogSoftMax": {
+  "abstract" : [
+    {
+      "text" : "Applies the Log Softmax function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "LogSoftMax"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LogSoftMax",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "LogSoftMax"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "LogSoftMax",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/logsoftmax"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Mish": {
+  "abstract" : [
+    {
+      "text" : "Applies the Mish function, element-wise.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Mish"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Mish",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Mish"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Mish",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/mish"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/PReLU": {
+  "abstract" : [
+    {
+      "text" : "Applies the element-wise parametric ReLU.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "PReLU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "PReLU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "PReLU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/prelu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU": {
+  "abstract" : [
+    {
+      "text" : "Applies the Rectified Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ReLU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ReLU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ReLU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/relu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6": {
+  "abstract" : [
+    {
+      "text" : "Applies the Rectified Linear Unit 6.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Relu6"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Relu6"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Relu6",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/relu6"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SELU": {
+  "abstract" : [
+    {
+      "text" : "Applies the Scaled Exponential Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SELU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SELU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SELU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SELU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/selu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SiLU": {
+  "abstract" : [
+    {
+      "text" : "Applies the Sigmoid Linear Unit. Also known as Swish.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SiLU"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SiLU",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SiLU"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SiLU",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/silu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Sigmoid": {
+  "abstract" : [
+    {
+      "text" : "Applies the element-wise logistic sigmoid.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Sigmoid"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sigmoid",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Sigmoid"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Sigmoid",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sigmoid"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SoftMax": {
+  "abstract" : [
+    {
+      "text" : "Applies the Softmax function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SoftMax"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftMax",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SoftMax"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SoftMax",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/softmax"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SoftPlus": {
+  "abstract" : [
+    {
+      "text" : "Applies the Softplus function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SoftPlus"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftPlus",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SoftPlus"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SoftPlus",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/softplus"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SoftSign": {
+  "abstract" : [
+    {
+      "text" : "Applies the Softsign function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SoftSign"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftSign",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SoftSign"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SoftSign",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/softsign"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Step": {
+  "abstract" : [
+    {
+      "text" : "Applies the Step Activation Function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Step"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Step",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Step"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Step",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/step"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Tanh": {
+  "abstract" : [
+    {
+      "text" : "Applies the hyperbolic tangent function",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Tanh"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Tanh",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Tanh"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Tanh",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/tanh"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/celu(_:alpha:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Continuously Differentiable Exponential Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "celu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "alpha"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/celu(_:alpha:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "celu(_:alpha:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/celu(_:alpha:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/elu(_:alpha:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Exponential Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "elu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "alpha"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/elu(_:alpha:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "elu(_:alpha:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/elu(_:alpha:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/gelu(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Gaussian Error Linear Units function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "gelu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/gelu(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "gelu(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/gelu(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/geluApproximate(_:)": {
+  "abstract" : [
+    {
+      "text" : "An approximation to Gaussian Error Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "geluApproximate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/geluApproximate(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "geluApproximate(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/geluapproximate(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/geluFastApproximate(_:)": {
+  "abstract" : [
+    {
+      "text" : "A fast approximation to Gaussian Error Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "geluFastApproximate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/geluFastApproximate(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "geluFastApproximate(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/gelufastapproximate(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/glu(_:axis:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the gated linear unit function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "glu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/glu(_:axis:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "glu(_:axis:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/glu(_:axis:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/hardSwish(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the hardswish function, element-wise",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "hardSwish"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/hardSwish(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "hardSwish(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/hardswish(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/leakyRelu(_:negativeSlope:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Leaky Rectified Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "leakyRelu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "negativeSlope"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/leakyRelu(_:negativeSlope:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "leakyRelu(_:negativeSlope:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/leakyrelu(_:negativeslope:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/logSigmoid(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Log Sigmoid function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "logSigmoid"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/logSigmoid(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "logSigmoid(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/logsigmoid(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/logSoftMax(_:axis:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Log Softmax function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "logSoftMax"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/logSoftMax(_:axis:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "logSoftMax(_:axis:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/logsoftmax(_:axis:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/mish(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Mish function, element-wise.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mish"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/mish(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mish(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/mish(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/prelu(_:alpha:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the element-wise parametric ReLU.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "prelu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "alpha"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/prelu(_:alpha:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "prelu(_:alpha:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/prelu(_:alpha:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/relu(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Rectified Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "relu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/relu(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "relu(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/relu(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/relu6(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Rectified Linear Unit 6.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "relu6"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/relu6(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "relu6(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/relu6(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/selu(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Scaled Exponential Linear Unit.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "selu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/selu(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "selu(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/selu(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/sigmoid(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the element-wise logistic sigmoid.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "sigmoid"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/sigmoid(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "sigmoid(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sigmoid(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/silu(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Sigmoid Linear Unit. Also known as Swish.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "silu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/silu(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "silu(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/silu(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/softPlus(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Softplus function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "softPlus"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softPlus(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "softPlus(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/softplus(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/softSign(_:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Softsign function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "softSign"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softSign(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "softSign(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/softsign(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/step(_:threshold:)": {
+  "abstract" : [
+    {
+      "text" : "Applies the Step Activation Function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "step"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "threshold"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/step(_:threshold:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "step(_:threshold:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/step(_:threshold:)"
+}
+}
+}

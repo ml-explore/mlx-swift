@@ -1,0 +1,692 @@
+{
+  "abstract" : [
+    {
+      "text" : "How different size arrays can be used together.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Numpy Style Broadcasting"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "MLX uses Numpy style broadcasting:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/numpy.org\/doc\/stable\/user\/basics.broadcasting.html",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is a brief excerpt on how numpy describes this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "The term broadcasting describes how NumPy treats arrays with different shapes during arithmetic operations. Subject to certain constraints, the smaller array is “broadcast” across the larger array so that they have compatible shapes. Broadcasting provides a means of vectorizing array operations so that looping occurs in C instead of Python. It does this without making needless copies of data and usually leads to efficient algorithm implementations. There are, however, cases where broadcasting is a bad idea because it leads to inefficient use of memory that slows computation.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Numpy",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Let’s consider some examples using an array like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let array = MLXArray(0 ..< 12, [4, 3])"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "giving us this structure:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "array([[0, 1, 2],",
+            "       [3, 4, 5],",
+            "       [6, 7, 8],",
+            "       [9, 10, 11]], dtype=int64)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Scalars",
+          "level" : 4,
+          "text" : "Scalars",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To add ",
+              "type" : "text"
+            },
+            {
+              "code" : "1",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " to each value in the array we can simply write:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let r = array + 1"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "giving us:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "array([[1, 2, 3],",
+            "       [4, 5, 6],",
+            "       [7, 8, 9],",
+            "       [10, 11, 12]], dtype=int64)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This uses ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/+(_:_:)-2vili",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " which uses ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " to automatically convert scalar values",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "into ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A scalar can be broadcast to any shape array:  the scalar is repeated for each element in the array.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Conceptually the scalar is converted into an array of the same shape and then added:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "array([[1, 1, 1],",
+            "       [1, 1, 1],",
+            "       [1, 1, 1],",
+            "       [1, 1, 1]], dtype=int64)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Broadcasting allows a much more efficient implementation where the scalar may simply be reused",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "for ever element in the first array.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Arrays",
+          "level" : 3,
+          "text" : "Arrays",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Array broadcasting is similar to scalar broadcasting but it requires compatible shapes.",
+              "type" : "text"
+            },
+            {
+              "text" : "\n",
+              "type" : "text"
+            },
+            {
+              "text" : "Going from right to left two shapes are compatible for broadcasting if any of these conditions are true:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "the dimensions are equal",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "one of the dimensions is 1 or is missing (fewer dimensions)",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If the arrays have different number of dimensions, the result will have the same number of dimensions",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "as the array with the most dimensions.  The resulting shape will have the max of the two matching dimensions.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let a = MLXArray(0 ..< 12, [4, 3])",
+            "let b = MLXArray(0 ..< 3, [3])",
+            "",
+            "\/\/ compatible because the last dimensions match:",
+            "\/\/ [4, 3]",
+            "\/\/ [   3]",
+            "let r = a + b",
+            "",
+            "\/\/ equivalent to adding these two arrays:",
+            "\/\/",
+            "\/\/ array([[0, 1, 2],",
+            "\/\/        [3, 4, 5],",
+            "\/\/        [6, 7, 8],",
+            "\/\/        [9, 10, 11]], dtype=int64)",
+            "\/\/",
+            "\/\/ array([[0, 1, 2],",
+            "\/\/        [0, 1, 2],",
+            "\/\/        [0, 1, 2],",
+            "\/\/        [0, 1, 2]], dtype=int64)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams"
+      ],
+      "title" : "MLX"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/broadcasting"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/+(_:_:)-2vili": {
+  "abstract" : [
+    {
+      "text" : "Element-wise addition with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "+"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/+(_:_:)-2vili",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "+(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/+(_:_:)-2vili"
+},
+"doc://mlx.swift.mlx/documentation/MLX/ScalarOrArray": {
+  "abstract" : [
+    {
+      "text" : "Protocol for promoting a value (e.g. a scalar) to an MLXArray.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ScalarOrArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ScalarOrArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ScalarOrArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/scalarorarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/converting-python": {
+  "abstract" : [
+    {
+      "text" : "Common patterns from python and mapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function names.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Converting From Python",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/converting-python"
+},
+"doc://mlx.swift.mlx/documentation/MLX/install": {
+  "abstract" : [
+    {
+      "text" : "How to install and use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Installation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/install"
+},
+"doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
+  "abstract" : [
+    {
+      "text" : "Computation in ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " is lazy.  Understand when the graph is evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Lazy Evaluation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/lazy-evaluation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/unified-memory": {
+  "abstract" : [
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " takes advantage of the shared memory between the CPU and GPU.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Unified Memory",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/unified-memory"
+},
+"doc://mlx.swift.mlx/documentation/MLX/using-streams": {
+  "abstract" : [
+    {
+      "text" : "Controlling where your computations are evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Using Streams",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/using-streams"
+},
+"https://numpy.org/doc/stable/user/basics.broadcasting.html": {
+  "identifier" : "https:\/\/numpy.org\/doc\/stable\/user\/basics.broadcasting.html",
+  "title" : "Numpy Documentation",
+  "titleInlineContent" : [
+    {
+      "text" : "Numpy Documentation",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/numpy.org\/doc\/stable\/user\/basics.broadcasting.html"
+}
+}
+}

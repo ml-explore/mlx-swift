@@ -1,0 +1,1619 @@
+{
+  "abstract" : [
+    {
+      "text" : "Nested structure of arrays, dictionaries and values.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:3MLX16NestedDictionaryV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "NestedDictionary"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "NestedDictionary"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Nested.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L324"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "NestedDictionary"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "NestedDictionary"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "genericParameter",
+              "text" : "Key"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "genericParameter",
+              "text" : "Element"
+            },
+            {
+              "kind" : "text",
+              "text" : "> "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "where"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "Key"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:SH",
+              "text" : "Hashable"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Some of the capabilities of ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLX",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " (especially in ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXNN",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") need to deal with arbitrarily structured",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "values.  This is simple in python but swift needs type to describe the structure.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example a nested dictionary \/ ",
+              "type" : "text"
+            },
+            {
+              "code" : "[Int]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " strucure might look like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "[",
+            "  w1: [",
+            "    weight: [64, 20]",
+            "  ],",
+            "  w2: [",
+            "    weight: [20, 64]",
+            "  ]",
+            "]"
+          ],
+          "syntax" : null,
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This could be created with:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let contents: NestedItem<String, [Int]> =",
+            "    .dictionary([",
+            "        \"w1\": .dictionary([",
+            "            \"weight\": .value([64, 20])",
+            "        ]),",
+            "        \"w2\": .dictionary([",
+            "            \"weight\": .value([20, 64])",
+            "        ]),",
+            "    ])",
+            "let nd = NestedDictionary(item: contents)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In practice these structures are created programatically by traversing other nested structures.  The",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "above example was actually created from code like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "import MLXNN",
+            "",
+            "class M : Module {",
+            "    let w1 = Linear(64, 20)",
+            "    let w2 = Linear(20, 64)",
+            "}",
+            "",
+            "let nd = M().mapParameters { $0.shape }"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/Sl",
+        "doc:\/\/mlx.swift.mlx\/s23CustomStringConvertibleP",
+        "doc:\/\/mlx.swift.mlx\/SQ",
+        "doc:\/\/mlx.swift.mlx\/ST"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/init()",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/init(item:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/init(values:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/count",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/description",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/isEmpty",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/keys",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/values"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/asDictionary()",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/asItem()",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/compactMapValues(transform:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/flattened(prefix:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(transform:)"
+      ],
+      "title" : "Instance Methods"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(_:)-7bphj",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(unwrapping:)"
+      ],
+      "title" : "Subscripts"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/unflattened(_:)-4p8bn",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/unflattened(_:)-7xuiv"
+      ],
+      "title" : "Type Methods"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/Collection-Implementations",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/Equatable-Implementations",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/Sequence-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/nesteddictionary"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/SQ": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/ST": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/ST",
+  "title" : "Swift.Sequence",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/Sl": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/Sl",
+  "title" : "Swift.Collection",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary": {
+  "abstract" : [
+    {
+      "text" : "Nested structure of arrays, dictionaries and values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NestedDictionary"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NestedDictionary"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NestedDictionary",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/Collection-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/Collection-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Collection Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/collection-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/Equatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/Equatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Equatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/equatable-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/Sequence-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/Sequence-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Sequence Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/sequence-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/asDictionary()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : " : "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "Any"
+    },
+    {
+      "kind" : "text",
+      "text" : "?]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/asDictionary()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asDictionary()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/asdictionary()"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/asItem()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/asItem()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asItem()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/asitem()"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/compactMapValues(transform:)": {
+  "abstract" : [
+    {
+      "text" : "Transform the values in the nested structure using the ",
+      "type" : "text"
+    },
+    {
+      "code" : "transform()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compactMapValues"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "transform"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : " -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : "?) "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "rethrows"
+    },
+    {
+      "kind" : "text",
+      "text" : " -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/compactMapValues(transform:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compactMapValues(transform:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/compactmapvalues(transform:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/count": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "count"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/count",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "count",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/count"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/description": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "description"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/description",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "description",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/description"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/flattened(prefix:)": {
+  "abstract" : [
+    {
+      "text" : "Return a flattened representation of the structured contents as an array of key\/value tuples.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flattened"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "prefix"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?) -> [("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ")]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/flattened(prefix:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flattened(prefix:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/flattened(prefix:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/init()": {
+  "abstract" : [
+    {
+      "text" : "Initialize an empty ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/init()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/init()"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/init(item:)": {
+  "abstract" : [
+    {
+      "text" : "Initialize with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "item"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/init(item:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(item:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/init(item:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/init(values:)": {
+  "abstract" : [
+    {
+      "text" : "Initialize with a dictionary of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "values"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : " : "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">])"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/init(values:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(values:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/init(values:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/isEmpty": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "isEmpty"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/isEmpty",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "isEmpty",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/isempty"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/keys": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "keys"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SD",
+      "text" : "Dictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">>."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SD4KeysV",
+      "text" : "Keys"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/keys",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "keys",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/keys"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/mapValues(transform:)": {
+  "abstract" : [
+    {
+      "text" : "Transform the values in the nested structure using the ",
+      "type" : "text"
+    },
+    {
+      "code" : "transform()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mapValues"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "transform"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : " -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "rethrows"
+    },
+    {
+      "kind" : "text",
+      "text" : " -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Result"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(transform:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mapValues(transform:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(transform:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/subscript(_:)-7bphj": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(_:)-7bphj",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/subscript(_:)-7bphj"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/subscript(unwrapping:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "unwrapping"
+    },
+    {
+      "kind" : "text",
+      "text" : " _: "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(unwrapping:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(unwrapping:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/subscript(unwrapping:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/unflattened(_:)-4p8bn": {
+  "abstract" : [
+    {
+      "text" : "Convert a flattened dictionary back into a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "unflattened"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : " : "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/unflattened(_:)-4p8bn",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "unflattened(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/unflattened(_:)-4p8bn"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/unflattened(_:)-7xuiv": {
+  "abstract" : [
+    {
+      "text" : "Convert a flattened list of key\/value tuples back into a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "unflattened"
+    },
+    {
+      "kind" : "text",
+      "text" : "([("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ")]) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/unflattened(_:)-7xuiv",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "unflattened(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/unflattened(_:)-7xuiv"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/values": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "values"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SD",
+      "text" : "Dictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">>."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SD6ValuesV",
+      "text" : "Values"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/values",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "values",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/values"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedItem": {
+  "abstract" : [
+    {
+      "text" : "Backing storage for ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NestedItem"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NestedItem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NestedItem",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteditem"
+},
+"doc://mlx.swift.mlx/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+}
+}
+}

@@ -1,0 +1,613 @@
+{
+  "abstract" : [
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " takes advantage of the shared memory between the CPU and GPU.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Unified Memory"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See also ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/usage\/unified_memory.html",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Apple silicon has a unified memory architecture. The CPU and GPU have direct",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "access to the same memory pool. MLX is designed to take advantage of that.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Concretely, when you make an array in MLX you don’t have to specify its location:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let a = MLXRandom.normal([100])",
+            "let b = MLXRandom.normal([100])"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Both ",
+              "type" : "text"
+            },
+            {
+              "code" : "a",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "b",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " live in unified memory.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In MLX, rather than moving arrays to devices, you specify the device when you",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "run the operation. Any device can perform any operation on ",
+              "type" : "text"
+            },
+            {
+              "code" : "a",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "b",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "without needing to move them from one memory location to another. For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "add(a, b, stream: .cpu)",
+            "add(a, b, stream: .gpu)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In the above, both the CPU and the GPU will perform the same add",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "operation. The operations can (and likely will) be run in parallel since",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "there are no dependencies between them. See ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " for more",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "information the semantics of streams in MLX.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In the above ",
+              "type" : "text"
+            },
+            {
+              "code" : "add",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " example, there are no dependencies between operations, so",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "there is no possibility for race conditions. If there are dependencies, the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "MLX scheduler will automatically manage them. For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let c = add(a, b, stream: .cpu)",
+            "let d = add(a, c, stream: .gpu)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In the above case, the second ",
+              "type" : "text"
+            },
+            {
+              "code" : "add",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " runs on the GPU but it depends on the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "output of the first ",
+              "type" : "text"
+            },
+            {
+              "code" : "add",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " which is running on the CPU. MLX will",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "automatically insert a dependency between the two streams so that the second",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "add",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " only starts executing after the first is complete and ",
+              "type" : "text"
+            },
+            {
+              "code" : "c",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "available.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "A-Simple-Example",
+          "level" : 2,
+          "text" : "A Simple Example",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is a more interesting (albeit slightly contrived example) of how unified",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "memory can be helpful. Suppose we have the following computation:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(a: MLXArray, b: MLXArray, d1: StreamOrDevice, d2: StreamOrDevice) -> (MLXArray, MLXArray) {",
+            "    let x = matmul(a, b, stream: d1)",
+            "    var b = b",
+            "    for _ in 0 ..< 500 {",
+            "        b = exp(b, stream: d2)",
+            "    }",
+            "    return (x, b)",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "which we want to run with the following arguments:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let a = MLXRandom.uniform([4096, 512])",
+            "let b = MLXRandom.uniform([512, 4])"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The first ",
+              "type" : "text"
+            },
+            {
+              "code" : "matmul",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " operation is a good fit for the GPU since it’s more",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "compute dense. The second sequence of operations are a better fit for the CPU,",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "since they are very small and would probably be overhead bound on the GPU.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If we time the computation fully on the GPU, we get 2.8 milliseconds. But if we",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "run the computation with ",
+              "type" : "text"
+            },
+            {
+              "code" : "d1: .gpu",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "d2: .cpu",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", then the time is only",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "about 1.4 milliseconds, about twice as fast. These times were measured on an M1",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Max.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams"
+      ],
+      "title" : "MLX"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/unified-memory"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/broadcasting": {
+  "abstract" : [
+    {
+      "text" : "How different size arrays can be used together.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Numpy Style Broadcasting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/broadcasting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/converting-python": {
+  "abstract" : [
+    {
+      "text" : "Common patterns from python and mapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function names.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Converting From Python",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/converting-python"
+},
+"doc://mlx.swift.mlx/documentation/MLX/install": {
+  "abstract" : [
+    {
+      "text" : "How to install and use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Installation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/install"
+},
+"doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
+  "abstract" : [
+    {
+      "text" : "Computation in ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " is lazy.  Understand when the graph is evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Lazy Evaluation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/lazy-evaluation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/using-streams": {
+  "abstract" : [
+    {
+      "text" : "Controlling where your computations are evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Using Streams",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/using-streams"
+},
+"https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/usage\/unified_memory.html",
+  "title" : "mlx python docs",
+  "titleInlineContent" : [
+    {
+      "text" : "mlx python docs",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/usage\/unified_memory.html"
+}
+}
+}

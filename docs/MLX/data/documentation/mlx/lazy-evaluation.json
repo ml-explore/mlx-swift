@@ -1,0 +1,1155 @@
+{
+  "abstract" : [
+    {
+      "text" : "Computation in ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " is lazy.  Understand when the graph is evaluated.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Lazy Evaluation"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "",
+          "level" : 2,
+          "text" : "",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See also ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/usage\/lazy_evaluation.html",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Why-Lazy-Evaluation",
+          "level" : 2,
+          "text" : "Why Lazy Evaluation",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "When you perform operations in MLX, no computation actually happens. Instead a",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "compute graph is recorded. The actual computation only happens if an",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " is performed or an implicit eval is triggered.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "MLX uses lazy evaluation because it has some nice features, some of which we",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "describe below.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Transforming-Compute-Graphs",
+          "level" : 3,
+          "text" : "Transforming Compute Graphs",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Lazy evaluation let’s us record a compute graph without actually doing any",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "computations. This is useful for function transformations like ",
+              "type" : "text"
+            },
+            {
+              "code" : "grad",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "vmap",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and graph optimizations like ",
+              "type" : "text"
+            },
+            {
+              "code" : "simplify",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Currently, MLX does not compile and rerun compute graphs. They are all",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "generated dynamically. However, lazy evaluation makes it much easier to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "integrate compilation for future performance enhancements.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Only-Compute-What-You-Use",
+          "level" : 3,
+          "text" : "Only Compute What You Use",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In MLX you do not need to worry as much about computing outputs that are never",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "used. For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(_ x: MLXArray) -> (MLXArray, MLXArray) {",
+            "    let a = fun1(x)",
+            "    let b = expensiveFunction(a)",
+            "    return (a, b)",
+            "}",
+            "",
+            "let (y, _) = f(x)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here, we never actually compute the output of ",
+              "type" : "text"
+            },
+            {
+              "code" : "expensiveFunction",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ". Use this",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "pattern with care though, as the graph of ",
+              "type" : "text"
+            },
+            {
+              "code" : "expensiveFunction",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is still built, and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "that has some cost associated to it.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Similarly, lazy evaluation can be beneficial for saving memory while keeping",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "code simple. Say you have a very large model ",
+              "type" : "text"
+            },
+            {
+              "code" : "Model",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " derived from",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "Module",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ". You can instantiate this model with ",
+              "type" : "text"
+            },
+            {
+              "code" : "model = Model()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Typically, this will initialize all of the weights as ",
+              "type" : "text"
+            },
+            {
+              "code" : "float32",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", but the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "initialization does not actually compute anything until you perform an",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ". If you update the model with ",
+              "type" : "text"
+            },
+            {
+              "code" : "float16",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " weights, your maximum",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "consumed memory will be half that required if eager computation was used",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "instead.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This pattern is simple to do in MLX thanks to lazy computation:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let model = Model()",
+            "",
+            "let url = URL(filePath: \"weights_fp16.safetensors\")",
+            "let weights = loadArrays(url: url)",
+            "",
+            "model.update(parameters: weights)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "When-to-Evaluate",
+          "level" : 2,
+          "text" : "When to Evaluate",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A common question is when to use ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ". The trade-off is between",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "letting graphs get too large and not batching enough useful work.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "var a: MLXArray = ...",
+            "var b: MLXArray = ...",
+            "",
+            "for _ in 0 ..< 100 {",
+            "    a = a + b",
+            "    eval(a)",
+            "    b = b * 2",
+            "    eval(b)",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This is a bad idea because there is some fixed overhead with each graph",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "evaluation. On the other hand, there is some slight overhead which grows with",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the compute graph size, so extremely large graphs (while computationally",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "correct) can be costly.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Luckily, a wide range of compute graph sizes work pretty well with MLX:",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "anything from a few tens of operations to many thousands of operations per",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "evaluation should be okay.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Most numerical computations have an iterative outer loop (e.g. the iteration in",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "stochastic gradient descent). A natural and usually efficient place to use",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " is at each iteration of this outer loop.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is a concrete example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "for batch in dataset {",
+            "    \/\/ Nothing has been evaluated yet",
+            "    let (loss, grad) = valueAndGrad(model, batch)",
+            "",
+            "    \/\/ Still nothing has been evaluated",
+            "    optimizer.update(model, grad)",
+            "",
+            "    \/\/ Evaluate the loss and the new parameters which will",
+            "    \/\/ run the full gradient computation and optimizer update",
+            "    eval(loss, model.parameters())",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "An important behavior to be aware of is when the graph will be implicitly",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "evaluated. Anytime you ",
+              "type" : "text"
+            },
+            {
+              "code" : "print",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " an array, or otherwise access it’s memory,",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the graph will be evaluated. Saving arrays via ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/save(arrays:url:stream:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : "",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "(or any other MLX saving functions) will also evaluate the array.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Calling ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/item(_:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " on a scalar array will also evaluate it. In the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "example above, printing the loss (",
+              "type" : "text"
+            },
+            {
+              "code" : "print(loss)",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") or adding the loss scalar to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "a list (",
+              "type" : "text"
+            },
+            {
+              "code" : "losses.append(loss.item(Float.self))",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") would cause a graph evaluation. If",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "these lines are before ",
+              "type" : "text"
+            },
+            {
+              "code" : "eval(loss, model.parameters())",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " then this",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "will be a partial evaluation, computing only the forward pass.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Also, calling ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " on an array or set of arrays multiple times is",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "perfectly fine. This is effectively a no-op.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Using scalar arrays for control-flow will cause an evaluation.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is an example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(_ x: MLXArray) -> MLXArray {",
+            "    let (h, y) = firstLayer(x)",
+            "",
+            "    \/\/ note: in python this is just \"if y > 0:\" which",
+            "    \/\/ has an implicit item() call in the boolean context",
+            "    let z: MLXArray",
+            "    if (y > 0).item() {",
+            "        z = secondLayerA(h)",
+            "    } else {",
+            "        z = secondLayerB(h)",
+            "    }",
+            "    return z",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Using arrays for control flow should be done with care. The above example works",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "and can even be used with gradient transformations. However, this can be very",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "inefficient if evaluations are done too frequently.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams"
+      ],
+      "title" : "MLX"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/lazy-evaluation"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/item(_:)": {
+  "abstract" : [
+    {
+      "text" : "Return the scalar value of the array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "item"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ".Type) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/item(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "item(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/item(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/broadcasting": {
+  "abstract" : [
+    {
+      "text" : "How different size arrays can be used together.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Numpy Style Broadcasting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/broadcasting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/converting-python": {
+  "abstract" : [
+    {
+      "text" : "Common patterns from python and mapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function names.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Converting From Python",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/converting-python"
+},
+"doc://mlx.swift.mlx/documentation/MLX/eval(_:)-3b2g9": {
+  "abstract" : [
+    {
+      "text" : "Evaluate one or more ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eval"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "Any"
+    },
+    {
+      "kind" : "text",
+      "text" : "...)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eval(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/eval(_:)-3b2g9"
+},
+"doc://mlx.swift.mlx/documentation/MLX/install": {
+  "abstract" : [
+    {
+      "text" : "How to install and use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Installation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/install"
+},
+"doc://mlx.swift.mlx/documentation/MLX/save(arrays:url:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Save dictionary of arrays in ",
+      "type" : "text"
+    },
+    {
+      "code" : "gguf",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " or ",
+      "type" : "text"
+    },
+    {
+      "code" : "safetensors",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " format.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "save"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "arrays"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : " : "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "url"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation3URLV",
+      "text" : "URL"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/save(arrays:url:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "save(arrays:url:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/save(arrays:url:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/unified-memory": {
+  "abstract" : [
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " takes advantage of the shared memory between the CPU and GPU.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Unified Memory",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/unified-memory"
+},
+"doc://mlx.swift.mlx/documentation/MLX/using-streams": {
+  "abstract" : [
+    {
+      "text" : "Controlling where your computations are evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Using Streams",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/using-streams"
+},
+"https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/usage\/lazy_evaluation.html",
+  "title" : "mlx python docs",
+  "titleInlineContent" : [
+    {
+      "text" : "mlx python docs",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/usage\/lazy_evaluation.html"
+}
+}
+}

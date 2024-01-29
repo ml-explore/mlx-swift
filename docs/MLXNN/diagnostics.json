@@ -1,0 +1,26 @@
+[
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "custom-layers.md",
+    "start" : {
+      "column" : 70,
+      "line" : 77
+    },
+    "summary" : "'valueAndGrad()' doesn't exist at '\/MLXNN\/custom-layers'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "custom-layers.md",
+    "start" : {
+      "column" : 18,
+      "line" : 155
+    },
+    "summary" : "'valueAndGrad()' doesn't exist at '\/MLXNN'"
+  }
+]

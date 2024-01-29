@@ -1,0 +1,707 @@
+{
+  "abstract" : [
+    {
+      "text" : "Enum wrapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "Cmlx.mlx_array_dtype",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:3MLX5DTypeO",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "enum"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "DType"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "DType"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "DType.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L8"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Enumeration",
+    "symbolKind" : "enum",
+    "title" : "DType"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "enum"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "DType"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This is typically not used directly, rather it is inferred from parameters that are ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/HasDType",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/SQ",
+        "doc:\/\/mlx.swift.mlx\/SH"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/bfloat16",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/bool",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/float16",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/float32",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int16",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int64",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int8",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint16",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint32",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint64",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint8"
+      ],
+      "title" : "Enumeration Cases"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/cmlxDtype",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/isFloatingPoint"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/Equatable-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/dtype"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/SH": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/SH",
+  "title" : "Swift.Hashable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/SQ": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType": {
+  "abstract" : [
+    {
+      "text" : "Enum wrapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "Cmlx.mlx_array_dtype",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "DType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "DType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "DType",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/Equatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/Equatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Equatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/equatable-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/bfloat16": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bfloat16"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/bfloat16",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.bfloat16",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/bfloat16"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/bool": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/bool",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.bool",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/bool"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/cmlxDtype": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cmlxDtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:array.h@T@mlx_array_dtype",
+      "text" : "mlx_array_dtype"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/cmlxDtype",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cmlxDtype",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/cmlxdtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/complex64": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "complex64"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.complex64",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/complex64"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/float16": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "float16"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/float16",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.float16",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/float16"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/float32": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "float32"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/float32",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.float32",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/float32"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int16": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int16"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int16",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int16",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int16"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int32": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int32"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int32",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int32"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int64": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int64"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int64",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int64",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int64"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int8": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int8"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int8",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int8",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int8"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/isFloatingPoint": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "isFloatingPoint"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/isFloatingPoint",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "isFloatingPoint",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/isfloatingpoint"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/uint16": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "uint16"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint16",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.uint16",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/uint16"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/uint32": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "uint32"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint32",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.uint32",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/uint32"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/uint64": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "uint64"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint64",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.uint64",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/uint64"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/uint8": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "uint8"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/uint8",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.uint8",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/uint8"
+},
+"doc://mlx.swift.mlx/documentation/MLX/HasDType": {
+  "abstract" : [
+    {
+      "text" : "Protocol for types that can provide a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "HasDType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/HasDType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "HasDType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "HasDType",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/hasdtype"
+}
+}
+}

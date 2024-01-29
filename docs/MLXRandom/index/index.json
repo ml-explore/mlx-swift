@@ -1,0 +1,112 @@
+{
+  "interfaceLanguages" : {
+    "swift" : [
+      {
+        "children" : [
+          {
+            "title" : "Functions",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/bernoulli(_:_:key:stream:)",
+            "title" : "func bernoulli(ScalarOrArray, [Int]?, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/bernoulli(_:key:stream:)",
+            "title" : "func bernoulli([Int], key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/categorical(_:axis:count:key:stream:)",
+            "title" : "func categorical(MLXArray, axis: Int, count: Int, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)",
+            "title" : "func categorical(MLXArray, axis: Int, shape: [Int]?, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/gumbel(_:type:key:stream:)",
+            "title" : "func gumbel<T>([Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/key(_:)",
+            "title" : "func key(UInt64) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/normal(_:type:key:stream:)",
+            "title" : "func normal<T>([Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/randint(_:_:key:stream:)",
+            "title" : "func randInt<T>(Range<T>, [Int], key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/randint(low:high:_:key:stream:)",
+            "title" : "func randInt(low: ScalarOrArray, high: ScalarOrArray, [Int]?, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/randint(low:high:_:type:key:stream:)",
+            "title" : "func randInt<T>(low: ScalarOrArray, high: ScalarOrArray, [Int]?, type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/seed(_:)",
+            "title" : "func seed(UInt64)",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/split(key:into:stream:)",
+            "title" : "func split(key: MLXArray, into: Int, stream: StreamOrDevice) -> [MLXArray]",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-62jwe",
+            "title" : "func truncatedNormal<T>(Range<Float>, [Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-8vjij",
+            "title" : "func truncatedNormal<R, T>(Range<R>, [Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/truncatednormal(low:high:_:type:key:stream:)",
+            "title" : "func truncatedNormal<T>(low: ScalarOrArray, high: ScalarOrArray, [Int]?, type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-10gj2",
+            "title" : "func uniform<R, T>(Range<R>, [Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-4d6d2",
+            "title" : "func uniform<T>(Range<Float>, [Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/uniform(low:high:_:type:key:stream:)",
+            "title" : "func uniform<T>(low: ScalarOrArray, high: ScalarOrArray, [Int]?, type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          }
+        ],
+        "path" : "\/documentation\/mlxrandom",
+        "title" : "MLXRandom",
+        "type" : "module"
+      }
+    ]
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 1,
+    "patch" : 1
+  }
+}

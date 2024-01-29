@@ -1,0 +1,9 @@
+{
+  "bundleDisplayName" : "MLX",
+  "bundleIdentifier" : "mlx.swift.mlx",
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 1,
+    "patch" : 0
+  }
+}
