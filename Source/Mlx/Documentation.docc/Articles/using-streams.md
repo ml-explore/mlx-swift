@@ -1,5 +1,7 @@
 # Using Streams
 
+Controlling where your computations are evaluated.
+
 ## Specifying the Stream
 
 All operations (including random number generation) take an optional
@@ -22,3 +24,5 @@ let b = MLXRandom.uniform([100, 100], stream: .gpu)
 
 The parameter is of type ``StreamOrDevice`` and can be initialized with
 a stream, device, or some defaults like ``StreamOrDevice/gpu``.
+
+Read more in <doc:unified-memory>.

@@ -26,22 +26,74 @@ let r = log(a)
 swift: `@` (``matmul(_:_:stream:)``) and `//` (``floorDivide(_:_:stream:)``).  Please
 use the methods on `MLXArray` or the free functions.
 
+## Swift Naming
+
+Note that the element-wise logical operations such as:
+
+- ``MLXArray/.==(_:_:)-56m0a``
+- ``MLXArray/.==(_:_:)-79hbc``
+
+are named using the Swift convention for SIMD operations, e.g. `.==`, `.<`, etc.  These
+operators produce a new ``MLXArray`` with `true`/`false` values for the elementwise comparison.
+
+## Operations With Scalars
+
+Many functions and operators that work on ``MLXArray`` take a ``ScalarOrArray`` argument or have
+an overload that does.  A sampling:
+
+- ``MLXArray/+(_:_:)-2vili``
+- ``MLXArray/+(_:_:)-1jn5i``
+- ``MLX/minimum(_:_:stream:)``
+- ``MLX/pow(_:_:stream:)-7pe7j``
+- ``MLX/pow(_:_:stream:)-49xi0``
+
+``ScalarOrArray`` is a protocol that various numeric types (`Int`, `Float`, etc.) implement and it
+provides a method to convert the scalar to an ``MLXArray`` using a suggested ``DType``.  This allows:
+
+```swift
+let values: [Float16] = [ 0.5, 1.0, 2.5 ]
+
+// a has dtype .float16
+let a = MLXArray(values)
+
+// b also has dtype .float16 because this translates (roughly) to:
+// t = Int(3).asMLXArray(dtype: .float16)
+// let b = a + t
+let b = a + 3
+```
+
+Scalars will not promote results to `float32` using these functions.
+
 ## Topics
 
 ### MLXArray Operators
 
-- ``MLXArray/+(_:_:)``
-- ``MLXArray/-(_:_:)``
+- ``MLXArray/+(_:_:)-1rv98``
+- ``MLXArray/+(_:_:)-2vili``
+- ``MLXArray/+(_:_:)-1jn5i``
+- ``MLXArray/-(_:_:)-7frdo``
+- ``MLXArray/-(_:_:)-9mf3``
+- ``MLXArray/-(_:_:)-971j0``
 - ``MLXArray/-(_:)``
-- ``MLXArray/!(_:)``
-- ``MLXArray/*(_:_:)``
-- ``MLXArray/**(_:_:)``
-- ``MLXArray/.==(_:_:)``
-- ``MLXArray/.!=(_:_:)``
-- ``MLXArray/.<(_:_:)``
-- ``MLXArray/.<=(_:_:)``
-- ``MLXArray/.>(_:_:)``
-- ``MLXArray/.>=(_:_:)``
+- ``MLXArray/*(_:_:)-1z2ck``
+- ``MLXArray/*(_:_:)-sw3w``
+- ``MLXArray/*(_:_:)-7441r``
+- ``MLXArray/**(_:_:)-8xxt3``
+- ``MLXArray/**(_:_:)-6ve5u``
+- ``MLXArray/**(_:_:)-4lp4b``
+- ``MLXArray/.!(_:)``
+- ``MLXArray/.==(_:_:)-56m0a``
+- ``MLXArray/.==(_:_:)-79hbc``
+- ``MLXArray/.!=(_:_:)-mbw0``
+- ``MLXArray/.!=(_:_:)-gkdj``
+- ``MLXArray/.<(_:_:)-9rzup``
+- ``MLXArray/.<(_:_:)-54ivt``
+- ``MLXArray/.<=(_:_:)-2a0s9``
+- ``MLXArray/.<=(_:_:)-6vb92``
+- ``MLXArray/.>(_:_:)-fwi1``
+- ``MLXArray/.>(_:_:)-2v86b``
+- ``MLXArray/.>=(_:_:)-2gqml``
+- ``MLXArray/.>=(_:_:)-6zxj9``
 - ``MLXArray/.&&(_:_:)``
 - ``MLXArray/.||(_:_:)``
 
@@ -113,5 +165,5 @@ use the methods on `MLXArray` or the free functions.
 - ``subtract(_:_:stream:)``
 - ``tan(_:stream:)``
 - ``tanh(_:stream:)``
-- ``where(_:_:_:stream:)``
+- ``which(_:_:_:stream:)``
 

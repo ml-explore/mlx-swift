@@ -18,7 +18,7 @@ import Cmlx
 /// set otherwise.
 ///
 /// ### See Also
-/// - <doc:Using-Streams>
+/// - <doc:using-streams>
 /// - ``Stream``
 /// - ``Device``
 public struct StreamOrDevice: CustomStringConvertible {
@@ -61,13 +61,16 @@ public struct StreamOrDevice: CustomStringConvertible {
     }
 }
 
+
 /// ### See Also
-/// - <doc:Using-Streams>
+/// - <doc:using-streams>
 /// - ``StreamOrDevice``
 public final class Stream {
-    public let ctx: OpaquePointer!
-    init(_ ctx_: mlx_stream) {
-        ctx = ctx_
+    
+    let ctx: mlx_stream
+    
+    init(_ ctx: mlx_stream) {
+        self.ctx = ctx
     }
 
     public init() {

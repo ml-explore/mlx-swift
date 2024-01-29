@@ -198,7 +198,7 @@ extension MLXArray {
         MLXArray(mlx_identity(n.int32, T.dtype.cmlxDtype, stream.ctx))
     }
 
-    /// Generate `num` evenly spaced numbers over interval `[start, stop]`.
+    /// Generate `num` evenly spaced numbers over interval `[start, stop]` for `BinaryInteger`.
     ///
     /// Example:
     ///
@@ -215,7 +215,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``linspace(_:_:count:stream:)-32sbl``
+    /// - ``linspace(_:_:count:stream:)-92x6l``
     static public func linspace<T: HasDType>(
         _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
     ) -> MLXArray where T: BinaryInteger {
@@ -223,7 +223,7 @@ extension MLXArray {
             mlx_linspace(Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx))
     }
 
-    /// Generate `num` evenly spaced numbers over interval `[start, stop]`.
+    /// Generate `num` evenly spaced numbers over interval `[start, stop]` for `BinaryFloatingPoint`.
     ///
     /// Example:
     ///
@@ -240,6 +240,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
+    /// - ``linspace(_:_:count:stream:)-7m7eg``
     static public func linspace<T: HasDType>(
         _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
     ) -> MLXArray where T: BinaryFloatingPoint {
@@ -530,7 +531,7 @@ public func identity<T: HasDType>(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:stream:)-32sbl``
+/// - ``linspace(_:_:count:stream:)-7vj0o``
 public func linspace<T: HasDType>(
     _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
 ) -> MLXArray where T: BinaryInteger {
@@ -554,6 +555,7 @@ public func linspace<T: HasDType>(
 ///
 /// ### See Also
 /// - <doc:initialization>
+/// - ``linspace(_:_:count:stream:)-6w959``
 public func linspace<T: HasDType>(
     _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
 ) -> MLXArray where T: BinaryFloatingPoint {

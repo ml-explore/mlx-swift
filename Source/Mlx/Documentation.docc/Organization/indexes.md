@@ -28,6 +28,6 @@ let sorted = array[sortIndexes]
 
 ### Index Consuming Functions
 
-- ``MLXArray/subscript(_:stream:)-1gwn3``
+- ``MLXArray/subscript(_:stream:)-82jwt``
 - ``MLXArray/take(_:axis:stream:)``
 - ``takeAlong(_:_:axis:stream:)``

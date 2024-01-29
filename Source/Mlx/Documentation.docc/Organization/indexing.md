@@ -80,12 +80,14 @@ let evens = a[stride: 2, axis: -1]
 
 ### Subscript Functions
 
-- ``MLXArray/subscript(_:stream:)-42bjb``
-- ``MLXArray/subscript(_:stream:)-4cvvk``
-- ``MLXArray/subscript(_:stream:)-1gwn3``
-- ``MLXArray/subscript(_:stream:)-8x0dh``
-- ``MLXArray/subscript(_:axis:stream:)-o7u6``
-- ``MLXArray/subscript(_:axis:stream:)-9hr7x``
+- ``MLXArray/subscript(_:stream:)-od5g``
+- ``MLXArray/subscript(_:stream:)-7n5nw``
+- ``MLXArray/subscript(_:stream:)-82jwt``
+- ``MLXArray/subscript(_:stream:)-1a84u``
+- ``MLXArray/subscript(_:stream:)-8a2s7``
+- ``MLXArray/subscript(_:stream:)-4z56f``
+- ``MLXArray/subscript(_:axis:stream:)-1jy5n``
+- ``MLXArray/subscript(_:axis:stream:)-79psf``
 - ``MLXArray/subscript(from:to:stride:axis:stream:)``
 
 ### Related Functions

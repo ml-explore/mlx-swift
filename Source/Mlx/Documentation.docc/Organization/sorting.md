@@ -32,7 +32,7 @@ See related items in <doc:indexes>.
 ### Index Producing Functions
 
 These functions produce indexes for sorting and partitioning.  
-``MLXArray/subscript(_:stream:)-42bjb`` or ``MLXArray/take(_:stream:)`` must
+``MLXArray/subscript(_:stream:)-82jwt`` or ``MLXArray/take(_:stream:)`` must
 be used to apply them to an array (if needed).
 
 - ``argSort(_:axis:stream:)``
@@ -42,5 +42,5 @@ be used to apply them to an array (if needed).
 
 These sort or partition the data directly (producing a new array).
 
-- ``sort(_:axis:stream:)``
-- ``partition(_:kth:axis:stream:)``
+- ``sorted(_:axis:stream:)``
+- ``partitioned(_:kth:axis:stream:)``

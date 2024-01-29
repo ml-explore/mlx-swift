@@ -16,13 +16,14 @@ public enum DeviceType {
 /// Typically this is used via the `stream: ` parameter on a method with a ``StreamOrDevice``.
 ///
 /// ### See Also
-/// - <doc:Using-Streams>
+/// - <doc:using-streams>
 /// - ``StreamOrDevice``
 public final class Device {
 
-    let ctx: OpaquePointer!
-    init(_ ctx_: mlx_device) {
-        ctx = ctx_
+    let ctx: mlx_device
+    
+    init(_ ctx: mlx_device) {
+        self.ctx = ctx
     }
 
     public init(_ deviceType: DeviceType, index: Int32 = 0) {

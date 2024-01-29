@@ -27,7 +27,7 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``MLXArray/+(_:_:)``
+/// - ``MLXArray/+(_:_:)-1rv98``
 public func add<A: ScalarOrArray, B: ScalarOrArray>(
     _ a: A, _ b: B, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -206,7 +206,7 @@ public func argSort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 /// The resulting array will always be as if the provided array was row
 /// contiguous regardless of the provided arrays storage order and current strides.
 ///
-/// > Note that this function should be used with caution as it changes
+/// > Caution! This function should be used with caution as it changes
 /// the shape and strides of the array directly. This can lead to the
 /// resulting array pointing to invalid memory locations which can
 /// result into crashes.
@@ -565,7 +565,7 @@ public func divide<A: ScalarOrArray, B: ScalarOrArray>(
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a == b).all().item() {
+/// if (a .== b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -659,7 +659,7 @@ public func expandedDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDev
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a > b).all().item() {
+/// if (a .> b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -688,7 +688,7 @@ public func greater<A: ScalarOrArray, B: ScalarOrArray>(
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a >= b).all().item() {
+/// if (a .>= b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -717,7 +717,7 @@ public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a < b).all().item() {
+/// if (a .< b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -746,7 +746,7 @@ public func less<A: ScalarOrArray, B: ScalarOrArray>(
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// if (a <= b).all().item() {
+/// if (a .<= b).all().item() {
 ///     ...
 /// }
 /// ```
@@ -801,7 +801,7 @@ public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLX
     }
 }
 
-/// Load dictionary of ``MLXArray`` from a ``gguf`` or ``safetensors`` file.
+/// Load dictionary of ``MLXArray`` from a `gguf` or `safetensors` file.
 ///
 /// - Parameters:
 ///     - url: URL of file to load
@@ -974,7 +974,7 @@ public func negative(_ array: MLXArray, stream: StreamOrDevice = .default) -> ML
 /// let a = MLXArray(0 ..< 12, [4, 3])
 /// let b = a + 1
 ///
-/// // equivalent to if (a != b).all().item() {
+/// // equivalent to if (a .!= b).all().item() {
 /// if notEqual(a, b).all().item() {
 ///     ...
 /// }
@@ -1005,8 +1005,8 @@ public func notEqual<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``paddded(_:widths:value:stream:)``
-public func paddded(
+/// - ``padded(_:widths:value:stream:)``
+public func padded(
     _ array: MLXArray, width: IntOrPair, value: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
@@ -1029,7 +1029,7 @@ public func paddded(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``paddded(_:width:value:stream:)``
+/// - ``padded(_:width:value:stream:)``
 public func padded(
     _ array: MLXArray, widths: [IntOrPair], value: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -1190,7 +1190,7 @@ public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) t
     }
 }
 
-/// Save dictionary of arrays in ``gguf`` or ``safetensors`` format.
+/// Save dictionary of arrays in `gguf` or `safetensors` format.
 ///
 /// - Parameters:
 ///     - a: array to save

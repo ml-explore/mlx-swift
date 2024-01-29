@@ -42,8 +42,8 @@ array([[1, 2, 3],
        [10, 11, 12]], dtype=int64)
 ```
 
-This uses the ``MLXArray/init(_:)-7t81v`` which allows automatic conversion from an `Int32` literal to
-a scalar `MLXArray`, e.g. `MLXArray(Int32(1))`.
+This uses ``MLXArray/+(_:_:)-2vili`` which uses ``ScalarOrArray`` to automatically convert scalar values
+into ``MLXArray``.
 
 A scalar can be broadcast to any shape array:  the scalar is repeated for each element in the array.
 Conceptually the scalar is converted into an array of the same shape and then added:

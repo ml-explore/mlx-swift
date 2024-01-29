@@ -1,6 +1,8 @@
 # Unified Memory
 
-##
+`MLX` takes advantage of the shared memory between the CPU and GPU.
+
+## Discussion
 
 See also [mlx python docs](https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html).
 
@@ -27,7 +29,7 @@ add(a, b, stream: .gpu)
 
 In the above, both the CPU and the GPU will perform the same add
 operation. The operations can (and likely will) be run in parallel since
-there are no dependencies between them. See <doc:Using-Streams> for more
+there are no dependencies between them. See <doc:using-streams> for more
 information the semantics of streams in MLX.
 
 In the above `add` example, there are no dependencies between operations, so
@@ -45,7 +47,7 @@ automatically insert a dependency between the two streams so that the second
 `add` only starts executing after the first is complete and `c` is
 available.
 
-# A Simple Example
+## A Simple Example
 
 Here is a more interesting (albeit slightly contrived example) of how unified
 memory can be helpful. Suppose we have the following computation:

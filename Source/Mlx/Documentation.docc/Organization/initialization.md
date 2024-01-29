@@ -2,34 +2,9 @@
 
 Creating MLXArrays.
 
-### Implicit Arrays
-
-MLXArrays can be created implicitly from literals.  You can create scalar
-arrays by using a scalar literal in a context where an MLXArray is needed:
-
-```swift
-let array = MLXArray(0 ..< 12, [4, 3])
-
-// equivalent to array + MLXArray(3)
-let r = array + 3
-
-// or as a parameter
-let r2 = divide(array, 3.0)
-```
-
-You can do the same with a scalar array of integers (`Int32`).  This does
-not work for `Float` arrays -- use ``MLXArray/init(_:_:)-1nwrn`` for those.
-
-```swift
-let array = MLXArray(0 ..< 12, [4, 3])
-
-// equivalent to array + MLXArray([1, 2, 3])
-let r = array + [1, 2, 3]
-```
-
 ### Scalar Arrays
 
-A scalar MLXArray is created from a scalar and has zero dimensions:
+A scalar ``MLXArray`` is created from a scalar and has zero dimensions:
 
 ```swift
 let v1 = MLXArray(true)
@@ -37,7 +12,45 @@ let v2 = MLXArray(7)
 let v3 = MLXArray(8.5)
 ```
 
-Typically you can create these through the scalar literal conversions (previous section).
+If an `MLXArray` of a different type is needed there is an initializer:
+
+```swift
+// dtype is .float32
+let v4 = MLXArray(8.5)
+
+// dtype is .float16
+let v5 = MLXArray(Float16(8.5))
+
+// dtype is .float16
+let v6 = MLXArray(8.5, dtype: .float16)
+```
+
+Sometimes scalars can be used in place of arrays (no need to explicitly create them).
+Some functions and operators that work on ``MLXArray`` take a ``ScalarOrArray`` argument or have
+an overload that does.  A sampling:
+
+- ``MLXArray/+(_:_:)-2vili``
+- ``MLXArray/+(_:_:)-1jn5i``
+- ``MLX/minimum(_:_:stream:)``
+- ``MLX/pow(_:_:stream:)-7pe7j``
+- ``MLX/pow(_:_:stream:)-49xi0``
+
+``ScalarOrArray`` is a protocol that various numeric types (`Int`, `Float`, etc.) implement and it
+provides a method to convert the scalar to an ``MLXArray`` using a suggested ``DType``.  This allows:
+
+```swift
+let values: [Float16] = [ 0.5, 1.0, 2.5 ]
+
+// a has dtype .float16
+let a = MLXArray(values)
+
+// b also has dtype .float16 because this translates (roughly) to:
+// t = Int(3).asMLXArray(dtype: .float16)
+// let b = a + t
+let b = a + 3
+```
+
+Scalars will not promote results to `float32` using these functions.
 
 ### Multi Value Arrays
 
@@ -89,7 +102,7 @@ let v1 = MLXArray(0 ..< 12, [3, 4])
 
 ### Random Value Arrays
 
-See also ``MLXRandom`` for creating arrays with random data.
+See also `MLXRandom` for creating arrays with random data.
 
 ### Other Arrays
 
@@ -111,20 +124,21 @@ let identity = MLXArray.identity(5)
 
 ### MLXArray Scalar Initializers
 
-- ``MLXArray/init(_:)-20ctj``
-- ``MLXArray/init(_:)-9h4g2``
-- ``MLXArray/init(_:)-7t81v``
-- ``MLXArray/init(_:)-9jjm5``
+- ``MLXArray/init(_:)-9iiz7``
+- ``MLXArray/init(_:)-6zp01``
+- ``MLXArray/init(_:)-86r8u``
+- ``MLXArray/init(_:)-10m``
+- ``MLXArray/init(_:)-96nyv``
+- ``MLXArray/init(_:dtype:)``
 
 ### MLXArray Array Initializers
 
-- ``MLXArray/init(_:_:)-9z9ix``
-- ``MLXArray/init(_:_:)-3roe8``
-- ``MLXArray/init(_:_:)-1nwrn``
+- ``MLXArray/init(_:_:)-4n0or``
+- ``MLXArray/init(_:_:)-dq8h``
+- ``MLXArray/init(_:_:)-89jw1``
 - ``MLXArray/init(converting:_:)``
-- ``MLXArray/init(_:_:type:)-22a1g``
-- ``MLXArray/init(_:_:type:)-7rglc``
-- ``MLXArray/init(_:dtype:)``
+- ``MLXArray/init(_:_:type:)-5esf9``
+- ``MLXArray/init(_:_:type:)-f9u5``
 
 ### MLXArray Factory Methods
 
@@ -136,8 +150,8 @@ let identity = MLXArray.identity(5)
 - ``MLXArray/full(_:values:type:stream:)``
 - ``MLXArray/full(_:values:stream:)``
 - ``MLXArray/identity(_:type:stream:)``
-- ``MLXArray/linspace(_:_:count:stream:)-32sbl``
-- ``MLXArray/linspace(_:_:count:stream:)-1m270``
+- ``MLXArray/linspace(_:_:count:stream:)-92x6l``
+- ``MLXArray/linspace(_:_:count:stream:)-7m7eg``
 - ``MLXArray/repeat(_:count:axis:stream:)``
 - ``MLXArray/repeat(_:count:stream:)``
 - ``MLXArray/tri(_:m:k:type:stream:)``
@@ -152,8 +166,8 @@ let identity = MLXArray.identity(5)
 - ``MLX/full(_:values:type:stream:)``
 - ``MLX/full(_:values:stream:)``
 - ``MLX/identity(_:type:stream:)``
-- ``MLX/linspace(_:_:count:stream:)-32sbl``
-- ``MLX/linspace(_:_:count:stream:)-1m270``
+- ``MLX/linspace(_:_:count:stream:)-7vj0o``
+- ``MLX/linspace(_:_:count:stream:)-6w959``
 - ``MLX/repeat(_:count:axis:stream:)``
 - ``MLX/repeat(_:count:stream:)``
 - ``MLX/tri(_:m:k:type:stream:)``

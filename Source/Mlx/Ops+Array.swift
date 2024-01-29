@@ -317,7 +317,7 @@ public func argMin(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 /// ### See Also
 /// - <doc:logical>
 /// - ``allClose(_:_:rtol:atol:stream:)``
-/// - ``MLXArray/==(_:_:)``
+/// - ``MLXArray/.==(_:_:)-56m0a``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func arrayEqual<T: ScalarOrArray>(
     _ array: MLXArray, _ other: T, equalNAN: Bool = false, stream: StreamOrDevice = .default
@@ -1135,8 +1135,8 @@ public func reciprocal(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshaped(_:stream:)-uxps``
-/// - ``reshaped(_:_:stream:)-7llxg``
+/// - ``MLXArray/reshaped(_:stream:)-19x5z``
+/// - ``reshaped(_:_:stream:)-96lgr``
 public func reshaped(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -1153,8 +1153,8 @@ public func reshaped(_ array: MLXArray, _ newShape: [Int], stream: StreamOrDevic
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshaped(_:stream:)-uxps``
-/// - ``reshaped(_:_:stream:)-8p51j``
+/// - ``MLXArray/reshaped(_:stream:)-67a89``
+/// - ``reshaped(_:_:stream:)-5x3y0``
 public func reshaped(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevice = .default)
     -> MLXArray
 {
