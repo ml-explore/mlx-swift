@@ -71,3 +71,35 @@ func new_mlx_map(_ dictionary: [String: MLXArray]) -> mlx_map_string_to_array {
 
     return mlx_map
 }
+
+func new_mlx_closure(_ f: @escaping ([MLXArray]) -> [MLXArray]) -> mlx_closure {
+
+    // holds reference to `f()` as capture state for the mlx_closure
+    class ClosureCaptureState {
+        let f: ([MLXArray]) -> [MLXArray]
+
+        init(_ f: @escaping ([MLXArray]) -> [MLXArray]) {
+            self.f = f
+        }
+    }
+
+    func free(ptr: UnsafeMutableRawPointer?) {
+        Unmanaged<ClosureCaptureState>.fromOpaque(ptr!).release()
+    }
+
+    let payload = Unmanaged.passRetained(ClosureCaptureState(f)).toOpaque()
+
+    // the C function that the mlx_closure will call -- this will convert
+    // arguments & results and call the captured `f()`
+    func trampoline(vector_array: mlx_vector_array?, payload: UnsafeMutableRawPointer?)
+        -> mlx_vector_array?
+    {
+        let state = Unmanaged<ClosureCaptureState>.fromOpaque(payload!).takeUnretainedValue()
+
+        let arrays = mlx_vector_array_values(vector_array!)
+        let result = state.f(arrays)
+        return new_mlx_vector_array(result)
+    }
+
+    return mlx_closure_new_with_payload(trampoline, payload, free)!
+}

@@ -66,6 +66,65 @@ public func eval(_ values: [Any]) {
     eval(arrays)
 }
 
+private func simplify(arrays: [MLXArray]) {
+    let vector_array = new_mlx_vector_array(arrays)
+    mlx_simplify(vector_array)
+    mlx_free(vector_array)
+}
+
+/// Simplify the graph that computes the arrays.
+///
+/// Run a few fast graph simplification operations to reuse computation and
+/// reduce memory consumption. This function is meant to be run every time
+/// so its overhead should be small, approximately 1ms for a graph with a
+/// few thousand nodes.
+///
+/// For example:
+///
+/// ```swift
+/// import MLX
+///
+/// func foo(_ x: MLXArray) -> MLXArray {
+///     let y = x.matmul(x)
+///     let z = x.matmul(x)
+///     return y + z
+/// }
+///
+/// let x = MLXArray.ones([10, 10])
+/// let y = foo(x)
+/// let z = foo(x)
+///
+/// // computes matmul twice
+/// eval(y)
+///
+/// // computes matmul once
+/// simplify(z)
+/// eval(z)
+/// ```
+public func simlify(_ values: Any...) {
+    var arrays = [MLXArray]()
+
+    for item in values {
+        collect(item, into: &arrays)
+    }
+
+    simplify(arrays: arrays)
+}
+
+/// Simplify the graph that computes the arrays.
+///
+/// See ``simlify(_:)-3sxjv``
+public func simlify(_ values: [Any]) {
+    var arrays = [MLXArray]()
+
+    for item in values {
+        collect(item, into: &arrays)
+    }
+
+    simplify(arrays: arrays)
+}
+
+
 private func collect(_ item: Any, into arrays: inout [MLXArray]) {
     switch item {
     case let v as NestedDictionary<String, MLXArray>:

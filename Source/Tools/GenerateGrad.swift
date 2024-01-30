@@ -6,8 +6,142 @@ import Foundation
 struct GenerateGrad {
 
     /// up to how many MLXArray tuples should we generate, e.g. 3 == `MLXArray, MLXArray, MLXArray`
-    static let inputTupleCount = 3
-    static let outputTupleCount = 3
+    static let inputTupleCount = 1
+    static let outputTupleCount = 1
+    
+    static func indentLines(_ text: String, lead: String) -> String {
+        lead +
+        text
+            .split(separator: "\n", omittingEmptySubsequences: false)
+            .joined(separator: "\n\(lead)")
+    }
+    
+    struct MethodInfo {
+        let methodName: String
+        let methodDescription: String
+        let internalDocumentation: String
+        let seeAlso: String
+        let arguments: (String, String) -> String
+        let returnValue: (String, String) -> String
+        let body: (String) -> String
+    }
+    
+    static let methodInfo = [
+        "grad" : MethodInfo(
+            methodName: "grad",
+            methodDescription: "Returns a function which computes the gradient of `f`.",
+            internalDocumentation:
+            """
+            Converts the given function `f()` into canonical types, e.g.
+            (MLXArray) -> MLXArray into the canonical form ([MLXArray]) -> [MLXArray].
+
+            First use the wrapArguments() and wrapResult() function to transform
+            it into that form.  Then call buildValueAndGradient() to produce a new
+            function with the same canonical form.
+
+            Finally use unwrapArguments() and unwrapResult() to transform the function
+            back into the original signature.
+
+            Note: this particular form of the function is already in the canonical
+            form and the wrap/unwrap calls are identity functions.
+            """,
+            seeAlso: "See ``grad(_:)-r8dv``",
+            arguments: { input, returnValue in
+                if input == "MLXArray" {
+                    return "(_ f: @escaping (\(input)) -> \(returnValue))"
+                } else {
+                    return "(_ f: @escaping (\(input)) -> \(returnValue), argumentNumbers: [Int] = [0])"
+                }
+            },
+            returnValue: { input, returnValue in
+                "(\(input)) -> \(returnValue)"
+            },
+            body: { input in
+                let argumentNumbersUse: String
+                if input == "MLXArray" {
+                    argumentNumbersUse = "[0]"
+                } else {
+                    argumentNumbersUse = "argumentNumbers"
+                }
+                return
+                    """
+                    let wrappedFunction = wrapResult(wrapArguments(f))
+                    let gradientFunction = buildGradient(wrappedFunction, argumentNumbers: \(argumentNumbersUse))
+                    let uag: (\(input)) -> [MLXArray] = unwrapArguments(gradientFunction)
+                    return unwrapResult(uag)
+                    """
+            }
+        ),
+        "valueAndGrad" : MethodInfo(
+            methodName: "valueAndGrad",
+            methodDescription: "Returns a function which computes the value and gradient of `f`.",
+            internalDocumentation: "",
+            seeAlso: "See ``valueAndGrad(_:)``",
+            arguments: { input, returnValue in
+                "(_ f: @escaping (\(input)) -> \(returnValue), argumentNumbers: [Int] = [0])"
+            },
+            returnValue: { input, returnValue in
+                "(\(input)) -> (\(returnValue), \(returnValue))"
+            },
+            body: { input in
+                """
+                return buildValueAndGradient(f, argumentNumbers: argumentNumbers)
+                """
+            }
+        ),
+        "valueAndGradNested" : MethodInfo(
+            methodName: "valueAndGrad",
+            methodDescription: "Returns a function which computes the value and gradient of `f`.",
+            internalDocumentation: "",
+            seeAlso: "See ``valueAndGrad(_:)``",
+            arguments: { input, returnValue in
+                "(_ f: @escaping (NestedDictionary<String, MLXArray>, \(input)) -> \(returnValue), argumentNumbers: [Int] = [0])"
+            },
+            returnValue: { input, returnValue in
+                "(NestedDictionary<String, MLXArray>, \(input)) -> (\(returnValue), \(returnValue))"
+            },
+            body: { input in
+                """
+                return buildValueAndGradient(f, argumentNumbers: argumentNumbers)
+                """
+            }
+        ),
+    ]
+    
+    static func emitFunction(name: String, input: String, output: String) -> String {
+        var result = ""
+        
+        let info = methodInfo[name]!
+        
+        let firstMethod = input == "[MLXArray]" && output == "[MLXArray]"
+        let documentationText = firstMethod ? info.methodDescription : info.seeAlso
+        
+        result += indentLines(documentationText, lead: "// ")
+        result += "\n"
+        
+        let returnValue: String
+        if output.contains(",") {
+            returnValue = "(\(output))"
+        } else {
+            returnValue = output
+        }
+                
+        result +=
+            """
+            public func \(name)\(info.arguments(input, returnValue)) -> \(info.returnValue(input, returnValue)) {
+            
+            """
+        
+        if firstMethod {
+            result += indentLines(info.internalDocumentation, lead: "    // ")
+            result += "\n"
+        }
+        
+        result += indentLines(info.body(input), lead: "    ")
+        result += "\n}\n"
+
+        return result
+    }
 
     /// Tool to generate `Transforms+Variants.swift`.
     ///
@@ -28,31 +162,6 @@ struct GenerateGrad {
         // emit the `grad()` variants -- these are the public functions that can be called.
         // we emit a variant for each combination of inputs and outputs below
 
-        let methodDocumentation =
-            """
-            Returns a function which computes the gradient of `f`.
-
-
-            """
-
-        let internalDocumentation =
-            """
-            Converts the given function `f()` into canonical types, e.g.
-            (MLXArray) -> MLXArray into the canonical form ([MLXArray]) -> [MLXArray].
-
-            First use the wrapArguments() and wrapResult() function to transform
-            it into that form.  Then call buildValueAndGradient() to produce a new
-            function with the same canonical form.
-
-            Finally use unwrapArguments() and unwrapResult() to transform the function
-            back into the original signature.
-
-            Note: this particular form of the function is already in the canonical
-            form and the wrap/unwrap calls are identity functions.
-            """
-
-        let seeAlso = "See ``grad(_:)-7zhu6``"
-
         let baseTypes = [
             "[MLXArray]",
             "MLXArray",
@@ -60,66 +169,21 @@ struct GenerateGrad {
         var inputs = baseTypes
         var outputs = baseTypes
 
-        for i in 2 ... inputTupleCount {
+        for i in 2 ..< (inputTupleCount + 1) {
             inputs.append(Array(repeating: "MLXArray", count: i).joined(separator: ", "))
         }
-        for i in 2 ... outputTupleCount {
+        for i in 2 ..< (outputTupleCount + 1) {
             outputs.append(Array(repeating: "MLXArray", count: i).joined(separator: ", "))
         }
 
-        for i in inputs {
-            for o in outputs {
-                let firstMethod = i == "[MLXArray]" && o == "[MLXArray]"
-                let documentation = firstMethod ? methodDocumentation : seeAlso
-
-                let rv: String
-                if o.contains(",") {
-                    rv = "(\(o))"
-                } else {
-                    rv = o
-                }
-
-                print(
-                    "/// "
-                        + documentation
-                        .split(separator: "\n", omittingEmptySubsequences: false)
-                        .joined(separator: "\n/// "))
-
-                let argumentNumbersParam: String
-                let argumentNumbersUse: String
-                if i == "MLXArray" {
-                    argumentNumbersParam = ""
-                    argumentNumbersUse = "[0]"
-                } else {
-                    argumentNumbersParam = ", argumentNumbers: [Int] = [0]"
-                    argumentNumbersUse = "argumentNumbers"
-                }
-                print(
-                    """
-                    public func grad(_ f: @escaping (\(i)) -> \(rv)\(argumentNumbersParam)) -> (\(i)) -> \(rv) {
-                    """
-                )
-
-                if firstMethod {
-                    print(
-                        "    // "
-                            + internalDocumentation
-                            .split(separator: "\n", omittingEmptySubsequences: false)
-                            .joined(separator: "\n    // "))
-                }
-
-                print(
-                    """
-                        let wrappedFunction = wrapResult(wrapArguments(f))
-                        let gradientFunction = buildValueAndGradient(wrappedFunction, argumentNumbers: \(argumentNumbersUse))
-                        let uag: (\(i)) -> [MLXArray] = unwrapArguments(gradientFunction)
-                        return unwrapResult(uag)
-                    }
-
-                    """
-                )
+        for input in inputs {
+            for output in outputs {
+                print(emitFunction(name: "grad", input: input, output: output))
             }
         }
+        
+        print(emitFunction(name: "valueAndGrad", input: "[MLXArray]", output: "[MLXArray]"))
+        print(emitFunction(name: "valueAndGradNested", input: "[MLXArray]", output: "[MLXArray]"))
 
         // functions for converting to and from canonical types.  For example this function:
         //
@@ -174,7 +238,7 @@ struct GenerateGrad {
             """
         )
 
-        for c in 1 ... inputTupleCount {
+        for c in 1 ..< (inputTupleCount + 1) {
             let args = Array(repeating: "MLXArray", count: c).joined(separator: ", ")
             let wrapArguments = (0 ..< c).map { "arrays[\($0)]" }.joined(separator: ", ")
 
@@ -192,7 +256,7 @@ struct GenerateGrad {
         }
 
         // note: from 2 since we have the 1 special case above
-        for c in 2 ... inputTupleCount {
+        for c in 2 ..< (inputTupleCount + 1) {
             let args = Array(repeating: "MLXArray", count: c).joined(separator: ", ")
             let wrapResult = (0 ..< c).map { "v.\($0)" }.joined(separator: ", ")
 
@@ -210,7 +274,7 @@ struct GenerateGrad {
             )
         }
 
-        for c in 1 ... inputTupleCount {
+        for c in 1 ..< (inputTupleCount + 1) {
             let args = Array(repeating: "MLXArray", count: c).joined(separator: ", ")
             let unrwapArguments1 = (0 ..< c).map { "a\($0): MLXArray" }.joined(separator: ", ")
             let unrwapArguments2 = (0 ..< c).map { "a\($0)" }.joined(separator: ", ")
@@ -231,7 +295,7 @@ struct GenerateGrad {
         // input/output pairs.
 
         // [MLXArray] -> (MLXArray...)
-        for c in 1 ... outputTupleCount {
+        for c in 1 ..< (inputTupleCount + 1) {
             let args = Array(repeating: "MLXArray", count: c).joined(separator: ", ")
             let unwrapResult = (0 ..< c).map { "v[\($0)]" }.joined(separator: ", ")
 
@@ -250,7 +314,7 @@ struct GenerateGrad {
         }
 
         // (MLXArray...) -> ([MLXArray])
-        for c in 1 ... inputTupleCount {
+        for c in 1 ..< (inputTupleCount + 1) {
             let args = Array(repeating: "MLXArray", count: c).joined(separator: ", ")
             let unwrapInputs1 = (0 ..< c).map { "a\($0): MLXArray" }.joined(separator: ", ")
             let unwrapInputs2 = (0 ..< c).map { "a\($0)" }.joined(separator: ", ")
@@ -269,11 +333,11 @@ struct GenerateGrad {
         }
 
         // (MLXArray...) -> (MLXArray...)
-        for c in 1 ... outputTupleCount {
+        for c in 1 ..< (inputTupleCount + 1) {
             let output = Array(repeating: "MLXArray", count: c).joined(separator: ", ")
             let unwrapResult = (0 ..< c).map { "v[\($0)]" }.joined(separator: ", ")
 
-            for argc in 1 ... inputTupleCount {
+            for argc in 1 ..< (inputTupleCount + 1) {
                 let inputArgs = Array(repeating: "MLXArray", count: argc).joined(separator: ", ")
                 let unwrapInputs1 = (0 ..< argc).map { "a\($0): MLXArray" }.joined(separator: ", ")
                 let unwrapInputs2 = (0 ..< argc).map { "a\($0)" }.joined(separator: ", ")
