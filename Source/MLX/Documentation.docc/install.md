@@ -47,3 +47,22 @@ to the build directory.
 
 Applications should be configured to copy `mlx-swift_Cmlx.bundle` -- this will happen automatically
 if you link the `MLX` library.
+
+## Build Issues
+
+### unsafe build flags
+
+If you get this error:
+
+```
+error: The package product 'MLX' cannot be used as a dependency of this target because it uses unsafe build flags.
+```
+
+There are two possible fixes:
+
+- the reference to the package must be made with a specific git hash
+- if using a local package reference, edit the Package.swift and change this line to `false`
+
+```
+let optimize = true
+```

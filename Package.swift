@@ -4,8 +4,11 @@
 
 import PackageDescription
 
-// this can be set to false for easier debugging
 let optimize = true
+// this can be set to false for easier debugging.
+//
+// you may also need to set this as false if using mlx-swift as a local package
+// and you get "cannot be used as a dependency of this target because it uses unsafe build flags"
 
 var extraCFlags = [CSetting]()
 var extraCXXFlags = [CXXSetting]()
