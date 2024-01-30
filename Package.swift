@@ -4,7 +4,8 @@
 
 import PackageDescription
 
-let optimize = false
+// this can be set to false for easier debugging
+let optimize = true
 
 var extraCFlags = [CSetting]()
 var extraCXXFlags = [CXXSetting]()
