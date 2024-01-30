@@ -6,7 +6,7 @@ if [[ `git rev-parse --abbrev-ref HEAD` != 'gh-pages' ]]
 then
     if [[ $1 != "-f" ]] 
     then
-        echo "Documentation should only be build on the gh-pages branch.  Use -f to force build."
+        echo "Documentation should only be built on the gh-pages branch.  Use -f to force build."
         exit 1
     fi
 fi
