@@ -21,7 +21,7 @@ public enum DeviceType {
 public final class Device {
 
     let ctx: mlx_device
-    
+
     init(_ ctx: mlx_device) {
         self.ctx = ctx
     }

@@ -124,7 +124,6 @@ public func simlify(_ values: [Any]) {
     simplify(arrays: arrays)
 }
 
-
 private func collect(_ item: Any, into arrays: inout [MLXArray]) {
     switch item {
     case let v as NestedDictionary<String, MLXArray>:

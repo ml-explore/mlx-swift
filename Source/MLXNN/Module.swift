@@ -16,57 +16,57 @@ public typealias ModuleItems = NestedDictionary<String, ModuleValue>
 public typealias ModuleItem = NestedItem<String, ModuleValue>
 
 /// Base class for building neural networks with MLX.
-/// 
+///
 /// All the layers provided in <doc:layers> subclass this class and
 /// your models should do the same.
-/// 
+///
 /// A `Module` can contain other `Module` instances or `MLXArray`
 /// instances in structures of `Array` and `Dictionary`. The `Module`
 /// then allows recursively extracting all the `MLXArray` instances
 /// using ``parameters()``
-/// 
+///
 /// In addition, the `Module` has the concept of trainable and non trainable
 /// parameters (called "frozen"). When using `valueAndGrad()` or `grad()`
 /// the gradients are returned only with respect to the trainable parameters.
 /// All arrays in a module are trainable unless they are added in the "frozen"
 /// set by calling ``freeze(recursive:keys:strict:)``
-/// 
+///
 /// ```swift
 /// import MLX
 /// import MLXNN
-/// 
+///
 /// class MyMLP : Module, UnaryLayer {
 ///     let inProjection: Linear
 ///     let outProjection: Linear
-/// 
+///
 ///     init(inputDimensions: Int, outputDimensions: Int, hiddenDimensions: Int = 16) {
 ///         self.inProjection = Linear(inputDimensions, hiddenDimensions)
 ///         sel.outProjection = Linear(hiddenDimensions, outputDimensions)
 ///     }
-/// 
+///
 ///     func callAsFunction(_ x: MLXArray) -> MLXArray {
 ///         var x = inProjection(x)
 ///         x = maximum(x, 0)
 ///         return outProjection(x)
 ///     }
 /// }
-/// 
+///
 /// let model = MyMLP(inputDimensions: 2, outputDimensions: 1)
-/// 
+///
 /// // All the model parameters are created but since MLX is lazy by
 /// // default, they are not evaluated yet. Calling `eval` actually
 /// // allocates memory and initializes the parameters.
 /// eval(model.parameters())
-/// 
+///
 /// // and projecting a value through the model:
 /// let input: MLXArray ...
 /// let result = model(input)
 /// ```
-/// 
+///
 /// > Please read <doc:custom-layers> for more information about implementing custom layers
 /// including how to override the module and parameter keys and allowing dynamic updates of the
 /// module structure to occur via ``update(modules:verify:)``.
-/// 
+///
 /// ### See Also
 /// - <doc:custom-layers>
 open class Module {
@@ -76,7 +76,7 @@ open class Module {
 
     public init() {
     }
-    
+
     /// Return a `NestedDictionary` structure of ``ModuleItem`` representing the ivars of the `Module` instance.
     ///
     /// This is typically not used directly -- it is part of the implementation of ``filterMap(filter:map:isLeaf:)``
@@ -130,7 +130,7 @@ open class Module {
             return ""
         }
     }
-    
+
     /// Recursively filter and map the contents of the module and its children and produce a `NestedDictionary`
     /// with the results.
     ///
@@ -196,7 +196,7 @@ open class Module {
             switch v {
             case .value(.module(let module)):
                 return module.filterMap(filter: filter, map: map, isLeaf: isLeaf).asItem()
-                
+
             case .value:
                 // e.g. parameters, other -- these were handled via the isLeaf case above
                 // or they can be ignored as they are not structural
@@ -318,7 +318,8 @@ open class Module {
     /// - ``isLeafModuleNoChildren``
     public func leafModules() -> ModuleChilren {
         filterMap(
-            filter: Self.filterValidChild, map: Self.mapModule(), isLeaf: Self.isLeafModuleNoChildren)
+            filter: Self.filterValidChild, map: Self.mapModule(),
+            isLeaf: Self.isLeafModuleNoChildren)
     }
 
     /// Options for verifying ``update(parameters:verify:)`` and ``update(modules:verify:)``.
@@ -332,7 +333,7 @@ open class Module {
         /// Check that all keys are used.  This is useful to ensure that e.g. all loaded parameters
         /// are used -- there are no names that don't match.
         static public let noUnusedKeys = VerifyUpdate(rawValue: 1 << 0)
-        
+
         // TODO: add a load_weights style strict -- verify that all keys on the model are specified
 
         static public let all = VerifyUpdate(rawValue: -1)
@@ -602,15 +603,16 @@ open class Module {
     public func visit(modules visitor: (String, Module) throws -> Void) rethrows {
         var stack = [(String, Module)]()
         stack.append(("", self))
-        
+
         while !stack.isEmpty {
             let (prefix, module) = stack.removeLast()
             try visitor(prefix, module)
-            
-            stack.append(contentsOf: module.children().flattened(prefix: prefix.isEmpty ? nil : prefix))
+
+            stack.append(
+                contentsOf: module.children().flattened(prefix: prefix.isEmpty ? nil : prefix))
         }
     }
-    
+
     /// Return a flat array of all the `Module` in the instance (including self).
     ///
     /// ### See Also
@@ -638,11 +640,15 @@ open class Module {
         }
         return result
     }
-    
-    private func freezeVisitor(keys: [String]? = nil, strict: Bool = false, update: @escaping (Module, [String]) -> Void) -> (String, Module) throws -> Void {
+
+    private func freezeVisitor(
+        keys: [String]? = nil, strict: Bool = false, update: @escaping (Module, [String]) -> Void
+    ) -> (String, Module) throws -> Void {
         func visit(key: String, module: Module) throws {
-            lazy var localKeys: [String] = { module.filterMap(filter: Self.filterLocalParameters).flattened().map { $0.0 } }()
-            
+            lazy var localKeys: [String] = {
+                module.filterMap(filter: Self.filterLocalParameters).flattened().map { $0.0 }
+            }()
+
             if strict, let keys {
                 let localKeys = Set(localKeys)
                 for key in keys {
@@ -651,10 +657,10 @@ open class Module {
                     }
                 }
             }
-            
+
             update(module, keys ?? localKeys)
         }
-        
+
         return visit(key:module:)
     }
 
@@ -691,7 +697,7 @@ open class Module {
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0.noGrad.formUnion($1)
         }
-        
+
         if recursive {
             try self.visit(modules: visitor)
         } else {
@@ -704,19 +710,18 @@ open class Module {
         try! unfreeze(recursive: recursive, keys: keys, strict: false)
     }
 
-    
     /// Unfreeze the `Module`'s parameters or subset.
-    /// 
+    ///
     /// A frozen parameter does not compute gradients.  The function is idempotent -- unfreezing a frozen model is a no-op.
-    /// 
+    ///
     /// For instance to only train the biases of a `Transformer` one can do:
-    /// 
+    ///
     /// ```swift
     /// model: Transformer
     /// model.freeze()
     /// try model.unfreeze(keys: ["bias"])
     /// ```
-    /// 
+    ///
     /// - Parameters:
     ///   - recursive: if `true` this will unfreeze the parameters of child `Module` recursively
     ///   - keys: optional keys to unfreeze -- if unspecified, will apply to all
@@ -725,11 +730,12 @@ open class Module {
     /// ### See Also
     /// - ``freeze(recursive:keys:)``
     /// - ``unfreeze(recursive:keys:strict:)``
-    public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
+    public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws
+    {
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0.noGrad.subtract($1)
         }
-        
+
         if recursive {
             try self.visit(modules: visitor)
         } else {
@@ -852,7 +858,8 @@ extension Module {
     static public let filterTrainableParameters = {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
-        case .array, .dictionary, .value(.parameters), .value(.module): !key.hasPrefix("_") && !module.noGrad.contains(key)
+        case .array, .dictionary, .value(.parameters), .value(.module):
+            !key.hasPrefix("_") && !module.noGrad.contains(key)
         default: false
         }
     }
@@ -893,17 +900,19 @@ extension Module {
     /// - ``ModuleValue/parameters(_:)``
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``filterMap(filter:map:isLeaf:)``
-    static public func mapParameters<Result>(map: @escaping (MLXArray) -> Result? = { $0 }) -> (ModuleItem) -> Result? {
+    static public func mapParameters<Result>(map: @escaping (MLXArray) -> Result? = { $0 }) -> (
+        ModuleItem
+    ) -> Result? {
         func apply(item: ModuleItem) -> Result? {
             switch item {
             case .value(.parameters(let v)): map(v)
             default: nil
             }
         }
-        
+
         return apply
     }
-        
+
     /// Function that will turn a `(Module) -> Result?` into a function suitable for use in ``filterMap(filter:map:isLeaf:)``.
     ///
     /// For example:
@@ -919,14 +928,16 @@ extension Module {
     /// - <doc:module-filters>
     /// - ``ModuleValue/module(_:)``
     /// - ``filterMap(filter:map:isLeaf:)``
-    static public func mapModule<Result>(map: @escaping (Module) -> Result? = { $0 }) -> (ModuleItem) -> Result? {
+    static public func mapModule<Result>(map: @escaping (Module) -> Result? = { $0 }) -> (
+        ModuleItem
+    ) -> Result? {
         func apply(item: ModuleItem) -> Result? {
             switch item {
             case .value(.module(let v)): map(v)
             default: nil
             }
         }
-        
+
         return apply
     }
 
@@ -945,14 +956,16 @@ extension Module {
     /// - <doc:module-filters>
     /// - ``ModuleValue/other(_:)``
     /// - ``filterMap(filter:map:isLeaf:)``
-    static public func mapOther<Result>(map: @escaping (Any) -> Result? = { $0 }) -> (ModuleItem) -> Result? {
+    static public func mapOther<Result>(map: @escaping (Any) -> Result? = { $0 }) -> (ModuleItem) ->
+        Result?
+    {
         func apply(item: ModuleItem) -> Result? {
             switch item {
             case .value(.other(let v)): map(v)
             default: nil
             }
         }
-        
+
         return apply
     }
 
@@ -1000,7 +1013,6 @@ extension Module {
 
 // MARK: - items() support
 
-
 /// A single value from ``Module``.
 ///
 /// This is typically produced from ``Module/items()`` or indirectly via ``Module/filterMap(filter:map:isLeaf:)``.
@@ -1019,7 +1031,7 @@ public enum ModuleValue {
     /// let weights: MLXArray
     /// ```
     case parameters(MLXArray)
-    
+
     /// A module value.
     ///
     /// From code:
@@ -1028,7 +1040,7 @@ public enum ModuleValue {
     /// let layerNorm: RMSNorm
     /// ```
     case module(Module)
-    
+
     /// A non-MLXArray and non-Module value.
     ///
     /// From code:
@@ -1048,7 +1060,8 @@ public enum ModuleValue {
         case let v as [Any]:
             return .array(v.map { build(value: $0) })
         case let v as [String: Any]:
-            return .dictionary(Dictionary(uniqueKeysWithValues: v.map { ($0.key, build(value: $0.value)) }))
+            return .dictionary(
+                Dictionary(uniqueKeysWithValues: v.map { ($0.key, build(value: $0.value)) }))
         default:
             return .value(.other(value))
         }
@@ -1270,7 +1283,7 @@ private func unwrapModule(_ property: Any) -> (String?, Any)? {
 private enum MirrorAction {
     /// stop iterating
     case stop
-    
+
     /// continue iterating
     case next
 }

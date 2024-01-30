@@ -61,14 +61,13 @@ public struct StreamOrDevice: CustomStringConvertible {
     }
 }
 
-
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
 public final class Stream {
-    
+
     let ctx: mlx_stream
-    
+
     init(_ ctx: mlx_stream) {
         self.ctx = ctx
     }

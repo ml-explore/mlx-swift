@@ -29,7 +29,7 @@ final public class RoPE: Module, UnaryLayer {
 
     // a cache of pre-computed (cos(theta), sin(theta)) by key
     static let cache = Cache<Key, (MLXArray, MLXArray)>()
-    
+
     /// Initialize ``RoPE``.
     ///
     /// - Parameters:

@@ -15,7 +15,7 @@ public class Conv1d: Module, UnaryLayer {
     let bias: MLXArray?
     let padding: Int
     let stride: Int
-    
+
     /// Applies a 1-dimensional convolution over the multi-channel input sequence.
     ///
     /// The channels are expected to be last i.e. the input shape should be `NLC` where:
@@ -77,7 +77,7 @@ public class Conv2d: Module, UnaryLayer {
     /// - `H` is the input image height
     /// - `W` is the input image width
     /// - `C` is the number of input channels
-    /// 
+    ///
     /// - Parameters:
     ///   - inputChannels: number of input channels (`C` from the discussion)
     ///   - outputChannels: number of output channels

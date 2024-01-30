@@ -4,7 +4,7 @@ import Foundation
 
 /// Protocol for types that can provide an indented description, e.g. nested types.
 public protocol IndentedDescription: CustomStringConvertible {
-    
+
     /// Return the `description` with the given indent level.
     ///
     /// This should apply successively nested indents to any children that can also be indented.

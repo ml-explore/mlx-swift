@@ -112,11 +112,11 @@ extension MLXArray {
                 case .int64:
                     self.init(Int64(v))
                 #if !arch(x86_64)
-                case .float16:
-                    self.init(Float16(v))
+                    case .float16:
+                        self.init(Float16(v))
                 #else
-                case .float16:
-                    fatalError("dtype \(dtype) not supported")
+                    case .float16:
+                        fatalError("dtype \(dtype) not supported")
                 #endif
                 case .float32:
                     self.init(Float32(v))
@@ -146,11 +146,11 @@ extension MLXArray {
                 case .int64:
                     self.init(Int64(v))
                 #if !arch(x86_64)
-                case .float16:
-                    self.init(Float16(v))
+                    case .float16:
+                        self.init(Float16(v))
                 #else
-                case .float16:
-                    fatalError("dtype \(dtype) not supported")
+                    case .float16:
+                        fatalError("dtype \(dtype) not supported")
                 #endif
                 case .float32:
                     self.init(Float32(v))

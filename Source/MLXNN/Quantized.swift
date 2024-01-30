@@ -89,7 +89,7 @@ public class QuantizedLinear: Linear {
         }
         return x
     }
-    
+
     /// Returns a QuantizedLinear layer that applies the same linear transformation up to the quantization error.
     ///
     /// - Parameters:
@@ -97,11 +97,10 @@ public class QuantizedLinear: Linear {
     ///   - groupSize: The group size to use for the quantized weight
     ///   - bits: The bit width to use for the quantized weight
     /// - Returns: a new `QuantizedLayer`
-    static public func from(linear: Linear, groupSize: Int = 64, bits: Int = 4) -> QuantizedLinear
-    {
+    static public func from(linear: Linear, groupSize: Int = 64, bits: Int = 4) -> QuantizedLinear {
         QuantizedLinear(weight: linear.weight, bias: linear.bias, groupSize: groupSize, bits: bits)
     }
-    
+
     /// Replace ``Linear`` layers with `QuantizedLinear`.
     ///
     /// Please see the disucssion in ``Linear`` for considerations when replacing layers.

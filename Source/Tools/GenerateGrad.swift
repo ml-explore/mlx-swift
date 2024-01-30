@@ -8,14 +8,14 @@ struct GenerateGrad {
     /// up to how many MLXArray tuples should we generate, e.g. 3 == `MLXArray, MLXArray, MLXArray`
     static let inputTupleCount = 1
     static let outputTupleCount = 1
-    
+
     static func indentLines(_ text: String, lead: String) -> String {
-        lead +
-        text
+        lead
+            + text
             .split(separator: "\n", omittingEmptySubsequences: false)
             .joined(separator: "\n\(lead)")
     }
-    
+
     struct MethodInfo {
         let methodName: String
         let methodDescription: String
@@ -25,32 +25,33 @@ struct GenerateGrad {
         let returnValue: (String, String) -> String
         let body: (String) -> String
     }
-    
+
     static let methodInfo = [
-        "grad" : MethodInfo(
+        "grad": MethodInfo(
             methodName: "grad",
             methodDescription: "Returns a function which computes the gradient of `f`.",
             internalDocumentation:
-            """
-            Converts the given function `f()` into canonical types, e.g.
-            (MLXArray) -> MLXArray into the canonical form ([MLXArray]) -> [MLXArray].
+                """
+                Converts the given function `f()` into canonical types, e.g.
+                (MLXArray) -> MLXArray into the canonical form ([MLXArray]) -> [MLXArray].
 
-            First use the wrapArguments() and wrapResult() function to transform
-            it into that form.  Then call buildValueAndGradient() to produce a new
-            function with the same canonical form.
+                First use the wrapArguments() and wrapResult() function to transform
+                it into that form.  Then call buildValueAndGradient() to produce a new
+                function with the same canonical form.
 
-            Finally use unwrapArguments() and unwrapResult() to transform the function
-            back into the original signature.
+                Finally use unwrapArguments() and unwrapResult() to transform the function
+                back into the original signature.
 
-            Note: this particular form of the function is already in the canonical
-            form and the wrap/unwrap calls are identity functions.
-            """,
+                Note: this particular form of the function is already in the canonical
+                form and the wrap/unwrap calls are identity functions.
+                """,
             seeAlso: "See ``grad(_:)-r8dv``",
             arguments: { input, returnValue in
                 if input == "MLXArray" {
                     return "(_ f: @escaping (\(input)) -> \(returnValue))"
                 } else {
-                    return "(_ f: @escaping (\(input)) -> \(returnValue), argumentNumbers: [Int] = [0])"
+                    return
+                        "(_ f: @escaping (\(input)) -> \(returnValue), argumentNumbers: [Int] = [0])"
                 }
             },
             returnValue: { input, returnValue in
@@ -72,7 +73,7 @@ struct GenerateGrad {
                     """
             }
         ),
-        "valueAndGrad" : MethodInfo(
+        "valueAndGrad": MethodInfo(
             methodName: "valueAndGrad",
             methodDescription: "Returns a function which computes the value and gradient of `f`.",
             internalDocumentation: "",
@@ -89,7 +90,7 @@ struct GenerateGrad {
                 """
             }
         ),
-        "valueAndGradNested" : MethodInfo(
+        "valueAndGradNested": MethodInfo(
             methodName: "valueAndGrad",
             methodDescription: "Returns a function which computes the value and gradient of `f`.",
             internalDocumentation: "",
@@ -107,36 +108,36 @@ struct GenerateGrad {
             }
         ),
     ]
-    
+
     static func emitFunction(name: String, input: String, output: String) -> String {
         var result = ""
-        
+
         let info = methodInfo[name]!
-        
+
         let firstMethod = input == "[MLXArray]" && output == "[MLXArray]"
         let documentationText = firstMethod ? info.methodDescription : info.seeAlso
-        
+
         result += indentLines(documentationText, lead: "// ")
         result += "\n"
-        
+
         let returnValue: String
         if output.contains(",") {
             returnValue = "(\(output))"
         } else {
             returnValue = output
         }
-                
+
         result +=
             """
             public func \(name)\(info.arguments(input, returnValue)) -> \(info.returnValue(input, returnValue)) {
-            
+
             """
-        
+
         if firstMethod {
             result += indentLines(info.internalDocumentation, lead: "    // ")
             result += "\n"
         }
-        
+
         result += indentLines(info.body(input), lead: "    ")
         result += "\n}\n"
 
@@ -181,7 +182,7 @@ struct GenerateGrad {
                 print(emitFunction(name: "grad", input: input, output: output))
             }
         }
-        
+
         print(emitFunction(name: "valueAndGrad", input: "[MLXArray]", output: "[MLXArray]"))
         print(emitFunction(name: "valueAndGradNested", input: "[MLXArray]", output: "[MLXArray]"))
 

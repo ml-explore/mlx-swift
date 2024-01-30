@@ -76,7 +76,7 @@ public class Linear: Module, UnaryLayer {
     public var shape: (Int, Int) {
         (weight.dim(0), weight.dim(1))
     }
-    
+
     /// Applies an affine transformation to the input.
     ///
     /// Please see discussion in ``Module``.

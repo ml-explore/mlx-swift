@@ -257,15 +257,15 @@ class ModuleTests: XCTestCase {
         XCTAssertEqual(
             Set(v.keys), Set(["child", "interior2", "leaf", "interior1", "nonWrappedChild"]))
     }
-    
+
     func testVisitModule() {
         let m = newStructureModule()
-        var collect = [String:String]()
-        
+        var collect = [String: String]()
+
         m.visit { key, m in
             collect[key] = String(describing: type(of: m))
         }
-        
+
         XCTAssertEqual(collect.count, 9)
         XCTAssertEqual(collect[""], "StructureModel")
         XCTAssertEqual(collect["interior2.children.1"], "Linear")
