@@ -1,14 +1,4 @@
 {
-  "abstract" : [
-    {
-      "text" : "See ",
-      "type" : "text"
-    },
-    {
-      "code" : "grad(_:)-7zhu6",
-      "type" : "codeVoice"
-    }
-  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -97,7 +87,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Transforms+Grad.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Transforms+Grad.swift#L33"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Transforms+Grad.swift#L29"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -302,14 +292,7 @@
 },
 "doc://mlx.swift.mlx/documentation/MLX/grad(_:argumentNumbers:)-2ictk": {
   "abstract" : [
-    {
-      "text" : "See ",
-      "type" : "text"
-    },
-    {
-      "code" : "grad(_:)-7zhu6",
-      "type" : "codeVoice"
-    }
+
   ],
   "fragments" : [
     {

@@ -13,6 +13,11 @@
             "type" : "article"
           },
           {
+            "path" : "\/documentation\/mlx\/examples",
+            "title" : "MLX Swift Examples",
+            "type" : "sampleCode"
+          },
+          {
             "path" : "\/documentation\/mlx\/broadcasting",
             "title" : "Numpy Style Broadcasting",
             "type" : "article"
@@ -3920,16 +3925,6 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlx\/grad(_:)-5u1fz",
-            "title" : "func grad((MLXArray) -> (MLXArray, MLXArray, MLXArray)) -> (MLXArray) -> (MLXArray, MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:)-6jw6",
-            "title" : "func grad((MLXArray) -> (MLXArray, MLXArray)) -> (MLXArray) -> (MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
             "path" : "\/documentation\/mlx\/grad(_:)-7z6i",
             "title" : "func grad((MLXArray) -> [MLXArray]) -> (MLXArray) -> [MLXArray]",
             "type" : "func"
@@ -3940,33 +3935,8 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-1db1s",
-            "title" : "func grad((MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray), argumentNumbers: [Int]) -> (MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-28isx",
-            "title" : "func grad((MLXArray, MLXArray) -> MLXArray, argumentNumbers: [Int]) -> (MLXArray, MLXArray) -> MLXArray",
-            "type" : "func"
-          },
-          {
             "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-2ictk",
             "title" : "func grad(([MLXArray]) -> MLXArray, argumentNumbers: [Int]) -> ([MLXArray]) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-2j55s",
-            "title" : "func grad((MLXArray, MLXArray, MLXArray) -> [MLXArray], argumentNumbers: [Int]) -> (MLXArray, MLXArray, MLXArray) -> [MLXArray]",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-2onuh",
-            "title" : "func grad((MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray), argumentNumbers: [Int]) -> (MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-4fgsk",
-            "title" : "func grad((MLXArray, MLXArray, MLXArray) -> MLXArray, argumentNumbers: [Int]) -> (MLXArray, MLXArray, MLXArray) -> MLXArray",
             "type" : "func"
           },
           {
@@ -3975,33 +3945,13 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-61iu5",
-            "title" : "func grad((MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray), argumentNumbers: [Int]) -> (MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-6dtct",
-            "title" : "func grad(([MLXArray]) -> (MLXArray, MLXArray), argumentNumbers: [Int]) -> ([MLXArray]) -> (MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-6jzar",
-            "title" : "func grad(([MLXArray]) -> (MLXArray, MLXArray, MLXArray), argumentNumbers: [Int]) -> ([MLXArray]) -> (MLXArray, MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-6mwqf",
-            "title" : "func grad((MLXArray, MLXArray) -> (MLXArray, MLXArray), argumentNumbers: [Int]) -> (MLXArray, MLXArray) -> (MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-9qbu4",
-            "title" : "func grad((MLXArray, MLXArray) -> [MLXArray], argumentNumbers: [Int]) -> (MLXArray, MLXArray) -> [MLXArray]",
-            "type" : "func"
-          },
-          {
             "path" : "\/documentation\/mlx\/indenteddescription(_:_:)",
             "title" : "func indentedDescription(Any, Int) -> String",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/jvp(_:primals:tangents:)",
+            "title" : "func jvp(([MLXArray]) -> [MLXArray], primals: [MLXArray], tangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
             "type" : "func"
           },
           {
@@ -4072,6 +4022,16 @@
           {
             "path" : "\/documentation\/mlx\/reshaped(_:_:stream:)-96lgr",
             "title" : "func reshaped(MLXArray, Int..., stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/simlify(_:)-3sxjv",
+            "title" : "func simlify(Any...)",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/simlify(_:)-5tkxd",
+            "title" : "func simlify([Any])",
             "type" : "func"
           },
           {
@@ -4165,6 +4125,21 @@
             "type" : "func"
           },
           {
+            "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)-158qb",
+            "title" : "func valueAndGrad(([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> ([MLXArray]) -> ([MLXArray], [MLXArray])",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)-7yzk7",
+            "title" : "func valueAndGrad((NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray])",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/valueandgradnested(_:argumentnumbers:)",
+            "title" : "func valueAndGradNested((NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray])",
+            "type" : "func"
+          },
+          {
             "path" : "\/documentation\/mlx\/variance(_:axis:keepdims:ddof:stream:)",
             "title" : "func variance(MLXArray, axis: Int, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
@@ -4172,6 +4147,11 @@
           {
             "path" : "\/documentation\/mlx\/variance(_:keepdims:ddof:stream:)",
             "title" : "func variance(MLXArray, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/vjp(_:primals:cotangents:)",
+            "title" : "func vjp(([MLXArray]) -> [MLXArray], primals: [MLXArray], cotangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
             "type" : "func"
           },
           {

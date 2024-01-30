@@ -31,7 +31,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Stream.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L76"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L75"
     },
     "role" : "symbol",
     "roleHeading" : "Initializer",

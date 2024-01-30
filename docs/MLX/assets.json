@@ -1,6 +1,11 @@
 {
   "downloads" : [
-
+    {
+      "checksum" : "b3aed1c2e07b46369a213711ab9a5804838459b61e44f8773a4cb2129d50d09dd2891f29618b45d64e67551fcd38724e9295453519bc8a81b23d38bfb70a2be3",
+      "identifier" : "mlx-examples-swift.zip",
+      "type" : "download",
+      "url" : "\/downloads\/mlx-examples-swift.zip"
+    }
   ],
   "images" : [
 

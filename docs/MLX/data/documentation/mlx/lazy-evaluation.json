@@ -801,6 +801,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
@@ -980,6 +981,20 @@
   "title" : "eval(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/eval(_:)-3b2g9"
+},
+"doc://mlx.swift.mlx/documentation/MLX/examples": {
+  "abstract" : [
+    {
+      "text" : "Swift example code for MLX and MLXNN.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
+  "kind" : "article",
+  "role" : "sampleCode",
+  "title" : "MLX Swift Examples",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/examples"
 },
 "doc://mlx.swift.mlx/documentation/MLX/install": {
   "abstract" : [

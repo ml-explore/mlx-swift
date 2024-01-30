@@ -104,7 +104,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Transformer.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L41"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L43"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",

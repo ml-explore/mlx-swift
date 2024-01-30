@@ -5578,6 +5578,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
@@ -14500,6 +14501,20 @@
   "title" : "erfInverse(_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/erfinverse(_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/examples": {
+  "abstract" : [
+    {
+      "text" : "Swift example code for MLX and MLXNN.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
+  "kind" : "article",
+  "role" : "sampleCode",
+  "title" : "MLX Swift Examples",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/examples"
 },
 "doc://mlx.swift.mlx/documentation/MLX/exp(_:stream:)": {
   "abstract" : [

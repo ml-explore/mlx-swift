@@ -91,8 +91,9 @@
                 {
                   "inlineContent" : [
                     {
-                      "code" : "subscript(key:)",
-                      "type" : "codeVoice"
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(_:)-7bphj",
+                      "isActive" : true,
+                      "type" : "reference"
                     }
                   ],
                   "type" : "paragraph"
@@ -215,6 +216,60 @@
   "title" : "init()",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/init()"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/subscript(_:)-7bphj": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX10NestedItemO",
+      "text" : "NestedItem"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(_:)-7bphj",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/subscript(_:)-7bphj"
 }
 }
 }

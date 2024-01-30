@@ -1,14 +1,4 @@
 {
-  "abstract" : [
-    {
-      "text" : "See ",
-      "type" : "text"
-    },
-    {
-      "code" : "grad(_:)-7zhu6",
-      "type" : "codeVoice"
-    }
-  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -18,11 +8,11 @@
   },
   "identifier" : {
     "interfaceLanguage" : "swift",
-    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/grad(_:argumentNumbers:)-6mwqf"
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/valueAndGrad(_:argumentNumbers:)-7yzk7"
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:3MLX4grad_15argumentNumbersAA8MLXArrayC_AEtAE_AEtcAE_AEtAE_AEtc_SaySiGtF",
+    "externalID" : "s:3MLX12valueAndGrad_15argumentNumbersSayAA8MLXArrayCG_AFtAA16NestedDictionaryVySSAEG_AFtcAfI_AFtc_SaySiGtF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -34,7 +24,7 @@
       },
       {
         "kind" : "identifier",
-        "text" : "grad"
+        "text" : "valueAndGrad"
       },
       {
         "kind" : "text",
@@ -42,8 +32,17 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
+        "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+        "text" : "NestedDictionary"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:SS",
+        "text" : "String"
       },
       {
         "kind" : "text",
@@ -56,7 +55,7 @@
       },
       {
         "kind" : "text",
-        "text" : ") -> ("
+        "text" : ">, ["
       },
       {
         "kind" : "typeIdentifier",
@@ -65,7 +64,7 @@
       },
       {
         "kind" : "text",
-        "text" : ", "
+        "text" : "]) -> ["
       },
       {
         "kind" : "typeIdentifier",
@@ -74,7 +73,7 @@
       },
       {
         "kind" : "text",
-        "text" : "), "
+        "text" : "], "
       },
       {
         "kind" : "externalParam",
@@ -95,8 +94,17 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
+        "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+        "text" : "NestedDictionary"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:SS",
+        "text" : "String"
       },
       {
         "kind" : "text",
@@ -109,7 +117,7 @@
       },
       {
         "kind" : "text",
-        "text" : ") -> ("
+        "text" : ">, ["
       },
       {
         "kind" : "typeIdentifier",
@@ -118,7 +126,7 @@
       },
       {
         "kind" : "text",
-        "text" : ", "
+        "text" : "]) -> (["
       },
       {
         "kind" : "typeIdentifier",
@@ -127,7 +135,16 @@
       },
       {
         "kind" : "text",
-        "text" : ")"
+        "text" : "], ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "])"
       }
     ],
     "modules" : [
@@ -136,13 +153,13 @@
       }
     ],
     "remoteSource" : {
-      "fileName" : "Transforms+Grad.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Transforms+Grad.swift#L119"
+      "fileName" : "Transforms.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Transforms.swift#L76"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
     "symbolKind" : "func",
-    "title" : "grad(_:argumentNumbers:)"
+    "title" : "valueAndGrad(_:argumentNumbers:)"
   },
   "primaryContentSections" : [
     {
@@ -165,7 +182,7 @@
             },
             {
               "kind" : "identifier",
-              "text" : "grad"
+              "text" : "valueAndGrad"
             },
             {
               "kind" : "text",
@@ -196,10 +213,19 @@
               "text" : " ("
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:3MLX8MLXArrayC",
-              "text" : "MLXArray"
+              "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+              "text" : "NestedDictionary"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:SS",
+              "text" : "String"
             },
             {
               "kind" : "text",
@@ -213,7 +239,7 @@
             },
             {
               "kind" : "text",
-              "text" : ") -> ("
+              "text" : ">, ["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -223,7 +249,7 @@
             },
             {
               "kind" : "text",
-              "text" : ", "
+              "text" : "]) -> ["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -233,7 +259,7 @@
             },
             {
               "kind" : "text",
-              "text" : "), "
+              "text" : "], "
             },
             {
               "kind" : "externalParam",
@@ -253,10 +279,19 @@
               "text" : "] = [0]) -> ("
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:3MLX8MLXArrayC",
-              "text" : "MLXArray"
+              "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+              "text" : "NestedDictionary"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:SS",
+              "text" : "String"
             },
             {
               "kind" : "text",
@@ -270,7 +305,7 @@
             },
             {
               "kind" : "text",
-              "text" : ") -> ("
+              "text" : ">, ["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -280,7 +315,7 @@
             },
             {
               "kind" : "text",
-              "text" : ", "
+              "text" : "]) -> (["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -290,7 +325,17 @@
             },
             {
               "kind" : "text",
-              "text" : ")"
+              "text" : "], ["
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : "])"
             }
           ]
         }
@@ -309,7 +354,7 @@
   "variants" : [
     {
       "paths" : [
-        "\/documentation\/mlx\/grad(_:argumentnumbers:)-6mwqf"
+        "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)-7yzk7"
       ],
       "traits" : [
         {
@@ -384,16 +429,43 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray"
 },
-"doc://mlx.swift.mlx/documentation/MLX/grad(_:argumentNumbers:)-6mwqf": {
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary": {
   "abstract" : [
     {
-      "text" : "See ",
+      "text" : "Nested structure of arrays, dictionaries and values.",
       "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
     },
     {
-      "code" : "grad(_:)-7zhu6",
-      "type" : "codeVoice"
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NestedDictionary"
     }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NestedDictionary"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NestedDictionary",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary"
+},
+"doc://mlx.swift.mlx/documentation/MLX/valueAndGrad(_:argumentNumbers:)-7yzk7": {
+  "abstract" : [
+
   ],
   "fragments" : [
     {
@@ -406,7 +478,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "grad"
+      "text" : "valueAndGrad"
     },
     {
       "kind" : "text",
@@ -414,8 +486,17 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
     },
     {
       "kind" : "text",
@@ -428,7 +509,7 @@
     },
     {
       "kind" : "text",
-      "text" : ") -> ("
+      "text" : ">, ["
     },
     {
       "kind" : "typeIdentifier",
@@ -437,7 +518,7 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
+      "text" : "]) -> ["
     },
     {
       "kind" : "typeIdentifier",
@@ -446,7 +527,7 @@
     },
     {
       "kind" : "text",
-      "text" : "), "
+      "text" : "], "
     },
     {
       "kind" : "externalParam",
@@ -467,8 +548,17 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
     },
     {
       "kind" : "text",
@@ -481,7 +571,7 @@
     },
     {
       "kind" : "text",
-      "text" : ") -> ("
+      "text" : ">, ["
     },
     {
       "kind" : "typeIdentifier",
@@ -490,7 +580,7 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
+      "text" : "]) -> (["
     },
     {
       "kind" : "typeIdentifier",
@@ -499,15 +589,24 @@
     },
     {
       "kind" : "text",
-      "text" : ")"
+      "text" : "], ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "])"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/grad(_:argumentNumbers:)-6mwqf",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/valueAndGrad(_:argumentNumbers:)-7yzk7",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "grad(_:argumentNumbers:)",
+  "title" : "valueAndGrad(_:argumentNumbers:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-6mwqf"
+  "url" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)-7yzk7"
 }
 }
 }

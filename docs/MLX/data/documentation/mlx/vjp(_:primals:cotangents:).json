@@ -1,12 +1,8 @@
 {
   "abstract" : [
     {
-      "text" : "See ",
+      "text" : "Compute the vector-Jacobian product.",
       "type" : "text"
-    },
-    {
-      "code" : "grad(_:)-7zhu6",
-      "type" : "codeVoice"
     }
   ],
   "hierarchy" : {
@@ -18,11 +14,11 @@
   },
   "identifier" : {
     "interfaceLanguage" : "swift",
-    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/grad(_:argumentNumbers:)-4fgsk"
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/vjp(_:primals:cotangents:)"
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:3MLX4grad_15argumentNumbersAA8MLXArrayCAE_A2EtcA2E_A2Etc_SaySiGtF",
+    "externalID" : "s:3MLX3vjp_7primals10cotangentsSayAA8MLXArrayCG_AGtA2Gc_A2GtF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -34,11 +30,11 @@
       },
       {
         "kind" : "identifier",
-        "text" : "grad"
+        "text" : "vjp"
       },
       {
         "kind" : "text",
-        "text" : "(("
+        "text" : "((["
       },
       {
         "kind" : "typeIdentifier",
@@ -47,7 +43,7 @@
       },
       {
         "kind" : "text",
-        "text" : ", "
+        "text" : "]) -> ["
       },
       {
         "kind" : "typeIdentifier",
@@ -56,29 +52,11 @@
       },
       {
         "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
+        "text" : "], "
       },
       {
         "kind" : "externalParam",
-        "text" : "argumentNumbers"
+        "text" : "primals"
       },
       {
         "kind" : "text",
@@ -86,12 +64,20 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
       },
       {
         "kind" : "text",
-        "text" : "]) -> ("
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "cotangents"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
       },
       {
         "kind" : "typeIdentifier",
@@ -100,7 +86,7 @@
       },
       {
         "kind" : "text",
-        "text" : ", "
+        "text" : "]) -> (["
       },
       {
         "kind" : "typeIdentifier",
@@ -109,7 +95,7 @@
       },
       {
         "kind" : "text",
-        "text" : ", "
+        "text" : "], ["
       },
       {
         "kind" : "typeIdentifier",
@@ -118,12 +104,7 @@
       },
       {
         "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
+        "text" : "])"
       }
     ],
     "modules" : [
@@ -132,13 +113,13 @@
       }
     ],
     "remoteSource" : {
-      "fileName" : "Transforms+Grad.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Transforms+Grad.swift#L150"
+      "fileName" : "Transforms.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Transforms.swift#L52"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
     "symbolKind" : "func",
-    "title" : "grad(_:argumentNumbers:)"
+    "title" : "vjp(_:primals:cotangents:)"
   },
   "primaryContentSections" : [
     {
@@ -161,7 +142,7 @@
             },
             {
               "kind" : "identifier",
-              "text" : "grad"
+              "text" : "vjp"
             },
             {
               "kind" : "text",
@@ -189,7 +170,7 @@
             },
             {
               "kind" : "text",
-              "text" : " ("
+              "text" : " (["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -199,7 +180,7 @@
             },
             {
               "kind" : "text",
-              "text" : ", "
+              "text" : "]) -> ["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -209,44 +190,33 @@
             },
             {
               "kind" : "text",
-              "text" : ", "
-            },
-            {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
-              "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:3MLX8MLXArrayC",
-              "text" : "MLXArray"
-            },
-            {
-              "kind" : "text",
-              "text" : ") -> "
-            },
-            {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
-              "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:3MLX8MLXArrayC",
-              "text" : "MLXArray"
-            },
-            {
-              "kind" : "text",
-              "text" : ", "
+              "text" : "], "
             },
             {
               "kind" : "externalParam",
-              "text" : "argumentNumbers"
+              "text" : "primals"
             },
             {
               "kind" : "text",
               "text" : ": ["
             },
             {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:Si",
-              "text" : "Int"
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
             },
             {
               "kind" : "text",
-              "text" : "] = [0]) -> ("
+              "text" : "], "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "cotangents"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -256,7 +226,7 @@
             },
             {
               "kind" : "text",
-              "text" : ", "
+              "text" : "]) -> (["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -266,7 +236,7 @@
             },
             {
               "kind" : "text",
-              "text" : ", "
+              "text" : "], ["
             },
             {
               "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
@@ -276,18 +246,183 @@
             },
             {
               "kind" : "text",
-              "text" : ") -> "
-            },
-            {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
-              "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:3MLX8MLXArrayC",
-              "text" : "MLXArray"
+              "text" : "])"
             }
           ]
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "kind" : "parameters",
+      "parameters" : [
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "function which takes an array of ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : " and returns an array of ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+                  "isActive" : true,
+                  "type" : "reference"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "f"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "array of ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : " at which to evaluate the Jacobian",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "primals"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "array of ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : " which are the “vector” in the vector-Jacobian product.  The ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "cotangents",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "should be the same in number, shape and type as the outputs of ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "f",
+                  "type" : "codeVoice"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "cotangents"
+        }
+      ]
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "return-value",
+          "level" : 2,
+          "text" : "Return Value",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "array of the vector-Jacobian products which is the same in number, shape and type of the outputs of ",
+              "type" : "text"
+            },
+            {
+              "code" : "f",
+              "type" : "codeVoice"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Computes the product of the ",
+              "type" : "text"
+            },
+            {
+              "code" : "cotangents",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " with the Jacobian of a",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "function ",
+              "type" : "text"
+            },
+            {
+              "code" : "f",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " evaluated at ",
+              "type" : "text"
+            },
+            {
+              "code" : "primals",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "schemaVersion" : {
@@ -301,7 +436,7 @@
   "variants" : [
     {
       "paths" : [
-        "\/documentation\/mlx\/grad(_:argumentnumbers:)-4fgsk"
+        "\/documentation\/mlx\/vjp(_:primals:cotangents:)"
       ],
       "traits" : [
         {
@@ -376,15 +511,11 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray"
 },
-"doc://mlx.swift.mlx/documentation/MLX/grad(_:argumentNumbers:)-4fgsk": {
+"doc://mlx.swift.mlx/documentation/MLX/vjp(_:primals:cotangents:)": {
   "abstract" : [
     {
-      "text" : "See ",
+      "text" : "Compute the vector-Jacobian product.",
       "type" : "text"
-    },
-    {
-      "code" : "grad(_:)-7zhu6",
-      "type" : "codeVoice"
     }
   ],
   "fragments" : [
@@ -398,11 +529,11 @@
     },
     {
       "kind" : "identifier",
-      "text" : "grad"
+      "text" : "vjp"
     },
     {
       "kind" : "text",
-      "text" : "(("
+      "text" : "((["
     },
     {
       "kind" : "typeIdentifier",
@@ -411,7 +542,7 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
+      "text" : "]) -> ["
     },
     {
       "kind" : "typeIdentifier",
@@ -420,29 +551,11 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
+      "text" : "], "
     },
     {
       "kind" : "externalParam",
-      "text" : "argumentNumbers"
+      "text" : "primals"
     },
     {
       "kind" : "text",
@@ -450,12 +563,20 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Si",
-      "text" : "Int"
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
     },
     {
       "kind" : "text",
-      "text" : "]) -> ("
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "cotangents"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
     },
     {
       "kind" : "typeIdentifier",
@@ -464,7 +585,7 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
+      "text" : "]) -> (["
     },
     {
       "kind" : "typeIdentifier",
@@ -473,7 +594,7 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
+      "text" : "], ["
     },
     {
       "kind" : "typeIdentifier",
@@ -482,20 +603,15 @@
     },
     {
       "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
+      "text" : "])"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/grad(_:argumentNumbers:)-4fgsk",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/vjp(_:primals:cotangents:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "grad(_:argumentNumbers:)",
+  "title" : "vjp(_:primals:cotangents:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-4fgsk"
+  "url" : "\/documentation\/mlx\/vjp(_:primals:cotangents:)"
 }
 }
 }

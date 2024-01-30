@@ -147,7 +147,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Quantized.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Quantized.swift#L114"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Quantized.swift#L113"
     },
     "role" : "symbol",
     "roleHeading" : "Type Method",

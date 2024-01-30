@@ -44,22 +44,22 @@
               "type" : "reference"
             },
             {
-              "text" : " is meant to be built and run from XCode or SwiftPM.",
+              "text" : " is meant to be built and run from Xcode or SwiftPM.",
               "type" : "text"
             }
           ],
           "type" : "paragraph"
         },
         {
-          "anchor" : "XCode",
+          "anchor" : "Xcode",
           "level" : 2,
-          "text" : "XCode",
+          "text" : "Xcode",
           "type" : "heading"
         },
         {
           "inlineContent" : [
             {
-              "text" : "In XCode you can add ",
+              "text" : "In Xcode you can add ",
               "type" : "text"
             },
             {
@@ -177,7 +177,15 @@
                   "type" : "text"
                 },
                 {
-                  "text" : "XCode.",
+                  "text" : "Xcode or ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "xcodebuild",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : ".",
                   "type" : "text"
                 }
               ],
@@ -187,6 +195,186 @@
           "name" : "Note",
           "style" : "note",
           "type" : "aside"
+        },
+        {
+          "anchor" : "Command-Line-Tools",
+          "level" : 2,
+          "text" : "Command Line Tools",
+          "type" : "heading"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "MLX requires metal shaders from the ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "Cmlx",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " framework – these not not usable",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "from command line tools unless ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "DYLD_FRAMEWORK_PATH",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " makes them visible.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " is built on top of the ",
+              "type" : "text"
+            },
+            {
+              "code" : "mlx",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " C++ library packaged in the ",
+              "type" : "text"
+            },
+            {
+              "code" : "Cmlx",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " swift package.  ",
+              "type" : "text"
+            },
+            {
+              "code" : "Cmlx",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "produces a bundle called ",
+              "type" : "text"
+            },
+            {
+              "code" : "mlx-swift_Cmlx.bundle",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " which contains the compiled metal shaders.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "If you build a command line tool and run it from Xcode, the ",
+              "type" : "text"
+            },
+            {
+              "code" : "DYLD_FRAMEWORK_PATH",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is set",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "so that this bundle is found.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If you want to run the same command from the shell you must manually set the ",
+              "type" : "text"
+            },
+            {
+              "code" : "DYLD_FRAMEWORK_PATH",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "to the build directory.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Applications",
+          "level" : 2,
+          "text" : "Applications",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Applications should be configured to copy ",
+              "type" : "text"
+            },
+            {
+              "code" : "mlx-swift_Cmlx.bundle",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " – this will happen automatically",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "if you link the ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLX",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " library.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
         }
       ],
       "kind" : "content"
@@ -204,6 +392,7 @@
     {
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
@@ -284,6 +473,20 @@
   "title" : "Converting From Python",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/converting-python"
+},
+"doc://mlx.swift.mlx/documentation/MLX/examples": {
+  "abstract" : [
+    {
+      "text" : "Swift example code for MLX and MLXNN.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
+  "kind" : "article",
+  "role" : "sampleCode",
+  "title" : "MLX Swift Examples",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/examples"
 },
 "doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
   "abstract" : [
