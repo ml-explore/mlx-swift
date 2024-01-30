@@ -4,20 +4,6 @@
 
 import PackageDescription
 
-let optimize = true
-// this can be set to false for easier debugging.
-//
-// you may also need to set this as false if using mlx-swift as a local package
-// and you get "cannot be used as a dependency of this target because it uses unsafe build flags"
-
-var extraCFlags = [CSetting]()
-var extraCXXFlags = [CXXSetting]()
-
-if optimize {
-    extraCFlags.append(.unsafeFlags(["-O3"]))
-    extraCXXFlags.append(.unsafeFlags(["-O3"]))
-}
-
 let package = Package(
     name: "mlx-swift",
 
@@ -101,7 +87,7 @@ let package = Package(
             cSettings: [
                 .headerSearchPath("mlx"),
                 .headerSearchPath("include/mlx-c"),
-            ] + extraCFlags,
+            ],
 
             cxxSettings: [
                 .headerSearchPath("mlx"),
@@ -114,7 +100,7 @@ let package = Package(
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
                 .define("METAL_PATH", to: "\"default.metallib\""),
-            ] + extraCXXFlags,
+            ],
             linkerSettings: [
                 .linkedFramework("Foundation"),
                 .linkedFramework("Metal"),
