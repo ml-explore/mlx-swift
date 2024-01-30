@@ -5,7 +5,7 @@ import Foundation
 
 // see Transforms+Variants for generated grad() functions
 
-private func valueAndGradient(valueAndGrad: mlx_closure_value_and_grad, arrays: [MLXArray]) -> ([MLXArray], [MLXArray]) {
+private func valueAndGradient(apply valueAndGrad: mlx_closure_value_and_grad, arrays: [MLXArray]) -> ([MLXArray], [MLXArray]) {
     let input_vector = new_mlx_vector_array(arrays)
     defer { mlx_free(input_vector) }
 
@@ -31,7 +31,7 @@ func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: [
         defer { mlx_free(valueAndGrad) }
         mlx_free(closure)
         
-        return valueAndGradient(valueAndGrad: valueAndGrad, arrays: arrays).1
+        return valueAndGradient(apply: valueAndGrad, arrays: arrays).1
     }
 }
 
@@ -44,7 +44,7 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
         defer { mlx_free(valueAndGrad) }
         mlx_free(closure)
         
-        return valueAndGradient(valueAndGrad: valueAndGrad, arrays: arrays)
+        return valueAndGradient(apply: valueAndGrad, arrays: arrays)
     }
 }
 
@@ -66,7 +66,7 @@ func buildValueAndGradient(_ f: @escaping (NestedDictionary<String, MLXArray>, [
         let parametersState = ParametersState(keys: flattenedParameters.map { $0.0 })
         
         // combine all the arrays
-        var arrays = flattenedParameters.map { $0.1 } + arrays
+        let arrays = flattenedParameters.map { $0.1 } + arrays
                 
         // a funcation that will get ParametersState back reconstitute the parameters
         func inner(arrays: [MLXArray]) -> [MLXArray] {
@@ -81,6 +81,6 @@ func buildValueAndGradient(_ f: @escaping (NestedDictionary<String, MLXArray>, [
         defer { mlx_free(valueAndGrad) }
         mlx_free(closure)
         
-        return valueAndGradient(valueAndGrad: valueAndGrad, arrays: arrays)
+        return valueAndGradient(apply: valueAndGrad, arrays: arrays)
     }
 }
