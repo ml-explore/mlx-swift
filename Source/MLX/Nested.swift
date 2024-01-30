@@ -327,7 +327,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     /// Initialize an empty `NestedDictionary`.
     ///
     /// ### See Also
-    /// - ``subscript(key:)``
+    /// - ``NestedDictionary/subscript(_:)-7bphj``
     public init() {
     }
 
