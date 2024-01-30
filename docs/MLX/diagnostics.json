@@ -16,6 +16,18 @@
 
     ],
     "severity" : 2,
+    "source" : "..\/MLXArray+Ops.swift",
+    "start" : {
+      "column" : 22,
+      "line" : 94
+    },
+    "summary" : "'-(_:_:)-7frdo' doesn't exist at '\/MLX\/MLXArray'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
     "source" : "Organization\/arithmetic.md",
     "start" : {
       "column" : 14,
@@ -46,17 +58,5 @@
       "line" : 76
     },
     "summary" : "'-(_:_:)-971j0' doesn't exist at '\/MLX\/MLXArray'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/MLXArray+Ops.swift",
-    "start" : {
-      "column" : 22,
-      "line" : 94
-    },
-    "summary" : "'-(_:_:)-7frdo' doesn't exist at '\/MLX\/MLXArray'"
   }
 ]
