@@ -4,14 +4,14 @@ import Foundation
 import MLX
 
 /// Different types of loss reductions
-public enum LossReduction : String {
+public enum LossReduction: String {
     /// take the `mean` of the loss. This produces a a scalar array
     case mean
     /// take the `sum` of the loss.  This produces a a scalar array.
     case sum
     /// take the loss as-is.  This produces an array the same shape as the input.
     case none
-    
+
     public func reduce(loss: MLXArray) -> MLXArray {
         switch self {
         case .mean:
@@ -37,34 +37,38 @@ public enum LossReduction : String {
 ///
 /// ### See Also
 /// - <doc:losses>
-public func crossEntropy(logits: MLXArray, targets: MLXArray, weights: MLXArray?, axis: Int = -1, labelSmoothing: Float = 0, reduction: LossReduction = .none) -> MLXArray {
+public func crossEntropy(
+    logits: MLXArray, targets: MLXArray, weights: MLXArray?, axis: Int = -1,
+    labelSmoothing: Float = 0, reduction: LossReduction = .none
+) -> MLXArray {
     guard (0.0 ..< 1.0).contains(labelSmoothing) else {
         fatalError("labelSmoothing must be in [0, 1): \(labelSmoothing)")
     }
-    
-    let score = takeAlong(logits, targets.expandedDimensions(axis: -1), axis: axis).squeezed(axis: -1)
+
+    let score = takeAlong(logits, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
+        axis: -1)
     let logSumExpLogits = logSumExp(logits, axis: axis)
-    
+
     var loss: MLXArray
     if labelSmoothing > 0 {
         // adjust the true class score with label smoothing
         let adjustedScore = (1 - labelSmoothing) * score
-        
+
         // calculate the mean logit across the classes for smoothed loss
         let meanLogits = logits.mean(axis: axis)
         let smoothedLoss = -meanLogits * labelSmoothing
-        
+
         // combine the adjusted score and smoothed loss with the logsumexp logits
         loss = logSumExpLogits - adjustedScore + smoothedLoss
     } else {
-       loss = logSumExpLogits - score
+        loss = logSumExpLogits - score
     }
-    
+
     if let weights {
         precondition(weights.shape == targets.shape)
         loss = loss * weights
     }
-    
+
     return reduction.reduce(loss: loss)
 }
 
@@ -78,7 +82,9 @@ public func crossEntropy(logits: MLXArray, targets: MLXArray, weights: MLXArray?
 ///
 /// ### See Also
 /// - <doc:losses>
-public func binaryCrossEntropy(logits: MLXArray, targets: MLXArray, reduction: LossReduction = .none) -> MLXArray {
+public func binaryCrossEntropy(
+    logits: MLXArray, targets: MLXArray, reduction: LossReduction = .none
+) -> MLXArray {
     let loss = logAddExp(0, logits) - targets * logits
     return reduction.reduce(loss: loss)
 }
@@ -92,7 +98,9 @@ public func binaryCrossEntropy(logits: MLXArray, targets: MLXArray, reduction: L
 ///
 /// ### See Also
 /// - <doc:losses>
-public func l1Loss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction = .mean) -> MLXArray {
+public func l1Loss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction = .mean)
+    -> MLXArray
+{
     precondition(predictions.shape == targets.shape)
     let loss = abs(predictions - targets)
     return reduction.reduce(loss: loss)
@@ -107,7 +115,9 @@ public func l1Loss(predictions: MLXArray, targets: MLXArray, reduction: LossRedu
 ///
 /// ### See Also
 /// - <doc:losses>
-public func mseLoss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction = .mean) -> MLXArray {
+public func mseLoss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction = .mean)
+    -> MLXArray
+{
     precondition(predictions.shape == targets.shape)
     let loss = square(predictions - targets)
     return reduction.reduce(loss: loss)
@@ -123,8 +133,11 @@ public func mseLoss(predictions: MLXArray, targets: MLXArray, reduction: LossRed
 ///
 /// ### See Also
 /// - <doc:losses>
-public func nllLoss(inputs: MLXArray, targets: MLXArray, axis: Int = -1, reduction: LossReduction = .none) -> MLXArray {
-    let loss = -takeAlong(inputs, targets.expandedDimensions(axis: -1), axis: axis).squeezed(axis: -1)
+public func nllLoss(
+    inputs: MLXArray, targets: MLXArray, axis: Int = -1, reduction: LossReduction = .none
+) -> MLXArray {
+    let loss = -takeAlong(inputs, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
+        axis: -1)
     return reduction.reduce(loss: loss)
 }
 
@@ -145,11 +158,12 @@ public func nllLoss(inputs: MLXArray, targets: MLXArray, axis: Int = -1, reducti
 ///
 /// ### See Also
 /// - <doc:losses>
-public func klDivLoss(inputs: MLXArray, targets: MLXArray, axis: Int = -1, reduction: LossReduction = .none) -> MLXArray {
+public func klDivLoss(
+    inputs: MLXArray, targets: MLXArray, axis: Int = -1, reduction: LossReduction = .none
+) -> MLXArray {
     let loss = sum(exp(targets) * (targets - inputs), axis: axis)
     return reduction.reduce(loss: loss)
 }
-
 
 /// Computes the smooth L1 loss.
 ///
@@ -166,15 +180,16 @@ public func klDivLoss(inputs: MLXArray, targets: MLXArray, axis: Int = -1, reduc
 ///
 /// ### See Also
 /// - <doc:losses>
-public func smoothL1Loss(predictions: MLXArray, targets: MLXArray, beta: Float = 1, reduction: LossReduction = .mean) -> MLXArray {
+public func smoothL1Loss(
+    predictions: MLXArray, targets: MLXArray, beta: Float = 1, reduction: LossReduction = .mean
+) -> MLXArray {
     precondition(predictions.shape == targets.shape)
-    
+
     let diff = predictions - targets
     let loss = which(diff .< beta, 0.5 * square(diff) / beta, abs(diff) - 0.5 * beta)
-    
+
     return reduction.reduce(loss: loss)
 }
-
 
 /// Computes the triplet loss for a set of anchor, positive, and negative samples. Margin is represented with alpha in the math section.
 ///
@@ -191,14 +206,17 @@ public func smoothL1Loss(predictions: MLXArray, targets: MLXArray, beta: Float =
 ///
 /// ### See Also
 /// - <doc:losses>
-public func tripletLoss(anchors: MLXArray, positives: MLXArray, negatives: MLXArray, axis: Int = -1, p: Int = 2, margin: Float = 1.0, eps: Float = 1e-6, reduction: LossReduction = .none) -> MLXArray {
+public func tripletLoss(
+    anchors: MLXArray, positives: MLXArray, negatives: MLXArray, axis: Int = -1, p: Int = 2,
+    margin: Float = 1.0, eps: Float = 1e-6, reduction: LossReduction = .none
+) -> MLXArray {
     let loss = maximum(
         sqrt(pow(anchors - positives, p).sum(axis: axis) + eps)
-        - sqrt(pow(anchors - negatives, p).sum(axis: axis) + eps)
-        + margin,
+            - sqrt(pow(anchors - negatives, p).sum(axis: axis) + eps)
+            + margin,
         0
     )
-    
+
     return reduction.reduce(loss: loss)
 }
 
@@ -212,7 +230,9 @@ public func tripletLoss(anchors: MLXArray, positives: MLXArray, negatives: MLXAr
 ///
 /// ### See Also
 /// - <doc:losses>
-public func hingeLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction = .none) -> MLXArray {
+public func hingeLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction = .none)
+    -> MLXArray
+{
     let loss = maximum(1 - inputs * targets, 0)
     return reduction.reduce(loss: loss)
 }
@@ -228,13 +248,15 @@ public func hingeLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduct
 ///
 /// ### See Also
 /// - <doc:losses>
-public func huberLoss(inputs: MLXArray, targets: MLXArray, delta: Float = 1.0, reduction: LossReduction = .none) -> MLXArray {
+public func huberLoss(
+    inputs: MLXArray, targets: MLXArray, delta: Float = 1.0, reduction: LossReduction = .none
+) -> MLXArray {
     let errors = inputs - targets
     let absErrors = abs(errors)
     let quadratic = minimum(absErrors, delta)
     let linear = absErrors - quadratic
     let loss = 0.5 * quadratic ** 2 + delta * linear
-    
+
     return reduction.reduce(loss: loss)
 }
 
@@ -252,10 +274,12 @@ public func huberLoss(inputs: MLXArray, targets: MLXArray, delta: Float = 1.0, r
 ///
 /// ### See Also
 /// - <doc:losses>
-public func logCoshLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction = .none) -> MLXArray {
+public func logCoshLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction = .none)
+    -> MLXArray
+{
     let errors = inputs - targets
     let loss = logAddExp(errors, -errors) - log(2.0)
-    
+
     return reduction.reduce(loss: loss)
 }
 
@@ -271,7 +295,9 @@ public func logCoshLoss(inputs: MLXArray, targets: MLXArray, reduction: LossRedu
 ///
 /// ### See Also
 /// - <doc:losses>
-public func cosineSimilarityLoss(x1: MLXArray, x2: MLXArray, axis: Int = 1, eps: Float = 1e-8, reduction: LossReduction = .none) -> MLXArray {
+public func cosineSimilarityLoss(
+    x1: MLXArray, x2: MLXArray, axis: Int = 1, eps: Float = 1e-8, reduction: LossReduction = .none
+) -> MLXArray {
     func l2Norm(_ a: MLXArray, axis: Int) -> MLXArray {
         if a.dtype.isComplex {
             return sqrt(sum(abs(a) * abs(a), axis: axis))
@@ -279,11 +305,11 @@ public func cosineSimilarityLoss(x1: MLXArray, x2: MLXArray, axis: Int = 1, eps:
             return sqrt(sum(square(a), axis: axis))
         }
     }
-    
+
     let x1Norm = l2Norm(x1, axis: axis)
     let x2Norm = l2Norm(x2, axis: axis)
-    
+
     let loss = sum(x1 * x2, axis: axis) / maximum(x1Norm * x2Norm, eps)
-    
+
     return reduction.reduce(loss: loss)
 }

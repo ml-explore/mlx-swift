@@ -1300,7 +1300,7 @@ extension MLXArray {
     public func exp(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_exp(ctx, stream.ctx))
     }
-    
+
     /// Add a size one dimension at the given axis.
     ///
     /// - Parameters:

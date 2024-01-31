@@ -64,7 +64,7 @@ public enum DType: Hashable {
         default: false
         }
     }
-    
+
     public var isComplex: Bool {
         switch self {
         case .complex64: true
