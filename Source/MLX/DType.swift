@@ -64,6 +64,13 @@ public enum DType: Hashable {
         default: false
         }
     }
+    
+    public var isComplex: Bool {
+        switch self {
+        case .complex64: true
+        default: false
+        }
+    }
 }
 
 /// Protocol for types that can provide a ``DType``

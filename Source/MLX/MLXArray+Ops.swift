@@ -1300,6 +1300,38 @@ extension MLXArray {
     public func exp(stream: StreamOrDevice = .default) -> MLXArray {
         MLXArray(mlx_exp(ctx, stream.ctx))
     }
+    
+    /// Add a size one dimension at the given axis.
+    ///
+    /// - Parameters:
+    ///     - array: input array
+    ///     - axes: indexes of the inserted dimensions
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``expandedDimensions(axis:stream:)``
+    public func expandedDimensions(axes: [Int], stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
+        MLXArray(mlx_expand_dims(self.ctx, axes.asInt32, axes.count, stream.ctx))
+    }
+
+    /// Add a size one dimension at the given axis.
+    ///
+    /// - Parameters:
+    ///     - array: input array
+    ///     - axis: index of the inserted dimension
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``expandedDimensions(axes:stream:)``
+    public func expandedDimensions(axis: Int, stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
+        MLXArray(mlx_expand_dims(self.ctx, [axis.int32], 1, stream.ctx))
+    }
 
     /// Flatten an array.
     ///

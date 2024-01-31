@@ -15,6 +15,7 @@ will moves rows and columns as they modify the shape.
 Some methods allow you to manipulate the shape of the array.  These methods change the size
 and ``MLXArray/shape`` of the dimensions without changing the number of elements or contents of the array:
 
+- ``MLXArray/expandedDimensions(axis:stream:)``
 - ``MLXArray/flattened(start:end:stream:)``
 - ``MLXArray/reshaped(_:stream:)-19x5z``
 - ``MLXArray/squeezed(axes:stream:)``

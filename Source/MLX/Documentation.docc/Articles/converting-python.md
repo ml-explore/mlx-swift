@@ -21,9 +21,9 @@ Python code | Swift Code
 `array[:, :8, 8:]` | `array[0..., ..<8, 8...]`
 `array[array2]` | `array[array2]`
 `array[array2, array3]` | `array[array2, array3]` -- numpy style advanced indexing
-`array[None]` | `expandedDimensions(array, axis: 0)`
-`array[:, None]` | `expandedDimensions(array, axis: 1)`
-`array[..., None]` | `expandedDimensions(array, axis: -1)`
+`array[None]` | `array.expandedDimensions(axis: 0)`
+`array[:, None]` | `array.expandedDimensions(axis: 1)`
+`array[..., None]` | `array.expandedDimensions(axis: -1)`
 `array[:, -1, :]` | `array[-1, axis: 1]`
 `array[..., ::2]` | `array[stride: 2, axis: -1]`
 `[array] * 4` | `Array(repeating: array, count: 4)`

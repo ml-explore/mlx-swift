@@ -632,7 +632,6 @@ public func expandedDimensions(_ array: MLXArray, axes: [Int], stream: StreamOrD
     MLXArray(mlx_expand_dims(array.ctx, axes.asInt32, axes.count, stream.ctx))
 }
 
-///
 /// Add a size one dimension at the given axis.
 ///
 /// - Parameters:
