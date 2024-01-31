@@ -6,7 +6,7 @@ import Foundation
 ///Type of device.
 ///
 ///See ``Device`` and ``StreamOrDevice``.
-public enum DeviceType {
+public enum DeviceType: String {
     case cpu
     case gpu
 }
