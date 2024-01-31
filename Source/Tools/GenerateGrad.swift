@@ -90,23 +90,6 @@ struct GenerateGrad {
                 """
             }
         ),
-        "valueAndGradNested": MethodInfo(
-            methodName: "valueAndGrad",
-            methodDescription: "Returns a function which computes the value and gradient of `f`.",
-            internalDocumentation: "",
-            seeAlso: "See ``valueAndGrad(_:)``",
-            arguments: { input, returnValue in
-                "(_ f: @escaping (NestedDictionary<String, MLXArray>, \(input)) -> \(returnValue), argumentNumbers: [Int] = [0])"
-            },
-            returnValue: { input, returnValue in
-                "(NestedDictionary<String, MLXArray>, \(input)) -> (\(returnValue), \(returnValue))"
-            },
-            body: { input in
-                """
-                return buildValueAndGradient(f, argumentNumbers: argumentNumbers)
-                """
-            }
-        ),
     ]
 
     static func emitFunction(name: String, input: String, output: String) -> String {
@@ -184,7 +167,6 @@ struct GenerateGrad {
         }
 
         print(emitFunction(name: "valueAndGrad", input: "[MLXArray]", output: "[MLXArray]"))
-        print(emitFunction(name: "valueAndGradNested", input: "[MLXArray]", output: "[MLXArray]"))
 
         // functions for converting to and from canonical types.  For example this function:
         //

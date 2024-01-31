@@ -52,18 +52,21 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
 }
 
 func buildValueAndGradient(
-    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray],
-    argumentNumbers: [Int]
-) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray]) {
+    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray]
+) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> (
+    [MLXArray], NestedDictionary<String, MLXArray>
+) {
     {
         (parameters: NestedDictionary<String, MLXArray>, arrays: [MLXArray]) -> (
-            [MLXArray], [MLXArray]
+            [MLXArray], NestedDictionary<String, MLXArray>
         ) in
 
         struct ParametersState {
             let keys: [String]
 
-            func unflatten(_ arrays: ArraySlice<MLXArray>) -> NestedDictionary<String, MLXArray> {
+            func unflatten(_ arrays: some Collection<MLXArray>) -> NestedDictionary<
+                String, MLXArray
+            > {
                 precondition(keys.count == arrays.count)
                 let tuples = zip(keys, arrays).map { ($0.0, $0.1) }
                 return NestedDictionary.unflattened(tuples)
@@ -87,10 +90,14 @@ func buildValueAndGradient(
 
         let closure = new_mlx_closure(inner)
         let valueAndGrad = mlx_value_and_grad(
-            closure, argumentNumbers.asInt32, argumentNumbers.count)!
+            closure, Array(Int32(0) ..< Int32(parametersState.keys.count)),
+            parametersState.keys.count)!
         defer { mlx_free(valueAndGrad) }
         mlx_free(closure)
 
-        return valueAndGradient(apply: valueAndGrad, arrays: arrays)
+        let (values, flatGradients) = valueAndGradient(apply: valueAndGrad, arrays: arrays)
+        let gradients = parametersState.unflatten(flatGradients)
+
+        return (values, gradients)
     }
 }

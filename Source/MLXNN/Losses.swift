@@ -38,7 +38,7 @@ public enum LossReduction: String {
 /// ### See Also
 /// - <doc:losses>
 public func crossEntropy(
-    logits: MLXArray, targets: MLXArray, weights: MLXArray?, axis: Int = -1,
+    logits: MLXArray, targets: MLXArray, weights: MLXArray? = nil, axis: Int = -1,
     labelSmoothing: Float = 0, reduction: LossReduction = .none
 ) -> MLXArray {
     guard (0.0 ..< 1.0).contains(labelSmoothing) else {

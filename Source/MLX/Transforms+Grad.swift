@@ -59,15 +59,6 @@ public func valueAndGrad(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumb
     return buildValueAndGradient(f, argumentNumbers: argumentNumbers)
 }
 
-// Returns a function which computes the value and gradient of `f`.
-public func valueAndGradNested(
-    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray],
-    argumentNumbers: [Int] = [0]
-) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray]) {
-    //
-    return buildValueAndGradient(f, argumentNumbers: argumentNumbers)
-}
-
 // MARK: - Functions to wrap and unwrap types in closures
 
 @inline(__always)

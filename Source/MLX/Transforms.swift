@@ -73,9 +73,11 @@ public func vjp(
     return (mlx_vector_array_values(v1), mlx_vector_array_values(v2))
 }
 
+/// Returns a function that computes the gradient and result of `f`, computing the gradient with respect to the ``NestedDictionary``.
 public func valueAndGrad(
-    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray],
-    argumentNumbers: [Int] = [0]
-) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray]) {
-    buildValueAndGradient(f, argumentNumbers: argumentNumbers)
+    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray]
+) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> (
+    [MLXArray], NestedDictionary<String, MLXArray>
+) {
+    buildValueAndGradient(f)
 }
