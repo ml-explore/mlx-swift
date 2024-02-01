@@ -5,10 +5,10 @@ learning on Apple silicon, brought to you by Apple machine learning research.
 
 The Swift API closely follows the 
 [C++ and Python MLX APIs](https://ml-explore.github.io/mlx/build/html/index.html), which in turn closely follow
-NumPy with a few exceptions.  Some useful pages showing how `mlx-swift` works and is different
+NumPy with a few exceptions. Here are some useful pages showing how MLX Swift works and is different
 from python:
 
-- <doc:converting-python> -- information about converting python code and differences between python and swift
+- <doc:converting-python> -- information about converting Python code and differences between Python and Swift
 - <doc:indexing> -- information about array indexing
 - <doc:arithmetic> -- information about array arithmetic
 
