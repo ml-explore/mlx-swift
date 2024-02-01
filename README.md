@@ -75,10 +75,7 @@ rest is coming soon.
 Here is what is missing:
 
 - [fft](https://ml-explore.github.io/mlx/build/html/python/fft.html) package
-- [transforms](https://ml-explore.github.io/mlx/build/html/python/fft.html) package -- `eval()` and `grad()` **are** available
 - [linalg](https://ml-explore.github.io/mlx/build/html/python/linalg.html) package
-- [some NN](https://ml-explore.github.io/mlx/build/html/python/nn.html) layers
-- [optimizers](https://ml-explore.github.io/mlx/build/html/python/optimizers.html) package
 
 For more details on the API see the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/).
 
