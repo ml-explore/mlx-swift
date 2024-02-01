@@ -113,8 +113,8 @@ public final class MLXArray {
 
     /// Return the scalar value of the array.
     ///
-    /// It is a contract violation to call this on an array with more than one element
-    /// or to read a type other than the `dtype`.
+    /// It is a contract violation to call this on an array with more than one element.
+    /// If the `type` does not match the `dtype` this will convert the type first.
     ///
     /// ```swift
     /// let array = MLXArray([3.5, 4.5])
@@ -123,24 +123,32 @@ public final class MLXArray {
     /// let value = array[1].item(Float.self)
     /// ```
     public func item<T: HasDType>(_ type: T.Type) -> T {
-        precondition(T.dtype == self.dtype, "\(T.dtype) != \(self.dtype)")
+        var array_ctx = self.ctx
+        var free = false
+        if type.dtype != self.dtype {
+            array_ctx = mlx_astype(self.ctx, type.dtype.cmlxDtype, StreamOrDevice.default.ctx)
+            free = true
+        }
+        
+        // can't do it inside the else as it will free at the end of the block
+        defer { if free { mlx_free(array_ctx) } }
 
         switch type {
-        case is Bool.Type: return mlx_array_item_bool(ctx) as! T
-        case is UInt8.Type: return mlx_array_item_uint8(ctx) as! T
-        case is UInt16.Type: return mlx_array_item_uint16(ctx) as! T
-        case is UInt32.Type: return mlx_array_item_uint32(ctx) as! T
-        case is UInt64.Type: return mlx_array_item_uint64(ctx) as! T
-        case is Int8.Type: return mlx_array_item_int8(ctx) as! T
-        case is Int16.Type: return mlx_array_item_int16(ctx) as! T
-        case is Int32.Type: return mlx_array_item_int32(ctx) as! T
-        case is Int64.Type: return mlx_array_item_int64(ctx) as! T
-        case is Int.Type: return Int(mlx_array_item_int64(ctx)) as! T
+        case is Bool.Type: return mlx_array_item_bool(array_ctx) as! T
+        case is UInt8.Type: return mlx_array_item_uint8(array_ctx) as! T
+        case is UInt16.Type: return mlx_array_item_uint16(array_ctx) as! T
+        case is UInt32.Type: return mlx_array_item_uint32(array_ctx) as! T
+        case is UInt64.Type: return mlx_array_item_uint64(array_ctx) as! T
+        case is Int8.Type: return mlx_array_item_int8(array_ctx) as! T
+        case is Int16.Type: return mlx_array_item_int16(array_ctx) as! T
+        case is Int32.Type: return mlx_array_item_int32(array_ctx) as! T
+        case is Int64.Type: return mlx_array_item_int64(array_ctx) as! T
+        case is Int.Type: return Int(mlx_array_item_int64(array_ctx)) as! T
         #if !arch(x86_64)
-            case is Float16.Type: return mlx_array_item_float16(ctx) as! T
+            case is Float16.Type: return mlx_array_item_float16(array_ctx) as! T
         #endif
-        case is Float32.Type: return mlx_array_item_float32(ctx) as! T
-        case is Float.Type: return mlx_array_item_float32(ctx) as! T
+        case is Float32.Type: return mlx_array_item_float32(array_ctx) as! T
+        case is Float.Type: return mlx_array_item_float32(array_ctx) as! T
         default:
             fatalError("Unable to get item() as \(type)")
         }
