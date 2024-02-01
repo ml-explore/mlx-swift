@@ -29,9 +29,8 @@ func new_mlx_vector_array(_ arrays: [MLXArray]) -> mlx_vector_array {
 func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
     (0 ..< mlx_vector_array_size(vector_array))
         .map { index in
-            // take a +1 on each array to transfer ownership
+            // ctx is a +1 object, the array takes ownership
             let ctx = mlx_vector_array_get(vector_array, index)!
-            mlx_retain(ctx)
             return MLXArray(ctx)
         }
 }
