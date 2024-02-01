@@ -27,6 +27,7 @@ Python code | Swift Code
 `array[:, -1, :]` | `array[-1, axis: 1]`
 `array[..., ::2]` | `array[stride: 2, axis: -1]`
 `[array] * 4` | `Array(repeating: array, count: 4)`
+`array.shape[:-1]` | `array.shape.dropLast()`
 
 ## Name Mapping
 
