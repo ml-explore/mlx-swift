@@ -11,7 +11,7 @@ dependency and link `MLX`, `MLXNN` and `MLXRandom` as needed.
 
 ## SwiftPM
 
-To use ``MLX`` with swiftpm you can add this to your `Package.swift`:
+To use ``MLX`` with SwiftPm you can add this to your `Package.swift`:
 
 ```
 dependencies: [
@@ -32,7 +32,7 @@ Xcode or `xcodebuild`.
 
 ## Command Line Tools
 
-> MLX requires metal shaders from the `Cmlx` framework -- these not not usable
+> MLX requires metal shaders from the `Cmlx` framework -- these are not usable
 from command line tools unless `DYLD_FRAMEWORK_PATH` makes them visible.
 
 ``MLX`` is built on top of the `mlx` C++ library packaged in the `Cmlx` swift package.  `Cmlx`
