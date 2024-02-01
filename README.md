@@ -85,3 +85,9 @@ We are grateful for all of [our
 contributors](ACKNOWLEDGMENTS.md#Individual-Contributors). If you contribute
 to MLX Swift and wish to be acknowledged, please add your name to the list in your
 pull request.
+
+MLX Swift was initially developed by David Koski and Ronan Collobert, and is
+now maintained by David Koski. MLX Swift is built on top of
+[MLX](https://github.com/ml-explore/mlx), which was initially developed with
+equal contribution by Awni Hannun, Jagrit Digani, Angelos Katharopoulos, and
+Ronan Collobert.
