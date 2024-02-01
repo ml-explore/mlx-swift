@@ -64,4 +64,60 @@ class NestedTests: XCTestCase {
         XCTAssertEqual(n, n2)
     }
 
+    func testMap2() {
+        // map 2 parallel structures
+        var d1 = NestedDictionary<String, Int>()
+        d1["layers"] = .array([
+            .dictionary([
+                "w": .value(10)
+            ]),
+            .dictionary([
+                "w": .value(20)
+            ]),
+        ])
+
+        // map both the input dictionary and another empty dictionary and produce
+        // a new nested (r2) with the same structure but the values are strings
+        let (_, r2) = d1.mapValues(NestedDictionary<String, String>()) { v1, v2 in
+            return (v1, "value = \(v1)")
+        }
+
+        let expected = d1.mapValues { "value = \($0)" }
+
+        XCTAssertEqual(r2, expected)
+    }
+
+    func testMap3() {
+        // map 3 parallel structures
+        var d1 = NestedDictionary<String, Int>()
+        d1["layers"] = .array([
+            .dictionary([
+                "w": .value(10)
+            ]),
+            .dictionary([
+                "w": .value(20)
+            ]),
+        ])
+
+        var d2 = NestedDictionary<String, Float>()
+        d2["layers"] = .array([
+            .dictionary([
+                "w": .value(3.5)
+            ]),
+            .dictionary([
+                "w": .value(123.5)
+            ]),
+        ])
+
+        let (_, r2, r3) = d1.mapValues(d2, NestedDictionary<String, String>()) { v1, v2, v3 in
+            return (v1, -(v2 ?? 0), "value = \(v1) + \(v2 ?? 0)")
+        }
+
+        let expected2 = d2.mapValues { -$0 }
+        let (_, expected3) = d1.mapValues(d2) { (0, "value = \($0) + \($1 ?? 0)") }
+
+        XCTAssertEqual(r2, expected2)
+        XCTAssertEqual(r3, expected3)
+    }
+
 }

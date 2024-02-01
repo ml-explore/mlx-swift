@@ -80,6 +80,224 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
         }
     }
 
+    /// Transform the values in the nested structure using the `transform()` function
+    /// while simultaneously iterating the same structure in a second `NestedItem`.
+    ///
+    /// This transforms both values simultaneously and produces two new `NestedItem`
+    /// conceptually somewhat like `map(zip(i1, i2))`.
+    ///
+    /// The structure of the second `NestedItem` should be identical to the first but these
+    /// exceptions are allowed:
+    ///
+    /// - `.none` will match any value, e.g. you can iterate an empty second item
+    /// - arrays do not need to be the same length -- the receiver's length is matched
+    /// - dictionaries do not need to have the same keys -- the receivers keys are matched
+    ///
+    /// This is typically called via ``NestedDictionary/mapValues(_:transform:)``.
+    ///
+    /// ### See Also
+    /// - ``NestedDictionary/mapValues(_:transform:))``
+    /// - ``mapValues(_:_:_:)``
+    public func mapValues<E2, R1, R2>(
+        _ item: NestedItem<Key, E2>, _ transform: (Element, E2?) throws -> (R1, R2?)
+    ) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>) {
+        switch (self, item) {
+        case (.none, _):
+            return (.none, .none)
+
+        case (.value(let e1), .none):
+            // allow Element, nil
+            let (r1, r2) = try transform(e1, nil)
+            if let r2 {
+                return (.value(r1), .value(r2))
+            } else {
+                return (.value(r1), .none)
+            }
+        case (.value(let e1), .value(let e2)):
+            // Element, E2
+            let (r1, r2) = try transform(e1, e2)
+            if let r2 {
+                return (.value(r1), .value(r2))
+            } else {
+                return (.value(r1), .none)
+            }
+
+        case (.array(let array1), .none):
+            // [Element], nil
+            let r = try array1.map { try $0.mapValues(.none, transform) }
+            return (.array(r.map { $0.0 }), .array(r.map { $0.1 }))
+        case (.array(let array1), .array(let array2)):
+            // [Element], [E2]
+            var r1 = [NestedItem<Key, R1>]()
+            var r2 = [NestedItem<Key, R2>]()
+
+            for (index, v1) in array1.enumerated() {
+                let v2 = (index >= array2.count) ? .none : array2[index]
+                let (e1, e2) = try v1.mapValues(v2, transform)
+                r1.append(e1)
+                r2.append(e2)
+            }
+
+            return (.array(r1), .array(r2))
+
+        case (.dictionary(let dictionary1), .none):
+            // [Key:Element], nil
+            var r1 = [Key: NestedItem<Key, R1>]()
+            var r2 = [Key: NestedItem<Key, R2>]()
+
+            for (key, v1) in dictionary1 {
+                let (e1, e2) = try v1.mapValues(.none, transform)
+                r1[key] = e1
+                r2[key] = e2
+            }
+
+            return (.dictionary(r1), .dictionary(r2))
+
+        case (.dictionary(let dictionary1), .dictionary(let dictionary2)):
+            // [Key:Element], [Key:E2]
+            var r1 = [Key: NestedItem<Key, R1>]()
+            var r2 = [Key: NestedItem<Key, R2>]()
+
+            for (key, v1) in dictionary1 {
+                let v2 = dictionary2[key] ?? .none
+                let (e1, e2) = try v1.mapValues(v2, transform)
+                r1[key] = e1
+                r2[key] = e2
+            }
+
+            return (.dictionary(r1), .dictionary(r2))
+
+        case (.value, _), (.array, _), (.dictionary, _):
+            fatalError("Unable to mapValues where item0 is \(self) and item1 is \(item)")
+        }
+    }
+
+    /// helper for mapping 3 values
+    static private func mapValues<E1, E2, E3, R1, R2, R3>(
+        _ v1: E1, _ v2: E2?, _ v3: E3?, _ transform: (E1, E2?, E3?) throws -> (R1, R2?, R3?)
+    ) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>, NestedItem<Key, R3>) {
+        let (r1, r2, r3) = try transform(v1, v2, v3)
+        let wr1 = NestedItem<Key, R1>.value(r1)
+        let wr2 = r2 == nil ? .none : NestedItem<Key, R2>.value(r2!)
+        let wr3 = r3 == nil ? .none : NestedItem<Key, R3>.value(r3!)
+        return (wr1, wr2, wr3)
+    }
+
+    /// helper for mapping 3 arrays
+    static private func mapArrays<E1, E2, E3, R1, R2, R3>(
+        _ v1: [NestedItem<Key, E1>], _ v2: [NestedItem<Key, E2>], _ v3: [NestedItem<Key, E3>],
+        _ transform: (E1, E2?, E3?) throws -> (R1, R2?, R3?)
+    ) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>, NestedItem<Key, R3>) {
+        var result1 = [NestedItem<Key, R1>]()
+        var result2 = [NestedItem<Key, R2>]()
+        var result3 = [NestedItem<Key, R3>]()
+
+        for (index, i1) in v1.enumerated() {
+            let i2 = (index >= v2.count) ? .none : v2[index]
+            let i3 = (index >= v3.count) ? .none : v3[index]
+
+            let (r1, r2, r3) = try i1.mapValues(i2, i3, transform)
+            result1.append(r1)
+            result2.append(r2)
+            result3.append(r3)
+        }
+
+        return (.array(result1), .array(result2), .array(result3))
+    }
+
+    /// helper for mapping 3 dictionaries
+    static private func mapDictionaries<E1, E2, E3, R1, R2, R3>(
+        _ v1: [Key: NestedItem<Key, E1>], _ v2: [Key: NestedItem<Key, E2>],
+        _ v3: [Key: NestedItem<Key, E3>], _ transform: (E1, E2?, E3?) throws -> (R1, R2?, R3?)
+    ) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>, NestedItem<Key, R3>) {
+        var result1 = [Key: NestedItem<Key, R1>]()
+        var result2 = [Key: NestedItem<Key, R2>]()
+        var result3 = [Key: NestedItem<Key, R3>]()
+
+        func lookup<T>(_ dict: [Key: NestedItem<Key, T>], _ key: Key) -> NestedItem<Key, T> {
+            if let v = dict[key] {
+                return v
+            } else {
+                return .none
+            }
+        }
+
+        for (key, i1) in v1 {
+            let i2 = lookup(v2, key)
+            let i3 = lookup(v3, key)
+
+            let (r1, r2, r3) = try i1.mapValues(i2, i3, transform)
+            result1[key] = r1
+            result2[key] = r2
+            result3[key] = r3
+        }
+
+        return (.dictionary(result1), .dictionary(result2), .dictionary(result3))
+    }
+
+    /// Transform the values in the nested structure using the `transform()` function
+    /// while simultaneously iterating the same structure in a second and third `NestedItem`.
+    ///
+    /// This transforms all three values simultaneously and produces three new `NestedItem`
+    /// conceptually somewhat like `map(zip(i1, i2, i3))`.
+    ///
+    /// The structure of the second and third `NestedItem` should be identical to the first but these
+    /// exceptions are allowed:
+    ///
+    /// - `.none` will match any value, e.g. you can iterate an empty second item
+    /// - arrays do not need to be the same length -- the receiver's length is matched
+    /// - dictionaries do not need to have the same keys -- the receivers keys are matched
+    ///
+    /// This is typically called via ``NestedDictionary/mapValues(_:transform:)``.
+    ///
+    /// ### See Also
+    /// - ``NestedDictionary/mapValues(_:transform:))``
+    /// - ``mapValues(_:_:_:)``
+    public func mapValues<E2, E3, R1, R2, R3>(
+        _ item1: NestedItem<Key, E2>, _ item2: NestedItem<Key, E3>,
+        _ transform: (Element, E2?, E3?) throws -> (R1, R2?, R3?)
+    ) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>, NestedItem<Key, R3>) {
+        switch (self, item1, item2) {
+        case (.none, _, _):
+            return (.none, .none, .none)
+
+        // handle various combinations of .value
+        case (.value(let e1), .none, .none):
+            return try Self.mapValues(e1, nil as E2?, nil as E3?, transform)
+        case (.value(let e1), .value(let e2), .none):
+            return try Self.mapValues(e1, e2, nil as E3?, transform)
+        case (.value(let e1), .none, .value(let e3)):
+            return try Self.mapValues(e1, nil as E2?, e3, transform)
+        case (.value(let e1), .value(let e2), .value(let e3)):
+            return try Self.mapValues(e1, e2, e3, transform)
+
+        // combinations of .array
+        case (.array(let a1), .none, .none):
+            return try Self.mapArrays(a1, [], [], transform)
+        case (.array(let a1), .array(let a2), .none):
+            return try Self.mapArrays(a1, a2, [], transform)
+        case (.array(let a1), .none, .array(let a3)):
+            return try Self.mapArrays(a1, [], a3, transform)
+        case (.array(let a1), .array(let a2), .array(let a3)):
+            return try Self.mapArrays(a1, a2, a3, transform)
+
+        // combinations of .dictionary
+        case (.dictionary(let d1), .none, .none):
+            return try Self.mapDictionaries(d1, [:], [:], transform)
+        case (.dictionary(let d1), .dictionary(let d2), .none):
+            return try Self.mapDictionaries(d1, d2, [:], transform)
+        case (.dictionary(let d1), .none, .dictionary(let d3)):
+            return try Self.mapDictionaries(d1, [:], d3, transform)
+        case (.dictionary(let d1), .dictionary(let d2), .dictionary(let d3)):
+            return try Self.mapDictionaries(d1, d2, d3, transform)
+
+        case (.value, _, _), (.array, _, _), (.dictionary, _, _):
+            fatalError(
+                "Unable to mapValues where item0 is \(self) and item1 is \(item1) and item2 is \(item2)"
+            )
+        }
+    }
+
     /// Transform the values in the nested structure using the `transform()` function.
     ///
     /// This is typically called via ``NestedDictionary/compactMapValues(transform:)``.
@@ -158,9 +376,13 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
                 value.flattened(prefix: newPrefix(index))
             }
         case .dictionary(let dictionary):
-            return dictionary.flatMap { (key, value) in
-                value.flattened(prefix: newPrefix(String(describing: key)))
-            }
+            // produce the dictionary in canonical order (sorted keys)
+            return
+                dictionary
+                .flatMap { (key, value) in
+                    value.flattened(prefix: newPrefix(String(describing: key)))
+                }
+                .sorted { lhs, rhs in String(describing: lhs.0) < String(describing: rhs.0) }
         }
     }
 
@@ -206,9 +428,15 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
 
         var children = [String: [(String, Element)]]()
         for (key, value) in tree {
-            let pieces = key.split(separator: ".", maxSplits: 1)
-            let current = pieces[0]
-            let next = pieces.count > 1 ? pieces[1] : ""
+            let current: String
+            let next: String
+            if let dotIndex = key.firstIndex(of: ".") {
+                current = String(key.prefix(upTo: dotIndex))
+                next = String(key.suffix(from: key.index(after: dotIndex)))
+            } else {
+                current = key
+                next = ""
+            }
             children[String(current), default: []].append((String(next), value))
         }
 
@@ -401,6 +629,133 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
         switch try NestedItem.dictionary(contents).mapValues(transform) {
         case .dictionary(let values):
             return NestedDictionary<Key, Result>(values: values)
+        default:
+            fatalError()
+        }
+    }
+
+    /// Transform the values in the nested structure using the `transform()` function
+    /// while simultaneously iterating the same structure in a second `NestedDictionary`.
+    ///
+    /// This transforms both values simultaneously and produces two new `NestedDictionary`
+    /// conceptually somewhat like `map(zip(i1, i2))`.
+    ///
+    /// The structure of the second `NestedDictionary` should be identical to the first but these
+    /// exceptions are allowed:
+    ///
+    /// - `.none` will match any value, e.g. you can iterate an empty second item
+    /// - arrays do not need to be the same length -- the receiver's length is matched
+    /// - dictionaries do not need to have the same keys -- the receivers keys are matched
+    ///
+    /// ### See Also
+    /// - ``NestedItem/mapValues(_:_:)``
+    /// - ``mapValues(_:dictionary2:transform:)``
+    public func mapValues<E2, R1, R2>(
+        _ dictionary1: NestedDictionary<Key, E2>, transform: (Element, E2?) throws -> (R1, R2?)
+    ) rethrows
+        -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>)
+    {
+        let (r1, r2) = try NestedItem.dictionary(contents).mapValues(
+            .dictionary(dictionary1.contents), transform)
+
+        switch (r1, r2) {
+        case (.dictionary(let v1), .dictionary(let v2)):
+            return (NestedDictionary<Key, R1>(values: v1), NestedDictionary<Key, R2>(values: v2))
+        default:
+            fatalError()
+        }
+    }
+
+    public func mapValues<E2, R1>(
+        _ dictionary1: NestedDictionary<Key, E2>, transform: (Element, E2?) -> R1
+    )
+        -> NestedDictionary<Key, R1>
+    {
+        let wrappedTransform = { (e1: Element, e2: E2?) -> (R1, Int) in
+            let r1 = transform(e1, e2)
+            return (r1, 0)
+        }
+        let (r1, _) = NestedItem.dictionary(contents).mapValues(
+            .dictionary(dictionary1.contents), wrappedTransform)
+
+        switch r1 {
+        case .dictionary(let v1):
+            return NestedDictionary<Key, R1>(values: v1)
+        default:
+            fatalError()
+        }
+    }
+
+    /// Transform the values in the nested structure using the `transform()` function
+    /// while simultaneously iterating the same structure in a second and third `NestedDictionary`.
+    ///
+    /// This transforms all three values simultaneously and produces three new `NestedDictionary`
+    /// conceptually somewhat like `map(zip(i1, i2, i3))`.
+    ///
+    /// The structure of the second and third `NestedDictionary` should be identical to the first but these
+    /// exceptions are allowed:
+    ///
+    /// - `.none` will match any value, e.g. you can iterate an empty second item
+    /// - arrays do not need to be the same length -- the receiver's length is matched
+    /// - dictionaries do not need to have the same keys -- the receivers keys are matched
+    ///
+    /// ### See Also
+    /// - ``NestedItem/mapValues(_:_:_:)``
+    /// - ``mapValues(_:transform:)``
+    public func mapValues<E2, E3, R1, R2, R3>(
+        _ dictionary1: NestedDictionary<Key, E2>, _ dictionary2: NestedDictionary<Key, E3>,
+        transform: (Element, E2?, E3?) throws -> (R1, R2?, R3?)
+    ) rethrows
+        -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>, NestedDictionary<Key, R3>)
+    {
+        let (r1, r2, r3) = try NestedItem.dictionary(contents).mapValues(
+            .dictionary(dictionary1.contents), .dictionary(dictionary2.contents), transform)
+
+        switch (r1, r2, r3) {
+        case (.dictionary(let v1), .dictionary(let v2), .dictionary(let v3)):
+            return (
+                NestedDictionary<Key, R1>(values: v1), NestedDictionary<Key, R2>(values: v2),
+                NestedDictionary<Key, R3>(values: v3)
+            )
+        default:
+            fatalError()
+        }
+    }
+
+    /// Transform the values in the nested structure using the `transform()` function
+    /// while simultaneously iterating the same structure in a second and third `NestedDictionary`.
+    ///
+    /// This transforms all three values simultaneously and produces **two** new `NestedDictionary`
+    /// conceptually somewhat like `map(zip(i1, i2, i3))`.
+    ///
+    /// The structure of the second and third `NestedDictionary` should be identical to the first but these
+    /// exceptions are allowed:
+    ///
+    /// - `.none` will match any value, e.g. you can iterate an empty second item
+    /// - arrays do not need to be the same length -- the receiver's length is matched
+    /// - dictionaries do not need to have the same keys -- the receivers keys are matched
+    ///
+    /// ### See Also
+    /// - ``NestedItem/mapValues(_:_:_:)``
+    /// - ``mapValues(_:transform:)``
+    public func mapValues<E2, E3, R1, R2>(
+        _ dictionary1: NestedDictionary<Key, E2>, _ dictionary2: NestedDictionary<Key, E3>,
+        transform: (Element, E2?, E3?) -> (R1, R2?)
+    )
+        -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>)
+    {
+        let wrappedTransform = { (e1: Element, e2: E2?, e3: E3?) -> (R1, R2?, Int) in
+            let (r1, r2) = transform(e1, e2, e3)
+            return (r1, r2, 0)
+        }
+        let (r1, r2, _) = NestedItem.dictionary(contents).mapValues(
+            .dictionary(dictionary1.contents), .dictionary(dictionary2.contents), wrappedTransform)
+
+        switch (r1, r2) {
+        case (.dictionary(let v1), .dictionary(let v2)):
+            return (
+                NestedDictionary<Key, R1>(values: v1), NestedDictionary<Key, R2>(values: v2)
+            )
         default:
             fatalError()
         }
