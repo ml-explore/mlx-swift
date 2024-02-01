@@ -62,7 +62,7 @@ extension MLXArray {
     /// - ``MLXArray/+(_:_:)-1rv98``
     public static func + <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
+        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -105,7 +105,7 @@ extension MLXArray {
     /// - ``MLXArray/-(_:_:)-7frdo``
     public static func - <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
+        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -168,7 +168,7 @@ extension MLXArray {
     /// - ``MLXArray/*(_:_:)-1z2ck``
     public static func * <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
+        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -214,7 +214,7 @@ extension MLXArray {
     /// - ``MLXArray/**(_:_:)-8xxt3``
     public static func ** <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
+        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
     }
 
@@ -256,7 +256,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     public static func / <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
-        let lhs = rhs.asMLXArray(dtype: rhs.dtype)
+        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
