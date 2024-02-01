@@ -73,8 +73,32 @@ open class Module {
 
     public private(set) var training = true
     public private(set) var noGrad = Set<String>()
+    
+    private var _items: ModuleItems!
+    private var _setters: [String:TypeErasedSetter]!
 
     public init() {
+        buildCaches()
+    }
+    
+    private func buildCaches() {
+        var items = ModuleItems()
+        var setters = [String:TypeErasedSetter]()
+
+        mirrorUpToModule(module: self) { c in
+            if let (key, value) = ModuleValue.fromMirror(c) {
+                items[key] = value
+                
+                if let (_, _, setter) = isModuleInfo(c.value) {
+                    setters[key] = setter
+                }
+            }
+            
+            return .next
+        }
+        
+        self._items = items
+        self._setters = setters
     }
 
     /// Return a `NestedDictionary` structure of ``ModuleItem`` representing the ivars of the `Module` instance.
@@ -84,15 +108,7 @@ open class Module {
     ///
     /// Subclasses could potentially override this to provide custom introspection.
     public func items() -> ModuleItems {
-        var result = ModuleItems()
-
-        mirrorUpToModule(module: self) { c in
-            if let (key, value) = ModuleValue.fromMirror(c) {
-                result[key] = value
-            }
-            return .next
-        }
-        return result
+        _items
     }
 
     /// Describe extra parameters.
@@ -500,7 +516,7 @@ open class Module {
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
     public func update(modules: ModuleChilren, verify: VerifyUpdate) throws {
-
+        
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
                 return
@@ -538,7 +554,7 @@ open class Module {
                         }
                     }
 
-                    try MLXNN.update(module: self, key: key, newModules)
+                    try self.update(key: key, newModules)
 
                 case .dictionary:
                     // recurse
@@ -572,10 +588,10 @@ open class Module {
                     }
                 }
 
-                try MLXNN.update(module: self, key: key, newModules)
+                try self.update(key: key, newModules)
 
             case (.value(.module), .value(let newModule)):
-                try MLXNN.update(module: self, key: key, newModule)
+                try self.update(key: key, newModule)
 
             case (.value(.module(let module)), .dictionary(let values)):
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
@@ -596,6 +612,22 @@ open class Module {
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
             throw UpdateError.unhandledKeys(
                 base: describeType(self), keys: processed.sorted())
+        }
+    }
+    
+    private func update(key: String, _ value: Any) throws {
+        if let setter = _setters[key] {
+            do {
+                try setter.updateModule(value)
+            } catch {
+                throw UpdateError.needModuleInfo(
+                    "Unable to set modules for \(describeType(self)).\(key) -- maybe type mismatch: \(describeType(value)))"
+                )
+            }
+        } else {
+            throw UpdateError.needModuleInfo(
+                "Unable to get @ModuleInfo for \(describeType(self)).\(key) -- must be wrapped to receive updates"
+            )
         }
     }
 
@@ -1094,7 +1126,6 @@ public enum ModuleValue {
     }
 }
 
-// TODO: here
 /// ### See Also
 /// - <doc:custom-layers>
 @propertyWrapper public class ParameterInfo<T> {
@@ -1134,10 +1165,13 @@ private protocol TypeErasedSetter {
     func updateModule(_ value: Any) throws
 }
 
-// TODO: here
+private protocol TypeErasedSetterProvider {
+    func typeErasedSetter() -> TypeErasedSetter
+}
+
 /// ### See Also
 /// - <doc:custom-layers>
-@propertyWrapper public class ModuleInfo<T>: TypeErasedSetter {
+@propertyWrapper public class ModuleInfo<T> : TypeErasedSetterProvider {
     var module: T?
     let key: String?
 
@@ -1167,13 +1201,21 @@ private protocol TypeErasedSetter {
             fatalError("Unable to apply @ModuleInfo to \(T.self)")
         }
     }
-
-    func updateModule(_ value: Any) throws {
-        if let value = value as? T {
-            self.wrappedValue = value
-        } else {
-            throw UpdateError.unableToCast
+    
+    struct Setter : TypeErasedSetter {
+        let info: ModuleInfo<T>
+        
+        func updateModule(_ value: Any) throws {
+            if let value = value as? T {
+                info.wrappedValue = value
+            } else {
+                throw UpdateError.unableToCast
+            }
         }
+    }
+
+    fileprivate func typeErasedSetter() -> TypeErasedSetter {
+        Setter(info: self)
     }
 }
 
@@ -1187,50 +1229,6 @@ enum UpdateError: Error {
     case unableToSet(String)
     case unableToCast
     case unhandledKeys(base: String, keys: [String])
-}
-
-private func matches(key: String, _ c: Mirror.Child) -> Bool {
-    if key == c.label {
-        return true
-    }
-
-    if let (label, _) = unwrapProperty(c.value) {
-        // match vs the configured key or the label without the leading _
-        return key == label ?? String((c.label ?? "").dropFirst())
-    }
-    if let (label, _) = unwrapModule(c.value) {
-        return key == label ?? String((c.label ?? "").dropFirst())
-    }
-
-    return false
-}
-
-private func update(module: Module, key: String, _ value: Any) throws {
-    var found = false
-
-    try mirrorUpToModule(module: module) { c in
-        if matches(key: key, c) {
-            if let (_, _, setter) = isModuleInfo(c.value) {
-                do {
-                    try setter.updateModule(value)
-                    found = true
-                    return .stop
-                } catch {
-                    throw UpdateError.needModuleInfo(
-                        "Unable to set modules for \(describeType(module)).\(key) -- maybe type mismatch: \(describeType(value)))"
-                    )
-                }
-            } else {
-                throw UpdateError.needModuleInfo(
-                    "Unable to get @ModuleInfo for \(describeType(module)).\(key) -- must be wrapped to receive updates"
-                )
-            }
-        }
-        return .next
-    }
-    if !found {
-        throw UpdateError.keyNotFound(base: describeType(module), key: key)
-    }
 }
 
 private func unwrapProperty(_ property: Any) -> (String?, Any)? {
@@ -1265,7 +1263,8 @@ private func isModuleInfo(_ property: Any) -> (String?, Any, TypeErasedSetter)? 
     let c = m.children.map { $0 }
 
     if c.count == 2 && c[0].label == "module" && c[1].label == "key" {
-        if let setter = property as? TypeErasedSetter {
+        if let property = property as? TypeErasedSetterProvider {
+            let setter = property.typeErasedSetter()
             return (c[1].value as? String, c[0].value, setter)
         }
     }
