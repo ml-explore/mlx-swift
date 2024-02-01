@@ -43,6 +43,7 @@ are the CPU and GPU.
 ### MLX
 
 - <doc:install>
+- <doc:troubleshooting>
 - <doc:examples>
 - <doc:broadcasting>
 - <doc:converting-python>
