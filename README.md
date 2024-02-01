@@ -48,9 +48,17 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 
 ### CMake
 
+Building with CMake requires both CMake and Ninja to be installed. You can do
+this with [Homebrew](https://brew.sh/):
+
+```shell
+brew install cmake
+brew install ninja
+```
+
 With CMake:
 
-```
+```shell
 mkdir build
 cd build
 cmake .. -G Ninja
