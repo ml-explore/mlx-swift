@@ -4,9 +4,8 @@
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
-MLX is an array framework for machine learning research on Apple silicon.
-
-MLX Swift expands MLX to the Swift language, making experimentation on Apple
+MLX is an array framework for machine learning research on Apple silicon. MLX
+Swift expands MLX to the Swift language, making experimentation on Apple
 silicon easier for ML researchers.
 
 ## Examples
