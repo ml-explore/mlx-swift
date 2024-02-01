@@ -28,6 +28,29 @@ extension MLXArray {
         MLXArray(mlx_zeros(shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx))
     }
 
+    /// Construct an array of zeros with a given ``DType``
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// let z = MLXArray.zeros([5, 10], type: Int.self)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - shape: desired shape
+    ///     - type: dtype of the values
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``zeros(like:stream:)``
+    /// - ``ones(_:type:stream:)``
+    static public func zeros(
+        _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLXArray(mlx_zeros(shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx))
+    }
+
     /// Construct an array of zeros.
     ///
     /// Example:
@@ -70,6 +93,29 @@ extension MLXArray {
         _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLXArray(mlx_ones(shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx))
+    }
+
+    /// Construct an array of ones with a given ``DType``
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// let r = MLXArray.ones([5, 10], type: Int.self)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - shape: desired shape
+    ///     - type: dtype of the values
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``ones(like:stream:)``
+    /// - ``zeros(_:type:stream:)``
+    static public func ones(
+        _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLXArray(mlx_ones(shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx))
     }
 
     /// Construct an array of ones.
