@@ -14,7 +14,7 @@ Coming soon.
 
 ## Installation
 
-The ``MLX`` Swift pacakge can be built and run from XCode or SwiftPM. A CMake install is also provided. 
+The ``MLX`` Swift package can be built and run from XCode or SwiftPM. A CMake install is also provided. 
 
 More details are in the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/install).
 
@@ -42,7 +42,7 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 ```
 
 > [!Note] 
-> SwiftPM cannot build the metal shaders so the ultimate build has to be done
+> SwiftPM cannot build the Metal shaders so the ultimate build has to be done
 > via XCode.
 
 
