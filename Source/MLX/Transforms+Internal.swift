@@ -61,42 +61,40 @@ func buildValueAndGradient(
             [MLXArray], NestedDictionary<String, MLXArray>
         ) in
 
-        struct ParametersState {
-            let keys: [String]
-
-            func unflatten(_ arrays: some Collection<MLXArray>) -> NestedDictionary<
-                String, MLXArray
-            > {
-                precondition(keys.count == arrays.count)
-                let tuples = zip(keys, arrays).map { ($0.0, $0.1) }
-                return NestedDictionary.unflattened(tuples)
-            }
-        }
-
         // capture the state so that we can unflatten
         let flattenedParameters = parameters.flattened()
-        let parametersState = ParametersState(keys: flattenedParameters.map { $0.0 })
+        let flattenedKeys = flattenedParameters.map { $0.0 }
+        let flattenedArrays = flattenedParameters.map { $0.1 }
+        
+        // function to unflatten back into the NestedDictionary
+        func unflattened(_ arrays: [MLXArray]) -> NestedDictionary<String, MLXArray> {
+            let tuples = zip(flattenedKeys, arrays).map { ($0.0, $0.1) }
+            return NestedDictionary.unflattened(tuples)
+        }
 
-        // combine all the arrays
-        let arrays = flattenedParameters.map { $0.1 } + arrays
-
-        // a funcation that will get ParametersState back reconstitute the parameters
-        func inner(arrays: [MLXArray]) -> [MLXArray] {
-            let parameters = parametersState.unflatten(arrays[0 ..< parametersState.keys.count])
-            let arrays = Array(arrays.dropFirst(parametersState.keys.count))
-
+        // this goes in the closure and is wrapped by mlx_value_and_grad
+        //
+        // Note: we pass the flattened array through the grad but
+        // we capture the extra arrays used as arguments (matching
+        // the python implementation).
+        //
+        // Potentially this could pass all the the values and use the
+        // arg indexes to indicate which ones to grad (it should work
+        // as is)
+        func inner(flattenedArrays: [MLXArray]) -> [MLXArray] {
+            let parameters = unflattened(flattenedArrays)
             return f(parameters, arrays)
         }
 
         let closure = new_mlx_closure(inner)
         let valueAndGrad = mlx_value_and_grad(
-            closure, Array(Int32(0) ..< Int32(parametersState.keys.count)),
-            parametersState.keys.count)!
+            closure, Array(Int32(0) ..< Int32(flattenedArrays.count)),
+            flattenedArrays.count)!
         defer { mlx_free(valueAndGrad) }
         mlx_free(closure)
 
-        let (values, flatGradients) = valueAndGradient(apply: valueAndGrad, arrays: arrays)
-        let gradients = parametersState.unflatten(flatGradients)
+        let (values, flatGradients) = valueAndGradient(apply: valueAndGrad, arrays: flattenedArrays)
+        let gradients = unflattened(flatGradients)
 
         return (values, gradients)
     }
