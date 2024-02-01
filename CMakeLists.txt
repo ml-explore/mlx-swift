@@ -1,31 +1,50 @@
 cmake_minimum_required(VERSION 3.16)
-project(SwiftMLX LANGUAGES C CXX Swift)
+project(MLXSwift LANGUAGES C CXX Swift)
 
-set(MLX_C_BUILD_EXAMPLES OFF)
 include(FetchContent)
 # Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
 if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
 
+# mlx-c
 FetchContent_Declare(
-  mlxc
-  GIT_REPOSITORY
-    "git@github.com:ml-explore/mlx-c.git" # https://github.com/ml-explore/mlx-c.git"
+  mlx-c
+  GIT_REPOSITORY "git@github.com:ml-explore/mlx-c.git"
+  # OSS: "https://github.com/ml-explore/mlx-c.git"
   GIT_TAG "main")
-FetchContent_MakeAvailable(mlxc)
+FetchContent_MakeAvailable(mlx-c)
 
-# MLX lib
-add_library(
-  MLX STATIC
-  ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/Array.swift
-  ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/Device.swift
-  ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/Stream.swift)
+# MLX package
+file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
+add_library(MLX STATIC ${MLX-src})
 target_include_directories(MLX
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
-target_link_libraries(MLX PRIVATE mlxc)
+# Note: mlxc is target name exported by mlx-c
+target_link_libraries(MLX PUBLIC mlxc)
+
+# MLXRandom package
+file(GLOB MLXRandom-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXRandom/*.swift)
+add_library(MLXRandom STATIC ${MLXRandom-src})
+target_link_libraries(MLXRandom PRIVATE MLX)
+
+# MLXNN package
+file(GLOB MLXNN-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXNN/*.swift)
+add_library(MLXNN STATIC ${MLXNN-src})
+target_link_libraries(MLXNN PRIVATE MLX MLXRandom)
 
 # Examples
 add_executable(example1
                ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)
 target_link_libraries(example1 PRIVATE MLX)
+target_compile_options(example1 PRIVATE -parse-as-library)
+
+add_executable(tutorial
+               ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Tutorial.swift)
+target_link_libraries(tutorial PRIVATE MLX)
+target_compile_options(tutorial PRIVATE -parse-as-library)
+
+add_executable(llama-mlx-bench
+               ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/LlamaMLXBench.swift)
+target_link_libraries(llama-mlx-bench PRIVATE MLX MLXNN)
+target_compile_options(llama-mlx-bench PRIVATE -parse-as-library)
