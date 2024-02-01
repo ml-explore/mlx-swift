@@ -5,7 +5,7 @@ with a short description of your contribution(s) below. For example:
 
 - Jane Smith: Added the `foo` and `bar` ops.
 
-MLX was developed with contributions from the following individuals:
+MLX Swift was developed with contributions from the following individuals:
 
 <a href="https://github.com/ml-explore/mlx-swift/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=ml-explore/mlx-swift&anon=0&columns=20&max=100&r=true" />

@@ -14,9 +14,9 @@ Coming soon.
 
 ## Installation
 
-``MLX`` is meant to be built and run from XCode or SwiftPM.  A CMake install is also provided. 
+The ``MLX`` Swift pacakge can be built and run from XCode or SwiftPM. A CMake install is also provided. 
 
-More details in the [documentation.](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/install)
+More details are in the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/install).
 
 ### XCode
 
@@ -25,7 +25,7 @@ dependency and link `MLX`, `MLXNN` and `MLXRandom` as needed.
 
 ### SwiftPM
 
-To use ``MLX`` with swiftpm you can add this to your `Package.swift`:
+To use ``MLX`` with SwiftPM you can add this to your `Package.swift`:
 
 ```
 dependencies: [
@@ -41,13 +41,15 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXNN", package: "mlx-swift")]
 ```
 
-> Note that SwiftPM cannot build the metal shaders so the ultimate build has to be done via
-XCode.
+> [!Note] 
+> SwiftPM cannot build the metal shaders so the ultimate build has to be done
+> via XCode.
 
 
 ### CMake
 
 With CMake:
+
 ```
 mkdir build
 cd build
@@ -58,8 +60,9 @@ ninja
 
 ## Limitations
 
-`mlx-swift` currently has a subset of the `mlx` functionality.
-Everything for doing inference is available and the rest are coming soon.
+MLX Swift currently supports a subset of MLX. Most of what you need for
+training and inference with typical neural network models is available. The
+rest is coming soon.
 
 Here is what is missing:
 
@@ -69,6 +72,16 @@ Here is what is missing:
 - [some NN](https://ml-explore.github.io/mlx/build/html/python/nn.html) layers
 - [optimizers](https://ml-explore.github.io/mlx/build/html/python/optimizers.html) package
 
-Please check out the documentation!
+For more details on the API see the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/).
 
-[**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
+## Contributing 
+
+Check out the [contribution guidelines](CONTRIBUTING.md) for more information
+on contributing to MLX. See the
+[docs](https://ml-explore.github.io/mlx/build/html/install.html) for more
+information on building from source, and running tests.
+
+We are grateful for all of [our
+contributors](ACKNOWLEDGMENTS.md#Individual-Contributors). If you contribute
+to MLX Swift and wish to be acknowledged, please add your name to the list in your
+pull request.
