@@ -129,7 +129,7 @@ public final class MLXArray {
             array_ctx = mlx_astype(self.ctx, type.dtype.cmlxDtype, StreamOrDevice.default.ctx)
             free = true
         }
-        
+
         // can't do it inside the else as it will free at the end of the block
         defer { if free { mlx_free(array_ctx) } }
 

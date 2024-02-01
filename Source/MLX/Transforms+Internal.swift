@@ -65,7 +65,7 @@ func buildValueAndGradient(
         let flattenedParameters = parameters.flattened()
         let flattenedKeys = flattenedParameters.map { $0.0 }
         let flattenedArrays = flattenedParameters.map { $0.1 }
-        
+
         // function to unflatten back into the NestedDictionary
         func unflattened(_ arrays: [MLXArray]) -> NestedDictionary<String, MLXArray> {
             let tuples = zip(flattenedKeys, arrays).map { ($0.0, $0.1) }

@@ -3,7 +3,6 @@
 import Foundation
 import MLX
 
-
 /// Transform the passed function `f(Model, [MLXArray])` to a function that computes the
 /// gradients of ``f`` wrt the model's trainable parameters and also its value.
 ///
@@ -15,19 +14,21 @@ import MLX
 ///
 /// ### See Also
 /// - ``valueAndGrad(model:_:)-12a2c``
-public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, [MLXArray]) -> [MLXArray]) -> (Model, [MLXArray]) -> ([MLXArray], NestedDictionary<String, MLXArray>) {
-    
-    func inner(parameters: NestedDictionary<String, MLXArray>, arrays: [MLXArray]) -> [MLXArray] {
+public func valueAndGrad<Model: Module>(
+    model: Model, _ f: @escaping (Model, [MLXArray]) -> [MLXArray]
+) -> (Model, [MLXArray]) -> ([MLXArray], ModuleParameters) {
+
+    func inner(parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] {
         model.update(parameters: parameters)
         return f(model, arrays)
     }
-    
+
     let vg = valueAndGrad(inner)
-    
-    func wrapped(model: Model, arrays: [MLXArray]) -> ([MLXArray], NestedDictionary<String, MLXArray>) {
+
+    func wrapped(model: Model, arrays: [MLXArray]) -> ([MLXArray], ModuleParameters) {
         vg(model.trainableParameters(), arrays)
     }
-    
+
     return wrapped
 }
 
@@ -42,24 +43,26 @@ public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, [ML
 ///
 /// ### See Also
 /// - ``valueAndGrad(model:_:)-12a2c``
-public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLXArray) -> MLXArray) -> (Model, MLXArray) -> (MLXArray, NestedDictionary<String, MLXArray>) {
-    
-    func inner(parameters: NestedDictionary<String, MLXArray>, arrays: [MLXArray]) -> [MLXArray] {
+public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLXArray) -> MLXArray)
+    -> (Model, MLXArray) -> (MLXArray, ModuleParameters)
+{
+
+    func inner(parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] {
         model.update(parameters: parameters)
         return [f(model, arrays[0])]
     }
-    
+
     let vg = valueAndGrad(inner)
-    
-    func wrapped(model: Model, array: MLXArray) -> (MLXArray, NestedDictionary<String, MLXArray>) {
+
+    func wrapped(model: Model, array: MLXArray) -> (MLXArray, ModuleParameters) {
         let (v, g) = vg(model.trainableParameters(), [array])
         return (v[0], g)
     }
-    
+
     return wrapped
 }
 
-/// Transform the passed function `f(Model, MLXArray, MLXArray)` to a 
+/// Transform the passed function `f(Model, MLXArray, MLXArray)` to a
 /// function that computes the gradients of ``f`` wrt the model's trainable
 /// parameters and also its value.
 ///
@@ -93,20 +96,22 @@ public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLX
 ///   - f: function to compute the gradients for
 /// - Returns: function that returns the value of `f()` and the gradient of
 ///     the parameters of the model
-public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLXArray, MLXArray) -> MLXArray) -> (Model, MLXArray, MLXArray) -> (MLXArray, NestedDictionary<String, MLXArray>) {
-    
-    func inner(parameters: NestedDictionary<String, MLXArray>, arrays: [MLXArray]) -> [MLXArray] {
+public func valueAndGrad<Model: Module>(
+    model: Model, _ f: @escaping (Model, MLXArray, MLXArray) -> MLXArray
+) -> (Model, MLXArray, MLXArray) -> (MLXArray, ModuleParameters) {
+
+    func inner(parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] {
         model.update(parameters: parameters)
         return [f(model, arrays[0], arrays[1])]
     }
-    
+
     let vg = valueAndGrad(inner)
-    
-    // outer function 
-    func wrapped(model: Model, a1: MLXArray, a2: MLXArray) -> (MLXArray, NestedDictionary<String, MLXArray>) {
+
+    // outer function
+    func wrapped(model: Model, a1: MLXArray, a2: MLXArray) -> (MLXArray, ModuleParameters) {
         let (v, g) = vg(model.trainableParameters(), [a1, a2])
         return (v[0], g)
     }
-    
+
     return wrapped
 }
