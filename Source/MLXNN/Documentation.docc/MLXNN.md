@@ -102,3 +102,22 @@ These can be used with ``Sequential``.
 - ``nllLoss(inputs:targets:axis:reduction:)``
 - ``smoothL1Loss(predictions:targets:beta:reduction:)``
 - ``tripletLoss(anchors:positives:negatives:axis:p:margin:eps:reduction:)``
+
+### Optimizers
+
+- ``AdaDelta``
+- ``Adafactor``
+- ``AdaGrad``
+- ``AdamW``
+- ``Adam``
+- ``Adamax``
+- ``Lion``
+- ``RMSprop``
+- ``SGD``
+
+
+### Optimizer Base Classes and Protocols
+
+- ``Optimizer``
+- ``OptimizerBase``
+- ``OptimizerBaseArrayState``
