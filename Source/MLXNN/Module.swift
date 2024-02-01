@@ -73,30 +73,30 @@ open class Module {
 
     public private(set) var training = true
     public private(set) var noGrad = Set<String>()
-    
+
     private var _items: ModuleItems!
-    private var _setters: [String:TypeErasedSetter]!
+    private var _setters: [String: TypeErasedSetter]!
 
     public init() {
         buildCaches()
     }
-    
+
     private func buildCaches() {
         var items = ModuleItems()
-        var setters = [String:TypeErasedSetter]()
+        var setters = [String: TypeErasedSetter]()
 
         mirrorUpToModule(module: self) { c in
             if let (key, value) = ModuleValue.fromMirror(c) {
                 items[key] = value
-                
+
                 if let (_, _, setter) = isModuleInfo(c.value) {
                     setters[key] = setter
                 }
             }
-            
+
             return .next
         }
-        
+
         self._items = items
         self._setters = setters
     }
@@ -516,7 +516,7 @@ open class Module {
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
     public func update(modules: ModuleChilren, verify: VerifyUpdate) throws {
-        
+
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
                 return
@@ -614,7 +614,7 @@ open class Module {
                 base: describeType(self), keys: processed.sorted())
         }
     }
-    
+
     private func update(key: String, _ value: Any) throws {
         if let setter = _setters[key] {
             do {
@@ -1171,7 +1171,7 @@ private protocol TypeErasedSetterProvider {
 
 /// ### See Also
 /// - <doc:custom-layers>
-@propertyWrapper public class ModuleInfo<T> : TypeErasedSetterProvider {
+@propertyWrapper public class ModuleInfo<T>: TypeErasedSetterProvider {
     var module: T?
     let key: String?
 
@@ -1201,10 +1201,10 @@ private protocol TypeErasedSetterProvider {
             fatalError("Unable to apply @ModuleInfo to \(T.self)")
         }
     }
-    
-    struct Setter : TypeErasedSetter {
+
+    struct Setter: TypeErasedSetter {
         let info: ModuleInfo<T>
-        
+
         func updateModule(_ value: Any) throws {
             if let value = value as? T {
                 info.wrappedValue = value
