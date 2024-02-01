@@ -23,21 +23,10 @@ let package = Package(
             name: "PrepareMetalShaders",
             targets: ["PrepareMetalShaders"]
         ),
-
-        .library(name: "Cmlx", targets: ["Cmlx"]),
-
-        // examples
-        .executable(name: "Example1", targets: ["Example1"]),
-        .executable(name: "Tutorial", targets: ["Tutorial"]),
-        .executable(name: "LlamaMLXBench", targets: ["LlamaMLXBench"]),
-
-        // tool to generate grad() variants
-        .executable(name: "GenerateGrad", targets: ["GenerateGrad"]),
-
     ],
     dependencies: [
         // docc builder
-        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main"),
+        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main")
     ],
     targets: [
         // plugin to help build the metal shaders
@@ -132,6 +121,9 @@ let package = Package(
             name: "MLXTests",
             dependencies: ["MLX", "MLXRandom", "MLXNN"]
         ),
+        
+        // ------
+        // Example programs
 
         .executableTarget(
             name: "Example1",
@@ -151,6 +143,9 @@ let package = Package(
             path: "Source/Examples",
             sources: ["LlamaMLXBench.swift"]
         ),
+
+        // ------
+        // Internal Tools
 
         .executableTarget(
             name: "GenerateGrad",
