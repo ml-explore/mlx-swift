@@ -11,5 +11,17 @@ Swift example code for MLX and MLXNN.
 
 ## Overview
 
-Example software for ``MLX`` and `MLXNN`.  This contains a command line tool for generating text using a Llama / Mistral model.
+Example software for ``MLX`` and `MLXNN`.
+
+### LinearFunctionModelTraining
+
+A simple linear function model and a training loop.
+
+### llm-tool
+
+A command line tool for generating text using a Llama / Mistral model.
+
+### mnist-tool
+
+A command line tool for training an MNIST (MLP) model.
 
