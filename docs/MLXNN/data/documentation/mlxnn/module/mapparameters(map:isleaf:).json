@@ -165,7 +165,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L286"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L302"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -1543,7 +1543,7 @@
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "`Module` Filter and Map Functions",
+  "title" : "Module Filter and Map Functions",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module-filters"
 }

@@ -124,7 +124,8 @@
     {
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/SQ",
-        "doc:\/\/mlx.swift.mlx\/SH"
+        "doc:\/\/mlx.swift.mlx\/SH",
+        "doc:\/\/mlx.swift.mlx\/SY"
       ],
       "kind" : "relationships",
       "title" : "Conforms To",
@@ -148,9 +149,16 @@
       "title" : "Enumeration Cases"
     },
     {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType\/init(rawValue:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType\/Equatable-Implementations"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType\/Equatable-Implementations",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType\/RawRepresentable-Implementations"
       ],
       "title" : "Default Implementations"
     }
@@ -177,6 +185,11 @@
 "doc://mlx.swift.mlx/SQ": {
   "identifier" : "doc:\/\/mlx.swift.mlx\/SQ",
   "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlx/SY": {
+  "identifier" : "doc:\/\/mlx.swift.mlx\/SY",
+  "title" : "Swift.RawRepresentable",
   "type" : "unresolvable"
 },
 "doc://mlx.swift.mlx/documentation/MLX": {
@@ -280,6 +293,17 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/devicetype\/equatable-implementations"
 },
+"doc://mlx.swift.mlx/documentation/MLX/DeviceType/RawRepresentable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType\/RawRepresentable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "RawRepresentable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/devicetype\/rawrepresentable-implementations"
+},
 "doc://mlx.swift.mlx/documentation/MLX/DeviceType/cpu": {
   "abstract" : [
 
@@ -329,6 +353,44 @@
   "title" : "DeviceType.gpu",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/devicetype\/gpu"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DeviceType/init(rawValue:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "?("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "rawValue"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType\/init(rawValue:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(rawValue:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/devicetype\/init(rawvalue:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
   "abstract" : [

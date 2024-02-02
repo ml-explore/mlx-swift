@@ -88,6 +88,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
@@ -205,6 +206,20 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/lazy-evaluation"
 },
+"doc://mlx.swift.mlx/documentation/MLX/troubleshooting": {
+  "abstract" : [
+    {
+      "text" : "Help with problems you might run into.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Troubleshooting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/troubleshooting"
+},
 "doc://mlx.swift.mlx/documentation/MLX/unified-memory": {
   "abstract" : [
     {
@@ -238,7 +253,7 @@
   "url" : "\/documentation\/mlx\/using-streams"
 },
 "mlx-examples-swift.zip": {
-  "checksum" : "b3aed1c2e07b46369a213711ab9a5804838459b61e44f8773a4cb2129d50d09dd2891f29618b45d64e67551fcd38724e9295453519bc8a81b23d38bfb70a2be3",
+  "checksum" : "039cbceca143f11eb95d279a4f3021c711ade09103cd9c21fc0efaf0a10c76c620981da0044b4e5b23ef9c2fe200b118662c3c3ab138d54f8833ac30db916413",
   "identifier" : "mlx-examples-swift.zip",
   "type" : "download",
   "url" : "\/downloads\/mlx-examples-swift.zip"

@@ -13,6 +13,11 @@
             "type" : "article"
           },
           {
+            "path" : "\/documentation\/mlx\/troubleshooting",
+            "title" : "Troubleshooting",
+            "type" : "article"
+          },
+          {
             "path" : "\/documentation\/mlx\/examples",
             "title" : "MLX Swift Examples",
             "type" : "sampleCode"
@@ -1262,6 +1267,11 @@
                     "type" : "groupMarker"
                   },
                   {
+                    "path" : "\/documentation\/mlx\/mlxarray\/expandeddimensions(axis:stream:)",
+                    "title" : "func expandedDimensions(axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
                     "path" : "\/documentation\/mlx\/mlxarray\/flattened(start:end:stream:)",
                     "title" : "func flattened(start: Int, end: Int, stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
@@ -2009,6 +2019,11 @@
                 "type" : "method"
               },
               {
+                "path" : "\/documentation\/mlx\/mlxarray\/expandeddimensions(axes:stream:)",
+                "title" : "func expandedDimensions(axes: [Int], stream: StreamOrDevice) -> MLXArray",
+                "type" : "method"
+              },
+              {
                 "path" : "\/documentation\/mlx\/mlxarray\/item()",
                 "title" : "func item<T>() -> T",
                 "type" : "method"
@@ -2131,6 +2146,20 @@
               {
                 "path" : "\/documentation\/mlx\/mlxarray\/variance(keepdims:ddof:stream:)",
                 "title" : "func variance(keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "title" : "Type Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/mlxarray\/ones(_:dtype:stream:)",
+                "title" : "static func ones([Int], dtype: DType, stream: StreamOrDevice) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/mlxarray\/zeros(_:dtype:stream:)",
+                "title" : "static func zeros([Int], dtype: DType, stream: StreamOrDevice) -> MLXArray",
                 "type" : "method"
               },
               {
@@ -3431,6 +3460,26 @@
                 "type" : "method"
               },
               {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(_:_:transform:)-52e9l",
+                "title" : "func mapValues<E2, E3, R1, R2>(NestedDictionary<Key, E2>, NestedDictionary<Key, E3>, transform: (Element, E2?, E3?) -> (R1, R2?)) -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>)",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(_:_:transform:)-8yhzk",
+                "title" : "func mapValues<E2, E3, R1, R2, R3>(NestedDictionary<Key, E2>, NestedDictionary<Key, E3>, transform: (Element, E2?, E3?) throws -> (R1, R2?, R3?)) rethrows -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>, NestedDictionary<Key, R3>)",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(_:transform:)-4ctis",
+                "title" : "func mapValues<E2, R1>(NestedDictionary<Key, E2>, transform: (Element, E2?) -> R1) -> NestedDictionary<Key, R1>",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(_:transform:)-54sj2",
+                "title" : "func mapValues<E2, R1, R2>(NestedDictionary<Key, E2>, transform: (Element, E2?) throws -> (R1, R2?)) rethrows -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>)",
+                "type" : "method"
+              },
+              {
                 "path" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(transform:)",
                 "title" : "func mapValues<Result>(transform: (Element) throws -> Result) rethrows -> NestedDictionary<Key, Result>",
                 "type" : "method"
@@ -4125,18 +4174,13 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)-158qb",
+            "path" : "\/documentation\/mlx\/valueandgrad(_:)",
+            "title" : "func valueAndGrad((NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray]) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], NestedDictionary<String, MLXArray>)",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)",
             "title" : "func valueAndGrad(([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> ([MLXArray]) -> ([MLXArray], [MLXArray])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)-7yzk7",
-            "title" : "func valueAndGrad((NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/valueandgradnested(_:argumentnumbers:)",
-            "title" : "func valueAndGradNested((NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], [MLXArray])",
             "type" : "func"
           },
           {
@@ -4285,6 +4329,11 @@
                 "type" : "property"
               },
               {
+                "path" : "\/documentation\/mlx\/dtype\/iscomplex",
+                "title" : "var isComplex: Bool",
+                "type" : "property"
+              },
+              {
                 "path" : "\/documentation\/mlx\/dtype\/isfloatingpoint",
                 "title" : "var isFloatingPoint: Bool",
                 "type" : "property"
@@ -4331,6 +4380,15 @@
                 "type" : "case"
               },
               {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/devicetype\/init(rawvalue:)",
+                "title" : "init?(rawValue: String)",
+                "type" : "init"
+              },
+              {
                 "title" : "Default Implementations",
                 "type" : "groupMarker"
               },
@@ -4348,6 +4406,31 @@
                 ],
                 "path" : "\/documentation\/mlx\/devicetype\/equatable-implementations",
                 "title" : "Equatable Implementations",
+                "type" : "symbol"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/devicetype\/hashvalue",
+                    "title" : "var hashValue: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/devicetype\/hash(into:)",
+                    "title" : "func hash(into: inout Hasher)",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/devicetype\/rawrepresentable-implementations",
+                "title" : "RawRepresentable Implementations",
                 "type" : "symbol"
               }
             ],
@@ -4403,6 +4486,16 @@
               {
                 "path" : "\/documentation\/mlx\/nesteditem\/mapvalues(_:)",
                 "title" : "func mapValues<Result>((Element) throws -> Result) rethrows -> NestedItem<Key, Result>",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteditem\/mapvalues(_:_:)",
+                "title" : "func mapValues<E2, R1, R2>(NestedItem<Key, E2>, (Element, E2?) throws -> (R1, R2?)) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>)",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteditem\/mapvalues(_:_:_:)",
+                "title" : "func mapValues<E2, E3, R1, R2, R3>(NestedItem<Key, E2>, NestedItem<Key, E3>, (Element, E2?, E3?) throws -> (R1, R2?, R3?)) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>, NestedItem<Key, R3>)",
                 "type" : "method"
               },
               {

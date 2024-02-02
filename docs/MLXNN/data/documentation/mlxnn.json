@@ -35,7 +35,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "Two places to read to get started are:",
+              "text" : "Some places to read to get started are:",
               "type" : "text"
             }
           ],
@@ -43,6 +43,20 @@
         },
         {
           "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
             {
               "content" : [
                 {
@@ -62,7 +76,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -115,6 +129,20 @@
                 {
                   "inlineContent" : [
                     {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
                       "isActive" : true,
                       "type" : "reference"
@@ -142,8 +170,21 @@
   "topicSections" : [
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
+      ],
+      "title" : "Articles"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleChilren",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItems",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue"
       ],
       "title" : "Base Classes and Interfaces"
     },
@@ -181,6 +222,7 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential"
       ],
@@ -212,6 +254,7 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/selu(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/silu(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/sigmoid(_:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softMax(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softPlus(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softSign(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/step(_:threshold:)"
@@ -243,20 +286,43 @@
       "title" : "Activation Modules"
     },
     {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/binaryCrossEntropy(logits:targets:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/cosineSimilarityLoss(x1:x2:axis:eps:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/crossEntropy(logits:targets:weights:axis:labelSmoothing:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/hingeLoss(inputs:targets:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/huberLoss(inputs:targets:delta:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/klDivLoss(inputs:targets:axis:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/l1Loss(predictions:targets:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/logCoshLoss(inputs:targets:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/mseLoss(predictions:targets:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/nllLoss(inputs:targets:axis:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/smoothL1Loss(predictions:targets:beta:reduction:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/tripletLoss(anchors:positives:negatives:axis:p:margin:eps:reduction:)"
+      ],
+      "title" : "Loss Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-12a2c",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-1w6x8",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-548r7"
+      ],
+      "title" : "Value and Grad"
+    },
+    {
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/activations",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/layers",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/losses"
       ],
       "title" : "Articles"
     },
     {
       "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo"
       ],
       "title" : "Classes"
     },
@@ -268,22 +334,7 @@
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softMax(_:)"
-      ],
-      "title" : "Functions"
-    },
-    {
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleChilren",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItems",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters"
-      ],
-      "title" : "Type Aliases"
-    },
-    {
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LossReduction"
       ],
       "title" : "Enumerations"
     }
@@ -857,6 +908,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/logsoftmax"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LossReduction": {
+  "abstract" : [
+    {
+      "text" : "Different types of loss reductions",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "LossReduction"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LossReduction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "LossReduction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "LossReduction",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/lossreduction"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Mish": {
   "abstract" : [
     {
@@ -987,6 +1072,93 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module\/items()"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(modules:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the child modules of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided replacements.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "modules"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13ModuleChilrena",
+      "text" : "ModuleChilren"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(modules:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(modules:verify:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleChilren": {
   "abstract" : [
     {
@@ -1031,7 +1203,27 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleInfo": {
   "abstract" : [
-
+    {
+      "text" : "ModuleInfo can provde information about child modules and act as an",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "update point for ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -1302,7 +1494,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ParameterInfo": {
   "abstract" : [
-
+    {
+      "text" : "ParameterInfo allows you to specify alternate keys for parameter propreties.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -1937,6 +2132,94 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/activations"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/binaryCrossEntropy(logits:targets:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the binary cross entropy loss.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "binaryCrossEntropy"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "logits"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/binaryCrossEntropy(logits:targets:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "binaryCrossEntropy(logits:targets:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/binarycrossentropy(logits:targets:reduction:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/celu(_:alpha:)": {
   "abstract" : [
     {
@@ -1999,6 +2282,267 @@
   "title" : "celu(_:alpha:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/celu(_:alpha:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/cosineSimilarityLoss(x1:x2:axis:eps:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the cosine similarity between the two inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cosineSimilarityLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "x1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "x2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "eps"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/cosineSimilarityLoss(x1:x2:axis:eps:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cosineSimilarityLoss(x1:x2:axis:eps:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/cosinesimilarityloss(x1:x2:axis:eps:reduction:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/crossEntropy(logits:targets:weights:axis:labelSmoothing:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the cross entropy loss.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "crossEntropy"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "logits"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "weights"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "labelSmoothing"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/crossEntropy(logits:targets:weights:axis:labelSmoothing:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "crossEntropy(logits:targets:weights:axis:labelSmoothing:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/crossentropy(logits:targets:weights:axis:labelsmoothing:reduction:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/custom-layers": {
   "abstract" : [
@@ -2332,6 +2876,392 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/hardswish(_:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/hingeLoss(inputs:targets:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the hinge loss between inputs and targets.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "hingeLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/hingeLoss(inputs:targets:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "hingeLoss(inputs:targets:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/hingeloss(inputs:targets:reduction:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/huberLoss(inputs:targets:delta:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the Huber loss between inputs and targets.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "huberLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "delta"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/huberLoss(inputs:targets:delta:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "huberLoss(inputs:targets:delta:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/huberloss(inputs:targets:delta:reduction:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/klDivLoss(inputs:targets:axis:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the Kullback-Leibler divergence loss.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "klDivLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/klDivLoss(inputs:targets:axis:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "klDivLoss(inputs:targets:axis:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/kldivloss(inputs:targets:axis:reduction:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/l1Loss(predictions:targets:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the L1 loss",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "l1Loss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "predictions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/l1Loss(predictions:targets:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "l1Loss(predictions:targets:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/l1loss(predictions:targets:reduction:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/layers": {
   "abstract" : [
     {
@@ -2408,6 +3338,94 @@
   "title" : "leakyRelu(_:negativeSlope:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/leakyrelu(_:negativeslope:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/logCoshLoss(inputs:targets:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the log cosh loss between inputs and targets.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "logCoshLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/logCoshLoss(inputs:targets:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "logCoshLoss(inputs:targets:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/logcoshloss(inputs:targets:reduction:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/logSigmoid(_:)": {
   "abstract" : [
@@ -2518,6 +3536,20 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/logsoftmax(_:axis:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/losses": {
+  "abstract" : [
+    {
+      "text" : "Built-in loss functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/losses",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Loss Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/losses"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/mish(_:)": {
   "abstract" : [
     {
@@ -2582,9 +3614,202 @@
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "`Module` Filter and Map Functions",
+  "title" : "Module Filter and Map Functions",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module-filters"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/mseLoss(predictions:targets:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the mean squared error loss.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "mseLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "predictions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/mseLoss(predictions:targets:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "mseLoss(predictions:targets:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/mseloss(predictions:targets:reduction:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/nllLoss(inputs:targets:axis:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the negative log likelihood loss.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "nllLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/nllLoss(inputs:targets:axis:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "nllLoss(inputs:targets:axis:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/nllloss(inputs:targets:axis:reduction:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/prelu(_:alpha:)": {
   "abstract" : [
@@ -2879,6 +4104,111 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/silu(_:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/smoothL1Loss(predictions:targets:beta:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the smooth L1 loss.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "smoothL1Loss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "predictions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targets"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "beta"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/smoothL1Loss(predictions:targets:beta:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "smoothL1Loss(predictions:targets:beta:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/smoothl1loss(predictions:targets:beta:reduction:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/softMax(_:)": {
   "abstract" : [
     {
@@ -3080,6 +4410,642 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/step(_:threshold:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/training": {
+  "abstract" : [
+    {
+      "text" : "A model training loop.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Training a Model",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/training"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/tripletLoss(anchors:positives:negatives:axis:p:margin:eps:reduction:)": {
+  "abstract" : [
+    {
+      "text" : "Computes the triplet loss for a set of anchor, positive, and negative samples. Margin is represented with alpha in the math section.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tripletLoss"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "anchors"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "positives"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "negatives"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "margin"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "eps"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13LossReductionO",
+      "text" : "LossReduction"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/tripletLoss(anchors:positives:negatives:axis:p:margin:eps:reduction:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tripletLoss(anchors:positives:negatives:axis:p:margin:eps:reduction:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/tripletloss(anchors:positives:negatives:axis:p:margin:eps:reduction:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-12a2c": {
+  "abstract" : [
+    {
+      "text" : "Transform the passed function ",
+      "type" : "text"
+    },
+    {
+      "code" : "f(Model, MLXArray, MLXArray)",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to a",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "function that computes the gradients of ",
+      "type" : "text"
+    },
+    {
+      "code" : "f",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with regard to the model’s trainable",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "parameters and also its value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueAndGrad"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-12a2c",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueAndGrad(model:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-12a2c"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-1w6x8": {
+  "abstract" : [
+    {
+      "text" : "Transform the passed function ",
+      "type" : "text"
+    },
+    {
+      "code" : "f(Model, MLXArray)",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to a function that computes the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "gradients of ",
+      "type" : "text"
+    },
+    {
+      "code" : "f",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with regard to the model’s trainable parameters and also its value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueAndGrad"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-1w6x8",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueAndGrad(model:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-1w6x8"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-548r7": {
+  "abstract" : [
+    {
+      "text" : "Transform the passed function ",
+      "type" : "text"
+    },
+    {
+      "code" : "f(Model, [MLXArray])",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to a function that computes the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "gradients of ",
+      "type" : "text"
+    },
+    {
+      "code" : "f",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with regard to the model’s trainable parameters and also its value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueAndGrad"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-548r7",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueAndGrad(model:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-548r7"
+},
 "https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
   "title" : "MLX",
@@ -3091,6 +5057,18 @@
   ],
   "type" : "link",
   "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+  "title" : "MLXOptimizers",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXOptimizers",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/"
 },
 "https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",

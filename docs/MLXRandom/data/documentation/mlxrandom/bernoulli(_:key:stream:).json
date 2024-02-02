@@ -1,7 +1,15 @@
 {
   "abstract" : [
     {
-      "text" : "Generate Bernoulli random values.",
+      "text" : "Generate Bernoulli random values with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "p",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " value of 0.5.",
       "type" : "text"
     }
   ],
@@ -92,7 +100,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L209"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L211"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -292,7 +300,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/bernoulli(_:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate Bernoulli random values.",
+      "text" : "Generate Bernoulli random values with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "p",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " value of 0.5.",
       "type" : "text"
     }
   ],

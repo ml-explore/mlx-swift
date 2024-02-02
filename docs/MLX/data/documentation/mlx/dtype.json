@@ -160,6 +160,7 @@
     {
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/cmlxDtype",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/isComplex",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/isFloatingPoint"
       ],
       "title" : "Instance Properties"
@@ -529,6 +530,40 @@
   "title" : "DType.int8",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/dtype\/int8"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/isComplex": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "isComplex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/isComplex",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "isComplex",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/iscomplex"
 },
 "doc://mlx.swift.mlx/documentation/MLX/DType/isFloatingPoint": {
   "abstract" : [

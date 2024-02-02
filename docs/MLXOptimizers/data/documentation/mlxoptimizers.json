@@ -1,0 +1,714 @@
+{
+  "abstract" : [
+    {
+      "text" : "Built-in optimizers.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "MLXOptimizers",
+    "modules" : [
+      {
+        "name" : "MLXOptimizers"
+      }
+    ],
+    "role" : "collection",
+    "roleHeading" : "Framework",
+    "symbolKind" : "module",
+    "title" : "MLXOptimizers"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "MLX has a number of built in optimizers that are useful for training models.  Here is a",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "simple training loop:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func loss(model: Model, x: MLXArray, y: MLXArray) -> MLXArray {",
+            "    \/\/ choose the loss function",
+            "    mseLoss(predictions: model(x), targets: y, reduction: .mean)",
+            "}",
+            "",
+            "\/\/ function to compute the value (loss) and gradient",
+            "let lg = valueAndGrad(model: model, loss)",
+            "",
+            "let optimizer = SGD(learningRate: 1e-1)",
+            "",
+            "for _ in 0 ..< epochs {",
+            "    let (x, y) = ...",
+            "",
+            "    \/\/ evaluate the training data",
+            "    let (loss, grads) = lg(model, x, y)",
+            "",
+            "    \/\/ use the optimizer to update the model parameters",
+            "    optimizer.update(model: model, gradients: grads)",
+            "",
+            "    eval(model.parameters(), optimizer.parameters())",
+            "}"
+          ],
+          "syntax" : null,
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Other-MLX-Packages",
+          "level" : 2,
+          "text" : "Other MLX Packages",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD"
+      ],
+      "title" : "Optimizers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
+      ],
+      "title" : "Base Classes and Protocols"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers"
+      ],
+      "title" : "Articles"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxoptimizers"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
+  "abstract" : [
+    {
+      "text" : "Built-in optimizers.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXOptimizers",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaDelta": {
+  "abstract" : [
+    {
+      "text" : "The AdaDelta optimizer with a learning rate [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AdaDelta"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AdaDelta"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AdaDelta",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adadelta"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaGrad": {
+  "abstract" : [
+    {
+      "text" : "The Adagrad optimizer [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AdaGrad"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AdaGrad"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AdaGrad",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adagrad"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor": {
+  "abstract" : [
+    {
+      "text" : "The Adafactor optimizer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Adafactor"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Adafactor"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Adafactor",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adafactor"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adam": {
+  "abstract" : [
+    {
+      "text" : "The Adam optimizer [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Adam"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Adam"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Adam",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adam"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdamW": {
+  "abstract" : [
+    {
+      "text" : "The AdamW optimizer [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AdamW"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AdamW"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AdamW",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adamw"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax": {
+  "abstract" : [
+    {
+      "text" : "The Adamax optimizer, a variant of Adam based on the infinity norm [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Adamax"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Adamax"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Adamax",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adamax"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Lion": {
+  "abstract" : [
+    {
+      "text" : "The Lion optimizer [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Lion"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Lion"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Lion",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/lion"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Optimizer": {
+  "abstract" : [
+    {
+      "text" : "Public interface for all Optimizer types.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Optimizer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Optimizer"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Optimizer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/optimizer"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase": {
+  "abstract" : [
+    {
+      "text" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and apply it to a parameter tree.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OptimizerBase"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OptimizerBase"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OptimizerBase",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/optimizerbase"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBaseArrayState": {
+  "abstract" : [
+    {
+      "text" : "Convenience subclass of OptimizerBase that provides ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " State.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OptimizerBaseArrayState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OptimizerBaseArrayState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OptimizerBaseArrayState",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/RMSprop": {
+  "abstract" : [
+    {
+      "text" : "The RMSprop optimizer [1].",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RMSprop"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RMSprop"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RMSprop",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/rmsprop"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/SGD": {
+  "abstract" : [
+    {
+      "text" : "Stochastic gradient descent optimizer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SGD"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SGD"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SGD",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/sgd"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
+  "abstract" : [
+    {
+      "text" : "Built-in optimizers.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Optimizers",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/optimizers"
+},
+"https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
+  "title" : "MLX",
+  "titleInlineContent" : [
+    {
+      "text" : "MLX",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
+  "title" : "MLXNN",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXNN",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
+  "title" : "MLXRandom",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXRandom",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/"
+},
+"https://ml-explore.github.io/mlx/build/html/index.html": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+  "title" : "Python mlx",
+  "titleInlineContent" : [
+    {
+      "text" : "Python ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html"
+}
+}
+}

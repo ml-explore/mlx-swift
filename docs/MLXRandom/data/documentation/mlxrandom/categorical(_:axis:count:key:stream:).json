@@ -1,7 +1,15 @@
 {
   "abstract" : [
     {
-      "text" : "Sample from a categorical distribution.",
+      "text" : "Sample ",
+      "type" : "text"
+    },
+    {
+      "code" : "count",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " values from a categorical distribution.",
       "type" : "text"
     }
   ],
@@ -126,7 +134,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L383"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L385"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -383,7 +391,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/categorical(_:axis:count:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Sample from a categorical distribution.",
+      "text" : "Sample ",
+      "type" : "text"
+    },
+    {
+      "code" : "count",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " values from a categorical distribution.",
       "type" : "text"
     }
   ],

@@ -153,6 +153,7 @@
         }
       ],
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/expandedDimensions(axis:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/flattened(start:end:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/reshaped(_:stream:)-19x5z",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/squeezed(axes:stream:)",
@@ -320,6 +321,77 @@
   "title" : "dim(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/dim(_:)-8s2hf"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/expandedDimensions(axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Add a size one dimension at the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "expandedDimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/expandedDimensions(axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "expandedDimensions(axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/expandeddimensions(axis:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/flattened(start:end:stream:)": {
   "abstract" : [

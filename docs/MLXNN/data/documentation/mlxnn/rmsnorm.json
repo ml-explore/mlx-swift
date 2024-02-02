@@ -175,6 +175,7 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential"
       ],
       "title" : "Unary Layers"
@@ -750,6 +751,40 @@
   "title" : "init(_:eps:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/rmsnorm\/init(_:eps:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/RoPE": {
+  "abstract" : [
+    {
+      "text" : "Implements the rotary positional encoding.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RoPE"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RoPE"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RoPE",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/rope"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Sequential": {
   "abstract" : [

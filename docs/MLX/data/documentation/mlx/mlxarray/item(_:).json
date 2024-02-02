@@ -177,7 +177,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "It is a contract violation to call this on an array with more than one element",
+              "text" : "It is a contract violation to call this on an array with more than one element.",
               "type" : "text"
             },
             {
@@ -185,7 +185,15 @@
               "type" : "text"
             },
             {
-              "text" : "or to read a type other than the ",
+              "text" : "If the ",
+              "type" : "text"
+            },
+            {
+              "code" : "type",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " does not match the ",
               "type" : "text"
             },
             {
@@ -193,7 +201,7 @@
               "type" : "codeVoice"
             },
             {
-              "text" : ".",
+              "text" : " this will convert the type first.",
               "type" : "text"
             }
           ],

@@ -32,7 +32,7 @@
       }
     ],
     "role" : "collectionGroup",
-    "title" : "`Module` Filter and Map Functions"
+    "title" : "Module Filter and Map Functions"
   },
   "primaryContentSections" : [
     {
@@ -112,6 +112,155 @@
             }
           ],
           "type" : "paragraph"
+        },
+        {
+          "anchor" : "Examples",
+          "level" : 2,
+          "text" : "Examples",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The ",
+              "type" : "text"
+            },
+            {
+              "code" : "filterMap()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " method has several options for controlling the traversal of",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the modules, parameters and other values in the model.  Here is an example",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "that limits the traversal to just local parameters and produces",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "a ",
+              "type" : "text"
+            },
+            {
+              "code" : "NestedDictionary",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " of the shapes:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ produces NestedDictionary<String, [Int]> for the parameters attached",
+            "\/\/ directly to this module",
+            "let localParameterShapes = module.filterMap(",
+            "    filter: Module.filterLocalParameters,",
+            "    map: Module.mapParameters { $0.shape })"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Applying a map to the entire set of parameters (though some traversal",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "control is possible through the optional ",
+              "type" : "text"
+            },
+            {
+              "code" : "isLeaf",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") is very easy:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let parameterShapes = module.mapParameters { $0.shape }"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Finally, ",
+              "type" : "text"
+            },
+            {
+              "code" : "apply()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " does both a filter and an ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "This code would convert all floating point parameters to ",
+              "type" : "text"
+            },
+            {
+              "code" : ".float16",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "layer.apply { array in",
+            "    array.dtype.isFloatingPoint ? array.asType(.float16) : array",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
         }
       ],
       "kind" : "content"
@@ -124,6 +273,16 @@
   },
   "sections" : [
 
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training"
+      ],
+      "title" : "Articles"
+    }
   ],
   "topicSections" : [
     {
@@ -1902,6 +2061,151 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module\/mapparameters(map:isleaf:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(parameters:)": {
+  "abstract" : [
+    {
+      "text" : "A non-throwing version of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(parameters:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(parameters:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(parameters:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the parameters of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided parameters.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(parameters:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(parameters:verify:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleValue/module(_:)": {
   "abstract" : [
     {
@@ -2031,6 +2335,42 @@
   "title" : "ModuleValue.parameters(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/modulevalue\/parameters(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/custom-layers": {
+  "abstract" : [
+    {
+      "text" : "Creating custom modules using ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXNN",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Creating Modules",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/custom-layers"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/training": {
+  "abstract" : [
+    {
+      "text" : "A model training loop.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Training a Model",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/training"
 }
 }
 }

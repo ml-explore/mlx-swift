@@ -151,6 +151,16 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)"
+      ],
+      "title" : "Keys and Seeds"
+    }
+  ],
   "variants" : [
     {
       "paths" : [
@@ -265,6 +275,98 @@
   "title" : "seed(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/seed(_:)"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/split(key:into:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Split a PRNG key into sub keys.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "split"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "into"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "split(key:into:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/split(key:into:stream:)"
 }
 }
 }

@@ -4,6 +4,99 @@
       {
         "children" : [
           {
+            "title" : "Articles",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/custom-layers",
+            "title" : "Creating Modules",
+            "type" : "article"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/training",
+            "title" : "Training a Model",
+            "type" : "article"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Key\/Value Filter Functions",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/filterall",
+                "title" : "static let filterAll: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/filterlocalparameters",
+                "title" : "static let filterLocalParameters: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/filterother",
+                "title" : "static let filterOther: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/filtertrainableparameters",
+                "title" : "static let filterTrainableParameters: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/filtervalidchild",
+                "title" : "static let filterValidChild: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/filtervalidparameters",
+                "title" : "static let filterValidParameters: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "title" : "isLeaf Functions",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/isleafdefault",
+                "title" : "static let isLeafDefault: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/isleafmodule",
+                "title" : "static let isLeafModule: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/isleafmodulenochildren",
+                "title" : "static let isLeafModuleNoChildren: (Module, String, ModuleItem) -> Bool",
+                "type" : "property"
+              },
+              {
+                "title" : "Map Functions",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/mapmodule(map:)",
+                "title" : "static func mapModule<Result>(map: (Module) -> Result?) -> (ModuleItem) -> Result?",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/mapother(map:)",
+                "title" : "static func mapOther<Result>(map: (Any) -> Result?) -> (ModuleItem) -> Result?",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/module\/mapparameters(map:)",
+                "title" : "static func mapParameters<Result>(map: (MLXArray) -> Result?) -> (ModuleItem) -> Result?",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/module-filters",
+            "title" : "Module Filter and Map Functions",
+            "type" : "symbol"
+          },
+          {
             "title" : "Base Classes and Interfaces",
             "type" : "groupMarker"
           },
@@ -512,6 +605,61 @@
             "type" : "protocol"
           },
           {
+            "path" : "\/documentation\/mlxnn\/moduleparameters",
+            "title" : "ModuleParameters",
+            "type" : "typealias"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/modulechilren",
+            "title" : "ModuleChilren",
+            "type" : "typealias"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/moduleitem",
+            "title" : "ModuleItem",
+            "type" : "typealias"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/moduleitems",
+            "title" : "ModuleItems",
+            "type" : "typealias"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Enumeration Cases",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/modulevalue\/module(_:)",
+                "title" : "case module(Module)",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/modulevalue\/other(_:)",
+                "title" : "case other(Any)",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/modulevalue\/parameters(_:)",
+                "title" : "case parameters(MLXArray)",
+                "type" : "case"
+              },
+              {
+                "title" : "Type Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/modulevalue\/frommirror(_:)",
+                "title" : "static func fromMirror(Mirror.Child) -> (String, ModuleItem)?",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/modulevalue",
+            "title" : "ModuleValue",
+            "type" : "enum"
+          },
+          {
             "title" : "Unary Layers",
             "type" : "groupMarker"
           },
@@ -781,6 +929,36 @@
                 "type" : "groupMarker"
               },
               {
+                "path" : "\/documentation\/mlxnn\/rope\/init(dimensions:traditional:base:scale:)",
+                "title" : "init(dimensions: Int, traditional: Bool, base: Float, scale: Float)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:offset:)",
+                "title" : "func callAsFunction(MLXArray, offset: Int) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/rope",
+            "title" : "RoPE",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
                 "path" : "\/documentation\/mlxnn\/rmsnorm\/init(_:eps:)",
                 "title" : "init(Int, eps: Float)",
                 "type" : "init"
@@ -994,6 +1172,11 @@
           {
             "path" : "\/documentation\/mlxnn\/sigmoid(_:)",
             "title" : "func sigmoid(MLXArray) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/softmax(_:)",
+            "title" : "func softMax(MLXArray) -> MLXArray",
             "type" : "func"
           },
           {
@@ -1413,6 +1596,89 @@
             "path" : "\/documentation\/mlxnn\/tanh",
             "title" : "Tanh",
             "type" : "class"
+          },
+          {
+            "title" : "Loss Functions",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/binarycrossentropy(logits:targets:reduction:)",
+            "title" : "func binaryCrossEntropy(logits: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/cosinesimilarityloss(x1:x2:axis:eps:reduction:)",
+            "title" : "func cosineSimilarityLoss(x1: MLXArray, x2: MLXArray, axis: Int, eps: Float, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/crossentropy(logits:targets:weights:axis:labelsmoothing:reduction:)",
+            "title" : "func crossEntropy(logits: MLXArray, targets: MLXArray, weights: MLXArray?, axis: Int, labelSmoothing: Float, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/hingeloss(inputs:targets:reduction:)",
+            "title" : "func hingeLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/huberloss(inputs:targets:delta:reduction:)",
+            "title" : "func huberLoss(inputs: MLXArray, targets: MLXArray, delta: Float, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/kldivloss(inputs:targets:axis:reduction:)",
+            "title" : "func klDivLoss(inputs: MLXArray, targets: MLXArray, axis: Int, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/l1loss(predictions:targets:reduction:)",
+            "title" : "func l1Loss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/logcoshloss(inputs:targets:reduction:)",
+            "title" : "func logCoshLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/mseloss(predictions:targets:reduction:)",
+            "title" : "func mseLoss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/nllloss(inputs:targets:axis:reduction:)",
+            "title" : "func nllLoss(inputs: MLXArray, targets: MLXArray, axis: Int, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/smoothl1loss(predictions:targets:beta:reduction:)",
+            "title" : "func smoothL1Loss(predictions: MLXArray, targets: MLXArray, beta: Float, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/tripletloss(anchors:positives:negatives:axis:p:margin:eps:reduction:)",
+            "title" : "func tripletLoss(anchors: MLXArray, positives: MLXArray, negatives: MLXArray, axis: Int, p: Int, margin: Float, eps: Float, reduction: LossReduction) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "title" : "Value and Grad",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-12a2c",
+            "title" : "func valueAndGrad<Model>(model: Model, (Model, MLXArray, MLXArray) -> MLXArray) -> (Model, MLXArray, MLXArray) -> (MLXArray, ModuleParameters)",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-1w6x8",
+            "title" : "func valueAndGrad<Model>(model: Model, (Model, MLXArray) -> MLXArray) -> (Model, MLXArray) -> (MLXArray, ModuleParameters)",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-548r7",
+            "title" : "func valueAndGrad<Model>(model: Model, (Model, [MLXArray]) -> [MLXArray]) -> (Model, [MLXArray]) -> ([MLXArray], ModuleParameters)",
+            "type" : "func"
           },
           {
             "title" : "Articles",
@@ -1933,11 +2199,6 @@
             "type" : "symbol"
           },
           {
-            "path" : "\/documentation\/mlxnn\/custom-layers",
-            "title" : "Creating Modules",
-            "type" : "article"
-          },
-          {
             "children" : [
               {
                 "title" : "Unary Layers",
@@ -2343,80 +2604,72 @@
           {
             "children" : [
               {
-                "title" : "Key\/Value Filter Functions",
+                "title" : "Loss Functions",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/filterall",
-                "title" : "static let filterAll: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/binarycrossentropy(logits:targets:reduction:)",
+                "title" : "func binaryCrossEntropy(logits: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/filterlocalparameters",
-                "title" : "static let filterLocalParameters: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/cosinesimilarityloss(x1:x2:axis:eps:reduction:)",
+                "title" : "func cosineSimilarityLoss(x1: MLXArray, x2: MLXArray, axis: Int, eps: Float, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/filterother",
-                "title" : "static let filterOther: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/crossentropy(logits:targets:weights:axis:labelsmoothing:reduction:)",
+                "title" : "func crossEntropy(logits: MLXArray, targets: MLXArray, weights: MLXArray?, axis: Int, labelSmoothing: Float, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/filtertrainableparameters",
-                "title" : "static let filterTrainableParameters: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/hingeloss(inputs:targets:reduction:)",
+                "title" : "func hingeLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/filtervalidchild",
-                "title" : "static let filterValidChild: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/huberloss(inputs:targets:delta:reduction:)",
+                "title" : "func huberLoss(inputs: MLXArray, targets: MLXArray, delta: Float, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/filtervalidparameters",
-                "title" : "static let filterValidParameters: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/kldivloss(inputs:targets:axis:reduction:)",
+                "title" : "func klDivLoss(inputs: MLXArray, targets: MLXArray, axis: Int, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "title" : "isLeaf Functions",
-                "type" : "groupMarker"
+                "path" : "\/documentation\/mlxnn\/l1loss(predictions:targets:reduction:)",
+                "title" : "func l1Loss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/isleafdefault",
-                "title" : "static let isLeafDefault: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/logcoshloss(inputs:targets:reduction:)",
+                "title" : "func logCoshLoss(inputs: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/isleafmodule",
-                "title" : "static let isLeafModule: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/mseloss(predictions:targets:reduction:)",
+                "title" : "func mseLoss(predictions: MLXArray, targets: MLXArray, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/isleafmodulenochildren",
-                "title" : "static let isLeafModuleNoChildren: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
+                "path" : "\/documentation\/mlxnn\/nllloss(inputs:targets:axis:reduction:)",
+                "title" : "func nllLoss(inputs: MLXArray, targets: MLXArray, axis: Int, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "title" : "Map Functions",
-                "type" : "groupMarker"
+                "path" : "\/documentation\/mlxnn\/smoothl1loss(predictions:targets:beta:reduction:)",
+                "title" : "func smoothL1Loss(predictions: MLXArray, targets: MLXArray, beta: Float, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/mapmodule(map:)",
-                "title" : "static func mapModule<Result>(map: (Module) -> Result?) -> (ModuleItem) -> Result?",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/mapother(map:)",
-                "title" : "static func mapOther<Result>(map: (Any) -> Result?) -> (ModuleItem) -> Result?",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/mapparameters(map:)",
-                "title" : "static func mapParameters<Result>(map: (MLXArray) -> Result?) -> (ModuleItem) -> Result?",
-                "type" : "method"
+                "path" : "\/documentation\/mlxnn\/tripletloss(anchors:positives:negatives:axis:p:margin:eps:reduction:)",
+                "title" : "func tripletLoss(anchors: MLXArray, positives: MLXArray, negatives: MLXArray, axis: Int, p: Int, margin: Float, eps: Float, reduction: LossReduction) -> MLXArray",
+                "type" : "func"
               }
             ],
-            "path" : "\/documentation\/mlxnn\/module-filters",
-            "title" : "`Module` Filter and Map Functions",
+            "path" : "\/documentation\/mlxnn\/losses",
+            "title" : "Loss Functions",
             "type" : "symbol"
           },
           {
@@ -2484,36 +2737,6 @@
             "type" : "class"
           },
           {
-            "children" : [
-              {
-                "title" : "Initializers",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/rope\/init(dimensions:traditional:base:scale:)",
-                "title" : "init(dimensions: Int, traditional: Bool, base: Float, scale: Float)",
-                "type" : "init"
-              },
-              {
-                "title" : "Instance Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:)",
-                "title" : "func callAsFunction(MLXArray) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:offset:)",
-                "title" : "func callAsFunction(MLXArray, offset: Int) -> MLXArray",
-                "type" : "method"
-              }
-            ],
-            "path" : "\/documentation\/mlxnn\/rope",
-            "title" : "RoPE",
-            "type" : "class"
-          },
-          {
             "title" : "Structures",
             "type" : "groupMarker"
           },
@@ -2569,39 +2792,6 @@
             "type" : "struct"
           },
           {
-            "title" : "Functions",
-            "type" : "groupMarker"
-          },
-          {
-            "path" : "\/documentation\/mlxnn\/softmax(_:)",
-            "title" : "func softMax(MLXArray) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "title" : "Type Aliases",
-            "type" : "groupMarker"
-          },
-          {
-            "path" : "\/documentation\/mlxnn\/modulechilren",
-            "title" : "ModuleChilren",
-            "type" : "typealias"
-          },
-          {
-            "path" : "\/documentation\/mlxnn\/moduleitem",
-            "title" : "ModuleItem",
-            "type" : "typealias"
-          },
-          {
-            "path" : "\/documentation\/mlxnn\/moduleitems",
-            "title" : "ModuleItems",
-            "type" : "typealias"
-          },
-          {
-            "path" : "\/documentation\/mlxnn\/moduleparameters",
-            "title" : "ModuleParameters",
-            "type" : "typealias"
-          },
-          {
             "title" : "Enumerations",
             "type" : "groupMarker"
           },
@@ -2612,32 +2802,86 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxnn\/modulevalue\/module(_:)",
-                "title" : "case module(Module)",
+                "path" : "\/documentation\/mlxnn\/lossreduction\/mean",
+                "title" : "case mean",
                 "type" : "case"
               },
               {
-                "path" : "\/documentation\/mlxnn\/modulevalue\/other(_:)",
-                "title" : "case other(Any)",
+                "path" : "\/documentation\/mlxnn\/lossreduction\/none",
+                "title" : "case none",
                 "type" : "case"
               },
               {
-                "path" : "\/documentation\/mlxnn\/modulevalue\/parameters(_:)",
-                "title" : "case parameters(MLXArray)",
+                "path" : "\/documentation\/mlxnn\/lossreduction\/sum",
+                "title" : "case sum",
                 "type" : "case"
               },
               {
-                "title" : "Type Methods",
+                "title" : "Initializers",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxnn\/modulevalue\/frommirror(_:)",
-                "title" : "static func fromMirror(Mirror.Child) -> (String, ModuleItem)?",
+                "path" : "\/documentation\/mlxnn\/lossreduction\/init(rawvalue:)",
+                "title" : "init?(rawValue: String)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/lossreduction\/reduce(loss:)",
+                "title" : "func reduce(loss: MLXArray) -> MLXArray",
                 "type" : "method"
+              },
+              {
+                "title" : "Default Implementations",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Operators",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/lossreduction\/!=(_:_:)",
+                    "title" : "static func != (Self, Self) -> Bool",
+                    "type" : "op"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/lossreduction\/equatable-implementations",
+                "title" : "Equatable Implementations",
+                "type" : "symbol"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/lossreduction\/hashvalue",
+                    "title" : "var hashValue: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/lossreduction\/hash(into:)",
+                    "title" : "func hash(into: inout Hasher)",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/lossreduction\/rawrepresentable-implementations",
+                "title" : "RawRepresentable Implementations",
+                "type" : "symbol"
               }
             ],
-            "path" : "\/documentation\/mlxnn\/modulevalue",
-            "title" : "ModuleValue",
+            "path" : "\/documentation\/mlxnn\/lossreduction",
+            "title" : "LossReduction",
             "type" : "enum"
           }
         ],

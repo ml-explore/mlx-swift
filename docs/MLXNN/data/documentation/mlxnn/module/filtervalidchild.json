@@ -35,6 +35,10 @@
       [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module"
+      ],
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
       ]
     ]
   },
@@ -111,7 +115,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L812"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L847"
     },
     "role" : "symbol",
     "roleHeading" : "Type Property",
@@ -1147,7 +1151,7 @@
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "`Module` Filter and Map Functions",
+  "title" : "Module Filter and Map Functions",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module-filters"
 }

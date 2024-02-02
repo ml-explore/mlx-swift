@@ -4,6 +4,25 @@
       {
         "children" : [
           {
+            "title" : "Keys and Seeds",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/key(_:)",
+            "title" : "func key(UInt64) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/split(key:into:stream:)",
+            "title" : "func split(key: MLXArray, into: Int, stream: StreamOrDevice) -> [MLXArray]",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/seed(_:)",
+            "title" : "func seed(UInt64)",
+            "type" : "func"
+          },
+          {
             "title" : "Functions",
             "type" : "groupMarker"
           },
@@ -33,11 +52,6 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlxrandom\/key(_:)",
-            "title" : "func key(UInt64) -> MLXArray",
-            "type" : "func"
-          },
-          {
             "path" : "\/documentation\/mlxrandom\/normal(_:type:key:stream:)",
             "title" : "func normal<T>([Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
@@ -55,16 +69,6 @@
           {
             "path" : "\/documentation\/mlxrandom\/randint(low:high:_:type:key:stream:)",
             "title" : "func randInt<T>(low: ScalarOrArray, high: ScalarOrArray, [Int]?, type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlxrandom\/seed(_:)",
-            "title" : "func seed(UInt64)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlxrandom\/split(key:into:stream:)",
-            "title" : "func split(key: MLXArray, into: Int, stream: StreamOrDevice) -> [MLXArray]",
             "type" : "func"
           },
           {

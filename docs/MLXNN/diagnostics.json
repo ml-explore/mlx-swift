@@ -4,23 +4,143 @@
 
     ],
     "severity" : 2,
-    "source" : "custom-layers.md",
+    "source" : "MLXNN.md",
     "start" : {
-      "column" : 70,
-      "line" : 77
+      "column" : 5,
+      "line" : 124
     },
-    "summary" : "'valueAndGrad()' doesn't exist at '\/MLXNN\/custom-layers'"
+    "summary" : "'AdaDelta' doesn't exist at '\/MLXNN'"
   },
   {
     "notes" : [
 
     ],
     "severity" : 2,
-    "source" : "custom-layers.md",
+    "source" : "MLXNN.md",
     "start" : {
-      "column" : 18,
-      "line" : 155
+      "column" : 5,
+      "line" : 125
     },
-    "summary" : "'valueAndGrad()' doesn't exist at '\/MLXNN'"
+    "summary" : "'Adafactor' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 126
+    },
+    "summary" : "'AdaGrad' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 127
+    },
+    "summary" : "'AdamW' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 128
+    },
+    "summary" : "'Adam' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 129
+    },
+    "summary" : "'Adamax' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 130
+    },
+    "summary" : "'Lion' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 131
+    },
+    "summary" : "'RMSprop' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 132
+    },
+    "summary" : "'SGD' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 137
+    },
+    "summary" : "'Optimizer' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 138
+    },
+    "summary" : "'OptimizerBase' doesn't exist at '\/MLXNN'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLXNN.md",
+    "start" : {
+      "column" : 5,
+      "line" : 139
+    },
+    "summary" : "'OptimizerBaseArrayState' doesn't exist at '\/MLXNN'"
   }
 ]

@@ -1,0 +1,577 @@
+{
+  "abstract" : [
+    {
+      "text" : "A model training loop.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLXNN"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Training a Model"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The model traing loop in ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLX",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " consists of:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "defining a model",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "defining a loss function that measures the distance between ",
+                      "type" : "text"
+                    },
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "predicted",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "emphasis"
+                    },
+                    {
+                      "text" : " and ",
+                      "type" : "text"
+                    },
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "expected",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "emphasis"
+                    },
+                    {
+                      "text" : " values",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "using the ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "valueAndGrad()",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " function to create a new function to compute the gradient",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "presenting training data and expected values to the model, measuring the loss and computing the gradient",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "using an optimizer to apply the gradient to the model parameters",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "see more about optimizers in ",
+                              "type" : "text"
+                            },
+                            {
+                              "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+                              "isActive" : true,
+                              "type" : "reference"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "unorderedList"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "repeat",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is an example showing a simple model that learns a linear",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "function, literally ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "f(x) = mx + b",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : ".  This model is simpler than",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "most, but it is easy to understand and see how it works.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ A very simple model that implements the equation",
+            "\/\/ for a linear function: y = mx + b.  This can be trained",
+            "\/\/ to match data -- in this case an unknown (to the model)",
+            "\/\/ linear function.",
+            "\/\/",
+            "\/\/ This is a nice example because most people know how",
+            "\/\/ linear functions work and we can see how the slope",
+            "\/\/ and intercept converge.",
+            "class LinearFunctionModel: Module, UnaryLayer {",
+            "    let m = MLXRandom.uniform(low: -5.0, high: 5.0)",
+            "    let b = MLXRandom.uniform(low: -5.0, high: 5.0)",
+            "",
+            "    func callAsFunction(_ x: MLXArray) -> MLXArray {",
+            "        m * x + b",
+            "    }",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Next we define a loss function – there are a number of ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/losses",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "available to use.  I chose one that accepted simple ",
+              "type" : "text"
+            },
+            {
+              "code" : "predictions",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "targets",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ":",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ measure the distance from the prediction (model(x)) and the",
+            "\/\/ ground truth (y).  this gives feedback on how close the",
+            "\/\/ prediction is from matching the truth",
+            "func loss(model: LinearFunctionModel, x: MLXArray, y: MLXArray) -> MLXArray {",
+            "    mseLoss(predictions: model(x), targets: y, reduction: .mean)",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Now we create the model, build the ",
+              "type" : "text"
+            },
+            {
+              "code" : "lg",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " (loss and gradient) function",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "and create the optimizer.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let model = LinearFunctionModel()",
+            "eval(model.parameters())",
+            "",
+            "\/\/ compute the loss and gradients",
+            "let lg = valueAndGrad(model: model, loss)",
+            "",
+            "\/\/ the optimizer will use the gradients update the model parameters",
+            "let optimizer = SGD(learningRate: 1e-1)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "We could define any ",
+              "type" : "text"
+            },
+            {
+              "code" : "f(x)",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " – I will use a simple one",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "that the model should be able to match very closely.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(_ x: MLXArray) -> MLXArray {",
+            "    \/\/ these are the target parameters",
+            "    let m = 0.25",
+            "    let b = 7",
+            "",
+            "    \/\/ our actual function",
+            "    return m * x + b",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Now we run the training loop for a number of epochs.  In each",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "epoch we produce training data (input x values) and expected values",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "(just evaluate ",
+              "type" : "text"
+            },
+            {
+              "code" : "f(x)",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ").",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "From this we can evaluate the model and compute a loss and gradient.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "The gradients are given to the optimizer to update the model parameters.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ run a number of epochs",
+            "for _ in 0 ..< 30 {",
+            "    print(\"target: b = \\(b), m = \\(m)\")",
+            "    print(\"parameters: \\(model.parameters())\")",
+            "",
+            "    \/\/ generate random training data along with the ground truth.",
+            "    \/\/ notice that the shape is [B, 1] where B is the batch",
+            "    \/\/ dimension -- this allows us to train on 10 samples simultaneously",
+            "    let x = MLXRandom.uniform(low: -5.0, high: 5.0, [10, 1])",
+            "    let y = f(x)",
+            "    eval(x, y)",
+            "",
+            "    \/\/ compute the loss and gradients.  use the optimizer",
+            "    \/\/ to adjust the parameters closer to the target",
+            "    let (loss, grads) = lg(model, x, y)",
+            "    optimizer.update(model: model, gradients: grads)",
+            "",
+            "    eval(model.parameters(), optimizer.parameters())",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
+      ],
+      "title" : "Articles"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxnn\/training"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXNN",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/custom-layers": {
+  "abstract" : [
+    {
+      "text" : "Creating custom modules using ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXNN",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Creating Modules",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/custom-layers"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/losses": {
+  "abstract" : [
+    {
+      "text" : "Built-in loss functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/losses",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Loss Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/losses"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/module-filters": {
+  "abstract" : [
+    {
+      "text" : "Pre-built filter and map functions in ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Module Filter and Map Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module-filters"
+},
+"https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+  "title" : "MLXOptimizers",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXOptimizers",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/"
+}
+}
+}

@@ -130,6 +130,20 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItems",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue"
+      ],
+      "title" : "Base Classes and Interfaces"
+    }
+  ],
   "variants" : [
     {
       "paths" : [
@@ -189,6 +203,68 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/items()": {
+  "abstract" : [
+    {
+      "text" : "Return a ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " representing the ivars of the ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " instance.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "items"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN11ModuleItemsa",
+      "text" : "ModuleItems"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/items()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "items()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/items()"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleChilren": {
   "abstract" : [
     {
@@ -230,6 +306,245 @@
   "title" : "ModuleChilren",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/modulechilren"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleItem": {
+  "abstract" : [
+    {
+      "text" : "Single item from ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/items()",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleItem"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleItem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleItem",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleitem"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleItems": {
+  "abstract" : [
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure of ",
+      "type" : "text"
+    },
+    {
+      "code" : "ModuleValue",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/items()",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleItems"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItems",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleItems"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleItems",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleitems"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleParameters": {
+  "abstract" : [
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " structure of ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleParameters"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleparameters"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleValue": {
+  "abstract" : [
+    {
+      "text" : "A single value from ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleValue"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleValue",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleValue"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleValue",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/modulevalue"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/UnaryLayer": {
+  "abstract" : [
+    {
+      "text" : "A ",
+      "type" : "text"
+    },
+    {
+      "code" : "Layer",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " subclass) that can be evaluated as a ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "unary function",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "UnaryLayer"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "UnaryLayer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/unarylayer"
 }
 }
 }

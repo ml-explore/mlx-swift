@@ -64,7 +64,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L1113"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L1162"
     },
     "role" : "symbol",
     "roleHeading" : "Initializer",
@@ -172,7 +172,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ParameterInfo": {
   "abstract" : [
-
+    {
+      "text" : "ParameterInfo allows you to specify alternate keys for parameter propreties.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

@@ -85,7 +85,7 @@
           "code" : [
             "ley key = MLXRandom.key(0)",
             "for _ in 0 ..< 3:",
-            "  print(MLXRandom.unfiform(key: key))"
+            "  print(MLXRandom.uniform(key: key))"
           ],
           "syntax" : "swift",
           "type" : "codeListing"
@@ -166,6 +166,20 @@
                 {
                   "inlineContent" : [
                     {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
                       "isActive" : true,
                       "type" : "reference"
@@ -193,18 +207,23 @@
   "topicSections" : [
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)"
+      ],
+      "title" : "Keys and Seeds"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
-        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
-        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)",
-        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)",
@@ -246,7 +265,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/bernoulli(_:_:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate Bernoulli random values.",
+      "text" : "Generate Bernoulli random values with a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "p",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " value.",
       "type" : "text"
     }
   ],
@@ -335,7 +362,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/bernoulli(_:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate Bernoulli random values.",
+      "text" : "Generate Bernoulli random values with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "p",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " value of 0.5.",
       "type" : "text"
     }
   ],
@@ -415,7 +450,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/categorical(_:axis:count:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Sample from a categorical distribution.",
+      "text" : "Sample ",
+      "type" : "text"
+    },
+    {
+      "code" : "count",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " values from a categorical distribution.",
       "type" : "text"
     }
   ],
@@ -2197,6 +2240,18 @@
   ],
   "type" : "link",
   "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+  "title" : "MLXOptimizers",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXOptimizers",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/"
 },
 "https://ml-explore.github.io/mlx/build/html/index.html": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",

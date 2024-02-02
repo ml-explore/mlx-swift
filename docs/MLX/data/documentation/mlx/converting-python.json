@@ -384,7 +384,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "code" : "expandedDimensions(array, axis: 0)",
+                      "code" : "array.expandedDimensions(axis: 0)",
                       "type" : "codeVoice"
                     }
                   ],
@@ -408,7 +408,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "code" : "expandedDimensions(array, axis: 1)",
+                      "code" : "array.expandedDimensions(axis: 1)",
                       "type" : "codeVoice"
                     }
                   ],
@@ -432,7 +432,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "code" : "expandedDimensions(array, axis: -1)",
+                      "code" : "array.expandedDimensions(axis: -1)",
                       "type" : "codeVoice"
                     }
                   ],
@@ -505,6 +505,30 @@
                   "inlineContent" : [
                     {
                       "code" : "Array(repeating: array, count: 4)",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "code" : "array.shape[:-1]",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ],
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "code" : "array.shape.dropLast()",
                       "type" : "codeVoice"
                     }
                   ],
@@ -5578,6 +5602,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
@@ -20092,6 +20117,20 @@
   "title" : "triu(_:k:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/triu(_:k:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/troubleshooting": {
+  "abstract" : [
+    {
+      "text" : "Help with problems you might run into.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Troubleshooting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/troubleshooting"
 },
 "doc://mlx.swift.mlx/documentation/MLX/unified-memory": {
   "abstract" : [
