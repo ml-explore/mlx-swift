@@ -1,6 +1,6 @@
 # MLX Swift
 
-[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**Examples**](#examples) 
+[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**MLXOptimizers**](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/) | [**Examples**](#examples) 
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
@@ -21,7 +21,7 @@ More details are in the [documentation](https://ml-explore.github.io/mlx-swift/M
 ### Xcode
 
 In Xcode you can add `https://github.com/ml-explore/mlx-swift` as a package
-dependency and link `MLX`, `MLXNN` and `MLXRandom` as needed.
+dependency and link `MLX`, `MLXNN`, `MLXOptimizers` and `MLXRandom` as needed.
 
 ### SwiftPM
 
@@ -38,7 +38,8 @@ and add the libraries as dependencies:
 ```
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXRandom", package: "mlx-swift"),
-               .product(name: "MLXNN", package: "mlx-swift")]
+               .product(name: "MLXNN", package: "mlx-swift"),
+               .product(name: "MLXOptimziers", package: "mlx-swift")]
 ```
 
 > [!Note] 
@@ -76,6 +77,7 @@ Here is what is missing:
 
 - [fft](https://ml-explore.github.io/mlx/build/html/python/fft.html) package
 - [linalg](https://ml-explore.github.io/mlx/build/html/python/linalg.html) package
+- a few of the layers in MLXNN
 
 For more details on the API see the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/).
 
