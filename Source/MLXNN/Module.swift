@@ -554,7 +554,7 @@ open class Module {
                         }
                     }
 
-                    try self.update(key: key, newModules)
+                    try self.updateModule(key: key, newModules)
 
                 case .dictionary:
                     // recurse
@@ -588,10 +588,10 @@ open class Module {
                     }
                 }
 
-                try self.update(key: key, newModules)
+                try self.updateModule(key: key, newModules)
 
             case (.value(.module), .value(let newModule)):
-                try self.update(key: key, newModule)
+                try self.updateModule(key: key, newModule)
 
             case (.value(.module(let module)), .dictionary(let values)):
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
@@ -613,9 +613,12 @@ open class Module {
             throw UpdateError.unhandledKeys(
                 base: describeType(self), keys: processed.sorted())
         }
+
+        // rebuild the caches because the modules may have changed
+        buildCaches()
     }
 
-    private func update(key: String, _ value: Any) throws {
+    private func updateModule(key: String, _ value: Any) throws {
         if let setter = _setters[key] {
             do {
                 try setter.updateModule(value)
@@ -1203,7 +1206,7 @@ private protocol TypeErasedSetterProvider {
     }
 
     struct Setter: TypeErasedSetter {
-        let info: ModuleInfo<T>
+        unowned var info: ModuleInfo<T>
 
         func updateModule(_ value: Any) throws {
             if let value = value as? T {
