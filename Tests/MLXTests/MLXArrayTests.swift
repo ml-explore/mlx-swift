@@ -22,7 +22,7 @@ class MLXArrayTests: XCTestCase {
     func testArrayRead() {
         let a = MLXArray(0 ..< 12, [4, 3])
 
-        XCTAssertEqual(a.asArray(Int.self), Array(0 ..< 12))
+        XCTAssertEqual(a.asArray(Int32.self), Array(0 ..< 12))
         XCTAssertEqual(a[1][2].item(Int.self), 5)
     }
 

@@ -52,6 +52,54 @@ let b = a + 3
 
 Scalars will not promote results to `float32` using these functions.
 
+### Int vs Int32 vs Int64
+
+In swift an Int is a 64 bit value (aka Int64).  You can get 32 bit values by using:
+
+```swift
+let i = Int32(10)
+```
+
+In MLX the preferred integer type is ``DType/int32`` or smaller.  You can create
+an ``MLXArray`` with an Int32 like this:
+
+```swift
+let a = MLXArray(Int32(10))
+```
+
+but as a convenience you can also create them like this:
+
+```swift
+// also int32!
+let a = MLXArray(10)
+```
+
+If the value is out of range you will get an error pointing
+you to the alternate initializer:
+
+```swift
+// array creation with Int -- we want it to produce .int32
+let a1 = MLXArray(500)
+XCTAssertEqual(a1.dtype, .int32)
+
+// eplicit int64
+let a2 = MLXArray(int64: 500)
+XCTAssertEqual(a2.dtype, .int64)
+```
+
+All of the `Int` initializers (e.g. `[Int]` and `Sequence<Int>`) work
+the same way and all have the `int64:` variant.
+
+### Double
+
+If you have a `Double` array, you have to convert it as `MLXArray` does not support `Double`:
+
+```swift
+// this converts to a Float array behind the scenes
+let v1 = MLXArray(converting: [0.1, 0.5])
+```
+
+
 ### Multi Value Arrays
 
 Typically MLXArrays are created with many values and potentially many dimensions.  You can create
@@ -70,13 +118,6 @@ let v1 = MLXArray(0 ..< 12)
 
 // this works with various types of sequences
 let v2 = MLXArray(stride(from: Float(0.5), to: Float(1.5), by: Float(0.1)))
-```
-
-If you have a `Double` array, you have to convert it as `MLXArray` does not support `Double`:
-
-```swift
-// this converts to a Float array behind the scenes
-let v1 = MLXArray(converting: [0.1, 0.5])
 ```
 
 If you have `Data` or a `UnsafePointer` (of various kinds) you can also create an `MLXArray`

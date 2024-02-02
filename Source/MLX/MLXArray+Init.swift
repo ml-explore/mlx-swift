@@ -15,13 +15,49 @@ extension MLXArray {
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
     ///
     /// ```swift
-    /// let a = MLXArray(7)
+    /// let a = MLXArray(Int32(7))
     /// ```
     ///
     /// ### See Also
     /// - <doc:initialization>
     public convenience init(_ value: Int32) {
         self.init(mlx_array_from_int(value))
+    }
+    
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
+    /// a `Dtype.int32`.
+    ///
+    /// ```swift
+    /// let a = MLXArray(7)
+    /// ```
+    ///
+    /// Note: if the value is out of bounds for an `Int32` the precondition will fail.  If you
+    /// need an `Int` (`Int64`) scalar, please use ``init(int64:)``.
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``init(int64:)``
+    public convenience init(_ value: Int) {
+        precondition((Int(Int32.min) ... Int(Int32.max)).contains(value), "\(value) is out of range for Int32 -- please use MLXArray(int64: Int) if you need 64 bits.")
+        self.init(mlx_array_from_int(Int32(value)))
+    }
+
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
+    /// a `Dtype.int64`.
+    ///
+    /// ```swift
+    /// let a = MLXArray(int64: Int(Int32.max) + 10)
+    /// ```
+    ///
+    /// Note ``init(_:)-6nnka`` (producing an `int32` scalar is preferred).
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    public convenience init(int64 value: Int) {
+        self.init(
+            withUnsafePointer(to: value) { ptr in
+                mlx_array_from_data(ptr, [], 0, Int.dtype.cmlxDtype)
+            })
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Bool`.
@@ -184,6 +220,56 @@ extension MLXArray {
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
             })
     }
+    
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
+    /// a `Dtype.int32`.
+    ///
+    /// ```swift
+    /// let a = MLXArray([1, 2, 3])
+    /// ```
+    ///
+    /// Note: if the value is out of bounds for an `Int32` the precondition will fail.  If you
+    /// need an `Int` (`Int64`) scalar, please use ``init(int64:_:)-7bgj2``.
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``init(int64:_:)-7bgj2``
+    public convenience init(_ value: [Int], _ shape: [Int]? = nil) {
+        shapePrecondition(shape: shape, count: value.count)
+        precondition(value.allSatisfy { (Int(Int32.min) ... Int(Int32.max)).contains($0) }, "\(value) is out of range for Int32 -- please use MLXArray(int64: [Int]]) if you need 64 bits.")
+
+        self.init(
+            value
+                .map { Int32($0) }
+                .withUnsafeBufferPointer { ptr in
+                    let shape = shape ?? [value.count]
+                    return mlx_array_from_data(
+                        ptr.baseAddress!, shape.asInt32, shape.count.int32, Int32.dtype.cmlxDtype)
+                })
+    }
+
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
+    /// a `Dtype.int64`.
+    ///
+    /// ```swift
+    /// let a = MLXArray(int64: [1, 2, 3])
+    /// ```
+    ///
+    /// Note ``init(int64:_:)`` (producing an `int32` scalar is preferred).
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    public convenience init(int64 value: [Int], _ shape: [Int]? = nil) {
+        shapePrecondition(shape: shape, count: value.count)
+
+        self.init(
+            value
+                .withUnsafeBufferPointer { ptr in
+                    let shape = shape ?? [value.count]
+                    return mlx_array_from_data(
+                        ptr.baseAddress!, shape.asInt32, shape.count.int32, Int.dtype.cmlxDtype)
+                })
+    }
 
     /// Initalizer allowing creation of `MLXArray` from an array of `Double` values with
     /// an optional shape.
@@ -224,17 +310,42 @@ extension MLXArray {
     /// let square = MLXArray(0 ..< 64, [8, 8])
     /// ```
     ///
+    /// Note: if the element type is `Int` this will produce an ``DType/int32`` result.  See ``init(int64:_:)``
+    /// if an `.int64` is required.
+    ///
     /// ### See Also
     /// - <doc:initialization>
     public convenience init<S: Sequence>(_ sequence: S, _ shape: [Int]? = nil)
     where S.Element: HasDType {
+        let value = Array(sequence)
+        if S.Element.self == Int.self {
+            // having an override for Sequence<Int> is ambiguous so
+            // do a runtime check and force it to the [Int] variant
+            self.init(value as! [Int], shape)
+        } else {
+            self.init(value, shape)
+        }
+    }
+
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
+    /// a `Dtype.int64`.
+    ///
+    /// ```swift
+    /// let a = MLXArray(int64: [1, 2, 3])
+    /// ```
+    ///
+    /// Note ``init(int64:_:)`` (producing an `int32` scalar is preferred).
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    public convenience init(int64 sequence: any Sequence<Int>, _ shape: [Int]? = nil) {
         let value = Array(sequence)
         shapePrecondition(shape: shape, count: value.count)
         self.init(
             value.withUnsafeBufferPointer { ptr in
                 let shape = shape ?? [value.count]
                 return mlx_array_from_data(
-                    ptr.baseAddress!, shape.asInt32, shape.count.int32, S.Element.dtype.cmlxDtype)
+                    ptr.baseAddress!, shape.asInt32, shape.count.int32, Int.dtype.cmlxDtype)
             })
     }
 

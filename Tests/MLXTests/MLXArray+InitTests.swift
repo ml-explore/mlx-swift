@@ -8,6 +8,28 @@ import XCTest
 class MLXArrayInitTests: XCTestCase {
 
     // MARK: - Creation
+    
+    func testInt() {
+        // array creation with Int -- we want it to produce .int32
+        let a1 = MLXArray(500)
+        XCTAssertEqual(a1.dtype, .int32)
+        
+        // eplicit int64
+        let a2 = MLXArray(int64: 500)
+        XCTAssertEqual(a2.dtype, .int64)
+        
+        let a3 = MLXArray([1, 2, 3])
+        XCTAssertEqual(a3.dtype, .int32)
+        
+        let a4 = MLXArray(int64: [1, 2, 3])
+        XCTAssertEqual(a4.dtype, .int64)
+        
+        let a5 = MLXArray(0 ..< 12)
+        XCTAssertEqual(a5.dtype, .int32)
+        
+        let a6 = MLXArray(int64: 0 ..< 12)
+        XCTAssertEqual(a6.dtype, .int64)
+    }
 
     func testArrayCreationLiteralArray() {
         let a: MLXArray = [20, 30, 40]
@@ -23,7 +45,7 @@ class MLXArrayInitTests: XCTestCase {
 
     func testArrayCreationArray1D() {
         let a = MLXArray([1, 2, 3])
-        XCTAssertEqual(a.dtype, .int64)
+        XCTAssertEqual(a.dtype, .int32)
         XCTAssertEqual(a.count, 3)
         XCTAssertEqual(a.ndim, 1)
         XCTAssertEqual(a.dim(0), 3)
@@ -31,7 +53,7 @@ class MLXArrayInitTests: XCTestCase {
 
     func testArrayCreationRange() {
         let a = MLXArray(0 ..< 12, [3, 4])
-        XCTAssertEqual(a.dtype, .int64)
+        XCTAssertEqual(a.dtype, .int32)
         XCTAssertEqual(a.size, 12)
         XCTAssertEqual(a.ndim, 2)
     }

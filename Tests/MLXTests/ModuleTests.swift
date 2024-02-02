@@ -75,47 +75,47 @@ class ModuleTests: XCTestCase {
             [
               alternateChild: [
                 a: [
-                  parameters(array([200, 300], dtype=int64)),
-                  parameters(array([400, 500], dtype=int64))
+                  parameters(array([200, 300], dtype=int32)),
+                  parameters(array([400, 500], dtype=int32))
                 ],
                 d: [
-                  key: parameters(array([1, 2], dtype=int64))
+                  key: parameters(array([1, 2], dtype=int32))
                 ],
                 i: other(10),
-                p: parameters(array([100, 200], dtype=int64))
+                p: parameters(array([100, 200], dtype=int32))
               ],
               alternateNameArray: [
-                parameters(array([200, 300], dtype=int64)),
-                parameters(array([400, 500], dtype=int64))
+                parameters(array([200, 300], dtype=int32)),
+                parameters(array([400, 500], dtype=int32))
               ],
               alternateNameDict: [
-                key: parameters(array([1, 2], dtype=int64))
+                key: parameters(array([1, 2], dtype=int32))
               ],
               d: [
                 a: [
                   a: [
-                    parameters(array([200, 300], dtype=int64)),
-                    parameters(array([400, 500], dtype=int64))
+                    parameters(array([200, 300], dtype=int32)),
+                    parameters(array([400, 500], dtype=int32))
                   ],
                   d: [
-                    key: parameters(array([1, 2], dtype=int64))
+                    key: parameters(array([1, 2], dtype=int32))
                   ],
                   i: other(10),
-                  p: parameters(array([100, 200], dtype=int64))
+                  p: parameters(array([100, 200], dtype=int32))
                 ],
                 b: [
                   a: [
-                    parameters(array([200, 300], dtype=int64)),
-                    parameters(array([400, 500], dtype=int64))
+                    parameters(array([200, 300], dtype=int32)),
+                    parameters(array([400, 500], dtype=int32))
                   ],
                   d: [
-                    key: parameters(array([1, 2], dtype=int64))
+                    key: parameters(array([1, 2], dtype=int32))
                   ],
                   i: other(10),
-                  p: parameters(array([100, 200], dtype=int64))
+                  p: parameters(array([100, 200], dtype=int32))
                 ]
               ],
-              p: parameters(array([100, 200], dtype=int64)),
+              p: parameters(array([100, 200], dtype=int32)),
               topLevelParam: other(50.0)
             ]
             """

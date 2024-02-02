@@ -123,6 +123,8 @@ public final class MLXArray {
     /// let value = array[1].item(Float.self)
     /// ```
     public func item<T: HasDType>(_ type: T.Type) -> T {
+        self.eval()
+
         var array_ctx = self.ctx
         var free = false
         if type.dtype != self.dtype {
