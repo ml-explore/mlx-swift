@@ -29,6 +29,7 @@ splittable version of Threefry, which is a counter-based PRNG.
 
 - [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
 - [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
+- [MLXOptimizers](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 

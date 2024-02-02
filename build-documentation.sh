@@ -13,7 +13,7 @@ fi
 
 export DOCC_JSON_PRETTYPRINT=YES
 
-for x in MLX MLXRandom MLXNN; do
+for x in MLX MLXRandom MLXNN MLXOptimizers; do
     swift package \
 	--allow-writing-to-directory ./docs \
 	generate-documentation \

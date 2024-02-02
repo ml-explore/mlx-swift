@@ -33,6 +33,11 @@ file(GLOB MLXNN-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXNN/*.swift)
 add_library(MLXNN STATIC ${MLXNN-src})
 target_link_libraries(MLXNN PRIVATE MLX MLXRandom)
 
+# MLXOptimizers package
+file(GLOB MLXOptimizers-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXOptimizers/*.swift)
+add_library(MLXOptimizers STATIC ${MLXOptimizers-src})
+target_link_libraries(MLXOptimizers PRIVATE MLX MLXNN)
+
 # Examples
 add_executable(example1
                ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)

@@ -2,10 +2,11 @@
 
 import Foundation
 import MLX
+import MLXNN
 import MLXRandom
 import XCTest
 
-@testable import MLXNN
+@testable import MLXOptimizers
 
 class OptimizerTests: XCTestCase {
 

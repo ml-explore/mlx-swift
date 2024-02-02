@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXNN
 
 /// Public interface for all Optimizer types.
 ///

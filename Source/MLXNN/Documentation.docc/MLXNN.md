@@ -12,6 +12,7 @@ Some places to read to get started are:
 
 - [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
 - [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
+- [MLXOptimizers](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 
