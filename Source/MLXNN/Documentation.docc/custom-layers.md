@@ -70,12 +70,14 @@ A parameter of a module is any public member of type `MLXArray` (its
 name should not start with `_`). It can be arbitrarily nested in other
 ``Module`` instances or `[MLXArray]` and `[String:MLXArray]`.
 
-``Module/parameters()`` can be used to extract a `NestedDictionary` (``ModuleParameters``) with all
-the parameters of a module and its submodules.
+``Module/parameters()`` can be used to extract a 
+`NestedDictionary` (``ModuleParameters``) with all the parameters of a 
+module and its submodules.
 
 A ``Module`` can also keep track of "frozen" parameters. See the
-``Module/freeze(recursive:keys:strict:)`` method for more details. ``valueAndGrad()``
-the gradients returned will be with respect to these trainable parameters.
+``Module/freeze(recursive:keys:strict:)`` method for more details.
+These parameters will not be considered when computing gradients and
+updating weights via ``valueAndGrad(model:_:)-12a2c``.
 
 See the _ModuleInfo and ParameterInfo_ section for more information about using
 these in swift.
@@ -85,6 +87,8 @@ these in swift.
 MLX modules allow accessing and updating individual parameters. However, most
 times we need to update large subsets of a module's parameters. This action is
 performed by ``Module/update(parameters:verify:)``.
+
+See also <doc:training>.
 
 ### Inspecting Modules
 
@@ -129,41 +133,6 @@ resulting in:
 ]
 ```
 
-
-### Value and Grad
-
-> Note that this section is included but the functionality is not complete at the time of writing.
-
-Using a ``Module`` does not preclude using MLX's high order function
-transformations (`valueAndGrad()`, `grad()`, etc.). However,
-these function transformations assume pure functions, namely the parameters
-should be passed as an argument to the function being transformed.
-
-There is an easy pattern to achieve that with MLX modules:
-
-```swift
-var model: ...
-
-func f(parameters: ModuleParameters, _ x: MLXArray) -> MLXArray {
-    model.update(parameters: parameters)
-    return model(x)
-}
-
-f(parameters: model.trainableParameters(), MLXArray.zeros([10]))
-```
-
-However, ``MLXNN/valueAndGrad()`` provides precisely this pattern and only
-computes the gradients with respect to the trainable parameters of the model.
-
-In detail:
-
-- it wraps the passed function with a function that calls ``Module/update(parameters:)``
-  to make sure the model is using the provided parameters.
-- it calls `valueAndGrad()` to transform the function into a function
-  that also computes the gradients with respect to the passed parameters.
-- it wraps the returned function with a function that passes the trainable
-  parameters as the first argument to the function returned by
-`valueAndGrad()`
 
 ## ModuleInfo and ParameterInfo
 

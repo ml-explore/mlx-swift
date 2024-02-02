@@ -4,7 +4,7 @@ import Foundation
 import MLX
 
 /// Transform the passed function `f(Model, [MLXArray])` to a function that computes the
-/// gradients of ``f`` wrt the model's trainable parameters and also its value.
+/// gradients of `f` with regard to the model's trainable parameters and also its value.
 ///
 /// - Parameters:
 ///   - model: model to apply parameters to
@@ -14,6 +14,7 @@ import MLX
 ///
 /// ### See Also
 /// - ``valueAndGrad(model:_:)-12a2c``
+/// - <doc:training>
 public func valueAndGrad<Model: Module>(
     model: Model, _ f: @escaping (Model, [MLXArray]) -> [MLXArray]
 ) -> (Model, [MLXArray]) -> ([MLXArray], ModuleParameters) {
@@ -33,7 +34,7 @@ public func valueAndGrad<Model: Module>(
 }
 
 /// Transform the passed function `f(Model, MLXArray)` to a function that computes the
-/// gradients of ``f`` wrt the model's trainable parameters and also its value.
+/// gradients of `f` with regard to the model's trainable parameters and also its value.
 ///
 /// - Parameters:
 ///   - model: model to apply parameters to
@@ -43,6 +44,7 @@ public func valueAndGrad<Model: Module>(
 ///
 /// ### See Also
 /// - ``valueAndGrad(model:_:)-12a2c``
+/// - <doc:training>
 public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLXArray) -> MLXArray)
     -> (Model, MLXArray) -> (MLXArray, ModuleParameters)
 {
@@ -63,7 +65,7 @@ public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLX
 }
 
 /// Transform the passed function `f(Model, MLXArray, MLXArray)` to a
-/// function that computes the gradients of ``f`` wrt the model's trainable
+/// function that computes the gradients of `f` with regard to the model's trainable
 /// parameters and also its value.
 ///
 /// For example:
@@ -96,6 +98,9 @@ public func valueAndGrad<Model: Module>(model: Model, _ f: @escaping (Model, MLX
 ///   - f: function to compute the gradients for
 /// - Returns: function that returns the value of `f()` and the gradient of
 ///     the parameters of the model
+///
+/// ### See Also
+/// - <doc:training>
 public func valueAndGrad<Model: Module>(
     model: Model, _ f: @escaping (Model, MLXArray, MLXArray) -> MLXArray
 ) -> (Model, MLXArray, MLXArray) -> (MLXArray, ModuleParameters) {

@@ -1129,8 +1129,23 @@ public enum ModuleValue {
     }
 }
 
+/// ParameterInfo allows you to specify alternate keys for parameter propreties.
+///
+/// For example:
+///
+/// ```swift
+/// class MyLayer : Module {
+///
+///     let weights: MLXArray
+///     @ParameterInfo(key: "bias") var b: MLXArray
+/// }
+/// ```
+///
+/// will have keys `weights` and `bias`.
+///
 /// ### See Also
 /// - <doc:custom-layers>
+/// - ``ModuleInfo``
 @propertyWrapper public class ParameterInfo<T> {
     var value: T?
     let key: String?
@@ -1172,8 +1187,62 @@ private protocol TypeErasedSetterProvider {
     func typeErasedSetter() -> TypeErasedSetter
 }
 
+/// ModuleInfo can provde information about child modules and act as an
+/// update point for ``Module/update(modules:verify:)``.
+///
+/// The keys for modules and parameters are usually named after their instance variables,
+/// but `feed_forward` would not be a very Swifty variable name:
+///
+/// ```python
+/// class TransformerBlock(nn.Module):
+///     def __init__(self, args: ModelArgs):
+///         super().__init__()
+///         ...
+///         self.feed_forward = FeedForward(args=args)
+/// ```
+///
+/// Instead we can use ``ModuleInfo`` to supply a replacement key that matches the python version:
+///
+/// ```swift
+/// public class TransformerBlock : Module {
+///
+///     let attention: Attention
+///
+///     @ModuleInfo(key: "feed_forward") var feedForward: FeedForward
+///     @ModuleInfo(key: "attention_norm") var attentionNorm: RMSNorm
+///     @ModuleInfo(key: "ffn_norm") var ffnNorm: RMSNorm
+///
+///     public init(_ args: Configuration) {
+///         self.attention = Attention(args)
+///         self._feedForward.wrappedValue = FeedForward(args)
+///         self._attentionNorm.wrappedValue = RMSNorm(args.dimensions, eps: args.normEps)
+///         self._ffnNorm.wrappedValue = RMSNorm(args.dimensions, eps: args.normEps)
+///     }
+/// ```
+///
+/// All ``Linear`` modules should use a ``ModuleInfo`` so that
+/// ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)`` can replace them at runtime:
+///
+/// ```swift
+/// public class FeedForward : Module {
+///
+///     @ModuleInfo var w1: Linear
+///     @ModuleInfo var w2: Linear
+///     @ModuleInfo var w3: Linear
+///
+///     public init(_ args: Configuration) {
+///         self.w1 = Linear(args.dimensions, args.hiddenDimensions, bias: false)
+///         self.w2 = Linear(args.hiddenDimensions, args.dimensions, bias: false)
+///         self.w3 = Linear(args.dimensions, args.hiddenDimensions, bias: false)
+///     }
+/// ```
+///
+/// The `ModuleInfo` provides a hook for ``QuantizedLinear`` and ``Module/update(modules:verify:)`` /// to
+/// replace the contents of `w1`, etc. with a new compatible `Model` after it is created.
+///
 /// ### See Also
 /// - <doc:custom-layers>
+/// - ``ParameterInfo``
 @propertyWrapper public class ModuleInfo<T>: TypeErasedSetterProvider {
     var module: T?
     let key: String?

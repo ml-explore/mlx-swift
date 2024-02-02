@@ -13,7 +13,9 @@ public func seed(_ seed: UInt64) {
 
 /// Get a PRNG key from a seed.
 ///
-/// Return a value that can be used as a PRNG key.
+/// Return a value that can be used as a PRNG key.  All ``MLXRandom``
+/// functions take an optional key -- this will let you control the
+/// random number generation.
 public func key(_ seed: UInt64) -> MLXArray {
     MLXArray(mlx_random_key(seed))
 }
@@ -192,7 +194,7 @@ public func randInt<T>(
             low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate Bernoulli random values.
+/// Generate Bernoulli random values with a `p` value of 0.5.
 ///
 /// The values are sampled from the bernoulli distribution with parameter `p` using the default value of 0.5.
 /// The result will be of size `shape`.
@@ -213,7 +215,7 @@ public func bernoulli(_ shape: [Int] = [], key: MLXArray? = nil, stream: StreamO
     return MLXArray(mlx_random_bernoulli(p.ctx, shape.asInt32, shape.count, key?.ctx, stream.ctx))
 }
 
-/// Generate Bernoulli random values.
+/// Generate Bernoulli random values with a given `p` value.
 ///
 /// The values are sampled from the bernoulli distribution with parameter
 /// `p`. The parameter `p` must have a floating point type and
@@ -364,7 +366,7 @@ public func categorical(
     }
 }
 
-/// Sample from a categorical distribution.
+/// Sample `count` values from a categorical distribution.
 ///
 /// The values are sampled from the categorical distribution specified by
 /// the unnormalized values in `logits`.

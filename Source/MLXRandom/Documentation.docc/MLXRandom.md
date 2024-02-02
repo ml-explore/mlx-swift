@@ -17,7 +17,7 @@ which will print a sequence of unique pseudo random numbers. Alternatively you c
 ```swift
 ley key = MLXRandom.key(0)
 for _ in 0 ..< 3:
-  print(MLXRandom.unfiform(key: key))
+  print(MLXRandom.uniform(key: key))
 ```
 
 which will yield the same pseudo random number at each iteration.
@@ -31,3 +31,12 @@ splittable version of Threefry, which is a counter-based PRNG.
 - [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
+
+## Topics
+
+### Keys and Seeds
+
+- ``key(_:)``
+- ``split(key:into:stream:)``
+- ``seed(_:)``
+

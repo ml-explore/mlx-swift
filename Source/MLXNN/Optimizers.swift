@@ -6,6 +6,7 @@ import MLX
 /// Public interface for all Optimizer types.
 ///
 /// ### See Also
+/// - <doc:optimizers>
 /// - ``OptimizerBase``
 public protocol Optimizer {
 
@@ -23,6 +24,9 @@ public protocol Optimizer {
 /// - `func newState(gradient: MLXArray) -> State`
 /// - `func parameters() -> ModuleParameters`
 /// - `func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (MLXArray, State)`
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class OptimizerBase<State>: Optimizer {
 
     /// Stores a `State` value in a structure that matches the model parameters
@@ -78,6 +82,9 @@ public class OptimizerBase<State>: Optimizer {
 }
 
 /// Convenience subclass of OptimizerBase that provides `MLXArray` State.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
 
     override func newState(gradient: MLXArray) -> MLXArray {
@@ -90,6 +97,9 @@ public class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
 }
 
 /// Stochastic gradient descent optimizer.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class SGD: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -152,6 +162,9 @@ public class SGD: OptimizerBaseArrayState {
 /// The RMSprop optimizer [1].
 ///
 /// [1]: Tieleman, T. and Hinton, G. 2012. Lecture 6.5-rmsprop, coursera: Neural networks for machine learning
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class RMSprop: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -185,6 +198,9 @@ public class RMSprop: OptimizerBaseArrayState {
 /// Our Adagrad implementation follows the original paper. In detail,
 ///
 /// [1]: Duchi, J., Hazan, E. and Singer, Y., 2011. Adaptive subgradient methods for online learning and stochastic optimization. JMLR 2011.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class AdaGrad: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -214,6 +230,9 @@ public class AdaGrad: OptimizerBaseArrayState {
 /// Our AdaDelta implementation follows the original paper. In detail,
 ///
 /// [1]: Zeiler, M.D., 2012. ADADELTA: an adaptive learning rate method. arXiv preprint arXiv:1212.5701.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class AdaDelta: OptimizerBase<(MLXArray, MLXArray)> {
 
     typealias State = (MLXArray, MLXArray)
@@ -264,6 +283,9 @@ public class AdaDelta: OptimizerBase<(MLXArray, MLXArray)> {
 /// correction in the first and second moment estimates. In detail,
 ///
 /// [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class Adam: OptimizerBase<(MLXArray, MLXArray)> {
 
     typealias State = (MLXArray, MLXArray)
@@ -313,6 +335,9 @@ public class Adam: OptimizerBase<(MLXArray, MLXArray)> {
 /// with a `weightDecay` lambda value:
 ///
 /// [1]: Loshchilov, I. and Hutter, F., 2019. Decoupled weight decay regularization. ICLR 2019.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class AdamW: Adam {
 
     var weightDecay: Float = 0.01
@@ -346,6 +371,9 @@ public class AdamW: Adam {
 /// correction in the first and second moment estimates. In detail,
 ///
 /// [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class Adamax: OptimizerBase<(MLXArray, MLXArray)> {
 
     typealias State = (MLXArray, MLXArray)
@@ -398,6 +426,9 @@ public class Adamax: OptimizerBase<(MLXArray, MLXArray)> {
 /// detail,
 ///
 /// [1]: Chen, X. Symbolic Discovery of Optimization Algorithms. arXiv preprint arXiv:2302.06675.
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class Lion: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -442,6 +473,9 @@ public class Lion: OptimizerBaseArrayState {
 /// Our Adafactor implementation follows the original paper: `Adafactor:
 /// Adaptive Learning Rates with Sublinear Memory Cost
 /// <https://arxiv.org/abs/1804.04235>
+///
+/// ### See Also
+/// - <doc:optimizers>
 public class Adafactor: OptimizerBase<Adafactor.State> {
 
     var learningRate: Float? = nil

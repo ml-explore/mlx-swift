@@ -2,10 +2,11 @@
 
 ## Overview
 
-Two places to read to get started are:
+Some places to read to get started are:
 
-- <doc:custom-layers>
 - ``Module``
+- <doc:custom-layers>
+- <doc:training>
 
 ## Other MLX Packages
 
@@ -16,10 +17,22 @@ Two places to read to get started are:
 
 ## Topics
 
+### Articles
+
+- <doc:custom-layers>
+- <doc:training>
+- <doc:module-filters>
+
 ### Base Classes and Interfaces
 
 - ``Module``
 - ``UnaryLayer``
+
+- ``ModuleParameters``
+- ``ModuleChilren``
+- ``ModuleItem``
+- ``ModuleItems``
+- ``ModuleValue``
 
 ### Unary Layers
 
@@ -35,6 +48,7 @@ These can be used with ``Sequential``.
 - ``Identity``
 - ``Linear``
 - ``QuantizedLinear``
+- ``RoPE``
 - ``RMSNorm``
 - ``Sequential``
 
@@ -62,6 +76,7 @@ These can be used with ``Sequential``.
 - ``selu(_:)``
 - ``silu(_:)``
 - ``sigmoid(_:)``
+- ``softMax(_:)``
 - ``softPlus(_:)``
 - ``softSign(_:)``
 - ``step(_:threshold:)``
@@ -121,3 +136,9 @@ These can be used with ``Sequential``.
 - ``Optimizer``
 - ``OptimizerBase``
 - ``OptimizerBaseArrayState``
+
+### Value and Grad
+
+- ``valueAndGrad(model:_:)-12a2c``
+- ``valueAndGrad(model:_:)-1w6x8``
+- ``valueAndGrad(model:_:)-548r7``

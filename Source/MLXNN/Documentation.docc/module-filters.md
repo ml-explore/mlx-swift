@@ -1,4 +1,4 @@
-# `Module` Filter and Map Functions
+# Module Filter and Map Functions
 
 Pre-built filter and map functions in `Module`.
 
@@ -9,6 +9,37 @@ Pre-built filter and map functions in `Module`.
 - ``Module/mapParameters(map:isLeaf:)``
 
 See those methods for more information.
+
+## Examples
+
+The `filterMap()` method has several options for controlling the traversal of
+the modules, parameters and other values in the model.  Here is an example
+that limits the traversal to just local parameters and produces 
+a `NestedDictionary` of the shapes:
+
+```swift
+// produces NestedDictionary<String, [Int]> for the parameters attached
+// directly to this module
+let localParameterShapes = module.filterMap(
+    filter: Module.filterLocalParameters,
+    map: Module.mapParameters { $0.shape })
+```
+
+Applying a map to the entire set of parameters (though some traversal
+control is possible through the optional `isLeaf`) is very easy:
+
+```swift
+let parameterShapes = module.mapParameters { $0.shape }
+```
+
+Finally, `apply()` does both a filter and an ``Module/update(parameters:)``.
+This code would convert all floating point parameters to `.float16`.
+
+```swift
+layer.apply { array in
+    array.dtype.isFloatingPoint ? array.asType(.float16) : array
+}
+```
 
 ## Topics
 
