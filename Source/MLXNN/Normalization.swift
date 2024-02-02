@@ -8,8 +8,11 @@ import MLX
 /// Concretely:
 ///
 /// ```swift
-/// MLX.rsqrt((x * S).square().sum() + eps)
+/// weight * x * MLX.rsqrt(x.square().mean() + eps)
 /// ```
+///
+/// where `weight` is initialized with ones and `eps` is a small float to
+/// ensure the numerical stability of inverse square root.
 ///
 /// ### See Also
 /// - [https://arxiv.org/abs/1910.07467](https://arxiv.org/abs/1910.07467)
