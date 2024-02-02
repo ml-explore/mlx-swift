@@ -51,13 +51,13 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
     }
 }
 
-func buildValueAndGradient(
-    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray]
-) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> (
+func buildValueAndGradient<T>(
+    _ f: @escaping (NestedDictionary<String, MLXArray>, T) -> [MLXArray]
+) -> (NestedDictionary<String, MLXArray>, T) -> (
     [MLXArray], NestedDictionary<String, MLXArray>
 ) {
     {
-        (parameters: NestedDictionary<String, MLXArray>, arrays: [MLXArray]) -> (
+        (parameters: NestedDictionary<String, MLXArray>, arrays: T) -> (
             [MLXArray], NestedDictionary<String, MLXArray>
         ) in
 
