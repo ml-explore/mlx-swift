@@ -100,7 +100,7 @@ Ronan Collobert.
 
 ## Versions
 
-The software generally matches the API and implementation of mlx as of hash
+The software generally matches the API and implementation of MLX as of hash
 [f6e911ced01cb1f1d7f0843620412f002d525e37](https://github.com/ml-explore/mlx/tree/f6e911ced01cb1f1d7f0843620412f002d525e37).
 
 There may be some implementations that match newer code/api, especially where
