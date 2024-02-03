@@ -1,0 +1,13 @@
+version: 2.1
+
+jobs:
+
+  build_and_test:
+    machine: true
+    resource_class: ml-explore/m-builder
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            echo "Do something useful"
