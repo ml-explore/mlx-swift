@@ -361,4 +361,53 @@ class ModuleTests: XCTestCase {
         XCTAssertTrue(m.module.child is QuantizedLinear)
     }
 
+    func testBatchNormItems() {
+        // BatchNorm is interesting because:
+        // - it has optional parameters
+        // - it has optional parameters with keys
+        // - it mutates its parameters
+        let n1 = BatchNorm(featureCount: 4)
+
+        // switch it into training mode so it update parameters
+        n1.train(true)
+
+        // it should have all the parameters present
+        XCTAssertEqual(
+            Set(n1.parameters().flattened().map { $0.0 }),
+            Set(["weight", "bias", "running_mean", "running_var"]))
+
+        // only two of them are trainable
+        XCTAssertEqual(
+            Set(n1.trainableParameters().flattened().map { $0.0 }), Set(["weight", "bias"]))
+
+        _ = n1(MLXArray(0 ..< 4, [1, 1, 4]))
+
+        let parameters = n1.parameters()
+
+        let m = parameters["running_mean"]
+        switch m {
+        case .value(let a):
+            let a = a.asArray(Float.self)
+            let e: [Float] = [0, 0.1, 0.2, 0.3]
+
+            for item in zip(a, e) {
+                XCTAssertEqual(item.0, item.1, accuracy: 0.01)
+            }
+        default:
+            XCTFail("should be a .value(array)")
+        }
+
+        let v = parameters["running_var"]
+        switch v {
+        case .value(let a):
+            let a = a.asArray(Float.self)
+            let e: [Float] = [0.9, 0.9, 0.9, 0.9]
+
+            for item in zip(a, e) {
+                XCTAssertEqual(item.0, item.1, accuracy: 0.01)
+            }
+        default:
+            XCTFail("should be a .value(array)")
+        }
+    }
 }
