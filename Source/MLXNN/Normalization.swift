@@ -7,6 +7,9 @@ import MLX
 ///
 /// ### References
 /// 1. [https://arxiv.org/abs/1607.08022](https://arxiv.org/abs/1607.08022)
+///
+/// ### See also
+/// - <doc:normalization>
 public class InstanceNorm: Module, UnaryLayer {
 
     let dimensions: Int
@@ -62,6 +65,9 @@ public class InstanceNorm: Module, UnaryLayer {
 ///
 /// ### References
 /// 1. [https://arxiv.org/abs/1607.06450](https://arxiv.org/abs/1607.06450)
+///
+/// ### See also
+/// - <doc:normalization>
 public class LayerNorm: Module, UnaryLayer {
 
     let dimensions: Int
@@ -118,8 +124,11 @@ public class LayerNorm: Module, UnaryLayer {
 /// where `weight` is initialized with ones and `eps` is a small float to
 /// ensure the numerical stability of inverse square root.
 ///
-/// ### See Also
-/// - [https://arxiv.org/abs/1910.07467](https://arxiv.org/abs/1910.07467)
+/// ### References
+/// 1. [https://arxiv.org/abs/1910.07467](https://arxiv.org/abs/1910.07467)
+///
+/// ### See also
+/// - <doc:normalization>
 public class RMSNorm: Module, UnaryLayer {
 
     let weight: MLXArray
@@ -157,6 +166,9 @@ public class RMSNorm: Module, UnaryLayer {
 ///
 /// ### References
 /// 1. [https://arxiv.org/abs/1803.08494](https://arxiv.org/abs/1803.08494)
+///
+/// ### See also
+/// - <doc:normalization>
 public class GroupNorm: Module, UnaryLayer {
 
     let groupCount: Int
@@ -247,6 +259,9 @@ public class GroupNorm: Module, UnaryLayer {
 ///
 /// ### References
 /// 1. [https://arxiv.org/abs/1502.03167](https://arxiv.org/abs/1502.03167)
+///
+/// ### See also
+/// - <doc:normalization>
 public class BatchNorm: Module, UnaryLayer {
 
     let featureCount: Int

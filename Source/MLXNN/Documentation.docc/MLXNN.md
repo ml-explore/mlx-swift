@@ -119,24 +119,18 @@ These can be used with ``Sequential``.
 - ``smoothL1Loss(predictions:targets:beta:reduction:)``
 - ``tripletLoss(anchors:positives:negatives:axis:p:margin:eps:reduction:)``
 
-### Optimizers
+### Normalization Layers
 
-- ``AdaDelta``
-- ``Adafactor``
-- ``AdaGrad``
-- ``AdamW``
-- ``Adam``
-- ``Adamax``
-- ``Lion``
-- ``RMSprop``
-- ``SGD``
+- ``InstanceNorm``
+- ``LayerNorm``
+- ``RMSNorm``
+- ``GroupNorm``
+- ``BatchNorm``
 
+### Transformer Layers
 
-### Optimizer Base Classes and Protocols
-
-- ``Optimizer``
-- ``OptimizerBase``
-- ``OptimizerBaseArrayState``
+- ``MultiHeadAttention``
+- ``Transformer``
 
 ### Value and Grad
 
