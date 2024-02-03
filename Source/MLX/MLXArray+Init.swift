@@ -23,7 +23,7 @@ extension MLXArray {
     public convenience init(_ value: Int32) {
         self.init(mlx_array_from_int(value))
     }
-    
+
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
     /// a `Dtype.int32`.
     ///
@@ -38,7 +38,10 @@ extension MLXArray {
     /// - <doc:initialization>
     /// - ``init(int64:)``
     public convenience init(_ value: Int) {
-        precondition((Int(Int32.min) ... Int(Int32.max)).contains(value), "\(value) is out of range for Int32 -- please use MLXArray(int64: Int) if you need 64 bits.")
+        precondition(
+            (Int(Int32.min) ... Int(Int32.max)).contains(value),
+            "\(value) is out of range for Int32 -- please use MLXArray(int64: Int) if you need 64 bits."
+        )
         self.init(mlx_array_from_int(Int32(value)))
     }
 
@@ -220,7 +223,7 @@ extension MLXArray {
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
             })
     }
-    
+
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
     /// a `Dtype.int32`.
     ///
@@ -236,7 +239,10 @@ extension MLXArray {
     /// - ``init(int64:_:)-7bgj2``
     public convenience init(_ value: [Int], _ shape: [Int]? = nil) {
         shapePrecondition(shape: shape, count: value.count)
-        precondition(value.allSatisfy { (Int(Int32.min) ... Int(Int32.max)).contains($0) }, "\(value) is out of range for Int32 -- please use MLXArray(int64: [Int]]) if you need 64 bits.")
+        precondition(
+            value.allSatisfy { (Int(Int32.min) ... Int(Int32.max)).contains($0) },
+            "\(value) is out of range for Int32 -- please use MLXArray(int64: [Int]]) if you need 64 bits."
+        )
 
         self.init(
             value
