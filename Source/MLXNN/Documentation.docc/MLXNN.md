@@ -127,6 +127,12 @@ These can be used with ``Sequential``.
 - ``GroupNorm``
 - ``BatchNorm``
 
+### Positional Encoding Layers
+
+- ``RoPE``
+- ``SinusoidalPositionalEncoding``
+- ``ALiBi``
+
 ### Transformer Layers
 
 - ``MultiHeadAttention``

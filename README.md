@@ -77,7 +77,6 @@ Here is what is missing:
 
 - [fft](https://ml-explore.github.io/mlx/build/html/python/fft.html) package
 - [linalg](https://ml-explore.github.io/mlx/build/html/python/linalg.html) package
-- a few of the layers in MLXNN
 
 For more details on the API see the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/).
 
