@@ -786,7 +786,7 @@ open class Module {
     ///
     /// ### See Also
     /// - ``training``
-    public func train(mode: Bool = true) {
+    public func train(_ mode: Bool = true) {
         visit(modules: {
             $1.training = mode
         })
@@ -1014,7 +1014,7 @@ extension Module {
     static public let isLeafDefault = { (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .none, .value(.module): false
-        case .value(.parameters), .value(.other): true
+        case .value(.parameters), .value(.other), .value(.none): true
         }
     }
 
@@ -1058,6 +1058,8 @@ extension Module {
 /// - ``ModuleItems``
 /// - ``ModuleItem``
 public enum ModuleValue {
+    case none
+
     /// An `MLXArray` parameters value.
     ///
     /// From code:
@@ -1086,7 +1088,11 @@ public enum ModuleValue {
     case other(Any)
 
     /// Recursive build of ``ModuleItem`` from a value.
-    private static func build(value: Any) -> ModuleItem {
+    private static func build(value: Any?) -> ModuleItem {
+        guard let value else {
+            return .none
+        }
+
         switch value {
         case let v as MLXArray:
             return .value(.parameters(v))
@@ -1155,7 +1161,13 @@ public enum ModuleValue {
             value!
         }
         set {
-            value = newValue
+            if value != nil {
+                // do not allow set because the info cache on Module will not
+                // see the new value
+                fatalError("please call update() on the array rather than setting it")
+            } else {
+                value = newValue
+            }
         }
     }
 
@@ -1303,14 +1315,17 @@ enum UpdateError: Error {
     case unhandledKeys(base: String, keys: [String])
 }
 
-private func unwrapProperty(_ property: Any) -> (String?, Any)? {
+private func unwrapProperty(_ property: Any) -> (String?, Any?)? {
     let label: String?
-    let value: Any
+    let value: Any?
 
     switch property {
     case let p as ParameterInfo<MLXArray>:
         label = p.key
         value = p.value!
+    case let p as ParameterInfo<MLXArray?>:
+        label = p.key
+        value = p.value
     case let p as ParameterInfo<(MLXArray, MLXArray)>:
         label = p.key
         value = p.value!
