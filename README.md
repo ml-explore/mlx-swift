@@ -97,3 +97,11 @@ now maintained by David Koski. MLX Swift is built on top of
 [MLX](https://github.com/ml-explore/mlx), which was initially developed with
 equal contribution by Awni Hannun, Jagrit Digani, Angelos Katharopoulos, and
 Ronan Collobert.
+
+## Versions
+
+The software generally matches the API and implementation of mlx as of hash
+[f6e911ced01cb1f1d7f0843620412f002d525e37](https://github.com/ml-explore/mlx/tree/f6e911ced01cb1f1d7f0843620412f002d525e37).
+
+There may be some implementations that match newer code/api, especially where
+there is a python equivalent but that hash was the reference implementation.
