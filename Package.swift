@@ -68,7 +68,6 @@ let package = Package(
 
                 // opt-out of these backends (using metal)
                 "mlx/mlx/backend/no_metal",
-                "mlx/mlx/backend/accelerate",
 
                 // see PrepareMetalShaders -- don't build the kernels in place
                 "mlx/mlx/backend/metal/kernels",
