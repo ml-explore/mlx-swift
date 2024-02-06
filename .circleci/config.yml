@@ -28,13 +28,4 @@ workflows:
         - not: << pipeline.parameters.weekly_build >>
     jobs:
       - mac_build_and_test
-      - build_release:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-          matrix:
-            parameters:
-              macos_version: ["14"]
 
