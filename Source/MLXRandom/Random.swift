@@ -98,6 +98,31 @@ public func uniform<T>(
             low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
+/// Generate uniformly distributed random numbers.
+///
+/// The values are sampled uniformly in the half-open interval `[lb, ub)`.
+/// The lower and upper bound can be scalars or arrays and must be
+/// broadcastable to the optional `shape` (it will be the shape of the `lb`
+/// if not specified).
+///
+/// ```swift
+/// let key = MLXRandom.key(0)
+///
+/// // generate an array of two Float values, one in the range 0 ..< 10
+/// // and one in the range 10 ..< 100
+/// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
+/// ```
+public func uniform(
+    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
+    key: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (low, high) = toArrays(low, high)
+    let shape = shape ?? low.shape
+    return MLXArray(
+        mlx_random_uniform(
+            low.ctx, high.ctx, shape.asInt32, shape.count, dtype.cmlxDtype, key?.ctx, stream.ctx))
+}
+
 /// Generate normally distributed random numbers.
 ///
 /// Generate an array of random numbers using the optional shape.  The result
@@ -117,6 +142,27 @@ public func normal<T>(
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     MLXArray(mlx_random_normal(shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
+}
+
+/// Generate normally distributed random numbers.
+///
+/// Generate an array of random numbers using the optional shape.  The result
+/// will be of the given `type`.
+///
+/// ```swift
+/// let key = MLXRandom.key(0)
+///
+/// // generate a single Float with normal distribution
+/// let value = MLXRandom.normal(key: key).item(Float.self)
+///
+/// // generate an array of Float with normal distribution in shape [10, 5]
+/// let array = MLXRandom.normal([10, 5], key: key)
+/// ```
+public func normal(
+    _ shape: [Int] = [], dtype: DType = .float32, key: MLXArray? = nil,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_random_normal(shape.asInt32, shape.count, dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
 /// Generate random integers from the given interval.
@@ -314,6 +360,30 @@ public func truncatedNormal<T>(
             low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
+/// Generate values from a truncated normal distribution.
+///
+/// The values are sampled from the truncated normal distribution
+/// on the domain `(lower, upper)`. The bounds `lower` and `upper`
+/// can be scalars or arrays and must be broadcastable to `shape`.
+///
+/// ```swift
+/// let key = MLXRandom.key(0)
+///
+/// // generate an array of two Float values, one in the range 0 ..< 10
+/// // and one in the range 10 ..< 100
+/// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
+/// ```
+public func truncatedNormal(
+    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
+    key: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (low, high) = toArrays(low, high)
+    let shape = shape ?? low.shape
+    return MLXArray(
+        mlx_random_truncated_normal(
+            low.ctx, high.ctx, shape.asInt32, shape.count, dtype.cmlxDtype, key?.ctx, stream.ctx))
+}
+
 /// Sample from the standard Gumbel distribution.
 ///
 /// The values are sampled from a standard Gumbel distribution
@@ -333,6 +403,27 @@ public func gumbel<T>(
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     MLXArray(mlx_random_gumbel(shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
+}
+
+/// Sample from the standard Gumbel distribution.
+///
+/// The values are sampled from a standard Gumbel distribution
+/// which CDF `exp(-exp(-x))`.
+///
+/// ```swift
+/// let key = MLXRandom.key(0)
+///
+/// // generate a single Float with Gumbel distribution
+/// let value = MLXRandom.gumbel(key: key).item(Float.self)
+///
+/// // generate an array of Float with Gumbel distribution in shape [10, 5]
+/// let array = MLXRandom.gumbel([10, 5], key: key)
+/// ```
+public func gumbel(
+    _ shape: [Int] = [], dtype: DType = .float32, key: MLXArray? = nil,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_random_gumbel(shape.asInt32, shape.count, dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
 /// Sample from a categorical distribution.
