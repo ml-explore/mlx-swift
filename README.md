@@ -67,19 +67,6 @@ ninja
 ./example
 ```
 
-## Limitations
-
-MLX Swift currently supports a subset of MLX. Most of what you need for
-training and inference with typical neural network models is available. The
-rest is coming soon.
-
-Here is what is missing:
-
-- [fft](https://ml-explore.github.io/mlx/build/html/python/fft.html) package
-- [linalg](https://ml-explore.github.io/mlx/build/html/python/linalg.html) package
-
-For more details on the API see the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/).
-
 ## Contributing 
 
 Check out the [contribution guidelines](CONTRIBUTING.md) for more information
