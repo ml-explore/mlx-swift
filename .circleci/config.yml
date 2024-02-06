@@ -19,7 +19,7 @@ jobs:
           name: Run Tests
           command: |
             xcodebuild -version
-	    xcrun --show-sdk-build-version
+            xcrun --show-sdk-build-version
             swift --version
             xcodebuild test -scheme mlx-swift-Package -destination 'platform=OS X'
 
