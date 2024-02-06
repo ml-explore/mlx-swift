@@ -1,8 +1,16 @@
 version: 2.1
 
+parameters:
+  nightly_build:
+    type: boolean
+    default: false
+  weekly_build:
+    type: boolean
+    default: false
+
 jobs:
 
-  build_and_test:
+  mac_build_and_test:
     machine: true
     resource_class: ml-explore/m-builder
     steps:
@@ -11,3 +19,22 @@ jobs:
           name: Install dependencies
           command: |
             echo "Do something useful - test"
+
+workflows:
+  build_and_test:
+    when:
+      and:
+        - not: << pipeline.parameters.nightly_build >>
+        - not: << pipeline.parameters.weekly_build >>
+    jobs:
+      - mac_build_and_test
+      - build_release:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+          matrix:
+            parameters:
+              macos_version: ["14"]
+
