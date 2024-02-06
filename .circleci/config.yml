@@ -16,9 +16,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Run Tests
           command: |
-            echo "Do something useful - test"
+            xcodebuild -version
+	    xcrun --show-sdk-build-version
+            swift --version
+            xcodebuild test -scheme mlx-swift-Package -destination 'platform=OS X'
 
 workflows:
   build_and_test:
