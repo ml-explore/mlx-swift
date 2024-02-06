@@ -11,8 +11,9 @@ parameters:
 jobs:
 
   mac_build_and_test:
-    machine: true
-    resource_class: ml-explore/m-builder
+    macos:
+      xcode: 15.2.0
+    resource_class: macos.m1.medium.gen1
     steps:
       - checkout
       - run:
