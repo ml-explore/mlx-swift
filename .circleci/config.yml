@@ -10,4 +10,4 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            echo "Do something useful"
+            echo "Do something useful - test"
