@@ -10,13 +10,13 @@ import XCTest
 
 class OptimizerTests: XCTestCase {
 
-    func testSGD() {
-        class M: Module {
-            let first = [MLXArray.zeros([10]), MLXArray.zeros([1])]
-            let second = MLXArray.zeros([1])
-        }
+    class ShapeModule: Module {
+        let first = [MLXArray.zeros([10]), MLXArray.zeros([1])]
+        let second = MLXArray.zeros([1])
+    }
 
-        let model = M()
+    func checkShape<T>(optimizer: OptimizerBase<T>) {
+        let model = ShapeModule()
         let params = model.parameters()
         let grads = params.mapValues { MLXArray.ones(like: $0) }
 
@@ -26,29 +26,34 @@ class OptimizerTests: XCTestCase {
 
         let shapesEqual = params.mapValues(update) { (e1, e2) -> Bool in
             e1.shape == e2!.shape
-        }
-        print(shapesEqual)
-
-        print(update)
-    }
-
-    func testTrain() {
-        // A very simple model that implements the equation
-        // for a linear function: y = mx + b.  This can be trained
-        // to match data -- in this case an unknown (to the model)
-        // linear function.
-        //
-        // This is a nice example because most people know how
-        // linear functions work and we can see how the slope
-        // and intercept converge.
-        class LinearFunctionModel: Module, UnaryLayer {
-            let m = MLXRandom.uniform(low: -5.0, high: 5.0)
-            let b = MLXRandom.uniform(low: -5.0, high: 5.0)
-
-            func callAsFunction(_ x: MLXArray) -> MLXArray {
-                m * x + b
+        }.allSatisfy {
+            switch $0.value {
+            case .value(let b): b
+            default: true
             }
         }
+
+        XCTAssertTrue(shapesEqual)
+    }
+
+    // A very simple model that implements the equation
+    // for a linear function: y = mx + b.  This can be trained
+    // to match data -- in this case an unknown (to the model)
+    // linear function.
+    //
+    // This is a nice example because most people know how
+    // linear functions work and we can see how the slope
+    // and intercept converge.
+    class LinearFunctionModel: Module, UnaryLayer {
+        let m = MLXRandom.uniform(low: -5.0, high: 5.0)
+        let b = MLXRandom.uniform(low: -5.0, high: 5.0)
+
+        func callAsFunction(_ x: MLXArray) -> MLXArray {
+            m * x + b
+        }
+    }
+
+    func checkTrain<T>(optimizer: OptimizerBase<T>) {
 
         // measure the distance from the prediction (model(x)) and the
         // ground truth (y).  this gives feedback on how close the
@@ -101,4 +106,56 @@ class OptimizerTests: XCTestCase {
         // ideally this should be pretty close to the m and b values above
         print(model.parameters())
     }
+
+    // MARK: - Integration Tests
+    //
+    // integration tests:
+    // - verify shapes match input (sort of a smoke test, copied from python)
+    // - verify that the otpimizer actually converges for a simple model
+
+    func testSGD() {
+        checkShape(optimizer: SGD(learningRate: 0.1))
+        checkTrain(optimizer: SGD(learningRate: 0.1))
+    }
+
+    func testRMSprop() {
+        checkShape(optimizer: RMSprop(learningRate: 0.1))
+        checkTrain(optimizer: RMSprop(learningRate: 0.1))
+    }
+
+    func testAdaGrad() {
+        checkShape(optimizer: AdaGrad(learningRate: 0.1))
+        checkTrain(optimizer: AdaGrad(learningRate: 0.1))
+    }
+
+    func testAdaDelta() {
+        checkShape(optimizer: AdaDelta(learningRate: 0.1))
+        checkTrain(optimizer: AdaDelta(learningRate: 0.1))
+    }
+
+    func testAdam() {
+        checkShape(optimizer: Adam(learningRate: 0.1))
+        checkTrain(optimizer: Adam(learningRate: 0.1))
+    }
+
+    func testAdamW() {
+        checkShape(optimizer: AdamW(learningRate: 0.1))
+        checkTrain(optimizer: AdamW(learningRate: 0.1))
+    }
+
+    func testAdamax() {
+        checkShape(optimizer: Adamax(learningRate: 0.1))
+        checkTrain(optimizer: Adamax(learningRate: 0.1))
+    }
+
+    func testLion() {
+        checkShape(optimizer: Lion(learningRate: 0.1))
+        checkTrain(optimizer: Lion(learningRate: 0.1))
+    }
+
+    func testAdafactor() {
+        checkShape(optimizer: Adafactor(learningRate: 0.1))
+        checkTrain(optimizer: Adafactor(learningRate: 0.1))
+    }
+
 }
