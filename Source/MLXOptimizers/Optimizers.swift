@@ -14,8 +14,8 @@ public protocol Optimizer {
     /// Apply the gradients to the parameters of the model and update the model with the new parameters.
     func update(model: Module, gradients: ModuleParameters)
 
-    /// Return any parameters that should be passed to `eval()`
-    func parameters() -> [MLXArray]
+    /// Return any state that should be passed to `eval()`
+    func state() -> [MLXArray]
 }
 
 /// The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis
@@ -31,7 +31,7 @@ public protocol Optimizer {
 public class OptimizerBase<State>: Optimizer {
 
     /// Stores a `State` value in a structure that matches the model parameters
-    var state = NestedDictionary<String, State>()
+    var stateStorage = NestedDictionary<String, State>()
 
     /// Subclasses must implment this to create a new `State` when needed.  This is called
     /// with the gradient in question.
@@ -56,7 +56,7 @@ public class OptimizerBase<State>: Optimizer {
     ///     state.flattened().map { $0.1 }
     /// }
     /// ```
-    public func parameters() -> [MLXArray] {
+    public func state() -> [MLXArray] {
         fatalError("parameters() not implemented \(type(of: self))")
     }
 
@@ -67,13 +67,14 @@ public class OptimizerBase<State>: Optimizer {
     /// Evaluate `applySingle(gradient: MLXArray, parameter: MLXArray, state: State)` for
     /// each parameter and update `self.state` and produce new `ModuleParameters`.
     final func apply(gradients: ModuleParameters, model: Module) -> ModuleParameters {
-        let (p, s) = gradients.mapValues(model.parameters(), state) { gradient, parameter, state in
+        let (p, s) = gradients.mapValues(model.parameters(), stateStorage) {
+            gradient, parameter, state in
             // handle optionality of the visitor params
             applySingle(
                 gradient: gradient, parameter: parameter!,
                 state: state ?? newState(gradient: gradient))
         }
-        self.state = s
+        self.stateStorage = s
         return p
     }
 
@@ -92,8 +93,8 @@ public class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
         MLXArray.zeros(like: gradient)
     }
 
-    public override func parameters() -> [MLXArray] {
-        state.flattened().map { $0.1 }
+    public override func state() -> [MLXArray] {
+        stateStorage.flattened().map { $0.1 }
     }
 }
 
@@ -260,8 +261,8 @@ public class AdaDelta: OptimizerBase<(MLXArray, MLXArray)> {
         (MLXArray.zeros(like: gradient), MLXArray.zeros(like: gradient))
     }
 
-    public override func parameters() -> [MLXArray] {
-        state.flattened().flatMap { [$0.1.0, $0.1.1] }
+    public override func state() -> [MLXArray] {
+        stateStorage.flattened().flatMap { [$0.1.0, $0.1.1] }
     }
 
     override func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
@@ -310,8 +311,8 @@ public class Adam: OptimizerBase<(MLXArray, MLXArray)> {
         (gradient, square(gradient))
     }
 
-    public override func parameters() -> [MLXArray] {
-        state.flattened().flatMap { [$0.1.0, $0.1.1] }
+    public override func state() -> [MLXArray] {
+        stateStorage.flattened().flatMap { [$0.1.0, $0.1.1] }
     }
 
     override func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
@@ -398,8 +399,8 @@ public class Adamax: OptimizerBase<(MLXArray, MLXArray)> {
         (MLXArray.zeros(like: gradient), MLXArray.zeros(like: gradient))
     }
 
-    public override func parameters() -> [MLXArray] {
-        state.flattened().flatMap { [$0.1.0, $0.1.1] }
+    public override func state() -> [MLXArray] {
+        stateStorage.flattened().flatMap { [$0.1.0, $0.1.1] }
     }
 
     override func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
@@ -531,8 +532,8 @@ public class Adafactor: OptimizerBase<Adafactor.State> {
         State()
     }
 
-    public override func parameters() -> [MLXArray] {
-        state.flattened().flatMap {
+    public override func state() -> [MLXArray] {
+        stateStorage.flattened().flatMap {
             [$0.1.expAvgSqRow, $0.1.expAvgSqCol, $0.1.expAvgSq, $0.1.expAvg]
                 .compactMap { $0 }
         }

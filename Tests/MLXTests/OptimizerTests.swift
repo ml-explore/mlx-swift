@@ -88,7 +88,7 @@ class OptimizerTests: XCTestCase {
             let (loss, grads) = lg(model, x, y)
             optimizer.update(model: model, gradients: grads)
 
-            eval(model.parameters(), optimizer.parameters())
+            eval(model.parameters(), optimizer.state())
 
             lastLoss = loss
         }
