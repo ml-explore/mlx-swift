@@ -1,6 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
+import Numerics
 import XCTest
 
 @testable import MLX
@@ -104,4 +105,26 @@ class MLXArrayInitTests: XCTestCase {
         assertEqual(a, expected)
     }
 
+    func testComplexScalar() {
+        let c1 = MLXArray(real: 3, imaginary: 4)
+        XCTAssertEqual(c1.realPart().item(), 3)
+        XCTAssertEqual(c1.imaginaryPart().item(), 4)
+
+        let c2 = MLXArray(Complex(3, 4))
+        assertEqual(c1, c2)
+    }
+
+    func testComplexArray() {
+        let r1 = MLXArray(converting: [2, 3, 4])
+        let i1 = MLXArray(converting: [7, 8, 9])
+        let c1 = r1 + i1.asImaginary()
+
+        assertEqual(c1.realPart(), r1)
+        assertEqual(c1.imaginaryPart(), i1)
+
+        let a1: [Complex<Float>] = [Complex(2, 7), Complex(3, 8), Complex(4, 9)]
+        let c2 = MLXArray(a1)
+
+        assertEqual(c1, c2)
+    }
 }

@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Numerics
 
 private func shapePrecondition(shape: [Int]?, count: Int) {
     if let shape {
@@ -421,6 +422,10 @@ extension MLXArray {
         self.init(mlx_array_from_data([real, imaginary], [], 0, DType.complex64.cmlxDtype))
     }
 
+    /// Create a ``DType/complex64`` scalar from `Complex<Float>`.
+    public convenience init(_ value: Complex<Float>) {
+        self.init(real: value.real, imaginary: value.imaginary)
+    }
 }
 
 // MARK: - Expressible by literals

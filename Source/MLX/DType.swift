@@ -1,6 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Cmlx
+import Numerics
 
 /// Enum wrapping `Cmlx.mlx_array_dtype`.
 ///
@@ -144,6 +145,10 @@ extension Float32: HasDType {
     }
 }
 
+extension Complex: HasDType where RealType == Float {
+    static public var dtype: DType { .complex64 }
+}
+
 /// Protocol for promoting a value (e.g. a scalar) to an MLXArray.
 public protocol ScalarOrArray {
     /// Convert to ``MLXArray`` using the optional suggested ``DType``.
@@ -173,6 +178,12 @@ extension Int: ScalarOrArray {
 extension Double: ScalarOrArray {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         MLXArray(Float(self), dtype: dtype ?? .float32)
+    }
+}
+
+extension Complex: ScalarOrArray where RealType == Float {
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        MLXArray(self)
     }
 }
 

@@ -26,8 +26,11 @@ let package = Package(
         ),
     ],
     dependencies: [
+        // for Complex type
+        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
+
         // docc builder
-        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main")
+        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main"),
     ],
     targets: [
         // plugin to help build the metal shaders
@@ -107,7 +110,10 @@ let package = Package(
 
         .target(
             name: "MLX",
-            dependencies: ["Cmlx"]
+            dependencies: [
+                "Cmlx",
+                .product(name: "Numerics", package: "swift-numerics"),
+            ]
         ),
         .target(
             name: "MLXRandom",
