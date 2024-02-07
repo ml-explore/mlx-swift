@@ -59,3 +59,22 @@ are the CPU and GPU.
 ### Free Functions
 
 - <doc:free-functions>
+
+### Data Types
+
+- ``DType``
+- ``HasDType``
+- ``ScalarOrArray``
+
+### Nested Data
+
+- ``NestedDictionary``
+- ``NestedItem``
+- ``IndentedDescription``
+
+### Streams and Devices
+
+- ``StreamOrDevice``
+- ``Device``
+- ``DeviceType``
+- ``Stream``

@@ -178,15 +178,27 @@ public final class MLXArray {
     /// print(array.dim(index))
     /// // 4
     /// ```
-    public func dim(_ dim: Int32) -> Int32 {
+    func dim(_ dim: Int32) -> Int32 {
         mlx_array_dim(ctx, MLX.resolve(axis: Int(dim), ndim: mlx_array_ndim(ctx)).int32)
     }
 
+    /// Create a new `MLXArray` with the contents converted to the given ``DType``.
+    /// - Parameters:
+    ///   - type: type to convert to
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
     public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {
         guard type != self.dtype else { return self }
         return MLXArray(mlx_astype(ctx, type.cmlxDtype, stream.ctx))
     }
 
+    /// Create a new `MLXArray` with the contents converted to the given type, e.g. `Float.self`.
+    /// - Parameters:
+    ///   - type: type to convert to
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
     public func asType<T: HasDType>(_ type: T.Type, stream: StreamOrDevice = .default) -> MLXArray {
         asType(T.dtype, stream: stream)
     }
@@ -195,6 +207,9 @@ public final class MLXArray {
     ///
     /// Note: because the number of dimensions is dynamic, this cannot produce a multi-dimensional
     /// array.
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
         precondition(T.dtype == self.dtype, "\(T.dtype) != \(self.dtype)")
 
@@ -244,6 +259,7 @@ public final class MLXArray {
     /// - ``init(real:imaginary:)``
     /// - ``realPart(stream:)``
     /// - ``imaginaryPart(stream:)``
+    /// - <doc:conversion>
     public func asImaginary(stream: StreamOrDevice = .default) -> MLXArray {
         precondition(!dtype.isComplex)
         let i = MLXArray(real: 0, imaginary: 1)
@@ -251,12 +267,18 @@ public final class MLXArray {
     }
 
     /// Extract the real part of a ``DType/complex64`` array.
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
     public func realPart(stream: StreamOrDevice = .default) -> MLXArray {
         precondition(dtype.isComplex)
         return asType(Float.self)
     }
 
     /// Extract the imaginary part of a ``DType/complex64`` array.
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
     public func imaginaryPart(stream: StreamOrDevice = .default) -> MLXArray {
         precondition(dtype.isComplex)
         let i = MLXArray(real: 0, imaginary: 1)

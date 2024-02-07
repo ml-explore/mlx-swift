@@ -17,8 +17,15 @@ public typealias ModuleItem = NestedItem<String, ModuleValue>
 
 /// Base class for building neural networks with MLX.
 ///
+/// The workhorse of any neural network library is the ``Module`` class. In MLX
+/// the ``Module`` class is a container of `MLXArray` or ``Module`` instances. Its
+/// main function is to provide a way to recursively access and update its
+/// parameters and those of its submodules.
+///
 /// All the layers provided in <doc:layers> subclass this class and
-/// your models should do the same.
+/// your models should do the same.  See <doc:custom-layers>.
+///
+/// ### Parameters
 ///
 /// A `Module` can contain other `Module` instances or `MLXArray`
 /// instances in structures of `Array` and `Dictionary`. The `Module`
@@ -29,7 +36,14 @@ public typealias ModuleItem = NestedItem<String, ModuleValue>
 /// parameters (called "frozen"). When using `valueAndGrad()` or `grad()`
 /// the gradients are returned only with respect to the trainable parameters.
 /// All arrays in a module are trainable unless they are added in the "frozen"
-/// set by calling ``freeze(recursive:keys:strict:)``
+/// set by calling ``freeze(recursive:keys:strict:)``.
+///
+/// ``valueAndGrad(model:_:)-12a2c`` the gradients returned will
+/// be with respect to these trainable parameters.
+///
+/// ### Example
+///
+/// Here is an example multi-layer perception (MLP):
 ///
 /// ```swift
 /// import MLX
@@ -67,16 +81,34 @@ public typealias ModuleItem = NestedItem<String, ModuleValue>
 /// including how to override the module and parameter keys and allowing dynamic updates of the
 /// module structure to occur via ``update(modules:verify:)``.
 ///
+/// ### Training
+///
+/// See <doc:training>
+///
+/// ### Mutation
+///
+/// All mutation of parameters and modules must go through ``update(parameters:)`` and
+/// ``update(modules:)``.  This is important because `Module` uses reflection (`Mirror`) to
+/// find paramters and modules but caches the values.  These two methods make sure the cache
+/// is kept up-to-date.
+///
 /// ### See Also
 /// - <doc:custom-layers>
 open class Module {
 
+    /// Flag to indicate whether the module is being trained.  Manipulated via
+    /// ``train(_:)``.
     public private(set) var training = true
+
+    /// Set of property names that are frozen.  Maniupulated via
+    /// ``freeze(recursive:keys:strict:)`` and
+    /// ``unfreeze(recursive:keys:strict:)``.
     public private(set) var noGrad = Set<String>()
 
     private var _items: ModuleItems!
     private var _setters: [String: TypeErasedSetter]!
 
+    /// Initializes the module.
     public init() {
         buildCaches()
     }
@@ -1050,7 +1082,8 @@ extension Module {
 
 /// A single value from ``Module``.
 ///
-/// This is typically produced from ``Module/items()`` or indirectly via ``Module/filterMap(filter:map:isLeaf:)``.
+/// This is typically produced from ``Module/items()`` or indirectly
+/// via ``Module/filterMap(filter:map:isLeaf:)``.
 ///
 /// ### See Also
 /// - ``Module/items()``

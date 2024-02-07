@@ -96,7 +96,7 @@ public class Sequential: Module, UnaryLayer {
 
 /// A way to build ``Sequential``.
 ///
-/// See ``Sequential/init(layers:)-43yu
+/// See ``Sequential/init(layers:)-43yu``
 @resultBuilder
 public struct SequentialBuilder {
 

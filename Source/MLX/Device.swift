@@ -13,7 +13,14 @@ public enum DeviceType: String {
 
 /// Representation of a Device in MLX.
 ///
-/// Typically this is used via the `stream: ` parameter on a method with a ``StreamOrDevice``.
+/// Typically this is used via the `stream: ` parameter on a method with a ``StreamOrDevice``:
+///
+/// ```swift
+/// let a: MLXArray ...
+/// let result = sqrt(a, stream: .gpu)
+/// ```
+///
+/// Read more at <doc:using-streams>.
 ///
 /// ### See Also
 /// - <doc:using-streams>

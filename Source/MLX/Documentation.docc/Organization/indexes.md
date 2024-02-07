@@ -19,11 +19,17 @@ let sorted = array[sortIndexes]
 
 ### Index Producing Functions
 
+- ``MLXArray/argMax(keepDims:stream:)``
 - ``MLXArray/argMax(axis:keepDims:stream:)``
+- ``MLXArray/argMin(keepDims:stream:)``
 - ``MLXArray/argMin(axis:keepDims:stream:)``
+- ``argMax(_:keepDims:stream:)``
 - ``argMax(_:axis:keepDims:stream:)``
+- ``argMin(_:keepDims:stream:)``
 - ``argMin(_:axis:keepDims:stream:)``
+- ``argPartition(_:kth:stream:)``
 - ``argPartition(_:kth:axis:stream:)``
+- ``argSort(_:stream:)``
 - ``argSort(_:axis:stream:)``
 
 ### Index Consuming Functions

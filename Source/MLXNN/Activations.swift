@@ -441,7 +441,6 @@ public class ReLU6: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``softMax(_:)``
 public class SoftMax: Module, UnaryLayer {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         softMax(x, axis: -1)

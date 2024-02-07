@@ -48,6 +48,21 @@ This message comes from part of the build process that prepares the metal kernel
 This may mean that the `kernels` directory in `Source/Cmlx/mlx/mlx/backend/metal/kernels`
 does not exist.  In particular it may mean that the git submodules were not checked out -- see "Installation" above.
 
+### received multiple target ended messages for target ID ...
+
+If you receive a message like this:
+
+```
+error: Internal inconsistency error: received multiple target ended messages for target ID '5' or received target ended message but did not receive corresponding target started message, while retrieving parent activity in taskStarted message.
+```
+
+There are a few approaches that have been observed to work around the issue:
+
+- wait a few seconds and try building again
+- quit and restart xcode
+- clean the build folder and rebuild
+- use Xcode 15.3 beta 2 or later
+
 ## Porting Python Code
 
 See <doc:converting-python> for examples and information about

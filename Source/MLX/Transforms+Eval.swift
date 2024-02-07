@@ -101,7 +101,7 @@ private func simplify(arrays: [MLXArray]) {
 /// simplify(z)
 /// eval(z)
 /// ```
-public func simlify(_ values: Any...) {
+public func simplify(_ values: Any...) {
     var arrays = [MLXArray]()
 
     for item in values {
@@ -113,8 +113,8 @@ public func simlify(_ values: Any...) {
 
 /// Simplify the graph that computes the arrays.
 ///
-/// See ``simlify(_:)-3sxjv``
-public func simlify(_ values: [Any]) {
+/// See ``simplify(_:)-7jbpa``
+public func simplify(_ values: [Any]) {
     var arrays = [MLXArray]()
 
     for item in values {

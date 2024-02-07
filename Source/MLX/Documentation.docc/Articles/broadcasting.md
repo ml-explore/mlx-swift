@@ -22,7 +22,7 @@ giving us this structure:
 array([[0, 1, 2],
        [3, 4, 5],
        [6, 7, 8],
-       [9, 10, 11]], dtype=int64)
+       [9, 10, 11]], dtype=int32)
 ```
 
 #### Scalars
@@ -39,7 +39,7 @@ giving us:
 array([[1, 2, 3],
        [4, 5, 6],
        [7, 8, 9],
-       [10, 11, 12]], dtype=int64)
+       [10, 11, 12]], dtype=int32)
 ```
 
 This uses ``MLXArray/+(_:_:)-2vili`` which uses ``ScalarOrArray`` to automatically convert scalar values
@@ -52,7 +52,7 @@ Conceptually the scalar is converted into an array of the same shape and then ad
 array([[1, 1, 1],
        [1, 1, 1],
        [1, 1, 1],
-       [1, 1, 1]], dtype=int64)
+       [1, 1, 1]], dtype=int32)
 ```
 
 Broadcasting allows a much more efficient implementation where the scalar may simply be reused
@@ -85,10 +85,10 @@ let r = a + b
 // array([[0, 1, 2],
 //        [3, 4, 5],
 //        [6, 7, 8],
-//        [9, 10, 11]], dtype=int64)
+//        [9, 10, 11]], dtype=int32)
 //
 // array([[0, 1, 2],
 //        [0, 1, 2],
 //        [0, 1, 2],
-//        [0, 1, 2]], dtype=int64)
+//        [0, 1, 2]], dtype=int32)
 ```

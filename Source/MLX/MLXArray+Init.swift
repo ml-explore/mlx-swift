@@ -317,8 +317,8 @@ extension MLXArray {
     /// let square = MLXArray(0 ..< 64, [8, 8])
     /// ```
     ///
-    /// Note: if the element type is `Int` this will produce an ``DType/int32`` result.  See ``init(int64:_:)``
-    /// if an `.int64` is required.
+    /// Note: if the element type is `Int` this will produce an ``DType/int32`` result.
+    /// See ``init(int64:_:)-74tu0`` if an `.int64` is required.
     ///
     /// ### See Also
     /// - <doc:initialization>

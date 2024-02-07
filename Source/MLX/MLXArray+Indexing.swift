@@ -30,7 +30,7 @@ func resolve(axis: Int, ndim: Int) -> Int {
 
 extension MLXArray: Sequence {
 
-    public struct MLXArrayIterator: IteratorProtocol {
+    private struct MLXArrayIterator: IteratorProtocol {
         fileprivate var index = -1
         fileprivate let count: Int
         fileprivate let array: MLXArray
@@ -48,7 +48,7 @@ extension MLXArray: Sequence {
     ///     row...
     /// }
     /// ```
-    public func makeIterator() -> MLXArrayIterator {
+    public func makeIterator() -> some IteratorProtocol<MLXArray> {
         MLXArrayIterator(count: self.dim(0), array: self)
     }
 }

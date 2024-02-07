@@ -68,6 +68,8 @@ Scalars will not promote results to `float32` using these functions.
 
 ### MLXArray Operators
 
+Note: the `-` and `/` operators are not able to be linked here.
+
 - ``MLXArray/+(_:_:)-1rv98``
 - ``MLXArray/+(_:_:)-2vili``
 - ``MLXArray/+(_:_:)-1jn5i``
@@ -81,6 +83,9 @@ Scalars will not promote results to `float32` using these functions.
 - ``MLXArray/**(_:_:)-8xxt3``
 - ``MLXArray/**(_:_:)-6ve5u``
 - ``MLXArray/**(_:_:)-4lp4b``
+- ``MLXArray/%(_:_:)-3ubwd``
+- ``MLXArray/%(_:_:)-516wd``
+- ``MLXArray/%(_:_:)-8az7l``
 - ``MLXArray/.!(_:)``
 - ``MLXArray/.==(_:_:)-56m0a``
 - ``MLXArray/.==(_:_:)-79hbc``
@@ -167,3 +172,7 @@ Scalars will not promote results to `float32` using these functions.
 - ``tanh(_:stream:)``
 - ``which(_:_:_:stream:)``
 
+### Matrix Multiply
+
+- ``MLXArray/matmul(_:stream:)``
+- ``matmul(_:_:stream:)``

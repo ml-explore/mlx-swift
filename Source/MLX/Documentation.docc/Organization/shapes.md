@@ -10,15 +10,25 @@ will moves rows and columns as they modify the shape.
 
 ## Topics
 
+### Reading Shapes
+
+- ``MLXArray/shape``
+- ``MLXArray/dim(_:)``
+
 ### MLXArray Shape Methods (Same Size)
 
 Some methods allow you to manipulate the shape of the array.  These methods change the size
 and ``MLXArray/shape`` of the dimensions without changing the number of elements or contents of the array:
 
 - ``MLXArray/expandedDimensions(axis:stream:)``
+- ``MLXArray/expandedDimensions(axes:stream:)``
 - ``MLXArray/flattened(start:end:stream:)``
 - ``MLXArray/reshaped(_:stream:)-19x5z``
+- ``MLXArray/reshaped(_:stream:)-67a89``
+- ``MLXArray/squeezed(stream:)``
+- ``MLXArray/squeezed(axis:stream:)``
 - ``MLXArray/squeezed(axes:stream:)``
+- ``expandedDimensions(_:axis:stream:)``
 - ``expandedDimensions(_:axes:stream:)``
 - ``asStrided(_:_:strides:offset:stream:)``
 
@@ -34,11 +44,16 @@ These methods manipulate the shape and contents of the array:
 - ``MLXArray/split(parts:axis:stream:)``
 - ``MLXArray/split(indices:axis:stream:)``
 - ``MLXArray/swappedAxes(_:_:stream:)``
+- ``MLXArray/transposed(stream:)``
+- ``MLXArray/transposed(axis:stream:)``
 - ``MLXArray/transposed(axes:stream:)``
+- ``MLXArray/transposed(_:stream:)``
+- ``MLXArray/T``
 
 ### Free Functions To Manipulate Shapes
 
 - ``asStrided(_:_:strides:offset:stream:)``
+- ``broadcast(_:to:stream:)``
 - ``concatenated(_:axis:stream:)``
 - ``expandedDimensions(_:axes:stream:)``
 - ``movedAxis(_:source:destination:stream:)``

@@ -7,7 +7,7 @@ import MLXNN
 /// Public interface for all Optimizer types.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 /// - ``OptimizerBase``
 public protocol Optimizer {
 
@@ -27,7 +27,7 @@ public protocol Optimizer {
 /// - `func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (MLXArray, State)`
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class OptimizerBase<State>: Optimizer {
 
     /// Stores a `State` value in a structure that matches the model parameters
@@ -88,7 +88,7 @@ public class OptimizerBase<State>: Optimizer {
 /// Convenience subclass of OptimizerBase that provides `MLXArray` State.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
 
     override func newState(gradient: MLXArray) -> MLXArray {
@@ -103,7 +103,7 @@ public class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
 /// Stochastic gradient descent optimizer.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class SGD: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -178,7 +178,7 @@ public class SGD: OptimizerBaseArrayState {
 /// [1]: Tieleman, T. and Hinton, G. 2012. Lecture 6.5-rmsprop, coursera: Neural networks for machine learning
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class RMSprop: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -214,7 +214,7 @@ public class RMSprop: OptimizerBaseArrayState {
 /// [1]: Duchi, J., Hazan, E. and Singer, Y., 2011. Adaptive subgradient methods for online learning and stochastic optimization. JMLR 2011.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class AdaGrad: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -246,7 +246,7 @@ public class AdaGrad: OptimizerBaseArrayState {
 /// [1]: Zeiler, M.D., 2012. ADADELTA: an adaptive learning rate method. arXiv preprint arXiv:1212.5701.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class AdaDelta: OptimizerBase<(MLXArray, MLXArray)> {
 
     typealias State = (MLXArray, MLXArray)
@@ -299,7 +299,7 @@ public class AdaDelta: OptimizerBase<(MLXArray, MLXArray)> {
 /// [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class Adam: OptimizerBase<(MLXArray, MLXArray)> {
 
     typealias State = (MLXArray, MLXArray)
@@ -351,7 +351,7 @@ public class Adam: OptimizerBase<(MLXArray, MLXArray)> {
 /// [1]: Loshchilov, I. and Hutter, F., 2019. Decoupled weight decay regularization. ICLR 2019.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class AdamW: Adam {
 
     var weightDecay: Float = 0.01
@@ -387,7 +387,7 @@ public class AdamW: Adam {
 /// [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class Adamax: OptimizerBase<(MLXArray, MLXArray)> {
 
     typealias State = (MLXArray, MLXArray)
@@ -442,7 +442,7 @@ public class Adamax: OptimizerBase<(MLXArray, MLXArray)> {
 /// [1]: Chen, X. Symbolic Discovery of Optimization Algorithms. arXiv preprint arXiv:2302.06675.
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class Lion: OptimizerBaseArrayState {
 
     var learningRate: Float
@@ -489,7 +489,7 @@ public class Lion: OptimizerBaseArrayState {
 /// <https://arxiv.org/abs/1804.04235>
 ///
 /// ### See Also
-/// - <doc:optimizers>
+/// - <doc:MLXOptimizers>
 public class Adafactor: OptimizerBase<Adafactor.State> {
 
     var learningRate: Float? = nil

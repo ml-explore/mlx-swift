@@ -24,30 +24,66 @@ See also <doc:logical> and <doc:cumulative>
 
 ### MLXArray Logical Reduction Functions
 
+- ``MLXArray/all(keepDims:stream:)``
+- ``MLXArray/all(axis:keepDims:stream:)``
 - ``MLXArray/all(axes:keepDims:stream:)``
+- ``MLXArray/any(keepDims:stream:)``
+- ``MLXArray/any(axis:keepDims:stream:)``
 - ``MLXArray/any(axes:keepDims:stream:)``
 
 ### MLXArray Aggregating Reduction Functions
 
+- ``MLXArray/logSumExp(keepDims:stream:)``
+- ``MLXArray/logSumExp(axis:keepDims:stream:)``
 - ``MLXArray/logSumExp(axes:keepDims:stream:)``
+- ``MLXArray/product(keepDims:stream:)``
 - ``MLXArray/product(axis:keepDims:stream:)``
+- ``MLXArray/product(axes:keepDims:stream:)``
+- ``MLXArray/max(keepDims:stream:)``
+- ``MLXArray/max(axis:keepDims:stream:)``
 - ``MLXArray/max(axes:keepDims:stream:)``
+- ``MLXArray/mean(keepDims:stream:)``
+- ``MLXArray/mean(axis:keepDims:stream:)``
 - ``MLXArray/mean(axes:keepDims:stream:)``
+- ``MLXArray/min(keepDims:stream:)``
+- ``MLXArray/min(axis:keepDims:stream:)``
 - ``MLXArray/min(axes:keepDims:stream:)``
+- ``MLXArray/sum(keepDims:stream:)``
+- ``MLXArray/sum(axis:keepDims:stream:)``
 - ``MLXArray/sum(axes:keepDims:stream:)``
+- ``MLXArray/variance(keepDims:ddof:stream:)``
+- ``MLXArray/variance(axis:keepDims:ddof:stream:)``
 - ``MLXArray/variance(axes:keepDims:ddof:stream:)``
 
 ### Logical Reduction Free Functions
 
+- ``all(_:keepDims:stream:)``
+- ``all(_:axis:keepDims:stream:)``
 - ``all(_:axes:keepDims:stream:)``
+- ``any(_:keepDims:stream:)``
+- ``any(_:axis:keepDims:stream:)``
 - ``any(_:axes:keepDims:stream:)``
 
 ### Aggregating Reduction Free Functions
 
+- ``logSumExp(_:keepDims:stream:)``
+- ``logSumExp(_:axis:keepDims:stream:)``
 - ``logSumExp(_:axes:keepDims:stream:)``
+- ``product(_:keepDims:stream:)``
 - ``product(_:axis:keepDims:stream:)``
+- ``product(_:axes:keepDims:stream:)``
+- ``max(_:keepDims:stream:)``
+- ``max(_:axis:keepDims:stream:)``
 - ``max(_:axes:keepDims:stream:)``
+- ``mean(_:keepDims:stream:)``
+- ``mean(_:axis:keepDims:stream:)``
 - ``mean(_:axes:keepDims:stream:)``
+- ``min(_:keepDims:stream:)``
+- ``min(_:axis:keepDims:stream:)``
 - ``min(_:axes:keepDims:stream:)``
+- ``sum(_:keepDims:stream:)``
+- ``sum(_:axis:keepDims:stream:)``
 - ``sum(_:axes:keepDims:stream:)``
+- ``variance(_:keepDims:ddof:stream:)``
+- ``variance(_:axis:keepDims:ddof:stream:)``
 - ``variance(_:axes:keepDims:ddof:stream:)``

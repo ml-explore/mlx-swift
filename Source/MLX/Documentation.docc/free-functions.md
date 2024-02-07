@@ -51,6 +51,8 @@ operations as methods for convenience.
 - ``sign(_:stream:)``
 - ``sin(_:stream:)``
 - ``sinh(_:stream:)``
+- ``softMax(_:stream:)``
+- ``softMax(_:axis:stream:)``
 - ``softMax(_:axes:stream:)``
 - ``sqrt(_:stream:)``
 - ``square(_:stream:)``
@@ -88,6 +90,10 @@ operations as methods for convenience.
 - ``argSort(_:stream:)``
 - ``takeAlong(_:_:axis:stream:)``
 - ``takeAlong(_:_:stream:)``
+- ``take(_:_:stream:)``
+- ``take(_:_:axis:stream:)``
+- ``top(_:k:stream:)``
+- ``top(_:k:axis:stream:)``
 
 ### Factory
 
@@ -104,6 +110,8 @@ operations as methods for convenience.
 - ``MLX/repeat(_:count:axis:stream:)``
 - ``MLX/repeat(_:count:stream:)``
 - ``MLX/tri(_:m:k:type:stream:)``
+- ``tril(_:k:stream:)``
+- ``triu(_:k:stream:)``
 
 ### I/O
 
@@ -149,22 +157,70 @@ operations as methods for convenience.
 ### Shapes
 
 - ``asStrided(_:_:strides:offset:stream:)``
+- ``broadcast(_:to:stream:)``
 - ``concatenated(_:axis:stream:)``
 - ``expandedDimensions(_:axes:stream:)``
 - ``expandedDimensions(_:axis:stream:)``
 - ``movedAxis(_:source:destination:stream:)``
 - ``padded(_:width:value:stream:)``
 - ``padded(_:widths:value:stream:)``
+- ``reshaped(_:_:stream:)-5x3y0``
+- ``reshaped(_:_:stream:)-96lgr``
 - ``split(_:indices:axis:stream:)``
 - ``split(_:parts:axis:stream:)``
+- ``squeezed(_:stream:)``
+- ``squeezed(_:axis:stream:)``
+- ``squeezed(_:axes:stream:)``
 - ``stacked(_:axis:stream:)``
 - ``swappedAxes(_:_:_:stream:)``
+- ``transposed(_:stream:)``
+- ``transposed(_:axis:stream:)``
 - ``transposed(_:axes:stream:)``
+- ``transposed(_:_:stream:)``
 - ``T(_:stream:)``
 
 ### Sorting
 
 - ``argSort(_:axis:stream:)``
 - ``argPartition(_:kth:axis:stream:)``
+- ``sorted(_:stream:)``
 - ``sorted(_:axis:stream:)``
+- ``partitioned(_:kth:stream:)``
 - ``partitioned(_:kth:axis:stream:)``
+
+### Quantization
+
+- ``quantized(_:groupSize:bits:stream:)``
+- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
+- ``dequantized(_:scales:biases:groupSize:bits:stream:)``
+
+### Evaluation and Transformation
+
+- ``eval(_:)-190w1``
+- ``eval(_:)-3b2g9``
+- ``eval(_:)-8fexv``
+- ``eval(_:)-91pbd``
+- ``grad(_:)-r8dv``
+- ``grad(_:)-7z6i``
+- ``grad(_:argumentNumbers:)-2ictk``
+- ``grad(_:argumentNumbers:)-5va2g``
+- ``valueAndGrad(_:)``
+- ``valueAndGrad(_:argumentNumbers:)``
+- ``stopGradient(_:stream:)``
+- ``jvp(_:primals:tangents:)``
+- ``vjp(_:primals:cotangents:)``
+
+### FFT
+
+- ``fft(_:n:axis:stream:)``
+- ``fft2(_:s:axes:stream:)``
+- ``fftn(_:s:axes:stream:)``
+- ``ifft(_:n:axis:stream:)``
+- ``ifft2(_:s:axes:stream:)``
+- ``ifftn(_:s:axes:stream:)``
+- ``irfft(_:n:axis:stream:)``
+- ``irfft2(_:s:axes:stream:)``
+- ``irfftn(_:s:axes:stream:)``
+- ``rfft(_:n:axis:stream:)``
+- ``rfft2(_:s:axes:stream:)``
+- ``rfftn(_:s:axes:stream:)``

@@ -8,7 +8,7 @@ public protocol IndentedDescription: CustomStringConvertible {
     /// Return the `description` with the given indent level.
     ///
     /// This should apply successively nested indents to any children that can also be indented.
-    /// See ``indentedDescription(_:_:)`` for an easy way to accomplish this.
+    /// See `indentedDescription(_:_:)` for an easy way to accomplish this.
     func description(indent: Int) -> String
 }
 
@@ -19,6 +19,7 @@ extension IndentedDescription {
 }
 
 /// Return `description` or ``IndentedDescription/description(indent:)`` if possible.
+@_documentation(visibility:internal)
 public func indentedDescription(_ value: Any, _ indent: Int) -> String {
     if let value = value as? IndentedDescription {
         return value.description(indent: indent)

@@ -61,6 +61,17 @@ public struct StreamOrDevice: CustomStringConvertible {
     }
 }
 
+/// A stream of evaluation attached to a particular device.
+///
+/// Typically this is used via the `stream: ` parameter on a method with a ``StreamOrDevice``:
+///
+/// ```swift
+/// let a: MLXArray ...
+/// let result = sqrt(a, stream: .gpu)
+/// ```
+///
+/// Read more at <doc:using-streams>.
+///
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``

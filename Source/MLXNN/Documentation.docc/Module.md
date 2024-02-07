@@ -31,11 +31,15 @@
 - ``Module/items()``
 - ``Module/visit(modules:)``
 
+### Module and Parameter Filtering
+
+- <doc:module-filters>
+
 ### Training
 
 - ``Module/freeze(recursive:keys:)``
 - ``Module/freeze(recursive:keys:strict:)``
-- ``Module/train(mode:)``
+- ``Module/train(_:)``
 - ``Module/unfreeze(recursive:keys:)``
 - ``Module/unfreeze(recursive:keys:strict:)``
 

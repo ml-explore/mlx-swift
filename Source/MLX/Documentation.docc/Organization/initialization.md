@@ -157,6 +157,37 @@ let zeros = MLXArray.zeros([5, 5])
 let identity = MLXArray.identity(5)
 ```
 
+### Complex Values
+
+``MLXArray`` supports complex numbers, specifically a real and imaginary `Float32` 
+as ``DType/complex64``.
+MLX uses [swift-numerics](https://github.com/apple/swift-numerics/tree/main)
+to represent the `Complex` type, though there are a few functions for manipulating
+the individual pieces, see <doc:conversion>.
+
+To create a complex scalar there are a few approaches:
+
+```swift
+let c1 = MLXArray(Complex(0, 1))
+let c2 = MLXArray(real: 0, imaginary: 1)
+```
+
+You can use `Complex` to create an array of complex as well:
+
+```swift
+let c3 = MLXArray([Complex(2, 7), Complex(3, 8), Complex(4, 9)])
+```
+
+If you have two arrays that you want to combine you can use this pattern:
+
+```swift
+let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
+let i = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
+
+// dtype is .complex64
+let c = r + i.asImaginary()
+```
+
 ## Topics
 
 ### MLXArray Literal Initializers
@@ -172,6 +203,18 @@ let identity = MLXArray.identity(5)
 - ``MLXArray/init(_:)-96nyv``
 - ``MLXArray/init(_:dtype:)``
 
+### MLXArray Int Overrides
+
+Creating an ``MLXArray`` from `Int` will produce ``DType/int32`` rather
+than ``DType/int64`` (`Int` is really `Int64`).  If you need ``DType/int64``
+there are specific initializers to request it:
+
+- ``MLXArray/init(_:)-6nnka``
+- ``MLXArray/init(_:_:)-93flk``
+- ``MLXArray/init(int64:)``
+- ``MLXArray/init(int64:_:)-7bgj2``
+- ``MLXArray/init(int64:_:)-74tu0``
+
 ### MLXArray Array Initializers
 
 - ``MLXArray/init(_:_:)-4n0or``
@@ -181,12 +224,19 @@ let identity = MLXArray.identity(5)
 - ``MLXArray/init(_:_:type:)-5esf9``
 - ``MLXArray/init(_:_:type:)-f9u5``
 
+### MLXArray Complex Initializers
+
+- ``MLXArray/init(real:imaginary:)``
+- ``MLXArray/init(_:)-6iii5``
+
 ### MLXArray Factory Methods
 
 - ``MLXArray/zeros(_:type:stream:)``
 - ``MLXArray/zeros(like:stream:)``
+- ``MLXArray/zeros(_:dtype:stream:)``
 - ``MLXArray/ones(_:type:stream:)``
 - ``MLXArray/ones(like:stream:)``
+- ``MLXArray/ones(_:dtype:stream:)``
 - ``MLXArray/eye(_:m:k:type:stream:)``
 - ``MLXArray/full(_:values:type:stream:)``
 - ``MLXArray/full(_:values:stream:)``

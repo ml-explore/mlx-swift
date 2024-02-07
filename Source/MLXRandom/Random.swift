@@ -29,7 +29,7 @@ public func split(key: MLXArray, into num: Int = 2, stream: StreamOrDevice = .de
     return keys.map { $0 }
 }
 
-/// Generate uniformly distributed random numbers.
+/// Generate uniformly distributed random numbers with a `RangeExpression`.
 ///
 /// The values are sampled uniformly in the range.  An optional shape can be used to broadcast into
 /// a larger array.  An optional `Key` can be specified to control the PRNG.
@@ -54,7 +54,7 @@ public func uniform<R: HasDType, T>(
             lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate uniformly distributed random numbers.
+/// Generate uniformly distributed random numbers with a `RangeExpression<Float>` (specialization).
 ///
 /// Specialization to make it easy to call with `Float`:
 ///
@@ -73,7 +73,7 @@ public func uniform<T>(
             lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate uniformly distributed random numbers.
+/// Generate uniformly distributed random numbers between `low` and `high`.
 ///
 /// The values are sampled uniformly in the half-open interval `[lb, ub)`.
 /// The lower and upper bound can be scalars or arrays and must be
@@ -98,7 +98,7 @@ public func uniform<T>(
             low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate uniformly distributed random numbers.
+/// Generate uniformly distributed random numbers between `low` and `high` with a given `DType`.
 ///
 /// The values are sampled uniformly in the half-open interval `[lb, ub)`.
 /// The lower and upper bound can be scalars or arrays and must be
@@ -165,7 +165,7 @@ public func normal(
     MLXArray(mlx_random_normal(shape.asInt32, shape.count, dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate random integers from the given interval.
+/// Generate random integers from the given interval using a `RangeExpression<Int>`.
 ///
 /// The values are sampled with equal probability from the integers in
 /// half-open interval `[low, high)`. The lower and upper bound can be
@@ -190,7 +190,7 @@ public func randInt<T>(
             lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate random integers from the given interval.
+/// Generate random integers from the given interval (`low:` and `high:`).
 ///
 /// The values are sampled with equal probability from the integers in
 /// half-open interval `[lb, ub)`. The lower and upper bound can be
@@ -215,7 +215,7 @@ public func randInt(
         ))
 }
 
-/// Generate random integers from the given interval.
+/// Generate random integers from the given interval (`low:` and `high:`) with a given type, e.g. `Int8.self`.
 ///
 /// The values are sampled with equal probability from the integers in
 /// half-open interval `[lb, ub)`. The lower and upper bound can be
@@ -317,7 +317,7 @@ public func truncatedNormal<R: HasDType, T>(
             lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate values from a truncated normal distribution.
+/// Generate values from a truncated normal distribution in a given `RangeExpression<Float>`.
 ///
 /// Specialization to make it easy to call with `Float`:
 ///
@@ -336,7 +336,7 @@ public func truncatedNormal<T>(
             lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate values from a truncated normal distribution.
+/// Generate values from a truncated normal distribution between `low` and `high`.
 ///
 /// The values are sampled from the truncated normal distribution
 /// on the domain `(lower, upper)`. The bounds `lower` and `upper`
@@ -360,7 +360,7 @@ public func truncatedNormal<T>(
             low.ctx, high.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Generate values from a truncated normal distribution.
+/// Generate values from a truncated normal distribution between `low` and `high` with a given `DType`.
 ///
 /// The values are sampled from the truncated normal distribution
 /// on the domain `(lower, upper)`. The bounds `lower` and `upper`
@@ -405,7 +405,7 @@ public func gumbel<T>(
     MLXArray(mlx_random_gumbel(shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
 }
 
-/// Sample from the standard Gumbel distribution.
+/// Sample from the standard Gumbel distribution with a given `DType`.
 ///
 /// The values are sampled from a standard Gumbel distribution
 /// which CDF `exp(-exp(-x))`.
