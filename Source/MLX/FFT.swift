@@ -307,7 +307,7 @@ public func irfftn(
     } else if let axes {
         // no n, compute from dim()
         var n = axes.map { array.dim($0) }
-        n[n.endIndex] = n[n.endIndex] - 1 * 2
+        n[n.count - 1] = (n[n.count - 1] - 1) * 2
         return MLXArray(
             mlx_fft_irfft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
     } else if let s {
@@ -318,7 +318,7 @@ public func irfftn(
     } else {
         let axes = Array(0 ..< array.ndim)
         var n = axes.map { array.dim($0) }
-        n[n.endIndex] = n[n.endIndex] - 1 * 2
+        n[n.count - 1] = (n[n.count - 1] - 1) * 2
         return MLXArray(
             mlx_fft_irfft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
     }

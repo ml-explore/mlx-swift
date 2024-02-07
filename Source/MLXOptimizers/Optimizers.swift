@@ -61,13 +61,15 @@ public class OptimizerBase<State>: Optimizer {
     }
 
     final public func update(model: Module, gradients: ModuleParameters) {
-        model.update(parameters: apply(gradients: gradients, model: model))
+        model.update(parameters: apply(gradients: gradients, modelParameters: model.parameters()))
     }
 
     /// Evaluate `applySingle(gradient: MLXArray, parameter: MLXArray, state: State)` for
     /// each parameter and update `self.state` and produce new `ModuleParameters`.
-    final func apply(gradients: ModuleParameters, model: Module) -> ModuleParameters {
-        let (p, s) = gradients.mapValues(model.parameters(), stateStorage) {
+    final func apply(gradients: ModuleParameters, modelParameters: ModuleParameters)
+        -> ModuleParameters
+    {
+        let (p, s) = gradients.mapValues(modelParameters, stateStorage) {
             gradient, parameter, state in
             // handle optionality of the visitor params
             applySingle(
@@ -131,22 +133,32 @@ public class SGD: OptimizerBaseArrayState {
         self.nesterov = nesterov
     }
 
+    override func newState(gradient: MLXArray) -> MLXArray {
+        if dampening > 0 {
+            return dampening / momentum * gradient
+        } else {
+            return MLXArray.zeros(like: gradient)
+        }
+    }
+
     override func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
         MLXArray, MLXArray
     ) {
-        if momentum <= 0 {
-            return (parameter - learningRate * gradient, state)
-        }
-
         var gradient = gradient
         if weightDecay != 0 {
             gradient = gradient + weightDecay * parameter
         }
 
-        var v = momentum * state
+        if momentum <= 0 {
+            return (parameter - learningRate * gradient, state)
+        }
+
+        var v = state
         if dampening > 0 {
+            v = v * momentum
             v = v + (1 - dampening) * gradient
         } else {
+            v = v * momentum
             v = v + gradient
         }
 

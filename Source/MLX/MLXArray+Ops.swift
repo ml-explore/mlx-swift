@@ -285,6 +285,17 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``MLXArray/%(_:_:)-3ubwd``
+    public static func % <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
+        return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise remainder with a ``ScalarOrArray`` (scalar) argument.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``MLXArray/%(_:_:)-3ubwd``
     public static func % <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
@@ -1146,7 +1157,7 @@ extension MLXArray {
     /// - ``cummax(reverse:inclusive:stream:)``
     /// - ``cummax(_:axis:reverse:inclusive:stream:)``
     public func cummax(
-        axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        axis: Int, reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLXArray(mlx_cummax(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -1165,11 +1176,11 @@ extension MLXArray {
     /// - ``cummax(axis:reverse:inclusive:stream:)``
     /// - ``cummax(_:axis:reverse:inclusive:stream:)``
     public func cummax(
-        reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
-        return MLXArray(mlx_cummax(ctx, 0, reverse, inclusive, stream.ctx))
+        return MLXArray(mlx_cummax(flat, 0, reverse, inclusive, stream.ctx))
     }
 
     /// Return the cumulative minimum of the elements along the given axis.
@@ -1186,7 +1197,7 @@ extension MLXArray {
     /// - ``cummin(reverse:inclusive:stream:)``
     /// - ``cummin(_:axis:reverse:inclusive:stream:)``
     public func cummin(
-        axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        axis: Int, reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLXArray(mlx_cummin(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -1205,11 +1216,11 @@ extension MLXArray {
     /// - ``cummin(axis:reverse:inclusive:stream:)``
     /// - ``cummin(_:axis:reverse:inclusive:stream:)``
     public func cummin(
-        reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
-        return MLXArray(mlx_cummin(ctx, 0, reverse, inclusive, stream.ctx))
+        return MLXArray(mlx_cummin(flat, 0, reverse, inclusive, stream.ctx))
     }
 
     /// Return the cumulative product of the elements along the given axis.
@@ -1226,7 +1237,7 @@ extension MLXArray {
     /// - ``cumprod(reverse:inclusive:stream:)``
     /// - ``cumprod(_:axis:reverse:inclusive:stream:)``
     public func cumprod(
-        axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        axis: Int, reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLXArray(mlx_cumprod(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -1245,11 +1256,11 @@ extension MLXArray {
     /// - ``cumprod(axis:reverse:inclusive:stream:)``
     /// - ``cumprod(_:axis:reverse:inclusive:stream:)``
     public func cumprod(
-        reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
-        return MLXArray(mlx_cumprod(ctx, 0, reverse, inclusive, stream.ctx))
+        return MLXArray(mlx_cumprod(flat, 0, reverse, inclusive, stream.ctx))
     }
 
     /// Return the cumulative sum of the elements along the given axis.
@@ -1266,7 +1277,7 @@ extension MLXArray {
     /// - ``cumsum(reverse:inclusive:stream:)``
     /// - ``cumsum(_:axis:reverse:inclusive:stream:)``
     public func cumsum(
-        axis: Int, reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        axis: Int, reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLXArray(mlx_cumsum(ctx, axis.int32, reverse, inclusive, stream.ctx))
     }
@@ -1285,11 +1296,11 @@ extension MLXArray {
     /// - ``cumsum(axis:reverse:inclusive:stream:)``
     /// - ``cumsum(_:axis:reverse:inclusive:stream:)``
     public func cumsum(
-        reverse: Bool = false, inclusive: Bool = false, stream: StreamOrDevice = .default
+        reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let flat = mlx_reshape(ctx, [-1], 1, stream.ctx)!
         defer { mlx_free(flat) }
-        return MLXArray(mlx_cumsum(ctx, 0, reverse, inclusive, stream.ctx))
+        return MLXArray(mlx_cumsum(flat, 0, reverse, inclusive, stream.ctx))
     }
 
     /// Element-wise exponential.

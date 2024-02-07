@@ -460,7 +460,7 @@ public enum ConvolveMode {
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
 public func convolve<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, mode: ConvolveMode, stream: StreamOrDevice = .default
+    _ a: A, _ b: B, mode: ConvolveMode = .full, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
 
@@ -496,7 +496,8 @@ public func convolve<A: ScalarOrArray, B: ScalarOrArray>(
         }
     }
 
-    return MLXArray(mlx_conv1d(input.ctx, weight.ctx, 1, padding.int32, 1, 1, stream.ctx))
+    return MLXArray(mlx_conv1d(input.ctx, weight.ctx, 1, padding.int32, 1, 1, stream.ctx)).reshaped(
+        -1, stream: stream)
 }
 
 /// Element-wise hyperbolic cosine.

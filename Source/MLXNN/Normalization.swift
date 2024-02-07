@@ -297,7 +297,7 @@ public class BatchNorm: Module, UnaryLayer {
     ///   - momentum: momentum for updating the running mean and variance
     ///   - affine: if `true` adds a trainable `weight` and `bias`
     ///   - trackRunningStats: if `true` track the running mean and variance
-    internal init(
+    public init(
         featureCount: Int, eps: Float = 1e-5, momentum: Float = 0.1, affine: Bool = true,
         trackRunningStats: Bool = true
     ) {

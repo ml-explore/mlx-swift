@@ -95,21 +95,6 @@ public func relu6(_ x: MLXArray) -> MLXArray {
     minimum(maximum(x, 0), 6)
 }
 
-/// Applies the Softmax function.
-///
-/// This is:
-///
-/// ```swift
-/// MLX.softMax(x)
-/// ```
-///
-/// ### See Also
-/// - <doc:activations>
-/// - ``SoftMax``
-public func softMax(_ x: MLXArray) -> MLXArray {
-    MLX.softMax(x)
-}
-
 /// Applies the Softplus function.
 ///
 /// This is:
@@ -440,7 +425,7 @@ public class LeakyReLU: Module, UnaryLayer {
 /// ### See Also
 /// - <doc:activations>
 /// - ``relu6(_:)``
-public class Relu6: Module, UnaryLayer {
+public class ReLU6: Module, UnaryLayer {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         relu6(x)
     }
@@ -459,7 +444,7 @@ public class Relu6: Module, UnaryLayer {
 /// - ``softMax(_:)``
 public class SoftMax: Module, UnaryLayer {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
-        softMax(x)
+        softMax(x, axis: -1)
     }
 }
 

@@ -21,7 +21,7 @@ class OptimizerTests: XCTestCase {
         let grads = params.mapValues { MLXArray.ones(like: $0) }
 
         let optimizer = SGD(learningRate: 0.1)
-        let update = optimizer.apply(gradients: grads, model: model)
+        let update = optimizer.apply(gradients: grads, modelParameters: model.parameters())
         eval(update)
 
         let shapesEqual = params.mapValues(update) { (e1, e2) -> Bool in

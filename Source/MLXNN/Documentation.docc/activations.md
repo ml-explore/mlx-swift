@@ -44,7 +44,7 @@ such as `alpha`.
 - ``Mish``
 - ``PReLU``
 - ``ReLU``
-- ``Relu6``
+- ``ReLU6``
 - ``SELU``
 - ``SiLU``
 - ``Sigmoid``

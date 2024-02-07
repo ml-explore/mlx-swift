@@ -163,6 +163,13 @@ public protocol ScalarOrArray {
     func asMLXArray(dtype: DType?) -> MLXArray
 }
 
+extension Int: ScalarOrArray {
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        // callers can use Int64() to get explicit .int64 behavior
+        MLXArray(Int32(self), dtype: dtype ?? .int32)
+    }
+}
+
 extension Double: ScalarOrArray {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         MLXArray(Float(self), dtype: dtype ?? .float32)
