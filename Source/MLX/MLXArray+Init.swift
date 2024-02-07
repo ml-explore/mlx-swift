@@ -413,6 +413,14 @@ extension MLXArray {
             })
     }
 
+    /// Create a ``DType/complex64`` scalar.
+    /// - Parameters:
+    ///   - real: real part
+    ///   - imaginary: imaginary part
+    public convenience init(real: Float, imaginary: Float) {
+        self.init(mlx_array_from_data([real, imaginary], [], 0, DType.complex64.cmlxDtype))
+    }
+
 }
 
 // MARK: - Expressible by literals

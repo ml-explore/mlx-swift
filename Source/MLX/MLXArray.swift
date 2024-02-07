@@ -232,6 +232,37 @@ public final class MLXArray {
         }
     }
 
+    /// Convert the real array into a ``DType/complex64`` imaginary part.
+    ///
+    /// This is equivalent to the following in python:
+    ///
+    /// ```python
+    /// result = 1j * array
+    /// ```
+    ///
+    /// ### See Also
+    /// - ``init(real:imaginary:)``
+    /// - ``realPart(stream:)``
+    /// - ``imaginaryPart(stream:)``
+    public func asImaginary(stream: StreamOrDevice = .default) -> MLXArray {
+        precondition(!dtype.isComplex)
+        let i = MLXArray(real: 0, imaginary: 1)
+        return self * i
+    }
+
+    /// Extract the real part of a ``DType/complex64`` array.
+    public func realPart(stream: StreamOrDevice = .default) -> MLXArray {
+        precondition(dtype.isComplex)
+        return asType(Float.self)
+    }
+
+    /// Extract the imaginary part of a ``DType/complex64`` array.
+    public func imaginaryPart(stream: StreamOrDevice = .default) -> MLXArray {
+        precondition(dtype.isComplex)
+        let i = MLXArray(real: 0, imaginary: 1)
+        return (self / i).asType(.float32)
+    }
+
     /// Evaluate the array.
     ///
     /// MLX is lazy and arrays are not fully realized until they are evaluated.  This method is typically
