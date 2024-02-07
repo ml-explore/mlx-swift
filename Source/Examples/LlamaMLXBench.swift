@@ -139,8 +139,8 @@ public class LlamaEncoderLayer: Module {
     public init(dimensions: Int, mlpDimensions: Int, numHeads: Int) {
         self.attention = LlamaAttention(dimensions: dimensions, numHeads: numHeads)
 
-        self.norm1 = RMSNorm(dimensions)
-        self.norm2 = RMSNorm(dimensions)
+        self.norm1 = RMSNorm(dimensions: dimensions)
+        self.norm2 = RMSNorm(dimensions: dimensions)
 
         self.linear1 = Linear(dimensions, mlpDimensions, bias: false)
         self.linear2 = Linear(dimensions, mlpDimensions, bias: false)

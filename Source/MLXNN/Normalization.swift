@@ -134,7 +134,7 @@ public class RMSNorm: Module, UnaryLayer {
     let weight: MLXArray
     let eps: Float
 
-    public init(_ dimensions: Int, eps: Float = 1e-5) {
+    public init(dimensions: Int, eps: Float = 1e-5) {
         self.weight = MLXArray.ones([dimensions])
         self.eps = eps
         super.init()
