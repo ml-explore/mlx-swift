@@ -11,6 +11,11 @@ then
     fi
 fi
 
+if [[ ! -d docs ]]
+then
+    echo "Please run from the root of the repository, e.g. ./tools/build-documentation.sh"
+fi
+
 export DOCC_JSON_PRETTYPRINT=YES
 
 for x in MLX MLXRandom MLXNN MLXOptimizers; do
