@@ -1120,7 +1120,7 @@ public enum ModuleValue {
         // has a label of `_items`
         if let (nl, nv) = unwrapProperty(value) {
             label = nl ?? label?.dropFirst().description
-            value = nv
+            value = nv!
         }
         if let (nl, nv) = unwrapModule(value) {
             label = nl ?? label?.dropFirst().description
@@ -1325,7 +1325,7 @@ private func unwrapProperty(_ property: Any) -> (String?, Any?)? {
         value = p.value!
     case let p as ParameterInfo<MLXArray?>:
         label = p.key
-        value = p.value
+        value = p.value as Any?
     case let p as ParameterInfo<(MLXArray, MLXArray)>:
         label = p.key
         value = p.value!

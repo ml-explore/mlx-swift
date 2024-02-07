@@ -361,6 +361,40 @@ class ModuleTests: XCTestCase {
         XCTAssertTrue(m.module.child is QuantizedLinear)
     }
 
+    func testNilParameters() {
+        class M: Module {
+            @ParameterInfo var a: MLXArray?
+            let b: MLXArray?
+
+            internal init(a: MLXArray? = nil, b: MLXArray? = nil) {
+                self.a = a
+                self.b = b
+            }
+        }
+
+        let m = M()
+        let parameters = m.parameters()
+
+        XCTAssertTrue(parameters.isEmpty)
+    }
+
+    func testNilModules() {
+        class M: Module {
+            @ModuleInfo var a: Linear?
+            let b: Linear?
+
+            internal init(a: Linear? = nil, b: Linear? = nil) {
+                self.a = a
+                self.b = b
+            }
+        }
+
+        let m = M()
+        let children = m.children()
+
+        XCTAssertTrue(children.isEmpty)
+    }
+
     func testBatchNormItems() {
         // BatchNorm is interesting because:
         // - it has optional parameters
