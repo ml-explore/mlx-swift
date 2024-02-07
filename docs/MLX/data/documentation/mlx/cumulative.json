@@ -122,15 +122,9 @@
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft"
       ],
-      "title" : "MLXArray"
+      "title" : "Arithmetic Operators and Functions"
     }
   ],
   "topicSections" : [
@@ -1034,7 +1028,7 @@
   ],
   "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
   "kind" : "article",
-  "role" : "article",
+  "role" : "collectionGroup",
   "title" : "Convolution",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/convolution"
@@ -1883,103 +1877,19 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/cumsum(_:reverse:inclusive:stream:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/indexes": {
+"doc://mlx.swift.mlx/documentation/MLX/fft": {
   "abstract" : [
     {
-      "text" : "Functions to produce and consume array indexes.",
+      "text" : "Fast Fourier Transform Functions",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Indexes",
+  "title" : "FFT Functions",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indexing": {
-  "abstract" : [
-    {
-      "text" : "Array subscripts.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexing",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexing"
-},
-"doc://mlx.swift.mlx/documentation/MLX/initialization": {
-  "abstract" : [
-    {
-      "text" : "Creating MLXArrays.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Initialization",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/initialization"
-},
-"doc://mlx.swift.mlx/documentation/MLX/logical": {
-  "abstract" : [
-    {
-      "text" : "Evaluating logical operations on MLXArray.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Logical Operators",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/logical"
-},
-"doc://mlx.swift.mlx/documentation/MLX/reduction": {
-  "abstract" : [
-    {
-      "text" : "Reduction or aggregation functions.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Reduction Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/reduction"
-},
-"doc://mlx.swift.mlx/documentation/MLX/shapes": {
-  "abstract" : [
-    {
-      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Shapes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/shapes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/sorting": {
-  "abstract" : [
-    {
-      "text" : "Sorting and partitioning values and indices.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Sorting",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/sorting"
+  "url" : "\/documentation\/mlx\/fft"
 }
 }
 }

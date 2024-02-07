@@ -29,8 +29,8 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "extendedModule" : "MLX",
-    "externalID" : "s:3MLX8HasDTypePAAE10asMLXArray5dtypeAA0E0CAA0C0OSg_tF::SYNTHESIZED::s:Si",
+    "extendedModule" : "Swift",
+    "externalID" : "s:Si3MLXE10asMLXArray5dtypeAA0C0CAA5DTypeOSg_tF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -73,12 +73,15 @@
     ],
     "modules" : [
       {
-        "name" : "MLX"
+        "name" : "MLX",
+        "relatedModules" : [
+          "Swift"
+        ]
       }
     ],
     "remoteSource" : {
       "fileName" : "DType.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L89"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L172"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",

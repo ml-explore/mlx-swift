@@ -76,7 +76,7 @@
             "    \/\/ use the optimizer to update the model parameters",
             "    optimizer.update(model: model, gradients: grads)",
             "",
-            "    eval(model.parameters(), optimizer.parameters())",
+            "    eval(model.parameters(), optimizer.state())",
             "}"
           ],
           "syntax" : null,
@@ -183,13 +183,6 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
       ],
       "title" : "Base Classes and Protocols"
-    },
-    {
-      "generated" : true,
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers"
-      ],
-      "title" : "Articles"
     }
   ],
   "variants" : [
@@ -643,20 +636,6 @@
   "title" : "SGD",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
-  "abstract" : [
-    {
-      "text" : "Built-in optimizers.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Optimizers",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizers"
 },
 "https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",

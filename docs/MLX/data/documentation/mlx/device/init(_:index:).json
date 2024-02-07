@@ -57,7 +57,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Device.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Device.swift#L29"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Device.swift#L36"
     },
     "role" : "symbol",
     "roleHeading" : "Initializer",

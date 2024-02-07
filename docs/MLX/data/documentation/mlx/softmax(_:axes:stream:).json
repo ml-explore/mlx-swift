@@ -98,7 +98,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1289"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1290"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -372,6 +372,8 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sign(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sin(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sinh(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:axis:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sqrt(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/square(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/subtract(_:_:stream:)",

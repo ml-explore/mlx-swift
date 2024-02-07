@@ -5648,6 +5648,48 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx"
 },
+"doc://mlx.swift.mlx/documentation/MLX/DType": {
+  "abstract" : [
+    {
+      "text" : "Enum wrapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "Cmlx.mlx_array_dtype",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "DType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "DType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "DType",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
   "abstract" : [
     {
@@ -7105,7 +7147,26 @@
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/asType(_:stream:)-4eqoc": {
   "abstract" : [
-
+    {
+      "text" : "Create a new ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the contents converted to the given type, e.g. ",
+      "type" : "text"
+    },
+    {
+      "code" : "Float.self",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -7172,7 +7233,27 @@
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/asType(_:stream:)-6d44y": {
   "abstract" : [
-
+    {
+      "text" : "Create a new ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the contents converted to the given ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

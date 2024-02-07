@@ -4,12 +4,24 @@
 
     ],
     "severity" : 2,
-    "source" : "MLXNN.md",
+    "source" : "..\/Activations.swift",
     "start" : {
-      "column" : 5,
-      "line" : 124
+      "column" : 9,
+      "line" : 93
     },
-    "summary" : "'AdaDelta' doesn't exist at '\/MLXNN'"
+    "summary" : "'Relu6' doesn't exist at '\/MLXNN\/relu6(_:)'"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "..\/Transformer.swift",
+    "start" : {
+      "column" : 28,
+      "line" : 31
+    },
+    "summary" : "'-inf' doesn't exist at '\/MLXNN\/MultiHeadAttention\/init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)'"
   },
   {
     "notes" : [
@@ -19,128 +31,8 @@
     "source" : "MLXNN.md",
     "start" : {
       "column" : 5,
-      "line" : 125
+      "line" : 115
     },
-    "summary" : "'Adafactor' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 126
-    },
-    "summary" : "'AdaGrad' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 127
-    },
-    "summary" : "'AdamW' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 128
-    },
-    "summary" : "'Adam' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 129
-    },
-    "summary" : "'Adamax' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 130
-    },
-    "summary" : "'Lion' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 131
-    },
-    "summary" : "'RMSprop' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 132
-    },
-    "summary" : "'SGD' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 137
-    },
-    "summary" : "'Optimizer' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 138
-    },
-    "summary" : "'OptimizerBase' doesn't exist at '\/MLXNN'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "MLXNN.md",
-    "start" : {
-      "column" : 5,
-      "line" : 139
-    },
-    "summary" : "'OptimizerBaseArrayState' doesn't exist at '\/MLXNN'"
+    "summary" : "'softMax(_:)' doesn't exist at '\/MLXNN'"
   }
 ]

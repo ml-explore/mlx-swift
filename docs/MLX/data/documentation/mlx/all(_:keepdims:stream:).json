@@ -18,6 +18,11 @@
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/free-functions"
+      ],
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction"
       ]
     ]
   },

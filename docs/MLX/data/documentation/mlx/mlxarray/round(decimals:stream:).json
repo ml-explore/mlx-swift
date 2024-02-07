@@ -9,10 +9,6 @@
     "paths" : [
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
-      ],
-      [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic"
       ]
@@ -90,7 +86,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray+Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1950"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1961"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -282,7 +278,7 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/sqrt(stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/square(stream:)"
       ],
-      "title" : "Element-wise Arithmetic Functions"
+      "title" : "MLXArray Element-wise Arithmetic Functions"
     }
   ],
   "variants" : [

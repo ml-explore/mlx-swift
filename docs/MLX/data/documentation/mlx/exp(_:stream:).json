@@ -268,6 +268,8 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sign(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sin(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sinh(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:axis:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:axes:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sqrt(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/square(_:stream:)",
@@ -3519,6 +3521,149 @@
   "title" : "softMax(_:axes:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/softmax(_:axes:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/softMax(_:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Perform the softmax along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "softMax"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "softMax(_:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/softmax(_:axis:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/softMax(_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Perform the softmax along the given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "softMax"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/softMax(_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "softMax(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/softmax(_:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/sqrt(_:stream:)": {
   "abstract" : [

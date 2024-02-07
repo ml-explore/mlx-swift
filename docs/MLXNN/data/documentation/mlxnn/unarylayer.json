@@ -76,7 +76,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L827"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L859"
     },
     "role" : "symbol",
     "roleHeading" : "Protocol",
@@ -199,6 +199,7 @@
   "relationshipsSections" : [
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d",
@@ -208,8 +209,11 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Embedding",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/HardSwish",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/InstanceNorm",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LeakyReLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LogSigmoid",
@@ -219,12 +223,13 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SiLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sigmoid",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftMax",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftPlus",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftSign",
@@ -249,6 +254,8 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleChilren",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
@@ -282,7 +289,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -290,6 +300,40 @@
   "title" : "MLXNN",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies batch normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BatchNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BatchNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BatchNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/CELU": {
   "abstract" : [
@@ -597,6 +641,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/glu"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies Group Normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GroupNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GroupNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GroupNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/HardSwish": {
   "abstract" : [
     {
@@ -664,6 +742,74 @@
   "title" : "Identity",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/identity"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/InstanceNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies instance normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "InstanceNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/InstanceNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "InstanceNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "InstanceNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/instancenorm"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies layer normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "LayerNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "LayerNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "LayerNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/layernorm"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/LeakyReLU": {
   "abstract" : [
@@ -931,6 +1077,93 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module\/items()"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/update(modules:verify:)": {
+  "abstract" : [
+    {
+      "text" : "Replace the child modules of this ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the provided replacements.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "modules"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN13ModuleChilrena",
+      "text" : "ModuleChilren"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "verify"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC",
+      "text" : "Module"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6ModuleC12VerifyUpdateV",
+      "text" : "VerifyUpdate"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(modules:verify:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/update(modules:verify:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleChilren": {
   "abstract" : [
     {
@@ -972,6 +1205,57 @@
   "title" : "ModuleChilren",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/modulechilren"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleInfo": {
+  "abstract" : [
+    {
+      "text" : "ModuleInfo can provde information about child modules and act as an",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "update point for ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleInfo"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleInfo"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleinfo"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleItem": {
   "abstract" : [
@@ -1182,6 +1466,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/prelu"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ParameterInfo": {
+  "abstract" : [
+    {
+      "text" : "ParameterInfo allows you to specify alternate keys for parameter propreties.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParameterInfo"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParameterInfo"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ParameterInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/parameterinfo"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/QuantizedLinear": {
   "abstract" : [
     {
@@ -1284,7 +1602,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU6": {
   "abstract" : [
     {
       "text" : "Applies the Rectified Linear Unit 6.",
@@ -1302,19 +1620,19 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
   "role" : "symbol",
-  "title" : "Relu6",
+  "title" : "ReLU6",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu6"
 },
@@ -1496,6 +1814,40 @@
   "title" : "Sigmoid",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/sigmoid"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SinusoidalPositionalEncoding": {
+  "abstract" : [
+    {
+      "text" : "Implements sinusoidal positional encoding.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SinusoidalPositionalEncoding"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SinusoidalPositionalEncoding"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SinusoidalPositionalEncoding",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/SoftMax": {
   "abstract" : [

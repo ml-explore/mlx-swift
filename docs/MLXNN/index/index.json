@@ -18,85 +18,6 @@
             "type" : "article"
           },
           {
-            "children" : [
-              {
-                "title" : "Key\/Value Filter Functions",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/filterall",
-                "title" : "static let filterAll: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/filterlocalparameters",
-                "title" : "static let filterLocalParameters: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/filterother",
-                "title" : "static let filterOther: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/filtertrainableparameters",
-                "title" : "static let filterTrainableParameters: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/filtervalidchild",
-                "title" : "static let filterValidChild: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/filtervalidparameters",
-                "title" : "static let filterValidParameters: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "title" : "isLeaf Functions",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/isleafdefault",
-                "title" : "static let isLeafDefault: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/isleafmodule",
-                "title" : "static let isLeafModule: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/isleafmodulenochildren",
-                "title" : "static let isLeafModuleNoChildren: (Module, String, ModuleItem) -> Bool",
-                "type" : "property"
-              },
-              {
-                "title" : "Map Functions",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/mapmodule(map:)",
-                "title" : "static func mapModule<Result>(map: (Module) -> Result?) -> (ModuleItem) -> Result?",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/mapother(map:)",
-                "title" : "static func mapOther<Result>(map: (Any) -> Result?) -> (ModuleItem) -> Result?",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/module\/mapparameters(map:)",
-                "title" : "static func mapParameters<Result>(map: (MLXArray) -> Result?) -> (ModuleItem) -> Result?",
-                "type" : "method"
-              }
-            ],
-            "path" : "\/documentation\/mlxnn\/module-filters",
-            "title" : "Module Filter and Map Functions",
-            "type" : "symbol"
-          },
-          {
             "title" : "Base Classes and Interfaces",
             "type" : "groupMarker"
           },
@@ -215,6 +136,89 @@
                 "type" : "method"
               },
               {
+                "title" : "Module and Parameter Filtering",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Key\/Value Filter Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/filterall",
+                    "title" : "static let filterAll: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/filterlocalparameters",
+                    "title" : "static let filterLocalParameters: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/filterother",
+                    "title" : "static let filterOther: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/filtertrainableparameters",
+                    "title" : "static let filterTrainableParameters: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/filtervalidchild",
+                    "title" : "static let filterValidChild: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/filtervalidparameters",
+                    "title" : "static let filterValidParameters: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "title" : "isLeaf Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/isleafdefault",
+                    "title" : "static let isLeafDefault: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/isleafmodule",
+                    "title" : "static let isLeafModule: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/isleafmodulenochildren",
+                    "title" : "static let isLeafModuleNoChildren: (Module, String, ModuleItem) -> Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "title" : "Map Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/mapmodule(map:)",
+                    "title" : "static func mapModule<Result>(map: (Module) -> Result?) -> (ModuleItem) -> Result?",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/mapother(map:)",
+                    "title" : "static func mapOther<Result>(map: (Any) -> Result?) -> (ModuleItem) -> Result?",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/mapparameters(map:)",
+                    "title" : "static func mapParameters<Result>(map: (MLXArray) -> Result?) -> (ModuleItem) -> Result?",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/module-filters",
+                "title" : "Module Filter and Map Functions",
+                "type" : "symbol"
+              },
+              {
                 "title" : "Training",
                 "type" : "groupMarker"
               },
@@ -229,8 +233,8 @@
                 "type" : "method"
               },
               {
-                "path" : "\/documentation\/mlxnn\/module\/train(mode:)",
-                "title" : "func train(mode: Bool)",
+                "path" : "\/documentation\/mlxnn\/module\/train(_:)",
+                "title" : "func train(Bool)",
                 "type" : "method"
               },
               {
@@ -605,6 +609,66 @@
             "type" : "protocol"
           },
           {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/moduleinfo\/init(key:)",
+                "title" : "init(key: String?)",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/moduleinfo\/init(wrappedvalue:key:)",
+                "title" : "init(wrappedValue: T, key: String?)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/moduleinfo\/wrappedvalue",
+                "title" : "var wrappedValue: T",
+                "type" : "property"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/moduleinfo",
+            "title" : "ModuleInfo",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/parameterinfo\/init(key:)",
+                "title" : "init(key: String?)",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/parameterinfo\/init(wrappedvalue:key:)",
+                "title" : "init(wrappedValue: T, key: String?)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/parameterinfo\/wrappedvalue",
+                "title" : "var wrappedValue: T",
+                "type" : "property"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/parameterinfo",
+            "title" : "ParameterInfo",
+            "type" : "class"
+          },
+          {
             "path" : "\/documentation\/mlxnn\/moduleparameters",
             "title" : "ModuleParameters",
             "type" : "typealias"
@@ -633,6 +697,11 @@
               {
                 "path" : "\/documentation\/mlxnn\/modulevalue\/module(_:)",
                 "title" : "case module(Module)",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/modulevalue\/none",
+                "title" : "case none",
                 "type" : "case"
               },
               {
@@ -959,8 +1028,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxnn\/rmsnorm\/init(_:eps:)",
-                "title" : "init(Int, eps: Float)",
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)",
+                "title" : "init(dimensions: Int, eps: Float)",
                 "type" : "init"
               },
               {
@@ -1172,11 +1241,6 @@
           {
             "path" : "\/documentation\/mlxnn\/sigmoid(_:)",
             "title" : "func sigmoid(MLXArray) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlxnn\/softmax(_:)",
-            "title" : "func softMax(MLXArray) -> MLXArray",
             "type" : "func"
           },
           {
@@ -1457,7 +1521,7 @@
               }
             ],
             "path" : "\/documentation\/mlxnn\/relu6",
-            "title" : "Relu6",
+            "title" : "ReLU6",
             "type" : "class"
           },
           {
@@ -1660,6 +1724,292 @@
             "path" : "\/documentation\/mlxnn\/tripletloss(anchors:positives:negatives:axis:p:margin:eps:reduction:)",
             "title" : "func tripletLoss(anchors: MLXArray, positives: MLXArray, negatives: MLXArray, axis: Int, p: Int, margin: Float, eps: Float, reduction: LossReduction) -> MLXArray",
             "type" : "func"
+          },
+          {
+            "title" : "Normalization Layers",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/instancenorm\/init(dimensions:eps:affine:)",
+                "title" : "init(dimensions: Int, eps: Float, affine: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/instancenorm\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/instancenorm",
+            "title" : "InstanceNorm",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/layernorm\/init(dimensions:eps:affine:)",
+                "title" : "init(dimensions: Int, eps: Float, affine: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/layernorm\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/layernorm",
+            "title" : "LayerNorm",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)",
+                "title" : "init(dimensions: Int, eps: Float)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/describeextra(_:)",
+                "title" : "func describeExtra(Int) -> String",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/rmsnorm",
+            "title" : "RMSNorm",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/init(groupcount:dimensions:eps:affine:pytorchcompatible:)",
+                "title" : "init(groupCount: Int, dimensions: Int, eps: Float, affine: Bool, pytorchCompatible: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/groupnorm",
+            "title" : "GroupNorm",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/init(featurecount:eps:momentum:affine:trackrunningstats:)",
+                "title" : "init(featureCount: Int, eps: Float, momentum: Float, affine: Bool, trackRunningStats: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/unfreeze(recursive:keys:strict:)",
+                "title" : "func unfreeze(recursive: Bool, keys: [String]?, strict: Bool) throws",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/batchnorm",
+            "title" : "BatchNorm",
+            "type" : "class"
+          },
+          {
+            "title" : "Positional Encoding Layers",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rope\/init(dimensions:traditional:base:scale:)",
+                "title" : "init(dimensions: Int, traditional: Bool, base: Float, scale: Float)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:offset:)",
+                "title" : "func callAsFunction(MLXArray, offset: Int) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/rope",
+            "title" : "RoPE",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/init(dimensions:minfrequency:maxfrequency:scale:cosinefirst:fullturns:)",
+                "title" : "init(dimensions: Int, minFrequency: Float, maxFrequency: Float, scale: Float?, cosineFirst: Bool, fullTurns: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding",
+            "title" : "SinusoidalPositionalEncoding",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/alibi\/init()",
+                "title" : "init()",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/alibi\/callasfunction(attentionscores:offset:mask:)",
+                "title" : "func callAsFunction(attentionScores: MLXArray, offset: Int, mask: MLXArray?) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/alibi",
+            "title" : "ALiBi",
+            "type" : "class"
+          },
+          {
+            "title" : "Transformer Layers",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)",
+                "title" : "init(dimensions: Int, numHeads: Int, queryInputDimensions: Int?, keyInputDimensions: Int?, valueInputDimensions: Int?, valueDimensions: Int?, valueOutputDimensions: Int?, bias: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/callasfunction(_:keys:values:mask:)",
+                "title" : "func callAsFunction(MLXArray, keys: MLXArray, values: MLXArray, mask: MLXArray?) -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "title" : "Type Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/createadditivecausalmask(_:dtype:)",
+                "title" : "static func createAdditiveCausalMask(Int, dtype: DType) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/multiheadattention",
+            "title" : "MultiHeadAttention",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/transformer\/init(dimensions:numheads:encoderlayercount:decoderlayercount:mlpdimensions:dropout:activation:normfirst:)",
+                "title" : "init(dimensions: Int, numHeads: Int, encoderLayerCount: Int, decoderLayerCount: Int, mlpDimensions: Int?, dropout: Float, activation: UnaryLayer, normFirst: Bool)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/transformer\/callasfunction(source:target:sourcemask:targetmask:memorymask:)",
+                "title" : "func callAsFunction(source: MLXArray, target: MLXArray, sourceMask: MLXArray, targetMask: MLXArray, memoryMask: MLXArray) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/transformer",
+            "title" : "Transformer",
+            "type" : "class"
           },
           {
             "title" : "Value and Grad",
@@ -2053,7 +2403,7 @@
                   }
                 ],
                 "path" : "\/documentation\/mlxnn\/relu6",
-                "title" : "Relu6",
+                "title" : "ReLU6",
                 "type" : "class"
               },
               {
@@ -2470,8 +2820,8 @@
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlxnn\/rmsnorm\/init(_:eps:)",
-                    "title" : "init(Int, eps: Float)",
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)",
+                    "title" : "init(dimensions: Int, eps: Float)",
                     "type" : "init"
                   },
                   {
@@ -2673,68 +3023,311 @@
             "type" : "symbol"
           },
           {
-            "title" : "Classes",
-            "type" : "groupMarker"
+            "children" : [
+              {
+                "title" : "Normalization Layers",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/instancenorm\/init(dimensions:eps:affine:)",
+                    "title" : "init(dimensions: Int, eps: Float, affine: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/instancenorm\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/instancenorm",
+                "title" : "InstanceNorm",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/layernorm\/init(dimensions:eps:affine:)",
+                    "title" : "init(dimensions: Int, eps: Float, affine: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/layernorm\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/layernorm",
+                "title" : "LayerNorm",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)",
+                    "title" : "init(dimensions: Int, eps: Float)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/describeextra(_:)",
+                    "title" : "func describeExtra(Int) -> String",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/rmsnorm",
+                "title" : "RMSNorm",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/init(groupcount:dimensions:eps:affine:pytorchcompatible:)",
+                    "title" : "init(groupCount: Int, dimensions: Int, eps: Float, affine: Bool, pytorchCompatible: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/groupnorm",
+                "title" : "GroupNorm",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/init(featurecount:eps:momentum:affine:trackrunningstats:)",
+                    "title" : "init(featureCount: Int, eps: Float, momentum: Float, affine: Bool, trackRunningStats: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/unfreeze(recursive:keys:strict:)",
+                    "title" : "func unfreeze(recursive: Bool, keys: [String]?, strict: Bool) throws",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/batchnorm",
+                "title" : "BatchNorm",
+                "type" : "class"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/normalization",
+            "title" : "Normalization",
+            "type" : "symbol"
           },
           {
             "children" : [
               {
-                "title" : "Initializers",
+                "title" : "Positional Encoding Layers",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxnn\/moduleinfo\/init(key:)",
-                "title" : "init(key: String?)",
-                "type" : "init"
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rope\/init(dimensions:traditional:base:scale:)",
+                    "title" : "init(dimensions: Int, traditional: Bool, base: Float, scale: Float)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rope\/callasfunction(_:offset:)",
+                    "title" : "func callAsFunction(MLXArray, offset: Int) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/rope",
+                "title" : "RoPE",
+                "type" : "class"
               },
               {
-                "path" : "\/documentation\/mlxnn\/moduleinfo\/init(wrappedvalue:key:)",
-                "title" : "init(wrappedValue: T, key: String?)",
-                "type" : "init"
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/init(dimensions:minfrequency:maxfrequency:scale:cosinefirst:fullturns:)",
+                    "title" : "init(dimensions: Int, minFrequency: Float, maxFrequency: Float, scale: Float?, cosineFirst: Bool, fullTurns: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/callasfunction(_:)",
+                    "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding",
+                "title" : "SinusoidalPositionalEncoding",
+                "type" : "class"
               },
               {
-                "title" : "Instance Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/moduleinfo\/wrappedvalue",
-                "title" : "var wrappedValue: T",
-                "type" : "property"
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/alibi\/init()",
+                    "title" : "init()",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/alibi\/callasfunction(attentionscores:offset:mask:)",
+                    "title" : "func callAsFunction(attentionScores: MLXArray, offset: Int, mask: MLXArray?) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/alibi",
+                "title" : "ALiBi",
+                "type" : "class"
               }
             ],
-            "path" : "\/documentation\/mlxnn\/moduleinfo",
-            "title" : "ModuleInfo",
-            "type" : "class"
+            "path" : "\/documentation\/mlxnn\/positional-encoding",
+            "title" : "Positional Encoding",
+            "type" : "symbol"
           },
           {
             "children" : [
               {
-                "title" : "Initializers",
+                "title" : "Transformer Layers",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxnn\/parameterinfo\/init(key:)",
-                "title" : "init(key: String?)",
-                "type" : "init"
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)",
+                    "title" : "init(dimensions: Int, numHeads: Int, queryInputDimensions: Int?, keyInputDimensions: Int?, valueInputDimensions: Int?, valueDimensions: Int?, valueOutputDimensions: Int?, bias: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/callasfunction(_:keys:values:mask:)",
+                    "title" : "func callAsFunction(MLXArray, keys: MLXArray, values: MLXArray, mask: MLXArray?) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "title" : "Type Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/createadditivecausalmask(_:dtype:)",
+                    "title" : "static func createAdditiveCausalMask(Int, dtype: DType) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/multiheadattention",
+                "title" : "MultiHeadAttention",
+                "type" : "class"
               },
               {
-                "path" : "\/documentation\/mlxnn\/parameterinfo\/init(wrappedvalue:key:)",
-                "title" : "init(wrappedValue: T, key: String?)",
-                "type" : "init"
-              },
-              {
-                "title" : "Instance Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxnn\/parameterinfo\/wrappedvalue",
-                "title" : "var wrappedValue: T",
-                "type" : "property"
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/transformer\/init(dimensions:numheads:encoderlayercount:decoderlayercount:mlpdimensions:dropout:activation:normfirst:)",
+                    "title" : "init(dimensions: Int, numHeads: Int, encoderLayerCount: Int, decoderLayerCount: Int, mlpDimensions: Int?, dropout: Float, activation: UnaryLayer, normFirst: Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/transformer\/callasfunction(source:target:sourcemask:targetmask:memorymask:)",
+                    "title" : "func callAsFunction(source: MLXArray, target: MLXArray, sourceMask: MLXArray, targetMask: MLXArray, memoryMask: MLXArray) -> MLXArray",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/transformer",
+                "title" : "Transformer",
+                "type" : "class"
               }
             ],
-            "path" : "\/documentation\/mlxnn\/parameterinfo",
-            "title" : "ParameterInfo",
-            "type" : "class"
+            "path" : "\/documentation\/mlxnn\/transformers",
+            "title" : "Transformer",
+            "type" : "symbol"
           },
           {
             "title" : "Structures",

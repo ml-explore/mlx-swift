@@ -1,9 +1,32 @@
 {
+  "abstract" : [
+    {
+      "text" : "Create a new ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the contents converted to the given type, e.g. ",
+      "type" : "text"
+    },
+    {
+      "code" : "Float.self",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/conversion"
       ]
     ]
   },
@@ -77,7 +100,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray.swift#L188"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray.swift#L202"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -197,6 +220,55 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "kind" : "parameters",
+      "parameters" : [
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "type to convert to",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "type"
+        }
+      ]
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/conversion",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "schemaVersion" : {
@@ -206,6 +278,19 @@
   },
   "sections" : [
 
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/asType(_:stream:)-6d44y",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/asArray(_:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/asImaginary(stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/imaginaryPart(stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/realPart(stream:)"
+      ],
+      "title" : "Conversion Functions"
+    }
   ],
   "variants" : [
     {
@@ -284,6 +369,31 @@
   "title" : "DType",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/dtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/complex64": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "complex64"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.complex64",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/complex64"
 },
 "doc://mlx.swift.mlx/documentation/MLX/HasDType": {
   "abstract" : [
@@ -366,9 +476,155 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/asArray(_:)": {
+  "abstract" : [
+    {
+      "text" : "Return the contents as a single contiguous 1d ",
+      "type" : "text"
+    },
+    {
+      "code" : "Swift.Array",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ".Type) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/asArray(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asArray(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/asarray(_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/asImaginary(stream:)": {
+  "abstract" : [
+    {
+      "text" : "Convert the real array into a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " imaginary part.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asImaginary"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/asImaginary(stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asImaginary(stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/asimaginary(stream:)"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/asType(_:stream:)-4eqoc": {
   "abstract" : [
-
+    {
+      "text" : "Create a new ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the contents converted to the given type, e.g. ",
+      "type" : "text"
+    },
+    {
+      "code" : "Float.self",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -433,6 +689,212 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/astype(_:stream:)-4eqoc"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/asType(_:stream:)-6d44y": {
+  "abstract" : [
+    {
+      "text" : "Create a new ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the contents converted to the given ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asType"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/asType(_:stream:)-6d44y",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asType(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/astype(_:stream:)-6d44y"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/imaginaryPart(stream:)": {
+  "abstract" : [
+    {
+      "text" : "Extract the imaginary part of a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "imaginaryPart"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/imaginaryPart(stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "imaginaryPart(stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/imaginarypart(stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/realPart(stream:)": {
+  "abstract" : [
+    {
+      "text" : "Extract the real part of a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "realPart"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/realPart(stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "realPart(stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/realpart(stream:)"
+},
 "doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
   "abstract" : [
     {
@@ -466,6 +928,20 @@
   "title" : "StreamOrDevice",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/streamordevice"
+},
+"doc://mlx.swift.mlx/documentation/MLX/conversion": {
+  "abstract" : [
+    {
+      "text" : "Conversion functions.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/conversion",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Conversion",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/conversion"
 }
 }
 }

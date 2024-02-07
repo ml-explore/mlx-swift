@@ -178,9 +178,8 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
-                      "isActive" : true,
-                      "type" : "reference"
+                      "code" : "Relu6",
+                      "type" : "codeVoice"
                     }
                   ],
                   "type" : "paragraph"
@@ -222,7 +221,6 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/selu(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/silu(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/sigmoid(_:)",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softMax(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softPlus(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softSign(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/step(_:threshold:)"
@@ -246,7 +244,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -254,40 +255,6 @@
   "title" : "MLXNN",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6": {
-  "abstract" : [
-    {
-      "text" : "Applies the Rectified Linear Unit 6.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Relu6"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "Relu6"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "Relu6",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/relu6"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/activations": {
   "abstract" : [
@@ -1186,52 +1153,6 @@
   "title" : "silu(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/silu(_:)"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/softMax(_:)": {
-  "abstract" : [
-    {
-      "text" : "Applies the Softmax function.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "softMax"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softMax(_:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "softMax(_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/softmax(_:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/softPlus(_:)": {
   "abstract" : [

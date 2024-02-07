@@ -55,7 +55,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Nested.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L41"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L42"
     },
     "role" : "symbol",
     "roleHeading" : "Enumeration",
@@ -282,6 +282,16 @@
   },
   "sections" : [
 
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IndentedDescription"
+      ],
+      "title" : "Nested Data"
+    }
   ],
   "topicSections" : [
     {

@@ -23,8 +23,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/adadelta\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/adadelta\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               }
             ],
@@ -57,8 +57,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/adafactor\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/adafactor\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               }
             ],
@@ -114,8 +114,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/adam\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/adam\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               }
             ],
@@ -139,8 +139,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/adamax\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/adamax\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               }
             ],
@@ -207,8 +207,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/optimizer\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/optimizer\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               },
               {
@@ -228,8 +228,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               },
               {
@@ -249,280 +249,14 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate\/parameters()",
-                "title" : "func parameters() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate\/state()",
+                "title" : "func state() -> [MLXArray]",
                 "type" : "method"
               }
             ],
             "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate",
             "title" : "OptimizerBaseArrayState",
             "type" : "class"
-          },
-          {
-            "title" : "Articles",
-            "type" : "groupMarker"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Optimizers",
-                "type" : "groupMarker"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adadelta\/init(learningrate:rho:eps:)",
-                    "title" : "init(learningRate: Float, rho: Float, eps: Float)",
-                    "type" : "init"
-                  },
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adadelta\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/adadelta",
-                "title" : "AdaDelta",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Structures",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adafactor\/state",
-                    "title" : "Adafactor.State",
-                    "type" : "struct"
-                  },
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adafactor\/init(learningrate:eps:clipthreshold:decayrate:beta1:weightdecay:scaleparameter:relativestep:warmupinit:)",
-                    "title" : "init(learningRate: Float?, eps: (Float, Float), clipThreshold: Float, decayRate: Float, beta1: Float?, weightDecay: Float, scaleParameter: Bool, relativeStep: Bool, warmupInit: Bool)",
-                    "type" : "init"
-                  },
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adafactor\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/adafactor",
-                "title" : "Adafactor",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adagrad\/init(learningrate:eps:)",
-                    "title" : "init(learningRate: Float, eps: Float)",
-                    "type" : "init"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/adagrad",
-                "title" : "AdaGrad",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adamw\/init(learningrate:betas:eps:weightdecay:)",
-                    "title" : "init(learningRate: Float, betas: (Float, Float), eps: Float, weightDecay: Float)",
-                    "type" : "init"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/adamw",
-                "title" : "AdamW",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adam\/init(learningrate:betas:eps:)",
-                    "title" : "init(learningRate: Float, betas: (Float, Float), eps: Float)",
-                    "type" : "init"
-                  },
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adam\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/adam",
-                "title" : "Adam",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)",
-                    "title" : "init(learningRate: Float, betas: (Float, Float), eps: Float)",
-                    "type" : "init"
-                  },
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/adamax\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/adamax",
-                "title" : "Adamax",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/lion\/init(learningrate:betas:weightdecay:)",
-                    "title" : "init(learningRate: Float, betas: (Float, Float), weightDecay: Float)",
-                    "type" : "init"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/lion",
-                "title" : "Lion",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/rmsprop\/init(learningrate:alpha:eps:)",
-                    "title" : "init(learningRate: Float, alpha: Float, eps: Float)",
-                    "type" : "init"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/rmsprop",
-                "title" : "RMSprop",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/sgd\/init(learningrate:momentum:weightdecay:dampening:nesterov:)",
-                    "title" : "init(learningRate: Float, momentum: Float, weightDecay: Float, dampening: Float, nesterov: Bool)",
-                    "type" : "init"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/sgd",
-                "title" : "SGD",
-                "type" : "class"
-              },
-              {
-                "title" : "Base Classes and Protocols",
-                "type" : "groupMarker"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/optimizer\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/optimizer\/update(model:gradients:)",
-                    "title" : "func update(model: Module, gradients: ModuleParameters)",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/optimizer",
-                "title" : "Optimizer",
-                "type" : "protocol"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/update(model:gradients:)",
-                    "title" : "func update(model: Module, gradients: ModuleParameters)",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/optimizerbase",
-                "title" : "OptimizerBase",
-                "type" : "class"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate\/parameters()",
-                    "title" : "func parameters() -> [MLXArray]",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate",
-                "title" : "OptimizerBaseArrayState",
-                "type" : "class"
-              }
-            ],
-            "path" : "\/documentation\/mlxoptimizers\/optimizers",
-            "title" : "Optimizers",
-            "type" : "symbol"
           }
         ],
         "path" : "\/documentation\/mlxoptimizers",

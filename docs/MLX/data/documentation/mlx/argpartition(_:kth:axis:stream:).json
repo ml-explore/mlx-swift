@@ -453,7 +453,11 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/argSort(_:axis:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/argSort(_:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/takeAlong(_:_:axis:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/takeAlong(_:_:stream:)"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/takeAlong(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/take(_:_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/take(_:_:axis:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/top(_:k:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/top(_:k:axis:stream:)"
       ],
       "title" : "Indexes"
     }
@@ -1395,6 +1399,167 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/sorting"
 },
+"doc://mlx.swift.mlx/documentation/MLX/take(_:_:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Take elements along an axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "take"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/take(_:_:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "take(_:_:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/take(_:_:axis:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/take(_:_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Take elements from flattened 1-D array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "take"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/take(_:_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "take(_:_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/take(_:_:stream:)"
+},
 "doc://mlx.swift.mlx/documentation/MLX/takeAlong(_:_:axis:stream:)": {
   "abstract" : [
     {
@@ -1555,6 +1720,199 @@
   "title" : "takeAlong(_:_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/takealong(_:_:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/top(_:k:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Returns the ",
+      "type" : "text"
+    },
+    {
+      "code" : "k",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " largest elements from the input along a given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "top"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "k"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/top(_:k:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "top(_:k:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/top(_:k:axis:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/top(_:k:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Returns the ",
+      "type" : "text"
+    },
+    {
+      "code" : "k",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " largest elements from the flattened input along a given axis.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "top"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "k"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/top(_:k:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "top(_:k:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/top(_:k:stream:)"
 }
 }
 }

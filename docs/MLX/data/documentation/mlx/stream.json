@@ -1,4 +1,10 @@
 {
+  "abstract" : [
+    {
+      "text" : "A stream of evaluation attached to a particular device.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -40,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Stream.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L67"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L78"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -85,6 +91,64 @@
     },
     {
       "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Typically this is used via the ",
+              "type" : "text"
+            },
+            {
+              "code" : "stream: ",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " parameter on a method with a ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ":",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let a: MLXArray ...",
+            "let result = sqrt(a, stream: .gpu)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Read more at ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
         {
           "anchor" : "See-Also",
           "level" : 3,
@@ -146,6 +210,17 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType"
+      ],
+      "title" : "Streams and Devices"
+    }
+  ],
   "topicSections" : [
     {
       "identifiers" : [
@@ -204,9 +279,80 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx"
 },
+"doc://mlx.swift.mlx/documentation/MLX/Device": {
+  "abstract" : [
+    {
+      "text" : "Representation of a Device in MLX.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Device"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Device"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Device",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/device"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DeviceType": {
+  "abstract" : [
+    {
+      "text" : "Type of device.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "DeviceType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "DeviceType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "DeviceType",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/devicetype"
+},
 "doc://mlx.swift.mlx/documentation/MLX/Stream": {
   "abstract" : [
-
+    {
+      "text" : "A stream of evaluation attached to a particular device.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

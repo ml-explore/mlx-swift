@@ -93,7 +93,7 @@
     ],
     "remoteSource" : {
       "fileName" : "DType.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L163"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L168"
     },
     "required" : true,
     "role" : "symbol",
@@ -216,9 +216,8 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/toArrays(_:_:)",
-              "isActive" : true,
-              "type" : "reference"
+              "code" : "toArrays(_:_:)",
+              "type" : "codeVoice"
             }
           ],
           "type" : "paragraph"
@@ -513,106 +512,6 @@
   "title" : "asMLXArray(dtype:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/scalarorarray\/asmlxarray(dtype:)-v238"
-},
-"doc://mlx.swift.mlx/documentation/MLX/toArrays(_:_:)": {
-  "abstract" : [
-    {
-      "text" : "Convert two ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : " into ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "toArrays"
-    },
-    {
-      "kind" : "text",
-      "text" : "<"
-    },
-    {
-      "kind" : "genericParameter",
-      "text" : "T1"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "genericParameter",
-      "text" : "T2"
-    },
-    {
-      "kind" : "text",
-      "text" : ">("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "text" : "T1"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "text" : "T2"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> ("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ")"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/toArrays(_:_:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "toArrays(_:_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/toarrays(_:_:)"
 }
 }
 }

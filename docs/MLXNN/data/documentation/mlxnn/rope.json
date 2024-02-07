@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "PositionalEncoding.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/PositionalEncoding.swift#L14"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/PositionalEncoding.swift#L17"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -160,6 +160,31 @@
             }
           ],
           "type" : "paragraph"
+        },
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/positional-encoding",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
         }
       ],
       "kind" : "content"
@@ -248,7 +273,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -994,6 +1022,20 @@
   "title" : "UnaryLayer",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/unarylayer"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/positional-encoding": {
+  "abstract" : [
+    {
+      "text" : "Built-in layers for positional encoding.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/positional-encoding",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Positional Encoding",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/positional-encoding"
 },
 "doc://mlx.swift.mlxnn/s23CustomStringConvertibleP": {
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",

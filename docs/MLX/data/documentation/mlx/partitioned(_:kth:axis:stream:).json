@@ -127,7 +127,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1064"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1065"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -447,7 +447,9 @@
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/argSort(_:axis:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/argPartition(_:kth:axis:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorted(_:axis:stream:)"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorted(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorted(_:axis:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/partitioned(_:kth:stream:)"
       ],
       "title" : "Sorting"
     }
@@ -1035,6 +1037,69 @@
   "title" : "sorted(_:axis:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/sorted(_:axis:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/sorted(_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Returns a sorted copy of the flattened array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "sorted"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorted(_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "sorted(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/sorted(_:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/sorting": {
   "abstract" : [

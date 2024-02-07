@@ -418,7 +418,9 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/linspace(_:_:count:stream:)-6w959",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/repeat(_:count:axis:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/repeat(_:count:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/tri(_:m:k:type:stream:)"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/tri(_:m:k:type:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/tril(_:k:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/triu(_:k:stream:)"
       ],
       "title" : "Factory"
     }
@@ -1646,6 +1648,166 @@
   "title" : "tri(_:m:k:type:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/tri(_:m:k:type:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/tril(_:k:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Zeros the array above the given diagonal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tril"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "k"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/tril(_:k:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tril(_:k:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/tril(_:k:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/triu(_:k:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Zeros the array below the given diagonal.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "triu"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "k"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/triu(_:k:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "triu(_:k:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/triu(_:k:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/zeros(_:type:stream:)": {
   "abstract" : [

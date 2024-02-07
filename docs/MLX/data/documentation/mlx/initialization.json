@@ -301,6 +301,213 @@
           "type" : "paragraph"
         },
         {
+          "anchor" : "Int-vs-Int32-vs-Int64",
+          "level" : 3,
+          "text" : "Int vs Int32 vs Int64",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In swift an Int is a 64 bit value (aka Int64).  You can get 32 bit values by using:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let i = Int32(10)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In MLX the preferred integer type is ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " or smaller.  You can create",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "an ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " with an Int32 like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let a = MLXArray(Int32(10))"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "but as a convenience you can also create them like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ also int32!",
+            "let a = MLXArray(10)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If the value is out of range you will get an error pointing",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "you to the alternate initializer:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ array creation with Int -- we want it to produce .int32",
+            "let a1 = MLXArray(500)",
+            "XCTAssertEqual(a1.dtype, .int32)",
+            "",
+            "\/\/ eplicit int64",
+            "let a2 = MLXArray(int64: 500)",
+            "XCTAssertEqual(a2.dtype, .int64)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "All of the ",
+              "type" : "text"
+            },
+            {
+              "code" : "Int",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " initializers (e.g. ",
+              "type" : "text"
+            },
+            {
+              "code" : "[Int]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " and ",
+              "type" : "text"
+            },
+            {
+              "code" : "Sequence<Int>",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") work",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the same way and all have the ",
+              "type" : "text"
+            },
+            {
+              "code" : "int64:",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " variant.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Double",
+          "level" : 3,
+          "text" : "Double",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If you have a ",
+              "type" : "text"
+            },
+            {
+              "code" : "Double",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " array, you have to convert it as ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " does not support ",
+              "type" : "text"
+            },
+            {
+              "code" : "Double",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ":",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ this converts to a Float array behind the scenes",
+            "let v1 = MLXArray(converting: [0.1, 0.5])"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
           "anchor" : "Multi-Value-Arrays",
           "level" : 3,
           "text" : "Multi Value Arrays",
@@ -363,47 +570,6 @@
             "",
             "\/\/ this works with various types of sequences",
             "let v2 = MLXArray(stride(from: Float(0.5), to: Float(1.5), by: Float(0.1)))"
-          ],
-          "syntax" : "swift",
-          "type" : "codeListing"
-        },
-        {
-          "inlineContent" : [
-            {
-              "text" : "If you have a ",
-              "type" : "text"
-            },
-            {
-              "code" : "Double",
-              "type" : "codeVoice"
-            },
-            {
-              "text" : " array, you have to convert it as ",
-              "type" : "text"
-            },
-            {
-              "code" : "MLXArray",
-              "type" : "codeVoice"
-            },
-            {
-              "text" : " does not support ",
-              "type" : "text"
-            },
-            {
-              "code" : "Double",
-              "type" : "codeVoice"
-            },
-            {
-              "text" : ":",
-              "type" : "text"
-            }
-          ],
-          "type" : "paragraph"
-        },
-        {
-          "code" : [
-            "\/\/ this converts to a Float array behind the scenes",
-            "let v1 = MLXArray(converting: [0.1, 0.5])"
           ],
           "syntax" : "swift",
           "type" : "codeListing"
@@ -524,6 +690,158 @@
           ],
           "syntax" : "swift",
           "type" : "codeListing"
+        },
+        {
+          "anchor" : "Complex-Values",
+          "level" : 3,
+          "text" : "Complex Values",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " supports complex numbers, specifically a real and imaginary ",
+              "type" : "text"
+            },
+            {
+              "code" : "Float32",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : "",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "as ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "MLX uses ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/github.com\/apple\/swift-numerics\/tree\/main",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "to represent the ",
+              "type" : "text"
+            },
+            {
+              "code" : "Complex",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " type, though there are a few functions for manipulating",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the individual pieces, see ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/conversion",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To create a complex scalar there are a few approaches:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let c1 = MLXArray(Complex(0, 1))",
+            "let c2 = MLXArray(real: 0, imaginary: 1)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "You can use ",
+              "type" : "text"
+            },
+            {
+              "code" : "Complex",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " to create an array of complex as well:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let c3 = MLXArray([Complex(2, 7), Complex(3, 8), Complex(4, 9)])"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If you have two arrays that you want to combine you can use this pattern:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])",
+            "let i = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])",
+            "",
+            "\/\/ dtype is .complex64",
+            "let c = r + i.asImaginary()"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
         }
       ],
       "kind" : "content"
@@ -536,23 +854,6 @@
   },
   "sections" : [
 
-  ],
-  "seeAlsoSections" : [
-    {
-      "generated" : true,
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting"
-      ],
-      "title" : "MLXArray"
-    }
   ],
   "topicSections" : [
     {
@@ -573,6 +874,94 @@
       "title" : "MLXArray Scalar Initializers"
     },
     {
+      "abstract" : [
+        {
+          "text" : "Creating an ",
+          "type" : "text"
+        },
+        {
+          "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+          "isActive" : true,
+          "type" : "reference"
+        },
+        {
+          "text" : " from ",
+          "type" : "text"
+        },
+        {
+          "code" : "Int",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " will produce ",
+          "type" : "text"
+        },
+        {
+          "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+          "isActive" : true,
+          "type" : "reference"
+        },
+        {
+          "text" : " rather",
+          "type" : "text"
+        },
+        {
+          "text" : " ",
+          "type" : "text"
+        },
+        {
+          "text" : "than ",
+          "type" : "text"
+        },
+        {
+          "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int64",
+          "isActive" : true,
+          "type" : "reference"
+        },
+        {
+          "text" : " (",
+          "type" : "text"
+        },
+        {
+          "code" : "Int",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " is really ",
+          "type" : "text"
+        },
+        {
+          "code" : "Int64",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : ").  If you need ",
+          "type" : "text"
+        },
+        {
+          "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int64",
+          "isActive" : true,
+          "type" : "reference"
+        },
+        {
+          "text" : " ",
+          "type" : "text"
+        },
+        {
+          "text" : "there are specific initializers to request it:",
+          "type" : "text"
+        }
+      ],
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:)-6nnka",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:_:)-93flk",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:_:)-7bgj2",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:_:)-74tu0"
+      ],
+      "title" : "MLXArray Int Overrides"
+    },
+    {
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:_:)-4n0or",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:_:)-dq8h",
@@ -585,10 +974,19 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(real:imaginary:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:)-6iii5"
+      ],
+      "title" : "MLXArray Complex Initializers"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/zeros(_:type:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/zeros(like:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/zeros(_:dtype:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/ones(_:type:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/ones(like:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/ones(_:dtype:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/eye(_:m:k:type:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/full(_:values:type:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/full(_:values:stream:)",
@@ -697,6 +1095,81 @@
   "title" : "DType",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/dtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/complex64": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "complex64"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.complex64",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/complex64"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int32": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int32"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int32",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int32"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int64": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int64"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int64",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int64",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int64"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
   "abstract" : [
@@ -1394,6 +1867,146 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/init(_:)-10m"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(_:)-6iii5": {
+  "abstract" : [
+    {
+      "text" : "Create a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " scalar from ",
+      "type" : "text"
+    },
+    {
+      "code" : "Complex<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13ComplexModule0A0V",
+      "text" : "Complex"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ">)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:)-6iii5",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(_:)-6iii5"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(_:)-6nnka": {
+  "abstract" : [
+    {
+      "text" : "Initalizer allowing creation of scalar (0-dimension) ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from an ",
+      "type" : "text"
+    },
+    {
+      "code" : "Int",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " as",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Dtype.int32",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:)-6nnka",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(_:)-6nnka"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(_:)-6zp01": {
   "abstract" : [
     {
@@ -1759,6 +2372,88 @@
   "title" : "init(_:_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-89jw1"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(_:_:)-93flk": {
+  "abstract" : [
+    {
+      "text" : "Initalizer allowing creation of scalar (0-dimension) ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from an ",
+      "type" : "text"
+    },
+    {
+      "code" : "[Int]",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " as",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Dtype.int32",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(_:_:)-93flk",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-93flk"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(_:_:)-dq8h": {
   "abstract" : [
@@ -2299,6 +2994,351 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/init(converting:_:)"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(int64:)": {
+  "abstract" : [
+    {
+      "text" : "Initalizer allowing creation of scalar (0-dimension) ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from an ",
+      "type" : "text"
+    },
+    {
+      "code" : "Int",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " as",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Dtype.int64",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "int64"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(int64:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(int64:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(int64:_:)-74tu0": {
+  "abstract" : [
+    {
+      "text" : "Initalizer allowing creation of scalar (0-dimension) ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from an ",
+      "type" : "text"
+    },
+    {
+      "code" : "[Int]",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " as",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Dtype.int64",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "int64"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:ST",
+      "text" : "Sequence"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ">, ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:_:)-74tu0",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(int64:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(int64:_:)-74tu0"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(int64:_:)-7bgj2": {
+  "abstract" : [
+    {
+      "text" : "Initalizer allowing creation of scalar (0-dimension) ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from an ",
+      "type" : "text"
+    },
+    {
+      "code" : "[Int]",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " as",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Dtype.int64",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "int64"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:_:)-7bgj2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(int64:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(int64:_:)-7bgj2"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(real:imaginary:)": {
+  "abstract" : [
+    {
+      "text" : "Create a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/complex64",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " scalar.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "real"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "imaginary"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(real:imaginary:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(real:imaginary:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(real:imaginary:)"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/linspace(_:_:count:stream:)-7m7eg": {
   "abstract" : [
     {
@@ -2552,6 +3592,99 @@
   "title" : "linspace(_:_:count:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/linspace(_:_:count:stream:)-92x6l"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/ones(_:dtype:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Construct an array of ones with a given ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ones"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/ones(_:dtype:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ones(_:dtype:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/ones(_:dtype:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/ones(_:type:stream:)": {
   "abstract" : [
@@ -3049,6 +4182,99 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/tri(_:m:k:type:stream:)"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/zeros(_:dtype:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Construct an array of zeros with a given ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "zeros"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/zeros(_:dtype:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "zeros(_:dtype:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/zeros(_:dtype:stream:)"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/zeros(_:type:stream:)": {
   "abstract" : [
     {
@@ -3257,47 +4483,19 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/scalarorarray"
 },
-"doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
+"doc://mlx.swift.mlx/documentation/MLX/conversion": {
   "abstract" : [
     {
-      "text" : "MLX supports a wide range of binary arithmetic operators.",
+      "text" : "Conversion functions.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/conversion",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Arithmetic",
+  "title" : "Conversion",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/arithmetic"
-},
-"doc://mlx.swift.mlx/documentation/MLX/convolution": {
-  "abstract" : [
-    {
-      "text" : "Convolution operations.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-  "kind" : "article",
-  "role" : "article",
-  "title" : "Convolution",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/convolution"
-},
-"doc://mlx.swift.mlx/documentation/MLX/cumulative": {
-  "abstract" : [
-    {
-      "text" : "Operations that produce a cumulative result.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Cumulative Operations",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/cumulative"
+  "url" : "\/documentation\/mlx\/conversion"
 },
 "doc://mlx.swift.mlx/documentation/MLX/eye(_:m:k:type:stream:)": {
   "abstract" : [
@@ -3691,34 +4889,6 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/identity(_:type:stream:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/indexes": {
-  "abstract" : [
-    {
-      "text" : "Functions to produce and consume array indexes.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indexing": {
-  "abstract" : [
-    {
-      "text" : "Array subscripts.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexing",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexing"
-},
 "doc://mlx.swift.mlx/documentation/MLX/linspace(_:_:count:stream:)-6w959": {
   "abstract" : [
     {
@@ -3940,20 +5110,6 @@
   "title" : "linspace(_:_:count:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/linspace(_:_:count:stream:)-7vj0o"
-},
-"doc://mlx.swift.mlx/documentation/MLX/logical": {
-  "abstract" : [
-    {
-      "text" : "Evaluating logical operations on MLXArray.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Logical Operators",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/logical"
 },
 "doc://mlx.swift.mlx/documentation/MLX/minimum(_:_:stream:)": {
   "abstract" : [
@@ -4351,20 +5507,6 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/pow(_:_:stream:)-7pe7j"
 },
-"doc://mlx.swift.mlx/documentation/MLX/reduction": {
-  "abstract" : [
-    {
-      "text" : "Reduction or aggregation functions.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Reduction Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/reduction"
-},
 "doc://mlx.swift.mlx/documentation/MLX/repeat(_:count:axis:stream:)": {
   "abstract" : [
     {
@@ -4541,34 +5683,6 @@
   "title" : "repeat(_:count:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/repeat(_:count:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/shapes": {
-  "abstract" : [
-    {
-      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Shapes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/shapes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/sorting": {
-  "abstract" : [
-    {
-      "text" : "Sorting and partitioning values and indices.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Sorting",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/sorting"
 },
 "doc://mlx.swift.mlx/documentation/MLX/tri(_:m:k:type:stream:)": {
   "abstract" : [
@@ -4848,6 +5962,18 @@
   "title" : "zeros(like:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/zeros(like:stream:)"
+},
+"https://github.com/apple/swift-numerics/tree/main": {
+  "identifier" : "https:\/\/github.com\/apple\/swift-numerics\/tree\/main",
+  "title" : "swift-numerics",
+  "titleInlineContent" : [
+    {
+      "text" : "swift-numerics",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/github.com\/apple\/swift-numerics\/tree\/main"
 }
 }
 }

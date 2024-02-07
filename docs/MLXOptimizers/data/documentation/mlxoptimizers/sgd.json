@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L104"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L107"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -96,7 +96,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
+                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -680,20 +680,6 @@
   "title" : "init(learningRate:momentum:weightDecay:dampening:nesterov:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd\/init(learningrate:momentum:weightdecay:dampening:nesterov:)"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
-  "abstract" : [
-    {
-      "text" : "Built-in optimizers.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Optimizers",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizers"
 }
 }
 }

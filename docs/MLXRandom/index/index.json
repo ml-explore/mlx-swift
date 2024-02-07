@@ -47,8 +47,18 @@
             "type" : "func"
           },
           {
+            "path" : "\/documentation\/mlxrandom\/gumbel(_:dtype:key:stream:)",
+            "title" : "func gumbel([Int], dtype: DType, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
             "path" : "\/documentation\/mlxrandom\/gumbel(_:type:key:stream:)",
             "title" : "func gumbel<T>([Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/normal(_:dtype:key:stream:)",
+            "title" : "func normal([Int], dtype: DType, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
           },
           {
@@ -82,6 +92,11 @@
             "type" : "func"
           },
           {
+            "path" : "\/documentation\/mlxrandom\/truncatednormal(low:high:_:dtype:key:stream:)",
+            "title" : "func truncatedNormal(low: ScalarOrArray, high: ScalarOrArray, [Int]?, dtype: DType, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
             "path" : "\/documentation\/mlxrandom\/truncatednormal(low:high:_:type:key:stream:)",
             "title" : "func truncatedNormal<T>(low: ScalarOrArray, high: ScalarOrArray, [Int]?, type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
@@ -94,6 +109,11 @@
           {
             "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-4d6d2",
             "title" : "func uniform<T>(Range<Float>, [Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/uniform(low:high:_:dtype:key:stream:)",
+            "title" : "func uniform(low: ScalarOrArray, high: ScalarOrArray, [Int]?, dtype: DType, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
           },
           {

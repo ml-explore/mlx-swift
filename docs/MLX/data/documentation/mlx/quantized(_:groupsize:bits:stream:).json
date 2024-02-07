@@ -24,7 +24,8 @@
   "hierarchy" : {
     "paths" : [
       [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/free-functions"
       ]
     ]
   },
@@ -159,7 +160,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1108"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1109"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -492,6 +493,16 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/dequantized(_:scales:biases:groupSize:bits:stream:)"
+      ],
+      "title" : "Quantization"
+    }
+  ],
   "variants" : [
     {
       "paths" : [
@@ -778,6 +789,20 @@
   "title" : "dequantized(_:scales:biases:groupSize:bits:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/dequantized(_:scales:biases:groupsize:bits:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/free-functions": {
+  "abstract" : [
+    {
+      "text" : "Free functions in MLX.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/free-functions",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Free Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/free-functions"
 },
 "doc://mlx.swift.mlx/documentation/MLX/quantized(_:groupSize:bits:stream:)": {
   "abstract" : [

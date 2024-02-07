@@ -108,7 +108,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L731"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L763"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -376,7 +376,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:)",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(mode:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/unfreeze(recursive:keys:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/unfreeze(recursive:keys:strict:)"
       ],
@@ -399,7 +399,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -620,7 +623,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module\/freeze(recursive:keys:strict:)"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/train(mode:)": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/train(_:)": {
   "abstract" : [
     {
       "text" : "Recursively set the model’s training mode.",
@@ -645,14 +648,6 @@
       "text" : "("
     },
     {
-      "kind" : "externalParam",
-      "text" : "mode"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:Sb",
       "text" : "Bool"
@@ -662,12 +657,12 @@
       "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(mode:)",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "train(mode:)",
+  "title" : "train(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/module\/train(mode:)"
+  "url" : "\/documentation\/mlxnn\/module\/train(_:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/unfreeze(recursive:keys:)": {
   "abstract" : [

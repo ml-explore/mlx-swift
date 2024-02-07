@@ -485,19 +485,35 @@
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft"
       ],
-      "title" : "MLXArray"
+      "title" : "Arithmetic Operators and Functions"
     }
   ],
   "topicSections" : [
     {
+      "abstract" : [
+        {
+          "text" : "Note: the ",
+          "type" : "text"
+        },
+        {
+          "code" : "-",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " and ",
+          "type" : "text"
+        },
+        {
+          "code" : "\/",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " operators are not able to be linked here.",
+          "type" : "text"
+        }
+      ],
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/+(_:_:)-1rv98",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/+(_:_:)-2vili",
@@ -509,6 +525,9 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/**(_:_:)-8xxt3",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/**(_:_:)-6ve5u",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/**(_:_:)-4lp4b",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/_(_:_:)-3ubwd",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/_(_:_:)-516wd",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/_(_:_:)-8az7l",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.!(_:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.==(_:_:)-56m0a",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/.==(_:_:)-79hbc",
@@ -600,6 +619,13 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/which(_:_:_:stream:)"
       ],
       "title" : "Element-wise Arithmetic Free Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/matmul(_:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/matmul(_:_:stream:)"
+      ],
+      "title" : "Matrix Multiply"
     }
   ],
   "variants" : [
@@ -2571,6 +2597,239 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/'.__(_:_:)"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/_(_:_:)-3ubwd": {
+  "abstract" : [
+    {
+      "text" : "Element-wise remainder of division.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "%"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/_(_:_:)-3ubwd",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "%(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-3ubwd"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/_(_:_:)-516wd": {
+  "abstract" : [
+    {
+      "text" : "Element-wise remainder with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "%"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/_(_:_:)-516wd",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "%(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-516wd"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/_(_:_:)-8az7l": {
+  "abstract" : [
+    {
+      "text" : "Element-wise remainder with a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " (scalar) argument.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "%"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "T"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/_(_:_:)-8az7l",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "%(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-8az7l"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/abs(stream:)": {
   "abstract" : [
     {
@@ -3072,6 +3331,69 @@
   "title" : "log2(stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/log2(stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/matmul(_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Matrix multiplication.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "matmul"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/matmul(_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "matmul(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/matmul(_:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/pow(_:stream:)": {
   "abstract" : [
@@ -4214,7 +4536,7 @@
   ],
   "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
   "kind" : "article",
-  "role" : "article",
+  "role" : "collectionGroup",
   "title" : "Convolution",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/convolution"
@@ -4643,6 +4965,20 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/exp(_:stream:)"
 },
+"doc://mlx.swift.mlx/documentation/MLX/fft": {
+  "abstract" : [
+    {
+      "text" : "Fast Fourier Transform Functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "FFT Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/fft"
+},
 "doc://mlx.swift.mlx/documentation/MLX/floor(_:stream:)": {
   "abstract" : [
     {
@@ -4784,48 +5120,6 @@
   "title" : "floorDivide(_:_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/floordivide(_:_:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indexes": {
-  "abstract" : [
-    {
-      "text" : "Functions to produce and consume array indexes.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indexing": {
-  "abstract" : [
-    {
-      "text" : "Array subscripts.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexing",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexing"
-},
-"doc://mlx.swift.mlx/documentation/MLX/initialization": {
-  "abstract" : [
-    {
-      "text" : "Creating MLXArrays.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Initialization",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/initialization"
 },
 "doc://mlx.swift.mlx/documentation/MLX/log(_:stream:)": {
   "abstract" : [
@@ -5164,20 +5458,6 @@
   "title" : "logAddExp(_:_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/logaddexp(_:_:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/logical": {
-  "abstract" : [
-    {
-      "text" : "Evaluating logical operations on MLXArray.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/logical",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Logical Operators",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/logical"
 },
 "doc://mlx.swift.mlx/documentation/MLX/logicalNot(_:stream:)": {
   "abstract" : [
@@ -6008,20 +6288,6 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/reciprocal(_:stream:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/reduction": {
-  "abstract" : [
-    {
-      "text" : "Reduction or aggregation functions.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Reduction Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/reduction"
-},
 "doc://mlx.swift.mlx/documentation/MLX/remainder(_:_:stream:)": {
   "abstract" : [
     {
@@ -6250,20 +6516,6 @@
   "title" : "rsqrt(_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/rsqrt(_:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/shapes": {
-  "abstract" : [
-    {
-      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Shapes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/shapes"
 },
 "doc://mlx.swift.mlx/documentation/MLX/sigmoid(_:stream:)": {
   "abstract" : [
@@ -6596,20 +6848,6 @@
   "title" : "softMax(_:axes:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/softmax(_:axes:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/sorting": {
-  "abstract" : [
-    {
-      "text" : "Sorting and partitioning values and indices.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Sorting",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/sorting"
 },
 "doc://mlx.swift.mlx/documentation/MLX/sqrt(_:stream:)": {
   "abstract" : [

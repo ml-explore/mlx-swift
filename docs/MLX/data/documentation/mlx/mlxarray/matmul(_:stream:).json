@@ -9,7 +9,8 @@
     "paths" : [
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic"
       ]
     ]
   },
@@ -77,7 +78,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray+Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1542"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1553"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -362,6 +363,15 @@
   },
   "sections" : [
 
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/matmul(_:_:stream:)"
+      ],
+      "title" : "Matrix Multiply"
+    }
   ],
   "variants" : [
     {

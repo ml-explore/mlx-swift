@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L237"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L250"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -120,7 +120,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
+                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -187,7 +187,7 @@
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/parameters()"
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/state()"
       ],
       "title" : "Instance Methods"
     }
@@ -329,7 +329,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adadelta\/init(learningrate:rho:eps:)"
 },
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaDelta/parameters()": {
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaDelta/state()": {
   "abstract" : [
 
   ],
@@ -344,7 +344,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "parameters"
+      "text" : "state"
     },
     {
       "kind" : "text",
@@ -360,12 +360,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/parameters()",
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/state()",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "parameters()",
+  "title" : "state()",
   "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/adadelta\/parameters()"
+  "url" : "\/documentation\/mlxoptimizers\/adadelta\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaGrad": {
   "abstract" : [
@@ -714,20 +714,6 @@
   "title" : "SGD",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
-  "abstract" : [
-    {
-      "text" : "Built-in optimizers.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Optimizers",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizers"
 }
 }
 }

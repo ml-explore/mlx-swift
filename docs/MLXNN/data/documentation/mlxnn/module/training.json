@@ -1,4 +1,23 @@
 {
+  "abstract" : [
+    {
+      "text" : "Flag to indicate whether the module is being trained.  Manipulated via",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -44,7 +63,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L74"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L101"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Property",
@@ -117,7 +136,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -160,9 +182,66 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/train(_:)": {
+  "abstract" : [
+    {
+      "text" : "Recursively set the model’s training mode.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "train"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "train(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/train(_:)"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/training": {
   "abstract" : [
-
+    {
+      "text" : "Flag to indicate whether the module is being trained.  Manipulated via",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

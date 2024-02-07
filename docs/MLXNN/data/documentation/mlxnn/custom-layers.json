@@ -1284,8 +1284,7 @@
     {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training"
       ],
       "title" : "Articles"
     }
@@ -1306,7 +1305,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -2200,28 +2202,6 @@
   "title" : "quantize(model:groupSize:bits:predicate:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/quantizedlinear\/quantize(model:groupsize:bits:predicate:)"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/module-filters": {
-  "abstract" : [
-    {
-      "text" : "Pre-built filter and map functions in ",
-      "type" : "text"
-    },
-    {
-      "code" : "Module",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Module Filter and Map Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/module-filters"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/training": {
   "abstract" : [

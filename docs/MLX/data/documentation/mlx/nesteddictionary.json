@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Nested.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L552"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L553"
     },
     "role" : "symbol",
     "roleHeading" : "Structure",
@@ -300,6 +300,16 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IndentedDescription"
+      ],
+      "title" : "Nested Data"
+    }
+  ],
   "topicSections" : [
     {
       "identifiers" : [
@@ -407,6 +417,40 @@
   "title" : "MLX",
   "type" : "topic",
   "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/IndentedDescription": {
+  "abstract" : [
+    {
+      "text" : "Protocol for types that can provide an indented description, e.g. nested types.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "IndentedDescription"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IndentedDescription",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "IndentedDescription"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "IndentedDescription",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/indenteddescription"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedDictionary": {
   "abstract" : [

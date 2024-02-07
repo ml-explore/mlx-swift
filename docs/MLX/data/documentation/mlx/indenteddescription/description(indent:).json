@@ -160,9 +160,8 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indentedDescription(_:_:)",
-              "isActive" : true,
-              "type" : "reference"
+              "code" : "indentedDescription(_:_:)",
+              "type" : "codeVoice"
             },
             {
               "text" : " for an easy way to accomplish this.",
@@ -315,77 +314,6 @@
   "title" : "description(indent:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/indenteddescription\/description(indent:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indentedDescription(_:_:)": {
-  "abstract" : [
-    {
-      "text" : "Return ",
-      "type" : "text"
-    },
-    {
-      "code" : "description",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IndentedDescription\/description(indent:)",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : " if possible.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "indentedDescription"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "keyword",
-      "text" : "Any"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Si",
-      "text" : "Int"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SS",
-      "text" : "String"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indentedDescription(_:_:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "indentedDescription(_:_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indenteddescription(_:_:)"
 }
 }
 }

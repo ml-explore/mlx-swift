@@ -58,7 +58,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Activations.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Activations.swift#L124"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Activations.swift#L109"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -223,7 +223,6 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/selu(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/silu(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/sigmoid(_:)",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softMax(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softSign(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/step(_:threshold:)"
       ],
@@ -246,7 +245,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -1186,52 +1188,6 @@
   "title" : "silu(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/silu(_:)"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/softMax(_:)": {
-  "abstract" : [
-    {
-      "text" : "Applies the Softmax function.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "softMax"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/softMax(_:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "softMax(_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/softmax(_:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/softPlus(_:)": {
   "abstract" : [

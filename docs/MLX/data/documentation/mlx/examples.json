@@ -56,7 +56,52 @@
               "type" : "codeVoice"
             },
             {
-              "text" : ".  This contains a command line tool for generating text using a Llama \/ Mistral model.",
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "LinearFunctionModelTraining",
+          "level" : 3,
+          "text" : "LinearFunctionModelTraining",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A simple linear function model and a training loop.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "llm-tool",
+          "level" : 3,
+          "text" : "llm-tool",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A command line tool for generating text using a Llama \/ Mistral model.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "mnist-tool",
+          "level" : 3,
+          "text" : "mnist-tool",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "A command line tool for training an MNIST (MLP) model.",
               "type" : "text"
             }
           ],
@@ -253,7 +298,7 @@
   "url" : "\/documentation\/mlx\/using-streams"
 },
 "mlx-examples-swift.zip": {
-  "checksum" : "039cbceca143f11eb95d279a4f3021c711ade09103cd9c21fc0efaf0a10c76c620981da0044b4e5b23ef9c2fe200b118662c3c3ab138d54f8833ac30db916413",
+  "checksum" : "0141c0cc3447566b46838d83f59ad1b8cbde0cf713480d64beaadc76083a4f0fd95d7b8695d468dab9ff901cc095e3004bf4d884504f4f1442981f81137bb614",
   "identifier" : "mlx-examples-swift.zip",
   "type" : "download",
   "url" : "\/downloads\/mlx-examples-swift.zip"

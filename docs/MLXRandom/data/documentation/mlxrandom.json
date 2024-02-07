@@ -219,16 +219,20 @@
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:dtype:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-10gj2",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-4d6d2",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:dtype:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:type:key:stream:)"
       ],
       "title" : "Functions"
@@ -683,6 +687,111 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)"
 },
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/gumbel(_:dtype:key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Sample from the standard Gumbel distribution with a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "DType",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "gumbel"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "gumbel(_:dtype:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/gumbel(_:dtype:key:stream:)"
+},
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/gumbel(_:type:key:stream:)": {
   "abstract" : [
     {
@@ -833,6 +942,103 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/key(_:)"
 },
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/normal(_:dtype:key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Generate normally distributed random numbers.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "normal"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "normal(_:dtype:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/normal(_:dtype:key:stream:)"
+},
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/normal(_:type:key:stream:)": {
   "abstract" : [
     {
@@ -940,7 +1146,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/randInt(_:_:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate random integers from the given interval.",
+      "text" : "Generate random integers from the given interval using a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Int>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -1045,7 +1259,23 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/randInt(low:high:_:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate random integers from the given interval.",
+      "text" : "Generate random integers from the given interval (",
+      "type" : "text"
+    },
+    {
+      "code" : "low:",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high:",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ").",
       "type" : "text"
     }
   ],
@@ -1159,7 +1389,31 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/randInt(low:high:_:type:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate random integers from the given interval.",
+      "text" : "Generate random integers from the given interval (",
+      "type" : "text"
+    },
+    {
+      "code" : "low:",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high:",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ") with a given type, e.g. ",
+      "type" : "text"
+    },
+    {
+      "code" : "Int8.self",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -1430,7 +1684,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(_:_:type:key:stream:)-62jwe": {
   "abstract" : [
     {
-      "text" : "Generate values from a truncated normal distribution.",
+      "text" : "Generate values from a truncated normal distribution in a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -1678,10 +1940,181 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-8vjij"
 },
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(low:high:_:dtype:key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Generate values from a truncated normal distribution between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "DType",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "truncatedNormal"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "low"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+      "text" : "ScalarOrArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "high"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+      "text" : "ScalarOrArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:dtype:key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "truncatedNormal(low:high:_:dtype:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/truncatednormal(low:high:_:dtype:key:stream:)"
+},
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(low:high:_:type:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate values from a truncated normal distribution.",
+      "text" : "Generate values from a truncated normal distribution between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -1819,7 +2252,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/uniform(_:_:type:key:stream:)-10gj2": {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -1948,7 +2389,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/uniform(_:_:type:key:stream:)-4d6d2": {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (specialization).",
       "type" : "text"
     }
   ],
@@ -2067,10 +2516,181 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-4d6d2"
 },
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/uniform(low:high:_:dtype:key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Generate uniformly distributed random numbers between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "DType",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "uniform"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "low"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+      "text" : "ScalarOrArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "high"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+      "text" : "ScalarOrArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dtype"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX5DTypeO",
+      "text" : "DType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:dtype:key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "uniform(low:high:_:dtype:key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/uniform(low:high:_:dtype:key:stream:)"
+},
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/uniform(low:high:_:type:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],

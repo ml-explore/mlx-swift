@@ -1,7 +1,23 @@
 {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -468,7 +484,23 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/uniform(low:high:_:type:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],

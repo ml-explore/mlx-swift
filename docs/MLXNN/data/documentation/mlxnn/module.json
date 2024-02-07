@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L72"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L97"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -92,6 +92,74 @@
         {
           "inlineContent" : [
             {
+              "text" : "The workhorse of any neural network library is the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " class. In MLX",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " class is a container of ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXArray",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " or ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " instances. Its",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "main function is to provide a way to recursively access and update its",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "parameters and those of its submodules.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
               "text" : "All the layers provided in ",
               "type" : "text"
             },
@@ -109,11 +177,26 @@
               "type" : "text"
             },
             {
-              "text" : "your models should do the same.",
+              "text" : "your models should do the same.  See ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
               "type" : "text"
             }
           ],
           "type" : "paragraph"
+        },
+        {
+          "anchor" : "Parameters",
+          "level" : 3,
+          "text" : "Parameters",
+          "type" : "heading"
         },
         {
           "inlineContent" : [
@@ -263,6 +346,47 @@
               "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
               "isActive" : true,
               "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-12a2c",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " the gradients returned will",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "be with respect to these trainable parameters.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Example",
+          "level" : 3,
+          "text" : "Example",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is an example multi-layer perception (MLP):",
+              "type" : "text"
             }
           ],
           "type" : "paragraph"
@@ -353,6 +477,95 @@
           "type" : "aside"
         },
         {
+          "anchor" : "Training",
+          "level" : 3,
+          "text" : "Training",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
+              "isActive" : true,
+              "type" : "reference"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Mutation",
+          "level" : 3,
+          "text" : "Mutation",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "All mutation of parameters and modules must go through ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(parameters:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".  This is important because ",
+              "type" : "text"
+            },
+            {
+              "code" : "Module",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " uses reflection (",
+              "type" : "text"
+            },
+            {
+              "code" : "Mirror",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ") to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "find paramters and modules but caches the values.  These two methods make sure the cache",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "is kept up-to-date.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
           "anchor" : "See-Also",
           "level" : 3,
           "text" : "See Also",
@@ -384,6 +597,8 @@
   "relationshipsSections" : [
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ALiBi",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d",
@@ -394,8 +609,11 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Embedding",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/HardSwish",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/InstanceNorm",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LeakyReLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LogSigmoid",
@@ -405,17 +623,19 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SiLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sigmoid",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftMax",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftPlus",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SoftSign",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Step",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Tanh"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Tanh",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Transformer"
       ],
       "kind" : "relationships",
       "title" : "Inherited By",
@@ -444,6 +664,8 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleParameters",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleChilren",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleItem",
@@ -491,9 +713,15 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
+      ],
+      "title" : "Module and Parameter Filtering"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(mode:)",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/unfreeze(recursive:keys:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/unfreeze(recursive:keys:strict:)"
       ],
@@ -649,7 +877,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -657,6 +888,71 @@
   "title" : "MLXNN",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ALiBi": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ALiBi"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ALiBi",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ALiBi"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ALiBi",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/alibi"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies batch normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BatchNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BatchNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BatchNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear": {
   "abstract" : [
@@ -998,6 +1294,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/glu"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies Group Normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GroupNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GroupNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GroupNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/HardSwish": {
   "abstract" : [
     {
@@ -1065,6 +1395,74 @@
   "title" : "Identity",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/identity"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/InstanceNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies instance normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "InstanceNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/InstanceNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "InstanceNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "InstanceNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/instancenorm"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm": {
+  "abstract" : [
+    {
+      "text" : "Applies layer normalization [1] on the inputs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "LayerNorm"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "LayerNorm"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "LayerNorm",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/layernorm"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/LeakyReLU": {
   "abstract" : [
@@ -2500,7 +2898,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/init()": {
   "abstract" : [
-
+    {
+      "text" : "Initializes the module.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -3459,7 +3860,36 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/noGrad": {
   "abstract" : [
-
+    {
+      "text" : "Set of property names that are frozen.  Maniupulated via",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/freeze(recursive:keys:strict:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/unfreeze(recursive:keys:strict:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -3557,7 +3987,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module\/parameters()"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/train(mode:)": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/train(_:)": {
   "abstract" : [
     {
       "text" : "Recursively set the model’s training mode.",
@@ -3582,14 +4012,6 @@
       "text" : "("
     },
     {
-      "kind" : "externalParam",
-      "text" : "mode"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:Sb",
       "text" : "Bool"
@@ -3599,12 +4021,12 @@
       "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(mode:)",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "train(mode:)",
+  "title" : "train(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/module\/train(mode:)"
+  "url" : "\/documentation\/mlxnn\/module\/train(_:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/trainableParameters()": {
   "abstract" : [
@@ -3661,7 +4083,23 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/training": {
   "abstract" : [
-
+    {
+      "text" : "Flag to indicate whether the module is being trained.  Manipulated via",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/train(_:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -4279,6 +4717,57 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/modulechilren"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleInfo": {
+  "abstract" : [
+    {
+      "text" : "ModuleInfo can provde information about child modules and act as an",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "update point for ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/update(modules:verify:)",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ModuleInfo"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ModuleInfo",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ModuleInfo"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ModuleInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/moduleinfo"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ModuleItem": {
   "abstract" : [
     {
@@ -4586,7 +5075,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention": {
   "abstract" : [
-
+    {
+      "text" : "Implements the scaled dot product attention with multiple heads.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -4648,6 +5140,40 @@
   "title" : "PReLU",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/prelu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ParameterInfo": {
+  "abstract" : [
+    {
+      "text" : "ParameterInfo allows you to specify alternate keys for parameter propreties.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParameterInfo"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ParameterInfo",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParameterInfo"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ParameterInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/parameterinfo"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/RMSNorm": {
   "abstract" : [
@@ -4717,7 +5243,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU6": {
   "abstract" : [
     {
       "text" : "Applies the Rectified Linear Unit 6.",
@@ -4735,19 +5261,19 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
   "role" : "symbol",
-  "title" : "Relu6",
+  "title" : "ReLU6",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu6"
 },
@@ -4930,6 +5456,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/sigmoid"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SinusoidalPositionalEncoding": {
+  "abstract" : [
+    {
+      "text" : "Implements sinusoidal positional encoding.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SinusoidalPositionalEncoding"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SinusoidalPositionalEncoding"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SinusoidalPositionalEncoding",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/SoftMax": {
   "abstract" : [
     {
@@ -5100,6 +5660,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/tanh"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Transformer": {
+  "abstract" : [
+    {
+      "text" : "Implements a standard Transformer model.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Transformer"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Transformer",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Transformer"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Transformer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/transformer"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/UnaryLayer": {
   "abstract" : [
     {
@@ -5199,6 +5793,209 @@
   "title" : "Layers",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/layers"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/module-filters": {
+  "abstract" : [
+    {
+      "text" : "Pre-built filter and map functions in ",
+      "type" : "text"
+    },
+    {
+      "code" : "Module",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Module Filter and Map Functions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module-filters"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/training": {
+  "abstract" : [
+    {
+      "text" : "A model training loop.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Training a Model",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/training"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-12a2c": {
+  "abstract" : [
+    {
+      "text" : "Transform the passed function ",
+      "type" : "text"
+    },
+    {
+      "code" : "f(Model, MLXArray, MLXArray)",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to a",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "function that computes the gradients of ",
+      "type" : "text"
+    },
+    {
+      "code" : "f",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with regard to the model’s trainable",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "parameters and also its value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueAndGrad"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-12a2c",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueAndGrad(model:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-12a2c"
 },
 "doc://mlx.swift.mlxnn/s23CustomStringConvertibleP": {
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",

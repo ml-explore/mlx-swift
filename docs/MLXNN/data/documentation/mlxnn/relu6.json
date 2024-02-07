@@ -14,11 +14,11 @@
   },
   "identifier" : {
     "interfaceLanguage" : "swift",
-    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6"
+    "url" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6"
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:5MLXNN5Relu6C",
+    "externalID" : "s:5MLXNN5ReLU6C",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -30,7 +30,7 @@
       },
       {
         "kind" : "identifier",
-        "text" : "Relu6"
+        "text" : "ReLU6"
       }
     ],
     "modules" : [
@@ -41,17 +41,17 @@
     "navigatorTitle" : [
       {
         "kind" : "identifier",
-        "text" : "Relu6"
+        "text" : "ReLU6"
       }
     ],
     "remoteSource" : {
       "fileName" : "Activations.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Activations.swift#L443"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Activations.swift#L428"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
     "symbolKind" : "class",
-    "title" : "Relu6"
+    "title" : "ReLU6"
   },
   "primaryContentSections" : [
     {
@@ -74,7 +74,7 @@
             },
             {
               "kind" : "identifier",
-              "text" : "Relu6"
+              "text" : "ReLU6"
             }
           ]
         }
@@ -205,7 +205,7 @@
   "topicSections" : [
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6\/callAsFunction(_:)"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
     }
@@ -231,7 +231,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -614,7 +617,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU6": {
   "abstract" : [
     {
       "text" : "Applies the Rectified Linear Unit 6.",
@@ -632,23 +635,23 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
   "role" : "symbol",
-  "title" : "Relu6",
+  "title" : "ReLU6",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu6"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6/callAsFunction(_:)": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU6/callAsFunction(_:)": {
   "abstract" : [
 
   ],
@@ -684,7 +687,7 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6\/callAsFunction(_:)",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6\/callAsFunction(_:)",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "callAsFunction(_:)",

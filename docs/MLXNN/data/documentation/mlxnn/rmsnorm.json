@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Normalization.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Normalization.swift#L16"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Normalization.swift#L132"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -100,15 +100,48 @@
         },
         {
           "code" : [
-            "MLX.rsqrt((x * S).square().sum() + eps)"
+            "weight * x * MLX.rsqrt(x.square().mean() + eps)"
           ],
           "syntax" : "swift",
           "type" : "codeListing"
         },
         {
-          "anchor" : "See-Also",
+          "inlineContent" : [
+            {
+              "text" : "where ",
+              "type" : "text"
+            },
+            {
+              "code" : "weight",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is initialized with ones and ",
+              "type" : "text"
+            },
+            {
+              "code" : "eps",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is a small float to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "ensure the numerical stability of inverse square root.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "References",
           "level" : 3,
-          "text" : "See Also",
+          "text" : "References",
           "type" : "heading"
         },
         {
@@ -119,6 +152,31 @@
                   "inlineContent" : [
                     {
                       "identifier" : "https:\/\/arxiv.org\/abs\/1910.07467",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "orderedList"
+        },
+        {
+          "anchor" : "See-also",
+          "level" : 3,
+          "text" : "See also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/normalization",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -184,7 +242,7 @@
   "topicSections" : [
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm\/init(_:eps:)"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm\/init(dimensions:eps:)"
       ],
       "title" : "Initializers"
     },
@@ -217,7 +275,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -705,7 +766,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/rmsnorm\/describeextra(_:)"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/RMSNorm/init(_:eps:)": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/RMSNorm/init(dimensions:eps:)": {
   "abstract" : [
 
   ],
@@ -717,6 +778,14 @@
     {
       "kind" : "text",
       "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "dimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
     },
     {
       "kind" : "typeIdentifier",
@@ -745,12 +814,12 @@
       "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm\/init(_:eps:)",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm\/init(dimensions:eps:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "init(_:eps:)",
+  "title" : "init(dimensions:eps:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/rmsnorm\/init(_:eps:)"
+  "url" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/RoPE": {
   "abstract" : [
@@ -892,6 +961,20 @@
   "title" : "UnaryLayer",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/unarylayer"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/normalization": {
+  "abstract" : [
+    {
+      "text" : "Built-in normalization layers",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/normalization",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Normalization",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/normalization"
 },
 "doc://mlx.swift.mlxnn/s23CustomStringConvertibleP": {
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",

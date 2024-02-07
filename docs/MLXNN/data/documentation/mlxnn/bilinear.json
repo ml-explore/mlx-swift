@@ -289,7 +289,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -581,7 +584,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention": {
   "abstract" : [
-
+    {
+      "text" : "Implements the scaled dot product attention with multiple heads.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

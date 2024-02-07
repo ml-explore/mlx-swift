@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L169"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L182"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -111,7 +111,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
+                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -661,20 +661,6 @@
   "title" : "SGD",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
-  "abstract" : [
-    {
-      "text" : "Built-in optimizers.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Optimizers",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizers"
 }
 }
 }

@@ -1,7 +1,15 @@
 {
   "abstract" : [
     {
-      "text" : "Generate values from a truncated normal distribution.",
+      "text" : "Generate values from a truncated normal distribution in a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -134,7 +142,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L282"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L328"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -413,7 +421,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(_:_:type:key:stream:)-62jwe": {
   "abstract" : [
     {
-      "text" : "Generate values from a truncated normal distribution.",
+      "text" : "Generate values from a truncated normal distribution in a given ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],

@@ -175,7 +175,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
+                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -234,7 +234,7 @@
   "topicSections" : [
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/parameters()",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/state()",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)"
       ],
       "title" : "Instance Methods"
@@ -480,7 +480,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/optimizerbase"
 },
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase/parameters()": {
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase/state()": {
   "abstract" : [
     {
       "text" : "Return any parameters that should be passed to ",
@@ -506,7 +506,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "parameters"
+      "text" : "state"
     },
     {
       "kind" : "text",
@@ -522,12 +522,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/parameters()",
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/state()",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "parameters()",
+  "title" : "state()",
   "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizerbase\/parameters()"
+  "url" : "\/documentation\/mlxoptimizers\/optimizerbase\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase/update(model:gradients:)": {
   "abstract" : [
@@ -633,20 +633,6 @@
   "title" : "OptimizerBaseArrayState",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
-  "abstract" : [
-    {
-      "text" : "Built-in optimizers.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Optimizers",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizers"
 }
 }
 }

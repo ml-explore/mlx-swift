@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "DType.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L148"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/DType.swift#L153"
     },
     "role" : "symbol",
     "roleHeading" : "Protocol",
@@ -95,6 +95,7 @@
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Array",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Bool",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ComplexModule\/Complex",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Double",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Float",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Float16",
@@ -121,6 +122,16 @@
   },
   "sections" : [
 
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/HasDType"
+      ],
+      "title" : "Data Types"
+    }
   ],
   "topicSections" : [
     {
@@ -165,6 +176,70 @@
   "title" : "MLX",
   "type" : "topic",
   "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/ComplexModule/Complex": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "RealType",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Float",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "extension"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "preciseIdentifier" : "s:13ComplexModule0A0V",
+      "text" : "Complex"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ComplexModule\/Complex",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Complex"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Complex",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/complexmodule\/complex"
 },
 "doc://mlx.swift.mlx/documentation/MLX/DType": {
   "abstract" : [

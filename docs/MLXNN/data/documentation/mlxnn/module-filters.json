@@ -16,7 +16,8 @@
   "hierarchy" : {
     "paths" : [
       [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module"
       ]
     ]
   },
@@ -274,16 +275,6 @@
   "sections" : [
 
   ],
-  "seeAlsoSections" : [
-    {
-      "generated" : true,
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training"
-      ],
-      "title" : "Articles"
-    }
-  ],
   "topicSections" : [
     {
       "abstract" : [
@@ -398,7 +389,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -2335,42 +2329,6 @@
   "title" : "ModuleValue.parameters(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/modulevalue\/parameters(_:)"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/custom-layers": {
-  "abstract" : [
-    {
-      "text" : "Creating custom modules using ",
-      "type" : "text"
-    },
-    {
-      "code" : "MLXNN",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
-  "kind" : "article",
-  "role" : "article",
-  "title" : "Creating Modules",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/custom-layers"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/training": {
-  "abstract" : [
-    {
-      "text" : "A model training loop.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/training",
-  "kind" : "article",
-  "role" : "article",
-  "title" : "Training a Model",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/training"
 }
 }
 }

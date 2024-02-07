@@ -109,8 +109,13 @@
         {
           "inlineContent" : [
             {
-              "text" : "See ``Sequential\/init(layers:)-43yu",
+              "text" : "See ",
               "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential\/init(layers:)-43yu",
+              "isActive" : true,
+              "type" : "reference"
             }
           ],
           "type" : "paragraph"
@@ -158,7 +163,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -209,6 +217,47 @@
   "title" : "Sequential",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/sequential"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Sequential/init(layers:)-43yu": {
+  "abstract" : [
+    {
+      "text" : "A convenient way to write code that builds a Sequential layer:",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "layers"
+    },
+    {
+      "kind" : "text",
+      "text" : ": () -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN10UnaryLayerP",
+      "text" : "UnaryLayer"
+    },
+    {
+      "kind" : "text",
+      "text" : "])"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sequential\/init(layers:)-43yu",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(layers:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sequential\/init(layers:)-43yu"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/SequentialBuilder": {
   "abstract" : [

@@ -96,7 +96,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray+Init.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Init.swift#L229"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Init.swift#L325"
     },
     "role" : "symbol",
     "roleHeading" : "Initializer",
@@ -256,6 +256,57 @@
           "type" : "codeListing"
         },
         {
+          "inlineContent" : [
+            {
+              "text" : "Note: if the element type is ",
+              "type" : "text"
+            },
+            {
+              "code" : "Int",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " this will produce an ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " result.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "See ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:_:)-74tu0",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " if an ",
+              "type" : "text"
+            },
+            {
+              "code" : ".int64",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is required.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
           "anchor" : "See-Also",
           "level" : 3,
           "text" : "See Also",
@@ -382,6 +433,31 @@
   "title" : "DType",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/dtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/DType/int32": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "int32"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DType\/int32",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "DType.int32",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/dtype\/int32"
 },
 "doc://mlx.swift.mlx/documentation/MLX/HasDType": {
   "abstract" : [
@@ -1009,6 +1085,105 @@
   "title" : "init(converting:_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/init(converting:_:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/init(int64:_:)-74tu0": {
+  "abstract" : [
+    {
+      "text" : "Initalizer allowing creation of scalar (0-dimension) ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " from an ",
+      "type" : "text"
+    },
+    {
+      "code" : "[Int]",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " as",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a ",
+      "type" : "text"
+    },
+    {
+      "code" : "Dtype.int64",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "convenience"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "int64"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:ST",
+      "text" : "Sequence"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ">, ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/init(int64:_:)-74tu0",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(int64:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/init(int64:_:)-74tu0"
 },
 "doc://mlx.swift.mlx/documentation/MLX/initialization": {
   "abstract" : [

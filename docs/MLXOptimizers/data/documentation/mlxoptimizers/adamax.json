@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L378"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L391"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -128,7 +128,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
+                      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -195,7 +195,7 @@
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/parameters()"
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/state()"
       ],
       "title" : "Instance Methods"
     }
@@ -516,7 +516,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)"
 },
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax/parameters()": {
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax/state()": {
   "abstract" : [
 
   ],
@@ -531,7 +531,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "parameters"
+      "text" : "state"
     },
     {
       "kind" : "text",
@@ -547,12 +547,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/parameters()",
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/state()",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "parameters()",
+  "title" : "state()",
   "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/adamax\/parameters()"
+  "url" : "\/documentation\/mlxoptimizers\/adamax\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Lion": {
   "abstract" : [
@@ -731,20 +731,6 @@
   "title" : "SGD",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/optimizers": {
-  "abstract" : [
-    {
-      "text" : "Built-in optimizers.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/optimizers",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Optimizers",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizers"
 }
 }
 }

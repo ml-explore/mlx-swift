@@ -352,6 +352,94 @@
           "type" : "paragraph"
         },
         {
+          "anchor" : "received-multiple-target-ended-messages-for-target-ID-",
+          "level" : 3,
+          "text" : "received multiple target ended messages for target ID …",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If you receive a message like this:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "error: Internal inconsistency error: received multiple target ended messages for target ID '5' or received target ended message but did not receive corresponding target started message, while retrieving parent activity in taskStarted message."
+          ],
+          "syntax" : null,
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "There are a few approaches that have been observed to work around the issue:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "wait a few seconds and try building again",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "quit and restart xcode",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "clean the build folder and rebuild",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "use Xcode 15.3 beta 2 or later",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
           "anchor" : "Porting-Python-Code",
           "level" : 2,
           "text" : "Porting Python Code",

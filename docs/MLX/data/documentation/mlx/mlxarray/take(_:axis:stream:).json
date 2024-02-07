@@ -9,10 +9,6 @@
     "paths" : [
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
-      ],
-      [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes"
       ],
@@ -104,7 +100,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray+Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L2177"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L2188"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -300,11 +296,10 @@
     {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/argMax(axis:keepDims:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/argMin(axis:keepDims:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-82jwt"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/subscript(_:stream:)-82jwt",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/takeAlong(_:_:axis:stream:)"
       ],
-      "title" : "Indexes"
+      "title" : "Index Consuming Functions"
     }
   ],
   "variants" : [
@@ -384,182 +379,6 @@
   "title" : "MLXArray",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray"
-},
-"doc://mlx.swift.mlx/documentation/MLX/MLXArray/argMax(axis:keepDims:stream:)": {
-  "abstract" : [
-    {
-      "text" : "Indices of the maximum values along the axis.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "argMax"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "axis"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Si",
-      "text" : "Int"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "keepDims"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sb",
-      "text" : "Bool"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "stream"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-      "text" : "StreamOrDevice"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/argMax(axis:keepDims:stream:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "argMax(axis:keepDims:stream:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/mlxarray\/argmax(axis:keepdims:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/MLXArray/argMin(axis:keepDims:stream:)": {
-  "abstract" : [
-    {
-      "text" : "Indices of the minimum values along the axis.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "argMin"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "axis"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Si",
-      "text" : "Int"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "keepDims"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sb",
-      "text" : "Bool"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "stream"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-      "text" : "StreamOrDevice"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/argMin(axis:keepDims:stream:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "argMin(axis:keepDims:stream:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/mlxarray\/argmin(axis:keepdims:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/subscript(_:stream:)-82jwt": {
   "abstract" : [
@@ -906,6 +725,95 @@
   "title" : "take(_:_:axis:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/take(_:_:axis:stream:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/takeAlong(_:_:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Take values along an axis at the specified indices.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "takeAlong"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/takeAlong(_:_:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "takeAlong(_:_:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/takealong(_:_:axis:stream:)"
 }
 }
 }

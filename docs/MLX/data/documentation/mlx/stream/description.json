@@ -60,7 +60,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Stream.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L95"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Stream.swift#L106"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Property",
@@ -163,7 +163,10 @@
 },
 "doc://mlx.swift.mlx/documentation/MLX/Stream": {
   "abstract" : [
-
+    {
+      "text" : "A stream of evaluation attached to a particular device.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

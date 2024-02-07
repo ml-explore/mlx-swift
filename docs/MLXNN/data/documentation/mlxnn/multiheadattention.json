@@ -1,4 +1,10 @@
 {
+  "abstract" : [
+    {
+      "text" : "Implements the scaled dot product attention with multiple heads.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -40,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Transformer.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L6"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L11"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -74,6 +80,50 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/transformers",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "relationshipsSections" : [
@@ -153,7 +203,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -232,7 +285,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention": {
   "abstract" : [
-
+    {
+      "text" : "Implements the scaled dot product attention with multiple heads.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -357,7 +413,15 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/createAdditiveCausalMask(_:dtype:)": {
   "abstract" : [
-
+    {
+      "text" : "Creates an attention mask for use with ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)",
+      "isActive" : true,
+      "type" : "reference"
+    }
   ],
   "fragments" : [
     {
@@ -425,7 +489,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)": {
   "abstract" : [
-
+    {
+      "text" : "Implements the scaled dot product attention with multiple heads.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -579,6 +646,20 @@
   "title" : "init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/transformers": {
+  "abstract" : [
+    {
+      "text" : "Built-in transformer layers",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/transformers",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Transformer",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/transformers"
 },
 "doc://mlx.swift.mlxnn/s23CustomStringConvertibleP": {
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",

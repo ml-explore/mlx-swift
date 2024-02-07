@@ -450,7 +450,7 @@
             "    let (loss, grads) = lg(model, x, y)",
             "    optimizer.update(model: model, gradients: grads)",
             "",
-            "    eval(model.parameters(), optimizer.parameters())",
+            "    eval(model.parameters(), optimizer.state())",
             "}"
           ],
           "syntax" : "swift",
@@ -472,8 +472,7 @@
     {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/custom-layers"
       ],
       "title" : "Articles"
     }
@@ -494,7 +493,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -538,28 +540,6 @@
   "title" : "Loss Functions",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/losses"
-},
-"doc://mlx.swift.mlxnn/documentation/MLXNN/module-filters": {
-  "abstract" : [
-    {
-      "text" : "Pre-built filter and map functions in ",
-      "type" : "text"
-    },
-    {
-      "code" : "Module",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/module-filters",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Module Filter and Map Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/module-filters"
 },
 "https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",

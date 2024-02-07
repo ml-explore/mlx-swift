@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Activations.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Activations.swift#L426"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Activations.swift#L411"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -189,7 +189,7 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Mish",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SELU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SiLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Sigmoid",
@@ -231,7 +231,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -657,7 +660,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/Relu6": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU6": {
   "abstract" : [
     {
       "text" : "Applies the Rectified Linear Unit 6.",
@@ -675,19 +678,19 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Relu6",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "Relu6"
+      "text" : "ReLU6"
     }
   ],
   "role" : "symbol",
-  "title" : "Relu6",
+  "title" : "ReLU6",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/relu6"
 },

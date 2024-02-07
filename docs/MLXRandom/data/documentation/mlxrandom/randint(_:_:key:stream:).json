@@ -1,7 +1,15 @@
 {
   "abstract" : [
     {
-      "text" : "Generate random integers from the given interval.",
+      "text" : "Generate random integers from the given interval using a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Int>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -117,7 +125,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L137"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L183"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -408,7 +416,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/randInt(_:_:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate random integers from the given interval.",
+      "text" : "Generate random integers from the given interval using a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Int>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],

@@ -54,7 +54,286 @@
           {
             "children" : [
               {
-                "title" : "MLXArray",
+                "title" : "Creation",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "MLXArray Literal Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(arrayliteral:)",
+                    "title" : "convenience init(arrayLiteral: Int32...)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "MLXArray Scalar Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-9iiz7",
+                    "title" : "convenience init(Bool)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-6zp01",
+                    "title" : "convenience init(Float)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-86r8u",
+                    "title" : "convenience init(Int32)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-10m",
+                    "title" : "convenience init<T>(T)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-96nyv",
+                    "title" : "init(mlx_array)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:dtype:)",
+                    "title" : "convenience init<T>(T, dtype: DType)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "MLXArray Int Overrides",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-6nnka",
+                    "title" : "convenience init(Int)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-93flk",
+                    "title" : "convenience init([Int], [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(int64:)",
+                    "title" : "convenience init(int64: Int)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(int64:_:)-7bgj2",
+                    "title" : "convenience init(int64: [Int], [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(int64:_:)-74tu0",
+                    "title" : "convenience init(int64: Sequence<Int>, [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "MLXArray Array Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-4n0or",
+                    "title" : "convenience init<S>(S, [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-dq8h",
+                    "title" : "convenience init<T>(UnsafeBufferPointer<T>, [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-89jw1",
+                    "title" : "convenience init<T>([T], [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(converting:_:)",
+                    "title" : "convenience init(converting: [Double], [Int]?)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:type:)-5esf9",
+                    "title" : "convenience init<T>(Data, [Int]?, type: T.Type)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:type:)-f9u5",
+                    "title" : "convenience init<T>(UnsafeRawBufferPointer, [Int]?, type: T.Type)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "MLXArray Complex Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(real:imaginary:)",
+                    "title" : "convenience init(real: Float, imaginary: Float)",
+                    "type" : "init"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-6iii5",
+                    "title" : "convenience init(Complex<Float>)",
+                    "type" : "init"
+                  },
+                  {
+                    "title" : "MLXArray Factory Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/zeros(_:type:stream:)",
+                    "title" : "static func zeros<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/zeros(like:stream:)",
+                    "title" : "static func zeros(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/zeros(_:dtype:stream:)",
+                    "title" : "static func zeros([Int], dtype: DType, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/ones(_:type:stream:)",
+                    "title" : "static func ones<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/ones(like:stream:)",
+                    "title" : "static func ones(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/ones(_:dtype:stream:)",
+                    "title" : "static func ones([Int], dtype: DType, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/eye(_:m:k:type:stream:)",
+                    "title" : "static func eye<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/full(_:values:type:stream:)",
+                    "title" : "static func full<T>([Int], values: MLXArray, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/full(_:values:stream:)",
+                    "title" : "static func full([Int], values: MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/identity(_:type:stream:)",
+                    "title" : "static func identity<T>(Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/linspace(_:_:count:stream:)-92x6l",
+                    "title" : "static func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/linspace(_:_:count:stream:)-7m7eg",
+                    "title" : "static func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/repeat(_:count:axis:stream:)",
+                    "title" : "static func `repeat`(MLXArray, count: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/repeat(_:count:stream:)",
+                    "title" : "static func `repeat`(MLXArray, count: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/tri(_:m:k:type:stream:)",
+                    "title" : "static func tri<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "title" : "MLXArray Factory Free Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/zeros(_:type:stream:)",
+                    "title" : "func zeros<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/zeros(like:stream:)",
+                    "title" : "func zeros(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/ones(_:type:stream:)",
+                    "title" : "func ones<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/ones(like:stream:)",
+                    "title" : "func ones(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/eye(_:m:k:type:stream:)",
+                    "title" : "func eye<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/full(_:values:type:stream:)",
+                    "title" : "func full<T>([Int], values: MLXArray, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/full(_:values:stream:)",
+                    "title" : "func full([Int], values: MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/identity(_:type:stream:)",
+                    "title" : "func identity<T>(Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/linspace(_:_:count:stream:)-7vj0o",
+                    "title" : "func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/linspace(_:_:count:stream:)-6w959",
+                    "title" : "func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/repeat(_:count:axis:stream:)",
+                    "title" : "func `repeat`(MLXArray, count: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/repeat(_:count:stream:)",
+                    "title" : "func `repeat`(MLXArray, count: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/tri(_:m:k:type:stream:)",
+                    "title" : "func tri<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/initialization",
+                "title" : "Initialization",
+                "type" : "symbol"
+              },
+              {
+                "title" : "Arithmetic Operators and Functions",
                 "type" : "groupMarker"
               },
               {
@@ -111,6 +390,21 @@
                   {
                     "path" : "\/documentation\/mlx\/mlxarray\/**(_:_:)-4lp4b",
                     "title" : "static func ** <T>(T, MLXArray) -> MLXArray",
+                    "type" : "op"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-3ubwd",
+                    "title" : "static func % (MLXArray, MLXArray) -> MLXArray",
+                    "type" : "op"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-516wd",
+                    "title" : "static func % <T>(MLXArray, T) -> MLXArray",
+                    "type" : "op"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-8az7l",
+                    "title" : "static func % <T>(T, MLXArray) -> MLXArray",
                     "type" : "op"
                   },
                   {
@@ -515,6 +809,20 @@
                     "path" : "\/documentation\/mlx\/which(_:_:_:stream:)",
                     "title" : "func which<A, B>(MLXArray, A, B, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
+                  },
+                  {
+                    "title" : "Matrix Multiply",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/matmul(_:stream:)",
+                    "title" : "func matmul(MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/matmul(_:_:stream:)",
+                    "title" : "func matmul(MLXArray, MLXArray, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
                   }
                 ],
                 "path" : "\/documentation\/mlx\/arithmetic",
@@ -522,9 +830,30 @@
                 "type" : "symbol"
               },
               {
+                "children" : [
+                  {
+                    "title" : "Convolution Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/conv1d(_:_:stride:padding:dilation:groups:stream:)",
+                    "title" : "func conv1d(MLXArray, MLXArray, stride: Int, padding: Int, dilation: Int, groups: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/conv2d(_:_:stride:padding:dilation:groups:stream:)",
+                    "title" : "func conv2d(MLXArray, MLXArray, stride: IntOrPair, padding: IntOrPair, dilation: IntOrPair, groups: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/convolve(_:_:mode:stream:)",
+                    "title" : "func convolve<A, B>(A, B, mode: ConvolveMode, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  }
+                ],
                 "path" : "\/documentation\/mlx\/convolution",
                 "title" : "Convolution",
-                "type" : "article"
+                "type" : "symbol"
               },
               {
                 "children" : [
@@ -624,12 +953,97 @@
               {
                 "children" : [
                   {
+                    "title" : "Free Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/fft(_:n:axis:stream:)",
+                    "title" : "func fft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/fft2(_:s:axes:stream:)",
+                    "title" : "func fft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/fftn(_:s:axes:stream:)",
+                    "title" : "func fftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/ifft(_:n:axis:stream:)",
+                    "title" : "func ifft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/ifft2(_:s:axes:stream:)",
+                    "title" : "func ifft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/ifftn(_:s:axes:stream:)",
+                    "title" : "func ifftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/irfft(_:n:axis:stream:)",
+                    "title" : "func irfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/irfft2(_:s:axes:stream:)",
+                    "title" : "func irfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/irfftn(_:s:axes:stream:)",
+                    "title" : "func irfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/rfft(_:n:axis:stream:)",
+                    "title" : "func rfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/rfft2(_:s:axes:stream:)",
+                    "title" : "func rfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/rfftn(_:s:axes:stream:)",
+                    "title" : "func rfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/fft",
+                "title" : "FFT Functions",
+                "type" : "symbol"
+              },
+              {
+                "title" : "Indexing",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
                     "title" : "Index Producing Functions",
                     "type" : "groupMarker"
                   },
                   {
+                    "path" : "\/documentation\/mlx\/mlxarray\/argmax(keepdims:stream:)",
+                    "title" : "func argMax(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
                     "path" : "\/documentation\/mlx\/mlxarray\/argmax(axis:keepdims:stream:)",
                     "title" : "func argMax(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/argmin(keepdims:stream:)",
+                    "title" : "func argMin(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
                   },
                   {
@@ -638,8 +1052,18 @@
                     "type" : "method"
                   },
                   {
+                    "path" : "\/documentation\/mlx\/argmax(_:keepdims:stream:)",
+                    "title" : "func argMax(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
                     "path" : "\/documentation\/mlx\/argmax(_:axis:keepdims:stream:)",
                     "title" : "func argMax(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/argmin(_:keepdims:stream:)",
+                    "title" : "func argMin(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   },
                   {
@@ -648,8 +1072,18 @@
                     "type" : "func"
                   },
                   {
+                    "path" : "\/documentation\/mlx\/argpartition(_:kth:stream:)",
+                    "title" : "func argPartition(MLXArray, kth: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
                     "path" : "\/documentation\/mlx\/argpartition(_:kth:axis:stream:)",
                     "title" : "func argPartition(MLXArray, kth: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/argsort(_:stream:)",
+                    "title" : "func argSort(MLXArray, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   },
                   {
@@ -754,224 +1188,41 @@
               {
                 "children" : [
                   {
-                    "title" : "MLXArray Literal Initializers",
+                    "title" : "Index Producing Functions",
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(arrayliteral:)",
-                    "title" : "convenience init(arrayLiteral: Int32...)",
-                    "type" : "init"
+                    "path" : "\/documentation\/mlx\/argsort(_:axis:stream:)",
+                    "title" : "func argSort(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
                   },
                   {
-                    "title" : "MLXArray Scalar Initializers",
+                    "path" : "\/documentation\/mlx\/argpartition(_:kth:axis:stream:)",
+                    "title" : "func argPartition(MLXArray, kth: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "title" : "Sorting Functions",
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-9iiz7",
-                    "title" : "convenience init(Bool)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-6zp01",
-                    "title" : "convenience init(Float)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-86r8u",
-                    "title" : "convenience init(Int32)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-10m",
-                    "title" : "convenience init<T>(T)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:)-96nyv",
-                    "title" : "init(mlx_array)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:dtype:)",
-                    "title" : "convenience init<T>(T, dtype: DType)",
-                    "type" : "init"
-                  },
-                  {
-                    "title" : "MLXArray Array Initializers",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-4n0or",
-                    "title" : "convenience init<S>(S, [Int]?)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-dq8h",
-                    "title" : "convenience init<T>(UnsafeBufferPointer<T>, [Int]?)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:)-89jw1",
-                    "title" : "convenience init<T>([T], [Int]?)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(converting:_:)",
-                    "title" : "convenience init(converting: [Double], [Int]?)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:type:)-5esf9",
-                    "title" : "convenience init<T>(Data, [Int]?, type: T.Type)",
-                    "type" : "init"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/init(_:_:type:)-f9u5",
-                    "title" : "convenience init<T>(UnsafeRawBufferPointer, [Int]?, type: T.Type)",
-                    "type" : "init"
-                  },
-                  {
-                    "title" : "MLXArray Factory Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/zeros(_:type:stream:)",
-                    "title" : "static func zeros<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/zeros(like:stream:)",
-                    "title" : "static func zeros(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/ones(_:type:stream:)",
-                    "title" : "static func ones<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/ones(like:stream:)",
-                    "title" : "static func ones(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/eye(_:m:k:type:stream:)",
-                    "title" : "static func eye<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/full(_:values:type:stream:)",
-                    "title" : "static func full<T>([Int], values: MLXArray, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/full(_:values:stream:)",
-                    "title" : "static func full([Int], values: MLXArray, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/identity(_:type:stream:)",
-                    "title" : "static func identity<T>(Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/linspace(_:_:count:stream:)-92x6l",
-                    "title" : "static func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/linspace(_:_:count:stream:)-7m7eg",
-                    "title" : "static func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/repeat(_:count:axis:stream:)",
-                    "title" : "static func `repeat`(MLXArray, count: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/repeat(_:count:stream:)",
-                    "title" : "static func `repeat`(MLXArray, count: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/tri(_:m:k:type:stream:)",
-                    "title" : "static func tri<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "title" : "MLXArray Factory Free Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/zeros(_:type:stream:)",
-                    "title" : "func zeros<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "path" : "\/documentation\/mlx\/sorted(_:axis:stream:)",
+                    "title" : "func sorted(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/zeros(like:stream:)",
-                    "title" : "func zeros(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/ones(_:type:stream:)",
-                    "title" : "func ones<T>([Int], type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/ones(like:stream:)",
-                    "title" : "func ones(like: MLXArray, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/eye(_:m:k:type:stream:)",
-                    "title" : "func eye<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/full(_:values:type:stream:)",
-                    "title" : "func full<T>([Int], values: MLXArray, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/full(_:values:stream:)",
-                    "title" : "func full([Int], values: MLXArray, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/identity(_:type:stream:)",
-                    "title" : "func identity<T>(Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/linspace(_:_:count:stream:)-7vj0o",
-                    "title" : "func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/linspace(_:_:count:stream:)-6w959",
-                    "title" : "func linspace<T>(T, T, count: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/repeat(_:count:axis:stream:)",
-                    "title" : "func `repeat`(MLXArray, count: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/repeat(_:count:stream:)",
-                    "title" : "func `repeat`(MLXArray, count: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/tri(_:m:k:type:stream:)",
-                    "title" : "func tri<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "path" : "\/documentation\/mlx\/partitioned(_:kth:axis:stream:)",
+                    "title" : "func partitioned(MLXArray, kth: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   }
                 ],
-                "path" : "\/documentation\/mlx\/initialization",
-                "title" : "Initialization",
+                "path" : "\/documentation\/mlx\/sorting",
+                "title" : "Sorting",
                 "type" : "symbol"
+              },
+              {
+                "title" : "Logical Operations",
+                "type" : "groupMarker"
               },
               {
                 "children" : [
@@ -1148,120 +1399,25 @@
                 "type" : "symbol"
               },
               {
-                "children" : [
-                  {
-                    "title" : "MLXArray Logical Reduction Functions",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/all(axes:keepdims:stream:)",
-                    "title" : "func all(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/any(axes:keepdims:stream:)",
-                    "title" : "func any(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "title" : "MLXArray Aggregating Reduction Functions",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(axes:keepdims:stream:)",
-                    "title" : "func logSumExp(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/product(axis:keepdims:stream:)",
-                    "title" : "func product(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/max(axes:keepdims:stream:)",
-                    "title" : "func max(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/mean(axes:keepdims:stream:)",
-                    "title" : "func mean(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/min(axes:keepdims:stream:)",
-                    "title" : "func min(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/sum(axes:keepdims:stream:)",
-                    "title" : "func sum(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mlxarray\/variance(axes:keepdims:ddof:stream:)",
-                    "title" : "func variance(axes: [Int], keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "method"
-                  },
-                  {
-                    "title" : "Logical Reduction Free Functions",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/all(_:axes:keepdims:stream:)",
-                    "title" : "func all(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/any(_:axes:keepdims:stream:)",
-                    "title" : "func any(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "title" : "Aggregating Reduction Free Functions",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/logsumexp(_:axes:keepdims:stream:)",
-                    "title" : "func logSumExp(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/product(_:axis:keepdims:stream:)",
-                    "title" : "func product(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/max(_:axes:keepdims:stream:)",
-                    "title" : "func max(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/mean(_:axes:keepdims:stream:)",
-                    "title" : "func mean(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/min(_:axes:keepdims:stream:)",
-                    "title" : "func min(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/sum(_:axes:keepdims:stream:)",
-                    "title" : "func sum(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/variance(_:axes:keepdims:ddof:stream:)",
-                    "title" : "func variance(MLXArray, axes: [Int], keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/reduction",
-                "title" : "Reduction Functions",
-                "type" : "symbol"
+                "title" : "Shapes",
+                "type" : "groupMarker"
               },
               {
                 "children" : [
+                  {
+                    "title" : "Reading Shapes",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/shape",
+                    "title" : "var shape: [Int]",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/dim(_:)",
+                    "title" : "func dim(Int) -> Int",
+                    "type" : "method"
+                  },
                   {
                     "title" : "MLXArray Shape Methods (Same Size)",
                     "type" : "groupMarker"
@@ -1269,6 +1425,11 @@
                   {
                     "path" : "\/documentation\/mlx\/mlxarray\/expandeddimensions(axis:stream:)",
                     "title" : "func expandedDimensions(axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/expandeddimensions(axes:stream:)",
+                    "title" : "func expandedDimensions(axes: [Int], stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
                   },
                   {
@@ -1282,9 +1443,29 @@
                     "type" : "method"
                   },
                   {
+                    "path" : "\/documentation\/mlx\/mlxarray\/reshaped(_:stream:)-67a89",
+                    "title" : "func reshaped(Int..., stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/squeezed(stream:)",
+                    "title" : "func squeezed(stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/squeezed(axis:stream:)",
+                    "title" : "func squeezed(axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
                     "path" : "\/documentation\/mlx\/mlxarray\/squeezed(axes:stream:)",
                     "title" : "func squeezed(axes: [Int], stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/expandeddimensions(_:axis:stream:)",
+                    "title" : "func expandedDimensions(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
                   },
                   {
                     "path" : "\/documentation\/mlx\/expandeddimensions(_:axes:stream:)",
@@ -1336,9 +1517,29 @@
                     "type" : "method"
                   },
                   {
+                    "path" : "\/documentation\/mlx\/mlxarray\/transposed(stream:)",
+                    "title" : "func transposed(stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/transposed(axis:stream:)",
+                    "title" : "func transposed(axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
                     "path" : "\/documentation\/mlx\/mlxarray\/transposed(axes:stream:)",
                     "title" : "func transposed(axes: [Int], stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/transposed(_:stream:)",
+                    "title" : "func transposed(Int..., stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/t",
+                    "title" : "var T: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Free Functions To Manipulate Shapes",
@@ -1347,6 +1548,11 @@
                   {
                     "path" : "\/documentation\/mlx\/asstrided(_:_:strides:offset:stream:)",
                     "title" : "func asStrided(MLXArray, [Int]?, strides: [Int]?, offset: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/broadcast(_:to:stream:)",
+                    "title" : "func broadcast(MLXArray, to: [Int], stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   },
                   {
@@ -1407,474 +1613,340 @@
               {
                 "children" : [
                   {
-                    "title" : "Index Producing Functions",
+                    "title" : "MLXArray Logical Reduction Functions",
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/argsort(_:axis:stream:)",
-                    "title" : "func argSort(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
+                    "path" : "\/documentation\/mlx\/mlxarray\/all(keepdims:stream:)",
+                    "title" : "func all(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/argpartition(_:kth:axis:stream:)",
-                    "title" : "func argPartition(MLXArray, kth: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
+                    "path" : "\/documentation\/mlx\/mlxarray\/all(axis:keepdims:stream:)",
+                    "title" : "func all(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
                   },
                   {
-                    "title" : "Sorting Functions",
+                    "path" : "\/documentation\/mlx\/mlxarray\/all(axes:keepdims:stream:)",
+                    "title" : "func all(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/any(keepdims:stream:)",
+                    "title" : "func any(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/any(axis:keepdims:stream:)",
+                    "title" : "func any(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/any(axes:keepdims:stream:)",
+                    "title" : "func any(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "title" : "MLXArray Aggregating Reduction Functions",
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/sorted(_:axis:stream:)",
-                    "title" : "func sorted(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(keepdims:stream:)",
+                    "title" : "func logSumExp(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(axis:keepdims:stream:)",
+                    "title" : "func logSumExp(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(axes:keepdims:stream:)",
+                    "title" : "func logSumExp(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/product(keepdims:stream:)",
+                    "title" : "func product(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/product(axis:keepdims:stream:)",
+                    "title" : "func product(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/product(axes:keepdims:stream:)",
+                    "title" : "func product(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/max(keepdims:stream:)",
+                    "title" : "func max(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/max(axis:keepdims:stream:)",
+                    "title" : "func max(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/max(axes:keepdims:stream:)",
+                    "title" : "func max(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/mean(keepdims:stream:)",
+                    "title" : "func mean(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/mean(axis:keepdims:stream:)",
+                    "title" : "func mean(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/mean(axes:keepdims:stream:)",
+                    "title" : "func mean(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/min(keepdims:stream:)",
+                    "title" : "func min(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/min(axis:keepdims:stream:)",
+                    "title" : "func min(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/min(axes:keepdims:stream:)",
+                    "title" : "func min(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/sum(keepdims:stream:)",
+                    "title" : "func sum(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/sum(axis:keepdims:stream:)",
+                    "title" : "func sum(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/sum(axes:keepdims:stream:)",
+                    "title" : "func sum(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/variance(keepdims:ddof:stream:)",
+                    "title" : "func variance(keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/variance(axis:keepdims:ddof:stream:)",
+                    "title" : "func variance(axis: Int, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/variance(axes:keepdims:ddof:stream:)",
+                    "title" : "func variance(axes: [Int], keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "title" : "Logical Reduction Free Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/all(_:keepdims:stream:)",
+                    "title" : "func all(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/partitioned(_:kth:axis:stream:)",
-                    "title" : "func partitioned(MLXArray, kth: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                    "path" : "\/documentation\/mlx\/all(_:axis:keepdims:stream:)",
+                    "title" : "func all(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/all(_:axes:keepdims:stream:)",
+                    "title" : "func all(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/any(_:keepdims:stream:)",
+                    "title" : "func any(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/any(_:axis:keepdims:stream:)",
+                    "title" : "func any(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/any(_:axes:keepdims:stream:)",
+                    "title" : "func any(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "title" : "Aggregating Reduction Free Functions",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/logsumexp(_:keepdims:stream:)",
+                    "title" : "func logSumExp(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/logsumexp(_:axis:keepdims:stream:)",
+                    "title" : "func logSumExp(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/logsumexp(_:axes:keepdims:stream:)",
+                    "title" : "func logSumExp(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/product(_:keepdims:stream:)",
+                    "title" : "func product(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/product(_:axis:keepdims:stream:)",
+                    "title" : "func product(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/product(_:axes:keepdims:stream:)",
+                    "title" : "func product(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/max(_:keepdims:stream:)",
+                    "title" : "func max(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/max(_:axis:keepdims:stream:)",
+                    "title" : "func max(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/max(_:axes:keepdims:stream:)",
+                    "title" : "func max(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mean(_:keepdims:stream:)",
+                    "title" : "func mean(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mean(_:axis:keepdims:stream:)",
+                    "title" : "func mean(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mean(_:axes:keepdims:stream:)",
+                    "title" : "func mean(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/min(_:keepdims:stream:)",
+                    "title" : "func min(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/min(_:axis:keepdims:stream:)",
+                    "title" : "func min(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/min(_:axes:keepdims:stream:)",
+                    "title" : "func min(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/sum(_:keepdims:stream:)",
+                    "title" : "func sum(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/sum(_:axis:keepdims:stream:)",
+                    "title" : "func sum(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/sum(_:axes:keepdims:stream:)",
+                    "title" : "func sum(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/variance(_:keepdims:ddof:stream:)",
+                    "title" : "func variance(MLXArray, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/variance(_:axis:keepdims:ddof:stream:)",
+                    "title" : "func variance(MLXArray, axis: Int, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "func"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/variance(_:axes:keepdims:ddof:stream:)",
+                    "title" : "func variance(MLXArray, axes: [Int], keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   }
                 ],
-                "path" : "\/documentation\/mlx\/sorting",
-                "title" : "Sorting",
+                "path" : "\/documentation\/mlx\/reduction",
+                "title" : "Reduction Functions",
                 "type" : "symbol"
               },
               {
-                "title" : "Arithmetic Operators",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/+(_:_:)-1rv98",
-                "title" : "static func + (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/+(_:_:)-2vili",
-                "title" : "static func + <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/+(_:_:)-1jn5i",
-                "title" : "static func + <T>(T, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/-(_:)",
-                "title" : "static func - (MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/*(_:_:)-1z2ck",
-                "title" : "static func * (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/*(_:_:)-sw3w",
-                "title" : "static func * <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/*(_:_:)-7441r",
-                "title" : "static func * <T>(T, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/**(_:_:)-8xxt3",
-                "title" : "static func ** (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/**(_:_:)-6ve5u",
-                "title" : "static func ** <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/**(_:_:)-4lp4b",
-                "title" : "static func ** <T>(T, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "title" : "Element-wise Arithmetic Functions",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/abs(stream:)",
-                "title" : "func abs(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cos(stream:)",
-                "title" : "func cos(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/exp(stream:)",
-                "title" : "func exp(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/floor(stream:)",
-                "title" : "func floor(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/floordivide(_:stream:)",
-                "title" : "func floorDivide<T>(T, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/log(stream:)",
-                "title" : "func log(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/log2(stream:)",
-                "title" : "func log2(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/log10(stream:)",
-                "title" : "func log10(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/log1p(stream:)",
-                "title" : "func log1p(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/pow(_:stream:)",
-                "title" : "func pow<T>(T, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/reciprocal(stream:)",
-                "title" : "func reciprocal(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/rsqrt(stream:)",
-                "title" : "func rsqrt(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/round(decimals:stream:)",
-                "title" : "func round(decimals: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/sin(stream:)",
-                "title" : "func sin(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/sqrt(stream:)",
-                "title" : "func sqrt(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/square(stream:)",
-                "title" : "func square(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Shape Methods (Same Size)",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/flattened(start:end:stream:)",
-                "title" : "func flattened(start: Int, end: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/reshaped(_:stream:)-19x5z",
-                "title" : "func reshaped([Int], stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/squeezed(axes:stream:)",
-                "title" : "func squeezed(axes: [Int], stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Shape Methods (Change Size)",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/movedaxis(source:destination:stream:)",
-                "title" : "func movedAxis(source: Int, destination: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/split(parts:axis:stream:)",
-                "title" : "func split(parts: Int, axis: Int, stream: StreamOrDevice) -> [MLXArray]",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/split(indices:axis:stream:)",
-                "title" : "func split(indices: [Int], axis: Int, stream: StreamOrDevice) -> [MLXArray]",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/swappedaxes(_:_:stream:)",
-                "title" : "func swappedAxes(Int, Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/transposed(axes:stream:)",
-                "title" : "func transposed(axes: [Int], stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Cumulative Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cummax(axis:reverse:inclusive:stream:)",
-                "title" : "func cummax(axis: Int, reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cummax(reverse:inclusive:stream:)",
-                "title" : "func cummax(reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cummin(axis:reverse:inclusive:stream:)",
-                "title" : "func cummin(axis: Int, reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cummin(reverse:inclusive:stream:)",
-                "title" : "func cummin(reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cumprod(axis:reverse:inclusive:stream:)",
-                "title" : "func cumprod(axis: Int, reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cumprod(reverse:inclusive:stream:)",
-                "title" : "func cumprod(reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cumsum(axis:reverse:inclusive:stream:)",
-                "title" : "func cumsum(axis: Int, reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/cumsum(reverse:inclusive:stream:)",
-                "title" : "func cumsum(reverse: Bool, inclusive: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Indexes",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/argmax(axis:keepdims:stream:)",
-                "title" : "func argMax(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/argmin(axis:keepdims:stream:)",
-                "title" : "func argMin(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/subscript(_:stream:)-82jwt",
-                "title" : "subscript(MLXArray..., stream _: StreamOrDevice) -> MLXArray",
-                "type" : "subscript"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/take(_:axis:stream:)",
-                "title" : "func take(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Logical Functions",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/all(axes:keepdims:stream:)",
-                "title" : "func all(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/all(keepdims:stream:)",
-                "title" : "func all(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/all(axis:keepdims:stream:)",
-                "title" : "func all(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/any(axes:keepdims:stream:)",
-                "title" : "func any(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/any(keepdims:stream:)",
-                "title" : "func any(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/any(axis:keepdims:stream:)",
-                "title" : "func any(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:stream:)",
-                "title" : "func allClose<T>(T, rtol: Double, atol: Double, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:stream:)",
-                "title" : "func allClose<T>(MLXArray, T, rtol: Double, atol: Double, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/arrayequal(_:equalnan:stream:)",
-                "title" : "func arrayEqual<T>(T, equalNAN: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.!(_:)",
-                "title" : "static func .! (MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.==(_:_:)-56m0a",
-                "title" : "static func .== (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.==(_:_:)-79hbc",
-                "title" : "static func .== <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.!=(_:_:)-mbw0",
-                "title" : "static func .!= (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.!=(_:_:)-gkdj",
-                "title" : "static func .!= <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-9rzup",
-                "title" : "static func .< (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-54ivt",
-                "title" : "static func .< <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-2a0s9",
-                "title" : "static func .<= (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-6vb92",
-                "title" : "static func .<= <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-fwi1",
-                "title" : "static func .> (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._(_:_:)-2v86b",
-                "title" : "static func .> <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-2gqml",
-                "title" : "static func .>= (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'._=(_:_:)-6zxj9",
-                "title" : "static func .>= <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.&&(_:_:)",
-                "title" : "static func .&& (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/'.__(_:_:)",
-                "title" : "static func .|| (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "title" : "Aggregating Reduction Functions",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(axes:keepdims:stream:)",
-                "title" : "func logSumExp(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/product(axis:keepdims:stream:)",
-                "title" : "func product(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/max(axes:keepdims:stream:)",
-                "title" : "func max(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/mean(axes:keepdims:stream:)",
-                "title" : "func mean(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/min(axes:keepdims:stream:)",
-                "title" : "func min(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/sum(axes:keepdims:stream:)",
-                "title" : "func sum(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/variance(axes:keepdims:ddof:stream:)",
-                "title" : "func variance(axes: [Int], keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Structures",
+                "title" : "Conversion and Data Types",
                 "type" : "groupMarker"
               },
               {
                 "children" : [
                   {
-                    "title" : "Instance Methods",
+                    "title" : "Conversion Functions",
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/mlxarray\/mlxarrayiterator\/next()",
-                    "title" : "func next() -> MLXArray?",
+                    "path" : "\/documentation\/mlx\/mlxarray\/astype(_:stream:)-4eqoc",
+                    "title" : "func asType<T>(T.Type, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/astype(_:stream:)-6d44y",
+                    "title" : "func asType(DType, stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/asarray(_:)",
+                    "title" : "func asArray<T>(T.Type) -> [T]",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/asimaginary(stream:)",
+                    "title" : "func asImaginary(stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/imaginarypart(stream:)",
+                    "title" : "func imaginaryPart(stream: StreamOrDevice) -> MLXArray",
+                    "type" : "method"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/realpart(stream:)",
+                    "title" : "func realPart(stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
                   }
                 ],
-                "path" : "\/documentation\/mlx\/mlxarray\/mlxarrayiterator",
-                "title" : "MLXArray.MLXArrayIterator",
-                "type" : "struct"
+                "path" : "\/documentation\/mlx\/conversion",
+                "title" : "Conversion",
+                "type" : "symbol"
               },
               {
                 "title" : "Operators",
@@ -1911,23 +1983,8 @@
                 "type" : "op"
               },
               {
-                "path" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-3ubwd",
-                "title" : "static func % (MLXArray, MLXArray) -> MLXArray",
-                "type" : "op"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-516wd",
-                "title" : "static func % <T>(MLXArray, T) -> MLXArray",
-                "type" : "op"
-              },
-              {
                 "title" : "Instance Properties",
                 "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/t",
-                "title" : "var T: MLXArray",
-                "type" : "property"
               },
               {
                 "path" : "\/documentation\/mlx\/mlxarray\/count",
@@ -1960,11 +2017,6 @@
                 "type" : "property"
               },
               {
-                "path" : "\/documentation\/mlx\/mlxarray\/shape",
-                "title" : "var shape: [Int]",
-                "type" : "property"
-              },
-              {
                 "path" : "\/documentation\/mlx\/mlxarray\/size",
                 "title" : "var size: Int",
                 "type" : "property"
@@ -1979,48 +2031,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlx\/mlxarray\/argmax(keepdims:stream:)",
-                "title" : "func argMax(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/argmin(keepdims:stream:)",
-                "title" : "func argMin(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/asarray(_:)",
-                "title" : "func asArray<T>(T.Type) -> [T]",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/astype(_:stream:)-4eqoc",
-                "title" : "func asType<T>(T.Type, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/astype(_:stream:)-6d44y",
-                "title" : "func asType(DType, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/dim(_:)-6npqw",
-                "title" : "func dim(Int32) -> Int32",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/dim(_:)-8s2hf",
-                "title" : "func dim(Int) -> Int",
-                "type" : "method"
-              },
-              {
                 "path" : "\/documentation\/mlx\/mlxarray\/eval()",
                 "title" : "func eval()",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/expandeddimensions(axes:stream:)",
-                "title" : "func expandedDimensions(axes: [Int], stream: StreamOrDevice) -> MLXArray",
                 "type" : "method"
               },
               {
@@ -2034,132 +2046,13 @@
                 "type" : "method"
               },
               {
-                "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(axis:keepdims:stream:)",
-                "title" : "func logSumExp(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/logsumexp(keepdims:stream:)",
-                "title" : "func logSumExp(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/matmul(_:stream:)",
-                "title" : "func matmul(MLXArray, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/max(axis:keepdims:stream:)",
-                "title" : "func max(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/max(keepdims:stream:)",
-                "title" : "func max(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/mean(axis:keepdims:stream:)",
-                "title" : "func mean(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/mean(keepdims:stream:)",
-                "title" : "func mean(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/min(axis:keepdims:stream:)",
-                "title" : "func min(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/min(keepdims:stream:)",
-                "title" : "func min(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/product(axes:keepdims:stream:)",
-                "title" : "func product(axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/product(keepdims:stream:)",
-                "title" : "func product(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/reshaped(_:stream:)-67a89",
-                "title" : "func reshaped(Int..., stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/squeezed(axis:stream:)",
-                "title" : "func squeezed(axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/squeezed(stream:)",
-                "title" : "func squeezed(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/sum(axis:keepdims:stream:)",
-                "title" : "func sum(axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/sum(keepdims:stream:)",
-                "title" : "func sum(keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
                 "path" : "\/documentation\/mlx\/mlxarray\/take(_:stream:)",
                 "title" : "func take(MLXArray, stream: StreamOrDevice) -> MLXArray",
                 "type" : "method"
               },
               {
-                "path" : "\/documentation\/mlx\/mlxarray\/transposed(_:stream:)",
-                "title" : "func transposed(Int..., stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/transposed(axis:stream:)",
-                "title" : "func transposed(axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/transposed(stream:)",
-                "title" : "func transposed(stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
                 "path" : "\/documentation\/mlx\/mlxarray\/update(_:)",
                 "title" : "func update(MLXArray)",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/variance(axis:keepdims:ddof:stream:)",
-                "title" : "func variance(axis: Int, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/variance(keepdims:ddof:stream:)",
-                "title" : "func variance(keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "title" : "Type Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/ones(_:dtype:stream:)",
-                "title" : "static func ones([Int], dtype: DType, stream: StreamOrDevice) -> MLXArray",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/mlxarray\/zeros(_:dtype:stream:)",
-                "title" : "static func zeros([Int], dtype: DType, stream: StreamOrDevice) -> MLXArray",
                 "type" : "method"
               },
               {
@@ -2336,7 +2229,7 @@
                   },
                   {
                     "path" : "\/documentation\/mlx\/mlxarray\/makeiterator()",
-                    "title" : "func makeIterator() -> MLXArray.MLXArrayIterator",
+                    "title" : "func makeIterator() -> some IteratorProtocol<MLXArray>\n",
                     "type" : "method"
                   },
                   {
@@ -2655,6 +2548,16 @@
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/softmax(_:stream:)",
+                "title" : "func softMax(MLXArray, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/softmax(_:axis:stream:)",
+                "title" : "func softMax(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "path" : "\/documentation\/mlx\/softmax(_:axes:stream:)",
                 "title" : "func softMax(MLXArray, axes: [Int], stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
@@ -2807,6 +2710,26 @@
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/take(_:_:stream:)",
+                "title" : "func take(MLXArray, MLXArray, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/take(_:_:axis:stream:)",
+                "title" : "func take(MLXArray, MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/top(_:k:stream:)",
+                "title" : "func top(MLXArray, k: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/top(_:k:axis:stream:)",
+                "title" : "func top(MLXArray, k: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "title" : "Factory",
                 "type" : "groupMarker"
               },
@@ -2873,6 +2796,16 @@
               {
                 "path" : "\/documentation\/mlx\/tri(_:m:k:type:stream:)",
                 "title" : "func tri<T>(Int, m: Int?, k: Int, type: T.Type, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/tril(_:k:stream:)",
+                "title" : "func tril(MLXArray, k: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/triu(_:k:stream:)",
+                "title" : "func triu(MLXArray, k: Int, stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
               },
               {
@@ -3046,6 +2979,11 @@
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/broadcast(_:to:stream:)",
+                "title" : "func broadcast(MLXArray, to: [Int], stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "path" : "\/documentation\/mlx\/concatenated(_:axis:stream:)",
                 "title" : "func concatenated([MLXArray], axis: Int, stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
@@ -3076,6 +3014,16 @@
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/reshaped(_:_:stream:)-5x3y0",
+                "title" : "func reshaped(MLXArray, [Int], stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/reshaped(_:_:stream:)-96lgr",
+                "title" : "func reshaped(MLXArray, Int..., stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "path" : "\/documentation\/mlx\/split(_:indices:axis:stream:)",
                 "title" : "func split(MLXArray, indices: [Int], axis: Int, stream: StreamOrDevice) -> [MLXArray]",
                 "type" : "func"
@@ -3083,6 +3031,21 @@
               {
                 "path" : "\/documentation\/mlx\/split(_:parts:axis:stream:)",
                 "title" : "func split(MLXArray, parts: Int, axis: Int, stream: StreamOrDevice) -> [MLXArray]",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/squeezed(_:stream:)",
+                "title" : "func squeezed(MLXArray, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/squeezed(_:axis:stream:)",
+                "title" : "func squeezed(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/squeezed(_:axes:stream:)",
+                "title" : "func squeezed(MLXArray, axes: [Int], stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
               },
               {
@@ -3096,8 +3059,23 @@
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/transposed(_:stream:)",
+                "title" : "func transposed(MLXArray, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/transposed(_:axis:stream:)",
+                "title" : "func transposed(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "path" : "\/documentation\/mlx\/transposed(_:axes:stream:)",
                 "title" : "func transposed(MLXArray, axes: [Int], stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/transposed(_:_:stream:)",
+                "title" : "func transposed(MLXArray, Int..., stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
               },
               {
@@ -3120,13 +3098,175 @@
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/sorted(_:stream:)",
+                "title" : "func sorted(MLXArray, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "path" : "\/documentation\/mlx\/sorted(_:axis:stream:)",
                 "title" : "func sorted(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
               },
               {
+                "path" : "\/documentation\/mlx\/partitioned(_:kth:stream:)",
+                "title" : "func partitioned(MLXArray, kth: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
                 "path" : "\/documentation\/mlx\/partitioned(_:kth:axis:stream:)",
                 "title" : "func partitioned(MLXArray, kth: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "title" : "Quantization",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/quantized(_:groupsize:bits:stream:)",
+                "title" : "func quantized(MLXArray, groupSize: Int, bits: Int, stream: StreamOrDevice) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray)",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/quantizedmatmul(_:_:scales:biases:transpose:groupsize:bits:stream:)",
+                "title" : "func quantizedMatmul(MLXArray, MLXArray, scales: MLXArray, biases: MLXArray, transpose: Bool, groupSize: Int, bits: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dequantized(_:scales:biases:groupsize:bits:stream:)",
+                "title" : "func dequantized(MLXArray, scales: MLXArray, biases: MLXArray, groupSize: Int, bits: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "title" : "Evaluation and Transformation",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/eval(_:)-190w1",
+                "title" : "func eval([Any])",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/eval(_:)-3b2g9",
+                "title" : "func eval(Any...)",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/eval(_:)-8fexv",
+                "title" : "func eval([MLXArray])",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/eval(_:)-91pbd",
+                "title" : "func eval(MLXArray...)",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/grad(_:)-r8dv",
+                "title" : "func grad((MLXArray) -> MLXArray) -> (MLXArray) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/grad(_:)-7z6i",
+                "title" : "func grad((MLXArray) -> [MLXArray]) -> (MLXArray) -> [MLXArray]",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-2ictk",
+                "title" : "func grad(([MLXArray]) -> MLXArray, argumentNumbers: [Int]) -> ([MLXArray]) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-5va2g",
+                "title" : "func grad(([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> ([MLXArray]) -> [MLXArray]",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/valueandgrad(_:)",
+                "title" : "func valueAndGrad<T>((NestedDictionary<String, MLXArray>, T) -> [MLXArray]) -> (NestedDictionary<String, MLXArray>, T) -> ([MLXArray], NestedDictionary<String, MLXArray>)",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)",
+                "title" : "func valueAndGrad(([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> ([MLXArray]) -> ([MLXArray], [MLXArray])",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/stopgradient(_:stream:)",
+                "title" : "func stopGradient(MLXArray, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/jvp(_:primals:tangents:)",
+                "title" : "func jvp(([MLXArray]) -> [MLXArray], primals: [MLXArray], tangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/vjp(_:primals:cotangents:)",
+                "title" : "func vjp(([MLXArray]) -> [MLXArray], primals: [MLXArray], cotangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
+                "type" : "func"
+              },
+              {
+                "title" : "FFT",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/fft(_:n:axis:stream:)",
+                "title" : "func fft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/fft2(_:s:axes:stream:)",
+                "title" : "func fft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/fftn(_:s:axes:stream:)",
+                "title" : "func fftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/ifft(_:n:axis:stream:)",
+                "title" : "func ifft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/ifft2(_:s:axes:stream:)",
+                "title" : "func ifft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/ifftn(_:s:axes:stream:)",
+                "title" : "func ifftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/irfft(_:n:axis:stream:)",
+                "title" : "func irfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/irfft2(_:s:axes:stream:)",
+                "title" : "func irfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/irfftn(_:s:axes:stream:)",
+                "title" : "func irfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/rfft(_:n:axis:stream:)",
+                "title" : "func rfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/rfft2(_:s:axes:stream:)",
+                "title" : "func rfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/rfftn(_:s:axes:stream:)",
+                "title" : "func rfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
               }
             ],
@@ -3135,52 +3275,98 @@
             "type" : "symbol"
           },
           {
-            "title" : "Classes",
+            "title" : "Data Types",
             "type" : "groupMarker"
           },
           {
             "children" : [
               {
-                "title" : "Initializers",
+                "title" : "Enumeration Cases",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlx\/device\/init()",
-                "title" : "init()",
-                "type" : "init"
+                "path" : "\/documentation\/mlx\/dtype\/bfloat16",
+                "title" : "case bfloat16",
+                "type" : "case"
               },
               {
-                "path" : "\/documentation\/mlx\/device\/init(_:index:)",
-                "title" : "init(DeviceType, index: Int32)",
-                "type" : "init"
+                "path" : "\/documentation\/mlx\/dtype\/bool",
+                "title" : "case bool",
+                "type" : "case"
               },
               {
-                "title" : "Type Properties",
+                "path" : "\/documentation\/mlx\/dtype\/complex64",
+                "title" : "case complex64",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/float16",
+                "title" : "case float16",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/float32",
+                "title" : "case float32",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/int16",
+                "title" : "case int16",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/int32",
+                "title" : "case int32",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/int64",
+                "title" : "case int64",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/int8",
+                "title" : "case int8",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/uint16",
+                "title" : "case uint16",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/uint32",
+                "title" : "case uint32",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/uint64",
+                "title" : "case uint64",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/dtype\/uint8",
+                "title" : "case uint8",
+                "type" : "case"
+              },
+              {
+                "title" : "Instance Properties",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlx\/device\/cpu",
-                "title" : "static let cpu: Device",
+                "path" : "\/documentation\/mlx\/dtype\/cmlxdtype",
+                "title" : "var cmlxDtype: mlx_array_dtype",
                 "type" : "property"
               },
               {
-                "path" : "\/documentation\/mlx\/device\/gpu",
-                "title" : "static let gpu: Device",
+                "path" : "\/documentation\/mlx\/dtype\/iscomplex",
+                "title" : "var isComplex: Bool",
                 "type" : "property"
               },
               {
-                "title" : "Type Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/device\/defaultdevice()",
-                "title" : "static func defaultDevice() -> Device",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/device\/setdefault(device:)",
-                "title" : "static func setDefault(device: Device)",
-                "type" : "method"
+                "path" : "\/documentation\/mlx\/dtype\/isfloatingpoint",
+                "title" : "var isFloatingPoint: Bool",
+                "type" : "property"
               },
               {
                 "title" : "Default Implementations",
@@ -3189,77 +3375,23 @@
               {
                 "children" : [
                   {
-                    "title" : "Instance Properties",
+                    "title" : "Operators",
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/device\/description",
-                    "title" : "var description: String",
-                    "type" : "property"
+                    "path" : "\/documentation\/mlx\/dtype\/!=(_:_:)",
+                    "title" : "static func != (Self, Self) -> Bool",
+                    "type" : "op"
                   }
                 ],
-                "path" : "\/documentation\/mlx\/device\/customstringconvertible-implementations",
-                "title" : "CustomStringConvertible Implementations",
+                "path" : "\/documentation\/mlx\/dtype\/equatable-implementations",
+                "title" : "Equatable Implementations",
                 "type" : "symbol"
               }
             ],
-            "path" : "\/documentation\/mlx\/device",
-            "title" : "Device",
-            "type" : "class"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Initializers",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/stream\/init()",
-                "title" : "init()",
-                "type" : "init"
-              },
-              {
-                "path" : "\/documentation\/mlx\/stream\/init(index:_:)",
-                "title" : "init(index: Int32, Device)",
-                "type" : "init"
-              },
-              {
-                "title" : "Type Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/stream\/defaultstream(_:)",
-                "title" : "static func defaultStream(Device) -> Stream",
-                "type" : "method"
-              },
-              {
-                "title" : "Default Implementations",
-                "type" : "groupMarker"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Instance Properties",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/stream\/description",
-                    "title" : "var description: String",
-                    "type" : "property"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/stream\/customstringconvertible-implementations",
-                "title" : "CustomStringConvertible Implementations",
-                "type" : "symbol"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/stream",
-            "title" : "Stream",
-            "type" : "class"
-          },
-          {
-            "title" : "Protocols",
-            "type" : "groupMarker"
+            "path" : "\/documentation\/mlx\/dtype",
+            "title" : "DType",
+            "type" : "enum"
           },
           {
             "children" : [
@@ -3275,31 +3407,6 @@
             ],
             "path" : "\/documentation\/mlx\/hasdtype",
             "title" : "HasDType",
-            "type" : "protocol"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Instance Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/indenteddescription\/description",
-                "title" : "var description: String",
-                "type" : "property"
-              },
-              {
-                "title" : "Instance Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/indenteddescription\/description(indent:)",
-                "title" : "func description(indent: Int) -> String",
-                "type" : "method"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/indenteddescription",
-            "title" : "IndentedDescription",
             "type" : "protocol"
           },
           {
@@ -3332,58 +3439,8 @@
             "type" : "protocol"
           },
           {
-            "title" : "Structures",
+            "title" : "Nested Data",
             "type" : "groupMarker"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Initializers",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/init(_:)-4gcmc",
-                "title" : "init((Int, Int))",
-                "type" : "init"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/init(_:)-78yd3",
-                "title" : "init([Int])",
-                "type" : "init"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/init(arrayliteral:)",
-                "title" : "init(arrayLiteral: Int...)",
-                "type" : "init"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/init(integerliteral:)",
-                "title" : "init(integerLiteral: Int)",
-                "type" : "init"
-              },
-              {
-                "title" : "Instance Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/first",
-                "title" : "var first: Int",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/second",
-                "title" : "var second: Int",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/intorpair\/values",
-                "title" : "let values: (Int, Int)",
-                "type" : "property"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/intorpair",
-            "title" : "IntOrPair",
-            "type" : "struct"
           },
           {
             "children" : [
@@ -3888,559 +3945,6 @@
           {
             "children" : [
               {
-                "title" : "Instance Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/ctx",
-                "title" : "var ctx: OpaquePointer",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/description",
-                "title" : "var description: String",
-                "type" : "property"
-              },
-              {
-                "title" : "Type Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/cpu",
-                "title" : "static let cpu: StreamOrDevice",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/default",
-                "title" : "static var `default`: StreamOrDevice",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/gpu",
-                "title" : "static let gpu: StreamOrDevice",
-                "type" : "property"
-              },
-              {
-                "title" : "Type Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/device(_:)",
-                "title" : "static func device(Device) -> StreamOrDevice",
-                "type" : "method"
-              },
-              {
-                "path" : "\/documentation\/mlx\/streamordevice\/stream(_:)",
-                "title" : "static func stream(Stream) -> StreamOrDevice",
-                "type" : "method"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/streamordevice",
-            "title" : "StreamOrDevice",
-            "type" : "struct"
-          },
-          {
-            "title" : "Functions",
-            "type" : "groupMarker"
-          },
-          {
-            "path" : "\/documentation\/mlx\/broadcast(_:to:stream:)",
-            "title" : "func broadcast(MLXArray, to: [Int], stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/dequantized(_:scales:biases:groupsize:bits:stream:)",
-            "title" : "func dequantized(MLXArray, scales: MLXArray, biases: MLXArray, groupSize: Int, bits: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/eval(_:)-190w1",
-            "title" : "func eval([Any])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/eval(_:)-3b2g9",
-            "title" : "func eval(Any...)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/eval(_:)-8fexv",
-            "title" : "func eval([MLXArray])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/eval(_:)-91pbd",
-            "title" : "func eval(MLXArray...)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:)-7z6i",
-            "title" : "func grad((MLXArray) -> [MLXArray]) -> (MLXArray) -> [MLXArray]",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:)-r8dv",
-            "title" : "func grad((MLXArray) -> MLXArray) -> (MLXArray) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-2ictk",
-            "title" : "func grad(([MLXArray]) -> MLXArray, argumentNumbers: [Int]) -> ([MLXArray]) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/grad(_:argumentnumbers:)-5va2g",
-            "title" : "func grad(([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> ([MLXArray]) -> [MLXArray]",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/indenteddescription(_:_:)",
-            "title" : "func indentedDescription(Any, Int) -> String",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/jvp(_:primals:tangents:)",
-            "title" : "func jvp(([MLXArray]) -> [MLXArray], primals: [MLXArray], tangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/logsumexp(_:axis:keepdims:stream:)",
-            "title" : "func logSumExp(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/logsumexp(_:keepdims:stream:)",
-            "title" : "func logSumExp(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/max(_:axis:keepdims:stream:)",
-            "title" : "func max(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/max(_:keepdims:stream:)",
-            "title" : "func max(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/mean(_:axis:keepdims:stream:)",
-            "title" : "func mean(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/mean(_:keepdims:stream:)",
-            "title" : "func mean(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/min(_:axis:keepdims:stream:)",
-            "title" : "func min(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/min(_:keepdims:stream:)",
-            "title" : "func min(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/partitioned(_:kth:stream:)",
-            "title" : "func partitioned(MLXArray, kth: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/product(_:axes:keepdims:stream:)",
-            "title" : "func product(MLXArray, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/product(_:keepdims:stream:)",
-            "title" : "func product(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/quantized(_:groupsize:bits:stream:)",
-            "title" : "func quantized(MLXArray, groupSize: Int, bits: Int, stream: StreamOrDevice) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/quantizedmatmul(_:_:scales:biases:transpose:groupsize:bits:stream:)",
-            "title" : "func quantizedMatmul(MLXArray, MLXArray, scales: MLXArray, biases: MLXArray, transpose: Bool, groupSize: Int, bits: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/reshaped(_:_:stream:)-96lgr",
-            "title" : "func reshaped(MLXArray, Int..., stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/simlify(_:)-3sxjv",
-            "title" : "func simlify(Any...)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/simlify(_:)-5tkxd",
-            "title" : "func simlify([Any])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/softmax(_:axis:stream:)",
-            "title" : "func softMax(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/softmax(_:stream:)",
-            "title" : "func softMax(MLXArray, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/sorted(_:stream:)",
-            "title" : "func sorted(MLXArray, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/squeezed(_:axis:stream:)",
-            "title" : "func squeezed(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/squeezed(_:stream:)",
-            "title" : "func squeezed(MLXArray, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/stopgradient(_:stream:)",
-            "title" : "func stopGradient(MLXArray, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/sum(_:axis:keepdims:stream:)",
-            "title" : "func sum(MLXArray, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/sum(_:keepdims:stream:)",
-            "title" : "func sum(MLXArray, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/take(_:_:axis:stream:)",
-            "title" : "func take(MLXArray, MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/take(_:_:stream:)",
-            "title" : "func take(MLXArray, MLXArray, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/toarrays(_:_:)",
-            "title" : "func toArrays<T1, T2>(T1, T2) -> (MLXArray, MLXArray)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/top(_:k:axis:stream:)",
-            "title" : "func top(MLXArray, k: Int, axis: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/top(_:k:stream:)",
-            "title" : "func top(MLXArray, k: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/transposed(_:_:stream:)",
-            "title" : "func transposed(MLXArray, Int..., stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/transposed(_:axis:stream:)",
-            "title" : "func transposed(MLXArray, axis: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/transposed(_:stream:)",
-            "title" : "func transposed(MLXArray, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/tril(_:k:stream:)",
-            "title" : "func tril(MLXArray, k: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/triu(_:k:stream:)",
-            "title" : "func triu(MLXArray, k: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/valueandgrad(_:)",
-            "title" : "func valueAndGrad((NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray]) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> ([MLXArray], NestedDictionary<String, MLXArray>)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/valueandgrad(_:argumentnumbers:)",
-            "title" : "func valueAndGrad(([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> ([MLXArray]) -> ([MLXArray], [MLXArray])",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/variance(_:axis:keepdims:ddof:stream:)",
-            "title" : "func variance(MLXArray, axis: Int, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/variance(_:keepdims:ddof:stream:)",
-            "title" : "func variance(MLXArray, keepDims: Bool, ddof: Int, stream: StreamOrDevice) -> MLXArray",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/vjp(_:primals:cotangents:)",
-            "title" : "func vjp(([MLXArray]) -> [MLXArray], primals: [MLXArray], cotangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
-            "type" : "func"
-          },
-          {
-            "title" : "Enumerations",
-            "type" : "groupMarker"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Enumeration Cases",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/convolvemode\/full",
-                "title" : "case full",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/convolvemode\/same",
-                "title" : "case same",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/convolvemode\/valid",
-                "title" : "case valid",
-                "type" : "case"
-              },
-              {
-                "title" : "Default Implementations",
-                "type" : "groupMarker"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Operators",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/convolvemode\/!=(_:_:)",
-                    "title" : "static func != (Self, Self) -> Bool",
-                    "type" : "op"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/convolvemode\/equatable-implementations",
-                "title" : "Equatable Implementations",
-                "type" : "symbol"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/convolvemode",
-            "title" : "ConvolveMode",
-            "type" : "enum"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Enumeration Cases",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/bfloat16",
-                "title" : "case bfloat16",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/bool",
-                "title" : "case bool",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/complex64",
-                "title" : "case complex64",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/float16",
-                "title" : "case float16",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/float32",
-                "title" : "case float32",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/int16",
-                "title" : "case int16",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/int32",
-                "title" : "case int32",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/int64",
-                "title" : "case int64",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/int8",
-                "title" : "case int8",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/uint16",
-                "title" : "case uint16",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/uint32",
-                "title" : "case uint32",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/uint64",
-                "title" : "case uint64",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/uint8",
-                "title" : "case uint8",
-                "type" : "case"
-              },
-              {
-                "title" : "Instance Properties",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/cmlxdtype",
-                "title" : "var cmlxDtype: mlx_array_dtype",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/iscomplex",
-                "title" : "var isComplex: Bool",
-                "type" : "property"
-              },
-              {
-                "path" : "\/documentation\/mlx\/dtype\/isfloatingpoint",
-                "title" : "var isFloatingPoint: Bool",
-                "type" : "property"
-              },
-              {
-                "title" : "Default Implementations",
-                "type" : "groupMarker"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Operators",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/dtype\/!=(_:_:)",
-                    "title" : "static func != (Self, Self) -> Bool",
-                    "type" : "op"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/dtype\/equatable-implementations",
-                "title" : "Equatable Implementations",
-                "type" : "symbol"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/dtype",
-            "title" : "DType",
-            "type" : "enum"
-          },
-          {
-            "children" : [
-              {
-                "title" : "Enumeration Cases",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/devicetype\/cpu",
-                "title" : "case cpu",
-                "type" : "case"
-              },
-              {
-                "path" : "\/documentation\/mlx\/devicetype\/gpu",
-                "title" : "case gpu",
-                "type" : "case"
-              },
-              {
-                "title" : "Initializers",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/devicetype\/init(rawvalue:)",
-                "title" : "init?(rawValue: String)",
-                "type" : "init"
-              },
-              {
-                "title" : "Default Implementations",
-                "type" : "groupMarker"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Operators",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/devicetype\/!=(_:_:)",
-                    "title" : "static func != (Self, Self) -> Bool",
-                    "type" : "op"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/devicetype\/equatable-implementations",
-                "title" : "Equatable Implementations",
-                "type" : "symbol"
-              },
-              {
-                "children" : [
-                  {
-                    "title" : "Instance Properties",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/devicetype\/hashvalue",
-                    "title" : "var hashValue: Int",
-                    "type" : "property"
-                  },
-                  {
-                    "title" : "Instance Methods",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/devicetype\/hash(into:)",
-                    "title" : "func hash(into: inout Hasher)",
-                    "type" : "method"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/devicetype\/rawrepresentable-implementations",
-                "title" : "RawRepresentable Implementations",
-                "type" : "symbol"
-              }
-            ],
-            "path" : "\/documentation\/mlx\/devicetype",
-            "title" : "DeviceType",
-            "type" : "enum"
-          },
-          {
-            "children" : [
-              {
                 "title" : "Enumeration Cases",
                 "type" : "groupMarker"
               },
@@ -4554,8 +4058,462 @@
             "type" : "enum"
           },
           {
+            "children" : [
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/indenteddescription\/description",
+                "title" : "var description: String",
+                "type" : "property"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/indenteddescription\/description(indent:)",
+                "title" : "func description(indent: Int) -> String",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/indenteddescription",
+            "title" : "IndentedDescription",
+            "type" : "protocol"
+          },
+          {
+            "title" : "Streams and Devices",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/ctx",
+                "title" : "var ctx: OpaquePointer",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/description",
+                "title" : "var description: String",
+                "type" : "property"
+              },
+              {
+                "title" : "Type Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/cpu",
+                "title" : "static let cpu: StreamOrDevice",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/default",
+                "title" : "static var `default`: StreamOrDevice",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/gpu",
+                "title" : "static let gpu: StreamOrDevice",
+                "type" : "property"
+              },
+              {
+                "title" : "Type Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/device(_:)",
+                "title" : "static func device(Device) -> StreamOrDevice",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/streamordevice\/stream(_:)",
+                "title" : "static func stream(Stream) -> StreamOrDevice",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/streamordevice",
+            "title" : "StreamOrDevice",
+            "type" : "struct"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/device\/init()",
+                "title" : "init()",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlx\/device\/init(_:index:)",
+                "title" : "init(DeviceType, index: Int32)",
+                "type" : "init"
+              },
+              {
+                "title" : "Type Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/device\/cpu",
+                "title" : "static let cpu: Device",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlx\/device\/gpu",
+                "title" : "static let gpu: Device",
+                "type" : "property"
+              },
+              {
+                "title" : "Type Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/device\/defaultdevice()",
+                "title" : "static func defaultDevice() -> Device",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/device\/setdefault(device:)",
+                "title" : "static func setDefault(device: Device)",
+                "type" : "method"
+              },
+              {
+                "title" : "Default Implementations",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/device\/description",
+                    "title" : "var description: String",
+                    "type" : "property"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/device\/customstringconvertible-implementations",
+                "title" : "CustomStringConvertible Implementations",
+                "type" : "symbol"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/device",
+            "title" : "Device",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Enumeration Cases",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/devicetype\/cpu",
+                "title" : "case cpu",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/devicetype\/gpu",
+                "title" : "case gpu",
+                "type" : "case"
+              },
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/devicetype\/init(rawvalue:)",
+                "title" : "init?(rawValue: String)",
+                "type" : "init"
+              },
+              {
+                "title" : "Default Implementations",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Operators",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/devicetype\/!=(_:_:)",
+                    "title" : "static func != (Self, Self) -> Bool",
+                    "type" : "op"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/devicetype\/equatable-implementations",
+                "title" : "Equatable Implementations",
+                "type" : "symbol"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/devicetype\/hashvalue",
+                    "title" : "var hashValue: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/devicetype\/hash(into:)",
+                    "title" : "func hash(into: inout Hasher)",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/devicetype\/rawrepresentable-implementations",
+                "title" : "RawRepresentable Implementations",
+                "type" : "symbol"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/devicetype",
+            "title" : "DeviceType",
+            "type" : "enum"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/stream\/init()",
+                "title" : "init()",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlx\/stream\/init(index:_:)",
+                "title" : "init(index: Int32, Device)",
+                "type" : "init"
+              },
+              {
+                "title" : "Type Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/stream\/defaultstream(_:)",
+                "title" : "static func defaultStream(Device) -> Stream",
+                "type" : "method"
+              },
+              {
+                "title" : "Default Implementations",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/stream\/description",
+                    "title" : "var description: String",
+                    "type" : "property"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/stream\/customstringconvertible-implementations",
+                "title" : "CustomStringConvertible Implementations",
+                "type" : "symbol"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/stream",
+            "title" : "Stream",
+            "type" : "class"
+          },
+          {
+            "title" : "Structures",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/init(_:)-4gcmc",
+                "title" : "init((Int, Int))",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/init(_:)-78yd3",
+                "title" : "init([Int])",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/init(arrayliteral:)",
+                "title" : "init(arrayLiteral: Int...)",
+                "type" : "init"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/init(integerliteral:)",
+                "title" : "init(integerLiteral: Int)",
+                "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/first",
+                "title" : "var first: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/second",
+                "title" : "var second: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlx\/intorpair\/values",
+                "title" : "let values: (Int, Int)",
+                "type" : "property"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/intorpair",
+            "title" : "IntOrPair",
+            "type" : "struct"
+          },
+          {
+            "title" : "Functions",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlx\/simplify(_:)-7jbpa",
+            "title" : "func simplify(Any...)",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlx\/simplify(_:)-awbz",
+            "title" : "func simplify([Any])",
+            "type" : "func"
+          },
+          {
+            "title" : "Enumerations",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Enumeration Cases",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/convolvemode\/full",
+                "title" : "case full",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/convolvemode\/same",
+                "title" : "case same",
+                "type" : "case"
+              },
+              {
+                "path" : "\/documentation\/mlx\/convolvemode\/valid",
+                "title" : "case valid",
+                "type" : "case"
+              },
+              {
+                "title" : "Default Implementations",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Operators",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/convolvemode\/!=(_:_:)",
+                    "title" : "static func != (Self, Self) -> Bool",
+                    "type" : "op"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/convolvemode\/equatable-implementations",
+                "title" : "Equatable Implementations",
+                "type" : "symbol"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/convolvemode",
+            "title" : "ConvolveMode",
+            "type" : "enum"
+          },
+          {
             "title" : "Extended Modules",
             "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Extended Structures",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Default Implementations",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "children" : [
+                      {
+                        "title" : "Type Properties",
+                        "type" : "groupMarker"
+                      },
+                      {
+                        "path" : "\/documentation\/mlx\/complexmodule\/complex\/dtype",
+                        "title" : "static var dtype: DType",
+                        "type" : "property"
+                      }
+                    ],
+                    "path" : "\/documentation\/mlx\/complexmodule\/complex\/hasdtype-implementations",
+                    "title" : "HasDType Implementations",
+                    "type" : "symbol"
+                  },
+                  {
+                    "children" : [
+                      {
+                        "title" : "Instance Methods",
+                        "type" : "groupMarker"
+                      },
+                      {
+                        "path" : "\/documentation\/mlx\/complexmodule\/complex\/asmlxarray(dtype:)-2x838",
+                        "title" : "func asMLXArray(dtype: DType?) -> MLXArray",
+                        "type" : "method"
+                      },
+                      {
+                        "path" : "\/documentation\/mlx\/complexmodule\/complex\/asmlxarray(dtype:)-9j3cr",
+                        "title" : "func asMLXArray(dtype: DType?) -> MLXArray",
+                        "type" : "method"
+                      }
+                    ],
+                    "path" : "\/documentation\/mlx\/complexmodule\/complex\/scalarorarray-implementations",
+                    "title" : "ScalarOrArray Implementations",
+                    "type" : "symbol"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/complexmodule\/complex",
+                "title" : "Complex",
+                "type" : "extension"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/complexmodule",
+            "title" : "ComplexModule",
+            "type" : "extension"
           },
           {
             "children" : [

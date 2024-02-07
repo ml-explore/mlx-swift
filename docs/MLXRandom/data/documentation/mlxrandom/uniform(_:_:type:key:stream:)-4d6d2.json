@@ -1,7 +1,15 @@
 {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (specialization).",
       "type" : "text"
     }
   ],
@@ -413,7 +421,15 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/uniform(_:_:type:key:stream:)-4d6d2": {
   "abstract" : [
     {
-      "text" : "Generate uniformly distributed random numbers.",
+      "text" : "Generate uniformly distributed random numbers with a ",
+      "type" : "text"
+    },
+    {
+      "code" : "RangeExpression<Float>",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " (specialization).",
       "type" : "text"
     }
   ],

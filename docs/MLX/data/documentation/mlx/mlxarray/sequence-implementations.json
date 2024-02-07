@@ -1705,18 +1705,30 @@
       "text" : "() -> "
     },
     {
+      "kind" : "keyword",
+      "text" : "some"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:St",
+      "text" : "IteratorProtocol"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:3MLX8MLXArrayC",
       "text" : "MLXArray"
     },
     {
       "kind" : "text",
-      "text" : "."
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC0B8IteratorV",
-      "text" : "MLXArrayIterator"
+      "text" : ">\n"
     }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/makeIterator()",

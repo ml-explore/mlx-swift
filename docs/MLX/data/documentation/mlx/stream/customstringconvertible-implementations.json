@@ -76,7 +76,10 @@
 },
 "doc://mlx.swift.mlx/documentation/MLX/Stream": {
   "abstract" : [
-
+    {
+      "text" : "A stream of evaluation attached to a particular device.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

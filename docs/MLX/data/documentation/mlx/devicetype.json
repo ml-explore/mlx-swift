@@ -140,6 +140,17 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/StreamOrDevice",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream"
+      ],
+      "title" : "Streams and Devices"
+    }
+  ],
   "topicSections" : [
     {
       "identifiers" : [
@@ -391,6 +402,40 @@
   "title" : "init(rawValue:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/devicetype\/init(rawvalue:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Stream": {
+  "abstract" : [
+    {
+      "text" : "A stream of evaluation attached to a particular device.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Stream"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Stream"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Stream",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/stream"
 },
 "doc://mlx.swift.mlx/documentation/MLX/StreamOrDevice": {
   "abstract" : [

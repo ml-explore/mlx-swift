@@ -104,23 +104,6 @@
   "sections" : [
 
   ],
-  "seeAlsoSections" : [
-    {
-      "generated" : true,
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting"
-      ],
-      "title" : "MLXArray"
-    }
-  ],
   "topicSections" : [
     {
       "identifiers" : [
@@ -2079,20 +2062,6 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/any(_:axes:keepdims:stream:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
-  "abstract" : [
-    {
-      "text" : "MLX supports a wide range of binary arithmetic operators.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Arithmetic",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/arithmetic"
-},
 "doc://mlx.swift.mlx/documentation/MLX/arrayEqual(_:_:equalNAN:stream:)": {
   "abstract" : [
     {
@@ -2188,34 +2157,6 @@
   "title" : "arrayEqual(_:_:equalNAN:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/arrayequal(_:_:equalnan:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/convolution": {
-  "abstract" : [
-    {
-      "text" : "Convolution operations.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-  "kind" : "article",
-  "role" : "article",
-  "title" : "Convolution",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/convolution"
-},
-"doc://mlx.swift.mlx/documentation/MLX/cumulative": {
-  "abstract" : [
-    {
-      "text" : "Operations that produce a cumulative result.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Cumulative Operations",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/cumulative"
 },
 "doc://mlx.swift.mlx/documentation/MLX/equal(_:_:stream:)": {
   "abstract" : [
@@ -2474,48 +2415,6 @@
   "title" : "greaterEqual(_:_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/greaterequal(_:_:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indexes": {
-  "abstract" : [
-    {
-      "text" : "Functions to produce and consume array indexes.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/indexing": {
-  "abstract" : [
-    {
-      "text" : "Array subscripts.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/indexing",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Indexing",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/indexing"
-},
-"doc://mlx.swift.mlx/documentation/MLX/initialization": {
-  "abstract" : [
-    {
-      "text" : "Creating MLXArrays.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/initialization",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Initialization",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/initialization"
 },
 "doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
   "abstract" : [
@@ -2859,48 +2758,6 @@
   "title" : "notEqual(_:_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/notequal(_:_:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/reduction": {
-  "abstract" : [
-    {
-      "text" : "Reduction or aggregation functions.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/reduction",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Reduction Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/reduction"
-},
-"doc://mlx.swift.mlx/documentation/MLX/shapes": {
-  "abstract" : [
-    {
-      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Shapes",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/shapes"
-},
-"doc://mlx.swift.mlx/documentation/MLX/sorting": {
-  "abstract" : [
-    {
-      "text" : "Sorting and partitioning values and indices.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/sorting",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Sorting",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/sorting"
 },
 "doc://mlx.swift.mlx/documentation/MLX/where(_:_:_:stream:)": {
   "abstract" : [

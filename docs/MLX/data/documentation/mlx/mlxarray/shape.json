@@ -9,7 +9,8 @@
     "paths" : [
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes"
       ]
     ]
   },
@@ -139,6 +140,15 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/dim(_:)"
+      ],
+      "title" : "Reading Shapes"
+    }
+  ],
   "variants" : [
     {
       "paths" : [
@@ -217,6 +227,52 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray"
 },
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/dim(_:)": {
+  "abstract" : [
+    {
+      "text" : "Read a dimension of the array.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dim"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/dim(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dim(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/dim(_:)"
+},
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/shape": {
   "abstract" : [
     {
@@ -257,6 +313,20 @@
   "title" : "shape",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/shape"
+},
+"doc://mlx.swift.mlx/documentation/MLX/shapes": {
+  "abstract" : [
+    {
+      "text" : "Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/shapes",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Shapes",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/shapes"
 }
 }
 }

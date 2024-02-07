@@ -1,4 +1,10 @@
 {
+  "abstract" : [
+    {
+      "text" : "Initializes the module.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -31,7 +37,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Module.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L80"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Module.swift#L112"
     },
     "role" : "symbol",
     "roleHeading" : "Initializer",
@@ -87,7 +93,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -132,7 +141,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/init()": {
   "abstract" : [
-
+    {
+      "text" : "Initializes the module.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

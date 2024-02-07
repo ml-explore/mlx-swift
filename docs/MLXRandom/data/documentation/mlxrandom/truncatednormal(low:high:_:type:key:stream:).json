@@ -1,7 +1,23 @@
 {
   "abstract" : [
     {
-      "text" : "Generate values from a truncated normal distribution.",
+      "text" : "Generate values from a truncated normal distribution between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -150,7 +166,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L306"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L352"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -468,7 +484,23 @@
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(low:high:_:type:key:stream:)": {
   "abstract" : [
     {
-      "text" : "Generate values from a truncated normal distribution.",
+      "text" : "Generate values from a truncated normal distribution between ",
+      "type" : "text"
+    },
+    {
+      "code" : "low",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " and ",
+      "type" : "text"
+    },
+    {
+      "code" : "high",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],

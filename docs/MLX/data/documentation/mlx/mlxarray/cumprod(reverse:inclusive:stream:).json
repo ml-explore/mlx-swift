@@ -9,10 +9,6 @@
     "paths" : [
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray"
-      ],
-      [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative"
       ]
@@ -107,7 +103,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray+Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1247"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L1258"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -173,7 +169,7 @@
             },
             {
               "kind" : "text",
-              "text" : " = false, "
+              "text" : " = true, "
             },
             {
               "kind" : "externalParam",
@@ -299,7 +295,7 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumsum(axis:reverse:inclusive:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/cumsum(reverse:inclusive:stream:)"
       ],
-      "title" : "Cumulative Methods"
+      "title" : "MLXArray Methods"
     }
   ],
   "variants" : [

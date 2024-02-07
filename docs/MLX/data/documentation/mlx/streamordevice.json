@@ -219,6 +219,17 @@
   "sections" : [
 
   ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Device",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Stream"
+      ],
+      "title" : "Streams and Devices"
+    }
+  ],
   "topicSections" : [
     {
       "identifiers" : [
@@ -397,9 +408,46 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/device\/gpu"
 },
+"doc://mlx.swift.mlx/documentation/MLX/DeviceType": {
+  "abstract" : [
+    {
+      "text" : "Type of device.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "DeviceType"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/DeviceType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "DeviceType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "DeviceType",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/devicetype"
+},
 "doc://mlx.swift.mlx/documentation/MLX/Stream": {
   "abstract" : [
-
+    {
+      "text" : "A stream of evaluation attached to a particular device.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

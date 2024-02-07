@@ -10,6 +10,11 @@
       [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/free-functions"
+      ],
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution"
       ]
     ]
   },
@@ -1064,7 +1069,7 @@
   ],
   "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
   "kind" : "article",
-  "role" : "article",
+  "role" : "collectionGroup",
   "title" : "Convolution",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/convolution"

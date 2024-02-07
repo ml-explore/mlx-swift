@@ -1,4 +1,15 @@
 {
+  "abstract" : [
+    {
+      "text" : "Creates an attention mask for use with ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)",
+      "isActive" : true,
+      "type" : "reference"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -78,7 +89,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Transformer.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L69"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/Transformer.swift#L105"
     },
     "role" : "symbol",
     "roleHeading" : "Type Method",
@@ -171,6 +182,39 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "kind" : "parameters",
+      "parameters" : [
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "number of dimensions",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "n"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "data type of the mask",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "dtype"
+        }
+      ]
     }
   ],
   "schemaVersion" : {
@@ -197,7 +241,10 @@
 "references": {
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
   "abstract" : [
-
+    {
+      "text" : "Neural Networks support for MLX",
+      "type" : "text"
+    }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN",
   "kind" : "symbol",
@@ -208,7 +255,10 @@
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention": {
   "abstract" : [
-
+    {
+      "text" : "Implements the scaled dot product attention with multiple heads.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -237,9 +287,111 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/multiheadattention"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/createAdditiveCausalMask(_:dtype:)": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/callAsFunction(_:keys:values:mask:)": {
   "abstract" : [
 
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "callAsFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keys"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "values"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "mask"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "callAsFunction(_:keys:values:mask:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/callasfunction(_:keys:values:mask:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/createAdditiveCausalMask(_:dtype:)": {
+  "abstract" : [
+    {
+      "text" : "Creates an attention mask for use with ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)",
+      "isActive" : true,
+      "type" : "reference"
+    }
   ],
   "fragments" : [
     {

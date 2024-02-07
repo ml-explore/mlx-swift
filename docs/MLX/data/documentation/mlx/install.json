@@ -149,7 +149,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "and add the libraries as dependencies:",
+              "text" : "and add the libraries (as needed) as dependencies:",
               "type" : "text"
             }
           ],
@@ -159,7 +159,8 @@
           "code" : [
             "dependencies: [.product(name: \"MLX\", package: \"mlx-swift\"),",
             "               .product(name: \"MLXRandom\", package: \"mlx-swift\"),",
-            "               .product(name: \"MLXNN\", package: \"mlx-swift\")]"
+            "               .product(name: \"MLXNN\", package: \"mlx-swift\"),",
+            "               .product(name: \"MLXOptimizers\", package: \"mlx-swift\")]"
           ],
           "syntax" : null,
           "type" : "codeListing"
