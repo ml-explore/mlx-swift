@@ -38,6 +38,11 @@ file(GLOB MLXOptimizers-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXOptimizers/*.swi
 add_library(MLXOptimizers STATIC ${MLXOptimizers-src})
 target_link_libraries(MLXOptimizers PRIVATE MLX MLXNN)
 
+# MLXFFT package
+file(GLOB MLXFFT-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXFFT/*.swift)
+add_library(MLXFFT STATIC ${MLXFFT-src})
+target_link_libraries(MLXFFT PRIVATE MLX)
+
 # Examples
 add_executable(example1
                ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)

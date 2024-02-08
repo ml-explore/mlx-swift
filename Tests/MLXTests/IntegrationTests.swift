@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXFFT
 import MLXNN
 import MLXRandom
 import XCTest

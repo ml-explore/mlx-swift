@@ -1,6 +1,6 @@
 # MLX Swift
 
-[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**MLXOptimizers**](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/) | [**Examples**](#examples) 
+[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**MLXOptimizers**](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/) | [**MLXFFT**](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/) | [**Examples**](#examples) 
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
@@ -39,7 +39,8 @@ and add the libraries as dependencies:
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXRandom", package: "mlx-swift"),
                .product(name: "MLXNN", package: "mlx-swift"),
-               .product(name: "MLXOptimziers", package: "mlx-swift")]
+               .product(name: "MLXOptimziers", package: "mlx-swift"),
+               .product(name: "MLXFFT", package: "mlx-swift")]
 ```
 
 > [!Note] 

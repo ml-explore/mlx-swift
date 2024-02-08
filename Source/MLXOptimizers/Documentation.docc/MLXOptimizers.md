@@ -34,6 +34,7 @@ for _ in 0 ..< epochs {
 - [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
 - [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
 - [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
+- [MLXFFT](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 

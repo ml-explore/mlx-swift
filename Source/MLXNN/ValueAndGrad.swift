@@ -115,7 +115,6 @@ public func valueAndGrad<Model: Module>(
     return wrapped
 }
 
-
 /// Variant of `valueAndGrad(model:_:)` that can be used to pass an arbitrary parameters to a loss
 /// function.
 ///
@@ -147,7 +146,7 @@ public func valueAndGrad<Model: Module, Arguments>(
 ) -> (Model, Arguments) -> ([MLXArray], ModuleParameters) {
 
     func wrapped(model: Model, arguments: Arguments) -> ([MLXArray], ModuleParameters) {
-        
+
         func inner(parameters: ModuleParameters, _ extra: ()) -> [MLXArray] {
             model.update(parameters: parameters)
             return f(model, arguments)
@@ -161,4 +160,3 @@ public func valueAndGrad<Model: Module, Arguments>(
 
     return wrapped
 }
-

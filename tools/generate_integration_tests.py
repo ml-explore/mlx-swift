@@ -509,6 +509,7 @@ import MLX
 import MLXRandom
 import MLXNN
 @testable import MLXOptimizers
+import MLXFFT
 import XCTest
 
 /// Integration tests comparing results vs known results from python

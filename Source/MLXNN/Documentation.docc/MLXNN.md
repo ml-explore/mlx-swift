@@ -46,6 +46,7 @@ See <doc:training>
 - [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
 - [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
 - [MLXOptimizers](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/)
+- [MLXFFT](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 

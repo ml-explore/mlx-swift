@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import MLX
 
 /// One dimensional discrete Fourier Transform.
 ///

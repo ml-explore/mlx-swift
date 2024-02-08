@@ -25,7 +25,8 @@ and add the libraries (as needed) as dependencies:
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXRandom", package: "mlx-swift"),
                .product(name: "MLXNN", package: "mlx-swift"),
-               .product(name: "MLXOptimizers", package: "mlx-swift")]
+               .product(name: "MLXOptimziers", package: "mlx-swift"),
+               .product(name: "MLXFFT", package: "mlx-swift")]
 ```
 
 > Note that SwiftPM cannot build the metal shaders so the ultimate build has to be done via
