@@ -90,7 +90,7 @@ public func elu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``Relu6``
+/// - ``ReLU6``
 public func relu6(_ x: MLXArray) -> MLXArray {
     minimum(maximum(x, 0), 6)
 }
