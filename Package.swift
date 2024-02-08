@@ -148,12 +148,6 @@ let package = Package(
             path: "Source/Examples",
             sources: ["Tutorial.swift"]
         ),
-        .executableTarget(
-            name: "LlamaMLXBench",
-            dependencies: ["MLX", "MLXRandom", "MLXNN"],
-            path: "Source/Examples",
-            sources: ["LlamaMLXBench.swift"]
-        ),
 
         // ------
         // Internal Tools
