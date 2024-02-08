@@ -112,7 +112,6 @@ These can be used with ``Sequential``.
 - ``selu(_:)``
 - ``silu(_:)``
 - ``sigmoid(_:)``
-- ``softMax(_:)``
 - ``softPlus(_:)``
 - ``softSign(_:)``
 - ``step(_:threshold:)``
@@ -176,5 +175,5 @@ These can be used with ``Sequential``.
 ### Value and Grad
 
 - ``valueAndGrad(model:_:)-12a2c``
-- ``valueAndGrad(model:_:)-1w6x8``
 - ``valueAndGrad(model:_:)-548r7``
+- ``valueAndGrad(model:_:)-45dg5``

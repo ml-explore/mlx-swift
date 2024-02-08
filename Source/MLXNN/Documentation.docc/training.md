@@ -6,7 +6,7 @@ The model traing loop in `MLX` consists of:
 
 - defining a model
 - defining a loss function that measures the distance between _predicted_ and _expected_ values
-- using the `valueAndGrad()` function to create a new function to compute the gradient
+- using the ``valueAndGrad(model:_:)-12a2c`` function to create a new function to compute the gradient
 - presenting training data and expected values to the model, measuring the loss and computing the gradient
 - using an optimizer to apply the gradient to the model parameters
     - see more about optimizers in [MLXOptimizers](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/)
