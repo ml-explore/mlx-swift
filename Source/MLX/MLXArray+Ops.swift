@@ -339,9 +339,9 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:logical>
-    /// - ``allClose(_:rtol:atol:stream:)``
+    /// - ``allClose(_:rtol:atol:equalNaN:stream:)``
     /// - ``arrayEqual(_:equalNAN:stream:)``
-    /// - ``allClose(_:_:rtol:atol:stream:)``
+    /// - ``allClose(_:_:rtol:atol:equalNaN:stream:)``
     public static func .== (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
@@ -1126,7 +1126,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:logical>
-    /// - ``allClose(_:rtol:atol:stream:)``
+    /// - ``allClose(_:rtol:atol:equalNaN:stream:)``
     /// - ``MLXArray/==(_:_:)`
     /// - ``arrayEqual(_:_:equalNAN:stream:)``
     public func arrayEqual<T: ScalarOrArray>(

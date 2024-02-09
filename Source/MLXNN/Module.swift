@@ -795,8 +795,8 @@ open class Module {
     ///   - strict: if `true` validate that the passed keys exist
     ///
     /// ### See Also
-    /// - ``freeze(recursive:keys:)``
-    /// - ``unfreeze(recursive:keys:strict:)``
+    /// - ``Module/freeze(recursive:keys:)``
+    /// - ``Module/unfreeze(recursive:keys:strict:)``
     public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws
     {
         let visitor = freezeVisitor(keys: keys, strict: strict) {

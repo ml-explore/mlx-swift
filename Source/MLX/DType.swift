@@ -164,7 +164,7 @@ public protocol ScalarOrArray {
     /// let r = x + 2.5
     /// ```
     ///
-    /// See also ``toArrays(_:_:)``
+    /// See also `toArrays(_:_:)` (internal).
     func asMLXArray(dtype: DType?) -> MLXArray
 }
 

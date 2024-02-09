@@ -41,13 +41,13 @@ if (a < b).all().item() {
 
 - ``MLXArray/all(axes:keepDims:stream:)``
 - ``MLXArray/any(axes:keepDims:stream:)``
-- ``MLXArray/allClose(_:rtol:atol:stream:)``
+- ``MLXArray/allClose(_:rtol:atol:equalNaN:stream:)``
 - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 
 ### Logical Free Functions
 
 - ``all(_:axes:keepDims:stream:)``
-- ``allClose(_:_:rtol:atol:stream:)``
+- ``allClose(_:_:rtol:atol:equalNaN:stream:)``
 - ``any(_:axes:keepDims:stream:)``
 - ``arrayEqual(_:_:equalNAN:stream:)``
 - ``equal(_:_:stream:)``

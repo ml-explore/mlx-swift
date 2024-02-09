@@ -125,7 +125,7 @@ operations as methods for convenience.
 - ``all(_:axes:keepDims:stream:)``
 - ``all(_:keepDims:stream:)``
 - ``all(_:axis:keepDims:stream:)``
-- ``allClose(_:_:rtol:atol:stream:)``
+- ``allClose(_:_:rtol:atol:equalNaN:stream:)``
 - ``any(_:axes:keepDims:stream:)``
 - ``any(_:keepDims:stream:)``
 - ``any(_:axis:keepDims:stream:)``
@@ -209,18 +209,3 @@ operations as methods for convenience.
 - ``stopGradient(_:stream:)``
 - ``jvp(_:primals:tangents:)``
 - ``vjp(_:primals:cotangents:)``
-
-### FFT
-
-- ``fft(_:n:axis:stream:)``
-- ``fft2(_:s:axes:stream:)``
-- ``fftn(_:s:axes:stream:)``
-- ``ifft(_:n:axis:stream:)``
-- ``ifft2(_:s:axes:stream:)``
-- ``ifftn(_:s:axes:stream:)``
-- ``irfft(_:n:axis:stream:)``
-- ``irfft2(_:s:axes:stream:)``
-- ``irfftn(_:s:axes:stream:)``
-- ``rfft(_:n:axis:stream:)``
-- ``rfft2(_:s:axes:stream:)``
-- ``rfftn(_:s:axes:stream:)``

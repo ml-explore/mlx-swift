@@ -28,7 +28,7 @@ public class MultiHeadAttention: Module {
     ///
     /// ``MultiHeadAttention`` also takes an optional additive attention mask that
     /// should be broadcastable with `(batch, numHeads, # queries, # keys)`. The
-    /// mask should have ``-inf`` or very large negative numbers at the positions
+    /// mask should have `-inf` or very large negative numbers at the positions
     /// that should *not* be attended to.
     ///
     /// - Parameters:

@@ -94,10 +94,10 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - arrays do not need to be the same length -- the receiver's length is matched
     /// - dictionaries do not need to have the same keys -- the receivers keys are matched
     ///
-    /// This is typically called via ``NestedDictionary/mapValues(_:transform:)``.
+    /// This is typically called via ``NestedDictionary/mapValues(_:transform:)-54sj2``.
     ///
     /// ### See Also
-    /// - ``NestedDictionary/mapValues(_:transform:))``
+    /// - ``NestedDictionary/mapValues(_:transform:)-54sj2``
     /// - ``mapValues(_:_:_:)``
     public func mapValues<E2, R1, R2>(
         _ item: NestedItem<Key, E2>, _ transform: (Element, E2?) throws -> (R1, R2?)
@@ -249,10 +249,10 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - arrays do not need to be the same length -- the receiver's length is matched
     /// - dictionaries do not need to have the same keys -- the receivers keys are matched
     ///
-    /// This is typically called via ``NestedDictionary/mapValues(_:transform:)``.
+    /// This is typically called via ``NestedDictionary/mapValues(_:_:transform:)-8yhzk``.
     ///
     /// ### See Also
-    /// - ``NestedDictionary/mapValues(_:transform:))``
+    /// - ``NestedDictionary/mapValues(_:_:transform:)-8yhzk``
     /// - ``mapValues(_:_:_:)``
     public func mapValues<E2, E3, R1, R2, R3>(
         _ item1: NestedItem<Key, E2>, _ item2: NestedItem<Key, E3>,
@@ -650,7 +650,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     ///
     /// ### See Also
     /// - ``NestedItem/mapValues(_:_:)``
-    /// - ``mapValues(_:dictionary2:transform:)``
+    /// - ``mapValues(_:_:transform:)-52e9l``
     public func mapValues<E2, R1, R2>(
         _ dictionary1: NestedDictionary<Key, E2>, transform: (Element, E2?) throws -> (R1, R2?)
     ) rethrows
@@ -702,7 +702,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     ///
     /// ### See Also
     /// - ``NestedItem/mapValues(_:_:_:)``
-    /// - ``mapValues(_:transform:)``
+    /// - ``mapValues(_:transform:)-4ctis``
     public func mapValues<E2, E3, R1, R2, R3>(
         _ dictionary1: NestedDictionary<Key, E2>, _ dictionary2: NestedDictionary<Key, E3>,
         transform: (Element, E2?, E3?) throws -> (R1, R2?, R3?)
@@ -738,7 +738,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     ///
     /// ### See Also
     /// - ``NestedItem/mapValues(_:_:_:)``
-    /// - ``mapValues(_:transform:)``
+    /// - ``mapValues(_:transform:)-4ctis``
     public func mapValues<E2, E3, R1, R2>(
         _ dictionary1: NestedDictionary<Key, E2>, _ dictionary2: NestedDictionary<Key, E3>,
         transform: (Element, E2?, E3?) -> (R1, R2?)

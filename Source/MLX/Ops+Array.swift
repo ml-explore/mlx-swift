@@ -317,7 +317,7 @@ public func argMin(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 ///
 /// ### See Also
 /// - <doc:logical>
-/// - ``allClose(_:_:rtol:atol:stream:)``
+/// - ``allClose(_:_:rtol:atol:equalNaN:stream:)``
 /// - ``MLXArray/.==(_:_:)-56m0a``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func arrayEqual<T: ScalarOrArray>(

@@ -15,7 +15,7 @@ import MLX
 /// - Returns: DFT of the input along the given axis
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func fft(_ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -34,7 +34,7 @@ public func fft(_ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: Stream
 /// - Returns: inverse DFT of the input along the given axis
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func ifft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -52,7 +52,7 @@ public func ifft(
 /// - Returns: DFT of the input along the given axes
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func fft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -70,7 +70,7 @@ public func fft2(
 /// - Returns: inverse DFT of the input along the given axes
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func ifft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -88,7 +88,7 @@ public func ifft2(
 /// - Returns: DFT of the input along the given axes
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func fftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -125,7 +125,7 @@ public func fftn(
 /// - Returns: inverse DFT of the input along the given axes
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func ifftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -165,7 +165,7 @@ public func ifftn(
 /// - Returns: DFT of the input along the given axis.  The output data type will be complex.
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func rfft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -187,7 +187,7 @@ public func rfft(
 /// - Returns: inverse of ``rfft(_:n:axis:stream:)``
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func irfft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -210,7 +210,7 @@ public func irfft(
 /// - Returns: DFT of the input along the given axes.  The output data type will be complex.
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func rfft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -233,7 +233,7 @@ public func rfft2(
 /// - Returns: inverse of ``rfft2(_:s:axes:stream:)``
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func irfft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -255,7 +255,7 @@ public func irfft2(
 /// - Returns: DFT of the input along the given axes.  The output data type will be complex.
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func rfftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -297,7 +297,7 @@ public func rfftn(
 /// - Returns: inverse of ``rfftn(_:s:axes:stream:)``
 ///
 /// ### See Also
-/// - <doc:fft>
+/// - <doc:MLXFFT>
 public func irfftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {

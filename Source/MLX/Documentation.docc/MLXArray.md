@@ -69,7 +69,6 @@ Will print a random value from outside `a`.
 - <doc:arithmetic>
 - <doc:convolution>
 - <doc:cumulative>
-- <doc:fft>
 
 ### Indexing
 
