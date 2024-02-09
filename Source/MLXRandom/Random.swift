@@ -137,11 +137,21 @@ public func uniform(
 /// // generate an array of Float with normal distribution in shape [10, 5]
 /// let array = MLXRandom.normal([10, 5], key: key)
 /// ```
+///
+/// - Parameters:
+///   - shape: shape of the output
+///   - type: type of the output
+///   - loc: mean of the distribution
+///   - scale: standard deviation of the distribution
+///   - key: PRNG key
 public func normal<T>(
-    _ shape: [Int] = [], type: T.Type = Float.self, key: MLXArray? = nil,
+    _ shape: [Int] = [], type: T.Type = Float.self, loc: Float = 0, scale: Float = 1,
+    key: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
-    MLXArray(mlx_random_normal(shape.asInt32, shape.count, T.dtype.cmlxDtype, key?.ctx, stream.ctx))
+    MLXArray(
+        mlx_random_normal(
+            shape.asInt32, shape.count, T.dtype.cmlxDtype, loc, scale, key?.ctx, stream.ctx))
 }
 
 /// Generate normally distributed random numbers.
@@ -158,11 +168,21 @@ public func normal<T>(
 /// // generate an array of Float with normal distribution in shape [10, 5]
 /// let array = MLXRandom.normal([10, 5], key: key)
 /// ```
+///
+/// - Parameters:
+///   - shape: shape of the output
+///   - dtype: type of the output
+///   - loc: mean of the distribution
+///   - scale: standard deviation of the distribution
+///   - key: PRNG key
 public func normal(
-    _ shape: [Int] = [], dtype: DType = .float32, key: MLXArray? = nil,
+    _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
+    key: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_random_normal(shape.asInt32, shape.count, dtype.cmlxDtype, key?.ctx, stream.ctx))
+    MLXArray(
+        mlx_random_normal(
+            shape.asInt32, shape.count, dtype.cmlxDtype, loc, scale, key?.ctx, stream.ctx))
 }
 
 /// Generate random integers from the given interval using a `RangeExpression<Int>`.

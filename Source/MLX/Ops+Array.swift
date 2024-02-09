@@ -115,6 +115,7 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 ///     - other: array to compare to
 ///     - rtol: relative tolerance (see discussion)
 ///     - atol: absolute tolerance (see discussion)
+///     - equalNaN: if `true` treat NaN values as equal to each other
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -122,11 +123,11 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// - ``arrayEqual(_:_:equalNAN:stream:)``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func allClose<T: ScalarOrArray>(
-    _ array: MLXArray, _ other: T, rtol: Double = 1e-5, atol: Double = 1e-8,
+    _ array: MLXArray, _ other: T, rtol: Double = 1e-5, atol: Double = 1e-8, equalNaN: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     let other = other.asMLXArray(dtype: array.dtype)
-    return MLXArray(mlx_allclose(array.ctx, other.ctx, rtol, atol, stream.ctx))
+    return MLXArray(mlx_allclose(array.ctx, other.ctx, rtol, atol, equalNaN, stream.ctx))
 }
 
 /// An `or` reduction over the given axes.

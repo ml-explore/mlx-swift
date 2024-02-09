@@ -125,3 +125,37 @@ pre-commit run --all-files
 ```
 
 14. Make a PR
+
+## Updating `mlx` and `mlx-c`
+
+SwiftPM is able to fetch repositories from github and build them _if_ they have
+a `Package.swift` at the top level.  It is unable to do this for repositories
+that do not have a `Package.swift`.  For this reason `mlx-swift` uses
+git submodules to include the `mlx` and `mlx-c` repositories.
+
+When a new version of `mlx` and its equivalent `mlx-c` are to be used, there is a
+process to go through to update `mlx-swift`.
+
+Additionally, SwiftPM supports plugins that can produce derived source for
+building, but this can only produce new swift source.  It is possible to use
+plugins to generate new source `.cpp` files and even compile them, but at
+best the `.o` is copied into the output as a resource, not linked.
+This is important because `mlx` has some build-time source generation
+(e.g. `make_compiled_preamble.sh`).  This is handled in `mlx-swift` by
+pre-generating the source when updating the `mlx` version.
+
+1. Update the `mlx` and `mlx-c` submodules via `git pull` or `git checkout ...`
+    - `Source/Cmlx/mlx`
+    - `Source/Cmlx/mlx-c`
+    
+2. Add any vendored dependencies as needed in `/vendor`
+
+3. Regenerate any build-time source: `./tools/update-mlx.sh`
+
+4. Fix any build issues
+
+5. Wrap any new API with swift, update documentation, etc.
+
+6. Run `pre-commit run --all-files`
+
+7. Make a PR

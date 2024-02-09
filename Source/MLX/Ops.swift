@@ -801,7 +801,7 @@ public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLX
     }
 }
 
-/// Load dictionary of ``MLXArray`` from a `gguf` or `safetensors` file.
+/// Load dictionary of ``MLXArray`` from a `safetensors` file.
 ///
 /// - Parameters:
 ///     - url: URL of file to load
@@ -818,12 +818,6 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .default) throws -> [S
     defer { mlx_free(filename) }
 
     switch url.pathExtension {
-    case "gguf":
-        let mlx_map = mlx_load_gguf(filename, stream.ctx)!
-        defer { mlx_free(mlx_map) }
-
-        return mlx_map_values(mlx_map)
-
     case "safetensors":
         let mlx_map = mlx_load_safetensors(filename, stream.ctx)!
         defer { mlx_free(mlx_map) }
@@ -1190,7 +1184,7 @@ public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) t
     }
 }
 
-/// Save dictionary of arrays in `gguf` or `safetensors` format.
+/// Save dictionary of arrays in `safetensors` format.
 ///
 /// - Parameters:
 ///     - a: array to save
@@ -1209,12 +1203,6 @@ public func save(arrays: [String: MLXArray], url: URL, stream: StreamOrDevice = 
     defer { mlx_free(mlx_map) }
 
     switch url.pathExtension {
-    case "gguf":
-        let filename = mlx_string_new(path.cString(using: .utf8))!
-        defer { mlx_free(filename) }
-
-        mlx_save_gguf(filename, mlx_map)
-
     case "safetensors":
         if let fp = fopen(path, "r") {
             defer { fclose(fp) }

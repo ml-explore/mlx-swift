@@ -14,6 +14,7 @@ fi
 if [[ ! -d docs ]]
 then
     echo "Please run from the root of the repository, e.g. ./tools/build-documentation.sh"
+    exit 1
 fi
 
 export DOCC_JSON_PRETTYPRINT=YES
