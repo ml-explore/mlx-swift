@@ -175,7 +175,7 @@ class TransformTests: XCTestCase {
             return [x]
         }
 
-        let compiled = compile(state: [state], testState(_:))
+        let compiled = compile(inputs: [state], testState(_:))
 
         // compiled function uses the state
         let r1 = compiled([MLXArray(5)])
@@ -201,7 +201,7 @@ class TransformTests: XCTestCase {
             return [abs(x[0])]
         }
 
-        let compiled = compile(state: [state], testState(_:))
+        let compiled = compile(inputs: [state], outputs: [state], testState(_:))
 
         // input state is only on array but output state is 2
         let r1 = compiled([MLXArray(3)])
@@ -229,7 +229,7 @@ class TransformTests: XCTestCase {
         XCTAssertTrue(allClose(c1a, c1b).item())
 
         // now cature the random state and the random numbers should change per call
-        let c2 = compile(state: [MLXRandom.globalState], f)
+        let c2 = compile(inputs: [MLXRandom.globalState], outputs: [MLXRandom.globalState], f)
 
         let c2a = c2(bias)
         let c2b = c2(bias)

@@ -12,11 +12,13 @@ class CompiledFunction {
     let f: ([MLXArray]) -> [MLXArray]
 
     /// any state to be observed
-    let state: [any Updatable]
+    let inputs: [any Updatable]
+    let outputs: [any Updatable]
 
-    init(state: [any Updatable], _ f: @escaping ([MLXArray]) -> [MLXArray]) {
+    init(inputs: [any Updatable], outputs: [any Updatable], _ f: @escaping ([MLXArray]) -> [MLXArray]) {
         self.f = f
-        self.state = state
+        self.inputs = inputs
+        self.outputs = outputs
         self.id = Int(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
 
@@ -26,7 +28,7 @@ class CompiledFunction {
     }
 
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
-        let stateInputs = state.flatMap { $0.innerState() }
+        let stateInputs = inputs.flatMap { $0.innerState() }
         let argumentsCount = arguments.count
 
         // inner function to hande the compilation.  this is called
@@ -53,7 +55,7 @@ class CompiledFunction {
             let result = f(tracerArguments)
 
             // recapture the state as it may have changed
-            let stateOutputTracers = state.flatMap { $0.innerState() }.map { $0.copy() }
+            let stateOutputTracers = outputs.flatMap { $0.innerState() }.map { $0.copy() }
 
             // put the original values back in the state
             for (s, saved) in zip(stateInputs, savedStateInputs) {
@@ -84,7 +86,7 @@ class CompiledFunction {
         let resultsPlusStateOutput = mlx_vector_array_values(resultVector)
 
         // push the stateOutput into the state
-        let stateOutput = state.flatMap { $0.innerState() }
+        let stateOutput = outputs.flatMap { $0.innerState() }
 
         for (s, newValues) in zip(stateOutput, resultsPlusStateOutput.suffix(stateOutput.count)) {
             s.update(newValues)
@@ -102,34 +104,35 @@ class CompiledFunction {
 /// information.
 ///
 /// - Parameters:
-///   - state: state
+///   - inputs: input state
+///   - outputs: output state
 ///   - f: function to compile
 /// - Returns: a new function that produces the same output as `f()`
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(state:_:)-3l9bp``
-/// - ``compile(state:_:)-71p0o``
-public func compile(state: [any Updatable] = [], _ f: @escaping ([MLXArray]) -> [MLXArray]) -> (
+/// - ``compile(inputs:outputs:_:)-7qwto``
+/// - ``compile(inputs:outputs:_:)-5mp7m``
+public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [], _ f: @escaping ([MLXArray]) -> [MLXArray]) -> (
     [MLXArray]
 ) -> [MLXArray] {
-    let compileState = CompiledFunction(state: state, f)
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, f)
 
     return { arrays in
         compileState.call(arrays)
     }
 }
 
-/// Overload of ``compile(state:_:)-95f19`` that takes a single ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:_:)-96gqs`` that takes a single ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(state:_:)-95f19``
-public func compile(state: [any Updatable] = [], _ f: @escaping (MLXArray) -> MLXArray) -> (
+/// - ``compile(inputs:outputs:_:)-96gqs``
+public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [], _ f: @escaping (MLXArray) -> MLXArray) -> (
     MLXArray
 ) -> MLXArray {
-    let compileState = CompiledFunction(state: state) {
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs) {
         [f($0[0])]
     }
 
@@ -138,16 +141,16 @@ public func compile(state: [any Updatable] = [], _ f: @escaping (MLXArray) -> ML
     }
 }
 
-/// Overload of ``compile(state:_:)-95f19`` that takes a two ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:_:)-96gqs`` that takes a two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(state:_:)-95f19``
-public func compile(state: [any Updatable] = [], _ f: @escaping (MLXArray, MLXArray) -> MLXArray)
+/// - ``compile(inputs:outputs:_:)-96gqs``
+public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [], _ f: @escaping (MLXArray, MLXArray) -> MLXArray)
     -> (MLXArray, MLXArray) -> MLXArray
 {
-    let compileState = CompiledFunction(state: state) {
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs) {
         [f($0[0], $0[1])]
     }
 
@@ -156,7 +159,7 @@ public func compile(state: [any Updatable] = [], _ f: @escaping (MLXArray, MLXAr
     }
 }
 
-/// Globally enable or disable ``compile(state:_:)-95f19``.
+/// Globally enable or disable ``compile(inputs:outputs:_:)-96gqs``.
 ///
 /// Default is enabled.
 public func compile(enable: Bool = true) {

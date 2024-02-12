@@ -1,12 +1,12 @@
 # Compilation
 
-MLX has a ``compile(state:_:)-95f19`` function transformation which compiles computation
+MLX has a ``compile(inputs:outputs:_:)-96gqs`` function transformation which compiles computation
 graphs. Function compilation results in smaller graphs by merging common work
 and fusing certain operations. In many cases this can lead to big improvements
 in run-time and memory use.
 
-Getting started with ``compile(state:_:)-95f19`` is simple, but there are some edge cases
-that are good to be aware of for more complex graphs and advanced usage.
+Getting started with ``compile(inputs:outputs:_:)-96gqs`` is simple, but there are 
+some edge cases that are good to be aware of for more complex graphs and advanced usage.
 
 ## Basics of Compile
 
@@ -70,7 +70,7 @@ public func gelu(_ x: MLXArray) -> MLXArray {
 If you use this function with small arrays, it will be overhead bound. If you
 use it with large arrays it will be memory bandwidth bound.  However, all of
 the operations in the `gelu` are fusible into a single kernel with
-``compile(state:_:)-3l9bp``. This can speedup both cases considerably.
+``compile(inputs:outputs:_:)-7qwto``. This can speedup both cases considerably.
 
 Let's compare the runtime of the regular function versus the compiled
 function. We'll use the following timing helper which does a warm up and
@@ -182,7 +182,7 @@ print(state)
 ```
 
 In some cases returning updated state can be pretty inconvenient. Hence,
-``compile(state:_:)-95f19`` has a parameter to capture implicit state:
+``compile(inputs:outputs:_:)-96gqs`` has a parameter to capture implicit state:
 
 ```swift
 var state = [MLXArray]()
@@ -194,7 +194,7 @@ func f(_ x: MLXArray) -> MLXArray {
 }
 
 // capture state the `state` array as a side effect
-let compiled = compile(state: [state], f)
+let compiled = compile(outputs: [state], f)
 _ = compiled(MLXArray(1.0))
 
 print(state)
@@ -233,7 +233,7 @@ To make this work as expected:
 
 ```swift
 // now cature the random state and the random numbers should change per call
-let c2 = compile(state: [MLXRandom.globalState], f)
+let c2 = compile(inputs: [MLXRandom.globalState], outputs: [MLXRandom.globalState], f)
 
 let c2a = c2(bias)
 let c2b = c2(bias)
@@ -242,10 +242,10 @@ XCTAssertFalse(allClose(c2a, c2b).item())
 
 ## Compiling Training Graphs 
 
-This section will step through how to use ``compile(state:_:)-71p0o`` with a simple example
-of a common setup: training a model with `Module` using an
+This section will step through how to use ``compile(inputs:outputs:_:)-96gqs`` 
+with a simple example of a common setup: training a model with `Module` using an
 `Optimizer` with state. We will show how to compile the
-full forward, backward, and update with ``compile(state:_:)-71p0o``.
+full forward, backward, and update with ``compile(inputs:outputs:_:)-96gqs``.
 
 Here is the basic scenario:
 
@@ -266,6 +266,8 @@ func loss(model: LinearFunctionModel, x: MLXArray, y: MLXArray) -> MLXArray {
 let model = LinearFunctionModel()
 eval(model)
 
+let lg = valueAndGrad(model: model, loss)
+
 // the optimizer will use the gradients update the model parameters
 let optimizer = SGD(learningRate: 1e-1)
 
@@ -277,7 +279,6 @@ let b = 7
 To start, here is the simple example without any compilation:
 
 ```swift
-let lg = valueAndGrad(model: model, loss)
 for _ in 0 ..< 30 {
     // prepare the training data
     let x = MLXRandom.uniform(low: -5.0, high: 5.0, [10, 1])
@@ -294,8 +295,7 @@ To compile the update we can put it all in a function and compile it with the
 appropriate input and output captures. Here's the same example but compiled:
 
 ```swift
-let step = compile(state: [model, optimizer]) { x, y in
-    let lg = valueAndGrad(model: model, loss)
+let step = compile(inputs: [model, optimizer], outputs: inputs: [model, optimizer]) { x, y in
     let (loss, grads) = lg(model, x, y)
     optimizer.update(model: model, gradients: grads)
     return loss
@@ -313,13 +313,13 @@ for _ in 0 ..< 30 {
 
 > If you are using a module which performs random sampling such as
 `Dropout`, make sure you also include `MLXRandom.globalState` in the
-`state:`.
+`inputs:` and `outputs:`.
 
 ## Topics
 
 ### Functions
 
-- ``compile(state:_:)-95f19``
-- ``compile(state:_:)-3l9bp``
-- ``compile(state:_:)-71p0o``
+- ``compile(inputs:outputs:_:)-96gqs``
+- ``compile(inputs:outputs:_:)-7qwto``
+- ``compile(inputs:outputs:_:)-5mp7m``
 - ``compile(enable:)``
