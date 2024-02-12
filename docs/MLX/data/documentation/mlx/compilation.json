@@ -5,7 +5,7 @@
       "type" : "text"
     },
     {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
       "isActive" : true,
       "type" : "reference"
     },
@@ -75,12 +75,12 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
               "isActive" : true,
               "type" : "reference"
             },
             {
-              "text" : " is simple, but there are some edge cases",
+              "text" : " is simple, but there are",
               "type" : "text"
             },
             {
@@ -88,7 +88,7 @@
               "type" : "text"
             },
             {
-              "text" : "that are good to be aware of for more complex graphs and advanced usage.",
+              "text" : "some edge cases that are good to be aware of for more complex graphs and advanced usage.",
               "type" : "text"
             }
           ],
@@ -390,7 +390,7 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-3l9bp",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-7qwto",
               "isActive" : true,
               "type" : "reference"
             },
@@ -759,7 +759,7 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
               "isActive" : true,
               "type" : "reference"
             },
@@ -781,7 +781,7 @@
             "}",
             "",
             "\/\/ capture state the `state` array as a side effect",
-            "let compiled = compile(state: [state], f)",
+            "let compiled = compile(outputs: [state], f)",
             "_ = compiled(MLXArray(1.0))",
             "",
             "print(state)"
@@ -961,7 +961,7 @@
         {
           "code" : [
             "\/\/ now cature the random state and the random numbers should change per call",
-            "let c2 = compile(state: [MLXRandom.globalState], f)",
+            "let c2 = compile(inputs: [MLXRandom.globalState], outputs: [MLXRandom.globalState], f)",
             "",
             "let c2a = c2(bias)",
             "let c2b = c2(bias)",
@@ -983,12 +983,12 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
               "isActive" : true,
               "type" : "reference"
             },
             {
-              "text" : " with a simple example",
+              "text" : "",
               "type" : "text"
             },
             {
@@ -996,7 +996,7 @@
               "type" : "text"
             },
             {
-              "text" : "of a common setup: training a model with ",
+              "text" : "with a simple example of a common setup: training a model with ",
               "type" : "text"
             },
             {
@@ -1028,7 +1028,7 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
               "isActive" : true,
               "type" : "reference"
             },
@@ -1066,6 +1066,8 @@
             "let model = LinearFunctionModel()",
             "eval(model)",
             "",
+            "let lg = valueAndGrad(model: model, loss)",
+            "",
             "\/\/ the optimizer will use the gradients update the model parameters",
             "let optimizer = SGD(learningRate: 1e-1)",
             "",
@@ -1087,7 +1089,6 @@
         },
         {
           "code" : [
-            "let lg = valueAndGrad(model: model, loss)",
             "for _ in 0 ..< 30 {",
             "    \/\/ prepare the training data",
             "    let x = MLXRandom.uniform(low: -5.0, high: 5.0, [10, 1])",
@@ -1121,8 +1122,7 @@
         },
         {
           "code" : [
-            "let step = compile(state: [model, optimizer]) { x, y in",
-            "    let lg = valueAndGrad(model: model, loss)",
+            "let step = compile(inputs: [model, optimizer], outputs: inputs: [model, optimizer]) { x, y in",
             "    let (loss, grads) = lg(model, x, y)",
             "    optimizer.update(model: model, gradients: grads)",
             "    return loss",
@@ -1173,7 +1173,15 @@
                   "type" : "text"
                 },
                 {
-                  "code" : "state:",
+                  "code" : "inputs:",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " and ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "outputs:",
                   "type" : "codeVoice"
                 },
                 {
@@ -1219,9 +1227,9 @@
   "topicSections" : [
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-3l9bp",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-7qwto",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-5mp7m",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(enable:)"
       ],
       "title" : "Functions"
@@ -1252,7 +1260,7 @@
       "type" : "text"
     },
     {
-      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "text" : "learning research on Apple silicon, brought to you by Apple machine learning research",
       "type" : "text"
     }
   ],
@@ -1369,7 +1377,7 @@
       "type" : "text"
     },
     {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
       "isActive" : true,
       "type" : "reference"
     },
@@ -1420,130 +1428,14 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/compile(enable:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-3l9bp": {
+"doc://mlx.swift.mlx/documentation/MLX/compile(inputs:outputs:_:)-5mp7m": {
   "abstract" : [
     {
       "text" : "Overload of ",
       "type" : "text"
     },
     {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : " that takes a single ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : " and",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "produces a single ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "compile"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "state"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX9UpdatableP",
-      "text" : "Updatable"
-    },
-    {
-      "kind" : "text",
-      "text" : "], ("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> ("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-3l9bp",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "compile(state:_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/compile(state:_:)-3l9bp"
-},
-"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-71p0o": {
-  "abstract" : [
-    {
-      "text" : "Overload of ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
       "isActive" : true,
       "type" : "reference"
     },
@@ -1597,7 +1489,24 @@
     },
     {
       "kind" : "externalParam",
-      "text" : "state"
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "outputs"
     },
     {
       "kind" : "text",
@@ -1663,14 +1572,147 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-5mp7m",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "compile(state:_:)",
+  "title" : "compile(inputs:outputs:_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/compile(state:_:)-71p0o"
+  "url" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-5mp7m"
 },
-"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-95f19": {
+"doc://mlx.swift.mlx/documentation/MLX/compile(inputs:outputs:_:)-7qwto": {
+  "abstract" : [
+    {
+      "text" : "Overload of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " that takes a single ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "produces a single ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "outputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-7qwto",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(inputs:outputs:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-7qwto"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(inputs:outputs:_:)-96gqs": {
   "abstract" : [
     {
       "text" : "Returns a compiled function that produces the same output as ",
@@ -1704,7 +1746,24 @@
     },
     {
       "kind" : "externalParam",
-      "text" : "state"
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "outputs"
     },
     {
       "kind" : "text",
@@ -1756,12 +1815,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "compile(state:_:)",
+  "title" : "compile(inputs:outputs:_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/compile(state:_:)-95f19"
+  "url" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-96gqs"
 },
 "doc://mlx.swift.mlx/documentation/MLX/converting-python": {
   "abstract" : [

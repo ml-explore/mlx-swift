@@ -49,18 +49,18 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlx\/compile(state:_:)-95f19",
-                "title" : "func compile(state: [Updatable], ([MLXArray]) -> [MLXArray]) -> ([MLXArray]) -> [MLXArray]",
+                "path" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-96gqs",
+                "title" : "func compile(inputs: [Updatable], outputs: [Updatable], ([MLXArray]) -> [MLXArray]) -> ([MLXArray]) -> [MLXArray]",
                 "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlx\/compile(state:_:)-3l9bp",
-                "title" : "func compile(state: [Updatable], (MLXArray) -> MLXArray) -> (MLXArray) -> MLXArray",
+                "path" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-7qwto",
+                "title" : "func compile(inputs: [Updatable], outputs: [Updatable], (MLXArray) -> MLXArray) -> (MLXArray) -> MLXArray",
                 "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlx\/compile(state:_:)-71p0o",
-                "title" : "func compile(state: [Updatable], (MLXArray, MLXArray) -> MLXArray) -> (MLXArray, MLXArray) -> MLXArray",
+                "path" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-5mp7m",
+                "title" : "func compile(inputs: [Updatable], outputs: [Updatable], (MLXArray, MLXArray) -> MLXArray) -> (MLXArray, MLXArray) -> MLXArray",
                 "type" : "func"
               },
               {

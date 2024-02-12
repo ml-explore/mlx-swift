@@ -169,7 +169,7 @@
       "type" : "text"
     },
     {
-      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "text" : "learning research on Apple silicon, brought to you by Apple machine learning research",
       "type" : "text"
     }
   ],
@@ -201,7 +201,7 @@
       "type" : "text"
     },
     {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
       "isActive" : true,
       "type" : "reference"
     },
@@ -241,7 +241,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/compilation"
 },
-"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-95f19": {
+"doc://mlx.swift.mlx/documentation/MLX/compile(inputs:outputs:_:)-96gqs": {
   "abstract" : [
     {
       "text" : "Returns a compiled function that produces the same output as ",
@@ -275,7 +275,24 @@
     },
     {
       "kind" : "externalParam",
-      "text" : "state"
+      "text" : "inputs"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "outputs"
     },
     {
       "kind" : "text",
@@ -327,12 +344,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(inputs:outputs:_:)-96gqs",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "compile(state:_:)",
+  "title" : "compile(inputs:outputs:_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/compile(state:_:)-95f19"
+  "url" : "\/documentation\/mlx\/compile(inputs:outputs:_:)-96gqs"
 },
 "doc://mlx.swift.mlx/documentation/MLX/converting-python": {
   "abstract" : [

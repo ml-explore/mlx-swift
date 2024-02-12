@@ -1,92 +1,5 @@
 [
   {
-    "abstract" : [
-      {
-        "text" : "Initialize the optimizer.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "init"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "learningRate"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "eps"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ")"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.initializer",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adagrad\/init(learningrate:eps:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad\/init(learningRate:eps:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "init(learningRate:eps:)",
-    "usr" : "s:13MLXOptimizers7AdaGradC12learningRate3epsACSf_Sftcfc"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "State container for ",
-        "type" : "text"
-      },
-      {
-        "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
-        "isActive" : true,
-        "type" : "reference"
-      },
-      {
-        "text" : " holding a tuple of ",
-        "type" : "text"
-      },
-      {
-        "code" : "MLXArray",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
     "availableLanguages" : [
       "swift"
     ],
@@ -101,28 +14,28 @@
       },
       {
         "kind" : "identifier",
-        "text" : "TupleState"
+        "text" : "State"
       }
     ],
     "kind" : "org.swift.docc.kind.structure",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/tuplestate",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState",
+    "path" : "\/documentation\/mlxoptimizers\/adafactor\/state",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State",
     "taskGroups" : [
       {
         "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState\/innerState()"
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State\/innerState()"
         ],
         "title" : "Instance Methods"
       }
     ],
-    "title" : "TupleState",
-    "usr" : "s:13MLXOptimizers10TupleStateV"
+    "title" : "Adafactor.State",
+    "usr" : "s:13MLXOptimizers9AdafactorC5StateV"
   },
   {
     "abstract" : [
       {
-        "text" : "Initialize the optimizer.",
+        "text" : "Public interface for all Optimizer types.",
         "type" : "text"
       }
     ],
@@ -132,82 +45,7 @@
     "fragments" : [
       {
         "kind" : "keyword",
-        "text" : "init"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "learningRate"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "alpha"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "eps"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ")"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.initializer",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/rmsprop\/init(learningrate:alpha:eps:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop\/init(learningRate:alpha:eps:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "init(learningRate:alpha:eps:)",
-    "usr" : "s:13MLXOptimizers7RMSpropC12learningRate5alpha3epsACSf_S2ftcfc"
-  },
-  {
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
+        "text" : "protocol"
       },
       {
         "kind" : "text",
@@ -215,211 +53,28 @@
       },
       {
         "kind" : "identifier",
-        "text" : "innerState"
-      },
-      {
-        "kind" : "text",
-        "text" : "() -> ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "]"
+        "text" : "Optimizer"
       }
     ],
-    "kind" : "org.swift.docc.kind.instanceMethod",
+    "kind" : "org.swift.docc.kind.protocol",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/tuplestate\/innerstate()",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState\/innerState()",
-    "taskGroups" : [
-
-    ],
-    "title" : "innerState()",
-    "usr" : "s:13MLXOptimizers10TupleStateV05innerC0Say3MLX8MLXArrayCGyF"
-  },
-  {
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "innerState"
-      },
-      {
-        "kind" : "text",
-        "text" : "() -> ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "]"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.instanceMethod",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/innerstate()",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/innerState()",
-    "taskGroups" : [
-
-    ],
-    "title" : "innerState()",
-    "usr" : "s:13MLXOptimizers13OptimizerBaseC10innerStateSay3MLX8MLXArrayCGyF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Built-in optimizers.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "kind" : "org.swift.docc.kind.module",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
+    "path" : "\/documentation\/mlxoptimizers\/optimizer",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer",
     "taskGroups" : [
       {
         "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD"
-        ],
-        "title" : "Optimizers"
-      },
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
-        ],
-        "title" : "Base Classes and Protocols"
-      },
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState"
-        ],
-        "title" : "Structures"
-      }
-    ],
-    "title" : "MLXOptimizers",
-    "usr" : "MLXOptimizers"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Stochastic gradient descent optimizer.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "class"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "SGD"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.class",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/sgd",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/init(learningRate:momentum:weightDecay:dampening:nesterov:)"
-        ],
-        "title" : "Initializers"
-      }
-    ],
-    "title" : "SGD",
-    "usr" : "s:13MLXOptimizers3SGDC"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis",
-        "type" : "text"
-      },
-      {
-        "text" : " ",
-        "type" : "text"
-      },
-      {
-        "text" : "and apply it to a parameter tree.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "class"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "OptimizerBase"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.class",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/optimizerbase",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/innerState()",
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)"
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer\/update(model:gradients:)"
         ],
         "title" : "Instance Methods"
       }
     ],
-    "title" : "OptimizerBase",
-    "usr" : "s:13MLXOptimizers13OptimizerBaseC"
+    "title" : "Optimizer",
+    "usr" : "s:13MLXOptimizers9OptimizerP"
   },
   {
     "abstract" : [
       {
-        "text" : "The AdaDelta optimizer with a learning rate [1].",
+        "text" : "The AdamW optimizer [1].",
         "type" : "text"
       }
     ],
@@ -437,23 +92,23 @@
       },
       {
         "kind" : "identifier",
-        "text" : "AdaDelta"
+        "text" : "AdamW"
       }
     ],
     "kind" : "org.swift.docc.kind.class",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adadelta",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta",
+    "path" : "\/documentation\/mlxoptimizers\/adamw",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW",
     "taskGroups" : [
       {
         "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)"
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW\/init(learningRate:betas:eps:weightDecay:)"
         ],
         "title" : "Initializers"
       }
     ],
-    "title" : "AdaDelta",
-    "usr" : "s:13MLXOptimizers8AdaDeltaC"
+    "title" : "AdamW",
+    "usr" : "s:13MLXOptimizers5AdamWC"
   },
   {
     "abstract" : [
@@ -537,18 +192,18 @@
     ],
     "kind" : "org.swift.docc.kind.initializer",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)",
+    "path" : "\/documentation\/mlxoptimizers\/adam\/init(learningrate:betas:eps:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam\/init(learningRate:betas:eps:)",
     "taskGroups" : [
 
     ],
     "title" : "init(learningRate:betas:eps:)",
-    "usr" : "s:13MLXOptimizers6AdamaxC12learningRate5betas3epsACSf_Sf_SftSftcfc"
+    "usr" : "s:13MLXOptimizers4AdamC12learningRate5betas3epsACSf_Sf_SftSftcfc"
   },
   {
     "abstract" : [
       {
-        "text" : "The AdamW optimizer [1].",
+        "text" : "Stochastic gradient descent optimizer.",
         "type" : "text"
       }
     ],
@@ -566,23 +221,23 @@
       },
       {
         "kind" : "identifier",
-        "text" : "AdamW"
+        "text" : "SGD"
       }
     ],
     "kind" : "org.swift.docc.kind.class",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adamw",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW",
+    "path" : "\/documentation\/mlxoptimizers\/sgd",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD",
     "taskGroups" : [
       {
         "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW\/init(learningRate:betas:eps:weightDecay:)"
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/init(learningRate:momentum:weightDecay:dampening:nesterov:)"
         ],
         "title" : "Initializers"
       }
     ],
-    "title" : "AdamW",
-    "usr" : "s:13MLXOptimizers5AdamWC"
+    "title" : "SGD",
+    "usr" : "s:13MLXOptimizers3SGDC"
   },
   {
     "abstract" : [
@@ -706,305 +361,31 @@
       },
       {
         "kind" : "identifier",
-        "text" : "update"
+        "text" : "innerState"
       },
       {
         "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "model"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
+        "text" : "() -> ["
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:5MLXNN6ModuleC",
-        "text" : "Module"
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
       },
       {
         "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "gradients"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
-        "text" : "ModuleParameters"
-      },
-      {
-        "kind" : "text",
-        "text" : ")"
+        "text" : "]"
       }
     ],
     "kind" : "org.swift.docc.kind.instanceMethod",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/update(model:gradients:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)",
+    "path" : "\/documentation\/mlxoptimizers\/adafactor\/state\/innerstate()",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State\/innerState()",
     "taskGroups" : [
 
     ],
-    "title" : "update(model:gradients:)",
-    "usr" : "s:13MLXOptimizers13OptimizerBaseC6update5model9gradientsy5MLXNN6ModuleC_3MLX16NestedDictionaryVySSAJ8MLXArrayCGtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "The Adagrad optimizer [1].",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "class"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "AdaGrad"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.class",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adagrad",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad\/init(learningRate:eps:)"
-        ],
-        "title" : "Initializers"
-      }
-    ],
-    "title" : "AdaGrad",
-    "usr" : "s:13MLXOptimizers7AdaGradC"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Public interface for all Optimizer types.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "protocol"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "Optimizer"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.protocol",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/optimizer",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer\/update(model:gradients:)"
-        ],
-        "title" : "Instance Methods"
-      }
-    ],
-    "title" : "Optimizer",
-    "usr" : "s:13MLXOptimizers9OptimizerP"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Initialize the optimizer.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "init"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "learningRate"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "betas"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : "), "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "weightDecay"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ")"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.initializer",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/lion\/init(learningrate:betas:weightdecay:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion\/init(learningRate:betas:weightDecay:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "init(learningRate:betas:weightDecay:)",
-    "usr" : "s:13MLXOptimizers4LionC12learningRate5betas11weightDecayACSf_Sf_SftSftcfc"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "The Adamax optimizer, a variant of Adam based on the infinity norm [1].",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "class"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "Adamax"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.class",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adamax",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)"
-        ],
-        "title" : "Initializers"
-      }
-    ],
-    "title" : "Adamax",
-    "usr" : "s:13MLXOptimizers6AdamaxC"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Convenience subclass of OptimizerBase that provides ",
-        "type" : "text"
-      },
-      {
-        "code" : "MLXArray",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : " State.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "class"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "OptimizerBaseArrayState"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.class",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState",
-    "taskGroups" : [
-
-    ],
-    "title" : "OptimizerBaseArrayState",
-    "usr" : "s:13MLXOptimizers23OptimizerBaseArrayStateC"
+    "title" : "innerState()",
+    "usr" : "s:13MLXOptimizers9AdafactorC5StateV05innerC0Say3MLX8MLXArrayCGyF"
   },
   {
     "abstract" : [
@@ -1124,7 +505,7 @@
   {
     "abstract" : [
       {
-        "text" : "The Adam optimizer [1].",
+        "text" : "The RMSprop optimizer [1].",
         "type" : "text"
       }
     ],
@@ -1142,56 +523,87 @@
       },
       {
         "kind" : "identifier",
-        "text" : "Adam"
+        "text" : "RMSprop"
       }
     ],
     "kind" : "org.swift.docc.kind.class",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adam",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam",
+    "path" : "\/documentation\/mlxoptimizers\/rmsprop",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop",
     "taskGroups" : [
       {
         "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam\/init(learningRate:betas:eps:)"
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop\/init(learningRate:alpha:eps:)"
         ],
         "title" : "Initializers"
       }
     ],
-    "title" : "Adam",
-    "usr" : "s:13MLXOptimizers4AdamC"
+    "title" : "RMSprop",
+    "usr" : "s:13MLXOptimizers7RMSpropC"
   },
   {
+    "abstract" : [
+      {
+        "text" : "Initialize the optimizer.",
+        "type" : "text"
+      }
+    ],
     "availableLanguages" : [
       "swift"
     ],
     "fragments" : [
       {
         "kind" : "keyword",
-        "text" : "struct"
+        "text" : "init"
       },
       {
         "kind" : "text",
-        "text" : " "
+        "text" : "("
       },
       {
-        "kind" : "identifier",
-        "text" : "State"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.structure",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adafactor\/state",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State",
-    "taskGroups" : [
+        "kind" : "externalParam",
+        "text" : "learningRate"
+      },
       {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State\/innerState()"
-        ],
-        "title" : "Instance Methods"
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "eps"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
       }
     ],
-    "title" : "Adafactor.State",
-    "usr" : "s:13MLXOptimizers9AdafactorC5StateV"
+    "kind" : "org.swift.docc.kind.initializer",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adagrad\/init(learningrate:eps:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad\/init(learningRate:eps:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "init(learningRate:eps:)",
+    "usr" : "s:13MLXOptimizers7AdaGradC12learningRate3epsACSf_Sftcfc"
   },
   {
     "abstract" : [
@@ -1275,13 +687,139 @@
     ],
     "kind" : "org.swift.docc.kind.initializer",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adam\/init(learningrate:betas:eps:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam\/init(learningRate:betas:eps:)",
+    "path" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)",
     "taskGroups" : [
 
     ],
     "title" : "init(learningRate:betas:eps:)",
-    "usr" : "s:13MLXOptimizers4AdamC12learningRate5betas3epsACSf_Sf_SftSftcfc"
+    "usr" : "s:13MLXOptimizers6AdamaxC12learningRate5betas3epsACSf_Sf_SftSftcfc"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "The Adam optimizer [1].",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "Adam"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.class",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adam",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam\/init(learningRate:betas:eps:)"
+        ],
+        "title" : "Initializers"
+      }
+    ],
+    "title" : "Adam",
+    "usr" : "s:13MLXOptimizers4AdamC"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "The Adamax optimizer, a variant of Adam based on the infinity norm [1].",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "Adamax"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.class",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adamax",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)"
+        ],
+        "title" : "Initializers"
+      }
+    ],
+    "title" : "Adamax",
+    "usr" : "s:13MLXOptimizers6AdamaxC"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis",
+        "type" : "text"
+      },
+      {
+        "text" : " ",
+        "type" : "text"
+      },
+      {
+        "text" : "and apply it to a parameter tree.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OptimizerBase"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.class",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/optimizerbase",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/innerState()",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)"
+        ],
+        "title" : "Instance Methods"
+      }
+    ],
+    "title" : "OptimizerBase",
+    "usr" : "s:13MLXOptimizers13OptimizerBaseC"
   },
   {
     "availableLanguages" : [
@@ -1316,13 +854,317 @@
     ],
     "kind" : "org.swift.docc.kind.instanceMethod",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adafactor\/state\/innerstate()",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State\/innerState()",
+    "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/innerstate()",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/innerState()",
     "taskGroups" : [
 
     ],
     "title" : "innerState()",
-    "usr" : "s:13MLXOptimizers9AdafactorC5StateV05innerC0Say3MLX8MLXArrayCGyF"
+    "usr" : "s:13MLXOptimizers13OptimizerBaseC10innerStateSay3MLX8MLXArrayCGyF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "The Adagrad optimizer [1].",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "AdaGrad"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.class",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adagrad",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad\/init(learningRate:eps:)"
+        ],
+        "title" : "Initializers"
+      }
+    ],
+    "title" : "AdaGrad",
+    "usr" : "s:13MLXOptimizers7AdaGradC"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "State container for ",
+        "type" : "text"
+      },
+      {
+        "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
+        "isActive" : true,
+        "type" : "reference"
+      },
+      {
+        "text" : " holding a tuple of ",
+        "type" : "text"
+      },
+      {
+        "code" : "MLXArray",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "TupleState"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.structure",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/tuplestate",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState\/innerState()"
+        ],
+        "title" : "Instance Methods"
+      }
+    ],
+    "title" : "TupleState",
+    "usr" : "s:13MLXOptimizers10TupleStateV"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Initialize the optimizer.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "init"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "learningRate"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "rho"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "eps"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.initializer",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adadelta\/init(learningrate:rho:eps:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "init(learningRate:rho:eps:)",
+    "usr" : "s:13MLXOptimizers8AdaDeltaC12learningRate3rho3epsACSf_S2ftcfc"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Built-in optimizers.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "kind" : "org.swift.docc.kind.module",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD"
+        ],
+        "title" : "Optimizers"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
+        ],
+        "title" : "Base Classes and Protocols"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState"
+        ],
+        "title" : "Structures"
+      }
+    ],
+    "title" : "MLXOptimizers",
+    "usr" : "MLXOptimizers"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Initialize the optimizer.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "init"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "learningRate"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "alpha"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "eps"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.initializer",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/rmsprop\/init(learningrate:alpha:eps:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop\/init(learningRate:alpha:eps:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "init(learningRate:alpha:eps:)",
+    "usr" : "s:13MLXOptimizers7RMSpropC12learningRate5alpha3epsACSf_S2ftcfc"
   },
   {
     "abstract" : [
@@ -1366,7 +1208,15 @@
   {
     "abstract" : [
       {
-        "text" : "The Adafactor optimizer.",
+        "text" : "Convenience subclass of OptimizerBase that provides ",
+        "type" : "text"
+      },
+      {
+        "code" : "MLXArray",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " State.",
         "type" : "text"
       }
     ],
@@ -1384,76 +1234,20 @@
       },
       {
         "kind" : "identifier",
-        "text" : "Adafactor"
+        "text" : "OptimizerBaseArrayState"
       }
     ],
     "kind" : "org.swift.docc.kind.class",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adafactor",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+    "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState",
     "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State"
-        ],
-        "title" : "Structures"
-      },
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)"
-        ],
-        "title" : "Initializers"
-      }
+
     ],
-    "title" : "Adafactor",
-    "usr" : "s:13MLXOptimizers9AdafactorC"
+    "title" : "OptimizerBaseArrayState",
+    "usr" : "s:13MLXOptimizers23OptimizerBaseArrayStateC"
   },
   {
-    "abstract" : [
-      {
-        "text" : "The RMSprop optimizer [1].",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "class"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "RMSprop"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.class",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/rmsprop",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop\/init(learningRate:alpha:eps:)"
-        ],
-        "title" : "Initializers"
-      }
-    ],
-    "title" : "RMSprop",
-    "usr" : "s:13MLXOptimizers7RMSpropC"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Apply the gradients to the parameters of the model and update the model with the new parameters.",
-        "type" : "text"
-      }
-    ],
     "availableLanguages" : [
       "swift"
     ],
@@ -1511,13 +1305,228 @@
     ],
     "kind" : "org.swift.docc.kind.instanceMethod",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/optimizer\/update(model:gradients:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer\/update(model:gradients:)",
+    "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/update(model:gradients:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)",
     "taskGroups" : [
 
     ],
     "title" : "update(model:gradients:)",
-    "usr" : "s:13MLXOptimizers9OptimizerP6update5model9gradientsy5MLXNN6ModuleC_3MLX16NestedDictionaryVySSAJ8MLXArrayCGtF"
+    "usr" : "s:13MLXOptimizers13OptimizerBaseC6update5model9gradientsy5MLXNN6ModuleC_3MLX16NestedDictionaryVySSAJ8MLXArrayCGtF"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "innerState"
+      },
+      {
+        "kind" : "text",
+        "text" : "() -> ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "]"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.instanceMethod",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/tuplestate\/innerstate()",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState\/innerState()",
+    "taskGroups" : [
+
+    ],
+    "title" : "innerState()",
+    "usr" : "s:13MLXOptimizers10TupleStateV05innerC0Say3MLX8MLXArrayCGyF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "The AdaDelta optimizer with a learning rate [1].",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "AdaDelta"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.class",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adadelta",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)"
+        ],
+        "title" : "Initializers"
+      }
+    ],
+    "title" : "AdaDelta",
+    "usr" : "s:13MLXOptimizers8AdaDeltaC"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Initialize the optimizer.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "init"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "learningRate"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "betas"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : "), "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "weightDecay"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.initializer",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/lion\/init(learningrate:betas:weightdecay:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion\/init(learningRate:betas:weightDecay:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "init(learningRate:betas:weightDecay:)",
+    "usr" : "s:13MLXOptimizers4LionC12learningRate5betas11weightDecayACSf_Sf_SftSftcfc"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "The Adafactor optimizer.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "Adafactor"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.class",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxoptimizers\/adafactor",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State"
+        ],
+        "title" : "Structures"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)"
+        ],
+        "title" : "Initializers"
+      }
+    ],
+    "title" : "Adafactor",
+    "usr" : "s:13MLXOptimizers9AdafactorC"
   },
   {
     "abstract" : [
@@ -1714,7 +1723,7 @@
   {
     "abstract" : [
       {
-        "text" : "Initialize the optimizer.",
+        "text" : "Apply the gradients to the parameters of the model and update the model with the new parameters.",
         "type" : "text"
       }
     ],
@@ -1724,7 +1733,15 @@
     "fragments" : [
       {
         "kind" : "keyword",
-        "text" : "init"
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "update"
       },
       {
         "kind" : "text",
@@ -1732,7 +1749,7 @@
       },
       {
         "kind" : "externalParam",
-        "text" : "learningRate"
+        "text" : "model"
       },
       {
         "kind" : "text",
@@ -1740,8 +1757,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
+        "preciseIdentifier" : "s:5MLXNN6ModuleC",
+        "text" : "Module"
       },
       {
         "kind" : "text",
@@ -1749,7 +1766,7 @@
       },
       {
         "kind" : "externalParam",
-        "text" : "rho"
+        "text" : "gradients"
       },
       {
         "kind" : "text",
@@ -1757,39 +1774,22 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "eps"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
+        "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+        "text" : "ModuleParameters"
       },
       {
         "kind" : "text",
         "text" : ")"
       }
     ],
-    "kind" : "org.swift.docc.kind.initializer",
+    "kind" : "org.swift.docc.kind.instanceMethod",
     "language" : "swift",
-    "path" : "\/documentation\/mlxoptimizers\/adadelta\/init(learningrate:rho:eps:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)",
+    "path" : "\/documentation\/mlxoptimizers\/optimizer\/update(model:gradients:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer\/update(model:gradients:)",
     "taskGroups" : [
 
     ],
-    "title" : "init(learningRate:rho:eps:)",
-    "usr" : "s:13MLXOptimizers8AdaDeltaC12learningRate3rho3epsACSf_S2ftcfc"
+    "title" : "update(model:gradients:)",
+    "usr" : "s:13MLXOptimizers9OptimizerP6update5model9gradientsy5MLXNN6ModuleC_3MLX16NestedDictionaryVySSAJ8MLXArrayCGtF"
   }
 ]
