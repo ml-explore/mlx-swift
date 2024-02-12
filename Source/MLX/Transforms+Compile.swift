@@ -15,7 +15,9 @@ class CompiledFunction {
     let inputs: [any Updatable]
     let outputs: [any Updatable]
 
-    init(inputs: [any Updatable], outputs: [any Updatable], _ f: @escaping ([MLXArray]) -> [MLXArray]) {
+    init(
+        inputs: [any Updatable], outputs: [any Updatable], _ f: @escaping ([MLXArray]) -> [MLXArray]
+    ) {
         self.f = f
         self.inputs = inputs
         self.outputs = outputs
@@ -113,7 +115,10 @@ class CompiledFunction {
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:_:)-7qwto``
 /// - ``compile(inputs:outputs:_:)-5mp7m``
-public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [], _ f: @escaping ([MLXArray]) -> [MLXArray]) -> (
+public func compile(
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [],
+    _ f: @escaping ([MLXArray]) -> [MLXArray]
+) -> (
     [MLXArray]
 ) -> [MLXArray] {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, f)
@@ -129,7 +134,10 @@ public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [],
 /// ### See Also
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:_:)-96gqs``
-public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [], _ f: @escaping (MLXArray) -> MLXArray) -> (
+public func compile(
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [],
+    _ f: @escaping (MLXArray) -> MLXArray
+) -> (
     MLXArray
 ) -> MLXArray {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs) {
@@ -147,7 +155,10 @@ public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [],
 /// ### See Also
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:_:)-96gqs``
-public func compile(inputs: [any Updatable] = [], outputs: [any Updatable] = [], _ f: @escaping (MLXArray, MLXArray) -> MLXArray)
+public func compile(
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [],
+    _ f: @escaping (MLXArray, MLXArray) -> MLXArray
+)
     -> (MLXArray, MLXArray) -> MLXArray
 {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs) {

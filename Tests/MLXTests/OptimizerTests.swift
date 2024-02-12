@@ -73,14 +73,16 @@ class OptimizerTests: XCTestCase {
         let b = 7
 
         let lg = valueAndGrad(model: model, loss)
-        
+
         func step(_ x: MLXArray, _ y: MLXArray) -> MLXArray {
             let (loss, grads) = lg(model, x, y)
             optimizer.update(model: model, gradients: grads)
             return loss
         }
-        
-        let resolvedStep = compile ? MLX.compile(inputs: [model, optimizer], outputs: [model, optimizer], step) : step
+
+        let resolvedStep =
+            compile
+            ? MLX.compile(inputs: [model, optimizer], outputs: [model, optimizer], step) : step
 
         // run a number of epochs
         var lastLoss: MLXArray!
