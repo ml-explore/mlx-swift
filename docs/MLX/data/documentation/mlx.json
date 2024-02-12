@@ -49,6 +49,23 @@
         {
           "inlineContent" : [
             {
+              "text" : "MLX is an array framework for machine learning research on Apple silicon. MLX Swift expands",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "MLX to the Swift language, making experimentation on Apple silicon easier for ML researchers.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
               "text" : "The Swift API closely follows the",
               "type" : "text"
             },
@@ -396,6 +413,20 @@
                 {
                   "inlineContent" : [
                     {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
                       "isActive" : true,
                       "overridingTitle" : "Python mlx",
@@ -437,10 +468,11 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compilation",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams"
       ],
       "title" : "MLX"
@@ -484,16 +516,16 @@
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Evaluatable",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable"
       ],
-      "title" : "Structures"
+      "title" : "Protocols"
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/simplify(_:)-7jbpa",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/simplify(_:)-awbz"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/IntOrPair"
       ],
-      "title" : "Functions"
+      "title" : "Structures"
     },
     {
       "identifiers" : [
@@ -704,6 +736,66 @@
   "title" : "DeviceType",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/devicetype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Evaluatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can be passed to ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and can produce a list",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "of interior ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " to be evaluated.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Evaluatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Evaluatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Evaluatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Evaluatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/evaluatable"
 },
 "doc://mlx.swift.mlx/documentation/MLX/HasDType": {
   "abstract" : [
@@ -1044,6 +1136,49 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/swift"
 },
+"doc://mlx.swift.mlx/documentation/MLX/Updatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can provide a list of the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in its inner state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Updatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/updatable"
+},
 "doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
   "abstract" : [
     {
@@ -1071,6 +1206,146 @@
   "title" : "Numpy Style Broadcasting",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/broadcasting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compilation": {
+  "abstract" : [
+    {
+      "text" : "MLX has a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " function transformation which compiles computation",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "graphs. Function compilation results in smaller graphs by merging common work",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and fusing certain operations. In many cases this can lead to big improvements",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in run-time and memory use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compilation",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Compilation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compilation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-95f19": {
+  "abstract" : [
+    {
+      "text" : "Returns a compiled function that produces the same output as ",
+      "type" : "text"
+    },
+    {
+      "code" : "f()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(state:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(state:_:)-95f19"
 },
 "doc://mlx.swift.mlx/documentation/MLX/converting-python": {
   "abstract" : [
@@ -1197,6 +1472,54 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/convolve(_:_:mode:stream:)"
 },
+"doc://mlx.swift.mlx/documentation/MLX/eval(_:)-3b2g9": {
+  "abstract" : [
+    {
+      "text" : "Evaluate one or more ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eval"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "Any"
+    },
+    {
+      "kind" : "text",
+      "text" : "...)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eval(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/eval(_:)-3b2g9"
+},
 "doc://mlx.swift.mlx/documentation/MLX/examples": {
   "abstract" : [
     {
@@ -1275,86 +1598,6 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/lazy-evaluation"
 },
-"doc://mlx.swift.mlx/documentation/MLX/simplify(_:)-7jbpa": {
-  "abstract" : [
-    {
-      "text" : "Simplify the graph that computes the arrays.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "simplify"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "keyword",
-      "text" : "Any"
-    },
-    {
-      "kind" : "text",
-      "text" : "...)"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/simplify(_:)-7jbpa",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "simplify(_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/simplify(_:)-7jbpa"
-},
-"doc://mlx.swift.mlx/documentation/MLX/simplify(_:)-awbz": {
-  "abstract" : [
-    {
-      "text" : "Simplify the graph that computes the arrays.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "simplify"
-    },
-    {
-      "kind" : "text",
-      "text" : "(["
-    },
-    {
-      "kind" : "keyword",
-      "text" : "Any"
-    },
-    {
-      "kind" : "text",
-      "text" : "])"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/simplify(_:)-awbz",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "simplify(_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/simplify(_:)-awbz"
-},
 "doc://mlx.swift.mlx/documentation/MLX/troubleshooting": {
   "abstract" : [
     {
@@ -1424,6 +1667,18 @@
   ],
   "type" : "link",
   "url" : "https:\/\/github.com\/google\/jax"
+},
+"https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+  "title" : "MLXFFT",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXFFT",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/"
 },
 "https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",

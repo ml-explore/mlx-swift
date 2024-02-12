@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L391"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L378"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -155,6 +155,8 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
       ],
       "kind" : "relationships",
@@ -192,12 +194,6 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)"
       ],
       "title" : "Initializers"
-    },
-    {
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/state()"
-      ],
-      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -214,6 +210,16 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxoptimizers/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxoptimizers/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
   "abstract" : [
     {
@@ -515,44 +521,6 @@
   "title" : "init(learningRate:betas:eps:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax/state()": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "state"
-    },
-    {
-      "kind" : "text",
-      "text" : "() -> ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/state()",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "state()",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/adamax\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Lion": {
   "abstract" : [

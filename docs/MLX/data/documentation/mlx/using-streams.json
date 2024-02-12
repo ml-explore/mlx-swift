@@ -235,10 +235,11 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compilation"
       ],
       "title" : "MLX"
     }
@@ -512,6 +513,146 @@
   "title" : "Numpy Style Broadcasting",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/broadcasting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compilation": {
+  "abstract" : [
+    {
+      "text" : "MLX has a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " function transformation which compiles computation",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "graphs. Function compilation results in smaller graphs by merging common work",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and fusing certain operations. In many cases this can lead to big improvements",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in run-time and memory use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compilation",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Compilation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compilation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-95f19": {
+  "abstract" : [
+    {
+      "text" : "Returns a compiled function that produces the same output as ",
+      "type" : "text"
+    },
+    {
+      "code" : "f()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(state:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(state:_:)-95f19"
 },
 "doc://mlx.swift.mlx/documentation/MLX/converting-python": {
   "abstract" : [

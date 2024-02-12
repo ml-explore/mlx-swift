@@ -107,25 +107,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:SD",
-        "text" : "Dictionary"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "Key"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX10NestedItemO",
-        "text" : "NestedItem"
+        "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+        "text" : "NestedDictionary"
       },
       {
         "kind" : "text",
@@ -145,12 +128,12 @@
       },
       {
         "kind" : "text",
-        "text" : ">>."
+        "text" : ">."
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:SD7Elementa",
-        "text" : "Element"
+        "preciseIdentifier" : "s:3MLX16NestedDictionaryV17CollectionElementa",
+        "text" : "CollectionElement"
       }
     ],
     "modules" : [
@@ -160,7 +143,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Nested.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L827"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L913"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Subscript",
@@ -231,27 +214,10 @@
               "text" : ") -> "
             },
             {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:SD",
-              "text" : "Dictionary"
-            },
-            {
-              "kind" : "text",
-              "text" : "<"
-            },
-            {
-              "kind" : "typeIdentifier",
-              "text" : "Key"
-            },
-            {
-              "kind" : "text",
-              "text" : ", "
-            },
-            {
-              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
-              "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:3MLX10NestedItemO",
-              "text" : "NestedItem"
+              "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+              "text" : "NestedDictionary"
             },
             {
               "kind" : "text",
@@ -271,12 +237,13 @@
             },
             {
               "kind" : "text",
-              "text" : ">>."
+              "text" : ">."
             },
             {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/CollectionElement",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:SD7Elementa",
-              "text" : "Element"
+              "preciseIdentifier" : "s:3MLX16NestedDictionaryV17CollectionElementa",
+              "text" : "CollectionElement"
             },
             {
               "kind" : "text",
@@ -384,6 +351,69 @@
   "title" : "Collection Implementations",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/collection-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/CollectionElement": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Key",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Hashable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "CollectionElement"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/CollectionElement",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "CollectionElement"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NestedDictionary.CollectionElement",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/collectionelement"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/Index": {
   "abstract" : [
@@ -529,25 +559,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SD",
-      "text" : "Dictionary"
-    },
-    {
-      "kind" : "text",
-      "text" : "<"
-    },
-    {
-      "kind" : "typeIdentifier",
-      "text" : "Key"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX10NestedItemO",
-      "text" : "NestedItem"
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
     },
     {
       "kind" : "text",
@@ -567,12 +580,12 @@
     },
     {
       "kind" : "text",
-      "text" : ">>."
+      "text" : ">."
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SD7Elementa",
-      "text" : "Element"
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV17CollectionElementa",
+      "text" : "CollectionElement"
     }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(_:)-4t8fg",
@@ -581,49 +594,6 @@
   "title" : "subscript(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/subscript(_:)-4t8fg"
-},
-"doc://mlx.swift.mlx/documentation/MLX/NestedItem": {
-  "abstract" : [
-    {
-      "text" : "Backing storage for ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "enum"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "NestedItem"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "NestedItem"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "NestedItem",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/nesteditem"
 }
 }
 }

@@ -1,0 +1,255 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "Updatable.innerState()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State\/innerState()"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:13MLXOptimizers9AdafactorC5StateV05innerC0Say3MLX8MLXArrayCGyF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "innerState"
+      },
+      {
+        "kind" : "text",
+        "text" : "() -> ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "]"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXOptimizers"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Optimizers.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L488"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Instance Method",
+    "symbolKind" : "method",
+    "title" : "innerState()"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "innerState"
+            },
+            {
+              "kind" : "text",
+              "text" : "() -> ["
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX8MLXArrayC",
+              "text" : "MLXArray"
+            },
+            {
+              "kind" : "text",
+              "text" : "]"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxoptimizers\/adafactor\/state\/innerstate()"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
+  "abstract" : [
+    {
+      "text" : "Built-in optimizers.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXOptimizers",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor": {
+  "abstract" : [
+    {
+      "text" : "The Adafactor optimizer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Adafactor"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Adafactor"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Adafactor",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adafactor"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor/State": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "State"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "State"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Adafactor.State",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adafactor\/state"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor/State/innerState()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "innerState"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State\/innerState()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "innerState()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adafactor\/state\/innerstate()"
+}
+}
+}

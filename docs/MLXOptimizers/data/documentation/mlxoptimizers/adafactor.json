@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L493"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L469"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -155,6 +155,8 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
       ],
       "kind" : "relationships",
@@ -198,12 +200,6 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)"
       ],
       "title" : "Initializers"
-    },
-    {
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/state()"
-      ],
-      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -220,6 +216,16 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxoptimizers/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxoptimizers/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
   "abstract" : [
     {
@@ -552,44 +558,6 @@
   "title" : "init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adafactor\/init(learningrate:eps:clipthreshold:decayrate:beta1:weightdecay:scaleparameter:relativestep:warmupinit:)"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor/state()": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "state"
-    },
-    {
-      "kind" : "text",
-      "text" : "() -> ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/state()",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "state()",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/adafactor\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adam": {
   "abstract" : [

@@ -1,0 +1,1885 @@
+{
+  "abstract" : [
+    {
+      "text" : "MLX has a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " function transformation which compiles computation",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "graphs. Function compilation results in smaller graphs by merging common work",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and fusing certain operations. In many cases this can lead to big improvements",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in run-time and memory use.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compilation"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLX"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "Compilation"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Getting started with ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " is simple, but there are some edge cases",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "that are good to be aware of for more complex graphs and advanced usage.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Basics-of-Compile",
+          "level" : 2,
+          "text" : "Basics of Compile",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Let’s start with a simple example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray {",
+            "    exp(-x) + y",
+            "}",
+            "",
+            "let x = MLXArray(1.0)",
+            "let y = MLXArray(2.0)",
+            "",
+            "\/\/ regular function call, prints array(2.36788, dtype=float32)",
+            "print(f(x, y))",
+            "",
+            "\/\/ compile the function",
+            "let compiled = compile(f)",
+            "",
+            "\/\/ call the compiled version, prints array(2.36788, dtype=float32)",
+            "print(compiled(x, y))"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The output of both the regular function and the compiled function is the same",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "up to numerical precision.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The first time you call a compiled function, MLX will build the compute",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "graph, optimize it, and generate and compile code. This can be relatively",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "slow. However, MLX will cache compiled functions, so calling a compiled",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "function multiple times will not initiate a new compilation. This means you",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "should typically compile functions that you plan to use more than once.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "There are some important cases to be aware of that can cause a function to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "be recompiled:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Changing the shape or number of dimensions",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Changing the type of any of the inputs",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Changing the number of inputs to the function",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In certain cases only some of the compilation stack will be rerun (for",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "example when changing the shapes) and in other cases the full compilation",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "stack will be rerun (for example when changing the types). In general you",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "should avoid compiling functions too frequently.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Another idiom to watch out for is compiling functions which get created and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "destroyed frequently. This can happen, for example, when compiling a",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "function inside a loop – better to hoist it to outside the loop.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Example-Speedup",
+          "level" : 2,
+          "text" : "Example Speedup",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The function ",
+              "type" : "text"
+            },
+            {
+              "code" : "gelu()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is a nonlinear activation function commonly used with",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Transformer-based models. The implementation involves several unary and binary",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "element-wise operations:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "public func gelu(_ x: MLXArray) -> MLXArray {",
+            "    x * (1 + erf(x \/ sqrt(2))) \/ 2",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If you use this function with small arrays, it will be overhead bound. If you",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "use it with large arrays it will be memory bandwidth bound.  However, all of",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the operations in the ",
+              "type" : "text"
+            },
+            {
+              "code" : "gelu",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " are fusible into a single kernel with",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-3l9bp",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ". This can speedup both cases considerably.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Let’s compare the runtime of the regular function versus the compiled",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "function. We’ll use the following timing helper which does a warm up and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "handles measures the execution:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func measure(_ f: (MLXArray) -> MLXArray, _ x: MLXArray) {",
+            "    \/\/ warm up",
+            "    for _ in 0 ..< 10 {",
+            "        eval(f(x))",
+            "    }",
+            "    ",
+            "    let start = Date.timeIntervalSinceReferenceDate",
+            "    let iterations = 100",
+            "    for _ in 0 ..< iterations {",
+            "        eval(f(x))",
+            "    }",
+            "    let end = Date.timeIntervalSinceReferenceDate",
+            "    ",
+            "    let timePerIteration = 1000.0 * (end - start) \/ Double(iterations)",
+            "    ",
+            "    print(\"Time per iteration \\(timePerIteration.formatted()) ms\")",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Now make an array, and benchmark both functions:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let x = MLXRandom.uniform(0 ..< 1, [32, 1000, 4096])",
+            "",
+            "measure(gelu, x)",
+            "measure(compile(gelu), x)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "On an M1 Max the times are 15.5 and 3.1 milliseconds. The compiled ",
+              "type" : "text"
+            },
+            {
+              "code" : "gelu",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "five times faster.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "As of the latest MLX, CPU functions are not fully compiled. Compiling CPU",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "functions can still be helpful, but won’t typically result in as large a",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "speedup as compiling operations that run on the GPU.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "anchor" : "Debugging",
+          "level" : 2,
+          "text" : "Debugging",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "When a compiled function is first called, it is traced with placeholder",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "inputs. This means you can’t evaluate arrays (for example to print their",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "contents) inside compiled functions.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(_ x: MLXArray) -> MLXArray {",
+            "    let z = -x",
+            "",
+            "    \/\/ this will crash",
+            "    print(z)",
+            "",
+            "    return exp(z)",
+            "}",
+            "",
+            "let compiled = compile(f)",
+            "_ = compiled(...)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For debugging, inspecting arrays can be helpful. One way to do that is to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "globally disable compilation using the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(enable:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " function or",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLX_DISABLE_COMPILE",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " environment variable.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Pure-Functions",
+          "level" : 2,
+          "text" : "Pure Functions",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Compiled functions are intended to be ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "pure",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : "; that is they should not have side",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "effects. For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "var state = [MLXArray]()",
+            "",
+            "func f(_ x: MLXArray) -> MLXArray {",
+            "    let z = x * 8",
+            "    state.append(z)",
+            "    return exp(z)",
+            "}",
+            "",
+            "let compiled = compile(f)",
+            "_ = compiled(MLXArray(1.0))",
+            "",
+            "\/\/ this will crash",
+            "print(state)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "After calling the compiled version of ",
+              "type" : "text"
+            },
+            {
+              "code" : "f()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " the ",
+              "type" : "text"
+            },
+            {
+              "code" : "state",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " variable will hold",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "a placeholder array.  The placeholder does not have any data; it is only",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "used to build the computation graph. Printing such an array results in a crash.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "You have two options to deal with this. The first option is to simply return",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "state",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " as an output:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "var state = [MLXArray]()",
+            "",
+            "func f(_ x: MLXArray) -> [MLXArray] {",
+            "    let z = x * 8",
+            "    state.append(z)",
+            "    return [exp(z), state]",
+            "}",
+            "",
+            "\/\/ note: the arguments would have to be adapted -- using this form",
+            "\/\/ for example purposes only",
+            "let compiled = compile(f)",
+            "_ = compiled(MLXArray(1.0))",
+            "",
+            "print(state)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In some cases returning updated state can be pretty inconvenient. Hence,",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " has a parameter to capture implicit state:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "var state = [MLXArray]()",
+            "",
+            "func f(_ x: MLXArray) -> MLXArray {",
+            "    let z = x * 8",
+            "    state.append(z)",
+            "    return exp(z)",
+            "}",
+            "",
+            "\/\/ capture state the `state` array as a side effect",
+            "let compiled = compile(state: [state], f)",
+            "_ = compiled(MLXArray(1.0))",
+            "",
+            "print(state)"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Note that ",
+              "type" : "text"
+            },
+            {
+              "code" : "[MLXArray]",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " implements the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " protocol, as does ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ",",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXRandom.globalState",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", ",
+              "type" : "text"
+            },
+            {
+              "code" : "Optimizer",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", and ",
+              "type" : "text"
+            },
+            {
+              "code" : "Module",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This is particularly useful for compiling a function which includes an update",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "to a container of arrays, as is commonly done when training the parameters of a",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "Module",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Compiled functions will also treat any inputs not in the parameter list as",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "constants. For example:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "func f(_ bias: MLXArray) -> MLXArray {",
+            "    MLXRandom.uniform(0 ..< 1, [4]) + bias",
+            "}",
+            "",
+            "let bias = MLXArray(0)",
+            "",
+            "\/\/ without capturing state this won't mutate the random state",
+            "let c1 = compile(f)",
+            "",
+            "let c1a = c1(bias)",
+            "let c1b = c1(bias)",
+            "XCTAssertTrue(allClose(c1a, c1b).item())"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The random number generation implicitly uses the global random seed, ",
+              "type" : "text"
+            },
+            {
+              "code" : "MLXRandom.seed(_:)",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Since this is not captured in the state, the value that is seen on the compilation run",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "is used without seeing any updates or making any changes to state.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To make this work as expected:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "\/\/ now cature the random state and the random numbers should change per call",
+            "let c2 = compile(state: [MLXRandom.globalState], f)",
+            "",
+            "let c2a = c2(bias)",
+            "let c2b = c2(bias)",
+            "XCTAssertFalse(allClose(c2a, c2b).item())"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Compiling-Training-Graphs",
+          "level" : 2,
+          "text" : "Compiling Training Graphs",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This section will step through how to use ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " with a simple example",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "of a common setup: training a model with ",
+              "type" : "text"
+            },
+            {
+              "code" : "Module",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " using an",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "code" : "Optimizer",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " with state. We will show how to compile the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "full forward, backward, and update with ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Here is the basic scenario:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "class LinearFunctionModel: Module, UnaryLayer {",
+            "    let m = MLXRandom.uniform(low: -5.0, high: 5.0)",
+            "    let b = MLXRandom.uniform(low: -5.0, high: 5.0)",
+            "",
+            "    func callAsFunction(_ x: MLXArray) -> MLXArray {",
+            "        m * x + b",
+            "    }",
+            "}",
+            "",
+            "func loss(model: LinearFunctionModel, x: MLXArray, y: MLXArray) -> MLXArray {",
+            "    mseLoss(predictions: model(x), targets: y, reduction: .mean)",
+            "}",
+            "",
+            "let model = LinearFunctionModel()",
+            "eval(model)",
+            "",
+            "\/\/ the optimizer will use the gradients update the model parameters",
+            "let optimizer = SGD(learningRate: 1e-1)",
+            "",
+            "\/\/ these are the target parameters",
+            "let m = 0.25",
+            "let b = 7"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To start, here is the simple example without any compilation:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let lg = valueAndGrad(model: model, loss)",
+            "for _ in 0 ..< 30 {",
+            "    \/\/ prepare the training data",
+            "    let x = MLXRandom.uniform(low: -5.0, high: 5.0, [10, 1])",
+            "    let y = m * x + b",
+            "    eval(x, y)",
+            "",
+            "    \/\/ evaluate and update parameters",
+            "    let (loss, grads) = lg(model, x, y)",
+            "    optimizer.update(model: model, gradients: grads)",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To compile the update we can put it all in a function and compile it with the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "appropriate input and output captures. Here’s the same example but compiled:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let step = compile(state: [model, optimizer]) { x, y in",
+            "    let lg = valueAndGrad(model: model, loss)",
+            "    let (loss, grads) = lg(model, x, y)",
+            "    optimizer.update(model: model, gradients: grads)",
+            "    return loss",
+            "}",
+            "",
+            "for _ in 0 ..< 30 {",
+            "    \/\/ prepare the training data",
+            "    let x = MLXRandom.uniform(low: -5.0, high: 5.0, [10, 1])",
+            "    let y = m * x + b",
+            "    eval(x, y)",
+            "",
+            "    let loss = step(x, y)",
+            "}"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "If you are using a module which performs random sampling such as",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "Dropout",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : ", make sure you also include ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "MLXRandom.globalState",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " in the",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "code" : "state:",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : ".",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams"
+      ],
+      "title" : "MLX"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-3l9bp",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(enable:)"
+      ],
+      "title" : "Functions"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlx\/compilation"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlx/documentation/MLX": {
+  "abstract" : [
+    {
+      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "learning on Apple silicon, brought to you by Apple machine learning research.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLX",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Updatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can provide a list of the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in its inner state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Updatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/updatable"
+},
+"doc://mlx.swift.mlx/documentation/MLX/broadcasting": {
+  "abstract" : [
+    {
+      "text" : "How different size arrays can be used together.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/broadcasting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Numpy Style Broadcasting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/broadcasting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(enable:)": {
+  "abstract" : [
+    {
+      "text" : "Globally enable or disable ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "enable"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(enable:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(enable:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(enable:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-3l9bp": {
+  "abstract" : [
+    {
+      "text" : "Overload of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " that takes a single ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "produces a single ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-3l9bp",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(state:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(state:_:)-3l9bp"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-71p0o": {
+  "abstract" : [
+    {
+      "text" : "Overload of ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " that takes a two ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "produces a single ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-71p0o",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(state:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(state:_:)-71p0o"
+},
+"doc://mlx.swift.mlx/documentation/MLX/compile(state:_:)-95f19": {
+  "abstract" : [
+    {
+      "text" : "Returns a compiled function that produces the same output as ",
+      "type" : "text"
+    },
+    {
+      "code" : "f()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compile"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX9UpdatableP",
+      "text" : "Updatable"
+    },
+    {
+      "kind" : "text",
+      "text" : "], (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> (["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/compile(state:_:)-95f19",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "compile(state:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/compile(state:_:)-95f19"
+},
+"doc://mlx.swift.mlx/documentation/MLX/converting-python": {
+  "abstract" : [
+    {
+      "text" : "Common patterns from python and mapping ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " function names.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/converting-python",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Converting From Python",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/converting-python"
+},
+"doc://mlx.swift.mlx/documentation/MLX/examples": {
+  "abstract" : [
+    {
+      "text" : "Swift example code for MLX and MLXNN.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/examples",
+  "kind" : "article",
+  "role" : "sampleCode",
+  "title" : "MLX Swift Examples",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/examples"
+},
+"doc://mlx.swift.mlx/documentation/MLX/install": {
+  "abstract" : [
+    {
+      "text" : "How to install and use.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/install",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Installation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/install"
+},
+"doc://mlx.swift.mlx/documentation/MLX/lazy-evaluation": {
+  "abstract" : [
+    {
+      "text" : "Computation in ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " is lazy.  Understand when the graph is evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/lazy-evaluation",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Lazy Evaluation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/lazy-evaluation"
+},
+"doc://mlx.swift.mlx/documentation/MLX/troubleshooting": {
+  "abstract" : [
+    {
+      "text" : "Help with problems you might run into.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/troubleshooting",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Troubleshooting",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/troubleshooting"
+},
+"doc://mlx.swift.mlx/documentation/MLX/unified-memory": {
+  "abstract" : [
+    {
+      "code" : "MLX",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " takes advantage of the shared memory between the CPU and GPU.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/unified-memory",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Unified Memory",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/unified-memory"
+},
+"doc://mlx.swift.mlx/documentation/MLX/using-streams": {
+  "abstract" : [
+    {
+      "text" : "Controlling where your computations are evaluated.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/using-streams",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Using Streams",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/using-streams"
+}
+}
+}

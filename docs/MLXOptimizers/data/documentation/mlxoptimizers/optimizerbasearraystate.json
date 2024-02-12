@@ -54,7 +54,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L92"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L81"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -142,6 +142,8 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
       ],
       "kind" : "relationships",
@@ -167,14 +169,6 @@
       "title" : "Base Classes and Protocols"
     }
   ],
-  "topicSections" : [
-    {
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState\/state()"
-      ],
-      "title" : "Instance Methods"
-    }
-  ],
   "variants" : [
     {
       "paths" : [
@@ -189,6 +183,16 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxoptimizers/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxoptimizers/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
   "abstract" : [
     {
@@ -388,44 +392,6 @@
   "title" : "OptimizerBaseArrayState",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBaseArrayState/state()": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "state"
-    },
-    {
-      "kind" : "text",
-      "text" : "() -> ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState\/state()",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "state()",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/RMSprop": {
   "abstract" : [

@@ -423,10 +423,12 @@
   "relationshipsSections" : [
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Evaluatable",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
         "doc:\/\/mlx.swift.mlx\/s23CustomStringConvertibleP",
         "doc:\/\/mlx.swift.mlx\/s25ExpressibleByArrayLiteralP",
-        "doc:\/\/mlx.swift.mlx\/ST"
+        "doc:\/\/mlx.swift.mlx\/ST",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable"
       ],
       "kind" : "relationships",
       "title" : "Conforms To",
@@ -452,8 +454,7 @@
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/arithmetic",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative"
       ],
       "title" : "Arithmetic Operators and Functions"
     },
@@ -533,6 +534,7 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/copy()",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/eval()",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/item()",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/item(_:)",
@@ -547,7 +549,8 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/CustomStringConvertible-Implementations",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/ExpressibleByArrayLiteral-Implementations",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/ScalarOrArray-Implementations",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/Sequence-Implementations"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/Sequence-Implementations",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/Updatable-Implementations"
       ],
       "title" : "Default Implementations"
     }
@@ -634,6 +637,66 @@
   "title" : "DType",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/dtype"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Evaluatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can be passed to ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and can produce a list",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "of interior ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " to be evaluated.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Evaluatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Evaluatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Evaluatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Evaluatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/evaluatable"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
   "abstract" : [
@@ -1186,6 +1249,51 @@
   "title" : "Sequence Implementations",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/sequence-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/Updatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/Updatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Updatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/updatable-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/copy()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "copy"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/copy()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "copy()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray\/copy()"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/count": {
   "abstract" : [
@@ -1810,6 +1918,49 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/scalarorarray"
 },
+"doc://mlx.swift.mlx/documentation/MLX/Updatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can provide a list of the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in its inner state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Updatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/updatable"
+},
 "doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
   "abstract" : [
     {
@@ -1866,19 +2017,53 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/cumulative"
 },
-"doc://mlx.swift.mlx/documentation/MLX/fft": {
+"doc://mlx.swift.mlx/documentation/MLX/eval(_:)-3b2g9": {
   "abstract" : [
     {
-      "text" : "Fast Fourier Transform Functions",
+      "text" : "Evaluate one or more ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "FFT Functions",
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eval"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "Any"
+    },
+    {
+      "kind" : "text",
+      "text" : "...)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eval(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/fft"
+  "url" : "\/documentation\/mlx\/eval(_:)-3b2g9"
 },
 "doc://mlx.swift.mlx/documentation/MLX/indexes": {
   "abstract" : [

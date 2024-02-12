@@ -402,7 +402,7 @@
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/all(_:axes:keepDims:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/all(_:keepDims:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:equalNaN:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:axes:keepDims:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:keepDims:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/any(_:axis:keepDims:stream:)",
@@ -925,7 +925,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/all(_:keepdims:stream:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/allClose(_:_:rtol:atol:stream:)": {
+"doc://mlx.swift.mlx/documentation/MLX/allClose(_:_:rtol:atol:equalNaN:stream:)": {
   "abstract" : [
     {
       "text" : "Approximate comparison of two arrays.",
@@ -1010,6 +1010,23 @@
     },
     {
       "kind" : "externalParam",
+      "text" : "equalNaN"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
       "text" : "stream"
     },
     {
@@ -1031,12 +1048,12 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:stream:)",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:equalNaN:stream:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "allClose(_:_:rtol:atol:stream:)",
+  "title" : "allClose(_:_:rtol:atol:equalNaN:stream:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:stream:)"
+  "url" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:equalnan:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/any(_:axes:keepDims:stream:)": {
   "abstract" : [

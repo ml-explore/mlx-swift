@@ -82,7 +82,9 @@
   "relationshipsSections" : [
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Evaluatable",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/ScalarOrArray",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable"
       ],
       "kind" : "relationships",
       "title" : "Conforms To",
@@ -101,7 +103,8 @@
     {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Array\/ScalarOrArray-Implementations"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Array\/ScalarOrArray-Implementations",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Array\/Updatable-Implementations"
       ],
       "title" : "Default Implementations"
     }
@@ -141,6 +144,140 @@
   "title" : "MLX",
   "type" : "topic",
   "url" : "\/documentation\/mlx"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Evaluatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can be passed to ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " and can produce a list",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "of interior ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " to be evaluated.",
+      "type" : "text"
+    }
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Element",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "MLXArray",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Evaluatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Evaluatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Evaluatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Evaluatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/evaluatable"
+},
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray": {
+  "abstract" : [
+    {
+      "text" : "An N dimensional array.  The main type in ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MLXArray"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MLXArray",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/mlxarray"
 },
 "doc://mlx.swift.mlx/documentation/MLX/ScalarOrArray": {
   "abstract" : [
@@ -261,6 +398,140 @@
   "title" : "ScalarOrArray Implementations",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/swift\/array\/scalarorarray-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Swift/Array/Updatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Swift\/Array\/Updatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Updatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/swift\/array\/updatable-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/Updatable": {
+  "abstract" : [
+    {
+      "text" : "An object that can provide a list of the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " in its inner state.",
+      "type" : "text"
+    }
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Element",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "MLXArray",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/Updatable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Updatable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Updatable",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/updatable"
+},
+"doc://mlx.swift.mlx/documentation/MLX/eval(_:)-3b2g9": {
+  "abstract" : [
+    {
+      "text" : "Evaluate one or more ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eval"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "Any"
+    },
+    {
+      "kind" : "text",
+      "text" : "...)"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/eval(_:)-3b2g9",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eval(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/eval(_:)-3b2g9"
 }
 }
 }

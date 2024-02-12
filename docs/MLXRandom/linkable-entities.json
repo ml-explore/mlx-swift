@@ -2,6 +2,286 @@
   {
     "abstract" : [
       {
+        "text" : "Generate values from a truncated normal distribution in a given ",
+        "type" : "text"
+      },
+      {
+        "code" : "RangeExpression<Float>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "truncatedNormal"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sn",
+        "text" : "Range"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ">, ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-62jwe",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
+    "taskGroups" : [
+
+    ],
+    "title" : "truncatedNormal(_:_:type:key:stream:)",
+    "usr" : "s:9MLXRandom15truncatedNormal__4type3key6stream3MLX8MLXArrayCSnySfG_SaySiGxmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate normally distributed random numbers.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "normal"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">(["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "loc"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "scale"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/normal(_:type:loc:scale:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:loc:scale:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "normal(_:type:loc:scale:key:stream:)",
+    "usr" : "s:9MLXRandom6normal_4type3loc5scale3key6stream3MLX8MLXArrayCSaySiG_xmS2fAJSgAH14StreamOrDeviceVtAH8HasDTypeRzSBRzlF"
+  },
+  {
+    "abstract" : [
+      {
         "text" : "Generate Bernoulli random values with a given ",
         "type" : "text"
       },
@@ -103,20 +383,6 @@
     "usr" : "s:9MLXRandom9bernoulli__3key6stream3MLX8MLXArrayCAE13ScalarOrArray_p_SaySiGSgAGSgAE06StreamH6DeviceVtF"
   },
   {
-    "abstract" : [
-      {
-        "text" : "Sample ",
-        "type" : "text"
-      },
-      {
-        "code" : "count",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : " values from a categorical distribution.",
-        "type" : "text"
-      }
-    ],
     "availableLanguages" : [
       "swift"
     ],
@@ -131,88 +397,11 @@
       },
       {
         "kind" : "identifier",
-        "text" : "categorical"
+        "text" : "next"
       },
       {
         "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axis"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "count"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
+        "text" : "() -> "
       },
       {
         "kind" : "typeIdentifier",
@@ -220,23 +409,17 @@
         "text" : "MLXArray"
       }
     ],
-    "kind" : "org.swift.docc.kind.function",
+    "kind" : "org.swift.docc.kind.instanceMethod",
     "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/categorical(_:axis:count:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
+    "path" : "\/documentation\/mlxrandom\/randomstate\/next()",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState\/next()",
     "taskGroups" : [
 
     ],
-    "title" : "categorical(_:axis:count:key:stream:)",
-    "usr" : "s:9MLXRandom11categorical_4axis5count3key6stream3MLX8MLXArrayCAI_S2iAISgAG14StreamOrDeviceVtF"
+    "title" : "next()",
+    "usr" : "s:9MLXRandom11RandomStateC4next3MLX8MLXArrayCyF"
   },
   {
-    "abstract" : [
-      {
-        "text" : "Split a PRNG key into sub keys.",
-        "type" : "text"
-      }
-    ],
     "availableLanguages" : [
       "swift"
     ],
@@ -251,62 +434,11 @@
       },
       {
         "kind" : "identifier",
-        "text" : "split"
+        "text" : "innerState"
       },
       {
         "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "into"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> ["
+        "text" : "() -> ["
       },
       {
         "kind" : "typeIdentifier",
@@ -318,20 +450,20 @@
         "text" : "]"
       }
     ],
-    "kind" : "org.swift.docc.kind.function",
+    "kind" : "org.swift.docc.kind.instanceMethod",
     "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/split(key:into:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
+    "path" : "\/documentation\/mlxrandom\/randomstate\/innerstate()",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState\/innerState()",
     "taskGroups" : [
 
     ],
-    "title" : "split(key:into:stream:)",
-    "usr" : "s:9MLXRandom5split3key4into6streamSay3MLX8MLXArrayCGAH_SiAF14StreamOrDeviceVtF"
+    "title" : "innerState()",
+    "usr" : "s:9MLXRandom11RandomStateC05innerC0Say3MLX8MLXArrayCGyF"
   },
   {
     "abstract" : [
       {
-        "text" : "Seed the global PRNG.",
+        "text" : "Global random state",
         "type" : "text"
       }
     ],
@@ -341,7 +473,7 @@
     "fragments" : [
       {
         "kind" : "keyword",
-        "text" : "func"
+        "text" : "class"
       },
       {
         "kind" : "text",
@@ -349,277 +481,25 @@
       },
       {
         "kind" : "identifier",
-        "text" : "seed"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:s6UInt64V",
-        "text" : "UInt64"
-      },
-      {
-        "kind" : "text",
-        "text" : ")"
+        "text" : "RandomState"
       }
     ],
-    "kind" : "org.swift.docc.kind.function",
+    "kind" : "org.swift.docc.kind.class",
     "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/seed(_:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)",
+    "path" : "\/documentation\/mlxrandom\/randomstate",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState",
     "taskGroups" : [
-
-    ],
-    "title" : "seed(_:)",
-    "usr" : "s:9MLXRandom4seedyys6UInt64VF"
-  },
-  {
-    "abstract" : [
       {
-        "text" : "Generate uniformly distributed random numbers with a ",
-        "type" : "text"
-      },
-      {
-        "code" : "RangeExpression<Float>",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : " (specialization).",
-        "type" : "text"
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState\/innerState()",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState\/next()",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState\/seed(_:)"
+        ],
+        "title" : "Instance Methods"
       }
     ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "uniform"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sn",
-        "text" : "Range"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ">, ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-4d6d2",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-4d6d2",
-    "taskGroups" : [
-
-    ],
-    "title" : "uniform(_:_:type:key:stream:)",
-    "usr" : "s:9MLXRandom7uniform__4type3key6stream3MLX8MLXArrayCSnySfG_SaySiGxmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate normally distributed random numbers.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "normal"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">(["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/normal(_:type:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "normal(_:type:key:stream:)",
-    "usr" : "s:9MLXRandom6normal_4type3key6stream3MLX8MLXArrayCSaySiG_xmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
+    "title" : "RandomState",
+    "usr" : "s:9MLXRandom11RandomStateC"
   },
   {
     "abstract" : [
@@ -781,880 +661,6 @@
     ],
     "title" : "truncatedNormal(low:high:_:dtype:key:stream:)",
     "usr" : "s:9MLXRandom15truncatedNormal3low4high_5dtype3key6stream3MLX8MLXArrayCAH13ScalarOrArray_p_AhK_pSaySiGSgAH5DTypeOAJSgAH06StreamL6DeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Sample from a categorical distribution.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "categorical"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axis"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "shape"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "categorical(_:axis:shape:key:stream:)",
-    "usr" : "s:9MLXRandom11categorical_4axis5shape3key6stream3MLX8MLXArrayCAI_SiSaySiGSgAISgAG14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate Bernoulli random values with a ",
-        "type" : "text"
-      },
-      {
-        "code" : "p",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : " value of 0.5.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "bernoulli"
-      },
-      {
-        "kind" : "text",
-        "text" : "(["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/bernoulli(_:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "bernoulli(_:key:stream:)",
-    "usr" : "s:9MLXRandom9bernoulli_3key6stream3MLX8MLXArrayCSaySiG_AGSgAE14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate uniformly distributed random numbers with a ",
-        "type" : "text"
-      },
-      {
-        "code" : "RangeExpression",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "uniform"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "R"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sn",
-        "text" : "Range"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "R"
-      },
-      {
-        "kind" : "text",
-        "text" : ">, ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-10gj2",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-10gj2",
-    "taskGroups" : [
-
-    ],
-    "title" : "uniform(_:_:type:key:stream:)",
-    "usr" : "s:9MLXRandom7uniform__4type3key6stream3MLX8MLXArrayCSnyxG_SaySiGq_mAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSLRzAfNR_SBR_r0_lF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate random integers from the given interval (",
-        "type" : "text"
-      },
-      {
-        "code" : "low:",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : " and ",
-        "type" : "text"
-      },
-      {
-        "code" : "high:",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ") with a given type, e.g. ",
-        "type" : "text"
-      },
-      {
-        "code" : "Int8.self",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "randInt"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "low"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
-        "text" : "ScalarOrArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "high"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
-        "text" : "ScalarOrArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/randint(low:high:_:type:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "randInt(low:high:_:type:key:stream:)",
-    "usr" : "s:9MLXRandom7randInt3low4high_4type3key6stream3MLX8MLXArrayCAH13ScalarOrArray_p_AhK_pSaySiGSgxmAJSgAH06StreamL6DeviceVtAH8HasDTypeRzSzRzlF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Sample from the standard Gumbel distribution.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "gumbel"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">(["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/gumbel(_:type:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "gumbel(_:type:key:stream:)",
-    "usr" : "s:9MLXRandom6gumbel_4type3key6stream3MLX8MLXArrayCSaySiG_xmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Collection of functions related to random number generation.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "kind" : "org.swift.docc.kind.module",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom",
-    "taskGroups" : [
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)"
-        ],
-        "title" : "Keys and Seeds"
-      },
-      {
-        "identifiers" : [
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:_:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:dtype:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-10gj2",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-4d6d2",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:dtype:key:stream:)",
-          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:type:key:stream:)"
-        ],
-        "title" : "Functions"
-      }
-    ],
-    "title" : "MLXRandom",
-    "usr" : "MLXRandom"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Get a PRNG key from a seed.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:s6UInt64V",
-        "text" : "UInt64"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/key(_:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "key(_:)",
-    "usr" : "s:9MLXRandom3keyy3MLX8MLXArrayCs6UInt64VF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate values from a truncated normal distribution in a given ",
-        "type" : "text"
-      },
-      {
-        "code" : "RangeExpression<Float>",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "truncatedNormal"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sn",
-        "text" : "Range"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sf",
-        "text" : "Float"
-      },
-      {
-        "kind" : "text",
-        "text" : ">, ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/truncatednormal(_:_:type:key:stream:)-62jwe",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
-    "taskGroups" : [
-
-    ],
-    "title" : "truncatedNormal(_:_:type:key:stream:)",
-    "usr" : "s:9MLXRandom15truncatedNormal__4type3key6stream3MLX8MLXArrayCSnySfG_SaySiGxmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
   },
   {
     "abstract" : [
@@ -1871,6 +877,40 @@
       },
       {
         "kind" : "externalParam",
+        "text" : "loc"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "scale"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
         "text" : "key"
       },
       {
@@ -1911,13 +951,217 @@
     ],
     "kind" : "org.swift.docc.kind.function",
     "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/normal(_:dtype:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:key:stream:)",
+    "path" : "\/documentation\/mlxrandom\/normal(_:dtype:loc:scale:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:loc:scale:key:stream:)",
     "taskGroups" : [
 
     ],
-    "title" : "normal(_:dtype:key:stream:)",
-    "usr" : "s:9MLXRandom6normal_5dtype3key6stream3MLX8MLXArrayCSaySiG_AF5DTypeOAHSgAF14StreamOrDeviceVtF"
+    "title" : "normal(_:dtype:loc:scale:key:stream:)",
+    "usr" : "s:9MLXRandom6normal_5dtype3loc5scale3key6stream3MLX8MLXArrayCSaySiG_AH5DTypeOS2fAJSgAH14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate Bernoulli random values with a ",
+        "type" : "text"
+      },
+      {
+        "code" : "p",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " value of 0.5.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "bernoulli"
+      },
+      {
+        "kind" : "text",
+        "text" : "(["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/bernoulli(_:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "bernoulli(_:key:stream:)",
+    "usr" : "s:9MLXRandom9bernoulli_3key6stream3MLX8MLXArrayCSaySiG_AGSgAE14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Sample from the standard Gumbel distribution.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "gumbel"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">(["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/gumbel(_:type:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "gumbel(_:type:key:stream:)",
+    "usr" : "s:9MLXRandom6gumbel_4type3key6stream3MLX8MLXArrayCSaySiG_xmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
   },
   {
     "abstract" : [
@@ -2054,396 +1298,6 @@
     ],
     "title" : "randInt(low:high:_:key:stream:)",
     "usr" : "s:9MLXRandom7randInt3low4high_3key6stream3MLX8MLXArrayCAG13ScalarOrArray_p_AgJ_pSaySiGSgAISgAG06StreamK6DeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Sample from the standard Gumbel distribution with a given ",
-        "type" : "text"
-      },
-      {
-        "code" : "DType",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "gumbel"
-      },
-      {
-        "kind" : "text",
-        "text" : "(["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "dtype"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX5DTypeO",
-        "text" : "DType"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/gumbel(_:dtype:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "gumbel(_:dtype:key:stream:)",
-    "usr" : "s:9MLXRandom6gumbel_5dtype3key6stream3MLX8MLXArrayCSaySiG_AF5DTypeOAHSgAF14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate values from a truncated normal distribution between ",
-        "type" : "text"
-      },
-      {
-        "code" : "low",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : " and ",
-        "type" : "text"
-      },
-      {
-        "code" : "high",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "truncatedNormal"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">("
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "low"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
-        "text" : "ScalarOrArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "high"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
-        "text" : "ScalarOrArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "type"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ".Type, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/truncatednormal(low:high:_:type:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "truncatedNormal(low:high:_:type:key:stream:)",
-    "usr" : "s:9MLXRandom15truncatedNormal3low4high_4type3key6stream3MLX8MLXArrayCAH13ScalarOrArray_p_AhK_pSaySiGSgxmAJSgAH06StreamL6DeviceVtAH8HasDTypeRzSBRzlF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Generate random integers from the given interval using a ",
-        "type" : "text"
-      },
-      {
-        "code" : "RangeExpression<Int>",
-        "type" : "codeVoice"
-      },
-      {
-        "text" : ".",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "randInt"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "genericParameter",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Sn",
-        "text" : "Range"
-      },
-      {
-        "kind" : "text",
-        "text" : "<"
-      },
-      {
-        "kind" : "typeIdentifier",
-        "text" : "T"
-      },
-      {
-        "kind" : "text",
-        "text" : ">, ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "], "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "key"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxrandom\/randint(_:_:key:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "randInt(_:_:key:stream:)",
-    "usr" : "s:9MLXRandom7randInt__3key6stream3MLX8MLXArrayCSnyxG_SaySiGAGSgAE14StreamOrDeviceVtAE8HasDTypeRzSzRzlF"
   },
   {
     "abstract" : [
@@ -2740,5 +1594,1525 @@
     ],
     "title" : "truncatedNormal(_:_:type:key:stream:)",
     "usr" : "s:9MLXRandom15truncatedNormal__4type3key6stream3MLX8MLXArrayCSnyxG_SaySiGq_mAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSLRzAfNR_SBR_r0_lF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Sample from a categorical distribution.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "categorical"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "shape"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "categorical(_:axis:shape:key:stream:)",
+    "usr" : "s:9MLXRandom11categorical_4axis5shape3key6stream3MLX8MLXArrayCAI_SiSaySiGSgAISgAG14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Global random state.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "let"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "globalState"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:9MLXRandom11RandomStateC",
+        "text" : "RandomState"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.globalVariable",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/globalstate",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/globalState",
+    "taskGroups" : [
+
+    ],
+    "title" : "globalState",
+    "usr" : "s:9MLXRandom11globalStateAA06RandomC0Cvp"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate random integers from the given interval using a ",
+        "type" : "text"
+      },
+      {
+        "code" : "RangeExpression<Int>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "randInt"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sn",
+        "text" : "Range"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">, ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/randint(_:_:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "randInt(_:_:key:stream:)",
+    "usr" : "s:9MLXRandom7randInt__3key6stream3MLX8MLXArrayCSnyxG_SaySiGAGSgAE14StreamOrDeviceVtAE8HasDTypeRzSzRzlF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate values from a truncated normal distribution between ",
+        "type" : "text"
+      },
+      {
+        "code" : "low",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " and ",
+        "type" : "text"
+      },
+      {
+        "code" : "high",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "truncatedNormal"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "low"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+        "text" : "ScalarOrArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "high"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+        "text" : "ScalarOrArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/truncatednormal(low:high:_:type:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "truncatedNormal(low:high:_:type:key:stream:)",
+    "usr" : "s:9MLXRandom15truncatedNormal3low4high_4type3key6stream3MLX8MLXArrayCAH13ScalarOrArray_p_AhK_pSaySiGSgxmAJSgAH06StreamL6DeviceVtAH8HasDTypeRzSBRzlF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Split a PRNG key into two keys and return a tuple.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "split"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> ("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/split(key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "split(key:stream:)",
+    "usr" : "s:9MLXRandom5split3key6stream3MLX8MLXArrayC_AGtAG_AE14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Seed the global PRNG.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "seed"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:s6UInt64V",
+        "text" : "UInt64"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/seed(_:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "seed(_:)",
+    "usr" : "s:9MLXRandom4seedyys6UInt64VF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Sample ",
+        "type" : "text"
+      },
+      {
+        "code" : "count",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " values from a categorical distribution.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "categorical"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "count"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/categorical(_:axis:count:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "categorical(_:axis:count:key:stream:)",
+    "usr" : "s:9MLXRandom11categorical_4axis5count3key6stream3MLX8MLXArrayCAI_S2iAISgAG14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Sample from the standard Gumbel distribution with a given ",
+        "type" : "text"
+      },
+      {
+        "code" : "DType",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "gumbel"
+      },
+      {
+        "kind" : "text",
+        "text" : "(["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "dtype"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX5DTypeO",
+        "text" : "DType"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/gumbel(_:dtype:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "gumbel(_:dtype:key:stream:)",
+    "usr" : "s:9MLXRandom6gumbel_5dtype3key6stream3MLX8MLXArrayCSaySiG_AF5DTypeOAHSgAF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate random integers from the given interval (",
+        "type" : "text"
+      },
+      {
+        "code" : "low:",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " and ",
+        "type" : "text"
+      },
+      {
+        "code" : "high:",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ") with a given type, e.g. ",
+        "type" : "text"
+      },
+      {
+        "code" : "Int8.self",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "randInt"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "low"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+        "text" : "ScalarOrArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "high"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX13ScalarOrArrayP",
+        "text" : "ScalarOrArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/randint(low:high:_:type:key:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "randInt(low:high:_:type:key:stream:)",
+    "usr" : "s:9MLXRandom7randInt3low4high_4type3key6stream3MLX8MLXArrayCAH13ScalarOrArray_p_AhK_pSaySiGSgxmAJSgAH06StreamL6DeviceVtAH8HasDTypeRzSzRzlF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Get a PRNG key from a seed.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:s6UInt64V",
+        "text" : "UInt64"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/key(_:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "key(_:)",
+    "usr" : "s:9MLXRandom3keyy3MLX8MLXArrayCs6UInt64VF"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "seed"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:s6UInt64V",
+        "text" : "UInt64"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.instanceMethod",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/randomstate\/seed(_:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState\/seed(_:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "seed(_:)",
+    "usr" : "s:9MLXRandom11RandomStateC4seedyys6UInt64VF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Split a PRNG key into sub keys.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "split"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "into"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "]"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/split(key:into:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "split(key:into:stream:)",
+    "usr" : "s:9MLXRandom5split3key4into6streamSay3MLX8MLXArrayCGAH_SiAF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate uniformly distributed random numbers with a ",
+        "type" : "text"
+      },
+      {
+        "code" : "RangeExpression<Float>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " (specialization).",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "uniform"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sn",
+        "text" : "Range"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sf",
+        "text" : "Float"
+      },
+      {
+        "kind" : "text",
+        "text" : ">, ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-4d6d2",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-4d6d2",
+    "taskGroups" : [
+
+    ],
+    "title" : "uniform(_:_:type:key:stream:)",
+    "usr" : "s:9MLXRandom7uniform__4type3key6stream3MLX8MLXArrayCSnySfG_SaySiGxmAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSBRzlF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Generate uniformly distributed random numbers with a ",
+        "type" : "text"
+      },
+      {
+        "code" : "RangeExpression",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "uniform"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "R"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "genericParameter",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ">("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sn",
+        "text" : "Range"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "R"
+      },
+      {
+        "kind" : "text",
+        "text" : ">, ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "type"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "T"
+      },
+      {
+        "kind" : "text",
+        "text" : ".Type, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "key"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom\/uniform(_:_:type:key:stream:)-10gj2",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-10gj2",
+    "taskGroups" : [
+
+    ],
+    "title" : "uniform(_:_:type:key:stream:)",
+    "usr" : "s:9MLXRandom7uniform__4type3key6stream3MLX8MLXArrayCSnyxG_SaySiGq_mAHSgAF14StreamOrDeviceVtAF8HasDTypeRzSLRzAfNR_SBR_r0_lF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Collection of functions related to random number generation.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "kind" : "org.swift.docc.kind.module",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxrandom",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:into:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/seed(_:)"
+        ],
+        "title" : "Keys and Seeds"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState"
+        ],
+        "title" : "Classes"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/globalState"
+        ],
+        "title" : "Variables"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:_:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:loc:scale:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:loc:scale:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:dtype:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:type:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-10gj2",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(_:_:type:key:stream:)-4d6d2",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:dtype:key:stream:)",
+          "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/uniform(low:high:_:type:key:stream:)"
+        ],
+        "title" : "Functions"
+      }
+    ],
+    "title" : "MLXRandom",
+    "usr" : "MLXRandom"
   }
 ]

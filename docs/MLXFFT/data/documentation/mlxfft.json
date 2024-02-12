@@ -1,0 +1,1404 @@
+{
+  "abstract" : [
+    {
+      "text" : "Fast Fourier Transform Functions",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "MLXFFT",
+    "modules" : [
+      {
+        "name" : "MLXFFT"
+      }
+    ],
+    "role" : "collection",
+    "roleHeading" : "Framework",
+    "symbolKind" : "module",
+    "title" : "MLXFFT"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Other-MLX-Packages",
+          "level" : 2,
+          "text" : "Other MLX Packages",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft(_:n:axis:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft2(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fftn(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft(_:n:axis:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft2(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifftn(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft(_:n:axis:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft2(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfftn(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft(_:n:axis:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft2(_:s:axes:stream:)",
+        "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfftn(_:s:axes:stream:)"
+      ],
+      "title" : "Free Functions"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxfft"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxfft/documentation/MLXFFT": {
+  "abstract" : [
+    {
+      "text" : "Fast Fourier Transform Functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXFFT",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/fft(_:n:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "One dimensional discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "fft"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "n"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft(_:n:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "fft(_:n:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/fft(_:n:axis:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/fft2(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Two dimensional discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "fft2"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft2(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "fft2(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/fft2(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/fftn(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "n-dimensional discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "fftn"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fftn(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "fftn(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/fftn(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/ifft(_:n:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "One dimensional inverse discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ifft"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "n"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft(_:n:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ifft(_:n:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/ifft(_:n:axis:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/ifft2(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Two dimensional inverse discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ifft2"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft2(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ifft2(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/ifft2(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/ifftn(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "n-dimensional inverse discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ifftn"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifftn(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ifftn(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/ifftn(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/irfft(_:n:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Inverse one dimensional discrete Fourier Transform on a real input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "irfft"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "n"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft(_:n:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "irfft(_:n:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/irfft(_:n:axis:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/irfft2(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Inverse two dimensional discrete Fourier Transform on a real input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "irfft2"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft2(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "irfft2(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/irfft2(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/irfftn(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Inverse n-dimensional discrete Fourier Transform on a real input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "irfftn"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfftn(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "irfftn(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/irfftn(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/rfft(_:n:axis:stream:)": {
+  "abstract" : [
+    {
+      "text" : "One dimensional discrete Fourier Transform on a real input.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "rfft"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "n"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft(_:n:axis:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "rfft(_:n:axis:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/rfft(_:n:axis:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/rfft2(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Two dimensional real discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "rfft2"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft2(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "rfft2(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/rfft2(_:s:axes:stream:)"
+},
+"doc://mlx.swift.mlxfft/documentation/MLXFFT/rfftn(_:s:axes:stream:)": {
+  "abstract" : [
+    {
+      "text" : "n-dimensional real discrete Fourier Transform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "rfftn"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "s"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfftn(_:s:axes:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "rfftn(_:s:axes:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxfft\/rfftn(_:s:axes:stream:)"
+},
+"https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+  "title" : "MLXFFT",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXFFT",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
+  "title" : "MLXNN",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXNN",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+  "title" : "MLXOptimizers",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXOptimizers",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
+  "title" : "MLXRandom",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXRandom",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/"
+},
+"https://ml-explore.github.io/mlx/build/html/index.html": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+  "title" : "Python mlx",
+  "titleInlineContent" : [
+    {
+      "text" : "Python ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html"
+}
+}
+}

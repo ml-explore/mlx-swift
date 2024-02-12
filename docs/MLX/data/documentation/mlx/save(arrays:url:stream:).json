@@ -5,14 +5,6 @@
       "type" : "text"
     },
     {
-      "code" : "gguf",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
-      "type" : "text"
-    },
-    {
       "code" : "safetensors",
       "type" : "codeVoice"
     },
@@ -125,7 +117,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1204"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Ops.swift#L1198"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -584,14 +576,6 @@
       "type" : "text"
     },
     {
-      "code" : "gguf",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
-      "type" : "text"
-    },
-    {
       "code" : "safetensors",
       "type" : "codeVoice"
     },
@@ -784,14 +768,6 @@
   "abstract" : [
     {
       "text" : "Save dictionary of arrays in ",
-      "type" : "text"
-    },
-    {
-      "code" : "gguf",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
       "type" : "text"
     },
     {

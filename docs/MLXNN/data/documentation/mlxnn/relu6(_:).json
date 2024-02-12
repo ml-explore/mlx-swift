@@ -178,8 +178,9 @@
                 {
                   "inlineContent" : [
                     {
-                      "code" : "Relu6",
-                      "type" : "codeVoice"
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
+                      "isActive" : true,
+                      "type" : "reference"
                     }
                   ],
                   "type" : "paragraph"
@@ -255,6 +256,40 @@
   "title" : "MLXNN",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU6": {
+  "abstract" : [
+    {
+      "text" : "Applies the Rectified Linear Unit 6.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ReLU6"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ReLU6"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ReLU6",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/relu6"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/activations": {
   "abstract" : [

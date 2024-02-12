@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L250"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L251"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -147,6 +147,8 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
       ],
       "kind" : "relationships",
@@ -184,12 +186,6 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)"
       ],
       "title" : "Initializers"
-    },
-    {
-      "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/state()"
-      ],
-      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -206,6 +202,16 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxoptimizers/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxoptimizers/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
   "abstract" : [
     {
@@ -328,44 +334,6 @@
   "title" : "init(learningRate:rho:eps:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adadelta\/init(learningrate:rho:eps:)"
-},
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaDelta/state()": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "state"
-    },
-    {
-      "kind" : "text",
-      "text" : "() -> ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/state()",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "state()",
-  "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/adadelta\/state()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/AdaGrad": {
   "abstract" : [

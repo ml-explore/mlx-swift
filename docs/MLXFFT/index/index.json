@@ -1,0 +1,82 @@
+{
+  "interfaceLanguages" : {
+    "swift" : [
+      {
+        "children" : [
+          {
+            "title" : "Free Functions",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/fft(_:n:axis:stream:)",
+            "title" : "func fft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/fft2(_:s:axes:stream:)",
+            "title" : "func fft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/fftn(_:s:axes:stream:)",
+            "title" : "func fftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/ifft(_:n:axis:stream:)",
+            "title" : "func ifft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/ifft2(_:s:axes:stream:)",
+            "title" : "func ifft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/ifftn(_:s:axes:stream:)",
+            "title" : "func ifftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/irfft(_:n:axis:stream:)",
+            "title" : "func irfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/irfft2(_:s:axes:stream:)",
+            "title" : "func irfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/irfftn(_:s:axes:stream:)",
+            "title" : "func irfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/rfft(_:n:axis:stream:)",
+            "title" : "func rfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/rfft2(_:s:axes:stream:)",
+            "title" : "func rfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxfft\/rfftn(_:s:axes:stream:)",
+            "title" : "func rfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          }
+        ],
+        "path" : "\/documentation\/mlxfft",
+        "title" : "MLXFFT",
+        "type" : "module"
+      }
+    ]
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 1,
+    "patch" : 1
+  }
+}

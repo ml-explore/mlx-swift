@@ -53,7 +53,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L10"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L13"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -120,24 +120,57 @@
     {
       "content" : [
         {
-          "anchor" : "discussion",
-          "level" : 2,
-          "text" : "Discussion",
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
           "type" : "heading"
         },
         {
-          "inlineContent" : [
+          "items" : [
             {
-              "text" : "See also ",
-              "type" : "text"
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/key(_:)",
-              "isActive" : true,
-              "type" : "reference"
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/globalState",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
             }
           ],
-          "type" : "paragraph"
+          "type" : "unorderedList"
         }
       ],
       "kind" : "content"
@@ -188,6 +221,77 @@
   "title" : "MLXRandom",
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/RandomState": {
+  "abstract" : [
+    {
+      "text" : "Global random state",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RandomState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RandomState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RandomState",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/randomstate"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/globalState": {
+  "abstract" : [
+    {
+      "text" : "Global random state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "globalState"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9MLXRandom11RandomStateC",
+      "text" : "RandomState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/globalState",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "globalState",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/globalstate"
 },
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/key(_:)": {
   "abstract" : [

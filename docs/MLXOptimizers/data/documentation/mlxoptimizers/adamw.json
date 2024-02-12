@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L355"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L342"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -171,6 +171,8 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
       ],
       "kind" : "relationships",
@@ -224,6 +226,16 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxoptimizers/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxoptimizers/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
   "abstract" : [
     {

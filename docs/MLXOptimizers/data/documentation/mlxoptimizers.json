@@ -76,7 +76,7 @@
             "    \/\/ use the optimizer to update the model parameters",
             "    optimizer.update(model: model, gradients: grads)",
             "",
-            "    eval(model.parameters(), optimizer.state())",
+            "    eval(model, optimizer)",
             "}"
           ],
           "syntax" : null,
@@ -137,6 +137,20 @@
                 {
                   "inlineContent" : [
                     {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
                       "isActive" : true,
                       "type" : "reference"
@@ -183,6 +197,12 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
       ],
       "title" : "Base Classes and Protocols"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState"
+      ],
+      "title" : "Structures"
     }
   ],
   "variants" : [
@@ -637,6 +657,57 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd"
 },
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/TupleState": {
+  "abstract" : [
+    {
+      "text" : "State container for ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " holding a tuple of ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "TupleState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "TupleState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "TupleState",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/tuplestate"
+},
 "https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
   "title" : "MLX",
@@ -648,6 +719,18 @@
   ],
   "type" : "link",
   "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+  "title" : "MLXFFT",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXFFT",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/"
 },
 "https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",

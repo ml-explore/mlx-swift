@@ -14,14 +14,6 @@
       "type" : "text"
     },
     {
-      "code" : "gguf",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
-      "type" : "text"
-    },
-    {
       "code" : "safetensors",
       "type" : "codeVoice"
     },
@@ -571,14 +563,6 @@
       "type" : "text"
     },
     {
-      "code" : "gguf",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
-      "type" : "text"
-    },
-    {
       "code" : "safetensors",
       "type" : "codeVoice"
     },
@@ -771,14 +755,6 @@
   "abstract" : [
     {
       "text" : "Save dictionary of arrays in ",
-      "type" : "text"
-    },
-    {
-      "code" : "gguf",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " or ",
       "type" : "text"
     },
     {

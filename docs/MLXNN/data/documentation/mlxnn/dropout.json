@@ -180,7 +180,9 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/3MLX11EvaluatableP",
         "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
+        "doc:\/\/mlx.swift.mlxnn\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/UnaryLayer"
       ],
@@ -244,9 +246,19 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxnn/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxnn/3MLX19IndentedDescriptionP": {
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
   "title" : "MLX.IndentedDescription",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxnn/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
   "type" : "unresolvable"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {

@@ -417,7 +417,7 @@
             "\/\/ All the model parameters are created but since MLX is lazy by",
             "\/\/ default, they are not evaluated yet. Calling `eval` actually",
             "\/\/ allocates memory and initializes the parameters.",
-            "eval(model.parameters())",
+            "eval(model)",
             "",
             "\/\/ and projecting a value through the model:",
             "let input: MLXArray ...",
@@ -643,7 +643,9 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/3MLX11EvaluatableP",
         "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
+        "doc:\/\/mlx.swift.mlxnn\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxnn\/s23CustomStringConvertibleP"
       ],
       "kind" : "relationships",
@@ -851,7 +853,8 @@
     {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/IndentedDescription-Implementations"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/IndentedDescription-Implementations",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/Updatable-Implementations"
       ],
       "title" : "Default Implementations"
     }
@@ -870,9 +873,19 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxnn/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxnn/3MLX19IndentedDescriptionP": {
   "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX19IndentedDescriptionP",
   "title" : "MLX.IndentedDescription",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxnn/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
   "type" : "unresolvable"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN": {
@@ -1678,6 +1691,17 @@
   "title" : "IndentedDescription Implementations",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/module\/indenteddescription-implementations"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Module/Updatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Module\/Updatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Updatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/module\/updatable-implementations"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module/VerifyUpdate": {
   "abstract" : [

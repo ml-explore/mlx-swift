@@ -2290,25 +2290,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SD",
-      "text" : "Dictionary"
-    },
-    {
-      "kind" : "text",
-      "text" : "<"
-    },
-    {
-      "kind" : "typeIdentifier",
-      "text" : "Key"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX10NestedItemO",
-      "text" : "NestedItem"
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
     },
     {
       "kind" : "text",
@@ -2328,12 +2311,12 @@
     },
     {
       "kind" : "text",
-      "text" : ">>."
+      "text" : ">."
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SD7Elementa",
-      "text" : "Element"
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV17CollectionElementa",
+      "text" : "CollectionElement"
     }
   ],
   "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(_:)-4t8fg",

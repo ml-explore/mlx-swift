@@ -254,7 +254,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:stream:)",
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:equalNaN:stream:)",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -282,7 +282,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:stream:)",
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:equalNaN:stream:)",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -2501,7 +2501,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/_(_:_:)-8az7l"
 },
-"doc://mlx.swift.mlx/documentation/MLX/MLXArray/allClose(_:rtol:atol:stream:)": {
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/allClose(_:rtol:atol:equalNaN:stream:)": {
   "abstract" : [
     {
       "text" : "Approximate comparison of two arrays.",
@@ -2577,6 +2577,23 @@
     },
     {
       "kind" : "externalParam",
+      "text" : "equalNaN"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
       "text" : "stream"
     },
     {
@@ -2598,12 +2615,12 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:stream:)",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:equalNaN:stream:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "allClose(_:rtol:atol:stream:)",
+  "title" : "allClose(_:rtol:atol:equalNaN:stream:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:stream:)"
+  "url" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:equalnan:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/arrayEqual(_:equalNAN:stream:)": {
   "abstract" : [
@@ -2726,7 +2743,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/scalarorarray"
 },
-"doc://mlx.swift.mlx/documentation/MLX/allClose(_:_:rtol:atol:stream:)": {
+"doc://mlx.swift.mlx/documentation/MLX/allClose(_:_:rtol:atol:equalNaN:stream:)": {
   "abstract" : [
     {
       "text" : "Approximate comparison of two arrays.",
@@ -2811,6 +2828,23 @@
     },
     {
       "kind" : "externalParam",
+      "text" : "equalNaN"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
       "text" : "stream"
     },
     {
@@ -2832,12 +2866,12 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:stream:)",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/allClose(_:_:rtol:atol:equalNaN:stream:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "allClose(_:_:rtol:atol:stream:)",
+  "title" : "allClose(_:_:rtol:atol:equalNaN:stream:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:stream:)"
+  "url" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:equalnan:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/arithmetic": {
   "abstract" : [

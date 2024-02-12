@@ -116,7 +116,7 @@
     ],
     "remoteSource" : {
       "fileName" : "MLXArray+Ops.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L978"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/MLXArray+Ops.swift#L980"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -376,7 +376,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/all(axes:keepDims:stream:)",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:stream:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:equalNaN:stream:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/arrayEqual(_:equalNAN:stream:)"
       ],
       "title" : "MLXArray Logical Functions"
@@ -556,7 +556,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/mlxarray\/all(axes:keepdims:stream:)"
 },
-"doc://mlx.swift.mlx/documentation/MLX/MLXArray/allClose(_:rtol:atol:stream:)": {
+"doc://mlx.swift.mlx/documentation/MLX/MLXArray/allClose(_:rtol:atol:equalNaN:stream:)": {
   "abstract" : [
     {
       "text" : "Approximate comparison of two arrays.",
@@ -632,6 +632,23 @@
     },
     {
       "kind" : "externalParam",
+      "text" : "equalNaN"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
       "text" : "stream"
     },
     {
@@ -653,12 +670,12 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:stream:)",
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/MLXArray\/allClose(_:rtol:atol:equalNaN:stream:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "allClose(_:rtol:atol:stream:)",
+  "title" : "allClose(_:rtol:atol:equalNaN:stream:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:stream:)"
+  "url" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:equalnan:stream:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/MLXArray/any(axes:keepDims:stream:)": {
   "abstract" : [

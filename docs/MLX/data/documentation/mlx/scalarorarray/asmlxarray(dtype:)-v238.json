@@ -218,6 +218,10 @@
             {
               "code" : "toArrays(_:_:)",
               "type" : "codeVoice"
+            },
+            {
+              "text" : " (internal).",
+              "type" : "text"
             }
           ],
           "type" : "paragraph"

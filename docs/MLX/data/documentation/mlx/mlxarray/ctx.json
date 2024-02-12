@@ -104,6 +104,10 @@
               "kind" : "typeIdentifier",
               "preciseIdentifier" : "c:array.h@T@mlx_array",
               "text" : "mlx_array"
+            },
+            {
+              "kind" : "text",
+              "text" : " { get }"
             }
           ]
         }

@@ -484,8 +484,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/convolution",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/cumulative"
       ],
       "title" : "Arithmetic Operators and Functions"
     }
@@ -4964,20 +4963,6 @@
   "title" : "exp(_:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/exp(_:stream:)"
-},
-"doc://mlx.swift.mlx/documentation/MLX/fft": {
-  "abstract" : [
-    {
-      "text" : "Fast Fourier Transform Functions",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/fft",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "FFT Functions",
-  "type" : "topic",
-  "url" : "\/documentation\/mlx\/fft"
 },
 "doc://mlx.swift.mlx/documentation/MLX/floor(_:stream:)": {
   "abstract" : [

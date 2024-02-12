@@ -4,54 +4,6 @@
 
     ],
     "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 13,
-      "line" : 741
-    },
-    "summary" : "'mapValues(_:transform:)' is ambiguous at '\/MLX\/NestedDictionary'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 13,
-      "line" : 705
-    },
-    "summary" : "'mapValues(_:transform:)' is ambiguous at '\/MLX\/NestedDictionary'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/DType.swift",
-    "start" : {
-      "column" : 20,
-      "line" : 167
-    },
-    "summary" : "'toArrays(_:_:)' doesn't exist at '\/MLX\/ScalarOrArray\/asMLXArray(dtype:)'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 13,
-      "line" : 653
-    },
-    "summary" : "'mapValues(_:dictionary2:transform:)' doesn't exist at '\/MLX\/NestedDictionary\/mapValues(_:transform:)'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
     "source" : "..\/MLXArray+Ops.swift",
     "start" : {
       "column" : 22,
@@ -106,53 +58,5 @@
       "line" : 78
     },
     "summary" : "'-(_:_:)-971j0' doesn't exist at '\/MLX\/MLXArray'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 57,
-      "line" : 97
-    },
-    "summary" : "'mapValues(_:transform:)' is ambiguous at '\/MLX\/NestedDictionary'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 30,
-      "line" : 100
-    },
-    "summary" : "'mapValues(_:transform:))' doesn't exist at '\/MLX\/NestedDictionary'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 57,
-      "line" : 252
-    },
-    "summary" : "'mapValues(_:transform:)' is ambiguous at '\/MLX\/NestedDictionary'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/Nested.swift",
-    "start" : {
-      "column" : 30,
-      "line" : 255
-    },
-    "summary" : "'mapValues(_:transform:))' doesn't exist at '\/MLX\/NestedDictionary'"
   }
 ]

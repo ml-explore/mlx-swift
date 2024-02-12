@@ -54,7 +54,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L31"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L27"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -94,7 +94,28 @@
             },
             {
               "kind" : "text",
-              "text" : ">"
+              "text" : "> "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "where"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "State"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:3MLX9UpdatableP",
+              "text" : "Updatable"
             }
           ]
         }
@@ -125,20 +146,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "code" : "func newState(gradient: MLXArray) -> State",
-                      "type" : "codeVoice"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            },
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "code" : "func parameters() -> ModuleParameters",
+                      "code" : "func newState(parameter: MLXArray) -> State",
                       "type" : "codeVoice"
                     }
                   ],
@@ -206,6 +214,8 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+        "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
       ],
       "kind" : "relationships",
@@ -234,7 +244,7 @@
   "topicSections" : [
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/state()",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/innerState()",
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)"
       ],
       "title" : "Instance Methods"
@@ -254,6 +264,16 @@
   ]
 , 
 "references": {
+"doc://mlx.swift.mlxoptimizers/3MLX11EvaluatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX11EvaluatableP",
+  "title" : "MLX.Evaluatable",
+  "type" : "unresolvable"
+},
+"doc://mlx.swift.mlxoptimizers/3MLX9UpdatableP": {
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/3MLX9UpdatableP",
+  "title" : "MLX.Updatable",
+  "type" : "unresolvable"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers": {
   "abstract" : [
     {
@@ -480,20 +500,9 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/optimizerbase"
 },
-"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase/state()": {
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase/innerState()": {
   "abstract" : [
-    {
-      "text" : "Return any parameters that should be passed to ",
-      "type" : "text"
-    },
-    {
-      "code" : "eval()",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : ".",
-      "type" : "text"
-    }
+
   ],
   "fragments" : [
     {
@@ -506,7 +515,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "state"
+      "text" : "innerState"
     },
     {
       "kind" : "text",
@@ -522,12 +531,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/state()",
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/innerState()",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "state()",
+  "title" : "innerState()",
   "type" : "topic",
-  "url" : "\/documentation\/mlxoptimizers\/optimizerbase\/state()"
+  "url" : "\/documentation\/mlxoptimizers\/optimizerbase\/innerstate()"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBase/update(model:gradients:)": {
   "abstract" : [

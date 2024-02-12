@@ -586,6 +586,22 @@
                 "path" : "\/documentation\/mlxnn\/module\/indenteddescription-implementations",
                 "title" : "IndentedDescription Implementations",
                 "type" : "symbol"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/module\/innerstate()",
+                    "title" : "func innerState() -> [MLXArray]",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/module\/updatable-implementations",
+                "title" : "Updatable Implementations",
+                "type" : "symbol"
               }
             ],
             "path" : "\/documentation\/mlxnn\/module",
@@ -2021,13 +2037,13 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-1w6x8",
-            "title" : "func valueAndGrad<Model>(model: Model, (Model, MLXArray) -> MLXArray) -> (Model, MLXArray) -> (MLXArray, ModuleParameters)",
+            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-548r7",
+            "title" : "func valueAndGrad<Model>(model: Model, (Model, [MLXArray]) -> [MLXArray]) -> (Model, [MLXArray]) -> ([MLXArray], ModuleParameters)",
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-548r7",
-            "title" : "func valueAndGrad<Model>(model: Model, (Model, [MLXArray]) -> [MLXArray]) -> (Model, [MLXArray]) -> ([MLXArray], ModuleParameters)",
+            "path" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-45dg5",
+            "title" : "func valueAndGrad<Model, Arguments>(model: Model, (Model, Arguments) -> [MLXArray]) -> (Model, Arguments) -> ([MLXArray], ModuleParameters)",
             "type" : "func"
           },
           {

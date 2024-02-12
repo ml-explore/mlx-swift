@@ -79,7 +79,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Nested.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L362"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L363"
     },
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -186,6 +186,20 @@
         },
         {
           "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/flattenedValues()",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
             {
               "content" : [
                 {
@@ -681,6 +695,46 @@
   "title" : "flattened(prefix:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteditem\/flattened(prefix:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedItem/flattenedValues()": {
+  "abstract" : [
+    {
+      "text" : "Return a flattened representation of the structured contents as an array of values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flattenedValues"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/flattenedValues()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flattenedValues()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteditem\/flattenedvalues()"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedItem/unflattened(_:)": {
   "abstract" : [

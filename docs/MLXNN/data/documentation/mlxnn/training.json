@@ -116,8 +116,9 @@
                       "type" : "text"
                     },
                     {
-                      "code" : "valueAndGrad()",
-                      "type" : "codeVoice"
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-12a2c",
+                      "isActive" : true,
+                      "type" : "reference"
                     },
                     {
                       "text" : " function to create a new function to compute the gradient",
@@ -331,7 +332,7 @@
         {
           "code" : [
             "let model = LinearFunctionModel()",
-            "eval(model.parameters())",
+            "eval(model)",
             "",
             "\/\/ compute the loss and gradients",
             "let lg = valueAndGrad(model: model, loss)",
@@ -450,7 +451,7 @@
             "    let (loss, grads) = lg(model, x, y)",
             "    optimizer.update(model: model, gradients: grads)",
             "",
-            "    eval(model.parameters(), optimizer.state())",
+            "    eval(model, optimizer)",
             "}"
           ],
           "syntax" : "swift",
@@ -540,6 +541,173 @@
   "title" : "Loss Functions",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/losses"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-12a2c": {
+  "abstract" : [
+    {
+      "text" : "Transform the passed function ",
+      "type" : "text"
+    },
+    {
+      "code" : "f(Model, MLXArray, MLXArray)",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to a",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "function that computes the gradients of ",
+      "type" : "text"
+    },
+    {
+      "code" : "f",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with regard to the model’s trainable",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "parameters and also its value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueAndGrad"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ">("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "model"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN16ModuleParametersa",
+      "text" : "ModuleParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-12a2c",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueAndGrad(model:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-12a2c"
 },
 "https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",

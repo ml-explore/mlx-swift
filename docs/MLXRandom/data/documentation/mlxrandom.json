@@ -180,6 +180,20 @@
                 {
                   "inlineContent" : [
                     {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
                       "isActive" : true,
                       "type" : "reference"
@@ -215,17 +229,30 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState"
+      ],
+      "title" : "Classes"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/globalState"
+      ],
+      "title" : "Variables"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/bernoulli(_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:count:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/categorical(_:axis:shape:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:dtype:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/gumbel(_:type:key:stream:)",
-        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:key:stream:)",
-        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:loc:scale:key:stream:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:loc:scale:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(_:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/randInt(low:high:_:type:key:stream:)",
+        "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:stream:)",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-62jwe",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(_:_:type:key:stream:)-8vjij",
         "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/truncatedNormal(low:high:_:dtype:key:stream:)",
@@ -265,6 +292,40 @@
   "title" : "MLXRandom",
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/RandomState": {
+  "abstract" : [
+    {
+      "text" : "Global random state",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RandomState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/RandomState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RandomState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RandomState",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/randomstate"
 },
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/bernoulli(_:_:key:stream:)": {
   "abstract" : [
@@ -687,6 +748,43 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/categorical(_:axis:shape:key:stream:)"
 },
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/globalState": {
+  "abstract" : [
+    {
+      "text" : "Global random state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "globalState"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9MLXRandom11RandomStateC",
+      "text" : "RandomState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/globalState",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "globalState",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/globalstate"
+},
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/gumbel(_:dtype:key:stream:)": {
   "abstract" : [
     {
@@ -942,7 +1040,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/key(_:)"
 },
-"doc://mlx.swift.mlxrandom/documentation/MLXRandom/normal(_:dtype:key:stream:)": {
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/normal(_:dtype:loc:scale:key:stream:)": {
   "abstract" : [
     {
       "text" : "Generate normally distributed random numbers.",
@@ -994,6 +1092,40 @@
     },
     {
       "kind" : "externalParam",
+      "text" : "loc"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "scale"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
       "text" : "key"
     },
     {
@@ -1032,14 +1164,14 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:key:stream:)",
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:dtype:loc:scale:key:stream:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "normal(_:dtype:key:stream:)",
+  "title" : "normal(_:dtype:loc:scale:key:stream:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlxrandom\/normal(_:dtype:key:stream:)"
+  "url" : "\/documentation\/mlxrandom\/normal(_:dtype:loc:scale:key:stream:)"
 },
-"doc://mlx.swift.mlxrandom/documentation/MLXRandom/normal(_:type:key:stream:)": {
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/normal(_:type:loc:scale:key:stream:)": {
   "abstract" : [
     {
       "text" : "Generate normally distributed random numbers.",
@@ -1098,6 +1230,40 @@
     },
     {
       "kind" : "externalParam",
+      "text" : "loc"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "scale"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
       "text" : "key"
     },
     {
@@ -1136,12 +1302,12 @@
       "text" : "MLXArray"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:key:stream:)",
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/normal(_:type:loc:scale:key:stream:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "normal(_:type:key:stream:)",
+  "title" : "normal(_:type:loc:scale:key:stream:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlxrandom\/normal(_:type:key:stream:)"
+  "url" : "\/documentation\/mlxrandom\/normal(_:type:loc:scale:key:stream:)"
 },
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/randInt(_:_:key:stream:)": {
   "abstract" : [
@@ -1680,6 +1846,90 @@
   "title" : "split(key:into:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/split(key:into:stream:)"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/split(key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Split a PRNG key into two keys and return a tuple.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "split"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "split(key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/split(key:stream:)"
 },
 "doc://mlx.swift.mlxrandom/documentation/MLXRandom/truncatedNormal(_:_:type:key:stream:)-62jwe": {
   "abstract" : [
@@ -2848,6 +3098,18 @@
   ],
   "type" : "link",
   "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+  "title" : "MLXFFT",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXFFT",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/"
 },
 "https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",

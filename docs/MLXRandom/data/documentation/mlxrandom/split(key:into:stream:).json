@@ -104,7 +104,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Random.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L26"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXRandom\/Random.swift#L30"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -178,7 +178,7 @@
             },
             {
               "kind" : "text",
-              "text" : " = 2, "
+              "text" : ", "
             },
             {
               "kind" : "externalParam",
@@ -214,27 +214,29 @@
     {
       "content" : [
         {
-          "anchor" : "discussion",
-          "level" : 2,
-          "text" : "Discussion",
+          "anchor" : "See-Also",
+          "level" : 3,
+          "text" : "See Also",
           "type" : "heading"
         },
         {
-          "inlineContent" : [
+          "items" : [
             {
-              "text" : "Array of ",
-              "type" : "text"
-            },
-            {
-              "code" : "MLXArray",
-              "type" : "codeVoice"
-            },
-            {
-              "text" : " values.",
-              "type" : "text"
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:stream:)",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
             }
           ],
-          "type" : "paragraph"
+          "type" : "unorderedList"
         }
       ],
       "kind" : "content"
@@ -464,6 +466,90 @@
   "title" : "split(key:into:stream:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxrandom\/split(key:into:stream:)"
+},
+"doc://mlx.swift.mlxrandom/documentation/MLXRandom/split(key:stream:)": {
+  "abstract" : [
+    {
+      "text" : "Split a PRNG key into two keys and return a tuple.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "split"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "key"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxrandom\/documentation\/MLXRandom\/split(key:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "split(key:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxrandom\/split(key:stream:)"
 }
 }
 }

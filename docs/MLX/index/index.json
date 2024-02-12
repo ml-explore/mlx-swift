@@ -23,13 +23,13 @@
             "type" : "sampleCode"
           },
           {
-            "path" : "\/documentation\/mlx\/broadcasting",
-            "title" : "Numpy Style Broadcasting",
+            "path" : "\/documentation\/mlx\/converting-python",
+            "title" : "Converting From Python",
             "type" : "article"
           },
           {
-            "path" : "\/documentation\/mlx\/converting-python",
-            "title" : "Converting From Python",
+            "path" : "\/documentation\/mlx\/broadcasting",
+            "title" : "Numpy Style Broadcasting",
             "type" : "article"
           },
           {
@@ -41,6 +41,37 @@
             "path" : "\/documentation\/mlx\/unified-memory",
             "title" : "Unified Memory",
             "type" : "article"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Functions",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/compile(state:_:)-95f19",
+                "title" : "func compile(state: [Updatable], ([MLXArray]) -> [MLXArray]) -> ([MLXArray]) -> [MLXArray]",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/compile(state:_:)-3l9bp",
+                "title" : "func compile(state: [Updatable], (MLXArray) -> MLXArray) -> (MLXArray) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/compile(state:_:)-71p0o",
+                "title" : "func compile(state: [Updatable], (MLXArray, MLXArray) -> MLXArray) -> (MLXArray, MLXArray) -> MLXArray",
+                "type" : "func"
+              },
+              {
+                "path" : "\/documentation\/mlx\/compile(enable:)",
+                "title" : "func compile(enable: Bool)",
+                "type" : "func"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/compilation",
+            "title" : "Compilation",
+            "type" : "symbol"
           },
           {
             "path" : "\/documentation\/mlx\/using-streams",
@@ -951,77 +982,6 @@
                 "type" : "symbol"
               },
               {
-                "children" : [
-                  {
-                    "title" : "Free Functions",
-                    "type" : "groupMarker"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/fft(_:n:axis:stream:)",
-                    "title" : "func fft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/fft2(_:s:axes:stream:)",
-                    "title" : "func fft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/fftn(_:s:axes:stream:)",
-                    "title" : "func fftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/ifft(_:n:axis:stream:)",
-                    "title" : "func ifft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/ifft2(_:s:axes:stream:)",
-                    "title" : "func ifft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/ifftn(_:s:axes:stream:)",
-                    "title" : "func ifftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/irfft(_:n:axis:stream:)",
-                    "title" : "func irfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/irfft2(_:s:axes:stream:)",
-                    "title" : "func irfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/irfftn(_:s:axes:stream:)",
-                    "title" : "func irfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/rfft(_:n:axis:stream:)",
-                    "title" : "func rfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/rfft2(_:s:axes:stream:)",
-                    "title" : "func rfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  },
-                  {
-                    "path" : "\/documentation\/mlx\/rfftn(_:s:axes:stream:)",
-                    "title" : "func rfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                    "type" : "func"
-                  }
-                ],
-                "path" : "\/documentation\/mlx\/fft",
-                "title" : "FFT Functions",
-                "type" : "symbol"
-              },
-              {
                 "title" : "Indexing",
                 "type" : "groupMarker"
               },
@@ -1320,8 +1280,8 @@
                     "type" : "method"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:stream:)",
-                    "title" : "func allClose<T>(T, rtol: Double, atol: Double, stream: StreamOrDevice) -> MLXArray",
+                    "path" : "\/documentation\/mlx\/mlxarray\/allclose(_:rtol:atol:equalnan:stream:)",
+                    "title" : "func allClose<T>(T, rtol: Double, atol: Double, equalNaN: Bool, stream: StreamOrDevice) -> MLXArray",
                     "type" : "method"
                   },
                   {
@@ -1339,8 +1299,8 @@
                     "type" : "func"
                   },
                   {
-                    "path" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:stream:)",
-                    "title" : "func allClose<T>(MLXArray, T, rtol: Double, atol: Double, stream: StreamOrDevice) -> MLXArray",
+                    "path" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:equalnan:stream:)",
+                    "title" : "func allClose<T>(MLXArray, T, rtol: Double, atol: Double, equalNaN: Bool, stream: StreamOrDevice) -> MLXArray",
                     "type" : "func"
                   },
                   {
@@ -2031,6 +1991,11 @@
                 "type" : "groupMarker"
               },
               {
+                "path" : "\/documentation\/mlx\/mlxarray\/copy()",
+                "title" : "func copy() -> MLXArray",
+                "type" : "method"
+              },
+              {
                 "path" : "\/documentation\/mlx\/mlxarray\/eval()",
                 "title" : "func eval()",
                 "type" : "method"
@@ -2320,6 +2285,22 @@
                 ],
                 "path" : "\/documentation\/mlx\/mlxarray\/sequence-implementations",
                 "title" : "Sequence Implementations",
+                "type" : "symbol"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlx\/mlxarray\/innerstate()",
+                    "title" : "func innerState() -> [MLXArray]",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlx\/mlxarray\/updatable-implementations",
+                "title" : "Updatable Implementations",
                 "type" : "symbol"
               }
             ],
@@ -2852,8 +2833,8 @@
                 "type" : "func"
               },
               {
-                "path" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:stream:)",
-                "title" : "func allClose<T>(MLXArray, T, rtol: Double, atol: Double, stream: StreamOrDevice) -> MLXArray",
+                "path" : "\/documentation\/mlx\/allclose(_:_:rtol:atol:equalnan:stream:)",
+                "title" : "func allClose<T>(MLXArray, T, rtol: Double, atol: Double, equalNaN: Bool, stream: StreamOrDevice) -> MLXArray",
                 "type" : "func"
               },
               {
@@ -3204,70 +3185,6 @@
                 "path" : "\/documentation\/mlx\/vjp(_:primals:cotangents:)",
                 "title" : "func vjp(([MLXArray]) -> [MLXArray], primals: [MLXArray], cotangents: [MLXArray]) -> ([MLXArray], [MLXArray])",
                 "type" : "func"
-              },
-              {
-                "title" : "FFT",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlx\/fft(_:n:axis:stream:)",
-                "title" : "func fft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/fft2(_:s:axes:stream:)",
-                "title" : "func fft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/fftn(_:s:axes:stream:)",
-                "title" : "func fftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/ifft(_:n:axis:stream:)",
-                "title" : "func ifft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/ifft2(_:s:axes:stream:)",
-                "title" : "func ifft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/ifftn(_:s:axes:stream:)",
-                "title" : "func ifftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/irfft(_:n:axis:stream:)",
-                "title" : "func irfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/irfft2(_:s:axes:stream:)",
-                "title" : "func irfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/irfftn(_:s:axes:stream:)",
-                "title" : "func irfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/rfft(_:n:axis:stream:)",
-                "title" : "func rfft(MLXArray, n: Int?, axis: Int, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/rfft2(_:s:axes:stream:)",
-                "title" : "func rfft2(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
-              },
-              {
-                "path" : "\/documentation\/mlx\/rfftn(_:s:axes:stream:)",
-                "title" : "func rfftn(MLXArray, s: [Int]?, axes: [Int]?, stream: StreamOrDevice) -> MLXArray",
-                "type" : "func"
               }
             ],
             "path" : "\/documentation\/mlx\/free-functions",
@@ -3517,6 +3434,11 @@
                 "type" : "method"
               },
               {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/flattenedvalues()",
+                "title" : "func flattenedValues() -> [Element]",
+                "type" : "method"
+              },
+              {
                 "path" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(_:_:transform:)-52e9l",
                 "title" : "func mapValues<E2, E3, R1, R2>(NestedDictionary<Key, E2>, NestedDictionary<Key, E3>, transform: (Element, E2?, E3?) -> (R1, R2?)) -> (NestedDictionary<Key, R1>, NestedDictionary<Key, R2>)",
                 "type" : "method"
@@ -3542,6 +3464,11 @@
                 "type" : "method"
               },
               {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/replacingvalues(with:)",
+                "title" : "func replacingValues(with: [Element]) -> NestedDictionary<Key, Element>",
+                "type" : "method"
+              },
+              {
                 "title" : "Subscripts",
                 "type" : "groupMarker"
               },
@@ -3554,6 +3481,15 @@
                 "path" : "\/documentation\/mlx\/nesteddictionary\/subscript(unwrapping:)",
                 "title" : "subscript(unwrapping _: Key) -> Element?",
                 "type" : "subscript"
+              },
+              {
+                "title" : "Type Aliases",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteddictionary\/collectionelement",
+                "title" : "NestedDictionary.CollectionElement",
+                "type" : "typealias"
               },
               {
                 "title" : "Type Methods",
@@ -3734,7 +3670,7 @@
                   },
                   {
                     "path" : "\/documentation\/mlx\/nesteddictionary\/subscript(_:)-4t8fg",
-                    "title" : "subscript(NestedDictionary<Key, Element>.Index) -> Dictionary<Key, NestedItem<Key, Element>>.Element",
+                    "title" : "subscript(NestedDictionary<Key, Element>.Index) -> NestedDictionary<Key, Element>.CollectionElement",
                     "type" : "subscript"
                   },
                   {
@@ -3985,6 +3921,11 @@
               {
                 "path" : "\/documentation\/mlx\/nesteditem\/flattened(prefix:)",
                 "title" : "func flattened(prefix: String?) -> [(String, Element)]",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlx\/nesteditem\/flattenedvalues()",
+                "title" : "func flattenedValues() -> [Element]",
                 "type" : "method"
               },
               {
@@ -4335,6 +4276,42 @@
             "type" : "class"
           },
           {
+            "title" : "Protocols",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/evaluatable\/innerstate()",
+                "title" : "func innerState() -> [MLXArray]",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/evaluatable",
+            "title" : "Evaluatable",
+            "type" : "protocol"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlx\/updatable\/innerstate()",
+                "title" : "func innerState() -> [MLXArray]",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlx\/updatable",
+            "title" : "Updatable",
+            "type" : "protocol"
+          },
+          {
             "title" : "Structures",
             "type" : "groupMarker"
           },
@@ -4387,20 +4364,6 @@
             "path" : "\/documentation\/mlx\/intorpair",
             "title" : "IntOrPair",
             "type" : "struct"
-          },
-          {
-            "title" : "Functions",
-            "type" : "groupMarker"
-          },
-          {
-            "path" : "\/documentation\/mlx\/simplify(_:)-7jbpa",
-            "title" : "func simplify(Any...)",
-            "type" : "func"
-          },
-          {
-            "path" : "\/documentation\/mlx\/simplify(_:)-awbz",
-            "title" : "func simplify([Any])",
-            "type" : "func"
           },
           {
             "title" : "Enumerations",
@@ -4541,6 +4504,22 @@
                     ],
                     "path" : "\/documentation\/mlx\/swift\/array\/scalarorarray-implementations",
                     "title" : "ScalarOrArray Implementations",
+                    "type" : "symbol"
+                  },
+                  {
+                    "children" : [
+                      {
+                        "title" : "Instance Methods",
+                        "type" : "groupMarker"
+                      },
+                      {
+                        "path" : "\/documentation\/mlx\/swift\/array\/innerstate()",
+                        "title" : "func innerState() -> [MLXArray]",
+                        "type" : "method"
+                      }
+                    ],
+                    "path" : "\/documentation\/mlx\/swift\/array\/updatable-implementations",
+                    "title" : "Updatable Implementations",
                     "type" : "symbol"
                   }
                 ],

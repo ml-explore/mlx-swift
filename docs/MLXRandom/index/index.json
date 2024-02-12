@@ -23,6 +23,45 @@
             "type" : "func"
           },
           {
+            "title" : "Classes",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxrandom\/randomstate\/innerstate()",
+                "title" : "func innerState() -> [MLXArray]",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxrandom\/randomstate\/next()",
+                "title" : "func next() -> MLXArray",
+                "type" : "method"
+              },
+              {
+                "path" : "\/documentation\/mlxrandom\/randomstate\/seed(_:)",
+                "title" : "func seed(UInt64)",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxrandom\/randomstate",
+            "title" : "RandomState",
+            "type" : "class"
+          },
+          {
+            "title" : "Variables",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/globalstate",
+            "title" : "let globalState: RandomState",
+            "type" : "var"
+          },
+          {
             "title" : "Functions",
             "type" : "groupMarker"
           },
@@ -57,13 +96,13 @@
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlxrandom\/normal(_:dtype:key:stream:)",
-            "title" : "func normal([Int], dtype: DType, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "path" : "\/documentation\/mlxrandom\/normal(_:dtype:loc:scale:key:stream:)",
+            "title" : "func normal([Int], dtype: DType, loc: Float, scale: Float, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
           },
           {
-            "path" : "\/documentation\/mlxrandom\/normal(_:type:key:stream:)",
-            "title" : "func normal<T>([Int], type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "path" : "\/documentation\/mlxrandom\/normal(_:type:loc:scale:key:stream:)",
+            "title" : "func normal<T>([Int], type: T.Type, loc: Float, scale: Float, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
             "type" : "func"
           },
           {
@@ -79,6 +118,11 @@
           {
             "path" : "\/documentation\/mlxrandom\/randint(low:high:_:type:key:stream:)",
             "title" : "func randInt<T>(low: ScalarOrArray, high: ScalarOrArray, [Int]?, type: T.Type, key: MLXArray?, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxrandom\/split(key:stream:)",
+            "title" : "func split(key: MLXArray, stream: StreamOrDevice) -> (MLXArray, MLXArray)",
             "type" : "func"
           },
           {

@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Nested.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L553"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLX\/Nested.swift#L619"
     },
     "role" : "symbol",
     "roleHeading" : "Structure",
@@ -335,11 +335,13 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/asItem()",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/compactMapValues(transform:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/flattened(prefix:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/flattenedValues()",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(_:_:transform:)-52e9l",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(_:_:transform:)-8yhzk",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(_:transform:)-4ctis",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(_:transform:)-54sj2",
-        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(transform:)"
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/mapValues(transform:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/replacingValues(with:)"
       ],
       "title" : "Instance Methods"
     },
@@ -349,6 +351,12 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/subscript(unwrapping:)"
       ],
       "title" : "Subscripts"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/CollectionElement"
+      ],
+      "title" : "Type Aliases"
     },
     {
       "identifiers" : [
@@ -496,6 +504,69 @@
   "title" : "Collection Implementations",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/collection-implementations"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/CollectionElement": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Key",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Hashable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "CollectionElement"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/CollectionElement",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "CollectionElement"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NestedDictionary.CollectionElement",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/collectionelement"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/Equatable-Implementations": {
   "abstract" : [
@@ -864,6 +935,46 @@
   "title" : "flattened(prefix:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/flattened(prefix:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/flattenedValues()": {
+  "abstract" : [
+    {
+      "text" : "Return a flattened representation of the structured contents as an array of values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flattenedValues"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/flattenedValues()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flattenedValues()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/flattenedvalues()"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/init()": {
   "abstract" : [
@@ -2126,6 +2237,95 @@
   "title" : "mapValues(transform:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/mapvalues(transform:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/replacingValues(with:)": {
+  "abstract" : [
+    {
+      "text" : "Return a new ",
+      "type" : "text"
+    },
+    {
+      "code" : "NestedDictionary",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " with the values replaced",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "by a flat array of values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "replacingValues"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "with"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX16NestedDictionaryV",
+      "text" : "NestedDictionary"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Key"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedDictionary\/replacingValues(with:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "replacingValues(with:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteddictionary\/replacingvalues(with:)"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedDictionary/subscript(_:)-7bphj": {
   "abstract" : [

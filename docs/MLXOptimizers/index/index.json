@@ -17,15 +17,6 @@
                 "path" : "\/documentation\/mlxoptimizers\/adadelta\/init(learningrate:rho:eps:)",
                 "title" : "init(learningRate: Float, rho: Float, eps: Float)",
                 "type" : "init"
-              },
-              {
-                "title" : "Instance Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxoptimizers\/adadelta\/state()",
-                "title" : "func state() -> [MLXArray]",
-                "type" : "method"
               }
             ],
             "path" : "\/documentation\/mlxoptimizers\/adadelta",
@@ -39,6 +30,17 @@
                 "type" : "groupMarker"
               },
               {
+                "children" : [
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxoptimizers\/adafactor\/state\/innerstate()",
+                    "title" : "func innerState() -> [MLXArray]",
+                    "type" : "method"
+                  }
+                ],
                 "path" : "\/documentation\/mlxoptimizers\/adafactor\/state",
                 "title" : "Adafactor.State",
                 "type" : "struct"
@@ -51,15 +53,6 @@
                 "path" : "\/documentation\/mlxoptimizers\/adafactor\/init(learningrate:eps:clipthreshold:decayrate:beta1:weightdecay:scaleparameter:relativestep:warmupinit:)",
                 "title" : "init(learningRate: Float?, eps: (Float, Float), clipThreshold: Float, decayRate: Float, beta1: Float?, weightDecay: Float, scaleParameter: Bool, relativeStep: Bool, warmupInit: Bool)",
                 "type" : "init"
-              },
-              {
-                "title" : "Instance Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxoptimizers\/adafactor\/state()",
-                "title" : "func state() -> [MLXArray]",
-                "type" : "method"
               }
             ],
             "path" : "\/documentation\/mlxoptimizers\/adafactor",
@@ -108,15 +101,6 @@
                 "path" : "\/documentation\/mlxoptimizers\/adam\/init(learningrate:betas:eps:)",
                 "title" : "init(learningRate: Float, betas: (Float, Float), eps: Float)",
                 "type" : "init"
-              },
-              {
-                "title" : "Instance Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxoptimizers\/adam\/state()",
-                "title" : "func state() -> [MLXArray]",
-                "type" : "method"
               }
             ],
             "path" : "\/documentation\/mlxoptimizers\/adam",
@@ -133,15 +117,6 @@
                 "path" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)",
                 "title" : "init(learningRate: Float, betas: (Float, Float), eps: Float)",
                 "type" : "init"
-              },
-              {
-                "title" : "Instance Methods",
-                "type" : "groupMarker"
-              },
-              {
-                "path" : "\/documentation\/mlxoptimizers\/adamax\/state()",
-                "title" : "func state() -> [MLXArray]",
-                "type" : "method"
               }
             ],
             "path" : "\/documentation\/mlxoptimizers\/adamax",
@@ -207,11 +182,6 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/optimizer\/state()",
-                "title" : "func state() -> [MLXArray]",
-                "type" : "method"
-              },
-              {
                 "path" : "\/documentation\/mlxoptimizers\/optimizer\/update(model:gradients:)",
                 "title" : "func update(model: Module, gradients: ModuleParameters)",
                 "type" : "method"
@@ -228,8 +198,8 @@
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/state()",
-                "title" : "func state() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/optimizerbase\/innerstate()",
+                "title" : "func innerState() -> [MLXArray]",
                 "type" : "method"
               },
               {
@@ -243,20 +213,29 @@
             "type" : "class"
           },
           {
+            "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate",
+            "title" : "OptimizerBaseArrayState",
+            "type" : "class"
+          },
+          {
+            "title" : "Structures",
+            "type" : "groupMarker"
+          },
+          {
             "children" : [
               {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
               {
-                "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate\/state()",
-                "title" : "func state() -> [MLXArray]",
+                "path" : "\/documentation\/mlxoptimizers\/tuplestate\/innerstate()",
+                "title" : "func innerState() -> [MLXArray]",
                 "type" : "method"
               }
             ],
-            "path" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate",
-            "title" : "OptimizerBaseArrayState",
-            "type" : "class"
+            "path" : "\/documentation\/mlxoptimizers\/tuplestate",
+            "title" : "TupleState",
+            "type" : "struct"
           }
         ],
         "path" : "\/documentation\/mlxoptimizers",

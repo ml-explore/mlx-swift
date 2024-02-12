@@ -179,7 +179,7 @@
     ],
     "remoteSource" : {
       "fileName" : "ValueAndGrad.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/ValueAndGrad.swift#L104"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXNN\/ValueAndGrad.swift#L54"
     },
     "role" : "symbol",
     "roleHeading" : "Function",
@@ -460,7 +460,7 @@
             "",
             "\/\/ create the model and realize the parameters",
             "let m = M()",
-            "MLX.eval(m.parameters())",
+            "MLX.eval(m)",
             "",
             "\/\/ input and targets",
             "let x = MLXArray(0 ..< 5, [1, 5])",
@@ -479,6 +479,119 @@
           ],
           "syntax" : "swift",
           "type" : "codeListing"
+        },
+        {
+          "anchor" : "Other-Arguments",
+          "level" : 3,
+          "text" : "Other Arguments",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If other arguments to the loss function are needed there are two variants of ",
+              "type" : "text"
+            },
+            {
+              "code" : "valueAndGrad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " that",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "can be used to build these:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-548r7",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " – passing only ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "[MLXArray]",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " and returning ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "[MLXArray]",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-45dg5",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : "– passing any arguments and returning ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "[MLXArray]",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Prefer the former as it can cache the value of the underlying ",
+              "type" : "text"
+            },
+            {
+              "code" : "valueAndGrad()",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " call while",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the latter must rebuild it for each call.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
         },
         {
           "anchor" : "See-Also",
@@ -521,8 +634,8 @@
     {
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-1w6x8",
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-548r7"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-548r7",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-45dg5"
       ],
       "title" : "Value and Grad"
     }
@@ -812,18 +925,18 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-12a2c"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-1w6x8": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-45dg5": {
   "abstract" : [
     {
-      "text" : "Transform the passed function ",
+      "text" : "Variant of ",
       "type" : "text"
     },
     {
-      "code" : "f(Model, MLXArray)",
+      "code" : "valueAndGrad(model:_:)",
       "type" : "codeVoice"
     },
     {
-      "text" : " to a function that computes the",
+      "text" : " that can be used to pass an arbitrary parameters to a loss",
       "type" : "text"
     },
     {
@@ -831,15 +944,7 @@
       "type" : "text"
     },
     {
-      "text" : "gradients of ",
-      "type" : "text"
-    },
-    {
-      "code" : "f",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " with regard to the model’s trainable parameters and also its value.",
+      "text" : "function.",
       "type" : "text"
     }
   ],
@@ -863,6 +968,14 @@
     {
       "kind" : "genericParameter",
       "text" : "Model"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "genericParameter",
+      "text" : "Arguments"
     },
     {
       "kind" : "text",
@@ -894,12 +1007,11 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
+      "text" : "Arguments"
     },
     {
       "kind" : "text",
-      "text" : ") -> "
+      "text" : ") -> ["
     },
     {
       "kind" : "typeIdentifier",
@@ -908,7 +1020,7 @@
     },
     {
       "kind" : "text",
-      "text" : ") -> ("
+      "text" : "]) -> ("
     },
     {
       "kind" : "typeIdentifier",
@@ -920,12 +1032,11 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:3MLX8MLXArrayC",
-      "text" : "MLXArray"
+      "text" : "Arguments"
     },
     {
       "kind" : "text",
-      "text" : ") -> ("
+      "text" : ") -> (["
     },
     {
       "kind" : "typeIdentifier",
@@ -934,7 +1045,7 @@
     },
     {
       "kind" : "text",
-      "text" : ", "
+      "text" : "], "
     },
     {
       "kind" : "typeIdentifier",
@@ -946,25 +1057,33 @@
       "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-1w6x8",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/valueAndGrad(model:_:)-45dg5",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "valueAndGrad(model:_:)",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-1w6x8"
+  "url" : "\/documentation\/mlxnn\/valueandgrad(model:_:)-45dg5"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/valueAndGrad(model:_:)-548r7": {
   "abstract" : [
     {
-      "text" : "Transform the passed function ",
+      "text" : "Variant of ",
       "type" : "text"
     },
     {
-      "code" : "f(Model, [MLXArray])",
+      "code" : "valueAndGrad(model:_:)",
       "type" : "codeVoice"
     },
     {
-      "text" : " to a function that computes the",
+      "text" : " that can be used to pass an arbitrary number of ",
+      "type" : "text"
+    },
+    {
+      "code" : "MLXArray",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " to",
       "type" : "text"
     },
     {
@@ -972,15 +1091,7 @@
       "type" : "text"
     },
     {
-      "text" : "gradients of ",
-      "type" : "text"
-    },
-    {
-      "code" : "f",
-      "type" : "codeVoice"
-    },
-    {
-      "text" : " with regard to the model’s trainable parameters and also its value.",
+      "text" : "a loss function.",
       "type" : "text"
     }
   ],

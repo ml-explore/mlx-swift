@@ -308,6 +308,7 @@
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/compactMapValues(_:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/description(indent:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/flattened(prefix:)",
+        "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/flattenedValues()",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/mapValues(_:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/mapValues(_:_:)",
         "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/mapValues(_:_:_:)",
@@ -1110,6 +1111,46 @@
   "title" : "flattened(prefix:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteditem\/flattened(prefix:)"
+},
+"doc://mlx.swift.mlx/documentation/MLX/NestedItem/flattenedValues()": {
+  "abstract" : [
+    {
+      "text" : "Return a flattened representation of the structured contents as an array of values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flattenedValues"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Element"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlx\/documentation\/MLX\/NestedItem\/flattenedValues()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flattenedValues()",
+  "type" : "topic",
+  "url" : "\/documentation\/mlx\/nesteditem\/flattenedvalues()"
 },
 "doc://mlx.swift.mlx/documentation/MLX/NestedItem/mapValues(_:)": {
   "abstract" : [
