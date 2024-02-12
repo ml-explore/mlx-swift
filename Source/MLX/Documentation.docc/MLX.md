@@ -1,7 +1,7 @@
 #  ``MLX``
 
 MLX is a NumPy-like array framework designed for efficient and flexible machine
-learning on Apple silicon, brought to you by Apple machine learning research.
+learning research on Apple silicon, brought to you by Apple machine learning research
 
 MLX is an array framework for machine learning research on Apple silicon. MLX Swift expands
 MLX to the Swift language, making experimentation on Apple silicon easier for ML researchers.
