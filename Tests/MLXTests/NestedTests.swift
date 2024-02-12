@@ -64,6 +64,19 @@ class NestedTests: XCTestCase {
         XCTAssertEqual(n, n2)
     }
 
+    func testFlattenedValues() {
+        // replacingValues() uses the original structure
+        // and makes an identical structure with new values
+        // from a flat array of values
+        let n = newNested()
+
+        let f = n.flattenedValues().map { $0 + 1 }
+        let n2 = n.replacingValues(with: f)
+
+        let expected = n.mapValues { $0 + 1 }
+        XCTAssertEqual(n2, expected)
+    }
+
     func testMap2() {
         // map 2 parallel structures
         var d1 = NestedDictionary<String, Int>()

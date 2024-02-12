@@ -14,7 +14,7 @@ import MLX
 ///
 /// // create the model and realize the parameters
 /// let m = M()
-/// MLX.eval(m.parameters())
+/// MLX.eval(m)
 ///
 /// // input and targets
 /// let x = MLXArray(0 ..< 5, [1, 5])

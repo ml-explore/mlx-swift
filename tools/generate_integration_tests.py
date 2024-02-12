@@ -79,6 +79,9 @@ def verify_array(indent, name: str, array: mx.array) -> str:
 def create_argument(indent, name, value) -> t.Tuple[str, mx.array]:
     if value is None:
         return (f"let {name} = MLXRandom.normal([4, 3])", mx.random.normal([4, 3]))
+        
+    if value == "scalar":
+        return (f"let {name} = MLXRandom.normal()", mx.random.normal())
 
     if isinstance(value, t.Tuple):
         return (
@@ -521,6 +524,14 @@ import XCTest
 class MLXIntegrationTests: XCTestCase {
 """
 )
+
+# test for random seed
+
+adhoc_preamble("randomSeed")
+(r_decl, r) = create_argument(8, "r", "scalar")
+print((" " * 8) + r_decl)
+print(assert_equal(8, "r.item(Float.self)", r.item(), 0.001))
+adhoc_postamble()
 
 
 # generate tests for operators

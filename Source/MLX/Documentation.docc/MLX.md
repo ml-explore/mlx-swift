@@ -47,10 +47,11 @@ are the CPU and GPU.
 - <doc:install>
 - <doc:troubleshooting>
 - <doc:examples>
-- <doc:broadcasting>
 - <doc:converting-python>
+- <doc:broadcasting>
 - <doc:lazy-evaluation>
 - <doc:unified-memory>
+- <doc:compilation>
 - <doc:using-streams>
 
 ### MLXArray

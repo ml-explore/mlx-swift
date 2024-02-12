@@ -108,7 +108,7 @@ for batch in dataset {
 
     // Evaluate the loss and the new parameters which will
     // run the full gradient computation and optimizer update
-    eval(loss, model.parameters())
+    eval(loss, model)
 }
 ```
 

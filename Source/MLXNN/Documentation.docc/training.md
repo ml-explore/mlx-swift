@@ -52,7 +52,7 @@ and create the optimizer.
 
 ```swift
 let model = LinearFunctionModel()
-eval(model.parameters())
+eval(model)
 
 // compute the loss and gradients
 let lg = valueAndGrad(model: model, loss)
@@ -100,6 +100,6 @@ for _ in 0 ..< 30 {
     let (loss, grads) = lg(model, x, y)
     optimizer.update(model: model, gradients: grads)
 
-    eval(model.parameters(), optimizer.state())
+    eval(model, optimizer)
 }
 ```

@@ -6,7 +6,7 @@ import Foundation
 public final class MLXArray {
 
     /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
-    public var ctx: mlx_array
+    public package(set) var ctx: mlx_array
 
     /// Initialize with the given +1 context (transfer ownership).
     ///
@@ -295,9 +295,22 @@ public final class MLXArray {
 
     /// Replace the contents with a reference to a new array.
     public func update(_ array: MLXArray) {
-        mlx_retain(array.ctx)
-        mlx_free(ctx)
-        self.ctx = array.ctx
+        if array.ctx != self.ctx {
+            mlx_retain(array.ctx)
+            mlx_free(ctx)
+            self.ctx = array.ctx
+        }
+    }
+
+    public func copy() -> MLXArray {
+        mlx_retain(ctx)
+        return MLXArray(ctx)
+    }
+}
+
+extension MLXArray: Updatable, Evaluatable {
+    public func innerState() -> [MLXArray] {
+        [self]
     }
 }
 

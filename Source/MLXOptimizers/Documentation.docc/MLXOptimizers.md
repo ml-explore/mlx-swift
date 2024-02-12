@@ -25,7 +25,7 @@ for _ in 0 ..< epochs {
     // use the optimizer to update the model parameters
     optimizer.update(model: model, gradients: grads)
 
-    eval(model.parameters(), optimizer.state())
+    eval(model, optimizer)
 }
 ```
 

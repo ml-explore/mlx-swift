@@ -70,7 +70,7 @@ public typealias ModuleItem = NestedItem<String, ModuleValue>
 /// // All the model parameters are created but since MLX is lazy by
 /// // default, they are not evaluated yet. Calling `eval` actually
 /// // allocates memory and initializes the parameters.
-/// eval(model.parameters())
+/// eval(model)
 ///
 /// // and projecting a value through the model:
 /// let input: MLXArray ...
@@ -846,6 +846,13 @@ extension Module: IndentedDescription {
         }
 
         return result
+    }
+}
+
+extension Module: Updatable, Evaluatable {
+    public func innerState() -> [MLXArray] {
+        filterMap(filter: Self.filterAll, map: Self.mapParameters())
+            .flattenedValues()
     }
 }
 

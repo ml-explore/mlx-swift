@@ -355,6 +355,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// This is typically called via ``NestedDictionary/flattened(prefix:)``.
     ///
     /// ### See Also
+    /// - ``flattenedValues()``
     /// - ``unflattened(_:)``
     /// - ``NestedDictionary/flattened(prefix:)``
     /// - ``NestedDictionary/unflattened(_:)-4p8bn``
@@ -380,10 +381,10 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
             // produce the dictionary in canonical order (sorted keys)
             return
                 dictionary
+                .sorted { lhs, rhs in String(describing: lhs.0) < String(describing: rhs.0) }
                 .flatMap { (key, value) in
                     value.flattened(prefix: newPrefix(String(describing: key)))
                 }
-                .sorted { lhs, rhs in String(describing: lhs.0) < String(describing: rhs.0) }
         }
     }
 
@@ -463,6 +464,71 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
                 result[key] = unflattenedRecurse(value)
             }
             return .dictionary(result)
+        }
+    }
+
+    /// Return a flattened representation of the structured contents as an array of values.
+    ///
+    /// This is typically called via ``NestedDictionary/flattenedValues()``.
+    /// Note that unlike ``flattened(prefix:)`` this cannot be reconstructed
+    /// back into the original structure, but can be used
+    /// with ``NestedDictionary/replacingValues(with:)`` in a similar fashion.
+    ///
+    /// ### See Also
+    /// - ``flattened(prefix:)``
+    /// - ``NestedDictionary/flattenedValues()``
+    /// - ``NestedDictionary/replacingValues(with:)``
+    public func flattenedValues() -> [Element] {
+        switch self {
+        case .none:
+            return []
+        case .value(let element):
+            return [element]
+        case .array(let array):
+            return array.flatMap { $0.flattenedValues() }
+        case .dictionary(let dictionary):
+            // produce the dictionary in canonical order (sorted keys)
+            return
+                dictionary
+                .sorted { lhs, rhs in String(describing: lhs.0) < String(describing: rhs.0) }
+                .flatMap { (key, value) in
+                    value.flattenedValues()
+                }
+        }
+    }
+
+    func replacingValues(with values: [Element], index: Int) -> (Int, NestedItem<Key, Element>) {
+        switch self {
+        case .none:
+            return (index, .none)
+        case .value:
+            return (index + 1, .value(values[index]))
+        case .array(let array):
+            var result = [NestedItem<Key, Element>]()
+            var index = index
+
+            for element in array {
+                let (newIndex, replaced) = element.replacingValues(with: values, index: index)
+                result.append(replaced)
+                index = newIndex
+            }
+
+            return (index, .array(result))
+        case .dictionary(let dictionary):
+            var result = [Key: NestedItem<Key, Element>]()
+            var index = index
+
+            let sorted = dictionary.sorted { lhs, rhs in
+                String(describing: lhs) < String(describing: rhs)
+            }
+
+            for (key, element) in sorted {
+                let (newIndex, replaced) = element.replacingValues(with: values, index: index)
+                result[key] = replaced
+                index = newIndex
+            }
+
+            return (index, .dictionary(result))
         }
     }
 
@@ -780,11 +846,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     /// - ``unflattened(_:)-4p8bn``
     /// - ``unflattened(_:)-7xuiv``
     public func flattened(prefix: String? = nil) -> [(String, Element)] {
-        contents.flatMap { key, value in
-            let keyString = String(describing: key)
-            let keyPrefix = prefix == nil ? keyString : "\(prefix!).\(keyString)"
-            return value.flattened(prefix: keyPrefix)
-        }
+        asItem().flattened(prefix: prefix)
     }
 
     /// Convert a flattened list of key/value tuples back into a `NestedDictionary` structure.
@@ -812,19 +874,43 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
         unflattened(flat.map { $0 })
     }
 
+    /// Return a flattened representation of the structured contents as an array of values.
+    ///
+    /// Note that unlike ``flattened(prefix:)`` this cannot be reconstructed
+    /// back into the original structure
+    ///
+    /// ### See Also
+    /// - ``flattened(prefix:)``
+    public func flattenedValues() -> [Element] {
+        asItem().flattenedValues()
+    }
+
+    /// Return a new `NestedDictionary` with the values replaced
+    /// by a flat array of values.
+    ///
+    /// ### See Also
+    /// - ``flattenedValues()``
+    public func replacingValues(with values: [Element]) -> NestedDictionary<Key, Element> {
+        switch asItem().replacingValues(with: values, index: 0) {
+        case (_, .dictionary(let values)):
+            return NestedDictionary(values: values)
+        default:
+            fatalError()
+        }
+    }
 }
 
 extension NestedDictionary: Equatable where Element: Equatable {
 }
 
 extension NestedDictionary: Collection {
-
+    public typealias CollectionElement = Dictionary<Key, NestedItem<Key, Element>>.Element
     public typealias Index = Dictionary<Key, NestedItem<Key, Element>>.Index
 
     public var startIndex: Index { contents.startIndex }
     public var endIndex: Index { contents.endIndex }
 
-    public subscript(position: Index) -> Dictionary<Key, NestedItem<Key, Element>>.Element {
+    public subscript(position: Index) -> CollectionElement {
         contents[position]
     }
 

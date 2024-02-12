@@ -17,84 +17,70 @@ import XCTest
 /// the same functions).
 class MLXIntegrationTests: XCTestCase {
 
-    func testAddOp() {
+    func testRandomSeed() {
         MLXRandom.seed(864)
+        let r = MLXRandom.normal()
+        XCTAssertEqual(
+            r.item(Float.self), 1.3235496282577515,
+            accuracy: 0.001)
+
+    }
+
+    func testAddOp() {
+        MLXRandom.seed(394)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(
-            a.mean().item(Float.self), 0.32840442657470703,
-            accuracy: 0.006568088531494141)
+            a.mean().item(Float.self), -0.17949937283992767,
+            accuracy: -0.0035899874567985536)
         XCTAssertEqual(
-            a.sum().item(Float.self), 3.9408528804779053,
-            accuracy: 0.07881705760955811)
+            a.sum().item(Float.self), -2.1539924144744873,
+            accuracy: -0.04307984828948975)
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), -0.38708561658859253,
-            accuracy: -0.007741712331771851)
+            b.mean().item(Float.self), 0.12489726394414902,
+            accuracy: 0.00249794527888298)
         XCTAssertEqual(
-            b.sum().item(Float.self), -4.645027160644531,
-            accuracy: -0.09290054321289062)
+            b.sum().item(Float.self), 1.4987671375274658,
+            accuracy: 0.029975342750549316)
         let result = a + b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.05868121236562729,
-            accuracy: -0.0011736242473125457)
+            result.mean().item(Float.self), -0.05460209771990776,
+            accuracy: -0.0010920419543981553)
         XCTAssertEqual(
-            result.sum().item(Float.self), -0.7041745185852051,
-            accuracy: -0.014083490371704102)
+            result.sum().item(Float.self), -0.6552251577377319,
+            accuracy: -0.01310450315475464)
     }
 
     func testAddOp1() {
-        MLXRandom.seed(394)
+        MLXRandom.seed(776)
         let a = 0.5
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), -0.17949937283992767,
-            accuracy: -0.0035899874567985536)
+            b.mean().item(Float.self), 0.1590166687965393,
+            accuracy: 0.003180333375930786)
         XCTAssertEqual(
-            b.sum().item(Float.self), -2.1539924144744873,
-            accuracy: -0.04307984828948975)
+            b.sum().item(Float.self), 1.9082000255584717,
+            accuracy: 0.03816400051116944)
         let result = a + b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.3205006718635559,
-            accuracy: 0.006410013437271119)
+            result.mean().item(Float.self), 0.6590167284011841,
+            accuracy: 0.013180334568023682)
         XCTAssertEqual(
-            result.sum().item(Float.self), 3.846008062362671,
-            accuracy: 0.07692016124725341)
+            result.sum().item(Float.self), 7.908200263977051,
+            accuracy: 0.15816400527954103)
     }
 
     func testAddOp2() {
-        MLXRandom.seed(776)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.1590166687965393,
-            accuracy: 0.003180333375930786)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.9082000255584717,
-            accuracy: 0.03816400051116944)
-        let b = 1.3
-        let result = a + b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.4590167999267578,
-            accuracy: 0.029180335998535156)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 17.508201599121094,
-            accuracy: 0.3501640319824219)
-    }
-
-    func testSubOp() {
         MLXRandom.seed(911)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -105,73 +91,73 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 6.28605842590332,
             accuracy: 0.12572116851806642)
+        let b = 1.3
+        let result = a + b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.8238381147384644,
+            accuracy: 0.03647676229476929)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 21.886056900024414,
+            accuracy: 0.4377211380004883)
+    }
+
+    func testSubOp() {
+        MLXRandom.seed(430)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.05095359683036804,
+            accuracy: 0.0010190719366073608)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.6114431619644165,
+            accuracy: 0.01222886323928833)
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), 0.28246065974235535,
-            accuracy: 0.005649213194847107)
+            b.mean().item(Float.self), 0.13153076171875,
+            accuracy: 0.002630615234375)
         XCTAssertEqual(
-            b.sum().item(Float.self), 3.3895277976989746,
-            accuracy: 0.0677905559539795)
+            b.sum().item(Float.self), 1.5783690214157104,
+            accuracy: 0.03156738042831421)
         let result = a - b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.24137762188911438,
-            accuracy: 0.0048275524377822876)
+            result.mean().item(Float.self), -0.08057717978954315,
+            accuracy: -0.001611543595790863)
         XCTAssertEqual(
-            result.sum().item(Float.self), 2.896531343460083,
-            accuracy: 0.05793062686920166)
+            result.sum().item(Float.self), -0.966926097869873,
+            accuracy: -0.01933852195739746)
     }
 
     func testSubOp1() {
-        MLXRandom.seed(430)
+        MLXRandom.seed(41)
         let a = 0.5
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), 0.05095359683036804,
-            accuracy: 0.0010190719366073608)
+            b.mean().item(Float.self), -0.27060821652412415,
+            accuracy: -0.005412164330482483)
         XCTAssertEqual(
-            b.sum().item(Float.self), 0.6114431619644165,
-            accuracy: 0.01222886323928833)
+            b.sum().item(Float.self), -3.2472984790802,
+            accuracy: -0.06494596958160401)
         let result = a - b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.44904646277427673,
-            accuracy: 0.008980929255485534)
+            result.mean().item(Float.self), 0.7706083059310913,
+            accuracy: 0.015412166118621827)
         XCTAssertEqual(
-            result.sum().item(Float.self), 5.388557434082031,
-            accuracy: 0.10777114868164063)
+            result.sum().item(Float.self), 9.247299194335938,
+            accuracy: 0.18494598388671876)
     }
 
     func testSubOp2() {
-        MLXRandom.seed(41)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.27060821652412415,
-            accuracy: -0.005412164330482483)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.2472984790802,
-            accuracy: -0.06494596958160401)
-        let b = 1.3
-        let result = a - b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -1.570608139038086,
-            accuracy: -0.03141216278076172)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -18.84729766845703,
-            accuracy: -0.3769459533691406)
-    }
-
-    func testMulOp() {
         MLXRandom.seed(265)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -182,73 +168,73 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 2.1826515197753906,
             accuracy: 0.043653030395507816)
+        let b = 1.3
+        let result = a - b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -1.118112325668335,
+            accuracy: -0.0223622465133667)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -13.417346954345703,
+            accuracy: -0.2683469390869141)
+    }
+
+    func testMulOp() {
+        MLXRandom.seed(988)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.03418738767504692,
+            accuracy: 0.0006837477535009385)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.41024863719940186,
+            accuracy: 0.008204972743988037)
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), 0.6280676126480103,
-            accuracy: 0.012561352252960206)
+            b.mean().item(Float.self), 0.841292142868042,
+            accuracy: 0.01682584285736084)
         XCTAssertEqual(
-            b.sum().item(Float.self), 7.536810874938965,
-            accuracy: 0.1507362174987793)
+            b.sum().item(Float.self), 10.095505714416504,
+            accuracy: 0.20191011428833008)
         let result = a * b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.3994637131690979,
-            accuracy: -0.007989274263381958)
+            result.mean().item(Float.self), 0.44235628843307495,
+            accuracy: 0.0088471257686615)
         XCTAssertEqual(
-            result.sum().item(Float.self), -4.793564319610596,
-            accuracy: -0.09587128639221192)
+            result.sum().item(Float.self), 5.30827522277832,
+            accuracy: 0.10616550445556641)
     }
 
     func testMulOp1() {
-        MLXRandom.seed(988)
+        MLXRandom.seed(523)
         let a = 0.5
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), 0.03418738767504692,
-            accuracy: 0.0006837477535009385)
+            b.mean().item(Float.self), 0.112852081656456,
+            accuracy: 0.00225704163312912)
         XCTAssertEqual(
-            b.sum().item(Float.self), 0.41024863719940186,
-            accuracy: 0.008204972743988037)
+            b.sum().item(Float.self), 1.3542249202728271,
+            accuracy: 0.027084498405456542)
         let result = a * b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.01709369383752346,
-            accuracy: 0.00034187387675046923)
+            result.mean().item(Float.self), 0.056426040828228,
+            accuracy: 0.00112852081656456)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.20512431859970093,
-            accuracy: 0.004102486371994019)
+            result.sum().item(Float.self), 0.6771124601364136,
+            accuracy: 0.013542249202728271)
     }
 
     func testMulOp2() {
-        MLXRandom.seed(523)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.112852081656456,
-            accuracy: 0.00225704163312912)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.3542249202728271,
-            accuracy: 0.027084498405456542)
-        let b = 1.3
-        let result = a * b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.1467076987028122,
-            accuracy: 0.0029341539740562438)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.7604923248291016,
-            accuracy: 0.035209846496582035)
-    }
-
-    func testDivOp() {
         MLXRandom.seed(497)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -259,73 +245,73 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), -2.889432907104492,
             accuracy: -0.057788658142089847)
+        let b = 1.3
+        let result = a * b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.3130219280719757,
+            accuracy: -0.006260438561439514)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -3.756263017654419,
+            accuracy: -0.07512526035308838)
+    }
+
+    func testDivOp() {
+        MLXRandom.seed(414)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.12723450362682343,
+            accuracy: -0.0025446900725364686)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.5268139839172363,
+            accuracy: -0.030536279678344727)
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), 0.06469622254371643,
-            accuracy: 0.0012939244508743287)
+            b.mean().item(Float.self), -0.47808408737182617,
+            accuracy: -0.009561681747436523)
         XCTAssertEqual(
-            b.sum().item(Float.self), 0.7763546705245972,
-            accuracy: 0.015527093410491943)
+            b.sum().item(Float.self), -5.737009048461914,
+            accuracy: -0.11474018096923828)
         let result = a / b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -2.3975558280944824,
-            accuracy: -0.04795111656188965)
+            result.mean().item(Float.self), 2.7393910884857178,
+            accuracy: 0.054787821769714355)
         XCTAssertEqual(
-            result.sum().item(Float.self), -28.77066993713379,
-            accuracy: -0.5754133987426758)
+            result.sum().item(Float.self), 32.8726921081543,
+            accuracy: 0.657453842163086)
     }
 
     func testDivOp1() {
-        MLXRandom.seed(414)
+        MLXRandom.seed(940)
         let a = 0.5
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), -0.12723450362682343,
-            accuracy: -0.0025446900725364686)
+            b.mean().item(Float.self), -0.3181919455528259,
+            accuracy: -0.0063638389110565186)
         XCTAssertEqual(
-            b.sum().item(Float.self), -1.5268139839172363,
-            accuracy: -0.030536279678344727)
+            b.sum().item(Float.self), -3.818303346633911,
+            accuracy: -0.07636606693267822)
         let result = a / b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -1.0689575672149658,
-            accuracy: -0.021379151344299317)
+            result.mean().item(Float.self), -0.33945927023887634,
+            accuracy: -0.006789185404777527)
         XCTAssertEqual(
-            result.sum().item(Float.self), -12.827489852905273,
-            accuracy: -0.2565497970581055)
+            result.sum().item(Float.self), -4.073511123657227,
+            accuracy: -0.08147022247314453)
     }
 
     func testDivOp2() {
-        MLXRandom.seed(940)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.3181919455528259,
-            accuracy: -0.0063638389110565186)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.818303346633911,
-            accuracy: -0.07636606693267822)
-        let b = 1.3
-        let result = a / b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.2447631061077118,
-            accuracy: -0.0048952621221542356)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.937157154083252,
-            accuracy: -0.05874314308166504)
-    }
-
-    func testModOp() {
         MLXRandom.seed(802)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -336,3249 +322,19 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 0.9602386951446533,
             accuracy: 0.019204773902893067)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.6472575068473816,
-            accuracy: -0.012945150136947633)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -7.76708984375,
-            accuracy: -0.155341796875)
-        let result = a % b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.08125662803649902,
-            accuracy: 0.0016251325607299805)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.9750795364379883,
-            accuracy: 0.019501590728759767)
-    }
-
-    func testModOp1() {
-        MLXRandom.seed(849)
-        let a = 0.5
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.5959362983703613,
-            accuracy: -0.011918725967407227)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -7.151235103607178,
-            accuracy: -0.14302470207214354)
-        let result = a % b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.3303334414958954,
-            accuracy: 0.006606668829917908)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 3.964001178741455,
-            accuracy: 0.0792800235748291)
-    }
-
-    func testModOp2() {
-        MLXRandom.seed(310)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.15466859936714172,
-            accuracy: 0.0030933719873428344)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.8560230731964111,
-            accuracy: 0.03712046146392822)
         let b = 1.3
-        let result = a % b
+        let result = a / b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.04633527621626854,
-            accuracy: 0.0009267055243253708)
+            result.mean().item(Float.self), 0.06155376881361008,
+            accuracy: 0.0012310753762722016)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.5560232996940613,
-            accuracy: 0.011120465993881225)
+            result.sum().item(Float.self), 0.7386451959609985,
+            accuracy: 0.014772903919219971)
     }
 
-    func testPowOp() {
-        MLXRandom.seed(991)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.9301013946533203,
-            accuracy: 0.018602027893066406)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 11.161216735839844,
-            accuracy: 0.22322433471679687)
-        let b = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.8905618190765381,
-            accuracy: 0.017811236381530763)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 10.686741828918457,
-            accuracy: 0.21373483657836914)
-        let result = a ** b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.7599539756774902,
-            accuracy: 0.015199079513549806)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.119447708129883,
-            accuracy: 0.18238895416259765)
-    }
-
-    func testPowOp1() {
-        MLXRandom.seed(488)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.8261654376983643,
-            accuracy: 0.016523308753967285)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 9.913985252380371,
-            accuracy: 0.19827970504760742)
-        let b = 1.3
-        let result = a ** b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.8316802978515625,
-            accuracy: 0.01663360595703125)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.98016357421875,
-            accuracy: 0.199603271484375)
-    }
-
-    func testEqualOp() {
-        MLXRandom.seed(366)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.18560372292995453,
-            accuracy: -0.0037120744585990907)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.2272446155548096,
-            accuracy: -0.04454489231109619)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.14294207096099854,
-            accuracy: -0.002858841419219971)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -1.7153047323226929,
-            accuracy: -0.03430609464645386)
-        let result = a .== b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), false)
-    }
-
-    func testEqualOp1() {
-        MLXRandom.seed(597)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.268618643283844,
-            accuracy: -0.00537237286567688)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.223423480987549,
-            accuracy: -0.06446846961975097)
-        let b = 1.3
-        let result = a .== b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), false)
-    }
-
-    func testNotEqualOp() {
-        MLXRandom.seed(913)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.040915559977293015,
-            accuracy: 0.0008183111995458603)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.490986704826355,
-            accuracy: 0.0098197340965271)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.7076951265335083,
-            accuracy: -0.014153902530670167)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -8.492341041564941,
-            accuracy: -0.16984682083129884)
-        let result = a .!= b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testNotEqualOp1() {
-        MLXRandom.seed(929)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.2947184443473816,
-            accuracy: -0.005894368886947632)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.536621332168579,
-            accuracy: -0.07073242664337158)
-        let b = 1.3
-        let result = a .!= b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testLessThanOp() {
-        MLXRandom.seed(223)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.009602058678865433,
-            accuracy: -0.00019204117357730867)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.11522470414638519,
-            accuracy: -0.002304494082927704)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.00826784037053585,
-            accuracy: 0.000165356807410717)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 0.09921407699584961,
-            accuracy: 0.0019842815399169923)
-        let result = a .< b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testLessThanOp1() {
-        MLXRandom.seed(516)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.671758770942688,
-            accuracy: 0.01343517541885376)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 8.061104774475098,
-            accuracy: 0.16122209548950195)
-        let b = 1.3
-        let result = a .< b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testLessThanEqualOp() {
-        MLXRandom.seed(142)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.21625718474388123,
-            accuracy: 0.004325143694877624)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.595086097717285,
-            accuracy: 0.051901721954345705)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.3831753134727478,
-            accuracy: -0.007663506269454956)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -4.5981035232543945,
-            accuracy: -0.09196207046508789)
-        let result = a .<= b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testLessThanEqualOp1() {
-        MLXRandom.seed(288)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.19039803743362427,
-            accuracy: -0.0038079607486724855)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.284776449203491,
-            accuracy: -0.045695528984069825)
-        let b = 1.3
-        let result = a .<= b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testGreaterThanOp() {
-        MLXRandom.seed(143)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.025643646717071533,
-            accuracy: -0.0005128729343414307)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.3077237606048584,
-            accuracy: -0.006154475212097168)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.5313312411308289,
-            accuracy: -0.010626624822616577)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -6.375974655151367,
-            accuracy: -0.12751949310302735)
-        let result = a .> b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testGreaterThanOp1() {
-        MLXRandom.seed(773)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.18657740950584412,
-            accuracy: -0.003731548190116882)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.23892879486084,
-            accuracy: -0.044778575897216795)
-        let b = 1.3
-        let result = a .> b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testGreaterThanEqualOp() {
-        MLXRandom.seed(97)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.04777970910072327,
-            accuracy: -0.0009555941820144654)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.5733565092086792,
-            accuracy: -0.011467130184173583)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.02195758745074272,
-            accuracy: -0.00043915174901485446)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -0.26349103450775146,
-            accuracy: -0.005269820690155029)
-        let result = a .>= b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testGreaterThanEqualOp1() {
-        MLXRandom.seed(633)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.17345473170280457,
-            accuracy: 0.0034690946340560913)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.0814566612243652,
-            accuracy: 0.0416291332244873)
-        let b = 1.3
-        let result = a .>= b
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAbs() {
-        MLXRandom.seed(818)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.01743374764919281,
-            accuracy: -0.0003486749529838562)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.20920497179031372,
-            accuracy: -0.004184099435806275)
-        let result = a.abs()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.829867959022522,
-            accuracy: 0.01659735918045044)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.958415031433105,
-            accuracy: 0.19916830062866211)
-    }
-
-    func testAbs1() {
-        MLXRandom.seed(256)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.15743832290172577,
-            accuracy: -0.0031487664580345156)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.8892598152160645,
-            accuracy: -0.03778519630432129)
-        let result = abs(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.8130466341972351,
-            accuracy: 0.0162609326839447)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.756559371948242,
-            accuracy: 0.19513118743896485)
-    }
-
-    func testAll() {
-        MLXRandom.seed(931)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.22450898587703705,
-            accuracy: -0.004490179717540741)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.6941077709198,
-            accuracy: -0.053882155418396)
-        let result = a.all()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAll1() {
-        MLXRandom.seed(545)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.05837365239858627,
-            accuracy: 0.0011674730479717256)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.7004837989807129,
-            accuracy: 0.014009675979614259)
-        let result = all(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAll2() {
-        MLXRandom.seed(722)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.01978858932852745,
-            accuracy: -0.00039577178657054904)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.2374630719423294,
-            accuracy: -0.004749261438846588)
-        let result = a.all(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAll3() {
-        MLXRandom.seed(829)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.03525291010737419,
-            accuracy: 0.0007050582021474838)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.4230349063873291,
-            accuracy: 0.008460698127746582)
-        let result = all(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAll4() {
-        MLXRandom.seed(616)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.49660220742225647,
-            accuracy: 0.00993204414844513)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 35.7553596496582,
-            accuracy: 0.715107192993164)
-        let result = a.all(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAll5() {
-        MLXRandom.seed(923)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4720103442668915,
-            accuracy: 0.00944020688533783)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 33.984745025634766,
-            accuracy: 0.6796949005126953)
-        let result = all(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAny() {
-        MLXRandom.seed(150)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.02183736488223076,
-            accuracy: -0.0004367472976446152)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.2620483636856079,
-            accuracy: -0.005240967273712158)
-        let result = a.any()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAny1() {
-        MLXRandom.seed(317)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.1289883852005005,
-            accuracy: -0.0025797677040100097)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.5478605031967163,
-            accuracy: -0.030957210063934325)
-        let result = any(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAny2() {
-        MLXRandom.seed(101)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.08150328695774078,
-            accuracy: -0.0016300657391548157)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.9780394434928894,
-            accuracy: -0.01956078886985779)
-        let result = a.any(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAny3() {
-        MLXRandom.seed(747)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.23745165765285492,
-            accuracy: 0.004749033153057099)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.8494198322296143,
-            accuracy: 0.056988396644592286)
-        let result = any(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAny4() {
-        MLXRandom.seed(75)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.48318418860435486,
-            accuracy: 0.009663683772087097)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 34.78926086425781,
-            accuracy: 0.6957852172851563)
-        let result = a.any(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testAny5() {
-        MLXRandom.seed(920)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.41749411821365356,
-            accuracy: 0.008349882364273071)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 30.0595760345459,
-            accuracy: 0.601191520690918)
-        let result = any(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testArgMax() {
-        MLXRandom.seed(870)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.32090985774993896,
-            accuracy: 0.006418197154998779)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 3.8509180545806885,
-            accuracy: 0.07701836109161377)
-        let result = a.argMax()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 4.0,
-            accuracy: 0.08)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4,
-            accuracy: 0.08)
-    }
-
-    func testArgMax1() {
-        MLXRandom.seed(700)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.20903855562210083,
-            accuracy: -0.004180771112442016)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.50846266746521,
-            accuracy: -0.0501692533493042)
-        let result = argMax(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 8.0,
-            accuracy: 0.16)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 8,
-            accuracy: 0.16)
-    }
-
-    func testArgMax2() {
-        MLXRandom.seed(338)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.07185819745063782,
-            accuracy: 0.0014371639490127564)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.8622983694076538,
-            accuracy: 0.017245967388153077)
-        let result = a.argMax(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.25,
-            accuracy: 0.025)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 5,
-            accuracy: 0.1)
-    }
-
-    func testArgMax3() {
-        MLXRandom.seed(483)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.0843842476606369,
-            accuracy: 0.001687684953212738)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.012610912322998,
-            accuracy: 0.020252218246459962)
-        let result = argMax(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.75,
-            accuracy: 0.015)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 3,
-            accuracy: 0.06)
-    }
-
-    func testArgMin() {
-        MLXRandom.seed(573)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5405035018920898,
-            accuracy: 0.010810070037841797)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 6.48604154586792,
-            accuracy: 0.1297208309173584)
-        let result = a.argMin()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 8.0,
-            accuracy: 0.16)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 8,
-            accuracy: 0.16)
-    }
-
-    func testArgMin1() {
-        MLXRandom.seed(103)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.2983229458332062,
-            accuracy: 0.005966458916664124)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 3.5798752307891846,
-            accuracy: 0.0715975046157837)
-        let result = argMin(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 11.0,
-            accuracy: 0.22)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 11,
-            accuracy: 0.22)
-    }
-
-    func testArgMin2() {
-        MLXRandom.seed(362)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.057320237159729004,
-            accuracy: -0.00114640474319458)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.687842845916748,
-            accuracy: -0.013756856918334961)
-        let result = a.argMin(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.0,
-            accuracy: 0.02)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4,
-            accuracy: 0.08)
-    }
-
-    func testArgMin3() {
-        MLXRandom.seed(444)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.22760924696922302,
-            accuracy: 0.004552184939384461)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.7313108444213867,
-            accuracy: 0.05462621688842773)
-        let result = argMin(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .uint32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.25,
-            accuracy: 0.005)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1,
-            accuracy: 0.02)
-    }
-
-    func testCummax() {
-        MLXRandom.seed(323)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.4485395550727844,
-            accuracy: -0.008970791101455688)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -5.382474422454834,
-            accuracy: -0.10764948844909668)
-        let result = a.cummax()
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.1089742183685303,
-            accuracy: 0.04217948436737061)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 25.307689666748047,
-            accuracy: 0.5061537933349609)
-    }
-
-    func testCummax1() {
-        MLXRandom.seed(625)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.2803424596786499,
-            accuracy: -0.0056068491935729985)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.3641092777252197,
-            accuracy: -0.0672821855545044)
-        let result = cummax(a)
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.3141178786754608,
-            accuracy: 0.006282357573509216)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 3.7694144248962402,
-            accuracy: 0.07538828849792481)
-    }
-
-    func testCummax2() {
-        MLXRandom.seed(655)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.37031763792037964,
-            accuracy: 0.0074063527584075925)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 4.443811416625977,
-            accuracy: 0.08887622833251953)
-        let result = a.cummax(axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.6860622763633728,
-            accuracy: 0.013721245527267457)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 8.232747077941895,
-            accuracy: 0.1646549415588379)
-    }
-
-    func testCummax3() {
-        MLXRandom.seed(934)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.05676526948809624,
-            accuracy: -0.0011353053897619249)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.6811832189559937,
-            accuracy: -0.013623664379119873)
-        let result = cummax(a, axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.018919458612799644,
-            accuracy: 0.0003783891722559929)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.22703349590301514,
-            accuracy: 0.004540669918060303)
-    }
-
-    func testCummin() {
-        MLXRandom.seed(209)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.07204179465770721,
-            accuracy: 0.0014408358931541443)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.8645014762878418,
-            accuracy: 0.017290029525756836)
-        let result = a.cummin()
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -2.270576000213623,
-            accuracy: -0.04541152000427246)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -27.246910095214844,
-            accuracy: -0.5449382019042969)
-    }
-
-    func testCummin1() {
-        MLXRandom.seed(989)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.16920256614685059,
-            accuracy: -0.0033840513229370117)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.030430793762207,
-            accuracy: -0.04060861587524414)
-        let result = cummin(a)
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.9566025733947754,
-            accuracy: -0.019132051467895508)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -11.479230880737305,
-            accuracy: -0.2295846176147461)
-    }
-
-    func testCummin2() {
-        MLXRandom.seed(565)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.644216775894165,
-            accuracy: -0.0128843355178833)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -7.7306013107299805,
-            accuracy: -0.1546120262145996)
-        let result = a.cummin(axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.9463123083114624,
-            accuracy: -0.01892624616622925)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -11.35574722290039,
-            accuracy: -0.2271149444580078)
-    }
-
-    func testCummin3() {
-        MLXRandom.seed(488)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.398279070854187,
-            accuracy: -0.00796558141708374)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -4.779348850250244,
-            accuracy: -0.09558697700500489)
-        let result = cummin(a, axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.9816936254501343,
-            accuracy: -0.019633872509002687)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -11.780323028564453,
-            accuracy: -0.23560646057128906)
-    }
-
-    func testCumprod() {
-        MLXRandom.seed(453)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.0004353722033556551,
-            accuracy: 8.707444067113101e-06)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.005224466323852539,
-            accuracy: 0.00010448932647705078)
-        let result = a.cumprod()
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.031617555767297745,
-            accuracy: -0.0006323511153459549)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -0.37941065430641174,
-            accuracy: -0.007588213086128235)
-    }
-
-    func testCumprod1() {
-        MLXRandom.seed(886)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.0051885247230529785,
-            accuracy: -0.00010377049446105957)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.06226229667663574,
-            accuracy: -0.001245245933532715)
-        let result = cumprod(a)
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.14253053069114685,
-            accuracy: 0.002850610613822937)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.7103662490844727,
-            accuracy: 0.034207324981689456)
-    }
-
-    func testCumprod2() {
-        MLXRandom.seed(533)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.12974336743354797,
-            accuracy: -0.0025948673486709596)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.5569202899932861,
-            accuracy: -0.031138405799865723)
-        let result = a.cumprod(axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.16878555715084076,
-            accuracy: -0.0033757111430168154)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.0254266262054443,
-            accuracy: -0.04050853252410889)
-    }
-
-    func testCumprod3() {
-        MLXRandom.seed(266)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.20902606844902039,
-            accuracy: 0.004180521368980407)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.508312702178955,
-            accuracy: 0.050166254043579106)
-        let result = cumprod(a, axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.7459201812744141,
-            accuracy: 0.014918403625488281)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 8.951042175292969,
-            accuracy: 0.17902084350585937)
-    }
-
-    func testCumsum() {
-        MLXRandom.seed(63)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.20442306995391846,
-            accuracy: 0.004088461399078369)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.4530768394470215,
-            accuracy: 0.04906153678894043)
-        let result = a.cumsum()
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.2362117767333984,
-            accuracy: 0.04472423553466797)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 26.83454132080078,
-            accuracy: 0.5366908264160156)
-    }
-
-    func testCumsum1() {
-        MLXRandom.seed(824)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.07800808548927307,
-            accuracy: 0.0015601617097854615)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.9360969662666321,
-            accuracy: 0.018721939325332643)
-        let result = cumsum(a)
-        XCTAssertEqual(result.shape, [12])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.16304373741149902,
-            accuracy: -0.0032608747482299806)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.9565248489379883,
-            accuracy: -0.03913049697875977)
-    }
-
-    func testCumsum2() {
-        MLXRandom.seed(940)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.3181919455528259,
-            accuracy: -0.0063638389110565186)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.818303346633911,
-            accuracy: -0.07636606693267822)
-        let result = a.cumsum(axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.8375476598739624,
-            accuracy: -0.016750953197479247)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -10.05057144165039,
-            accuracy: -0.20101142883300782)
-    }
-
-    func testCumsum3() {
-        MLXRandom.seed(561)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.19832412898540497,
-            accuracy: 0.0039664825797081)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.379889488220215,
-            accuracy: 0.0475977897644043)
-        let result = cumsum(a, axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.7345349788665771,
-            accuracy: 0.014690699577331543)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 8.814419746398926,
-            accuracy: 0.17628839492797851)
-    }
-
-    func testExpandedDimensions() {
-        MLXRandom.seed(937)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.38423240184783936,
-            accuracy: -0.007684648036956787)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -4.610788822174072,
-            accuracy: -0.09221577644348145)
-        let result = expandedDimensions(a, axis: -1)
-        XCTAssertEqual(result.shape, [4, 3, 1])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.38423240184783936,
-            accuracy: -0.007684648036956787)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -4.610788822174072,
-            accuracy: -0.09221577644348145)
-    }
-
-    func testExpandedDimensions1() {
-        MLXRandom.seed(14)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5235790014266968,
-            accuracy: 0.010471580028533935)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 37.697689056396484,
-            accuracy: 0.7539537811279297)
-        let result = expandedDimensions(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [1, 2, 3, 4, 3, 1])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5235790014266968,
-            accuracy: 0.010471580028533935)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 37.697689056396484,
-            accuracy: 0.7539537811279297)
-    }
-
-    func testFloor() {
-        MLXRandom.seed(95)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.4827702045440674,
-            accuracy: -0.009655404090881349)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -5.793242454528809,
-            accuracy: -0.11586484909057618)
-        let result = floor(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -1.0833333730697632,
-            accuracy: -0.021666667461395263)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -13.0,
-            accuracy: -0.26)
-    }
-
-    func testLog() {
-        MLXRandom.seed(736)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.0185847282409668,
-            accuracy: 0.020371694564819336)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 12.223016738891602,
-            accuracy: 0.24446033477783205)
-        let result = a.log()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.08654867112636566,
-            accuracy: -0.0017309734225273133)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.0385839939117432,
-            accuracy: -0.020771679878234865)
-    }
-
-    func testLog1() {
-        MLXRandom.seed(860)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.9451824426651001,
-            accuracy: 0.018903648853302004)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 11.342188835144043,
-            accuracy: 0.22684377670288086)
-        let result = log(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.26455360651016235,
-            accuracy: -0.0052910721302032475)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -3.174643039703369,
-            accuracy: -0.06349286079406738)
-    }
-
-    func testLog2() {
-        MLXRandom.seed(408)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.1787240505218506,
-            accuracy: 0.023574481010437014)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 14.144688606262207,
-            accuracy: 0.28289377212524414)
-        let result = a.log2()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.11644445359706879,
-            accuracy: 0.002328889071941376)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.3973333835601807,
-            accuracy: 0.027946667671203615)
-    }
-
-    func testLog21() {
-        MLXRandom.seed(727)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.0156004428863525,
-            accuracy: 0.020312008857727052)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 12.18720531463623,
-            accuracy: 0.2437441062927246)
-        let result = log2(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.2411154955625534,
-            accuracy: -0.004822309911251068)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.893385887145996,
-            accuracy: -0.057867717742919926)
-    }
-
-    func testLog10() {
-        MLXRandom.seed(844)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.0754908323287964,
-            accuracy: 0.02150981664657593)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 12.905889511108398,
-            accuracy: 0.25811779022216796)
-        let result = a.log10()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.014521514996886253,
-            accuracy: -0.0002904302999377251)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -0.17425817251205444,
-            accuracy: -0.003485163450241089)
-    }
-
-    func testLog101() {
-        MLXRandom.seed(803)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.1359423398971558,
-            accuracy: 0.022718846797943115)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 13.631307601928711,
-            accuracy: 0.2726261520385742)
-        let result = log10(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.07397204637527466,
-            accuracy: -0.0014794409275054933)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -0.8876644968986511,
-            accuracy: -0.017753289937973024)
-    }
-
-    func testLog1p() {
-        MLXRandom.seed(684)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.3902796506881714,
-            accuracy: 0.027805593013763428)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 16.6833553314209,
-            accuracy: 0.333667106628418)
-        let result = a.log1p()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.851651668548584,
-            accuracy: 0.01703303337097168)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 10.219820022583008,
-            accuracy: 0.20439640045166016)
-    }
-
-    func testLog1p1() {
-        MLXRandom.seed(640)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.2758265733718872,
-            accuracy: 0.025516531467437743)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 15.309918403625488,
-            accuracy: 0.3061983680725098)
-        let result = log1p(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.7979601621627808,
-            accuracy: 0.015959203243255615)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.575521469116211,
-            accuracy: 0.1915104293823242)
-    }
-
-    func testLogSumExp() {
-        MLXRandom.seed(1)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.01741863414645195,
-            accuracy: 0.000348372682929039)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.2090235948562622,
-            accuracy: 0.004180471897125245)
-        let result = a.logSumExp()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.8441760540008545,
-            accuracy: 0.05688352108001709)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 2.8441760540008545,
-            accuracy: 0.05688352108001709)
-    }
-
-    func testLogSumExp1() {
-        MLXRandom.seed(626)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.09981077909469604,
-            accuracy: -0.001996215581893921)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.1977293491363525,
-            accuracy: -0.023954586982727052)
-        let result = logSumExp(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.6805179119110107,
-            accuracy: 0.05361035823822022)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 2.6805179119110107,
-            accuracy: 0.05361035823822022)
-    }
-
-    func testLogSumExp2() {
-        MLXRandom.seed(505)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.16046583652496338,
-            accuracy: 0.0032093167304992677)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.9255900382995605,
-            accuracy: 0.038511800765991214)
-        let result = a.logSumExp(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.4977089166641235,
-            accuracy: 0.029954178333282473)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 5.990835666656494,
-            accuracy: 0.11981671333312989)
-    }
-
-    func testLogSumExp3() {
-        MLXRandom.seed(847)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.2282017469406128,
-            accuracy: -0.004564034938812256)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.7384209632873535,
-            accuracy: -0.05476841926574707)
-        let result = logSumExp(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.163524866104126,
-            accuracy: 0.02327049732208252)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4.654099464416504,
-            accuracy: 0.09308198928833009)
-    }
-
-    func testLogSumExp4() {
-        MLXRandom.seed(888)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.512793242931366,
-            accuracy: 0.01025586485862732)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 36.921112060546875,
-            accuracy: 0.7384222412109375)
-        let result = a.logSumExp(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.3400487899780273,
-            accuracy: 0.04680097579956055)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 28.080583572387695,
-            accuracy: 0.5616116714477539)
-    }
-
-    func testLogSumExp5() {
-        MLXRandom.seed(341)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5185534358024597,
-            accuracy: 0.010371068716049195)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 37.335845947265625,
-            accuracy: 0.7467169189453126)
-        let result = logSumExp(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.3395986557006836,
-            accuracy: 0.046791973114013674)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 28.07518196105957,
-            accuracy: 0.5615036392211914)
-    }
-
-    func testMax() {
-        MLXRandom.seed(249)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5458451509475708,
-            accuracy: 0.010916903018951415)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 6.55014181137085,
-            accuracy: 0.13100283622741699)
-        let result = a.max()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.437469005584717,
-            accuracy: 0.048749380111694336)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 2.437469005584717,
-            accuracy: 0.048749380111694336)
-    }
-
-    func testMax1() {
-        MLXRandom.seed(747)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.23745165765285492,
-            accuracy: 0.004749033153057099)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.8494198322296143,
-            accuracy: 0.056988396644592286)
-        let result = max(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.8713812828063965,
-            accuracy: 0.03742762565612793)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.8713812828063965,
-            accuracy: 0.03742762565612793)
-    }
-
-    func testMax2() {
-        MLXRandom.seed(333)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.08884426206350327,
-            accuracy: 0.0017768852412700653)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.0661311149597168,
-            accuracy: 0.021322622299194335)
-        let result = a.max(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.9345294833183289,
-            accuracy: 0.018690589666366577)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 3.7381179332733154,
-            accuracy: 0.07476235866546631)
-    }
-
-    func testMax3() {
-        MLXRandom.seed(720)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.03598502278327942,
-            accuracy: -0.0007197004556655884)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.431820273399353,
-            accuracy: -0.00863640546798706)
-        let result = max(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.0814929008483887,
-            accuracy: 0.021629858016967773)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4.325971603393555,
-            accuracy: 0.08651943206787109)
-    }
-
-    func testMax4() {
-        MLXRandom.seed(891)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4746115505695343,
-            accuracy: 0.009492231011390686)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 34.17203140258789,
-            accuracy: 0.6834406280517579)
-        let result = a.max(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.8310352563858032,
-            accuracy: 0.016620705127716066)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.97242259979248,
-            accuracy: 0.19944845199584962)
-    }
-
-    func testMax5() {
-        MLXRandom.seed(64)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5222265124320984,
-            accuracy: 0.010444530248641969)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 37.60030746459961,
-            accuracy: 0.7520061492919922)
-        let result = max(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.8983621597290039,
-            accuracy: 0.01796724319458008)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 10.780345916748047,
-            accuracy: 0.21560691833496093)
-    }
-
-    func testMean() {
-        MLXRandom.seed(195)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.8051623702049255,
-            accuracy: 0.016103247404098513)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 9.661948204040527,
-            accuracy: 0.19323896408081054)
-        let result = a.mean()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.8051623702049255,
-            accuracy: 0.016103247404098513)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.8051623702049255,
-            accuracy: 0.016103247404098513)
-    }
-
-    func testMean1() {
-        MLXRandom.seed(939)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.1672295778989792,
-            accuracy: -0.0033445915579795836)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.0067548751831055,
-            accuracy: -0.040135097503662114)
-        let result = mean(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.1672295778989792,
-            accuracy: -0.0033445915579795836)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -0.1672295778989792,
-            accuracy: -0.0033445915579795836)
-    }
-
-    func testMean2() {
-        MLXRandom.seed(581)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.3291994333267212,
-            accuracy: -0.006583988666534424)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.950392961502075,
-            accuracy: -0.0790078592300415)
-        let result = a.mean(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.3291994333267212,
-            accuracy: -0.006583988666534424)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.3167977333068848,
-            accuracy: -0.026335954666137695)
-    }
-
-    func testMean3() {
-        MLXRandom.seed(227)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.28339889645576477,
-            accuracy: -0.005667977929115295)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.4007866382598877,
-            accuracy: -0.06801573276519776)
-        let result = mean(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.2833988666534424,
-            accuracy: -0.005667977333068848)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.1335954666137695,
-            accuracy: -0.022671909332275392)
-    }
-
-    func testMean4() {
-        MLXRandom.seed(244)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5118785500526428,
-            accuracy: 0.010237571001052857)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 36.855255126953125,
-            accuracy: 0.7371051025390625)
-        let result = a.mean(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5118785500526428,
-            accuracy: 0.010237571001052857)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 6.142542362213135,
-            accuracy: 0.12285084724426269)
-    }
-
-    func testMean5() {
-        MLXRandom.seed(822)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4916161596775055,
-            accuracy: 0.00983232319355011)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 35.3963623046875,
-            accuracy: 0.70792724609375)
-        let result = mean(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.4916161894798279,
-            accuracy: 0.009832323789596557)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 5.8993940353393555,
-            accuracy: 0.11798788070678712)
-    }
-
-    func testMin() {
-        MLXRandom.seed(990)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.2101413607597351,
-            accuracy: -0.0042028272151947025)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.5216963291168213,
-            accuracy: -0.050433926582336426)
-        let result = a.min()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -2.5653531551361084,
-            accuracy: -0.05130706310272217)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.5653531551361084,
-            accuracy: -0.05130706310272217)
-    }
-
-    func testMin1() {
-        MLXRandom.seed(145)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.16449235379695892,
-            accuracy: -0.0032898470759391784)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.9739081859588623,
-            accuracy: -0.03947816371917725)
-        let result = min(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -1.3645747900009155,
-            accuracy: -0.02729149580001831)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.3645747900009155,
-            accuracy: -0.02729149580001831)
-    }
-
-    func testMin2() {
-        MLXRandom.seed(822)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.025983989238739014,
-            accuracy: 0.0005196797847747803)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.31180787086486816,
-            accuracy: 0.006236157417297363)
-        let result = a.min(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.8900715708732605,
-            accuracy: -0.01780143141746521)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -3.560286283493042,
-            accuracy: -0.07120572566986084)
-    }
-
-    func testMin3() {
-        MLXRandom.seed(556)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.47528061270713806,
-            accuracy: 0.00950561225414276)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 5.703367233276367,
-            accuracy: 0.11406734466552734)
-        let result = min(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.6413009166717529,
-            accuracy: -0.012826018333435059)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.5652036666870117,
-            accuracy: -0.051304073333740235)
-    }
-
-    func testMin4() {
-        MLXRandom.seed(458)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4730764627456665,
-            accuracy: 0.00946152925491333)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 34.06150436401367,
-            accuracy: 0.6812300872802735)
-        let result = a.min(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.09017934650182724,
-            accuracy: 0.0018035869300365448)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.0821521282196045,
-            accuracy: 0.02164304256439209)
-    }
-
-    func testMin5() {
-        MLXRandom.seed(93)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4830058515071869,
-            accuracy: 0.009660117030143738)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 34.77642059326172,
-            accuracy: 0.6955284118652344)
-        let result = min(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.11048994958400726,
-            accuracy: 0.0022097989916801454)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.3258793354034424,
-            accuracy: 0.02651758670806885)
-    }
-
-    func testProduct() {
-        MLXRandom.seed(82)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.2605368494987488,
-            accuracy: 0.005210736989974976)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 3.1264421939849854,
-            accuracy: 0.0625288438796997)
-        let result = a.product()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -2.726646744122263e-05,
-            accuracy: -5.453293488244526e-07)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.726646744122263e-05,
-            accuracy: -5.453293488244526e-07)
-    }
-
-    func testProduct1() {
-        MLXRandom.seed(327)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.296897828578949,
-            accuracy: -0.00593795657157898)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.5627739429473877,
-            accuracy: -0.07125547885894776)
-        let result = product(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 3.555632019924815e-06,
-            accuracy: 7.11126403984963e-08)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 3.555632019924815e-06,
-            accuracy: 7.11126403984963e-08)
-    }
-
-    func testProduct2() {
-        MLXRandom.seed(896)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.05823778361082077,
-            accuracy: -0.0011647556722164155)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.6988533735275269,
-            accuracy: -0.013977067470550537)
-        let result = a.product(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.6222327351570129,
-            accuracy: 0.012444654703140259)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 2.4889309406280518,
-            accuracy: 0.049778618812561036)
-    }
-
-    func testProduct3() {
-        MLXRandom.seed(520)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.19801780581474304,
-            accuracy: 0.003960356116294861)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.376213550567627,
-            accuracy: 0.04752427101135254)
-        let result = product(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.0764155238866806,
-            accuracy: 0.0015283104777336122)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.3056620955467224,
-            accuracy: 0.006113241910934449)
-    }
-
-    func testProduct4() {
-        MLXRandom.seed(955)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4643688201904297,
-            accuracy: 0.009287376403808594)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 33.43455505371094,
-            accuracy: 0.6686911010742188)
-        let result = a.product(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.005116840824484825,
-            accuracy: 0.00010233681648969651)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.0614020898938179,
-            accuracy: 0.0012280417978763581)
-    }
-
-    func testProduct5() {
-        MLXRandom.seed(501)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5341216921806335,
-            accuracy: 0.010682433843612671)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 38.45676040649414,
-            accuracy: 0.7691352081298828)
-        let result = product(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.02406497858464718,
-            accuracy: 0.0004812995716929436)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.28877973556518555,
-            accuracy: 0.0057755947113037115)
-    }
-
-    func testReciprocal() {
-        MLXRandom.seed(111)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.31357258558273315,
-            accuracy: 0.006271451711654663)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 3.762871026992798,
-            accuracy: 0.07525742053985596)
-        let result = a.reciprocal()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.9539644122123718,
-            accuracy: 0.019079288244247438)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 11.447572708129883,
-            accuracy: 0.22895145416259766)
-    }
-
-    func testReciprocal1() {
-        MLXRandom.seed(308)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.12339428067207336,
-            accuracy: -0.0024678856134414673)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.4807313680648804,
-            accuracy: -0.029614627361297607)
-        let result = reciprocal(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.3978341817855835,
-            accuracy: 0.02795668363571167)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 16.774009704589844,
-            accuracy: 0.33548019409179686)
-    }
-
-    func testRound() {
-        MLXRandom.seed(564)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.20050053298473358,
-            accuracy: -0.004010010659694672)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.406006336212158,
-            accuracy: -0.048120126724243165)
-        let result = a.round()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.1666666716337204,
-            accuracy: -0.003333333432674408)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.0,
-            accuracy: -0.04)
-    }
-
-    func testRound1() {
-        MLXRandom.seed(298)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.23528259992599487,
-            accuracy: 0.004705651998519898)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.8233911991119385,
-            accuracy: 0.05646782398223877)
-        let result = round(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.25,
-            accuracy: 0.005)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 3.0,
-            accuracy: 0.06)
-    }
-
-    func testSin() {
-        MLXRandom.seed(723)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.16675782203674316,
-            accuracy: 0.0033351564407348632)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.001093864440918,
-            accuracy: 0.04002187728881836)
-        let result = a.sin()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.11908348649740219,
-            accuracy: 0.0023816697299480437)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.429001808166504,
-            accuracy: 0.028580036163330078)
-    }
-
-    func testSin1() {
-        MLXRandom.seed(127)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.18461060523986816,
-            accuracy: -0.0036922121047973633)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.215327262878418,
-            accuracy: -0.04430654525756836)
-        let result = sin(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.15534619987010956,
-            accuracy: -0.0031069239974021914)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.86415433883667,
-            accuracy: -0.0372830867767334)
-    }
-
-    func testCos() {
-        MLXRandom.seed(560)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.15535306930541992,
-            accuracy: -0.0031070613861083987)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.864236831665039,
-            accuracy: -0.03728473663330078)
-        let result = a.cos()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5902791023254395,
-            accuracy: 0.01180558204650879)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 7.083348751068115,
-            accuracy: 0.1416669750213623)
-    }
-
-    func testCos1() {
-        MLXRandom.seed(340)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.18920934200286865,
-            accuracy: 0.003784186840057373)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.270512104034424,
-            accuracy: 0.04541024208068848)
-        let result = cos(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.7257080078125,
-            accuracy: 0.01451416015625)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 8.70849609375,
-            accuracy: 0.174169921875)
-    }
-
-    func testSqrt() {
-        MLXRandom.seed(834)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.1289045810699463,
-            accuracy: 0.022578091621398927)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 13.546854972839355,
-            accuracy: 0.2709370994567871)
-        let result = a.sqrt()
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.0152535438537598,
-            accuracy: 0.020305070877075195)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 12.1830415725708,
-            accuracy: 0.243660831451416)
-    }
-
-    func testSqrt1() {
-        MLXRandom.seed(944)
-        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.1813615560531616,
-            accuracy: 0.023627231121063234)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 14.176338195800781,
-            accuracy: 0.2835267639160156)
-        let result = sqrt(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.040137767791748,
-            accuracy: 0.02080275535583496)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 12.481653213500977,
-            accuracy: 0.24963306427001955)
-    }
-
-    func testSum() {
-        MLXRandom.seed(553)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.41794854402542114,
-            accuracy: 0.008358970880508423)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 5.015382289886475,
-            accuracy: 0.1003076457977295)
-        let result = a.sum()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 5.015382289886475,
-            accuracy: 0.1003076457977295)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 5.015382289886475,
-            accuracy: 0.1003076457977295)
-    }
-
-    func testSum1() {
-        MLXRandom.seed(208)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.013726795092225075,
-            accuracy: 0.0002745359018445015)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.1647215336561203,
-            accuracy: 0.003294430673122406)
-        let result = sum(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.1647215336561203,
-            accuracy: 0.003294430673122406)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.1647215336561203,
-            accuracy: 0.003294430673122406)
-    }
-
-    func testSum2() {
-        MLXRandom.seed(986)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.08680947870016098,
-            accuracy: 0.0017361895740032197)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.0417137145996094,
-            accuracy: 0.020834274291992187)
-        let result = a.sum(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.26042836904525757,
-            accuracy: 0.005208567380905151)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.0417134761810303,
-            accuracy: 0.020834269523620604)
-    }
-
-    func testSum3() {
-        MLXRandom.seed(818)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.01743374764919281,
-            accuracy: -0.0003486749529838562)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.20920497179031372,
-            accuracy: -0.004184099435806275)
-        let result = sum(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.05230128765106201,
-            accuracy: -0.0010460257530212403)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -0.20920515060424805,
-            accuracy: -0.004184103012084961)
-    }
-
-    func testSum4() {
-        MLXRandom.seed(617)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5379223823547363,
-            accuracy: 0.010758447647094728)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 38.730411529541016,
-            accuracy: 0.7746082305908203)
-        let result = a.sum(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 3.227534294128418,
-            accuracy: 0.06455068588256836)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 38.730411529541016,
-            accuracy: 0.7746082305908203)
-    }
-
-    func testSum5() {
-        MLXRandom.seed(560)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4772148132324219,
-            accuracy: 0.009544296264648438)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 34.359466552734375,
-            accuracy: 0.6871893310546875)
-        let result = sum(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 2.8632893562316895,
-            accuracy: 0.05726578712463379)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 34.35947036743164,
-            accuracy: 0.6871894073486329)
-    }
-
-    func testVariance() {
-        MLXRandom.seed(601)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.24374054372310638,
-            accuracy: 0.004874810874462128)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.924886465072632,
-            accuracy: 0.05849772930145264)
-        let result = a.variance()
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.3644942045211792,
-            accuracy: 0.007289884090423584)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.3644942045211792,
-            accuracy: 0.007289884090423584)
-    }
-
-    func testVariance1() {
-        MLXRandom.seed(294)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.047887593507766724,
-            accuracy: 0.0009577518701553345)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.5746511220932007,
-            accuracy: 0.011493022441864014)
-        let result = variance(a)
-        XCTAssertEqual(result.shape, [])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.6768754124641418,
-            accuracy: 0.013537508249282838)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.6768754124641418,
-            accuracy: 0.013537508249282838)
-    }
-
-    func testVariance2() {
-        MLXRandom.seed(455)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.07983233034610748,
-            accuracy: 0.0015966466069221496)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.957987904548645,
-            accuracy: 0.019159758090972902)
-        let result = a.variance(axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5036177039146423,
-            accuracy: 0.010072354078292847)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 2.0144708156585693,
-            accuracy: 0.040289416313171386)
-    }
-
-    func testVariance3() {
-        MLXRandom.seed(93)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.028267383575439453,
-            accuracy: -0.0005653476715087891)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -0.33920860290527344,
-            accuracy: -0.006784172058105469)
-        let result = variance(a, axis: -1)
-        XCTAssertEqual(result.shape, [4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.0322922468185425,
-            accuracy: 0.02064584493637085)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4.12916898727417,
-            accuracy: 0.0825833797454834)
-    }
-
-    func testVariance4() {
-        MLXRandom.seed(610)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4193626046180725,
-            accuracy: 0.00838725209236145)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 30.194107055664062,
-            accuracy: 0.6038821411132813)
-        let result = a.variance(axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.07003539055585861,
-            accuracy: 0.0014007078111171723)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.840424656867981,
-            accuracy: 0.01680849313735962)
-    }
-
-    func testVariance5() {
-        MLXRandom.seed(817)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4460234045982361,
-            accuracy: 0.008920468091964721)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 32.113685607910156,
-            accuracy: 0.6422737121582032)
-        let result = variance(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [3, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.0666377991437912,
-            accuracy: 0.001332755982875824)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 0.7996535301208496,
-            accuracy: 0.015993070602416993)
-    }
-
-    func testAcos() {
-        MLXRandom.seed(394)
-        let a = MLXRandom.uniform(low: 0.1, high: 1.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5139000415802002,
-            accuracy: 0.010278000831604003)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 6.166800498962402,
-            accuracy: 0.12333600997924805)
-        let result = acos(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.9816445112228394,
-            accuracy: 0.019632890224456787)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 11.779733657836914,
-            accuracy: 0.2355946731567383)
-    }
-
-    func testAcosh() {
-        MLXRandom.seed(324)
-        let a = MLXRandom.uniform(low: 1, high: 3, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.9701108932495117,
-            accuracy: 0.039402217864990235)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 23.64133071899414,
-            accuracy: 0.4728266143798828)
-        let result = acosh(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.1439350843429565,
-            accuracy: 0.02287870168685913)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 13.72722053527832,
-            accuracy: 0.2745444107055664)
-    }
-
-    func testAsin() {
-        MLXRandom.seed(589)
-        let a = MLXRandom.uniform(low: 0.1, high: 1.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5361738801002502,
-            accuracy: 0.010723477602005005)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 6.434086322784424,
-            accuracy: 0.12868172645568848)
-        let result = asin(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5976895093917847,
-            accuracy: 0.011953790187835694)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 7.172273635864258,
-            accuracy: 0.14344547271728517)
-    }
-
-    func testAsinh() {
-        MLXRandom.seed(247)
-        let a = MLXRandom.uniform(low: 1, high: 3, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 1.8222084045410156,
-            accuracy: 0.036444168090820316)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 21.866500854492188,
-            accuracy: 0.43733001708984376)
-        let result = asinh(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.340692400932312,
-            accuracy: 0.026813848018646242)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 16.088308334350586,
-            accuracy: 0.32176616668701175)
-    }
-
-    func testAtan() {
-        MLXRandom.seed(297)
-        let a = MLXRandom.uniform(low: 0.1, high: 1.0, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.45578455924987793,
-            accuracy: 0.00911569118499756)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 5.469414710998535,
-            accuracy: 0.1093882942199707)
-        let result = atan(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.415025919675827,
-            accuracy: 0.00830051839351654)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4.980310916900635,
-            accuracy: 0.0996062183380127)
-    }
-
-    func testAtanh() {
-        MLXRandom.seed(188)
-        let a = MLXRandom.uniform(low: 0.1, high: 0.9, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.3955610692501068,
-            accuracy: 0.007911221385002136)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 4.746732711791992,
-            accuracy: 0.09493465423583984)
-        let result = atanh(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.43353432416915894,
-            accuracy: 0.00867068648338318)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 5.202411651611328,
-            accuracy: 0.10404823303222656)
-    }
-
-    func testCeil() {
-        MLXRandom.seed(193)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4008181691169739,
-            accuracy: 0.008016363382339478)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 4.809817790985107,
-            accuracy: 0.09619635581970215)
-        let result = ceil(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.9166666865348816,
-            accuracy: 0.01833333373069763)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 11.0,
-            accuracy: 0.22)
-    }
-
-    func testCosh() {
-        MLXRandom.seed(841)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.3292633295059204,
-            accuracy: -0.006585266590118408)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.951159715652466,
-            accuracy: -0.07902319431304931)
-        let result = cosh(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.7108967304229736,
-            accuracy: 0.034217934608459476)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 20.530759811401367,
-            accuracy: 0.41061519622802733)
-    }
-
-    func testErf() {
-        MLXRandom.seed(191)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.5465152263641357,
-            accuracy: -0.010930304527282716)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -6.558182239532471,
-            accuracy: -0.1311636447906494)
-        let result = erf(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.3972204625606537,
-            accuracy: -0.007944409251213074)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -4.766645431518555,
-            accuracy: -0.0953329086303711)
-    }
-
-    func testErfInverse() {
-        MLXRandom.seed(33)
-        let a = MLXRandom.uniform(low: 0.1, high: 0.9, [4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5479786396026611,
-            accuracy: 0.010959572792053222)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 6.575743675231934,
-            accuracy: 0.13151487350463867)
-        let result = erfInverse(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5522865653038025,
-            accuracy: 0.01104573130607605)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 6.627438545227051,
-            accuracy: 0.132548770904541)
-    }
-
-    func testLogicalNot() {
-        MLXRandom.seed(627)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.007127379532903433,
-            accuracy: 0.00014254759065806865)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.08552855253219604,
-            accuracy: 0.0017105710506439208)
-        let result = logicalNot(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), false)
-    }
-
-    func testNegative() {
-        MLXRandom.seed(672)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.16328130662441254,
-            accuracy: 0.0032656261324882506)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1.9593756198883057,
-            accuracy: 0.03918751239776611)
-        let result = negative(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.16328130662441254,
-            accuracy: -0.0032656261324882506)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -1.9593756198883057,
-            accuracy: -0.03918751239776611)
-    }
-
-    func testSigmoid() {
-        MLXRandom.seed(266)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.20902606844902039,
-            accuracy: 0.004180521368980407)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2.508312702178955,
-            accuracy: 0.050166254043579106)
-        let result = sigmoid(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5332736372947693,
-            accuracy: 0.010665472745895386)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 6.399283409118652,
-            accuracy: 0.12798566818237306)
-    }
-
-    func testSign() {
-        MLXRandom.seed(487)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.4737564027309418,
-            accuracy: -0.009475128054618835)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -5.685076713562012,
-            accuracy: -0.11370153427124023)
-        let result = sign(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.5,
-            accuracy: -0.01)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -6.0,
-            accuracy: -0.12)
-    }
-
-    func testSinh() {
-        MLXRandom.seed(70)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.19362865388393402,
-            accuracy: -0.0038725730776786806)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.3235437870025635,
-            accuracy: -0.04647087574005127)
-        let result = sinh(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.2631848156452179,
-            accuracy: -0.005263696312904358)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -3.158217668533325,
-            accuracy: -0.0631643533706665)
-    }
-
-    func testSoftMax() {
-        MLXRandom.seed(91)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.37823864817619324,
-            accuracy: 0.007564772963523865)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 4.538863658905029,
-            accuracy: 0.09077727317810058)
-        let result = softMax(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.0833333358168602,
-            accuracy: 0.001666666716337204)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1.0,
-            accuracy: 0.02)
-    }
-
-    func testSoftMax1() {
-        MLXRandom.seed(695)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.14673520624637604,
-            accuracy: -0.002934704124927521)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -1.7608224153518677,
-            accuracy: -0.03521644830703735)
-        let result = softMax(a, axis: -1)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.3333333432674408,
-            accuracy: 0.006666666865348816)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4.0,
-            accuracy: 0.08)
-    }
-
-    func testSoftMax2() {
-        MLXRandom.seed(775)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
-        XCTAssertEqual(a.shape, [2, 3, 4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5035431385040283,
-            accuracy: 0.010070862770080567)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 36.255104064941406,
-            accuracy: 0.7251020812988281)
-        let result = softMax(a, axes: [0, -1])
-        XCTAssertEqual(result.shape, [2, 3, 4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.1666666716337204,
-            accuracy: 0.003333333432674408)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 12.0,
-            accuracy: 0.24)
-    }
-
-    func testTan() {
-        MLXRandom.seed(133)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.24041497707366943,
-            accuracy: -0.004808299541473389)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -2.884979724884033,
-            accuracy: -0.05769959449768067)
-        let result = tan(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -1.4056938886642456,
-            accuracy: -0.028113877773284914)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -16.86832618713379,
-            accuracy: -0.3373665237426758)
-    }
-
-    func testTanh() {
-        MLXRandom.seed(897)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.3048655390739441,
-            accuracy: -0.006097310781478882)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.65838623046875,
-            accuracy: -0.073167724609375)
-        let result = tanh(a)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.1846114993095398,
-            accuracy: -0.003692229986190796)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.2153379917144775,
-            accuracy: -0.04430675983428955)
-    }
-
-    func testMLXadd() {
-        MLXRandom.seed(153)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.45169347524642944,
-            accuracy: -0.009033869504928588)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -5.420321464538574,
-            accuracy: -0.10840642929077149)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.4135611951351166,
-            accuracy: 0.008271223902702332)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 4.962734222412109,
-            accuracy: 0.09925468444824219)
-        let result = MLX.add(a, b)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.038132235407829285,
-            accuracy: -0.0007626447081565857)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -0.4575868248939514,
-            accuracy: -0.009151736497879029)
-    }
-
-    func testConv1d() {
-        MLXRandom.seed(945)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [4, 10, 4])
-        XCTAssertEqual(a.shape, [4, 10, 4])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.48101645708084106,
-            accuracy: 0.009620329141616821)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 76.96263122558594,
-            accuracy: 1.5392526245117188)
-        let b = MLXRandom.uniform(0.0 ..< 1.0, [2, 10, 4])
-        XCTAssertEqual(b.shape, [2, 10, 4])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.5652215480804443,
-            accuracy: 0.011304430961608887)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 45.21772384643555,
-            accuracy: 0.904354476928711)
-        let result = conv1d(a, b)
-        XCTAssertEqual(result.shape, [4, 1, 2])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 10.589902877807617,
-            accuracy: 0.21179805755615236)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 84.71922302246094,
-            accuracy: 1.6943844604492189)
-    }
-
-    func testConv2d() {
-        MLXRandom.seed(39)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [4, 10, 12, 4])
-        XCTAssertEqual(a.shape, [4, 10, 12, 4])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.5260733366012573,
-            accuracy: 0.010521466732025147)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 1010.0607299804688,
-            accuracy: 20.201214599609376)
-        let b = MLXRandom.uniform(0.0 ..< 1.0, [2, 10, 12, 4])
-        XCTAssertEqual(b.shape, [2, 10, 12, 4])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.4953395426273346,
-            accuracy: 0.009906790852546692)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 475.52593994140625,
-            accuracy: 9.510518798828125)
-        let result = conv2d(a, b)
-        XCTAssertEqual(result.shape, [4, 1, 1, 2])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 125.77770233154297,
-            accuracy: 2.5155540466308595)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 1006.2216186523438,
-            accuracy: 20.124432373046876)
-    }
-
-    func testConvolve() {
-        MLXRandom.seed(862)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [20])
-        XCTAssertEqual(a.shape, [20])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4844416081905365,
-            accuracy: 0.00968883216381073)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 9.68883228302002,
-            accuracy: 0.1937766456604004)
-        let b = MLXRandom.uniform(0.0 ..< 1.0, [4])
-        XCTAssertEqual(b.shape, [4])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.5360236167907715,
-            accuracy: 0.01072047233581543)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 2.144094467163086,
-            accuracy: 0.04288188934326172)
-        let result = convolve(a, b)
-        XCTAssertEqual(result.shape, [23])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.9032073616981506,
-            accuracy: 0.018064147233963015)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 20.77376937866211,
-            accuracy: 0.4154753875732422)
-    }
-
-    func testDivide() {
-        MLXRandom.seed(82)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.2605368494987488,
-            accuracy: 0.005210736989974976)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 3.1264421939849854,
-            accuracy: 0.0625288438796997)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.05087272450327873,
-            accuracy: 0.0010174544900655746)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 0.6104726791381836,
-            accuracy: 0.012209453582763673)
-        let result = divide(a, b)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.39920175075531006,
-            accuracy: 0.007984035015106201)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 4.790421009063721,
-            accuracy: 0.09580842018127442)
-    }
-
-    func testEqual() {
-        MLXRandom.seed(919)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), -0.2972916066646576,
-            accuracy: -0.005945832133293152)
-        XCTAssertEqual(
-            a.sum().item(Float.self), -3.5674991607666016,
-            accuracy: -0.07134998321533204)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.04941798374056816,
-            accuracy: 0.0009883596748113633)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 0.5930157899856567,
-            accuracy: 0.011860315799713136)
-        let result = equal(a, b)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), false)
-    }
-
-    func testGreater() {
-        MLXRandom.seed(716)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.3898356854915619,
-            accuracy: 0.007796713709831238)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 4.678028106689453,
-            accuracy: 0.09356056213378906)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.30894142389297485,
-            accuracy: -0.0061788284778594976)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -3.707296848297119,
-            accuracy: -0.07414593696594239)
-        let result = greater(a, b)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testGreaterEqual() {
-        MLXRandom.seed(945)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.3744015097618103,
-            accuracy: 0.007488030195236206)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 4.4928178787231445,
-            accuracy: 0.08985635757446289)
-        let b = MLXRandom.normal([4, 3])
-        XCTAssertEqual(b.shape, [4, 3])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), -0.20527128875255585,
-            accuracy: -0.004105425775051117)
-        XCTAssertEqual(
-            b.sum().item(Float.self), -2.4632554054260254,
-            accuracy: -0.04926510810852051)
-        let result = greaterEqual(a, b)
-        XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), false)
-        XCTAssertEqual(result.any().item(), true)
-    }
-
-    func testLess() {
+    func testModOp() {
         MLXRandom.seed(849)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3598,14 +354,3240 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), 5.058513641357422,
             accuracy: 0.10117027282714844)
-        let result = less(a, b)
+        let result = a % b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.14204177260398865,
+            accuracy: -0.002840835452079773)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.7045011520385742,
+            accuracy: -0.03409002304077149)
+    }
+
+    func testModOp1() {
+        MLXRandom.seed(310)
+        let a = 0.5
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.15466859936714172,
+            accuracy: 0.0030933719873428344)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 1.8560230731964111,
+            accuracy: 0.03712046146392822)
+        let result = a % b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.39097175002098083,
+            accuracy: 0.007819435000419617)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.6916608810424805,
+            accuracy: 0.09383321762084962)
+    }
+
+    func testModOp2() {
+        MLXRandom.seed(991)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.34309279918670654,
+            accuracy: -0.006861855983734131)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -4.1171135902404785,
+            accuracy: -0.08234227180480957)
+        let b = 1.3
+        let result = a % b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.018092799931764603,
+            accuracy: -0.00036185599863529204)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -0.21711358428001404,
+            accuracy: -0.0043422716856002805)
+    }
+
+    func testPowOp() {
+        MLXRandom.seed(488)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.8261654376983643,
+            accuracy: 0.016523308753967285)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 9.913985252380371,
+            accuracy: 0.19827970504760742)
+        let b = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 1.3262829780578613,
+            accuracy: 0.02652565956115723)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 15.915395736694336,
+            accuracy: 0.3183079147338867)
+        let result = a ** b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.8045400381088257,
+            accuracy: 0.016090800762176515)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 9.65447998046875,
+            accuracy: 0.193089599609375)
+    }
+
+    func testPowOp1() {
+        MLXRandom.seed(366)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.9292365908622742,
+            accuracy: 0.018584731817245483)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 11.150838851928711,
+            accuracy: 0.22301677703857423)
+        let b = 1.3
+        let result = a ** b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.9557135105133057,
+            accuracy: 0.019114270210266113)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 11.468562126159668,
+            accuracy: 0.22937124252319335)
+    }
+
+    func testEqualOp() {
+        MLXRandom.seed(597)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.268618643283844,
+            accuracy: -0.00537237286567688)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.223423480987549,
+            accuracy: -0.06446846961975097)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), -0.002711281180381775,
+            accuracy: -5.42256236076355e-05)
+        XCTAssertEqual(
+            b.sum().item(Float.self), -0.0325353741645813,
+            accuracy: -0.000650707483291626)
+        let result = a .== b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), false)
+    }
+
+    func testEqualOp1() {
+        MLXRandom.seed(913)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.040915559977293015,
+            accuracy: 0.0008183111995458603)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.490986704826355,
+            accuracy: 0.0098197340965271)
+        let b = 1.3
+        let result = a .== b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), false)
+    }
+
+    func testNotEqualOp() {
+        MLXRandom.seed(929)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.2947184443473816,
+            accuracy: -0.005894368886947632)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.536621332168579,
+            accuracy: -0.07073242664337158)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), -0.009182363748550415,
+            accuracy: -0.0001836472749710083)
+        XCTAssertEqual(
+            b.sum().item(Float.self), -0.11018836498260498,
+            accuracy: -0.0022037672996520997)
+        let result = a .!= b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testNotEqualOp1() {
+        MLXRandom.seed(223)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.009602058678865433,
+            accuracy: -0.00019204117357730867)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.11522470414638519,
+            accuracy: -0.002304494082927704)
+        let b = 1.3
+        let result = a .!= b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testLessThanOp() {
+        MLXRandom.seed(516)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.671758770942688,
+            accuracy: 0.01343517541885376)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 8.061104774475098,
+            accuracy: 0.16122209548950195)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), -0.04753169044852257,
+            accuracy: -0.0009506338089704514)
+        XCTAssertEqual(
+            b.sum().item(Float.self), -0.5703802704811096,
+            accuracy: -0.011407605409622193)
+        let result = a .< b
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .bool)
         XCTAssertEqual(result.all().item(), false)
         XCTAssertEqual(result.any().item(), true)
     }
 
-    func testLessEqual() {
+    func testLessThanOp1() {
+        MLXRandom.seed(142)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.21625718474388123,
+            accuracy: 0.004325143694877624)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.595086097717285,
+            accuracy: 0.051901721954345705)
+        let b = 1.3
+        let result = a .< b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testLessThanEqualOp() {
+        MLXRandom.seed(288)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.19039803743362427,
+            accuracy: -0.0038079607486724855)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.284776449203491,
+            accuracy: -0.045695528984069825)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.10338123887777328,
+            accuracy: 0.002067624777555466)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 1.240574836730957,
+            accuracy: 0.024811496734619142)
+        let result = a .<= b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testLessThanEqualOp1() {
+        MLXRandom.seed(143)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.025643646717071533,
+            accuracy: -0.0005128729343414307)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.3077237606048584,
+            accuracy: -0.006154475212097168)
+        let b = 1.3
+        let result = a .<= b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testGreaterThanOp() {
+        MLXRandom.seed(773)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.18657740950584412,
+            accuracy: -0.003731548190116882)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.23892879486084,
+            accuracy: -0.044778575897216795)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.0327937975525856,
+            accuracy: 0.0006558759510517121)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 0.39352554082870483,
+            accuracy: 0.007870510816574097)
+        let result = a .> b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testGreaterThanOp1() {
+        MLXRandom.seed(97)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.04777970910072327,
+            accuracy: -0.0009555941820144654)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.5733565092086792,
+            accuracy: -0.011467130184173583)
+        let b = 1.3
+        let result = a .> b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), false)
+    }
+
+    func testGreaterThanEqualOp() {
+        MLXRandom.seed(633)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.17345473170280457,
+            accuracy: 0.0034690946340560913)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.0814566612243652,
+            accuracy: 0.0416291332244873)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.2481841742992401,
+            accuracy: 0.004963683485984803)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 2.978209972381592,
+            accuracy: 0.05956419944763184)
+        let result = a .>= b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testGreaterThanEqualOp1() {
+        MLXRandom.seed(818)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.01743374764919281,
+            accuracy: -0.0003486749529838562)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.20920497179031372,
+            accuracy: -0.004184099435806275)
+        let b = 1.3
+        let result = a .>= b
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), false)
+    }
+
+    func testAbs() {
+        MLXRandom.seed(256)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.15743832290172577,
+            accuracy: -0.0031487664580345156)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.8892598152160645,
+            accuracy: -0.03778519630432129)
+        let result = a.abs()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.8130466341972351,
+            accuracy: 0.0162609326839447)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 9.756559371948242,
+            accuracy: 0.19513118743896485)
+    }
+
+    func testAbs1() {
+        MLXRandom.seed(931)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.22450898587703705,
+            accuracy: -0.004490179717540741)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.6941077709198,
+            accuracy: -0.053882155418396)
+        let result = abs(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.6981315016746521,
+            accuracy: 0.013962630033493042)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8.377577781677246,
+            accuracy: 0.16755155563354493)
+    }
+
+    func testAll() {
+        MLXRandom.seed(545)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.05837365239858627,
+            accuracy: 0.0011674730479717256)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.7004837989807129,
+            accuracy: 0.014009675979614259)
+        let result = a.all()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAll1() {
+        MLXRandom.seed(722)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.01978858932852745,
+            accuracy: -0.00039577178657054904)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.2374630719423294,
+            accuracy: -0.004749261438846588)
+        let result = all(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAll2() {
+        MLXRandom.seed(829)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.03525291010737419,
+            accuracy: 0.0007050582021474838)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.4230349063873291,
+            accuracy: 0.008460698127746582)
+        let result = a.all(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAll3() {
+        MLXRandom.seed(616)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.1122930571436882,
+            accuracy: 0.002245861142873764)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.347516655921936,
+            accuracy: 0.02695033311843872)
+        let result = all(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAll4() {
+        MLXRandom.seed(923)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4720103442668915,
+            accuracy: 0.00944020688533783)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 33.984745025634766,
+            accuracy: 0.6796949005126953)
+        let result = a.all(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAll5() {
+        MLXRandom.seed(150)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4883745014667511,
+            accuracy: 0.009767490029335022)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 35.1629638671875,
+            accuracy: 0.70325927734375)
+        let result = all(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAny() {
+        MLXRandom.seed(317)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.1289883852005005,
+            accuracy: -0.0025797677040100097)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.5478605031967163,
+            accuracy: -0.030957210063934325)
+        let result = a.any()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAny1() {
+        MLXRandom.seed(101)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.08150328695774078,
+            accuracy: -0.0016300657391548157)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.9780394434928894,
+            accuracy: -0.01956078886985779)
+        let result = any(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAny2() {
+        MLXRandom.seed(747)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.23745165765285492,
+            accuracy: 0.004749033153057099)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.8494198322296143,
+            accuracy: 0.056988396644592286)
+        let result = a.any(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAny3() {
+        MLXRandom.seed(75)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.3039236068725586,
+            accuracy: -0.006078472137451172)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.647083282470703,
+            accuracy: -0.07294166564941407)
+        let result = any(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAny4() {
+        MLXRandom.seed(920)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.41749411821365356,
+            accuracy: 0.008349882364273071)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 30.0595760345459,
+            accuracy: 0.601191520690918)
+        let result = a.any(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testAny5() {
+        MLXRandom.seed(870)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5518582463264465,
+            accuracy: 0.01103716492652893)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 39.73379135131836,
+            accuracy: 0.7946758270263672)
+        let result = any(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testArgMax() {
+        MLXRandom.seed(700)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.20903855562210083,
+            accuracy: -0.004180771112442016)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.50846266746521,
+            accuracy: -0.0501692533493042)
+        let result = a.argMax()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 8.0,
+            accuracy: 0.16)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8,
+            accuracy: 0.16)
+    }
+
+    func testArgMax1() {
+        MLXRandom.seed(338)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.07185819745063782,
+            accuracy: 0.0014371639490127564)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.8622983694076538,
+            accuracy: 0.017245967388153077)
+        let result = argMax(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 7.0,
+            accuracy: 0.14)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 7,
+            accuracy: 0.14)
+    }
+
+    func testArgMax2() {
+        MLXRandom.seed(483)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.0843842476606369,
+            accuracy: 0.001687684953212738)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.012610912322998,
+            accuracy: 0.020252218246459962)
+        let result = a.argMax(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.75,
+            accuracy: 0.015)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 3,
+            accuracy: 0.06)
+    }
+
+    func testArgMax3() {
+        MLXRandom.seed(573)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5405035018920898,
+            accuracy: 0.010810070037841797)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 6.48604154586792,
+            accuracy: 0.1297208309173584)
+        let result = argMax(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.25,
+            accuracy: 0.025)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 5,
+            accuracy: 0.1)
+    }
+
+    func testArgMin() {
+        MLXRandom.seed(103)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.2983229458332062,
+            accuracy: 0.005966458916664124)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 3.5798752307891846,
+            accuracy: 0.0715975046157837)
+        let result = a.argMin()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 11.0,
+            accuracy: 0.22)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 11,
+            accuracy: 0.22)
+    }
+
+    func testArgMin1() {
+        MLXRandom.seed(362)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.057320237159729004,
+            accuracy: -0.00114640474319458)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.687842845916748,
+            accuracy: -0.013756856918334961)
+        let result = argMin(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 8.0,
+            accuracy: 0.16)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8,
+            accuracy: 0.16)
+    }
+
+    func testArgMin2() {
+        MLXRandom.seed(444)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.22760924696922302,
+            accuracy: 0.004552184939384461)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.7313108444213867,
+            accuracy: 0.05462621688842773)
+        let result = a.argMin(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.25,
+            accuracy: 0.005)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1,
+            accuracy: 0.02)
+    }
+
+    func testArgMin3() {
+        MLXRandom.seed(323)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.4485395550727844,
+            accuracy: -0.008970791101455688)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -5.382474422454834,
+            accuracy: -0.10764948844909668)
+        let result = argMin(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .uint32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5,
+            accuracy: 0.01)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 2,
+            accuracy: 0.04)
+    }
+
+    func testCummax() {
+        MLXRandom.seed(625)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.2803424596786499,
+            accuracy: -0.0056068491935729985)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.3641092777252197,
+            accuracy: -0.0672821855545044)
+        let result = a.cummax()
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.3141178786754608,
+            accuracy: 0.006282357573509216)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 3.7694144248962402,
+            accuracy: 0.07538828849792481)
+    }
+
+    func testCummax1() {
+        MLXRandom.seed(655)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.37031763792037964,
+            accuracy: 0.0074063527584075925)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.443811416625977,
+            accuracy: 0.08887622833251953)
+        let result = cummax(a)
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.3793113231658936,
+            accuracy: 0.027586226463317872)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 16.551734924316406,
+            accuracy: 0.3310346984863281)
+    }
+
+    func testCummax2() {
+        MLXRandom.seed(934)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.05676526948809624,
+            accuracy: -0.0011353053897619249)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.6811832189559937,
+            accuracy: -0.013623664379119873)
+        let result = a.cummax(axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.018919458612799644,
+            accuracy: 0.0003783891722559929)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.22703349590301514,
+            accuracy: 0.004540669918060303)
+    }
+
+    func testCummax3() {
+        MLXRandom.seed(209)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.07204179465770721,
+            accuracy: 0.0014408358931541443)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.8645014762878418,
+            accuracy: 0.017290029525756836)
+        let result = cummax(a, axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.061327576637268,
+            accuracy: 0.02122655153274536)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 12.735930442810059,
+            accuracy: 0.2547186088562012)
+    }
+
+    func testCummin() {
+        MLXRandom.seed(989)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.16920256614685059,
+            accuracy: -0.0033840513229370117)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.030430793762207,
+            accuracy: -0.04060861587524414)
+        let result = a.cummin()
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.9566025733947754,
+            accuracy: -0.019132051467895508)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -11.479230880737305,
+            accuracy: -0.2295846176147461)
+    }
+
+    func testCummin1() {
+        MLXRandom.seed(565)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.644216775894165,
+            accuracy: -0.0128843355178833)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -7.7306013107299805,
+            accuracy: -0.1546120262145996)
+        let result = cummin(a)
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -1.7292345762252808,
+            accuracy: -0.03458469152450561)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -20.75081443786621,
+            accuracy: -0.4150162887573242)
+    }
+
+    func testCummin2() {
+        MLXRandom.seed(488)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.398279070854187,
+            accuracy: -0.00796558141708374)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -4.779348850250244,
+            accuracy: -0.09558697700500489)
+        let result = a.cummin(axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.9816936254501343,
+            accuracy: -0.019633872509002687)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -11.780323028564453,
+            accuracy: -0.23560646057128906)
+    }
+
+    func testCummin3() {
+        MLXRandom.seed(453)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.0004353722033556551,
+            accuracy: 8.707444067113101e-06)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.005224466323852539,
+            accuracy: 0.00010448932647705078)
+        let result = cummin(a, axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.4506932497024536,
+            accuracy: -0.009013864994049072)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -5.408318996429443,
+            accuracy: -0.10816637992858887)
+    }
+
+    func testCumprod() {
+        MLXRandom.seed(886)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.0051885247230529785,
+            accuracy: -0.00010377049446105957)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.06226229667663574,
+            accuracy: -0.001245245933532715)
+        let result = a.cumprod()
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.14253053069114685,
+            accuracy: 0.002850610613822937)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.7103662490844727,
+            accuracy: 0.034207324981689456)
+    }
+
+    func testCumprod1() {
+        MLXRandom.seed(533)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.12974336743354797,
+            accuracy: -0.0025948673486709596)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.5569202899932861,
+            accuracy: -0.031138405799865723)
+        let result = cumprod(a)
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.020257528871297836,
+            accuracy: 0.0004051505774259567)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.24309033155441284,
+            accuracy: 0.004861806631088257)
+    }
+
+    func testCumprod2() {
+        MLXRandom.seed(266)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.20902606844902039,
+            accuracy: 0.004180521368980407)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.508312702178955,
+            accuracy: 0.050166254043579106)
+        let result = a.cumprod(axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.7459201812744141,
+            accuracy: 0.014918403625488281)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8.951042175292969,
+            accuracy: 0.17902084350585937)
+    }
+
+    func testCumprod3() {
+        MLXRandom.seed(63)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.20442306995391846,
+            accuracy: 0.004088461399078369)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.4530768394470215,
+            accuracy: 0.04906153678894043)
+        let result = cumprod(a, axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.20277641713619232,
+            accuracy: 0.004055528342723847)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 2.433316946029663,
+            accuracy: 0.048666338920593265)
+    }
+
+    func testCumsum() {
+        MLXRandom.seed(824)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.07800808548927307,
+            accuracy: 0.0015601617097854615)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.9360969662666321,
+            accuracy: 0.018721939325332643)
+        let result = a.cumsum()
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.16304373741149902,
+            accuracy: -0.0032608747482299806)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.9565248489379883,
+            accuracy: -0.03913049697875977)
+    }
+
+    func testCumsum1() {
+        MLXRandom.seed(940)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.3181919455528259,
+            accuracy: -0.0063638389110565186)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.818303346633911,
+            accuracy: -0.07636606693267822)
+        let result = cumsum(a)
+        XCTAssertEqual(result.shape, [12])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -3.2638518810272217,
+            accuracy: -0.06527703762054443)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -39.166221618652344,
+            accuracy: -0.7833244323730469)
+    }
+
+    func testCumsum2() {
+        MLXRandom.seed(561)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.19832412898540497,
+            accuracy: 0.0039664825797081)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.379889488220215,
+            accuracy: 0.0475977897644043)
+        let result = a.cumsum(axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.7345349788665771,
+            accuracy: 0.014690699577331543)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8.814419746398926,
+            accuracy: 0.17628839492797851)
+    }
+
+    func testCumsum3() {
+        MLXRandom.seed(937)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.38423240184783936,
+            accuracy: -0.007684648036956787)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -4.610788822174072,
+            accuracy: -0.09221577644348145)
+        let result = cumsum(a, axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.6559594869613647,
+            accuracy: -0.013119189739227296)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -7.871513366699219,
+            accuracy: -0.15743026733398438)
+    }
+
+    func testExpandedDimensions() {
+        MLXRandom.seed(14)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.20228910446166992,
+            accuracy: -0.004045782089233399)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.427469253540039,
+            accuracy: -0.04854938507080078)
+        let result = expandedDimensions(a, axis: -1)
+        XCTAssertEqual(result.shape, [4, 3, 1])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.20228910446166992,
+            accuracy: -0.004045782089233399)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -2.427469253540039,
+            accuracy: -0.04854938507080078)
+    }
+
+    func testExpandedDimensions1() {
+        MLXRandom.seed(95)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5254887342453003,
+            accuracy: 0.010509774684906006)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 37.83518981933594,
+            accuracy: 0.7567037963867188)
+        let result = expandedDimensions(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [1, 2, 3, 4, 3, 1])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5254887342453003,
+            accuracy: 0.010509774684906006)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 37.83518981933594,
+            accuracy: 0.7567037963867188)
+    }
+
+    func testFloor() {
+        MLXRandom.seed(736)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.035255465656518936,
+            accuracy: -0.0007051093131303787)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.42306557297706604,
+            accuracy: -0.00846131145954132)
+        let result = floor(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.4166666865348816,
+            accuracy: -0.008333333730697633)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -5.0,
+            accuracy: -0.1)
+    }
+
+    func testLog() {
+        MLXRandom.seed(860)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.9451824426651001,
+            accuracy: 0.018903648853302004)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 11.342188835144043,
+            accuracy: 0.22684377670288086)
+        let result = a.log()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.26455360651016235,
+            accuracy: -0.0052910721302032475)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -3.174643039703369,
+            accuracy: -0.06349286079406738)
+    }
+
+    func testLog1() {
+        MLXRandom.seed(408)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.1787240505218506,
+            accuracy: 0.023574481010437014)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 14.144688606262207,
+            accuracy: 0.28289377212524414)
+        let result = log(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.08071314543485641,
+            accuracy: 0.0016142629086971284)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.9685577154159546,
+            accuracy: 0.01937115430831909)
+    }
+
+    func testLog2() {
+        MLXRandom.seed(727)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.0156004428863525,
+            accuracy: 0.020312008857727052)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 12.18720531463623,
+            accuracy: 0.2437441062927246)
+        let result = a.log2()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.2411154955625534,
+            accuracy: -0.004822309911251068)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -2.893385887145996,
+            accuracy: -0.057867717742919926)
+    }
+
+    func testLog21() {
+        MLXRandom.seed(844)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.0754908323287964,
+            accuracy: 0.02150981664657593)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 12.905889511108398,
+            accuracy: 0.25811779022216796)
+        let result = log2(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.04823940992355347,
+            accuracy: -0.0009647881984710694)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -0.5788729190826416,
+            accuracy: -0.011577458381652831)
+    }
+
+    func testLog10() {
+        MLXRandom.seed(803)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.1359423398971558,
+            accuracy: 0.022718846797943115)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 13.631307601928711,
+            accuracy: 0.2726261520385742)
+        let result = a.log10()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.07397204637527466,
+            accuracy: -0.0014794409275054933)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -0.8876644968986511,
+            accuracy: -0.017753289937973024)
+    }
+
+    func testLog101() {
+        MLXRandom.seed(684)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.3902796506881714,
+            accuracy: 0.027805593013763428)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 16.6833553314209,
+            accuracy: 0.333667106628418)
+        let result = log10(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.11499349772930145,
+            accuracy: 0.002299869954586029)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.3799219131469727,
+            accuracy: 0.027598438262939454)
+    }
+
+    func testLog1p() {
+        MLXRandom.seed(640)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.2758265733718872,
+            accuracy: 0.025516531467437743)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 15.309918403625488,
+            accuracy: 0.3061983680725098)
+        let result = a.log1p()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.7979601621627808,
+            accuracy: 0.015959203243255615)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 9.575521469116211,
+            accuracy: 0.1915104293823242)
+    }
+
+    func testLog1p1() {
+        MLXRandom.seed(1)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.045818567276001,
+            accuracy: 0.02091637134552002)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 12.549821853637695,
+            accuracy: 0.25099643707275393)
+        let result = log1p(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.686416506767273,
+            accuracy: 0.01372833013534546)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8.236997604370117,
+            accuracy: 0.16473995208740236)
+    }
+
+    func testLogSumExp() {
+        MLXRandom.seed(626)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.09981077909469604,
+            accuracy: -0.001996215581893921)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.1977293491363525,
+            accuracy: -0.023954586982727052)
+        let result = a.logSumExp()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 2.6805179119110107,
+            accuracy: 0.05361035823822022)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 2.6805179119110107,
+            accuracy: 0.05361035823822022)
+    }
+
+    func testLogSumExp1() {
+        MLXRandom.seed(505)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.16046583652496338,
+            accuracy: 0.0032093167304992677)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.9255900382995605,
+            accuracy: 0.038511800765991214)
+        let result = logSumExp(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 3.126417636871338,
+            accuracy: 0.06252835273742675)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 3.126417636871338,
+            accuracy: 0.06252835273742675)
+    }
+
+    func testLogSumExp2() {
+        MLXRandom.seed(847)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.2282017469406128,
+            accuracy: -0.004564034938812256)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.7384209632873535,
+            accuracy: -0.05476841926574707)
+        let result = a.logSumExp(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.163524866104126,
+            accuracy: 0.02327049732208252)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.654099464416504,
+            accuracy: 0.09308198928833009)
+    }
+
+    func testLogSumExp3() {
+        MLXRandom.seed(888)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.05087994784116745,
+            accuracy: 0.001017598956823349)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.610559344291687,
+            accuracy: 0.01221118688583374)
+        let result = logSumExp(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.5178632736206055,
+            accuracy: 0.03035726547241211)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 6.071453094482422,
+            accuracy: 0.12142906188964844)
+    }
+
+    func testLogSumExp4() {
+        MLXRandom.seed(341)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5185534358024597,
+            accuracy: 0.010371068716049195)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 37.335845947265625,
+            accuracy: 0.7467169189453126)
+        let result = a.logSumExp(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 2.3395986557006836,
+            accuracy: 0.046791973114013674)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 28.07518196105957,
+            accuracy: 0.5615036392211914)
+    }
+
+    func testLogSumExp5() {
+        MLXRandom.seed(249)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.48312702775001526,
+            accuracy: 0.009662540555000305)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 34.7851448059082,
+            accuracy: 0.695702896118164)
+        let result = logSumExp(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 2.314382553100586,
+            accuracy: 0.04628765106201172)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 27.7725887298584,
+            accuracy: 0.555451774597168)
+    }
+
+    func testMax() {
+        MLXRandom.seed(747)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.23745165765285492,
+            accuracy: 0.004749033153057099)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.8494198322296143,
+            accuracy: 0.056988396644592286)
+        let result = a.max()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.8713812828063965,
+            accuracy: 0.03742762565612793)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.8713812828063965,
+            accuracy: 0.03742762565612793)
+    }
+
+    func testMax1() {
+        MLXRandom.seed(333)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.08884426206350327,
+            accuracy: 0.0017768852412700653)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.0661311149597168,
+            accuracy: 0.021322622299194335)
+        let result = max(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.4511317014694214,
+            accuracy: 0.029022634029388428)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.4511317014694214,
+            accuracy: 0.029022634029388428)
+    }
+
+    func testMax2() {
+        MLXRandom.seed(720)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.03598502278327942,
+            accuracy: -0.0007197004556655884)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.431820273399353,
+            accuracy: -0.00863640546798706)
+        let result = a.max(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.0814929008483887,
+            accuracy: 0.021629858016967773)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.325971603393555,
+            accuracy: 0.08651943206787109)
+    }
+
+    func testMax3() {
+        MLXRandom.seed(891)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.2537704408168793,
+            accuracy: -0.005075408816337585)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.0452451705932617,
+            accuracy: -0.06090490341186523)
+        let result = max(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.30163291096687317,
+            accuracy: 0.006032658219337464)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.2065316438674927,
+            accuracy: 0.024130632877349855)
+    }
+
+    func testMax4() {
+        MLXRandom.seed(64)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5222265124320984,
+            accuracy: 0.010444530248641969)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 37.60030746459961,
+            accuracy: 0.7520061492919922)
+        let result = a.max(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.8983621597290039,
+            accuracy: 0.01796724319458008)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 10.780345916748047,
+            accuracy: 0.21560691833496093)
+    }
+
+    func testMax5() {
+        MLXRandom.seed(195)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4561886787414551,
+            accuracy: 0.009123773574829101)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 32.845584869384766,
+            accuracy: 0.6569116973876953)
+        let result = max(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.7991632223129272,
+            accuracy: 0.015983264446258545)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 9.589958190917969,
+            accuracy: 0.19179916381835938)
+    }
+
+    func testMean() {
+        MLXRandom.seed(939)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.1672295778989792,
+            accuracy: -0.0033445915579795836)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.0067548751831055,
+            accuracy: -0.040135097503662114)
+        let result = a.mean()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.1672295778989792,
+            accuracy: -0.0033445915579795836)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -0.1672295778989792,
+            accuracy: -0.0033445915579795836)
+    }
+
+    func testMean1() {
+        MLXRandom.seed(581)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.3291994333267212,
+            accuracy: -0.006583988666534424)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.950392961502075,
+            accuracy: -0.0790078592300415)
+        let result = mean(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.3291994333267212,
+            accuracy: -0.006583988666534424)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -0.3291994333267212,
+            accuracy: -0.006583988666534424)
+    }
+
+    func testMean2() {
+        MLXRandom.seed(227)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.28339889645576477,
+            accuracy: -0.005667977929115295)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.4007866382598877,
+            accuracy: -0.06801573276519776)
+        let result = a.mean(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.2833988666534424,
+            accuracy: -0.005667977333068848)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.1335954666137695,
+            accuracy: -0.022671909332275392)
+    }
+
+    func testMean3() {
+        MLXRandom.seed(244)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5779480934143066,
+            accuracy: 0.011558961868286134)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 6.93537712097168,
+            accuracy: 0.1387075424194336)
+        let result = mean(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5779481530189514,
+            accuracy: 0.011558963060379028)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 2.3117926120758057,
+            accuracy: 0.046235852241516114)
+    }
+
+    func testMean4() {
+        MLXRandom.seed(822)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4916161596775055,
+            accuracy: 0.00983232319355011)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 35.3963623046875,
+            accuracy: 0.70792724609375)
+        let result = a.mean(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.4916161894798279,
+            accuracy: 0.009832323789596557)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 5.8993940353393555,
+            accuracy: 0.11798788070678712)
+    }
+
+    func testMean5() {
+        MLXRandom.seed(990)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4603706896305084,
+            accuracy: 0.009207413792610168)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 33.146690368652344,
+            accuracy: 0.6629338073730469)
+        let result = mean(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.4603707790374756,
+            accuracy: 0.009207415580749513)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 5.524449348449707,
+            accuracy: 0.11048898696899415)
+    }
+
+    func testMin() {
+        MLXRandom.seed(145)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.16449235379695892,
+            accuracy: -0.0032898470759391784)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.9739081859588623,
+            accuracy: -0.03947816371917725)
+        let result = a.min()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -1.3645747900009155,
+            accuracy: -0.02729149580001831)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.3645747900009155,
+            accuracy: -0.02729149580001831)
+    }
+
+    func testMin1() {
+        MLXRandom.seed(822)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.025983989238739014,
+            accuracy: 0.0005196797847747803)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.31180787086486816,
+            accuracy: 0.006236157417297363)
+        let result = min(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -1.8071335554122925,
+            accuracy: -0.03614267110824585)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.8071335554122925,
+            accuracy: -0.03614267110824585)
+    }
+
+    func testMin2() {
+        MLXRandom.seed(556)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.47528061270713806,
+            accuracy: 0.00950561225414276)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 5.703367233276367,
+            accuracy: 0.11406734466552734)
+        let result = a.min(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.6413009166717529,
+            accuracy: -0.012826018333435059)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -2.5652036666870117,
+            accuracy: -0.051304073333740235)
+    }
+
+    func testMin3() {
+        MLXRandom.seed(458)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.1867717206478119,
+            accuracy: 0.003735434412956238)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.241260528564453,
+            accuracy: 0.04482521057128906)
+        let result = min(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.8374209403991699,
+            accuracy: -0.0167484188079834)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -3.3496837615966797,
+            accuracy: -0.0669936752319336)
+    }
+
+    func testMin4() {
+        MLXRandom.seed(93)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4830058515071869,
+            accuracy: 0.009660117030143738)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 34.77642059326172,
+            accuracy: 0.6955284118652344)
+        let result = a.min(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.11048994958400726,
+            accuracy: 0.0022097989916801454)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.3258793354034424,
+            accuracy: 0.02651758670806885)
+    }
+
+    func testMin5() {
+        MLXRandom.seed(82)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5077146887779236,
+            accuracy: 0.010154293775558472)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 36.555458068847656,
+            accuracy: 0.7311091613769531)
+        let result = min(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.12779314815998077,
+            accuracy: 0.0025558629631996154)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.5335177183151245,
+            accuracy: 0.030670354366302492)
+    }
+
+    func testProduct() {
+        MLXRandom.seed(327)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.296897828578949,
+            accuracy: -0.00593795657157898)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.5627739429473877,
+            accuracy: -0.07125547885894776)
+        let result = a.product()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 3.555632019924815e-06,
+            accuracy: 7.11126403984963e-08)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 3.555632019924815e-06,
+            accuracy: 7.11126403984963e-08)
+    }
+
+    func testProduct1() {
+        MLXRandom.seed(896)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.05823778361082077,
+            accuracy: -0.0011647556722164155)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.6988533735275269,
+            accuracy: -0.013977067470550537)
+        let result = product(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0047314404509961605,
+            accuracy: 9.462880901992321e-05)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.0047314404509961605,
+            accuracy: 9.462880901992321e-05)
+    }
+
+    func testProduct2() {
+        MLXRandom.seed(520)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.19801780581474304,
+            accuracy: 0.003960356116294861)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.376213550567627,
+            accuracy: 0.04752427101135254)
+        let result = a.product(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0764155238866806,
+            accuracy: 0.0015283104777336122)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.3056620955467224,
+            accuracy: 0.006113241910934449)
+    }
+
+    func testProduct3() {
+        MLXRandom.seed(955)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.36796003580093384,
+            accuracy: 0.007359200716018677)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.415520191192627,
+            accuracy: 0.08831040382385254)
+        let result = product(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0716419368982315,
+            accuracy: 0.0014328387379646302)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.286567747592926,
+            accuracy: 0.005731354951858521)
+    }
+
+    func testProduct4() {
+        MLXRandom.seed(501)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5341216921806335,
+            accuracy: 0.010682433843612671)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 38.45676040649414,
+            accuracy: 0.7691352081298828)
+        let result = a.product(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.02406497858464718,
+            accuracy: 0.0004812995716929436)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.28877973556518555,
+            accuracy: 0.0057755947113037115)
+    }
+
+    func testProduct5() {
+        MLXRandom.seed(111)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4650188088417053,
+            accuracy: 0.009300376176834107)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 33.481353759765625,
+            accuracy: 0.6696270751953125)
+        let result = product(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.007884619757533073,
+            accuracy: 0.00015769239515066148)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.09461543709039688,
+            accuracy: 0.0018923087418079377)
+    }
+
+    func testReciprocal() {
+        MLXRandom.seed(308)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.12339428067207336,
+            accuracy: -0.0024678856134414673)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.4807313680648804,
+            accuracy: -0.029614627361297607)
+        let result = a.reciprocal()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.3978341817855835,
+            accuracy: 0.02795668363571167)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 16.774009704589844,
+            accuracy: 0.33548019409179686)
+    }
+
+    func testReciprocal1() {
+        MLXRandom.seed(564)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.20050053298473358,
+            accuracy: -0.004010010659694672)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.406006336212158,
+            accuracy: -0.048120126724243165)
+        let result = reciprocal(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.753860592842102,
+            accuracy: -0.015077211856842042)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -9.046326637268066,
+            accuracy: -0.18092653274536133)
+    }
+
+    func testRound() {
+        MLXRandom.seed(298)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.23528259992599487,
+            accuracy: 0.004705651998519898)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.8233911991119385,
+            accuracy: 0.05646782398223877)
+        let result = a.round()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.25,
+            accuracy: 0.005)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 3.0,
+            accuracy: 0.06)
+    }
+
+    func testRound1() {
+        MLXRandom.seed(723)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.16675782203674316,
+            accuracy: 0.0033351564407348632)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.001093864440918,
+            accuracy: 0.04002187728881836)
+        let result = round(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.25,
+            accuracy: 0.005)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 3.0,
+            accuracy: 0.06)
+    }
+
+    func testSin() {
+        MLXRandom.seed(127)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.18461060523986816,
+            accuracy: -0.0036922121047973633)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.215327262878418,
+            accuracy: -0.04430654525756836)
+        let result = a.sin()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.15534619987010956,
+            accuracy: -0.0031069239974021914)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.86415433883667,
+            accuracy: -0.0372830867767334)
+    }
+
+    func testSin1() {
+        MLXRandom.seed(560)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.15535306930541992,
+            accuracy: -0.0031070613861083987)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.864236831665039,
+            accuracy: -0.03728473663330078)
+        let result = sin(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.13987457752227783,
+            accuracy: -0.002797491550445557)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.6784948110580444,
+            accuracy: -0.03356989622116089)
+    }
+
+    func testCos() {
+        MLXRandom.seed(340)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.18920934200286865,
+            accuracy: 0.003784186840057373)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.270512104034424,
+            accuracy: 0.04541024208068848)
+        let result = a.cos()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.7257080078125,
+            accuracy: 0.01451416015625)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 8.70849609375,
+            accuracy: 0.174169921875)
+    }
+
+    func testCos1() {
+        MLXRandom.seed(834)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.18475177884101868,
+            accuracy: 0.0036950355768203737)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.2170212268829346,
+            accuracy: 0.04434042453765869)
+        let result = cos(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.4963728189468384,
+            accuracy: 0.009927456378936769)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 5.9564738273620605,
+            accuracy: 0.11912947654724121)
+    }
+
+    func testSqrt() {
+        MLXRandom.seed(944)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.1813615560531616,
+            accuracy: 0.023627231121063234)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 14.176338195800781,
+            accuracy: 0.2835267639160156)
+        let result = a.sqrt()
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.040137767791748,
+            accuracy: 0.02080275535583496)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 12.481653213500977,
+            accuracy: 0.24963306427001955)
+    }
+
+    func testSqrt1() {
+        MLXRandom.seed(553)
+        let a = MLXRandom.uniform(low: 0.1, high: 2.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.2980049848556519,
+            accuracy: 0.025960099697113038)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 15.576059341430664,
+            accuracy: 0.3115211868286133)
+        let result = sqrt(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.118424415588379,
+            accuracy: 0.02236848831176758)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 13.421092987060547,
+            accuracy: 0.26842185974121097)
+    }
+
+    func testSum() {
+        MLXRandom.seed(208)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.013726795092225075,
+            accuracy: 0.0002745359018445015)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.1647215336561203,
+            accuracy: 0.003294430673122406)
+        let result = a.sum()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.1647215336561203,
+            accuracy: 0.003294430673122406)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.1647215336561203,
+            accuracy: 0.003294430673122406)
+    }
+
+    func testSum1() {
+        MLXRandom.seed(986)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.08680947870016098,
+            accuracy: 0.0017361895740032197)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.0417137145996094,
+            accuracy: 0.020834274291992187)
+        let result = sum(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.0417137145996094,
+            accuracy: 0.020834274291992187)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.0417137145996094,
+            accuracy: 0.020834274291992187)
+    }
+
+    func testSum2() {
+        MLXRandom.seed(818)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.01743374764919281,
+            accuracy: -0.0003486749529838562)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.20920497179031372,
+            accuracy: -0.004184099435806275)
+        let result = a.sum(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.05230128765106201,
+            accuracy: -0.0010460257530212403)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -0.20920515060424805,
+            accuracy: -0.004184103012084961)
+    }
+
+    func testSum3() {
+        MLXRandom.seed(617)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.2992609739303589,
+            accuracy: -0.005985219478607178)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.5911316871643066,
+            accuracy: -0.07182263374328614)
+        let result = sum(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.8977828621864319,
+            accuracy: -0.017955657243728638)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -3.5911314487457275,
+            accuracy: -0.07182262897491455)
+    }
+
+    func testSum4() {
+        MLXRandom.seed(560)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4772148132324219,
+            accuracy: 0.009544296264648438)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 34.359466552734375,
+            accuracy: 0.6871893310546875)
+        let result = a.sum(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 2.8632893562316895,
+            accuracy: 0.05726578712463379)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 34.35947036743164,
+            accuracy: 0.6871894073486329)
+    }
+
+    func testSum5() {
+        MLXRandom.seed(601)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5380033850669861,
+            accuracy: 0.010760067701339722)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 38.736244201660156,
+            accuracy: 0.7747248840332032)
+        let result = sum(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 3.228020429611206,
+            accuracy: 0.06456040859222412)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 38.736244201660156,
+            accuracy: 0.7747248840332032)
+    }
+
+    func testVariance() {
+        MLXRandom.seed(294)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.047887593507766724,
+            accuracy: 0.0009577518701553345)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.5746511220932007,
+            accuracy: 0.011493022441864014)
+        let result = a.variance()
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.6768754124641418,
+            accuracy: 0.013537508249282838)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.6768754124641418,
+            accuracy: 0.013537508249282838)
+    }
+
+    func testVariance1() {
+        MLXRandom.seed(455)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.07983233034610748,
+            accuracy: 0.0015966466069221496)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 0.957987904548645,
+            accuracy: 0.019159758090972902)
+        let result = variance(a)
+        XCTAssertEqual(result.shape, [])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5957978367805481,
+            accuracy: 0.011915956735610963)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.5957978367805481,
+            accuracy: 0.011915956735610963)
+    }
+
+    func testVariance2() {
+        MLXRandom.seed(93)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.028267383575439453,
+            accuracy: -0.0005653476715087891)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.33920860290527344,
+            accuracy: -0.006784172058105469)
+        let result = a.variance(axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.0322922468185425,
+            accuracy: 0.02064584493637085)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.12916898727417,
+            accuracy: 0.0825833797454834)
+    }
+
+    func testVariance3() {
+        MLXRandom.seed(610)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.01769038289785385,
+            accuracy: -0.00035380765795707704)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -0.21228459477424622,
+            accuracy: -0.004245691895484924)
+        let result = variance(a, axis: -1)
+        XCTAssertEqual(result.shape, [4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.591558039188385,
+            accuracy: 0.0118311607837677)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 2.36623215675354,
+            accuracy: 0.0473246431350708)
+    }
+
+    func testVariance4() {
+        MLXRandom.seed(817)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4460234045982361,
+            accuracy: 0.008920468091964721)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 32.113685607910156,
+            accuracy: 0.6422737121582032)
+        let result = a.variance(axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0666377991437912,
+            accuracy: 0.001332755982875824)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.7996535301208496,
+            accuracy: 0.015993070602416993)
+    }
+
+    func testVariance5() {
+        MLXRandom.seed(394)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.56817227602005,
+            accuracy: 0.011363445520401002)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 40.90840530395508,
+            accuracy: 0.8181681060791016)
+        let result = variance(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [3, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.07289446890354156,
+            accuracy: 0.0014578893780708313)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.8747336268424988,
+            accuracy: 0.017494672536849977)
+    }
+
+    func testAcos() {
+        MLXRandom.seed(324)
+        let a = MLXRandom.uniform(low: 0.1, high: 1.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5365500450134277,
+            accuracy: 0.010731000900268555)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 6.438600063323975,
+            accuracy: 0.1287720012664795)
+        let result = acos(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.9425711631774902,
+            accuracy: 0.018851423263549806)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 11.310853958129883,
+            accuracy: 0.22621707916259767)
+    }
+
+    func testAcosh() {
+        MLXRandom.seed(589)
+        let a = MLXRandom.uniform(low: 1, high: 3, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.9692752361297607,
+            accuracy: 0.039385504722595215)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 23.631301879882812,
+            accuracy: 0.47262603759765626)
+        let result = acosh(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.259089469909668,
+            accuracy: 0.02518178939819336)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 15.109073638916016,
+            accuracy: 0.3021814727783203)
+    }
+
+    func testAsin() {
+        MLXRandom.seed(247)
+        let a = MLXRandom.uniform(low: 0.1, high: 1.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4699937105178833,
+            accuracy: 0.009399874210357666)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 5.6399245262146,
+            accuracy: 0.112798490524292)
+        let result = asin(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5069084763526917,
+            accuracy: 0.010138169527053834)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 6.082901477813721,
+            accuracy: 0.12165802955627442)
+    }
+
+    func testAsinh() {
+        MLXRandom.seed(297)
+        let a = MLXRandom.uniform(low: 1, high: 3, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 1.7906322479248047,
+            accuracy: 0.03581264495849609)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 21.487586975097656,
+            accuracy: 0.4297517395019531)
+        let result = asinh(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.3248964548110962,
+            accuracy: 0.026497929096221923)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 15.898756980895996,
+            accuracy: 0.31797513961791996)
+    }
+
+    func testAtan() {
+        MLXRandom.seed(188)
+        let a = MLXRandom.uniform(low: 0.1, high: 1.0, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.43250617384910583,
+            accuracy: 0.008650123476982116)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 5.1900739669799805,
+            accuracy: 0.10380147933959961)
+        let result = atan(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.3987109661102295,
+            accuracy: 0.00797421932220459)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.784531593322754,
+            accuracy: 0.09569063186645509)
+    }
+
+    func testAtanh() {
+        MLXRandom.seed(193)
+        let a = MLXRandom.uniform(low: 0.1, high: 0.9, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.593014657497406,
+            accuracy: 0.01186029314994812)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 7.116175651550293,
+            accuracy: 0.14232351303100585)
+        let result = atanh(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.759239137172699,
+            accuracy: 0.01518478274345398)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 9.110869407653809,
+            accuracy: 0.18221738815307617)
+    }
+
+    func testCeil() {
+        MLXRandom.seed(841)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.3292633295059204,
+            accuracy: -0.006585266590118408)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.951159715652466,
+            accuracy: -0.07902319431304931)
+        let result = ceil(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.3333333432674408,
+            accuracy: 0.006666666865348816)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.0,
+            accuracy: 0.08)
+    }
+
+    func testCosh() {
+        MLXRandom.seed(191)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.5465152263641357,
+            accuracy: -0.010930304527282716)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -6.558182239532471,
+            accuracy: -0.1311636447906494)
+        let result = cosh(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 1.735574722290039,
+            accuracy: 0.03471149444580078)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 20.82689666748047,
+            accuracy: 0.41653793334960937)
+    }
+
+    func testErf() {
+        MLXRandom.seed(33)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.15268580615520477,
+            accuracy: 0.0030537161231040956)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.8322296142578125,
+            accuracy: 0.03664459228515625)
+        let result = erf(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.16305577754974365,
+            accuracy: 0.003261115550994873)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.9566693305969238,
+            accuracy: 0.03913338661193848)
+    }
+
+    func testErfInverse() {
+        MLXRandom.seed(627)
+        let a = MLXRandom.uniform(low: 0.1, high: 0.9, [4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4853326678276062,
+            accuracy: 0.009706653356552124)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 5.823991775512695,
+            accuracy: 0.11647983551025391)
+        let result = erfInverse(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5043282508850098,
+            accuracy: 0.010086565017700196)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 6.051938533782959,
+            accuracy: 0.12103877067565919)
+    }
+
+    func testLogicalNot() {
+        MLXRandom.seed(672)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.16328130662441254,
+            accuracy: 0.0032656261324882506)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 1.9593756198883057,
+            accuracy: 0.03918751239776611)
+        let result = logicalNot(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), false)
+    }
+
+    func testNegative() {
+        MLXRandom.seed(266)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.20902606844902039,
+            accuracy: 0.004180521368980407)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2.508312702178955,
+            accuracy: 0.050166254043579106)
+        let result = negative(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.20902606844902039,
+            accuracy: -0.004180521368980407)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -2.508312702178955,
+            accuracy: -0.050166254043579106)
+    }
+
+    func testSigmoid() {
+        MLXRandom.seed(487)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.4737564027309418,
+            accuracy: -0.009475128054618835)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -5.685076713562012,
+            accuracy: -0.11370153427124023)
+        let result = sigmoid(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.40112757682800293,
+            accuracy: 0.00802255153656006)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.813530921936035,
+            accuracy: 0.0962706184387207)
+    }
+
+    func testSign() {
+        MLXRandom.seed(70)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.19362865388393402,
+            accuracy: -0.0038725730776786806)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -2.3235437870025635,
+            accuracy: -0.04647087574005127)
+        let result = sign(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.3333333432674408,
+            accuracy: -0.006666666865348816)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -4.0,
+            accuracy: -0.08)
+    }
+
+    func testSinh() {
+        MLXRandom.seed(91)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.37823864817619324,
+            accuracy: 0.007564772963523865)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.538863658905029,
+            accuracy: 0.09077727317810058)
+        let result = sinh(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.8675357103347778,
+            accuracy: 0.017350714206695556)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 10.410428047180176,
+            accuracy: 0.20820856094360352)
+    }
+
+    func testSoftMax() {
+        MLXRandom.seed(695)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.14673520624637604,
+            accuracy: -0.002934704124927521)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.7608224153518677,
+            accuracy: -0.03521644830703735)
+        let result = softMax(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0833333283662796,
+            accuracy: 0.0016666665673255921)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.9999998807907104,
+            accuracy: 0.01999999761581421)
+    }
+
+    func testSoftMax1() {
+        MLXRandom.seed(775)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.27563148736953735,
+            accuracy: 0.005512629747390747)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 3.307577610015869,
+            accuracy: 0.06615155220031739)
+        let result = softMax(a, axis: -1)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.3333333432674408,
+            accuracy: 0.006666666865348816)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.0,
+            accuracy: 0.08)
+    }
+
+    func testSoftMax2() {
+        MLXRandom.seed(133)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 3, 4, 3])
+        XCTAssertEqual(a.shape, [2, 3, 4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5304720401763916,
+            accuracy: 0.010609440803527832)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 38.19398498535156,
+            accuracy: 0.7638796997070313)
+        let result = softMax(a, axes: [0, -1])
+        XCTAssertEqual(result.shape, [2, 3, 4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.1666666716337204,
+            accuracy: 0.003333333432674408)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 12.0,
+            accuracy: 0.24)
+    }
+
+    func testTan() {
+        MLXRandom.seed(897)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.3048655390739441,
+            accuracy: -0.006097310781478882)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.65838623046875,
+            accuracy: -0.073167724609375)
+        let result = tan(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0694185122847557,
+            accuracy: 0.001388370245695114)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.8330221176147461,
+            accuracy: 0.016660442352294923)
+    }
+
+    func testTanh() {
+        MLXRandom.seed(153)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.45169347524642944,
+            accuracy: -0.009033869504928588)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -5.420321464538574,
+            accuracy: -0.10840642929077149)
+        let result = tanh(a)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.3471390902996063,
+            accuracy: -0.006942781805992127)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -4.165668964385986,
+            accuracy: -0.08331337928771973)
+    }
+
+    func testMLXadd() {
+        MLXRandom.seed(945)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.3744015097618103,
+            accuracy: 0.007488030195236206)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.4928178787231445,
+            accuracy: 0.08985635757446289)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), -0.20527128875255585,
+            accuracy: -0.004105425775051117)
+        XCTAssertEqual(
+            b.sum().item(Float.self), -2.4632554054260254,
+            accuracy: -0.04926510810852051)
+        let result = MLX.add(a, b)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.16913020610809326,
+            accuracy: 0.0033826041221618653)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 2.029562473297119,
+            accuracy: 0.040591249465942385)
+    }
+
+    func testConv1d() {
+        MLXRandom.seed(39)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [4, 10, 4])
+        XCTAssertEqual(a.shape, [4, 10, 4])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5018469095230103,
+            accuracy: 0.010036938190460205)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 80.29550170898438,
+            accuracy: 1.6059100341796875)
+        let b = MLXRandom.uniform(0.0 ..< 1.0, [2, 10, 4])
+        XCTAssertEqual(b.shape, [2, 10, 4])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.5621036291122437,
+            accuracy: 0.011242072582244873)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 44.96828842163086,
+            accuracy: 0.8993657684326172)
+        let result = conv1d(a, b)
+        XCTAssertEqual(result.shape, [4, 1, 2])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 11.004511833190918,
+            accuracy: 0.22009023666381836)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 88.03609466552734,
+            accuracy: 1.7607218933105468)
+    }
+
+    func testConv2d() {
+        MLXRandom.seed(862)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [4, 10, 12, 4])
+        XCTAssertEqual(a.shape, [4, 10, 12, 4])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5062730312347412,
+            accuracy: 0.010125460624694825)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 972.044189453125,
+            accuracy: 19.4408837890625)
+        let b = MLXRandom.uniform(0.0 ..< 1.0, [2, 10, 12, 4])
+        XCTAssertEqual(b.shape, [2, 10, 12, 4])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.4991826117038727,
+            accuracy: 0.009983652234077454)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 479.21527099609375,
+            accuracy: 9.584305419921876)
+        let result = conv2d(a, b)
+        XCTAssertEqual(result.shape, [4, 1, 1, 2])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 121.8356704711914,
+            accuracy: 2.4367134094238283)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 974.6853637695312,
+            accuracy: 19.493707275390626)
+    }
+
+    func testConvolve() {
+        MLXRandom.seed(82)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [20])
+        XCTAssertEqual(a.shape, [20])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4547460675239563,
+            accuracy: 0.009094921350479125)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 9.094921112060547,
+            accuracy: 0.18189842224121094)
+        let b = MLXRandom.uniform(0.0 ..< 1.0, [4])
+        XCTAssertEqual(b.shape, [4])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.36941707134246826,
+            accuracy: 0.007388341426849365)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 1.477668285369873,
+            accuracy: 0.02955336570739746)
+        let result = convolve(a, b)
+        XCTAssertEqual(result.shape, [23])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.5843163132667542,
+            accuracy: 0.011686326265335084)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 13.439274787902832,
+            accuracy: 0.26878549575805666)
+    }
+
+    func testDivide() {
+        MLXRandom.seed(919)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.2972916066646576,
+            accuracy: -0.005945832133293152)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -3.5674991607666016,
+            accuracy: -0.07134998321533204)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.04941798374056816,
+            accuracy: 0.0009883596748113633)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 0.5930157899856567,
+            accuracy: 0.011860315799713136)
+        let result = divide(a, b)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -3.7239060401916504,
+            accuracy: -0.07447812080383301)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -44.68687057495117,
+            accuracy: -0.8937374114990234)
+    }
+
+    func testEqual() {
+        MLXRandom.seed(716)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.3898356854915619,
+            accuracy: 0.007796713709831238)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.678028106689453,
+            accuracy: 0.09356056213378906)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), -0.30894142389297485,
+            accuracy: -0.0061788284778594976)
+        XCTAssertEqual(
+            b.sum().item(Float.self), -3.707296848297119,
+            accuracy: -0.07414593696594239)
+        let result = equal(a, b)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), false)
+    }
+
+    func testGreater() {
+        MLXRandom.seed(945)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.3744015097618103,
+            accuracy: 0.007488030195236206)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.4928178787231445,
+            accuracy: 0.08985635757446289)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), -0.20527128875255585,
+            accuracy: -0.004105425775051117)
+        XCTAssertEqual(
+            b.sum().item(Float.self), -2.4632554054260254,
+            accuracy: -0.04926510810852051)
+        let result = greater(a, b)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testGreaterEqual() {
+        MLXRandom.seed(849)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.5959362983703613,
+            accuracy: -0.011918725967407227)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -7.151235103607178,
+            accuracy: -0.14302470207214354)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.42154282331466675,
+            accuracy: 0.008430856466293336)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 5.058513641357422,
+            accuracy: 0.10117027282714844)
+        let result = greaterEqual(a, b)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
+    }
+
+    func testLess() {
         MLXRandom.seed(553)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3625,14 +3607,14 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), -2.318342447280884,
             accuracy: -0.04636684894561768)
-        let result = lessEqual(a, b)
+        let result = less(a, b)
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .bool)
         XCTAssertEqual(result.all().item(), false)
         XCTAssertEqual(result.any().item(), true)
     }
 
-    func testLogAddExp() {
+    func testLessEqual() {
         MLXRandom.seed(699)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3652,80 +3634,76 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), -5.301156997680664,
             accuracy: -0.10602313995361329)
-        let result = logAddExp(a, b)
+        let result = lessEqual(a, b)
         XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.7705571055412292,
-            accuracy: 0.015411142110824585)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 9.246685028076172,
-            accuracy: 0.18493370056152345)
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), false)
+        XCTAssertEqual(result.any().item(), true)
     }
 
-    func testMatmul() {
+    func testLogAddExp() {
         MLXRandom.seed(400)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [10, 8])
-        XCTAssertEqual(a.shape, [10, 8])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.560379147529602,
-            accuracy: 0.011207582950592042)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 44.83032989501953,
-            accuracy: 0.8966065979003907)
-        let b = MLXRandom.uniform(0.0 ..< 1.0, [8, 13])
-        XCTAssertEqual(b.shape, [8, 13])
-        XCTAssertEqual(b.dtype, .float32)
-        XCTAssertEqual(
-            b.mean().item(Float.self), 0.4166308343410492,
-            accuracy: 0.008332616686820985)
-        XCTAssertEqual(
-            b.sum().item(Float.self), 43.32960510253906,
-            accuracy: 0.8665921020507813)
-        let result = matmul(a, b)
-        XCTAssertEqual(result.shape, [10, 13])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 1.8758766651153564,
-            accuracy: 0.03751753330230713)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 243.8639678955078,
-            accuracy: 4.877279357910156)
-    }
-
-    func testMaximum() {
-        MLXRandom.seed(857)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(
-            a.mean().item(Float.self), -0.5597882866859436,
-            accuracy: -0.011195765733718872)
+            a.mean().item(Float.self), -0.19093476235866547,
+            accuracy: -0.0038186952471733096)
         XCTAssertEqual(
-            a.sum().item(Float.self), -6.717459201812744,
-            accuracy: -0.1343491840362549)
+            a.sum().item(Float.self), -2.291217088699341,
+            accuracy: -0.04582434177398682)
         let b = MLXRandom.normal([4, 3])
         XCTAssertEqual(b.shape, [4, 3])
         XCTAssertEqual(b.dtype, .float32)
         XCTAssertEqual(
-            b.mean().item(Float.self), 0.16689209640026093,
-            accuracy: 0.0033378419280052185)
+            b.mean().item(Float.self), 0.09774001687765121,
+            accuracy: 0.001954800337553024)
         XCTAssertEqual(
-            b.sum().item(Float.self), 2.0027050971984863,
-            accuracy: 0.04005410194396973)
-        let result = maximum(a, b)
+            b.sum().item(Float.self), 1.1728801727294922,
+            accuracy: 0.023457603454589845)
+        let result = logAddExp(a, b)
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.3417151868343353,
-            accuracy: 0.006834303736686706)
+            result.mean().item(Float.self), 0.7312957048416138,
+            accuracy: 0.014625914096832275)
         XCTAssertEqual(
-            result.sum().item(Float.self), 4.100582122802734,
-            accuracy: 0.08201164245605469)
+            result.sum().item(Float.self), 8.775547981262207,
+            accuracy: 0.17551095962524416)
     }
 
-    func testMinimum() {
+    func testMatmul() {
+        MLXRandom.seed(857)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [10, 8])
+        XCTAssertEqual(a.shape, [10, 8])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.517481803894043,
+            accuracy: 0.01034963607788086)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 41.39854431152344,
+            accuracy: 0.8279708862304688)
+        let b = MLXRandom.uniform(0.0 ..< 1.0, [8, 13])
+        XCTAssertEqual(b.shape, [8, 13])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.4867754876613617,
+            accuracy: 0.009735509753227234)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 50.62464904785156,
+            accuracy: 1.0124929809570313)
+        let result = matmul(a, b)
+        XCTAssertEqual(result.shape, [10, 13])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 2.032482862472534,
+            accuracy: 0.04064965724945068)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 264.2227783203125,
+            accuracy: 5.28445556640625)
+    }
+
+    func testMaximum() {
         MLXRandom.seed(722)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3745,18 +3723,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), 4.083311080932617,
             accuracy: 0.08166622161865235)
-        let result = minimum(a, b)
+        let result = maximum(a, b)
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.3063547909259796,
-            accuracy: -0.006127095818519592)
+            result.mean().item(Float.self), 0.6268421411514282,
+            accuracy: 0.012536842823028565)
         XCTAssertEqual(
-            result.sum().item(Float.self), -3.676257371902466,
-            accuracy: -0.07352514743804932)
+            result.sum().item(Float.self), 7.522105693817139,
+            accuracy: 0.15044211387634276)
     }
 
-    func testMultiply() {
+    func testMinimum() {
         MLXRandom.seed(537)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3776,18 +3754,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), 1.9275552034378052,
             accuracy: 0.03855110406875611)
-        let result = multiply(a, b)
+        let result = minimum(a, b)
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.1341765820980072,
-            accuracy: -0.002683531641960144)
+            result.mean().item(Float.self), -0.4159923493862152,
+            accuracy: -0.008319846987724304)
         XCTAssertEqual(
-            result.sum().item(Float.self), -1.6101188659667969,
-            accuracy: -0.03220237731933594)
+            result.sum().item(Float.self), -4.991908073425293,
+            accuracy: -0.09983816146850587)
     }
 
-    func testNotEqual() {
+    func testMultiply() {
         MLXRandom.seed(282)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3807,14 +3785,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), 3.0051355361938477,
             accuracy: 0.060102710723876955)
-        let result = notEqual(a, b)
+        let result = multiply(a, b)
         XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .bool)
-        XCTAssertEqual(result.all().item(), true)
-        XCTAssertEqual(result.any().item(), true)
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.2712330222129822,
+            accuracy: -0.005424660444259643)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -3.254796266555786,
+            accuracy: -0.06509592533111572)
     }
 
-    func testRemainder() {
+    func testNotEqual() {
         MLXRandom.seed(534)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3834,18 +3816,14 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), -1.8538023233413696,
             accuracy: -0.03707604646682739)
-        let result = remainder(a, b)
+        let result = notEqual(a, b)
         XCTAssertEqual(result.shape, [4, 3])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.2596015930175781,
-            accuracy: -0.005192031860351562)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -3.1152191162109375,
-            accuracy: -0.062304382324218754)
+        XCTAssertEqual(result.dtype, .bool)
+        XCTAssertEqual(result.all().item(), true)
+        XCTAssertEqual(result.any().item(), true)
     }
 
-    func testSubtract() {
+    func testRemainder() {
         MLXRandom.seed(831)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -3865,93 +3843,82 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             b.sum().item(Float.self), 1.7042728662490845,
             accuracy: 0.03408545732498169)
+        let result = remainder(a, b)
+        XCTAssertEqual(result.shape, [4, 3])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.09767231345176697,
+            accuracy: 0.0019534462690353393)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 1.1720677614212036,
+            accuracy: 0.023441355228424072)
+    }
+
+    func testSubtract() {
+        MLXRandom.seed(241)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), -0.1329968273639679,
+            accuracy: -0.002659936547279358)
+        XCTAssertEqual(
+            a.sum().item(Float.self), -1.5959618091583252,
+            accuracy: -0.031919236183166506)
+        let b = MLXRandom.normal([4, 3])
+        XCTAssertEqual(b.shape, [4, 3])
+        XCTAssertEqual(b.dtype, .float32)
+        XCTAssertEqual(
+            b.mean().item(Float.self), 0.03048303723335266,
+            accuracy: 0.0006096607446670532)
+        XCTAssertEqual(
+            b.sum().item(Float.self), 0.36579644680023193,
+            accuracy: 0.007315928936004639)
         let result = subtract(a, b)
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.12952594459056854,
-            accuracy: 0.002590518891811371)
+            result.mean().item(Float.self), -0.16347989439964294,
+            accuracy: -0.003269597887992859)
         XCTAssertEqual(
-            result.sum().item(Float.self), 1.5543112754821777,
-            accuracy: 0.031086225509643555)
+            result.sum().item(Float.self), -1.9617586135864258,
+            accuracy: -0.03923517227172851)
     }
 
     func testQuantize() {
-        MLXRandom.seed(241)
+        MLXRandom.seed(869)
         let w = MLXRandom.uniform(0.0 ..< 1.0, [32, 256])
         let (wq, scales, biases) = quantized(w, bits: 8)
         XCTAssertEqual(wq.shape, [32, 64])
         XCTAssertEqual(wq.dtype, .uint32)
         XCTAssertEqual(
-            wq.mean().item(Float.self), 1512617.0,
-            accuracy: 30252.34)
+            wq.mean().item(Float.self), 1684202.0,
+            accuracy: 33684.04)
         XCTAssertEqual(
-            wq.sum().item(Float.self), 3_097_839_510,
-            accuracy: 61956790.2)
+            wq.sum().item(Float.self), 3_449_245_613,
+            accuracy: 68984912.26)
 
         XCTAssertEqual(scales.shape, [32, 4])
         XCTAssertEqual(scales.dtype, .float32)
         XCTAssertEqual(
-            scales.mean().item(Float.self), 0.0038017292972654104,
-            accuracy: 7.603458594530821e-05)
+            scales.mean().item(Float.self), 0.0037989525590091944,
+            accuracy: 7.597905118018388e-05)
         XCTAssertEqual(
-            scales.sum().item(Float.self), 0.48662135004997253,
-            accuracy: 0.00973242700099945)
+            scales.sum().item(Float.self), 0.4862659275531769,
+            accuracy: 0.009725318551063537)
 
         XCTAssertEqual(biases.shape, [32, 4])
         XCTAssertEqual(biases.dtype, .float32)
         XCTAssertEqual(
-            biases.mean().item(Float.self), 0.014969739131629467,
-            accuracy: 0.00029939478263258935)
+            biases.mean().item(Float.self), 0.01748880185186863,
+            accuracy: 0.0003497760370373726)
         XCTAssertEqual(
-            biases.sum().item(Float.self), 1.9161266088485718,
-            accuracy: 0.03832253217697144)
+            biases.sum().item(Float.self), 2.2385666370391846,
+            accuracy: 0.044771332740783695)
 
     }
 
     func testFft_() {
-        MLXRandom.seed(869)
-        let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
-        XCTAssertEqual(r.shape, [100, 100])
-        XCTAssertEqual(r.dtype, .float32)
-        XCTAssertEqual(
-            r.mean().item(Float.self), 0.49898672103881836,
-            accuracy: 0.009979734420776367)
-        XCTAssertEqual(
-            r.sum().item(Float.self), 4989.8671875,
-            accuracy: 99.79734375)
-        let i = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
-        XCTAssertEqual(i.shape, [100, 100])
-        XCTAssertEqual(i.dtype, .float32)
-        XCTAssertEqual(
-            i.mean().item(Float.self), 0.4985533654689789,
-            accuracy: 0.009971067309379578)
-        XCTAssertEqual(
-            i.sum().item(Float.self), 4985.53369140625,
-            accuracy: 99.710673828125)
-        let c = r + i.asImaginary()
-        let result = fft(c, stream: .cpu)
-        let resultReal = result.realPart()
-        let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [100, 100])
-        XCTAssertEqual(resultReal.dtype, .float32)
-        XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.46522781252861023,
-            accuracy: 0.009304556250572206)
-        XCTAssertEqual(
-            resultReal.sum().item(Float.self), 4652.2783203125,
-            accuracy: 93.04556640625)
-        XCTAssertEqual(resultImaginary.shape, [100, 100])
-        XCTAssertEqual(resultImaginary.dtype, .float32)
-        XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.49382880330085754,
-            accuracy: 0.009876576066017152)
-        XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 4938.2880859375,
-            accuracy: 98.76576171875)
-    }
-
-    func testFft_1() {
         MLXRandom.seed(220)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
         XCTAssertEqual(r.shape, [100, 100])
@@ -3972,28 +3939,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 4961.728515625,
             accuracy: 99.2345703125)
         let c = r + i.asImaginary()
-        let result = fft(c, n: 80, stream: .cpu)
+        let result = fft(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [100, 80])
+        XCTAssertEqual(resultReal.shape, [100, 100])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.5186548233032227,
-            accuracy: 0.010373096466064453)
+            resultReal.mean().item(Float.self), 0.5186547636985779,
+            accuracy: 0.010373095273971558)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 4149.23828125,
-            accuracy: 82.98476562500001)
-        XCTAssertEqual(resultImaginary.shape, [100, 80])
+            resultReal.sum().item(Float.self), 5186.5478515625,
+            accuracy: 103.73095703125)
+        XCTAssertEqual(resultImaginary.shape, [100, 100])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.49386361241340637,
-            accuracy: 0.009877272248268128)
+            resultImaginary.mean().item(Float.self), 0.4938635528087616,
+            accuracy: 0.009877271056175233)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 3950.90869140625,
-            accuracy: 79.018173828125)
+            resultImaginary.sum().item(Float.self), 4938.6357421875,
+            accuracy: 98.77271484375001)
     }
 
-    func testFft_2() {
+    func testFft_1() {
         MLXRandom.seed(916)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
         XCTAssertEqual(r.shape, [100, 100])
@@ -4014,28 +3981,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 4982.15625,
             accuracy: 99.643125)
         let c = r + i.asImaginary()
-        let result = fft(c, n: 120, stream: .cpu)
+        let result = fft(c, n: 80, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [100, 120])
+        XCTAssertEqual(resultReal.shape, [100, 80])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.4616168439388275,
-            accuracy: 0.00923233687877655)
+            resultReal.mean().item(Float.self), 0.4616168737411499,
+            accuracy: 0.009232337474822999)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 5539.40234375,
-            accuracy: 110.788046875)
-        XCTAssertEqual(resultImaginary.shape, [100, 120])
+            resultReal.sum().item(Float.self), 3692.934814453125,
+            accuracy: 73.85869628906251)
+        XCTAssertEqual(resultImaginary.shape, [100, 80])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.45072126388549805,
-            accuracy: 0.00901442527770996)
+            resultImaginary.mean().item(Float.self), 0.4507213234901428,
+            accuracy: 0.009014426469802857)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 5408.6552734375,
-            accuracy: 108.17310546875001)
+            resultImaginary.sum().item(Float.self), 3605.7705078125,
+            accuracy: 72.11541015625001)
     }
 
-    func testFft_3() {
+    func testFft_2() {
         MLXRandom.seed(695)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
         XCTAssertEqual(r.shape, [100, 100])
@@ -4056,70 +4023,70 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 5017.33544921875,
             accuracy: 100.346708984375)
         let c = r + i.asImaginary()
+        let result = fft(c, n: 120, stream: .cpu)
+        let resultReal = result.realPart()
+        let resultImaginary = result.imaginaryPart()
+        XCTAssertEqual(resultReal.shape, [100, 120])
+        XCTAssertEqual(resultReal.dtype, .float32)
+        XCTAssertEqual(
+            resultReal.mean().item(Float.self), 0.5616999268531799,
+            accuracy: 0.011233998537063599)
+        XCTAssertEqual(
+            resultReal.sum().item(Float.self), 6740.3994140625,
+            accuracy: 134.80798828125)
+        XCTAssertEqual(resultImaginary.shape, [100, 120])
+        XCTAssertEqual(resultImaginary.dtype, .float32)
+        XCTAssertEqual(
+            resultImaginary.mean().item(Float.self), 0.5033472180366516,
+            accuracy: 0.010066944360733033)
+        XCTAssertEqual(
+            resultImaginary.sum().item(Float.self), 6040.1669921875,
+            accuracy: 120.80333984375)
+    }
+
+    func testFft_3() {
+        MLXRandom.seed(603)
+        let r = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
+        XCTAssertEqual(r.shape, [100, 100])
+        XCTAssertEqual(r.dtype, .float32)
+        XCTAssertEqual(
+            r.mean().item(Float.self), 0.4938477873802185,
+            accuracy: 0.00987695574760437)
+        XCTAssertEqual(
+            r.sum().item(Float.self), 4938.47802734375,
+            accuracy: 98.769560546875)
+        let i = MLXRandom.uniform(0.0 ..< 1.0, [100, 100])
+        XCTAssertEqual(i.shape, [100, 100])
+        XCTAssertEqual(i.dtype, .float32)
+        XCTAssertEqual(
+            i.mean().item(Float.self), 0.5019298791885376,
+            accuracy: 0.010038597583770752)
+        XCTAssertEqual(
+            i.sum().item(Float.self), 5019.298828125,
+            accuracy: 100.3859765625)
+        let c = r + i.asImaginary()
         let result = fft(c, axis: 0, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
         XCTAssertEqual(resultReal.shape, [100, 100])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.5061290264129639,
-            accuracy: 0.010122580528259277)
+            resultReal.mean().item(Float.self), 0.5286791324615479,
+            accuracy: 0.010573582649230957)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 5061.29052734375,
-            accuracy: 101.225810546875)
+            resultReal.sum().item(Float.self), 5286.79150390625,
+            accuracy: 105.735830078125)
         XCTAssertEqual(resultImaginary.shape, [100, 100])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.4449807107448578,
-            accuracy: 0.008899614214897156)
+            resultImaginary.mean().item(Float.self), 0.5054363012313843,
+            accuracy: 0.010108726024627685)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 4449.80712890625,
-            accuracy: 88.996142578125)
+            resultImaginary.sum().item(Float.self), 5054.36328125,
+            accuracy: 101.087265625)
     }
 
     func testIfft_() {
-        MLXRandom.seed(603)
-        let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
-        XCTAssertEqual(r.shape, [100])
-        XCTAssertEqual(r.dtype, .float32)
-        XCTAssertEqual(
-            r.mean().item(Float.self), 0.49448537826538086,
-            accuracy: 0.009889707565307618)
-        XCTAssertEqual(
-            r.sum().item(Float.self), 49.44853973388672,
-            accuracy: 0.9889707946777344)
-        let i = MLXRandom.uniform(0.0 ..< 1.0, [100])
-        XCTAssertEqual(i.shape, [100])
-        XCTAssertEqual(i.dtype, .float32)
-        XCTAssertEqual(
-            i.mean().item(Float.self), 0.5573599338531494,
-            accuracy: 0.011147198677062988)
-        XCTAssertEqual(
-            i.sum().item(Float.self), 55.73599624633789,
-            accuracy: 1.1147199249267579)
-        let c = r + i.asImaginary()
-        let result = ifft(c, stream: .cpu)
-        let resultReal = result.realPart()
-        let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [100])
-        XCTAssertEqual(resultReal.dtype, .float32)
-        XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.009103093296289444,
-            accuracy: 0.00018206186592578888)
-        XCTAssertEqual(
-            resultReal.sum().item(Float.self), 0.9103093147277832,
-            accuracy: 0.018206186294555664)
-        XCTAssertEqual(resultImaginary.shape, [100])
-        XCTAssertEqual(resultImaginary.dtype, .float32)
-        XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.001101400819607079,
-            accuracy: 2.202801639214158e-05)
-        XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 0.11014008522033691,
-            accuracy: 0.002202801704406738)
-    }
-
-    func testIfft_1() {
         MLXRandom.seed(845)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4140,28 +4107,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 47.583282470703125,
             accuracy: 0.9516656494140625)
         let c = r + i.asImaginary()
-        let result = ifft(c, n: 80, stream: .cpu)
+        let result = ifft(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [80])
+        XCTAssertEqual(resultReal.shape, [100])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.008635956794023514,
-            accuracy: 0.00017271913588047028)
+            resultReal.mean().item(Float.self), 0.006908764597028494,
+            accuracy: 0.00013817529194056987)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 0.6908765435218811,
-            accuracy: 0.013817530870437623)
-        XCTAssertEqual(resultImaginary.shape, [80])
+            resultReal.sum().item(Float.self), 0.6908764839172363,
+            accuracy: 0.013817529678344726)
+        XCTAssertEqual(resultImaginary.shape, [100])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.0071121747605502605,
-            accuracy: 0.00014224349521100522)
+            resultImaginary.mean().item(Float.self), 0.005689740646630526,
+            accuracy: 0.00011379481293261051)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 0.568973958492279,
-            accuracy: 0.011379479169845582)
+            resultImaginary.sum().item(Float.self), 0.5689740777015686,
+            accuracy: 0.011379481554031371)
     }
 
-    func testIfft_2() {
+    func testIfft_1() {
         MLXRandom.seed(972)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4182,28 +4149,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 47.61311340332031,
             accuracy: 0.9522622680664062)
         let c = r + i.asImaginary()
-        let result = ifft(c, n: 120, stream: .cpu)
+        let result = ifft(c, n: 80, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [120])
+        XCTAssertEqual(resultReal.shape, [80])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.0033360826782882214,
-            accuracy: 6.672165356576443e-05)
+            resultReal.mean().item(Float.self), 0.005004124250262976,
+            accuracy: 0.00010008248500525951)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 0.4003298878669739,
-            accuracy: 0.008006597757339478)
-        XCTAssertEqual(resultImaginary.shape, [120])
+            resultReal.sum().item(Float.self), 0.40032994747161865,
+            accuracy: 0.008006598949432373)
+        XCTAssertEqual(resultImaginary.shape, [80])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.00022756408725399524,
-            accuracy: 4.551281745079905e-06)
+            resultImaginary.mean().item(Float.self), 0.0003413451777305454,
+            accuracy: 6.826903554610908e-06)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 0.02730768918991089,
-            accuracy: 0.0005461537837982178)
+            resultImaginary.sum().item(Float.self), 0.02730761468410492,
+            accuracy: 0.0005461522936820984)
     }
 
-    func testIfft_3() {
+    func testIfft_2() {
         MLXRandom.seed(429)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4224,28 +4191,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 46.24754333496094,
             accuracy: 0.9249508666992188)
         let c = r + i.asImaginary()
-        let result = ifft(c, axis: 0, stream: .cpu)
+        let result = ifft(c, n: 120, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [100])
+        XCTAssertEqual(resultReal.shape, [120])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.004011719953268766,
-            accuracy: 8.023439906537533e-05)
+            resultReal.mean().item(Float.self), 0.0033431013580411673,
+            accuracy: 6.686202716082335e-05)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 0.4011719822883606,
-            accuracy: 0.008023439645767213)
-        XCTAssertEqual(resultImaginary.shape, [100])
+            resultReal.sum().item(Float.self), 0.40117213129997253,
+            accuracy: 0.00802344262599945)
+        XCTAssertEqual(resultImaginary.shape, [120])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.005859805271029472,
-            accuracy: 0.00011719610542058945)
+            resultImaginary.mean().item(Float.self), 0.0048831733874976635,
+            accuracy: 9.766346774995328e-05)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 0.5859805345535278,
-            accuracy: 0.011719610691070557)
+            resultImaginary.sum().item(Float.self), 0.5859807729721069,
+            accuracy: 0.01171961545944214)
     }
 
-    func testRfft_() {
+    func testIfft_3() {
         MLXRandom.seed(593)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4266,28 +4233,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 48.93672180175781,
             accuracy: 0.9787344360351563)
         let c = r + i.asImaginary()
-        let result = rfft(c, stream: .cpu)
+        let result = ifft(c, axis: 0, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [51])
+        XCTAssertEqual(resultReal.shape, [100])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 1.4419496059417725,
-            accuracy: 0.02883899211883545)
+            resultReal.mean().item(Float.self), 0.009695236571133137,
+            accuracy: 0.00019390473142266273)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 73.5394287109375,
-            accuracy: 1.47078857421875)
-        XCTAssertEqual(resultImaginary.shape, [51])
+            resultReal.sum().item(Float.self), 0.9695236682891846,
+            accuracy: 0.019390473365783693)
+        XCTAssertEqual(resultImaginary.shape, [100])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.2742384374141693,
-            accuracy: 0.005484768748283387)
+            resultImaginary.mean().item(Float.self), 0.008965172804892063,
+            accuracy: 0.00017930345609784126)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 13.986159324645996,
-            accuracy: 0.27972318649291994)
+            resultImaginary.sum().item(Float.self), 0.896517276763916,
+            accuracy: 0.017930345535278322)
     }
 
-    func testRfft_1() {
+    func testRfft_() {
         MLXRandom.seed(281)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4308,28 +4275,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 53.12841796875,
             accuracy: 1.062568359375)
         let c = r + i.asImaginary()
-        let result = rfft(c, n: 80, stream: .cpu)
+        let result = rfft(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [41])
+        XCTAssertEqual(resultReal.shape, [51])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 1.085523009300232,
-            accuracy: 0.02171046018600464)
+            resultReal.mean().item(Float.self), 1.0831178426742554,
+            accuracy: 0.021662356853485106)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 44.50644302368164,
-            accuracy: 0.8901288604736328)
-        XCTAssertEqual(resultImaginary.shape, [41])
+            resultReal.sum().item(Float.self), 55.23900604248047,
+            accuracy: 1.1047801208496093)
+        XCTAssertEqual(resultImaginary.shape, [51])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.05501865968108177,
-            accuracy: 0.0011003731936216354)
+            resultImaginary.mean().item(Float.self), 0.31754177808761597,
+            accuracy: 0.006350835561752319)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 2.255765199661255,
-            accuracy: 0.0451153039932251)
+            resultImaginary.sum().item(Float.self), 16.194629669189453,
+            accuracy: 0.32389259338378906)
     }
 
-    func testRfft_2() {
+    func testRfft_1() {
         MLXRandom.seed(461)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4350,28 +4317,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 51.84644317626953,
             accuracy: 1.0369288635253906)
         let c = r + i.asImaginary()
-        let result = rfft(c, n: 120, stream: .cpu)
+        let result = rfft(c, n: 80, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [61])
+        XCTAssertEqual(resultReal.shape, [41])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 1.2384992837905884,
-            accuracy: 0.02476998567581177)
+            resultReal.mean().item(Float.self), 1.3340529203414917,
+            accuracy: 0.026681058406829834)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 75.5484619140625,
-            accuracy: 1.51096923828125)
-        XCTAssertEqual(resultImaginary.shape, [61])
+            resultReal.sum().item(Float.self), 54.696170806884766,
+            accuracy: 1.0939234161376954)
+        XCTAssertEqual(resultImaginary.shape, [41])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), -0.46380823850631714,
-            accuracy: -0.009276164770126343)
+            resultImaginary.mean().item(Float.self), 0.09739136695861816,
+            accuracy: 0.0019478273391723632)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), -28.29230499267578,
-            accuracy: -0.5658460998535156)
+            resultImaginary.sum().item(Float.self), 3.993046283721924,
+            accuracy: 0.07986092567443848)
     }
 
-    func testRfft_3() {
+    func testRfft_2() {
         MLXRandom.seed(504)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4392,28 +4359,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 48.13127899169922,
             accuracy: 0.9626255798339844)
         let c = r + i.asImaginary()
-        let result = rfft(c, axis: 0, stream: .cpu)
+        let result = rfft(c, n: 120, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [51])
+        XCTAssertEqual(resultReal.shape, [61])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.5036380290985107,
-            accuracy: 0.010072760581970215)
+            resultReal.mean().item(Float.self), 0.421972393989563,
+            accuracy: 0.00843944787979126)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 25.68553924560547,
-            accuracy: 0.5137107849121094)
-        XCTAssertEqual(resultImaginary.shape, [51])
+            resultReal.sum().item(Float.self), 25.740318298339844,
+            accuracy: 0.5148063659667969)
+        XCTAssertEqual(resultImaginary.shape, [61])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.4131971001625061,
-            accuracy: 0.008263942003250122)
+            resultImaginary.mean().item(Float.self), -0.24379387497901917,
+            accuracy: -0.004875877499580384)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 21.07305145263672,
-            accuracy: 0.42146102905273436)
+            resultImaginary.sum().item(Float.self), -14.871427536010742,
+            accuracy: -0.29742855072021485)
     }
 
-    func testIrfft_() {
+    func testRfft_3() {
         MLXRandom.seed(676)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4434,18 +4401,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 47.86808776855469,
             accuracy: 0.9573617553710938)
         let c = r + i.asImaginary()
-        let result = irfft(c, stream: .cpu)
-        XCTAssertEqual(result.shape, [198])
-        XCTAssertEqual(result.dtype, .float32)
+        let result = rfft(c, axis: 0, stream: .cpu)
+        let resultReal = result.realPart()
+        let resultImaginary = result.imaginaryPart()
+        XCTAssertEqual(resultReal.shape, [51])
+        XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.0004948826390318573,
-            accuracy: 9.897652780637145e-06)
+            resultReal.mean().item(Float.self), 0.5287001729011536,
+            accuracy: 0.010574003458023071)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.09798675775527954,
-            accuracy: 0.001959735155105591)
+            resultReal.sum().item(Float.self), 26.963706970214844,
+            accuracy: 0.5392741394042969)
+        XCTAssertEqual(resultImaginary.shape, [51])
+        XCTAssertEqual(resultImaginary.dtype, .float32)
+        XCTAssertEqual(
+            resultImaginary.mean().item(Float.self), 0.25333887338638306,
+            accuracy: 0.005066777467727661)
+        XCTAssertEqual(
+            resultImaginary.sum().item(Float.self), 12.920282363891602,
+            accuracy: 0.25840564727783205)
     }
 
-    func testIrfft_1() {
+    func testIrfft_() {
         MLXRandom.seed(656)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4466,18 +4443,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 54.90367889404297,
             accuracy: 1.0980735778808595)
         let c = r + i.asImaginary()
-        let result = irfft(c, n: 80, stream: .cpu)
-        XCTAssertEqual(result.shape, [80])
+        let result = irfft(c, stream: .cpu)
+        XCTAssertEqual(result.shape, [198])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.0071747018955647945,
-            accuracy: 0.0001434940379112959)
+            result.mean().item(Float.self), 0.0028988695703446865,
+            accuracy: 5.797739140689373e-05)
         XCTAssertEqual(
             result.sum().item(Float.self), 0.5739761590957642,
             accuracy: 0.011479523181915283)
     }
 
-    func testIrfft_2() {
+    func testIrfft_1() {
         MLXRandom.seed(717)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4498,18 +4475,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 46.035667419433594,
             accuracy: 0.9207133483886719)
         let c = r + i.asImaginary()
-        let result = irfft(c, n: 120, stream: .cpu)
-        XCTAssertEqual(result.shape, [120])
+        let result = irfft(c, n: 80, stream: .cpu)
+        XCTAssertEqual(result.shape, [80])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.0025687282904982567,
-            accuracy: 5.137456580996514e-05)
+            result.mean().item(Float.self), 0.0038530919700860977,
+            accuracy: 7.706183940172196e-05)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.3082473874092102,
-            accuracy: 0.006164947748184204)
+            result.sum().item(Float.self), 0.3082473576068878,
+            accuracy: 0.006164947152137757)
     }
 
-    func testIrfft_3() {
+    func testIrfft_2() {
         MLXRandom.seed(938)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
         XCTAssertEqual(r.shape, [100])
@@ -4530,60 +4507,50 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 49.99184036254883,
             accuracy: 0.9998368072509766)
         let c = r + i.asImaginary()
+        let result = irfft(c, n: 120, stream: .cpu)
+        XCTAssertEqual(result.shape, [120])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.0034326675813645124,
+            accuracy: 6.865335162729025e-05)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 0.41192010045051575,
+            accuracy: 0.008238402009010316)
+    }
+
+    func testIrfft_3() {
+        MLXRandom.seed(812)
+        let r = MLXRandom.uniform(0.0 ..< 1.0, [100])
+        XCTAssertEqual(r.shape, [100])
+        XCTAssertEqual(r.dtype, .float32)
+        XCTAssertEqual(
+            r.mean().item(Float.self), 0.4437080919742584,
+            accuracy: 0.008874161839485169)
+        XCTAssertEqual(
+            r.sum().item(Float.self), 44.370811462402344,
+            accuracy: 0.8874162292480469)
+        let i = MLXRandom.uniform(0.0 ..< 1.0, [100])
+        XCTAssertEqual(i.shape, [100])
+        XCTAssertEqual(i.dtype, .float32)
+        XCTAssertEqual(
+            i.mean().item(Float.self), 0.5141764879226685,
+            accuracy: 0.01028352975845337)
+        XCTAssertEqual(
+            i.sum().item(Float.self), 51.41764831542969,
+            accuracy: 1.0283529663085937)
+        let c = r + i.asImaginary()
         let result = irfft(c, axis: 0, stream: .cpu)
         XCTAssertEqual(result.shape, [198])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.002080403733998537,
-            accuracy: 4.160807467997074e-05)
+            result.mean().item(Float.self), 0.004781102295964956,
+            accuracy: 9.562204591929913e-05)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.4119199514389038,
-            accuracy: 0.008238399028778076)
+            result.sum().item(Float.self), 0.9466582536697388,
+            accuracy: 0.018933165073394775)
     }
 
     func testFft2_() {
-        MLXRandom.seed(812)
-        let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
-        XCTAssertEqual(r.shape, [8, 8, 8])
-        XCTAssertEqual(r.dtype, .float32)
-        XCTAssertEqual(
-            r.mean().item(Float.self), 0.49497753381729126,
-            accuracy: 0.009899550676345825)
-        XCTAssertEqual(
-            r.sum().item(Float.self), 253.42849731445312,
-            accuracy: 5.068569946289062)
-        let i = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
-        XCTAssertEqual(i.shape, [8, 8, 8])
-        XCTAssertEqual(i.dtype, .float32)
-        XCTAssertEqual(
-            i.mean().item(Float.self), 0.48790931701660156,
-            accuracy: 0.009758186340332032)
-        XCTAssertEqual(
-            i.sum().item(Float.self), 249.8095703125,
-            accuracy: 4.99619140625)
-        let c = r + i.asImaginary()
-        let result = fft2(c, stream: .cpu)
-        let resultReal = result.realPart()
-        let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
-        XCTAssertEqual(resultReal.dtype, .float32)
-        XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.4430522322654724,
-            accuracy: 0.008861044645309448)
-        XCTAssertEqual(
-            resultReal.sum().item(Float.self), 226.84274291992188,
-            accuracy: 4.536854858398438)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
-        XCTAssertEqual(resultImaginary.dtype, .float32)
-        XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.5499212145805359,
-            accuracy: 0.010998424291610718)
-        XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 281.5596618652344,
-            accuracy: 5.631193237304688)
-    }
-
-    func testFft2_1() {
         MLXRandom.seed(365)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4604,28 +4571,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 260.727783203125,
             accuracy: 5.2145556640625)
         let c = r + i.asImaginary()
-        let result = fft2(c, s: [3, 4], stream: .cpu)
+        let result = fft2(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 4])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
             resultReal.mean().item(Float.self), 0.3378489017486572,
             accuracy: 0.0067569780349731445)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 32.433494567871094,
-            accuracy: 0.6486698913574219)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
+            resultReal.sum().item(Float.self), 172.9786376953125,
+            accuracy: 3.45957275390625)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.4062994420528412,
-            accuracy: 0.008125988841056824)
+            resultImaginary.mean().item(Float.self), 0.4062993824481964,
+            accuracy: 0.008125987648963929)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 39.00474548339844,
-            accuracy: 0.7800949096679688)
+            resultImaginary.sum().item(Float.self), 208.02528381347656,
+            accuracy: 4.160505676269532)
     }
 
-    func testFft2_2() {
+    func testFft2_1() {
         MLXRandom.seed(84)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4646,28 +4613,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 257.0783996582031,
             accuracy: 5.141567993164062)
         let c = r + i.asImaginary()
-        let result = fft2(c, axes: [0, 2], stream: .cpu)
+        let result = fft2(c, s: [3, 4], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 3, 4])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.5207626819610596,
-            accuracy: 0.010415253639221191)
+            resultReal.mean().item(Float.self), 0.5198299884796143,
+            accuracy: 0.010396599769592285)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 266.6304931640625,
-            accuracy: 5.33260986328125)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 49.9036750793457,
+            accuracy: 0.9980735015869141)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.4760454297065735,
-            accuracy: 0.00952090859413147)
+            resultImaginary.mean().item(Float.self), 0.5818836688995361,
+            accuracy: 0.011637673377990723)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 243.73526000976562,
-            accuracy: 4.874705200195312)
+            resultImaginary.sum().item(Float.self), 55.8608283996582,
+            accuracy: 1.117216567993164)
     }
 
-    func testFft2_3() {
+    func testFft2_2() {
         MLXRandom.seed(332)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4688,28 +4655,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 256.2694091796875,
             accuracy: 5.12538818359375)
         let c = r + i.asImaginary()
-        let result = fft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let result = fft2(c, axes: [0, 2], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 5, 10])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.5536004304885864,
-            accuracy: 0.01107200860977173)
+            resultReal.mean().item(Float.self), 0.3796372711658478,
+            accuracy: 0.007592745423316956)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 221.440185546875,
-            accuracy: 4.4288037109375)
-        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
+            resultReal.sum().item(Float.self), 194.37428283691406,
+            accuracy: 3.8874856567382814)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.658384382724762,
-            accuracy: 0.01316768765449524)
+            resultImaginary.mean().item(Float.self), 0.6848205327987671,
+            accuracy: 0.013696410655975343)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 263.353759765625,
-            accuracy: 5.2670751953125)
+            resultImaginary.sum().item(Float.self), 350.62811279296875,
+            accuracy: 7.012562255859375)
     }
 
-    func testIfft2_() {
+    func testFft2_3() {
         MLXRandom.seed(627)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4730,28 +4697,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 253.56591796875,
             accuracy: 5.071318359375)
         let c = r + i.asImaginary()
-        let result = ifft2(c, stream: .cpu)
+        let result = fft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 5, 10])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.006198027171194553,
-            accuracy: 0.00012396054342389106)
+            resultReal.mean().item(Float.self), 0.39667367935180664,
+            accuracy: 0.007933473587036133)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 3.1733899116516113,
-            accuracy: 0.06346779823303222)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 158.6694793701172,
+            accuracy: 3.173389587402344)
+        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.007202435284852982,
-            accuracy: 0.00014404870569705963)
+            resultImaginary.mean().item(Float.self), 0.46095579862594604,
+            accuracy: 0.009219115972518921)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 3.6876468658447266,
-            accuracy: 0.07375293731689453)
+            resultImaginary.sum().item(Float.self), 184.38232421875,
+            accuracy: 3.687646484375)
     }
 
-    func testIfft2_1() {
+    func testIfft2_() {
         MLXRandom.seed(118)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4772,28 +4739,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 257.5908203125,
             accuracy: 5.15181640625)
         let c = r + i.asImaginary()
-        let result = ifft2(c, s: [3, 4], stream: .cpu)
+        let result = ifft2(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 4])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.0496579185128212,
-            accuracy: 0.0009931583702564239)
+            resultReal.mean().item(Float.self), 0.009310859255492687,
+            accuracy: 0.00018621718510985374)
         XCTAssertEqual(
             resultReal.sum().item(Float.self), 4.767159938812256,
             accuracy: 0.09534319877624511)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.035478584468364716,
-            accuracy: 0.0007095716893672944)
+            resultImaginary.mean().item(Float.self), 0.006652233190834522,
+            accuracy: 0.00013304466381669044)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 3.4059438705444336,
-            accuracy: 0.06811887741088868)
+            resultImaginary.sum().item(Float.self), 3.4059433937072754,
+            accuracy: 0.0681188678741455)
     }
 
-    func testIfft2_2() {
+    func testIfft2_1() {
         MLXRandom.seed(498)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4814,28 +4781,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 252.1264190673828,
             accuracy: 5.0425283813476565)
         let c = r + i.asImaginary()
-        let result = ifft2(c, axes: [0, 2], stream: .cpu)
+        let result = ifft2(c, s: [3, 4], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 3, 4])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.010478660464286804,
-            accuracy: 0.0002095732092857361)
+            resultReal.mean().item(Float.self), 0.055086322128772736,
+            accuracy: 0.0011017264425754547)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 5.365074157714844,
-            accuracy: 0.10730148315429688)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 5.2882866859436035,
+            accuracy: 0.10576573371887207)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.005031844601035118,
-            accuracy: 0.00010063689202070237)
+            resultImaginary.mean().item(Float.self), 0.052069030702114105,
+            accuracy: 0.001041380614042282)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 2.5763044357299805,
-            accuracy: 0.05152608871459961)
+            resultImaginary.sum().item(Float.self), 4.998626708984375,
+            accuracy: 0.0999725341796875)
     }
 
-    func testIfft2_3() {
+    func testIfft2_2() {
         MLXRandom.seed(601)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4856,28 +4823,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 270.459228515625,
             accuracy: 5.4091845703125)
         let c = r + i.asImaginary()
-        let result = ifft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let result = ifft2(c, axes: [0, 2], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 5, 10])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.01160472258925438,
-            accuracy: 0.0002320944517850876)
+            resultReal.mean().item(Float.self), 0.005900253541767597,
+            accuracy: 0.00011800507083535194)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 4.6418890953063965,
-            accuracy: 0.09283778190612793)
-        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
+            resultReal.sum().item(Float.self), 3.0209298133850098,
+            accuracy: 0.06041859626770019)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.0105382539331913,
-            accuracy: 0.000210765078663826)
+            resultImaginary.mean().item(Float.self), 0.009091435000300407,
+            accuracy: 0.00018182870000600816)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 4.215301513671875,
-            accuracy: 0.0843060302734375)
+            resultImaginary.sum().item(Float.self), 4.654814720153809,
+            accuracy: 0.09309629440307618)
     }
 
-    func testFftn_() {
+    func testIfft2_3() {
         MLXRandom.seed(645)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4898,28 +4865,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 250.76573181152344,
             accuracy: 5.015314636230469)
         let c = r + i.asImaginary()
-        let result = fftn(c, stream: .cpu)
+        let result = ifft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 5, 10])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.3406478762626648,
-            accuracy: 0.006812957525253296)
+            resultReal.mean().item(Float.self), 0.011821601539850235,
+            accuracy: 0.0002364320307970047)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 174.41171264648438,
-            accuracy: 3.4882342529296877)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 4.728640556335449,
+            accuracy: 0.09457281112670898)
+        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.10801282525062561,
-            accuracy: 0.0021602565050125124)
+            resultImaginary.mean().item(Float.self), 0.007806990761309862,
+            accuracy: 0.00015613981522619725)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 55.30256652832031,
-            accuracy: 1.1060513305664064)
+            resultImaginary.sum().item(Float.self), 3.1227962970733643,
+            accuracy: 0.06245592594146729)
     }
 
-    func testFftn_1() {
+    func testFftn_() {
         MLXRandom.seed(343)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4940,28 +4907,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 255.30624389648438,
             accuracy: 5.1061248779296875)
         let c = r + i.asImaginary()
-        let result = fftn(c, s: [3, 4], stream: .cpu)
+        let result = fftn(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 4])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.47607600688934326,
-            accuracy: 0.009521520137786866)
+            resultReal.mean().item(Float.self), 0.8467151522636414,
+            accuracy: 0.01693430304527283)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 45.70329666137695,
-            accuracy: 0.914065933227539)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
+            resultReal.sum().item(Float.self), 433.5181579589844,
+            accuracy: 8.670363159179688)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.4268122613430023,
-            accuracy: 0.008536245226860046)
+            resultImaginary.mean().item(Float.self), 0.28999343514442444,
+            accuracy: 0.005799868702888489)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 40.973976135253906,
-            accuracy: 0.8194795227050782)
+            resultImaginary.sum().item(Float.self), 148.4766387939453,
+            accuracy: 2.9695327758789065)
     }
 
-    func testFftn_2() {
+    func testFftn_1() {
         MLXRandom.seed(865)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -4982,28 +4949,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 253.7275848388672,
             accuracy: 5.074551696777344)
         let c = r + i.asImaginary()
-        let result = fftn(c, axes: [0, 2], stream: .cpu)
+        let result = fftn(c, s: [3, 4], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 3, 4])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.3889971375465393,
-            accuracy: 0.007779942750930786)
+            resultReal.mean().item(Float.self), 0.3270348012447357,
+            accuracy: 0.006540696024894714)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 199.16653442382812,
-            accuracy: 3.9833306884765625)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 31.395339965820312,
+            accuracy: 0.6279067993164062)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.4737764000892639,
-            accuracy: 0.009475528001785279)
+            resultImaginary.mean().item(Float.self), 0.4940086305141449,
+            accuracy: 0.009880172610282898)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 242.57351684570312,
-            accuracy: 4.851470336914063)
+            resultImaginary.sum().item(Float.self), 47.424827575683594,
+            accuracy: 0.9484965515136718)
     }
 
-    func testFftn_3() {
+    func testFftn_2() {
         MLXRandom.seed(194)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5024,28 +4991,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 246.45315551757812,
             accuracy: 4.929063110351563)
         let c = r + i.asImaginary()
-        let result = fftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let result = fftn(c, axes: [0, 2], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 5, 10])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.4991455674171448,
-            accuracy: 0.009982911348342895)
+            resultReal.mean().item(Float.self), 0.6415871381759644,
+            accuracy: 0.012831742763519288)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 199.65823364257812,
-            accuracy: 3.9931646728515626)
-        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
+            resultReal.sum().item(Float.self), 328.49261474609375,
+            accuracy: 6.569852294921875)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.5157737731933594,
-            accuracy: 0.010315475463867187)
+            resultImaginary.mean().item(Float.self), 0.5985268950462341,
+            accuracy: 0.011970537900924684)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 206.3095245361328,
-            accuracy: 4.1261904907226565)
+            resultImaginary.sum().item(Float.self), 306.4457702636719,
+            accuracy: 6.128915405273438)
     }
 
-    func testIfftn_() {
+    func testFftn_3() {
         MLXRandom.seed(248)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5066,28 +5033,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 257.8474426269531,
             accuracy: 5.156948852539062)
         let c = r + i.asImaginary()
-        let result = ifftn(c, stream: .cpu)
+        let result = fftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 5, 10])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.0013018902391195297,
-            accuracy: 2.6037804782390595e-05)
+            resultReal.mean().item(Float.self), 0.44054391980171204,
+            accuracy: 0.008810878396034241)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 0.6665678024291992,
-            accuracy: 0.013331356048583985)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 176.2175750732422,
+            accuracy: 3.5243515014648437)
+        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.001114223967306316,
-            accuracy: 2.2284479346126318e-05)
+            resultImaginary.mean().item(Float.self), 0.5384612679481506,
+            accuracy: 0.010769225358963012)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 0.5704826712608337,
-            accuracy: 0.011409653425216675)
+            resultImaginary.sum().item(Float.self), 215.384521484375,
+            accuracy: 4.3076904296875)
     }
 
-    func testIfftn_1() {
+    func testIfftn_() {
         MLXRandom.seed(16)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5108,28 +5075,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 255.66778564453125,
             accuracy: 5.113355712890625)
         let c = r + i.asImaginary()
-        let result = ifftn(c, s: [3, 4], stream: .cpu)
+        let result = ifftn(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 4])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.03455181047320366,
-            accuracy: 0.0006910362094640732)
+            resultReal.mean().item(Float.self), 0.000745800556614995,
+            accuracy: 1.49160111322999e-05)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 3.3169736862182617,
-            accuracy: 0.06633947372436523)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
+            resultReal.sum().item(Float.self), 0.38184988498687744,
+            accuracy: 0.007636997699737549)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.04623018205165863,
-            accuracy: 0.0009246036410331726)
+            resultImaginary.mean().item(Float.self), 0.00013762176968157291,
+            accuracy: 2.7524353936314585e-06)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 4.4380974769592285,
-            accuracy: 0.08876194953918458)
+            resultImaginary.sum().item(Float.self), 0.07046234607696533,
+            accuracy: 0.0014092469215393067)
     }
 
-    func testIfftn_2() {
+    func testIfftn_1() {
         MLXRandom.seed(749)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5150,28 +5117,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 251.43585205078125,
             accuracy: 5.028717041015625)
         let c = r + i.asImaginary()
-        let result = ifftn(c, axes: [0, 2], stream: .cpu)
+        let result = ifftn(c, s: [3, 4], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 8])
+        XCTAssertEqual(resultReal.shape, [8, 3, 4])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.009729268029332161,
-            accuracy: 0.00019458536058664322)
+            resultReal.mean().item(Float.self), 0.029997922480106354,
+            accuracy: 0.0005999584496021271)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 4.981385231018066,
-            accuracy: 0.09962770462036133)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
+            resultReal.sum().item(Float.self), 2.87980055809021,
+            accuracy: 0.0575960111618042)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 4])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.006195453926920891,
-            accuracy: 0.00012390907853841783)
+            resultImaginary.mean().item(Float.self), 0.04324401170015335,
+            accuracy: 0.0008648802340030671)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 3.172072410583496,
-            accuracy: 0.06344144821166993)
+            resultImaginary.sum().item(Float.self), 4.151424884796143,
+            accuracy: 0.08302849769592285)
     }
 
-    func testIfftn_3() {
+    func testIfftn_2() {
         MLXRandom.seed(277)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5192,28 +5159,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 250.53282165527344,
             accuracy: 5.010656433105469)
         let c = r + i.asImaginary()
-        let result = ifftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let result = ifftn(c, axes: [0, 2], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 5, 10])
+        XCTAssertEqual(resultReal.shape, [8, 8, 8])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.010853717103600502,
-            accuracy: 0.00021707434207201006)
+            resultReal.mean().item(Float.self), 0.007633390370756388,
+            accuracy: 0.00015266780741512775)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 4.341486930847168,
-            accuracy: 0.08682973861694336)
-        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
+            resultReal.sum().item(Float.self), 3.9082958698272705,
+            accuracy: 0.07816591739654541)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 8])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.011352523230016232,
-            accuracy: 0.00022705046460032465)
+            resultImaginary.mean().item(Float.self), 0.010958677157759666,
+            accuracy: 0.00021917354315519335)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 4.541009426116943,
-            accuracy: 0.09082018852233886)
+            resultImaginary.sum().item(Float.self), 5.610842704772949,
+            accuracy: 0.11221685409545899)
     }
 
-    func testRfft2_() {
+    func testIfftn_3() {
         MLXRandom.seed(119)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5234,28 +5201,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 258.79547119140625,
             accuracy: 5.175909423828125)
         let c = r + i.asImaginary()
-        let result = rfft2(c, stream: .cpu)
+        let result = ifftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 5])
+        XCTAssertEqual(resultReal.shape, [8, 5, 10])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.7667209506034851,
-            accuracy: 0.015334419012069703)
+            resultReal.mean().item(Float.self), 0.008541149087250233,
+            accuracy: 0.00017082298174500465)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 245.3507080078125,
-            accuracy: 4.90701416015625)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
+            resultReal.sum().item(Float.self), 3.416459560394287,
+            accuracy: 0.06832919120788575)
+        XCTAssertEqual(resultImaginary.shape, [8, 5, 10])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), -0.1745600402355194,
-            accuracy: -0.0034912008047103885)
+            resultImaginary.mean().item(Float.self), 0.013507889583706856,
+            accuracy: 0.00027015779167413714)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), -55.85921096801758,
-            accuracy: -1.1171842193603516)
+            resultImaginary.sum().item(Float.self), 5.40315580368042,
+            accuracy: 0.1080631160736084)
     }
 
-    func testRfft2_1() {
+    func testRfft2_() {
         MLXRandom.seed(722)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5276,28 +5243,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 255.18826293945312,
             accuracy: 5.103765258789062)
         let c = r + i.asImaginary()
-        let result = rfft2(c, s: [3, 4], stream: .cpu)
+        let result = rfft2(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 3])
+        XCTAssertEqual(resultReal.shape, [8, 8, 5])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.7137078046798706,
-            accuracy: 0.014274156093597412)
+            resultReal.mean().item(Float.self), 0.8082265853881836,
+            accuracy: 0.016164531707763673)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 51.386962890625,
-            accuracy: 1.0277392578125)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 3])
+            resultReal.sum().item(Float.self), 258.63250732421875,
+            accuracy: 5.172650146484375)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.01423428300768137,
-            accuracy: 0.0002846856601536274)
+            resultImaginary.mean().item(Float.self), 0.03572067618370056,
+            accuracy: 0.0007144135236740113)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 1.024868369102478,
-            accuracy: 0.02049736738204956)
+            resultImaginary.sum().item(Float.self), 11.43061637878418,
+            accuracy: 0.2286123275756836)
     }
 
-    func testRfft2_2() {
+    func testRfft2_1() {
         MLXRandom.seed(225)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5318,28 +5285,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 249.77439880371094,
             accuracy: 4.995487976074219)
         let c = r + i.asImaginary()
-        let result = rfft2(c, axes: [0, 2], stream: .cpu)
+        let result = rfft2(c, s: [3, 4], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 5])
+        XCTAssertEqual(resultReal.shape, [8, 3, 3])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.6888449788093567,
-            accuracy: 0.013776899576187135)
+            resultReal.mean().item(Float.self), 0.7214547991752625,
+            accuracy: 0.014429095983505249)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 220.43038940429688,
-            accuracy: 4.408607788085938)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
+            resultReal.sum().item(Float.self), 51.94474411010742,
+            accuracy: 1.0388948822021484)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 3])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.04995536431670189,
-            accuracy: 0.0009991072863340378)
+            resultImaginary.mean().item(Float.self), -0.03948277235031128,
+            accuracy: -0.0007896554470062257)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 15.985715866088867,
-            accuracy: 0.31971431732177735)
+            resultImaginary.sum().item(Float.self), -2.842759609222412,
+            accuracy: -0.05685519218444824)
     }
 
-    func testRfft2_3() {
+    func testRfft2_2() {
         MLXRandom.seed(380)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5360,28 +5327,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 251.87103271484375,
             accuracy: 5.037420654296875)
         let c = r + i.asImaginary()
-        let result = rfft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let result = rfft2(c, axes: [0, 2], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 10])
+        XCTAssertEqual(resultReal.shape, [8, 8, 5])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.7202292084693909,
-            accuracy: 0.014404584169387818)
+            resultReal.mean().item(Float.self), 0.86641925573349,
+            accuracy: 0.0173283851146698)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 172.85499572753906,
-            accuracy: 3.4570999145507812)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 10])
+            resultReal.sum().item(Float.self), 277.254150390625,
+            accuracy: 5.5450830078125)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.07359541952610016,
-            accuracy: 0.0014719083905220033)
+            resultImaginary.mean().item(Float.self), 0.006711974740028381,
+            accuracy: 0.00013423949480056762)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 17.662899017333984,
-            accuracy: 0.3532579803466797)
+            resultImaginary.sum().item(Float.self), 2.147831916809082,
+            accuracy: 0.04295663833618164)
     }
 
-    func testIrfft2_() {
+    func testRfft2_3() {
         MLXRandom.seed(813)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5402,18 +5369,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 255.34896850585938,
             accuracy: 5.1069793701171875)
         let c = r + i.asImaginary()
-        let result = irfft2(c, stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 8, 14])
-        XCTAssertEqual(result.dtype, .float32)
+        let result = rfft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let resultReal = result.realPart()
+        let resultImaginary = result.imaginaryPart()
+        XCTAssertEqual(resultReal.shape, [8, 3, 10])
+        XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.004433207679539919,
-            accuracy: 8.866415359079838e-05)
+            resultReal.mean().item(Float.self), 0.7862035036087036,
+            accuracy: 0.015724070072174072)
         XCTAssertEqual(
-            result.sum().item(Float.self), 3.972153902053833,
-            accuracy: 0.07944307804107666)
+            resultReal.sum().item(Float.self), 188.68882751464844,
+            accuracy: 3.7737765502929688)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 10])
+        XCTAssertEqual(resultImaginary.dtype, .float32)
+        XCTAssertEqual(
+            resultImaginary.mean().item(Float.self), 0.11010777205228806,
+            accuracy: 0.002202155441045761)
+        XCTAssertEqual(
+            resultImaginary.sum().item(Float.self), 26.42586326599121,
+            accuracy: 0.5285172653198242)
     }
 
-    func testIrfft2_1() {
+    func testIrfft2_() {
         MLXRandom.seed(174)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5434,18 +5411,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 262.817626953125,
             accuracy: 5.2563525390625)
         let c = r + i.asImaginary()
-        let result = irfft2(c, s: [3, 4], stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 3, 4])
+        let result = irfft2(c, stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 8, 14])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.05568484589457512,
-            accuracy: 0.0011136969178915023)
+            result.mean().item(Float.self), 0.005966233555227518,
+            accuracy: 0.00011932467110455036)
         XCTAssertEqual(
             result.sum().item(Float.self), 5.345745086669922,
             accuracy: 0.10691490173339845)
     }
 
-    func testIrfft2_2() {
+    func testIrfft2_1() {
         MLXRandom.seed(340)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5466,18 +5443,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 262.481689453125,
             accuracy: 5.2496337890625)
         let c = r + i.asImaginary()
-        let result = irfft2(c, axes: [0, 2], stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 8, 14])
+        let result = irfft2(c, s: [3, 4], stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 3, 4])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.00403842655941844,
-            accuracy: 8.07685311883688e-05)
+            result.mean().item(Float.self), 0.047055989503860474,
+            accuracy: 0.0009411197900772095)
         XCTAssertEqual(
-            result.sum().item(Float.self), 3.6184298992156982,
-            accuracy: 0.07236859798431397)
+            result.sum().item(Float.self), 4.5173749923706055,
+            accuracy: 0.09034749984741211)
     }
 
-    func testIrfft2_3() {
+    func testIrfft2_2() {
         MLXRandom.seed(436)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5498,18 +5475,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 260.3631286621094,
             accuracy: 5.207262573242188)
         let c = r + i.asImaginary()
-        let result = irfft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 5, 10])
+        let result = irfft2(c, axes: [0, 2], stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 8, 14])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.01129558403044939,
-            accuracy: 0.00022591168060898781)
+            result.mean().item(Float.self), 0.004838266409933567,
+            accuracy: 9.676532819867134e-05)
         XCTAssertEqual(
-            result.sum().item(Float.self), 4.518233776092529,
-            accuracy: 0.09036467552185058)
+            result.sum().item(Float.self), 4.335086345672607,
+            accuracy: 0.08670172691345215)
     }
 
-    func testRfftn_() {
+    func testIrfft2_3() {
         MLXRandom.seed(835)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5530,28 +5507,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 253.270263671875,
             accuracy: 5.0654052734375)
         let c = r + i.asImaginary()
-        let result = rfftn(c, stream: .cpu)
-        let resultReal = result.realPart()
-        let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 5])
-        XCTAssertEqual(resultReal.dtype, .float32)
+        let result = irfft2(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 5, 10])
+        XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.9688063859939575,
-            accuracy: 0.01937612771987915)
+            result.mean().item(Float.self), 0.013026298955082893,
+            accuracy: 0.0002605259791016579)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 310.0180358886719,
-            accuracy: 6.200360717773438)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
-        XCTAssertEqual(resultImaginary.dtype, .float32)
-        XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.1087944433093071,
-            accuracy: 0.002175888866186142)
-        XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 34.8142204284668,
-            accuracy: 0.6962844085693359)
+            result.sum().item(Float.self), 5.210519790649414,
+            accuracy: 0.10421039581298829)
     }
 
-    func testRfftn_1() {
+    func testRfftn_() {
         MLXRandom.seed(63)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5572,28 +5539,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 248.92767333984375,
             accuracy: 4.978553466796875)
         let c = r + i.asImaginary()
-        let result = rfftn(c, s: [3, 4], stream: .cpu)
+        let result = rfftn(c, stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 3])
+        XCTAssertEqual(resultReal.shape, [8, 8, 5])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.46335750818252563,
-            accuracy: 0.009267150163650513)
+            resultReal.mean().item(Float.self), 0.5379745960235596,
+            accuracy: 0.010759491920471192)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 33.36174011230469,
-            accuracy: 0.6672348022460938)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 3])
+            resultReal.sum().item(Float.self), 172.15187072753906,
+            accuracy: 3.443037414550781)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), -0.007272897753864527,
-            accuracy: -0.00014545795507729054)
+            resultImaginary.mean().item(Float.self), 0.12080971151590347,
+            accuracy: 0.0024161942303180697)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), -0.5236486196517944,
-            accuracy: -0.010472972393035889)
+            resultImaginary.sum().item(Float.self), 38.65910720825195,
+            accuracy: 0.773182144165039)
     }
 
-    func testRfftn_2() {
+    func testRfftn_1() {
         MLXRandom.seed(103)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5614,28 +5581,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 247.2552032470703,
             accuracy: 4.945104064941407)
         let c = r + i.asImaginary()
-        let result = rfftn(c, axes: [0, 2], stream: .cpu)
+        let result = rfftn(c, s: [3, 4], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 8, 5])
+        XCTAssertEqual(resultReal.shape, [8, 3, 3])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.8185403943061829,
-            accuracy: 0.016370807886123658)
+            resultReal.mean().item(Float.self), 0.5502752065658569,
+            accuracy: 0.011005504131317139)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 261.93292236328125,
-            accuracy: 5.2386584472656255)
-        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
+            resultReal.sum().item(Float.self), 39.619815826416016,
+            accuracy: 0.7923963165283203)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 3])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), 0.12567834556102753,
-            accuracy: 0.0025135669112205505)
+            resultImaginary.mean().item(Float.self), 0.025733524933457375,
+            accuracy: 0.0005146704986691475)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), 40.217071533203125,
-            accuracy: 0.8043414306640625)
+            resultImaginary.sum().item(Float.self), 1.852813720703125,
+            accuracy: 0.0370562744140625)
     }
 
-    func testRfftn_3() {
+    func testRfftn_2() {
         MLXRandom.seed(801)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5656,28 +5623,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 258.2913513183594,
             accuracy: 5.165827026367188)
         let c = r + i.asImaginary()
-        let result = rfftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let result = rfftn(c, axes: [0, 2], stream: .cpu)
         let resultReal = result.realPart()
         let resultImaginary = result.imaginaryPart()
-        XCTAssertEqual(resultReal.shape, [8, 3, 10])
+        XCTAssertEqual(resultReal.shape, [8, 8, 5])
         XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            resultReal.mean().item(Float.self), 0.907656192779541,
-            accuracy: 0.01815312385559082)
+            resultReal.mean().item(Float.self), 0.8939148187637329,
+            accuracy: 0.017878296375274657)
         XCTAssertEqual(
-            resultReal.sum().item(Float.self), 217.8374786376953,
-            accuracy: 4.356749572753906)
-        XCTAssertEqual(resultImaginary.shape, [8, 3, 10])
+            resultReal.sum().item(Float.self), 286.052734375,
+            accuracy: 5.7210546875)
+        XCTAssertEqual(resultImaginary.shape, [8, 8, 5])
         XCTAssertEqual(resultImaginary.dtype, .float32)
         XCTAssertEqual(
-            resultImaginary.mean().item(Float.self), -0.0713878720998764,
-            accuracy: -0.0014277574419975282)
+            resultImaginary.mean().item(Float.self), -0.05308229848742485,
+            accuracy: -0.001061645969748497)
         XCTAssertEqual(
-            resultImaginary.sum().item(Float.self), -17.133089065551758,
-            accuracy: -0.34266178131103514)
+            resultImaginary.sum().item(Float.self), -16.98633575439453,
+            accuracy: -0.33972671508789065)
     }
 
-    func testIrfftn_() {
+    func testRfftn_3() {
         MLXRandom.seed(149)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5698,18 +5665,28 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 253.41595458984375,
             accuracy: 5.068319091796875)
         let c = r + i.asImaginary()
-        let result = irfftn(c, stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 8, 14])
-        XCTAssertEqual(result.dtype, .float32)
+        let result = rfftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
+        let resultReal = result.realPart()
+        let resultImaginary = result.imaginaryPart()
+        XCTAssertEqual(resultReal.shape, [8, 3, 10])
+        XCTAssertEqual(resultReal.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.00016006881196517497,
-            accuracy: 3.2013762393034994e-06)
+            resultReal.mean().item(Float.self), 0.7501934170722961,
+            accuracy: 0.015003868341445924)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.14342164993286133,
-            accuracy: 0.0028684329986572265)
+            resultReal.sum().item(Float.self), 180.04641723632812,
+            accuracy: 3.6009283447265625)
+        XCTAssertEqual(resultImaginary.shape, [8, 3, 10])
+        XCTAssertEqual(resultImaginary.dtype, .float32)
+        XCTAssertEqual(
+            resultImaginary.mean().item(Float.self), -0.039641283452510834,
+            accuracy: -0.0007928256690502167)
+        XCTAssertEqual(
+            resultImaginary.sum().item(Float.self), -9.513907432556152,
+            accuracy: -0.19027814865112305)
     }
 
-    func testIrfftn_1() {
+    func testIrfftn_() {
         MLXRandom.seed(875)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5730,18 +5707,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 256.13421630859375,
             accuracy: 5.122684326171875)
         let c = r + i.asImaginary()
-        let result = irfftn(c, s: [3, 4], stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 3, 4])
+        let result = irfftn(c, stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 8, 14])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.03406701982021332,
-            accuracy: 0.0006813403964042664)
+            result.mean().item(Float.self), 9.236017649527639e-05,
+            accuracy: 1.8472035299055278e-06)
         XCTAssertEqual(
-            result.sum().item(Float.self), 3.2704339027404785,
-            accuracy: 0.06540867805480957)
+            result.sum().item(Float.self), 0.0827547162771225,
+            accuracy: 0.00165509432554245)
     }
 
-    func testIrfftn_2() {
+    func testIrfftn_1() {
         MLXRandom.seed(714)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5762,18 +5739,18 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 263.08154296875,
             accuracy: 5.261630859375)
         let c = r + i.asImaginary()
-        let result = irfftn(c, axes: [0, 2], stream: .cpu)
-        XCTAssertEqual(result.shape, [8, 8, 14])
+        let result = irfftn(c, s: [3, 4], stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 3, 4])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.0031077044550329447,
-            accuracy: 6.21540891006589e-05)
+            result.mean().item(Float.self), 0.041039690375328064,
+            accuracy: 0.0008207938075065613)
         XCTAssertEqual(
-            result.sum().item(Float.self), 2.7845029830932617,
-            accuracy: 0.055690059661865236)
+            result.sum().item(Float.self), 3.939810276031494,
+            accuracy: 0.07879620552062988)
     }
 
-    func testIrfftn_3() {
+    func testIrfftn_2() {
         MLXRandom.seed(224)
         let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
         XCTAssertEqual(r.shape, [8, 8, 8])
@@ -5794,51 +5771,50 @@ class MLXIntegrationTests: XCTestCase {
             i.sum().item(Float.self), 253.32447814941406,
             accuracy: 5.066489562988282)
         let c = r + i.asImaginary()
+        let result = irfftn(c, axes: [0, 2], stream: .cpu)
+        XCTAssertEqual(result.shape, [8, 8, 14])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.00553929852321744,
+            accuracy: 0.00011078597046434879)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 4.9632110595703125,
+            accuracy: 0.09926422119140625)
+    }
+
+    func testIrfftn_3() {
+        MLXRandom.seed(46)
+        let r = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
+        XCTAssertEqual(r.shape, [8, 8, 8])
+        XCTAssertEqual(r.dtype, .float32)
+        XCTAssertEqual(
+            r.mean().item(Float.self), 0.5066219568252563,
+            accuracy: 0.010132439136505127)
+        XCTAssertEqual(
+            r.sum().item(Float.self), 259.39044189453125,
+            accuracy: 5.187808837890625)
+        let i = MLXRandom.uniform(0.0 ..< 1.0, [8, 8, 8])
+        XCTAssertEqual(i.shape, [8, 8, 8])
+        XCTAssertEqual(i.dtype, .float32)
+        XCTAssertEqual(
+            i.mean().item(Float.self), 0.5006622076034546,
+            accuracy: 0.010013244152069093)
+        XCTAssertEqual(
+            i.sum().item(Float.self), 256.33905029296875,
+            accuracy: 5.1267810058593755)
+        let c = r + i.asImaginary()
         let result = irfftn(c, s: [10, 5], axes: [2, 1], stream: .cpu)
         XCTAssertEqual(result.shape, [8, 5, 10])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.01100881863385439,
-            accuracy: 0.0002201763726770878)
+            result.mean().item(Float.self), 0.010128638707101345,
+            accuracy: 0.00020257277414202692)
         XCTAssertEqual(
-            result.sum().item(Float.self), 4.403527736663818,
-            accuracy: 0.08807055473327637)
+            result.sum().item(Float.self), 4.051455497741699,
+            accuracy: 0.08102910995483399)
     }
 
     func testSGD() {
-        MLXRandom.seed(46)
-        let a = MLXRandom.normal([4, 3])
-        XCTAssertEqual(a.shape, [4, 3])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.04528568685054779,
-            accuracy: 0.0009057137370109558)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 0.5434282422065735,
-            accuracy: 0.01086856484413147)
-        let aGrad = MLXRandom.normal([4, 3])
-        XCTAssertEqual(aGrad.shape, [4, 3])
-        XCTAssertEqual(aGrad.dtype, .float32)
-        XCTAssertEqual(
-            aGrad.mean().item(Float.self), -0.3039197623729706,
-            accuracy: -0.006078395247459412)
-        XCTAssertEqual(
-            aGrad.sum().item(Float.self), -3.6470370292663574,
-            accuracy: -0.07294074058532715)
-        let aModel = ModuleParameters(values: ["a": .value(a)])
-        let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = SGD(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
-        XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
-        XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
-        XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), 0.07567766308784485,
-            accuracy: 0.001513553261756897)
-        XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), 0.9081318974494934,
-            accuracy: 0.018162637948989868)
-    }
-
-    func testSGD1() {
         MLXRandom.seed(836)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -5860,8 +5836,7 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.022383363246917726)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = SGD(learningRate: 0.1, momentum: 0.1).apply(
-            gradients: aGradParams, modelParameters: aModel)
+        let result = SGD(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
@@ -5872,7 +5847,7 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.01575117826461792)
     }
 
-    func testSGD2() {
+    func testSGD1() {
         MLXRandom.seed(587)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -5894,7 +5869,7 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: -0.07725746631622314)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = SGD(learningRate: 0.1, momentum: 0.1, dampening: 0.1).apply(
+        let result = SGD(learningRate: 0.1, momentum: 0.1).apply(
             gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
@@ -5906,7 +5881,7 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: -0.018069093227386476)
     }
 
-    func testRMSprop() {
+    func testSGD2() {
         MLXRandom.seed(649)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -5928,19 +5903,19 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.016169002056121828)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = RMSprop(learningRate: 0.1).apply(
+        let result = SGD(learningRate: 0.1, momentum: 0.1, dampening: 0.1).apply(
             gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), 0.7766839265823364,
-            accuracy: 0.015533678531646729)
+            result[unwrapping: "a"]!.mean().item(Float.self), 0.7706205248832703,
+            accuracy: 0.015412410497665405)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), 9.320206642150879,
-            accuracy: 0.18640413284301757)
+            result[unwrapping: "a"]!.sum().item(Float.self), 9.247446060180664,
+            accuracy: 0.18494892120361328)
     }
 
-    func testAdagrad() {
+    func testRMSprop() {
         MLXRandom.seed(931)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -5962,19 +5937,19 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.05967716217041016)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = AdaGrad(learningRate: 0.1).apply(
+        let result = RMSprop(learningRate: 0.1).apply(
             gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.22450897097587585,
-            accuracy: -0.0044901794195175175)
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.22450922429561615,
+            accuracy: -0.004490184485912323)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -2.6941075325012207,
-            accuracy: -0.05388215065002441)
+            result[unwrapping: "a"]!.sum().item(Float.self), -2.694110631942749,
+            accuracy: -0.05388221263885498)
     }
 
-    func testAdaDelta() {
+    func testAdagrad() {
         MLXRandom.seed(958)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -5996,19 +5971,19 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.05580094337463379)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = AdaDelta(learningRate: 0.1).apply(
+        let result = AdaGrad(learningRate: 0.1).apply(
             gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.04589603468775749,
-            accuracy: -0.0009179206937551498)
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.06250998377799988,
+            accuracy: -0.0012501996755599975)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -0.5507524013519287,
-            accuracy: -0.011015048027038574)
+            result[unwrapping: "a"]!.sum().item(Float.self), -0.7501198053359985,
+            accuracy: -0.01500239610671997)
     }
 
-    func testAdam() {
+    func testAdaDelta() {
         MLXRandom.seed(547)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6030,18 +6005,19 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.12544280052185058)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = Adam(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
+        let result = AdaDelta(learningRate: 0.1).apply(
+            gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.3816703259944916,
-            accuracy: -0.007633406519889831)
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.348442405462265,
+            accuracy: -0.0069688481092453)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -4.580043792724609,
-            accuracy: -0.09160087585449218)
+            result[unwrapping: "a"]!.sum().item(Float.self), -4.181308746337891,
+            accuracy: -0.08362617492675782)
     }
 
-    func testAdamW() {
+    func testAdam() {
         MLXRandom.seed(616)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6063,18 +6039,18 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.0733434534072876)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = AdamW(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
+        let result = Adam(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), 0.11218076944351196,
-            accuracy: 0.0022436153888702394)
+            result[unwrapping: "a"]!.mean().item(Float.self), 0.11229278147220612,
+            accuracy: 0.0022458556294441224)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), 1.3461692333221436,
-            accuracy: 0.02692338466644287)
+            result[unwrapping: "a"]!.sum().item(Float.self), 1.3475133180618286,
+            accuracy: 0.026950266361236572)
     }
 
-    func testAdamax() {
+    func testAdamW() {
         MLXRandom.seed(696)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6096,19 +6072,18 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.05322107315063477)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = Adamax(learningRate: 0.1).apply(
-            gradients: aGradParams, modelParameters: aModel)
+        let result = AdamW(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.36672520637512207,
-            accuracy: -0.007334504127502441)
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.4684376120567322,
+            accuracy: -0.009368752241134645)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -4.400702476501465,
-            accuracy: -0.0880140495300293)
+            result[unwrapping: "a"]!.sum().item(Float.self), -5.621251106262207,
+            accuracy: -0.11242502212524415)
     }
 
-    func testLion() {
+    func testAdamax() {
         MLXRandom.seed(75)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6130,18 +6105,19 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: -0.05825213432312012)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = Lion(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
+        let result = Adamax(learningRate: 0.1).apply(
+            gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.303923636674881,
-            accuracy: -0.00607847273349762)
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.3039236068725586,
+            accuracy: -0.006078472137451172)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -3.6470835208892822,
-            accuracy: -0.07294167041778564)
+            result[unwrapping: "a"]!.sum().item(Float.self), -3.647083282470703,
+            accuracy: -0.07294166564941407)
     }
 
-    func testLion1() {
+    func testLion() {
         MLXRandom.seed(27)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6163,19 +6139,18 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: -0.005084936618804932)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = Lion(learningRate: 0.1, weightDecay: 0.1).apply(
-            gradients: aGradParams, modelParameters: aModel)
+        let result = Lion(learningRate: 0.1).apply(gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), 0.2092486470937729,
-            accuracy: 0.004184972941875458)
+            result[unwrapping: "a"]!.mean().item(Float.self), 0.21102556586265564,
+            accuracy: 0.004220511317253113)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), 2.51098370552063,
-            accuracy: 0.0502196741104126)
+            result[unwrapping: "a"]!.sum().item(Float.self), 2.532306671142578,
+            accuracy: 0.05064613342285156)
     }
 
-    func testAdafactor() {
+    func testLion1() {
         MLXRandom.seed(127)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6197,19 +6172,19 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: -0.008640961647033691)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
-        let result = Adafactor(learningRate: 0.1).apply(
+        let result = Lion(learningRate: 0.1, weightDecay: 0.1).apply(
             gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.1855461299419403,
-            accuracy: -0.0037109225988388064)
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.18276450037956238,
+            accuracy: -0.003655290007591248)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -2.226553440093994,
-            accuracy: -0.04453106880187988)
+            result[unwrapping: "a"]!.sum().item(Float.self), -2.193173885345459,
+            accuracy: -0.04386347770690918)
     }
 
-    func testAdafactor1() {
+    func testAdafactor() {
         MLXRandom.seed(650)
         let a = MLXRandom.normal([4, 3])
         XCTAssertEqual(a.shape, [4, 3])
@@ -6231,38 +6206,72 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 0.10399287223815919)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
+        let result = Adafactor(learningRate: 0.1).apply(
+            gradients: aGradParams, modelParameters: aModel)
+        XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
+        XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
+        XCTAssertEqual(
+            result[unwrapping: "a"]!.mean().item(Float.self), -0.5268284678459167,
+            accuracy: -0.010536569356918336)
+        XCTAssertEqual(
+            result[unwrapping: "a"]!.sum().item(Float.self), -6.321941375732422,
+            accuracy: -0.12643882751464844)
+    }
+
+    func testAdafactor1() {
+        MLXRandom.seed(193)
+        let a = MLXRandom.normal([4, 3])
+        XCTAssertEqual(a.shape, [4, 3])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4008181691169739,
+            accuracy: 0.008016363382339478)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 4.809817790985107,
+            accuracy: 0.09619635581970215)
+        let aGrad = MLXRandom.normal([4, 3])
+        XCTAssertEqual(aGrad.shape, [4, 3])
+        XCTAssertEqual(aGrad.dtype, .float32)
+        XCTAssertEqual(
+            aGrad.mean().item(Float.self), 0.21447472274303436,
+            accuracy: 0.004289494454860688)
+        XCTAssertEqual(
+            aGrad.sum().item(Float.self), 2.5736966133117676,
+            accuracy: 0.05147393226623535)
+        let aModel = ModuleParameters(values: ["a": .value(a)])
+        let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
         let result = Adafactor(learningRate: 0.1, beta1: 0.1).apply(
             gradients: aGradParams, modelParameters: aModel)
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [4, 3])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), -0.526216983795166,
-            accuracy: -0.01052433967590332)
+            result[unwrapping: "a"]!.mean().item(Float.self), 0.39943069219589233,
+            accuracy: 0.007988613843917847)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), -6.314603805541992,
-            accuracy: -0.12629207611083984)
+            result[unwrapping: "a"]!.sum().item(Float.self), 4.793168067932129,
+            accuracy: 0.09586336135864258)
     }
 
     func testAdafactor2() {
-        MLXRandom.seed(193)
+        MLXRandom.seed(620)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [10])
         XCTAssertEqual(a.shape, [10])
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(
-            a.mean().item(Float.self), 0.4277171194553375,
-            accuracy: 0.008554342389106752)
+            a.mean().item(Float.self), 0.4890245497226715,
+            accuracy: 0.00978049099445343)
         XCTAssertEqual(
-            a.sum().item(Float.self), 4.2771711349487305,
-            accuracy: 0.08554342269897461)
+            a.sum().item(Float.self), 4.89024543762207,
+            accuracy: 0.09780490875244141)
         let aGrad = MLXRandom.uniform(0.0 ..< 1.0, [10])
         XCTAssertEqual(aGrad.shape, [10])
         XCTAssertEqual(aGrad.dtype, .float32)
         XCTAssertEqual(
-            aGrad.mean().item(Float.self), 0.5291318297386169,
-            accuracy: 0.010582636594772338)
+            aGrad.mean().item(Float.self), 0.6818901896476746,
+            accuracy: 0.013637803792953491)
         XCTAssertEqual(
-            aGrad.sum().item(Float.self), 5.291317939758301,
-            accuracy: 0.10582635879516601)
+            aGrad.sum().item(Float.self), 6.818902015686035,
+            accuracy: 0.1363780403137207)
         let aModel = ModuleParameters(values: ["a": .value(a)])
         let aGradParams = ModuleParameters(values: ["a": .value(aGrad)])
         let result = Adafactor(learningRate: 0.1).apply(
@@ -6270,36 +6279,14 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result[unwrapping: "a"]!.shape, [10])
         XCTAssertEqual(result[unwrapping: "a"]!.dtype, .float32)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.mean().item(Float.self), 0.4227916896343231,
-            accuracy: 0.008455833792686463)
+            result[unwrapping: "a"]!.mean().item(Float.self), 0.4835330545902252,
+            accuracy: 0.009670661091804504)
         XCTAssertEqual(
-            result[unwrapping: "a"]!.sum().item(Float.self), 4.227916717529297,
-            accuracy: 0.08455833435058593)
+            result[unwrapping: "a"]!.sum().item(Float.self), 4.835330486297607,
+            accuracy: 0.09670660972595214)
     }
 
     func testGLU() {
-        MLXRandom.seed(620)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
-        XCTAssertEqual(a.shape, [2, 8, 16])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4667481780052185,
-            accuracy: 0.00933496356010437)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 119.48753356933594,
-            accuracy: 2.389750671386719)
-        let result = GLU()(a)
-        XCTAssertEqual(result.shape, [2, 8, 8])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.2931130528450012,
-            accuracy: 0.005862261056900024)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 37.518470764160156,
-            accuracy: 0.7503694152832031)
-    }
-
-    func testSigmoid1() {
         MLXRandom.seed(850)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6310,18 +6297,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 140.0966796875,
             accuracy: 2.80193359375)
-        let result = Sigmoid()(a)
-        XCTAssertEqual(result.shape, [2, 8, 16])
+        let result = GLU()(a)
+        XCTAssertEqual(result.shape, [2, 8, 8])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.6309544444084167,
-            accuracy: 0.012619088888168335)
+            result.mean().item(Float.self), 0.33327674865722656,
+            accuracy: 0.006665534973144531)
         XCTAssertEqual(
-            result.sum().item(Float.self), 161.5243377685547,
-            accuracy: 3.2304867553710936)
+            result.sum().item(Float.self), 42.659423828125,
+            accuracy: 0.8531884765625)
     }
 
-    func testMish() {
+    func testSigmoid1() {
         MLXRandom.seed(589)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6332,18 +6319,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 135.6026611328125,
             accuracy: 2.71205322265625)
-        let result = Mish()(a)
+        let result = Sigmoid()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.4196430444717407,
-            accuracy: 0.008392860889434814)
+            result.mean().item(Float.self), 0.6270139813423157,
+            accuracy: 0.012540279626846314)
         XCTAssertEqual(
-            result.sum().item(Float.self), 107.42861938476562,
-            accuracy: 2.1485723876953124)
+            result.sum().item(Float.self), 160.5155792236328,
+            accuracy: 3.2103115844726564)
     }
 
-    func testReLU() {
+    func testMish() {
         MLXRandom.seed(122)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6354,18 +6341,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 128.4402618408203,
             accuracy: 2.5688052368164063)
-        let result = ReLU()(a)
+        let result = Mish()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.5017197728157043,
-            accuracy: 0.010034395456314087)
+            result.mean().item(Float.self), 0.39537572860717773,
+            accuracy: 0.007907514572143556)
         XCTAssertEqual(
-            result.sum().item(Float.self), 128.4402618408203,
-            accuracy: 2.5688052368164063)
+            result.sum().item(Float.self), 101.2161865234375,
+            accuracy: 2.0243237304687502)
     }
 
-    func testLeakyReLU() {
+    func testReLU() {
         MLXRandom.seed(400)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6376,7 +6363,7 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 122.45062255859375,
             accuracy: 2.449012451171875)
-        let result = LeakyReLU()(a)
+        let result = ReLU()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
@@ -6387,7 +6374,7 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 2.449012451171875)
     }
 
-    func testReLU6() {
+    func testLeakyReLU() {
         MLXRandom.seed(93)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6398,7 +6385,7 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 127.98225402832031,
             accuracy: 2.559645080566406)
-        let result = ReLU6()(a)
+        let result = LeakyReLU()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
@@ -6409,7 +6396,7 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 2.559645080566406)
     }
 
-    func testSoftmax() {
+    func testReLU6() {
         MLXRandom.seed(379)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6420,18 +6407,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 126.27421569824219,
             accuracy: 2.525484313964844)
-        let result = SoftMax()(a)
+        let result = ReLU6()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.0625,
-            accuracy: 0.00125)
+            result.mean().item(Float.self), 0.49325865507125854,
+            accuracy: 0.009865173101425172)
         XCTAssertEqual(
-            result.sum().item(Float.self), 16.0,
-            accuracy: 0.32)
+            result.sum().item(Float.self), 126.27421569824219,
+            accuracy: 2.525484313964844)
     }
 
-    func testSoftplus() {
+    func testSoftmax() {
         MLXRandom.seed(853)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6442,18 +6429,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 131.68545532226562,
             accuracy: 2.6337091064453126)
-        let result = SoftPlus()(a)
+        let result = SoftMax()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.9923473596572876,
-            accuracy: 0.019846947193145753)
+            result.mean().item(Float.self), 0.0624999962747097,
+            accuracy: 0.001249999925494194)
         XCTAssertEqual(
-            result.sum().item(Float.self), 254.04092407226562,
-            accuracy: 5.080818481445313)
+            result.sum().item(Float.self), 15.999999046325684,
+            accuracy: 0.31999998092651366)
     }
 
-    func testSoftsign() {
+    func testSoftplus() {
         MLXRandom.seed(118)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6464,18 +6451,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 127.73924255371094,
             accuracy: 2.554784851074219)
-        let result = SoftSign()(a)
+        let result = SoftPlus()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.3073887825012207,
-            accuracy: 0.006147775650024414)
+            result.mean().item(Float.self), 0.982857882976532,
+            accuracy: 0.01965715765953064)
         XCTAssertEqual(
-            result.sum().item(Float.self), 78.6915283203125,
-            accuracy: 1.57383056640625)
+            result.sum().item(Float.self), 251.6116180419922,
+            accuracy: 5.032232360839844)
     }
 
-    func testCELU() {
+    func testSoftsign() {
         MLXRandom.seed(37)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6486,18 +6473,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 129.6771240234375,
             accuracy: 2.59354248046875)
-        let result = CELU()(a)
+        let result = SoftSign()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.5065512657165527,
-            accuracy: 0.010131025314331054)
+            result.mean().item(Float.self), 0.314089834690094,
+            accuracy: 0.00628179669380188)
         XCTAssertEqual(
-            result.sum().item(Float.self), 129.6771240234375,
-            accuracy: 2.59354248046875)
+            result.sum().item(Float.self), 80.40699768066406,
+            accuracy: 1.6081399536132812)
     }
 
-    func testSiLU() {
+    func testCELU() {
         MLXRandom.seed(620)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6508,18 +6495,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 119.48753356933594,
             accuracy: 2.389750671386719)
-        let result = SiLU()(a)
+        let result = CELU()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.30425208806991577,
-            accuracy: 0.006085041761398315)
+            result.mean().item(Float.self), 0.4667481780052185,
+            accuracy: 0.00933496356010437)
         XCTAssertEqual(
-            result.sum().item(Float.self), 77.88853454589844,
-            accuracy: 1.5577706909179687)
+            result.sum().item(Float.self), 119.48753356933594,
+            accuracy: 2.389750671386719)
     }
 
-    func testLogSoftmax() {
+    func testSiLU() {
         MLXRandom.seed(22)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6530,18 +6517,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 128.76046752929688,
             accuracy: 2.5752093505859377)
-        let result = LogSoftMax()(a)
+        let result = SiLU()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -2.8123879432678223,
-            accuracy: -0.05624775886535645)
+            result.mean().item(Float.self), 0.3319709300994873,
+            accuracy: 0.0066394186019897465)
         XCTAssertEqual(
-            result.sum().item(Float.self), -719.9713134765625,
-            accuracy: -14.39942626953125)
+            result.sum().item(Float.self), 84.98455810546875,
+            accuracy: 1.699691162109375)
     }
 
-    func testLogSigmoid() {
+    func testLogSoftmax() {
         MLXRandom.seed(199)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6552,18 +6539,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 135.12799072265625,
             accuracy: 2.702559814453125)
-        let result = LogSigmoid()(a)
+        let result = LogSoftMax()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.473541796207428,
-            accuracy: -0.00947083592414856)
+            result.mean().item(Float.self), -2.8109545707702637,
+            accuracy: -0.05621909141540527)
         XCTAssertEqual(
-            result.sum().item(Float.self), -121.22669982910156,
-            accuracy: -2.4245339965820314)
+            result.sum().item(Float.self), -719.6043701171875,
+            accuracy: -14.39208740234375)
     }
 
-    func testPReLU() {
+    func testLogSigmoid() {
         MLXRandom.seed(984)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6574,18 +6561,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 130.81028747558594,
             accuracy: 2.616205749511719)
-        let result = PReLU()(a)
+        let result = LogSigmoid()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.5109776854515076,
-            accuracy: 0.010219553709030152)
+            result.mean().item(Float.self), -0.47959864139556885,
+            accuracy: -0.009591972827911377)
         XCTAssertEqual(
-            result.sum().item(Float.self), 130.81028747558594,
-            accuracy: 2.616205749511719)
+            result.sum().item(Float.self), -122.77725219726562,
+            accuracy: -2.4555450439453126)
     }
 
-    func testGELU() {
+    func testPReLU() {
         MLXRandom.seed(993)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6596,18 +6583,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 127.14276885986328,
             accuracy: 2.5428553771972657)
-        let result = GELU()(a)
+        let result = PReLU()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.36863499879837036,
-            accuracy: 0.0073726999759674075)
+            result.mean().item(Float.self), 0.49665144085884094,
+            accuracy: 0.00993302881717682)
         XCTAssertEqual(
-            result.sum().item(Float.self), 94.37055969238281,
-            accuracy: 1.8874111938476563)
+            result.sum().item(Float.self), 127.14276885986328,
+            accuracy: 2.5428553771972657)
     }
 
-    func testTanh1() {
+    func testGELU() {
         MLXRandom.seed(189)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6618,18 +6605,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 126.19528198242188,
             accuracy: 2.5239056396484374)
-        let result = Tanh()(a)
+        let result = GELU()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.42792606353759766,
-            accuracy: 0.008558521270751953)
+            result.mean().item(Float.self), 0.3656384348869324,
+            accuracy: 0.007312768697738648)
         XCTAssertEqual(
-            result.sum().item(Float.self), 109.549072265625,
-            accuracy: 2.1909814453125)
+            result.sum().item(Float.self), 93.60343933105469,
+            accuracy: 1.8720687866210939)
     }
 
-    func testHardswish() {
+    func testTanh1() {
         MLXRandom.seed(735)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6640,18 +6627,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 121.37541198730469,
             accuracy: 2.4275082397460936)
-        let result = HardSwish()(a)
+        let result = Tanh()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.28867530822753906,
-            accuracy: 0.005773506164550781)
+            result.mean().item(Float.self), 0.4130796790122986,
+            accuracy: 0.008261593580245972)
         XCTAssertEqual(
-            result.sum().item(Float.self), 73.90087890625,
-            accuracy: 1.478017578125)
+            result.sum().item(Float.self), 105.74839782714844,
+            accuracy: 2.114967956542969)
     }
 
-    func testStep() {
+    func testHardswish() {
         MLXRandom.seed(126)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6662,6 +6649,28 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 125.92446899414062,
             accuracy: 2.5184893798828125)
+        let result = HardSwish()(a)
+        XCTAssertEqual(result.shape, [2, 8, 16])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.2996022403240204,
+            accuracy: 0.005992044806480408)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 76.69817352294922,
+            accuracy: 1.5339634704589844)
+    }
+
+    func testStep() {
+        MLXRandom.seed(490)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
+        XCTAssertEqual(a.shape, [2, 8, 16])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.4793606400489807,
+            accuracy: 0.009587212800979614)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 122.71632385253906,
+            accuracy: 2.454326477050781)
         let result = Step()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .int32)
@@ -6674,28 +6683,6 @@ class MLXIntegrationTests: XCTestCase {
     }
 
     func testSELU() {
-        MLXRandom.seed(490)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
-        XCTAssertEqual(a.shape, [2, 8, 16])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.4793606400489807,
-            accuracy: 0.009587212800979614)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 122.71632385253906,
-            accuracy: 2.454326477050781)
-        let result = SELU()(a)
-        XCTAssertEqual(result.shape, [2, 8, 16])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5036641359329224,
-            accuracy: 0.010073282718658448)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 128.93801879882812,
-            accuracy: 2.5787603759765627)
-    }
-
-    func testLinear() {
         MLXRandom.seed(215)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6706,18 +6693,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 126.21485900878906,
             accuracy: 2.524297180175781)
-        let result = Linear(16, 5)(a)
-        XCTAssertEqual(result.shape, [2, 8, 5])
+        let result = SELU()(a)
+        XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.20422397553920746,
-            accuracy: 0.00408447951078415)
+            result.mean().item(Float.self), 0.5180231928825378,
+            accuracy: 0.010360463857650756)
         XCTAssertEqual(
-            result.sum().item(Float.self), 16.33791732788086,
-            accuracy: 0.3267583465576172)
+            result.sum().item(Float.self), 132.6139373779297,
+            accuracy: 2.6522787475585936)
     }
 
-    func testConv1d1() {
+    func testLinear() {
         MLXRandom.seed(744)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6728,62 +6715,62 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 130.22427368164062,
             accuracy: 2.6044854736328125)
-        let result = Conv1d(inputChannels: 16, outputChannels: 2, kernelSize: 8)(a)
-        XCTAssertEqual(result.shape, [2, 1, 2])
+        let result = Linear(16, 5)(a)
+        XCTAssertEqual(result.shape, [2, 8, 5])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.05025433003902435,
-            accuracy: 0.001005086600780487)
+            result.mean().item(Float.self), 0.10419309139251709,
+            accuracy: 0.002083861827850342)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.2010173201560974,
-            accuracy: 0.004020346403121948)
+            result.sum().item(Float.self), 8.335447311401367,
+            accuracy: 0.16670894622802734)
     }
 
-    func testConv2d1() {
+    func testConv1d1() {
         MLXRandom.seed(819)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 8, 4])
-        XCTAssertEqual(a.shape, [2, 8, 8, 4])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.49545639753341675,
-            accuracy: 0.009909127950668336)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 253.67367553710938,
-            accuracy: 5.073473510742188)
-        let result = Conv2d(inputChannels: 4, outputChannels: 2, kernelSize: 8)(a)
-        XCTAssertEqual(result.shape, [2, 1, 1, 2])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), -0.5255705714225769,
-            accuracy: -0.010511411428451538)
-        XCTAssertEqual(
-            result.sum().item(Float.self), -2.1022822856903076,
-            accuracy: -0.04204564571380615)
-    }
-
-    func testDropout() {
-        MLXRandom.seed(62)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(
-            a.mean().item(Float.self), 0.490646630525589,
-            accuracy: 0.00981293261051178)
+            a.mean().item(Float.self), 0.512987494468689,
+            accuracy: 0.01025974988937378)
         XCTAssertEqual(
-            a.sum().item(Float.self), 125.60553741455078,
-            accuracy: 2.5121107482910157)
-        let result = Dropout()(a)
-        XCTAssertEqual(result.shape, [2, 8, 16])
+            a.sum().item(Float.self), 131.32479858398438,
+            accuracy: 2.6264959716796876)
+        let result = Conv1d(inputChannels: 16, outputChannels: 2, kernelSize: 8)(a)
+        XCTAssertEqual(result.shape, [2, 1, 2])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.5042853355407715,
-            accuracy: 0.01008570671081543)
+            result.mean().item(Float.self), 0.2648651897907257,
+            accuracy: 0.005297303795814514)
         XCTAssertEqual(
-            result.sum().item(Float.self), 129.0970458984375,
-            accuracy: 2.5819409179687502)
+            result.sum().item(Float.self), 1.0594607591629028,
+            accuracy: 0.021189215183258055)
     }
 
-    func testDropout2d() {
+    func testConv2d1() {
+        MLXRandom.seed(62)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 8, 4])
+        XCTAssertEqual(a.shape, [2, 8, 8, 4])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5225042700767517,
+            accuracy: 0.010450085401535034)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 267.5221862792969,
+            accuracy: 5.350443725585937)
+        let result = Conv2d(inputChannels: 4, outputChannels: 2, kernelSize: 8)(a)
+        XCTAssertEqual(result.shape, [2, 1, 1, 2])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.27932149171829224,
+            accuracy: -0.005586429834365845)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -1.117285966873169,
+            accuracy: -0.02234571933746338)
+    }
+
+    func testDropout() {
         MLXRandom.seed(959)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6794,84 +6781,84 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 130.92587280273438,
             accuracy: 2.6185174560546876)
-        let result = Dropout2d()(a)
+        let result = Dropout()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.5483106374740601,
-            accuracy: 0.0109662127494812)
+            result.mean().item(Float.self), 0.47791361808776855,
+            accuracy: 0.009558272361755372)
         XCTAssertEqual(
-            result.sum().item(Float.self), 140.36752319335938,
-            accuracy: 2.8073504638671873)
+            result.sum().item(Float.self), 122.34588623046875,
+            accuracy: 2.446917724609375)
     }
 
-    func testDropout3d() {
+    func testDropout2d() {
         MLXRandom.seed(695)
-        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 8, 4])
-        XCTAssertEqual(a.shape, [2, 8, 8, 4])
-        XCTAssertEqual(a.dtype, .float32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 0.49696213006973267,
-            accuracy: 0.009939242601394654)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 254.44461059570312,
-            accuracy: 5.088892211914063)
-        let result = Dropout3d()(a)
-        XCTAssertEqual(result.shape, [2, 8, 8, 4])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.5081886053085327,
-            accuracy: 0.010163772106170655)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 260.19256591796875,
-            accuracy: 5.2038513183593755)
-    }
-
-    func testEmbedding() {
-        MLXRandom.seed(23)
-        let a = MLXRandom.randInt(low: 0, high: 10, [2, 8, 8, 4])
-        XCTAssertEqual(a.shape, [2, 8, 8, 4])
-        XCTAssertEqual(a.dtype, .int32)
-        XCTAssertEqual(
-            a.mean().item(Float.self), 4.50390625,
-            accuracy: 0.090078125)
-        XCTAssertEqual(
-            a.sum().item(Float.self), 2306,
-            accuracy: 46.12)
-        let result = Embedding(embeddingCount: 10, dimensions: 8)(a)
-        XCTAssertEqual(result.shape, [2, 8, 8, 4, 8])
-        XCTAssertEqual(result.dtype, .float32)
-        XCTAssertEqual(
-            result.mean().item(Float.self), 0.060480039566755295,
-            accuracy: 0.0012096007913351059)
-        XCTAssertEqual(
-            result.sum().item(Float.self), 247.7262420654297,
-            accuracy: 4.954524841308594)
-    }
-
-    func testInstanceNorm() {
-        MLXRandom.seed(557)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
         XCTAssertEqual(a.dtype, .float32)
         XCTAssertEqual(
-            a.mean().item(Float.self), 0.4883057475090027,
-            accuracy: 0.009766114950180054)
+            a.mean().item(Float.self), 0.4578399062156677,
+            accuracy: 0.009156798124313355)
         XCTAssertEqual(
-            a.sum().item(Float.self), 125.00627136230469,
-            accuracy: 2.5001254272460938)
-        let result = InstanceNorm(dimensions: 8)(a)[0, 0]
-        XCTAssertEqual(result.shape, [16])
+            a.sum().item(Float.self), 117.20701599121094,
+            accuracy: 2.344140319824219)
+        let result = Dropout2d()(a)
+        XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.027962476015090942,
-            accuracy: 0.0005592495203018188)
+            result.mean().item(Float.self), 0.36828434467315674,
+            accuracy: 0.007365686893463135)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.4473996162414551,
-            accuracy: 0.008947992324829101)
+            result.sum().item(Float.self), 94.28079223632812,
+            accuracy: 1.8856158447265625)
     }
 
-    func testLayerNorm() {
+    func testDropout3d() {
+        MLXRandom.seed(23)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 8, 4])
+        XCTAssertEqual(a.shape, [2, 8, 8, 4])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5006061792373657,
+            accuracy: 0.010012123584747314)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 256.31036376953125,
+            accuracy: 5.126207275390625)
+        let result = Dropout3d()(a)
+        XCTAssertEqual(result.shape, [2, 8, 8, 4])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.23728415369987488,
+            accuracy: 0.004745683073997498)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 121.48948669433594,
+            accuracy: 2.429789733886719)
+    }
+
+    func testEmbedding() {
+        MLXRandom.seed(557)
+        let a = MLXRandom.randInt(low: 0, high: 10, [2, 8, 8, 4])
+        XCTAssertEqual(a.shape, [2, 8, 8, 4])
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 4.60546875,
+            accuracy: 0.09210937500000001)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 2358,
+            accuracy: 47.160000000000004)
+        let result = Embedding(embeddingCount: 10, dimensions: 8)(a)
+        XCTAssertEqual(result.shape, [2, 8, 8, 4, 8])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), -0.0011973462533205748,
+            accuracy: -2.3946925066411497e-05)
+        XCTAssertEqual(
+            result.sum().item(Float.self), -4.904330253601074,
+            accuracy: -0.0980866050720215)
+    }
+
+    func testInstanceNorm() {
         MLXRandom.seed(435)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6882,18 +6869,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 128.01654052734375,
             accuracy: 2.560330810546875)
-        let result = LayerNorm(dimensions: 16)(a)[0, axis: -1]
-        XCTAssertEqual(result.shape, [2, 8])
+        let result = InstanceNorm(dimensions: 8)(a)[0, 0]
+        XCTAssertEqual(result.shape, [16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.06166763976216316,
-            accuracy: 0.0012333527952432632)
+            result.mean().item(Float.self), 0.10645411163568497,
+            accuracy: 0.0021290822327136995)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.9866822361946106,
-            accuracy: 0.01973364472389221)
+            result.sum().item(Float.self), 1.7032657861709595,
+            accuracy: 0.03406531572341919)
     }
 
-    func testRMSNorm() {
+    func testLayerNorm() {
         MLXRandom.seed(635)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6904,18 +6891,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 126.12872314453125,
             accuracy: 2.522574462890625)
-        let result = RMSNorm(dimensions: 16)(a)
-        XCTAssertEqual(result.shape, [2, 8, 16])
+        let result = LayerNorm(dimensions: 16)(a)[0, axis: -1]
+        XCTAssertEqual(result.shape, [2, 8])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.856640100479126,
-            accuracy: 0.01713280200958252)
+            result.mean().item(Float.self), 0.2909903824329376,
+            accuracy: 0.005819807648658752)
         XCTAssertEqual(
-            result.sum().item(Float.self), 219.29986572265625,
-            accuracy: 4.3859973144531255)
+            result.sum().item(Float.self), 4.655846118927002,
+            accuracy: 0.09311692237854004)
     }
 
-    func testGroupNorm() {
+    func testRMSNorm() {
         MLXRandom.seed(103)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6926,18 +6913,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 129.40194702148438,
             accuracy: 2.5880389404296875)
-        let result = GroupNorm(groupCount: 4, dimensions: 16)(a)[0, 0]
-        XCTAssertEqual(result.shape, [16])
+        let result = RMSNorm(dimensions: 16)(a)
+        XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.24117237329483032,
-            accuracy: 0.004823447465896607)
+            result.mean().item(Float.self), 0.8729387521743774,
+            accuracy: 0.01745877504348755)
         XCTAssertEqual(
-            result.sum().item(Float.self), 3.858757972717285,
-            accuracy: 0.07717515945434571)
+            result.sum().item(Float.self), 223.47232055664062,
+            accuracy: 4.469446411132813)
     }
 
-    func testBatchNorm() {
+    func testGroupNorm() {
         MLXRandom.seed(855)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6948,18 +6935,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 124.58646392822266,
             accuracy: 2.491729278564453)
-        let result = BatchNorm(featureCount: 16)(a)[0, 0]
+        let result = GroupNorm(groupCount: 4, dimensions: 16)(a)[0, 0]
         XCTAssertEqual(result.shape, [16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.004223518073558807,
-            accuracy: 8.447036147117615e-05)
+            result.mean().item(Float.self), -0.054606519639492035,
+            accuracy: -0.0010921303927898408)
         XCTAssertEqual(
-            result.sum().item(Float.self), 0.06757628917694092,
-            accuracy: 0.0013515257835388184)
+            result.sum().item(Float.self), -0.8737043142318726,
+            accuracy: -0.017474086284637452)
     }
 
-    func testRoPE() {
+    func testBatchNorm() {
         MLXRandom.seed(266)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6970,18 +6957,18 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 129.48855590820312,
             accuracy: 2.5897711181640624)
-        let result = RoPE(dimensions: 8)(a)
-        XCTAssertEqual(result.shape, [2, 8, 16])
+        let result = BatchNorm(featureCount: 16)(a)[0, 0]
+        XCTAssertEqual(result.shape, [16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.4610366225242615,
-            accuracy: 0.00922073245048523)
+            result.mean().item(Float.self), 0.4397852420806885,
+            accuracy: 0.00879570484161377)
         XCTAssertEqual(
-            result.sum().item(Float.self), 118.02537536621094,
-            accuracy: 2.3605075073242188)
+            result.sum().item(Float.self), 7.036563873291016,
+            accuracy: 0.14073127746582031)
     }
 
-    func testSinusoidalPositionalEncoding() {
+    func testRoPE() {
         MLXRandom.seed(71)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
         XCTAssertEqual(a.shape, [2, 8, 16])
@@ -6992,15 +6979,37 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 130.1162109375,
             accuracy: 2.60232421875)
+        let result = RoPE(dimensions: 8)(a)
+        XCTAssertEqual(result.shape, [2, 8, 16])
+        XCTAssertEqual(result.dtype, .float32)
+        XCTAssertEqual(
+            result.mean().item(Float.self), 0.4562537670135498,
+            accuracy: 0.009125075340270997)
+        XCTAssertEqual(
+            result.sum().item(Float.self), 116.80096435546875,
+            accuracy: 2.3360192871093752)
+    }
+
+    func testSinusoidalPositionalEncoding() {
+        MLXRandom.seed(226)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
+        XCTAssertEqual(a.shape, [2, 8, 16])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(
+            a.mean().item(Float.self), 0.5026599168777466,
+            accuracy: 0.010053198337554931)
+        XCTAssertEqual(
+            a.sum().item(Float.self), 128.68093872070312,
+            accuracy: 2.5736187744140624)
         let result = SinusoidalPositionalEncoding(dimensions: 8)(a)
         XCTAssertEqual(result.shape, [2, 8, 16, 8])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.27050766348838806,
-            accuracy: 0.005410153269767761)
+            result.mean().item(Float.self), 0.2705308198928833,
+            accuracy: 0.005410616397857666)
         XCTAssertEqual(
-            result.sum().item(Float.self), 553.9996948242188,
-            accuracy: 11.079993896484375)
+            result.sum().item(Float.self), 554.047119140625,
+            accuracy: 11.0809423828125)
     }
 
 }

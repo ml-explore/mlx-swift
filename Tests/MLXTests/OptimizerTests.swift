@@ -53,7 +53,7 @@ class OptimizerTests: XCTestCase {
         }
     }
 
-    func checkTrain<T>(optimizer: OptimizerBase<T>) {
+    func checkTrain<T>(optimizer: OptimizerBase<T>, compile: Bool = false) {
 
         // measure the distance from the prediction (model(x)) and the
         // ground truth (y).  this gives feedback on how close the
@@ -63,10 +63,7 @@ class OptimizerTests: XCTestCase {
         }
 
         let model = LinearFunctionModel()
-        eval(model.parameters())
-
-        // compute the loss and gradients
-        let lg = valueAndGrad(model: model, loss)
+        eval(model)
 
         // the optimizer will use the gradients update the model parameters
         let optimizer = SGD(learningRate: 1e-1)
@@ -74,6 +71,23 @@ class OptimizerTests: XCTestCase {
         // these are the target parameters
         let m = 0.25
         let b = 7
+
+        let step: (MLXArray, MLXArray) -> MLXArray
+        if compile {
+            step = MLX.compile(state: [model, optimizer]) { x, y in
+                let lg = valueAndGrad(model: model, loss)
+                let (loss, grads) = lg(model, x, y)
+                optimizer.update(model: model, gradients: grads)
+                return loss
+            }
+        } else {
+            let lg = valueAndGrad(model: model, loss)
+            step = { x, y in
+                let (loss, grads) = lg(model, x, y)
+                optimizer.update(model: model, gradients: grads)
+                return loss
+            }
+        }
 
         // run a number of epochs
         var lastLoss: MLXArray!
@@ -90,10 +104,9 @@ class OptimizerTests: XCTestCase {
 
             // compute the loss and gradients.  use the optimizer
             // to adjust the parameters closer to the target
-            let (loss, grads) = lg(model, x, y)
-            optimizer.update(model: model, gradients: grads)
+            let loss = step(x, y)
 
-            eval(model.parameters(), optimizer.state())
+            eval(model, optimizer)
 
             lastLoss = loss
         }
@@ -101,10 +114,7 @@ class OptimizerTests: XCTestCase {
         // it should reach this loss
         XCTAssertLessThan(lastLoss.item(Float.self), 0.1)
 
-        print(lastLoss!)
-
-        // ideally this should be pretty close to the m and b values above
-        print(model.parameters())
+        print("final loss: \(lastLoss!)")
     }
 
     // MARK: - Integration Tests
@@ -116,46 +126,55 @@ class OptimizerTests: XCTestCase {
     func testSGD() {
         checkShape(optimizer: SGD(learningRate: 0.1))
         checkTrain(optimizer: SGD(learningRate: 0.1))
+        checkTrain(optimizer: SGD(learningRate: 0.1), compile: true)
     }
 
     func testRMSprop() {
         checkShape(optimizer: RMSprop(learningRate: 0.1))
         checkTrain(optimizer: RMSprop(learningRate: 0.1))
+        checkTrain(optimizer: RMSprop(learningRate: 0.1), compile: true)
     }
 
     func testAdaGrad() {
         checkShape(optimizer: AdaGrad(learningRate: 0.1))
         checkTrain(optimizer: AdaGrad(learningRate: 0.1))
+        checkTrain(optimizer: AdaGrad(learningRate: 0.1), compile: true)
     }
 
     func testAdaDelta() {
         checkShape(optimizer: AdaDelta(learningRate: 0.1))
         checkTrain(optimizer: AdaDelta(learningRate: 0.1))
+        checkTrain(optimizer: AdaDelta(learningRate: 0.1), compile: true)
     }
 
     func testAdam() {
         checkShape(optimizer: Adam(learningRate: 0.1))
         checkTrain(optimizer: Adam(learningRate: 0.1))
+        checkTrain(optimizer: Adam(learningRate: 0.1), compile: true)
     }
 
     func testAdamW() {
         checkShape(optimizer: AdamW(learningRate: 0.1))
         checkTrain(optimizer: AdamW(learningRate: 0.1))
+        checkTrain(optimizer: AdamW(learningRate: 0.1), compile: true)
     }
 
     func testAdamax() {
         checkShape(optimizer: Adamax(learningRate: 0.1))
         checkTrain(optimizer: Adamax(learningRate: 0.1))
+        checkTrain(optimizer: Adamax(learningRate: 0.1), compile: true)
     }
 
     func testLion() {
         checkShape(optimizer: Lion(learningRate: 0.1))
         checkTrain(optimizer: Lion(learningRate: 0.1))
+        checkTrain(optimizer: Lion(learningRate: 0.1), compile: true)
     }
 
     func testAdafactor() {
         checkShape(optimizer: Adafactor(learningRate: 0.1))
         checkTrain(optimizer: Adafactor(learningRate: 0.1))
+        checkTrain(optimizer: Adafactor(learningRate: 0.1), compile: true)
     }
 
 }
