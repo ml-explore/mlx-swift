@@ -43,6 +43,11 @@ file(GLOB MLXFFT-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXFFT/*.swift)
 add_library(MLXFFT STATIC ${MLXFFT-src})
 target_link_libraries(MLXFFT PRIVATE MLX)
 
+# MLXLinalg package
+file(GLOB MLXLinalg-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXLinalg/*.swift)
+add_library(MLXLinalg STATIC ${MLXLinalg-src})
+target_link_libraries(MLXLinalg PRIVATE MLX)
+
 # Examples
 add_executable(example1
                ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)

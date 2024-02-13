@@ -1,6 +1,6 @@
 # MLX Swift
 
-[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**MLXOptimizers**](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/) | [**MLXFFT**](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/) | [**Examples**](#examples) 
+[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**MLXOptimizers**](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/) | [**MLXLinalg**](https://ml-explore.github.io/mlx-swift/MLXLinalg/documentation/mlxlinalg/) | [**MLXFFT**](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/) | [**Examples**](#examples) 
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
