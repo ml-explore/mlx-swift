@@ -10,7 +10,7 @@ import MLX
 /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
 /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
 /// - ``MLXLinalg``
-public enum NormKind : String {
+public enum NormKind: String {
     /// Frobenius norm
     case fro
 }
@@ -56,11 +56,15 @@ public enum NormKind : String {
 ///
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-public func norm(_ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+public func norm(
+    _ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     if let ord {
         let ord_str = mlx_string_new(ord.rawValue.cString(using: .utf8))!
         defer { mlx_free(ord_str) }
-        return MLXArray(mlx_linalg_norm_ord(array.ctx, ord_str, axes.asInt32, axes.count, keepDims, stream.ctx))
+        return MLXArray(
+            mlx_linalg_norm_ord(array.ctx, ord_str, axes.asInt32, axes.count, keepDims, stream.ctx))
     } else {
         return MLXArray(mlx_linalg_norm(array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
     }
@@ -107,18 +111,25 @@ public func norm(_ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims:
 ///
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-public func norm(_ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+public func norm(
+    _ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     MLXArray(mlx_linalg_norm_p(array.ctx, ord, axes.asInt32, axes.count, keepDims, stream.ctx))
 }
 
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-public func norm(_ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+public func norm(
+    _ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     if let ord {
         let ord_str = mlx_string_new(ord.rawValue.cString(using: .utf8))!
         defer { mlx_free(ord_str) }
-        return MLXArray(mlx_linalg_norm_ord(array.ctx, ord_str, [axis].asInt32, 1, keepDims, stream.ctx))
+        return MLXArray(
+            mlx_linalg_norm_ord(array.ctx, ord_str, [axis].asInt32, 1, keepDims, stream.ctx))
     } else {
         return MLXArray(mlx_linalg_norm(array.ctx, [axis].asInt32, 1, keepDims, stream.ctx))
     }
@@ -127,14 +138,20 @@ public func norm(_ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: B
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-public func norm(_ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+public func norm(
+    _ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     MLXArray(mlx_linalg_norm_p(array.ctx, ord, [axis].asInt32, 1, keepDims, stream.ctx))
 }
 
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-public func norm(_ array: MLXArray, ord: NormKind? = nil, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+public func norm(
+    _ array: MLXArray, ord: NormKind? = nil, keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     if let ord {
         let ord_str = mlx_string_new(ord.rawValue.cString(using: .utf8))!
         defer { mlx_free(ord_str) }
@@ -147,13 +164,14 @@ public func norm(_ array: MLXArray, ord: NormKind? = nil, keepDims: Bool = false
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-public func norm(_ array: MLXArray, ord: Double, keepDims: Bool = false, stream: StreamOrDevice = .default) -> MLXArray {
+public func norm(
+    _ array: MLXArray, ord: Double, keepDims: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
     MLXArray(mlx_linalg_norm_p(array.ctx, ord, nil, 0, keepDims, stream.ctx))
 }
 
-
 /// The QR factorization of the input matrix.
-/// 
+///
 /// This function supports arrays with at least 2 dimensions. The matrices
 /// which are factorized are assumed to be in the last two dimensions of
 /// the input.
@@ -162,7 +180,7 @@ public func norm(_ array: MLXArray, ord: Double, keepDims: Bool = false, stream:
 public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
     let result_vector = mlx_linalg_qr(array.ctx, stream.ctx)!
     defer { mlx_free(result_vector) }
-    
+
     let arrays = mlx_vector_array_values(result_vector)
     return (arrays[0], arrays[1])
 }
