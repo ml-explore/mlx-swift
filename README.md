@@ -1,6 +1,6 @@
 # MLX Swift
 
-[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**MLXRandom**](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/) | [**MLXNN**](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/) | [**MLXOptimizers**](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/) | [**MLXLinalg**](https://ml-explore.github.io/mlx-swift/MLXLinalg/documentation/mlxlinalg/) | [**MLXFFT**](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/) | [**Examples**](#examples) 
+[**Installation**](#installation) | [**Documentation**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**Examples**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/examples)
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
@@ -10,7 +10,10 @@ silicon easier for ML researchers.
 
 ## Examples
 
-Coming soon.
+MLX Swift has a [few examples]((https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/examples), including:
+
+- Large-scale text generation with Mistral 7B
+- Training a simple multt-layer perceoptron on MNSIT
 
 ## Installation
 
