@@ -1,4 +1,4 @@
-#/bin/zsh
+#!/bin/zsh
 
 # See MAINTENANCE.md : Updating `mlx` and `mlx-c`
 

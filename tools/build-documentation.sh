@@ -1,4 +1,4 @@
-#/bin/zsh
+#!/bin/zsh
 
 # based on https://github.com/swiftviz/Scale/blob/main/docbuild.bash
 
