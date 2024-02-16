@@ -1,10 +1,11 @@
 #  ``MLX``
 
-MLX is a NumPy-like array framework designed for efficient and flexible machine
-learning research on Apple silicon, brought to you by Apple machine learning research
+MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
-MLX is an array framework for machine learning research on Apple silicon. MLX Swift expands
-MLX to the Swift language, making experimentation on Apple silicon easier for ML researchers.
+MLX is an array framework for machine learning research on Apple
+silicon. MLX Swift expands MLX to the Swift language, making research and
+experimentation easier on Apple silicon. MLX is intended for research and
+not for production deployment of models in apps.
 
 The Swift API closely follows the 
 [C++ and Python MLX APIs](https://ml-explore.github.io/mlx/build/html/index.html), which in turn closely follow
