@@ -132,15 +132,16 @@
 "doc://mlx.swift.mlx/documentation/MLX": {
   "abstract" : [
     {
-      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "text" : "MLX Swift is a Swift API for ",
       "type" : "text"
     },
     {
-      "text" : " ",
-      "type" : "text"
+      "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+      "isActive" : true,
+      "type" : "reference"
     },
     {
-      "text" : "learning research on Apple silicon, brought to you by Apple machine learning research",
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -270,6 +271,18 @@
   "title" : "subscript(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlx\/nesteddictionary\/subscript(_:)-7bphj"
+},
+"https://ml-explore.github.io/mlx/build/html/index.html": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+  "title" : "MLX",
+  "titleInlineContent" : [
+    {
+      "text" : "MLX",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html"
 }
 }
 }

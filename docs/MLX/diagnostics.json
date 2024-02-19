@@ -1,5 +1,30 @@
 [
   {
+    "explanation" : "Summary should only contain (formatted) text. To resolve this issue, place links and images elsewhere in the document, or remove them.",
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "MLX.md",
+    "start" : {
+      "column" : 30,
+      "line" : 3
+    },
+    "summary" : "Link in document summary will not be displayed"
+  },
+  {
+    "notes" : [
+
+    ],
+    "severity" : 2,
+    "source" : "..\/MLXArray+Ops.swift",
+    "start" : {
+      "column" : 22,
+      "line" : 105
+    },
+    "summary" : "'-(_:_:)-7frdo' doesn't exist at '\/MLX\/MLXArray'"
+  },
+  {
     "notes" : [
 
     ],
@@ -46,17 +71,5 @@
       "line" : 78
     },
     "summary" : "'-(_:_:)-971j0' doesn't exist at '\/MLX\/MLXArray'"
-  },
-  {
-    "notes" : [
-
-    ],
-    "severity" : 2,
-    "source" : "..\/MLXArray+Ops.swift",
-    "start" : {
-      "column" : 22,
-      "line" : 105
-    },
-    "summary" : "'-(_:_:)-7frdo' doesn't exist at '\/MLX\/MLXArray'"
   }
 ]

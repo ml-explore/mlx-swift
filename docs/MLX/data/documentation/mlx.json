@@ -1,15 +1,16 @@
 {
   "abstract" : [
     {
-      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "text" : "MLX Swift is a Swift API for ",
       "type" : "text"
     },
     {
-      "text" : " ",
-      "type" : "text"
+      "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+      "isActive" : true,
+      "type" : "reference"
     },
     {
-      "text" : "learning research on Apple silicon, brought to you by Apple machine learning research",
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -49,7 +50,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "MLX is an array framework for machine learning research on Apple silicon. MLX Swift expands",
+              "text" : "MLX is an array framework for machine learning research on Apple",
               "type" : "text"
             },
             {
@@ -57,7 +58,23 @@
               "type" : "text"
             },
             {
-              "text" : "MLX to the Swift language, making experimentation on Apple silicon easier for ML researchers.",
+              "text" : "silicon. MLX Swift expands MLX to the Swift language, making research and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "experimentation easier on Apple silicon. MLX is intended for research and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "not for production deployment of models in apps.",
               "type" : "text"
             }
           ],
@@ -371,6 +388,20 @@
                 {
                   "inlineContent" : [
                     {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
                       "isActive" : true,
                       "type" : "reference"
@@ -414,6 +445,20 @@
                   "inlineContent" : [
                     {
                       "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXLinalg\/documentation\/mlxlinalg\/",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -558,15 +603,16 @@
 "doc://mlx.swift.mlx/documentation/MLX": {
   "abstract" : [
     {
-      "text" : "MLX is a NumPy-like array framework designed for efficient and flexible machine",
+      "text" : "MLX Swift is a Swift API for ",
       "type" : "text"
     },
     {
-      "text" : " ",
-      "type" : "text"
+      "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+      "isActive" : true,
+      "type" : "reference"
     },
     {
-      "text" : "learning research on Apple silicon, brought to you by Apple machine learning research",
+      "text" : ".",
       "type" : "text"
     }
   ],
@@ -1685,6 +1731,18 @@
   "type" : "link",
   "url" : "https:\/\/github.com\/google\/jax"
 },
+"https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
+  "title" : "MLX",
+  "titleInlineContent" : [
+    {
+      "text" : "MLX",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/"
+},
 "https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
   "title" : "MLXFFT",
@@ -1696,6 +1754,18 @@
   ],
   "type" : "link",
   "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXLinalg/documentation/mlxlinalg/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXLinalg\/documentation\/mlxlinalg\/",
+  "title" : "MLXLinalg",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXLinalg",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXLinalg\/documentation\/mlxlinalg\/"
 },
 "https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
@@ -1735,10 +1805,10 @@
 },
 "https://ml-explore.github.io/mlx/build/html/index.html": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
-  "title" : "C++ and Python MLX APIs",
+  "title" : "MLX",
   "titleInlineContent" : [
     {
-      "text" : "C++ and Python MLX APIs",
+      "text" : "MLX",
       "type" : "text"
     }
   ],
