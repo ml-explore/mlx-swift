@@ -26,83 +26,13 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fftn(_:s:axes:stream:)"
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifftn(_:s:axes:stream:)"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "n-dimensional discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axis) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axes See Also MLXFFT",
-    "summary" : "n-dimensional discrete Fourier Transform.",
-    "title" : "fftn(_:s:axes:stream:)"
-  },
-  {
-    "headings" : [
-      "Return Value",
-      "Discussion",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft2(_:s:axes:stream:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Inverse two dimensional discrete Fourier Transform on a real input.  input array size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n \/ 2 + 1.  If not specified array.dim(axis) \/ 2 + 1 will be used. axis along which to perform the FFT stream or device to evaluate on Return Value inverse of rfft2(_:s:axes:stream:) Discussion Note the input is generally complex. The dimensions of the input specified in axes are padded or truncated to match the sizes from s. The last axis in axes is treated as the real axis and will have size s[s.lastIndex] \/ 2 + 1. See Also MLXFFT",
-    "summary" : "Inverse two dimensional discrete Fourier Transform on a real input.",
-    "title" : "irfft2(_:s:axes:stream:)"
-  },
-  {
-    "headings" : [
-      "Return Value",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft(_:n:axis:stream:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "One dimensional inverse discrete Fourier Transform.  input array size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n.  If not specified array.dim(axis) will be used. axis along which to perform the FFT stream or device to evaluate on Return Value inverse DFT of the input along the given axis See Also MLXFFT",
-    "summary" : "One dimensional inverse discrete Fourier Transform.",
-    "title" : "ifft(_:n:axis:stream:)"
-  },
-  {
-    "headings" : [
-      "Return Value",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft2(_:s:axes:stream:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Two dimensional inverse discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axis) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value inverse DFT of the input along the given axes See Also MLXFFT",
-    "summary" : "Two dimensional inverse discrete Fourier Transform.",
-    "title" : "ifft2(_:s:axes:stream:)"
-  },
-  {
-    "headings" : [
-      "Return Value",
-      "Discussion",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft(_:n:axis:stream:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Inverse one dimensional discrete Fourier Transform on a real input.  input array.  If the array is complex it will be silently cast to a real type size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n \/ 2 + 1.  If not specified array.dim(axis) \/ 2 + 1 will be used. axis along which to perform the FFT stream or device to evaluate on Return Value inverse of rfft(_:n:axis:stream:) Discussion The output has the same shape as the input except along axis in which case it has size n. See Also MLXFFT",
-    "summary" : "Inverse one dimensional discrete Fourier Transform on a real input.",
-    "title" : "irfft(_:n:axis:stream:)"
+    "rawIndexableTextContent" : "n-dimensional inverse discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axes) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value inverse DFT of the input along the given axes See Also MLXFFT",
+    "summary" : "n-dimensional inverse discrete Fourier Transform.",
+    "title" : "ifftn(_:s:axes:stream:)"
   },
   {
     "headings" : [
@@ -131,13 +61,30 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft(_:n:axis:stream:)"
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft2(_:s:axes:stream:)"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "One dimensional discrete Fourier Transform.  input array size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n.  If not specified array.dim(axis) will be used. axis along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axis See Also MLXFFT",
-    "summary" : "One dimensional discrete Fourier Transform.",
-    "title" : "fft(_:n:axis:stream:)"
+    "rawIndexableTextContent" : "Two dimensional discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axis) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axes See Also MLXFFT",
+    "summary" : "Two dimensional discrete Fourier Transform.",
+    "title" : "fft2(_:s:axes:stream:)"
+  },
+  {
+    "headings" : [
+      "Return Value",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft(_:n:axis:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "One dimensional inverse discrete Fourier Transform.  input array size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n.  If not specified array.dim(axis) will be used. axis along which to perform the FFT stream or device to evaluate on Return Value inverse DFT of the input along the given axis See Also MLXFFT",
+    "summary" : "One dimensional inverse discrete Fourier Transform.",
+    "title" : "ifft(_:n:axis:stream:)"
   },
   {
     "headings" : [
@@ -164,13 +111,13 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifftn(_:s:axes:stream:)"
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft(_:n:axis:stream:)"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "n-dimensional inverse discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axes) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value inverse DFT of the input along the given axes See Also MLXFFT",
-    "summary" : "n-dimensional inverse discrete Fourier Transform.",
-    "title" : "ifftn(_:s:axes:stream:)"
+    "rawIndexableTextContent" : "One dimensional discrete Fourier Transform.  input array size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n.  If not specified array.dim(axis) will be used. axis along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axis See Also MLXFFT",
+    "summary" : "One dimensional discrete Fourier Transform.",
+    "title" : "fft(_:n:axis:stream:)"
   },
   {
     "headings" : [
@@ -181,13 +128,48 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fft2(_:s:axes:stream:)"
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft2(_:s:axes:stream:)"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "Two dimensional discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axis) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axes See Also MLXFFT",
-    "summary" : "Two dimensional discrete Fourier Transform.",
-    "title" : "fft2(_:s:axes:stream:)"
+    "rawIndexableTextContent" : "Two dimensional inverse discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axis) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value inverse DFT of the input along the given axes See Also MLXFFT",
+    "summary" : "Two dimensional inverse discrete Fourier Transform.",
+    "title" : "ifft2(_:s:axes:stream:)"
+  },
+  {
+    "headings" : [
+      "Return Value",
+      "Discussion",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft2(_:s:axes:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inverse two dimensional discrete Fourier Transform on a real input.  input array size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n \/ 2 + 1.  If not specified array.dim(axis) \/ 2 + 1 will be used. axis along which to perform the FFT stream or device to evaluate on Return Value inverse of rfft2(_:s:axes:stream:) Discussion Note the input is generally complex. The dimensions of the input specified in axes are padded or truncated to match the sizes from s. The last axis in axes is treated as the real axis and will have size s[s.lastIndex] \/ 2 + 1. See Also MLXFFT",
+    "summary" : "Inverse two dimensional discrete Fourier Transform on a real input.",
+    "title" : "irfft2(_:s:axes:stream:)"
+  },
+  {
+    "headings" : [
+      "Return Value",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/fftn(_:s:axes:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "n-dimensional discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axis) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axes See Also MLXFFT",
+    "summary" : "n-dimensional discrete Fourier Transform.",
+    "title" : "fftn(_:s:axes:stream:)"
   },
   {
     "headings" : [
@@ -224,5 +206,23 @@
     "rawIndexableTextContent" : "n-dimensional real discrete Fourier Transform.  input array sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to match s.  If not specified array.dim(axes) will be used. axes along which to perform the FFT stream or device to evaluate on Return Value DFT of the input along the given axes.  The output data type will be complex. Discussion The output has the same shape as the input except along the dimensions in axes in which case it has sizes from s. The last axis in axes is treated as the real axis and will have size s[s.lastIndex] \/ 2 + 1. See Also MLXFFT",
     "summary" : "n-dimensional real discrete Fourier Transform.",
     "title" : "rfftn(_:s:axes:stream:)"
+  },
+  {
+    "headings" : [
+      "Return Value",
+      "Discussion",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft(_:n:axis:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inverse one dimensional discrete Fourier Transform on a real input.  input array.  If the array is complex it will be silently cast to a real type size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to match n \/ 2 + 1.  If not specified array.dim(axis) \/ 2 + 1 will be used. axis along which to perform the FFT stream or device to evaluate on Return Value inverse of rfft(_:n:axis:stream:) Discussion The output has the same shape as the input except along axis in which case it has size n. See Also MLXFFT",
+    "summary" : "Inverse one dimensional discrete Fourier Transform on a real input.",
+    "title" : "irfft(_:n:axis:stream:)"
   }
 ]
