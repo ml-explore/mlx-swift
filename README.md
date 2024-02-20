@@ -94,6 +94,3 @@ Ronan Collobert.
 
 The software generally matches the API and implementation of MLX as of tag 
 [v0.0.10](https://github.com/ml-explore/mlx/releases/tag/v0.0.10).
-
-There may be some implementations that match newer code/api, especially where
-there is a python equivalent but that hash was the reference implementation.
