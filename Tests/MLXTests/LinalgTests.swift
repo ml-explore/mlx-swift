@@ -7,6 +7,10 @@ import XCTest
 
 class LinalgTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func testNormNoAxes() {
         let a = MLXArray(0 ..< 9) - 4
         let b = a.reshaped(3, 3)

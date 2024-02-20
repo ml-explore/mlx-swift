@@ -7,6 +7,10 @@ import XCTest
 
 class MLXArrayIndexingTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     // MARK: - Subscript (get)
 
     func testArraySubscriptInt() {

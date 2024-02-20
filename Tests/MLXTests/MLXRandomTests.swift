@@ -8,6 +8,10 @@ import XCTest
 
 class MLXRandomTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func testSplit() {
         let key = MLXRandom.key(0)
         let keys = split(key: key, into: 4)

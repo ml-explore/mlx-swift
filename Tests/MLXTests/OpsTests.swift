@@ -7,6 +7,10 @@ import XCTest
 
 class OpsTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func testAsStridedReshape() {
         // just changing the shape and using the default strides is the same as reshape
         let a = MLXArray(0 ..< 12, [4, 3])

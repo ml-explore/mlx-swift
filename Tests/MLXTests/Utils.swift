@@ -23,3 +23,8 @@ func assertEqual(
         assertEqual(e1, e2, rtol: rtol, atol: atol, file: file, line: line)
     }
 }
+
+func setDefaultDevice() {
+    // run tests on CPU for now until we pick up https://github.com/ml-explore/mlx/issues/31
+    MLX.Device.setDefault(device: .cpu)
+}

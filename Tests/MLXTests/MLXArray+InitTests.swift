@@ -8,6 +8,10 @@ import XCTest
 
 class MLXArrayInitTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     // MARK: - Creation
 
     func testInt() {

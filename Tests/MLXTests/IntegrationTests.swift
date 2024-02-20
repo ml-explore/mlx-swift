@@ -17,6 +17,10 @@ import XCTest
 /// the same functions).
 class MLXIntegrationTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func testRandomSeed() {
         MLXRandom.seed(864)
         let r = MLXRandom.normal()

@@ -7,6 +7,10 @@ import XCTest
 
 class MLXArrayTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func testArrayProperties() {
         let a = MLXArray(converting: [3.5, 4.5, 5.5, 7.0, 9.4, 10.0], [2, 3, 1])
 

@@ -10,6 +10,10 @@ import XCTest
 
 class OptimizerTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     class ShapeModule: Module {
         let first = [MLXArray.zeros([10]), MLXArray.zeros([1])]
         let second = MLXArray.zeros([1])

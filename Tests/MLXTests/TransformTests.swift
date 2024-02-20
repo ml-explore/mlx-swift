@@ -10,6 +10,10 @@ import XCTest
 
 class TransformTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func testEval() {
         // eval various structures
         let a = MLXArray(0)
@@ -238,6 +242,8 @@ class TransformTests: XCTestCase {
 
     func testCompilePerformance() {
         // this is the code from compilation.md
+
+        MLX.Device.setDefault(device: .gpu)
 
         func measure(_ f: (MLXArray) -> MLXArray, _ x: MLXArray) {
             // warm up

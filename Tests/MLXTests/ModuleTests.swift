@@ -8,6 +8,10 @@ import XCTest
 
 class ModuleTests: XCTestCase {
 
+    override class func setUp() {
+        setDefaultDevice()
+    }
+
     func newTestModule() -> Module {
         class ChildTestModule: Module {
             let p = MLXArray([100, 200])
