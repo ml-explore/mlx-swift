@@ -1,6 +1,102 @@
 [
   {
     "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate the coefficient used for computing a running average of squared gradients the epsilon added to the denominator to improve numerical stability",
+    "summary" : "Initialize the optimizer.",
+    "title" : "init(learningRate:rho:eps:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop\/init(learningRate:alpha:eps:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate the smoothing constant the epsilon added to the denominator to improve numerical stability",
+    "summary" : "Initialize the optimizer.",
+    "title" : "init(learningRate:alpha:eps:)"
+  },
+  {
+    "headings" : [
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Public interface for all Optimizer types.  See Also MLXOptimizers OptimizerBase",
+    "summary" : "Public interface for all Optimizer types.",
+    "title" : "Optimizer"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the epsilon added to the denominator to improve numerical stability",
+    "summary" : "Initialize the optimizer.",
+    "title" : "init(learningRate:betas:eps:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion\/init(learningRate:betas:weightDecay:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the weight decay",
+    "summary" : "Initialize the optimizer.",
+    "title" : "init(learningRate:betas:weightDecay:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState\/innerState()"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inherited from Updatable.innerState(). ",
+    "summary" : "Inherited from Updatable.innerState().",
+    "title" : "innerState()"
+  },
+  {
+    "headings" : [
       "Overview",
       "See Also"
     ],
@@ -18,19 +114,168 @@
   },
   {
     "headings" : [
+      "Overview",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis and apply it to a parameter tree.  Overview Subclasses need to implement: func newState(parameter: MLXArray) -> State func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (MLXArray, State) See Also MLXOptimizers",
+    "summary" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis and apply it to a parameter tree.",
+    "title" : "OptimizerBase"
+  },
+  {
+    "headings" : [
+      "Overview",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "The Lion optimizer [1].  Overview Since updates are computed through the sign operation, they tend to have larger norm than for other optimizers such as SGD and Adam. We recommend a learning rate that is 3-10x smaller than AdamW and a weight decay 3-10x larger than AdamW to maintain the strength (lr * wd). Our Lion implementation follows the original paper. In detail, [1]: Chen, X. Symbolic Discovery of Optimization Algorithms. arXiv preprint arXiv:2302.06675. See Also MLXOptimizers",
+    "summary" : "The Lion optimizer [1].",
+    "title" : "Lion"
+  },
+  {
+    "headings" : [
+      "Overview",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "The Adam optimizer [1].  Overview Our Adam implementation follows the original paper and omits the bias correction in the first and second moment estimates. In detail, [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015. See Also MLXOptimizers",
+    "summary" : "The Adam optimizer [1].",
+    "title" : "Adam"
+  },
+  {
+    "headings" : [
 
     ],
     "kind" : "symbol",
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop\/init(learningRate:alpha:eps:)"
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer\/update(model:gradients:)"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate the smoothing constant the epsilon added to the denominator to improve numerical stability",
+    "rawIndexableTextContent" : "Apply the gradients to the parameters of the model and update the model with the new parameters. ",
+    "summary" : "Apply the gradients to the parameters of the model and update the model with the new parameters.",
+    "title" : "update(model:gradients:)"
+  },
+  {
+    "headings" : [
+      "Overview",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "The Adagrad optimizer [1].  Overview Our Adagrad implementation follows the original paper. In detail, [1]: Duchi, J., Hazan, E. and Singer, Y., 2011. Adaptive subgradient methods for online learning and stochastic optimization. JMLR 2011. See Also MLXOptimizers",
+    "summary" : "The Adagrad optimizer [1].",
+    "title" : "AdaGrad"
+  },
+  {
+    "headings" : [
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Convenience subclass of OptimizerBase that provides MLXArray State.  See Also MLXOptimizers",
+    "summary" : "Convenience subclass of OptimizerBase that provides MLXArray State.",
+    "title" : "OptimizerBaseArrayState"
+  },
+  {
+    "headings" : [
+      "Overview",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "The AdaDelta optimizer with a learning rate [1].  Overview Our AdaDelta implementation follows the original paper. In detail, [1]: Zeiler, M.D., 2012. ADADELTA: an adaptive learning rate method. arXiv preprint arXiv:1212.5701. See Also MLXOptimizers",
+    "summary" : "The AdaDelta optimizer with a learning rate [1].",
+    "title" : "AdaDelta"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad\/init(learningRate:eps:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate the epsilon added to the denominator to improve numerical stability",
     "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:alpha:eps:)"
+    "title" : "init(learningRate:eps:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam\/init(learningRate:betas:eps:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the epsilon added to the denominator to improve numerical stability",
+    "summary" : "Initialize the optimizer.",
+    "title" : "init(learningRate:betas:eps:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/init(learningRate:momentum:weightDecay:dampening:nesterov:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Initialize the SGD optimizer.  the learning rate momentum strength weight decay (L2 penalty) dampening for momentum enables Nesterov momentum Discussion learningRate is the only required parameter and 0.1 might be a reasonable number to try.",
+    "summary" : "Initialize the SGD optimizer.",
+    "title" : "init(learningRate:momentum:weightDecay:dampening:nesterov:)"
   },
   {
     "headings" : [
@@ -57,94 +302,13 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW"
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "The AdamW optimizer [1].  Overview Following the above convention, in contrast with [1], we do not use bias correction in the first and second moments for AdamW. We update the weights with a weightDecay lambda value: [1]: Loshchilov, I. and Hutter, F., 2019. Decoupled weight decay regularization. ICLR 2019. See Also MLXOptimizers",
-    "summary" : "The AdamW optimizer [1].",
-    "title" : "AdamW"
-  },
-  {
-    "headings" : [
-      "Overview",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis and apply it to a parameter tree.  Overview Subclasses need to implement: func newState(parameter: MLXArray) -> State func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (MLXArray, State) See Also MLXOptimizers",
-    "summary" : "The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis and apply it to a parameter tree.",
-    "title" : "OptimizerBase"
-  },
-  {
-    "headings" : [
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Convenience subclass of OptimizerBase that provides MLXArray State.  See Also MLXOptimizers",
-    "summary" : "Convenience subclass of OptimizerBase that provides MLXArray State.",
-    "title" : "OptimizerBaseArrayState"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW\/init(learningRate:betas:eps:weightDecay:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the epsilon added to the denominator to improve numerical stability the weight decay",
-    "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:betas:eps:weightDecay:)"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/TupleState\/innerState()"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Inherited from Updatable.innerState(). ",
-    "summary" : "Inherited from Updatable.innerState().",
-    "title" : "innerState()"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : " ",
-    "summary" : "",
-    "title" : "Adafactor.State"
+    "rawIndexableTextContent" : "The RMSprop optimizer [1].  Overview [1]: Tieleman, T. and Hinton, G. 2012. Lecture 6.5-rmsprop, coursera: Neural networks for machine learning See Also MLXOptimizers",
+    "summary" : "The RMSprop optimizer [1].",
+    "title" : "RMSprop"
   },
   {
     "headings" : [
@@ -170,30 +334,13 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad\/init(learningRate:eps:)"
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/State"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate the epsilon added to the denominator to improve numerical stability",
-    "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:eps:)"
-  },
-  {
-    "headings" : [
-      "Overview",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaGrad"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "The Adagrad optimizer [1].  Overview Our Adagrad implementation follows the original paper. In detail, [1]: Duchi, J., Hazan, E. and Singer, Y., 2011. Adaptive subgradient methods for online learning and stochastic optimization. JMLR 2011. See Also MLXOptimizers",
-    "summary" : "The Adagrad optimizer [1].",
-    "title" : "AdaGrad"
+    "rawIndexableTextContent" : " ",
+    "summary" : "",
+    "title" : "Adafactor.State"
   },
   {
     "headings" : [
@@ -220,46 +367,29 @@
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/RMSprop"
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "The RMSprop optimizer [1].  Overview [1]: Tieleman, T. and Hinton, G. 2012. Lecture 6.5-rmsprop, coursera: Neural networks for machine learning See Also MLXOptimizers",
-    "summary" : "The RMSprop optimizer [1].",
-    "title" : "RMSprop"
+    "rawIndexableTextContent" : "The AdamW optimizer [1].  Overview Following the above convention, in contrast with [1], we do not use bias correction in the first and second moments for AdamW. We update the weights with a weightDecay lambda value: [1]: Loshchilov, I. and Hutter, F., 2019. Decoupled weight decay regularization. ICLR 2019. See Also MLXOptimizers",
+    "summary" : "The AdamW optimizer [1].",
+    "title" : "AdamW"
   },
   {
     "headings" : [
-      "See Also"
+
     ],
     "kind" : "symbol",
     "location" : {
       "reference" : {
         "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer"
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdamW\/init(learningRate:betas:eps:weightDecay:)"
       },
       "type" : "topLevelPage"
     },
-    "rawIndexableTextContent" : "Public interface for all Optimizer types.  See Also MLXOptimizers OptimizerBase",
-    "summary" : "Public interface for all Optimizer types.",
-    "title" : "Optimizer"
-  },
-  {
-    "headings" : [
-      "Overview",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "The Lion optimizer [1].  Overview Since updates are computed through the sign operation, they tend to have larger norm than for other optimizers such as SGD and Adam. We recommend a learning rate that is 3-10x smaller than AdamW and a weight decay 3-10x larger than AdamW to maintain the strength (lr * wd). Our Lion implementation follows the original paper. In detail, [1]: Chen, X. Symbolic Discovery of Optimization Algorithms. arXiv preprint arXiv:2302.06675. See Also MLXOptimizers",
-    "summary" : "The Lion optimizer [1].",
-    "title" : "Lion"
+    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the epsilon added to the denominator to improve numerical stability the weight decay",
+    "summary" : "Initialize the optimizer.",
+    "title" : "init(learningRate:betas:eps:weightDecay:)"
   },
   {
     "headings" : [
@@ -277,6 +407,38 @@
     "rawIndexableTextContent" : "Built-in optimizers. Overview MLX has a number of built in optimizers that are useful for training models.  Here is a simple training loop:  Other MLX Packages MLX MLXRandom MLXNN MLXOptimizers MLXFFT MLXLinalg Python mlx",
     "summary" : "Built-in optimizers.",
     "title" : "MLXOptimizers"
+  },
+  {
+    "headings" : [
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Stochastic gradient descent optimizer.  See Also MLXOptimizers",
+    "summary" : "Stochastic gradient descent optimizer.",
+    "title" : "SGD"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inherited from Optimizer.update(model:gradients:). ",
+    "summary" : "Inherited from Optimizer.update(model:gradients:).",
+    "title" : "update(model:gradients:)"
   },
   {
     "headings" : [
@@ -310,167 +472,5 @@
     "rawIndexableTextContent" : "The Adafactor optimizer.  Overview Our Adafactor implementation follows the original paper: `Adafactor: Adaptive Learning Rates with Sublinear Memory Cost https:\/\/arxiv.org\/abs\/1804.04235 See Also MLXOptimizers",
     "summary" : "The Adafactor optimizer.",
     "title" : "Adafactor"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase\/update(model:gradients:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Inherited from Optimizer.update(model:gradients:). ",
-    "summary" : "Inherited from Optimizer.update(model:gradients:).",
-    "title" : "update(model:gradients:)"
-  },
-  {
-    "headings" : [
-      "Overview",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "The Adam optimizer [1].  Overview Our Adam implementation follows the original paper and omits the bias correction in the first and second moment estimates. In detail, [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015. See Also MLXOptimizers",
-    "summary" : "The Adam optimizer [1].",
-    "title" : "Adam"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adam\/init(learningRate:betas:eps:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the epsilon added to the denominator to improve numerical stability",
-    "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:betas:eps:)"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Lion\/init(learningRate:betas:weightDecay:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the weight decay",
-    "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:betas:weightDecay:)"
-  },
-  {
-    "headings" : [
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Stochastic gradient descent optimizer.  See Also MLXOptimizers",
-    "summary" : "Stochastic gradient descent optimizer.",
-    "title" : "SGD"
-  },
-  {
-    "headings" : [
-      "Discussion"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/init(learningRate:momentum:weightDecay:dampening:nesterov:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Initialize the SGD optimizer.  the learning rate momentum strength weight decay (L2 penalty) dampening for momentum enables Nesterov momentum Discussion learningRate is the only required parameter and 0.1 might be a reasonable number to try.",
-    "summary" : "Initialize the SGD optimizer.",
-    "title" : "init(learningRate:momentum:weightDecay:dampening:nesterov:)"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate coefficients used for computing running averages of the gradient and its square the epsilon added to the denominator to improve numerical stability",
-    "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:betas:eps:)"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Optimizer\/update(model:gradients:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Apply the gradients to the parameters of the model and update the model with the new parameters. ",
-    "summary" : "Apply the gradients to the parameters of the model and update the model with the new parameters.",
-    "title" : "update(model:gradients:)"
-  },
-  {
-    "headings" : [
-
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta\/init(learningRate:rho:eps:)"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "Initialize the optimizer.  the learning rate the coefficient used for computing a running average of squared gradients the epsilon added to the denominator to improve numerical stability",
-    "summary" : "Initialize the optimizer.",
-    "title" : "init(learningRate:rho:eps:)"
-  },
-  {
-    "headings" : [
-      "Overview",
-      "See Also"
-    ],
-    "kind" : "symbol",
-    "location" : {
-      "reference" : {
-        "interfaceLanguage" : "swift",
-        "url" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/AdaDelta"
-      },
-      "type" : "topLevelPage"
-    },
-    "rawIndexableTextContent" : "The AdaDelta optimizer with a learning rate [1].  Overview Our AdaDelta implementation follows the original paper. In detail, [1]: Zeiler, M.D., 2012. ADADELTA: an adaptive learning rate method. arXiv preprint arXiv:1212.5701. See Also MLXOptimizers",
-    "summary" : "The AdaDelta optimizer with a learning rate [1].",
-    "title" : "AdaDelta"
   }
 ]
