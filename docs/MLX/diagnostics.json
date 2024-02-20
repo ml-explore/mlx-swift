@@ -20,7 +20,7 @@
     "source" : "..\/MLXArray+Ops.swift",
     "start" : {
       "column" : 22,
-      "line" : 105
+      "line" : 94
     },
     "summary" : "'-(_:_:)-7frdo' doesn't exist at '\/MLX\/MLXArray'"
   },
@@ -32,7 +32,7 @@
     "source" : "..\/MLXArray+Ops.swift",
     "start" : {
       "column" : 22,
-      "line" : 94
+      "line" : 105
     },
     "summary" : "'-(_:_:)-7frdo' doesn't exist at '\/MLX\/MLXArray'"
   },
