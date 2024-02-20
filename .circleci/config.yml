@@ -37,7 +37,3 @@ workflows:
         - not: << pipeline.parameters.weekly_build >>
     jobs:
       - mac_build_and_test
-      - hold:
-          type: approval
-      - mac_build_and_test:
-          requires: [ hold ]
