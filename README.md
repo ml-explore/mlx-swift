@@ -76,7 +76,7 @@ ninja
 
 Check out the [contribution guidelines](CONTRIBUTING.md) for more information
 on contributing to MLX. See the
-[docs](https://ml-explore.github.io/mlx/build/html/install.html) for more
+[docs](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/install) for more
 information on building from source, and running tests.
 
 We are grateful for all of [our
