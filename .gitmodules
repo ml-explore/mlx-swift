@@ -3,4 +3,4 @@
 	url = https://github.com/ml-explore/mlx
 [submodule "submodules/mlx-c"]
 	path = Source/Cmlx/mlx-c
-	url = https://github.com/ml-explore/mlx-
+	url = https://github.com/ml-explore/mlx-c
