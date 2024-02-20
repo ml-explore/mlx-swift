@@ -63,15 +63,15 @@
           "type" : "paragraph"
         },
         {
-          "anchor" : "LinearFunctionModelTraining",
+          "anchor" : "LinearModelTraining",
           "level" : 3,
-          "text" : "LinearFunctionModelTraining",
+          "text" : "LinearModelTraining",
           "type" : "heading"
         },
         {
           "inlineContent" : [
             {
-              "text" : "A simple linear function model and a training loop.",
+              "text" : "A simple linear model and a training loop.",
               "type" : "text"
             }
           ],

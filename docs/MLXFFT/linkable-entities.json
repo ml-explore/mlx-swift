@@ -38,6 +38,109 @@
   {
     "abstract" : [
       {
+        "text" : "Inverse one dimensional discrete Fourier Transform on a real input.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "irfft"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "n"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxfft\/irfft(_:n:axis:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft(_:n:axis:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "irfft(_:n:axis:stream:)",
+    "usr" : "s:6MLXFFT5irfft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
         "text" : "One dimensional discrete Fourier Transform.",
         "type" : "text"
       }
@@ -137,315 +240,6 @@
     ],
     "title" : "fft(_:n:axis:stream:)",
     "usr" : "s:6MLXFFT3fft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "One dimensional discrete Fourier Transform on a real input.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "rfft"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "n"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axis"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/rfft(_:n:axis:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft(_:n:axis:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "rfft(_:n:axis:stream:)",
-    "usr" : "s:6MLXFFT4rfft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "One dimensional inverse discrete Fourier Transform.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "ifft"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "n"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axis"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/ifft(_:n:axis:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft(_:n:axis:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "ifft(_:n:axis:stream:)",
-    "usr" : "s:6MLXFFT4ifft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Inverse two dimensional discrete Fourier Transform on a real input.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "irfft2"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "s"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axes"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/irfft2(_:s:axes:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft2(_:s:axes:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "irfft2(_:s:axes:stream:)",
-    "usr" : "s:6MLXFFT6irfft2_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
   },
   {
     "abstract" : [
@@ -553,6 +347,109 @@
   {
     "abstract" : [
       {
+        "text" : "Two dimensional real discrete Fourier Transform.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "rfft2"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "s"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axes"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxfft\/rfft2(_:s:axes:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft2(_:s:axes:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "rfft2(_:s:axes:stream:)",
+    "usr" : "s:6MLXFFT5rfft2_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
         "text" : "Two dimensional discrete Fourier Transform.",
         "type" : "text"
       }
@@ -652,212 +549,6 @@
     ],
     "title" : "fft2(_:s:axes:stream:)",
     "usr" : "s:6MLXFFT4fft2_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "n-dimensional real discrete Fourier Transform.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "rfftn"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "s"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axes"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/rfftn(_:s:axes:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfftn(_:s:axes:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "rfftn(_:s:axes:stream:)",
-    "usr" : "s:6MLXFFT5rfftn_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
-  },
-  {
-    "abstract" : [
-      {
-        "text" : "Inverse n-dimensional discrete Fourier Transform on a real input.",
-        "type" : "text"
-      }
-    ],
-    "availableLanguages" : [
-      "swift"
-    ],
-    "fragments" : [
-      {
-        "kind" : "keyword",
-        "text" : "func"
-      },
-      {
-        "kind" : "text",
-        "text" : " "
-      },
-      {
-        "kind" : "identifier",
-        "text" : "irfftn"
-      },
-      {
-        "kind" : "text",
-        "text" : "("
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      },
-      {
-        "kind" : "text",
-        "text" : ", "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "s"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "axes"
-      },
-      {
-        "kind" : "text",
-        "text" : ": ["
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:Si",
-        "text" : "Int"
-      },
-      {
-        "kind" : "text",
-        "text" : "]?, "
-      },
-      {
-        "kind" : "externalParam",
-        "text" : "stream"
-      },
-      {
-        "kind" : "text",
-        "text" : ": "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
-        "text" : "StreamOrDevice"
-      },
-      {
-        "kind" : "text",
-        "text" : ") -> "
-      },
-      {
-        "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:3MLX8MLXArrayC",
-        "text" : "MLXArray"
-      }
-    ],
-    "kind" : "org.swift.docc.kind.function",
-    "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/irfftn(_:s:axes:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfftn(_:s:axes:stream:)",
-    "taskGroups" : [
-
-    ],
-    "title" : "irfftn(_:s:axes:stream:)",
-    "usr" : "s:6MLXFFT6irfftn_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
   },
   {
     "abstract" : [
@@ -965,7 +656,7 @@
   {
     "abstract" : [
       {
-        "text" : "Inverse one dimensional discrete Fourier Transform on a real input.",
+        "text" : "n-dimensional real discrete Fourier Transform.",
         "type" : "text"
       }
     ],
@@ -983,7 +674,213 @@
       },
       {
         "kind" : "identifier",
-        "text" : "irfft"
+        "text" : "rfftn"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "s"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axes"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxfft\/rfftn(_:s:axes:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfftn(_:s:axes:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "rfftn(_:s:axes:stream:)",
+    "usr" : "s:6MLXFFT5rfftn_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Inverse two dimensional discrete Fourier Transform on a real input.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "irfft2"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "s"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axes"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "]?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxfft\/irfft2(_:s:axes:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft2(_:s:axes:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "irfft2(_:s:axes:stream:)",
+    "usr" : "s:6MLXFFT6irfft2_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "One dimensional discrete Fourier Transform on a real input.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "rfft"
       },
       {
         "kind" : "text",
@@ -1057,13 +954,13 @@
     ],
     "kind" : "org.swift.docc.kind.function",
     "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/irfft(_:n:axis:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfft(_:n:axis:stream:)",
+    "path" : "\/documentation\/mlxfft\/rfft(_:n:axis:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft(_:n:axis:stream:)",
     "taskGroups" : [
 
     ],
-    "title" : "irfft(_:n:axis:stream:)",
-    "usr" : "s:6MLXFFT5irfft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
+    "title" : "rfft(_:n:axis:stream:)",
+    "usr" : "s:6MLXFFT4rfft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
   },
   {
     "abstract" : [
@@ -1171,7 +1068,7 @@
   {
     "abstract" : [
       {
-        "text" : "Two dimensional real discrete Fourier Transform.",
+        "text" : "Inverse n-dimensional discrete Fourier Transform on a real input.",
         "type" : "text"
       }
     ],
@@ -1189,7 +1086,7 @@
       },
       {
         "kind" : "identifier",
-        "text" : "rfft2"
+        "text" : "irfftn"
       },
       {
         "kind" : "text",
@@ -1263,12 +1160,115 @@
     ],
     "kind" : "org.swift.docc.kind.function",
     "language" : "swift",
-    "path" : "\/documentation\/mlxfft\/rfft2(_:s:axes:stream:)",
-    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/rfft2(_:s:axes:stream:)",
+    "path" : "\/documentation\/mlxfft\/irfftn(_:s:axes:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/irfftn(_:s:axes:stream:)",
     "taskGroups" : [
 
     ],
-    "title" : "rfft2(_:s:axes:stream:)",
-    "usr" : "s:6MLXFFT5rfft2_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
+    "title" : "irfftn(_:s:axes:stream:)",
+    "usr" : "s:6MLXFFT6irfftn_1s4axes6stream3MLX8MLXArrayCAH_SaySiGSgAjF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "One dimensional inverse discrete Fourier Transform.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "ifft"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "n"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxfft\/ifft(_:n:axis:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxfft\/documentation\/MLXFFT\/ifft(_:n:axis:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "ifft(_:n:axis:stream:)",
+    "usr" : "s:6MLXFFT4ifft_1n4axis6stream3MLX8MLXArrayCAH_SiSgSiAF14StreamOrDeviceVtF"
   }
 ]
