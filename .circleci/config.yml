@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  apple: ml-explore/pr-approval@0.1.0
+  
 parameters:
   nightly_build:
     type: boolean
@@ -37,3 +40,16 @@ workflows:
         - not: << pipeline.parameters.weekly_build >>
     jobs:
       - mac_build_and_test
+
+  prb:
+    when:
+      matches:
+        pattern: "^pull/\\d+(/head)?$"
+        value: << pipeline.git.branch >>
+    jobs:
+      - hold:
+          type: approval
+      - apple/authenticate:
+          context: pr-approval
+      - mac_build_and_test:
+          requires: [ hold ]
