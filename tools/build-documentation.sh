@@ -34,3 +34,6 @@ for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT; do
 	--source-service-base-url https://github.com/ml-explore/mlx-swift/blob/main \
 	--checkout-path `pwd`
 done
+
+mkdir -p docs/mlx-swift/MLX/downloads
+cp Source/MLX/Documentation.docc/Resources/mlx-examples-swift.zip docs/mlx-swift/MLX/downloads
