@@ -36,4 +36,4 @@ for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT; do
 done
 
 mkdir -p docs/mlx-swift/MLX/downloads
-cp Source/MLX/Documentation.docc/Resources/mlx-examples-swift.zip docs/mlx-swift/MLX/downloads
+cp Source/MLX/Documentation.docc/Resources/mlx-examples-swift.zip docs

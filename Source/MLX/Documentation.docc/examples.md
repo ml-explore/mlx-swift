@@ -5,7 +5,7 @@ Swift example code for MLX and MLXNN.
 @Metadata {
     @CallToAction(
         purpose: download,
-        url: "https://ml-explore.github.io/mlx-swift/MLX/downloads/mlx-examples-swift.zip")
+        url: "https://ml-explore.github.io/mlx-swift/mlx-examples-swift.zip")
     @PageKind(sampleCode)
 }
 
