@@ -10,8 +10,7 @@ endif()
 # mlx-c
 FetchContent_Declare(
   mlx-c
-  GIT_REPOSITORY "git@github.com:ml-explore/mlx-c.git"
-  # OSS: "https://github.com/ml-explore/mlx-c.git"
+  GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
   GIT_TAG "main")
 FetchContent_MakeAvailable(mlx-c)
 
