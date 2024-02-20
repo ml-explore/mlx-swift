@@ -469,7 +469,7 @@
   "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html"
 },
 "mlx-examples-swift.zip": {
-  "checksum" : "0141c0cc3447566b46838d83f59ad1b8cbde0cf713480d64beaadc76083a4f0fd95d7b8695d468dab9ff901cc095e3004bf4d884504f4f1442981f81137bb614",
+  "checksum" : "123f3f17a8442ac91cd44b1b77e9820c333f3beef8d450ec14f6cf94ae98753cf3ac64a465bd1cfb80e8c196031342a6d5bcd7a6d6cb71b251c46c32ac3d2da2",
   "identifier" : "mlx-examples-swift.zip",
   "type" : "download",
   "url" : "\/downloads\/mlx-examples-swift.zip"
