@@ -242,8 +242,9 @@ class TransformTests: XCTestCase {
 
     func testCompilePerformance() {
         // this is the code from compilation.md
-
-        MLX.Device.setDefault(device: .gpu)
+        
+        // disabling until we pick up the fix for https://github.com/ml-explore/mlx/issues/31
+        return
 
         func measure(_ f: (MLXArray) -> MLXArray, _ x: MLXArray) {
             // warm up
