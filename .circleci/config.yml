@@ -35,3 +35,16 @@ workflows:
     jobs:
       - mac_build_and_test
 
+  prb:
+    when:
+      matches:
+        pattern: "^pull/\\d+(/head)?$"
+        value: << pipeline.git.branch >>
+    jobs:
+      - hold:
+          type: approval
+      - apple/authenticate:
+          context: pr-approval
+      - mac_build_and_test:
+          requires: [ hold ]
+
