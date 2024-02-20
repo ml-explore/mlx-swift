@@ -13,9 +13,9 @@ Swift example code for MLX and MLXNN.
 
 Example software for ``MLX`` and `MLXNN`.
 
-### LinearFunctionModelTraining
+### LinearModelTraining
 
-A simple linear function model and a training loop.
+A simple linear model and a training loop.
 
 ### llm-tool
 
