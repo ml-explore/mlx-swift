@@ -43,8 +43,6 @@ workflows:
     jobs:
       - hold:
           type: approval
-      - apple/authenticate:
-          context: pr-approval
       - mac_build_and_test:
           requires: [ hold ]
 
