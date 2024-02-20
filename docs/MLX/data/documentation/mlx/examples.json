@@ -113,7 +113,7 @@
   ],
   "sampleCodeDownload" : {
     "action" : {
-      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/downloads\/mlx-examples-swift.zip",
+      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip",
       "isActive" : true,
       "overridingTitle" : "Download",
       "type" : "reference"
@@ -456,11 +456,11 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/using-streams"
 },
-"https://ml-explore.github.io/mlx-swift/MLX/downloads/mlx-examples-swift.zip": {
+"https://ml-explore.github.io/mlx-swift/mlx-examples-swift.zip": {
   "checksum" : null,
-  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/downloads\/mlx-examples-swift.zip",
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip",
   "type" : "download",
-  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/downloads\/mlx-examples-swift.zip"
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip"
 },
 "https://ml-explore.github.io/mlx/build/html/index.html": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
