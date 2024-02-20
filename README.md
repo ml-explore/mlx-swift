@@ -11,7 +11,7 @@ not for production deployment of models in apps.
 
 ## Examples
 
-MLX Swift has a [few examples]((https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/examples), including:
+MLX Swift has a [few examples](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/examples), including:
 
 - Large-scale text generation with Mistral 7B
 - Training a simple multt-layer perceoptron on MNSIT
@@ -92,8 +92,8 @@ Ronan Collobert.
 
 ## Versions
 
-The software generally matches the API and implementation of MLX as of hash
-[f6e911ced01cb1f1d7f0843620412f002d525e37](https://github.com/ml-explore/mlx/tree/f6e911ced01cb1f1d7f0843620412f002d525e37).
+The software generally matches the API and implementation of MLX as of tag 
+[v0.0.10](https://github.com/ml-explore/mlx/releases/tag/v0.0.10).
 
 There may be some implementations that match newer code/api, especially where
 there is a python equivalent but that hash was the reference implementation.
