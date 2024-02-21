@@ -3,12 +3,12 @@
 import Foundation
 import MLX
 
-public class Pool: Module, UnaryLayer {
+open class Pool: Module, UnaryLayer {
 
-    let kernelSize: [Int]
-    let stride: [Int]
-    let axes: [Int]
-    let poolingOp: (MLXArray, [Int]) -> MLXArray
+    public let kernelSize: [Int]
+    public let stride: [Int]
+    public let axes: [Int]
+    public let poolingOp: (MLXArray, [Int]) -> MLXArray
 
     init(
         kernelSize: [Int],
@@ -50,7 +50,7 @@ public class Pool: Module, UnaryLayer {
 }
 
 /// Applies 1-dimensional max pooling.
-public class MaxPool1d: Pool {
+open class MaxPool1d: Pool {
 
     /// Applies 1-dimensional max pooling.
     ///
@@ -67,7 +67,7 @@ public class MaxPool1d: Pool {
 }
 
 /// Applies 2-dimensional max pooling.
-public class MaxPool2d: Pool {
+open class MaxPool2d: Pool {
 
     /// Applies 2-dimensional max pooling.
     ///
@@ -87,7 +87,7 @@ public class MaxPool2d: Pool {
 }
 
 /// Applies 1-dimensional average pooling.
-public class AvgPool1d: Pool {
+open class AvgPool1d: Pool {
 
     /// Applies 1-dimensional average pooling.
     ///
@@ -104,7 +104,7 @@ public class AvgPool1d: Pool {
 }
 
 /// Applies 2-dimensional average pooling.
-public class AvgPool2d: Pool {
+open class AvgPool2d: Pool {
 
     /// Applies 2-dimensional average pooling.
     ///
