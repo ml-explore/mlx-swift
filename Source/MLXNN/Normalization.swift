@@ -10,13 +10,13 @@ import MLX
 ///
 /// ### See also
 /// - <doc:normalization>
-public class InstanceNorm: Module, UnaryLayer {
+open class InstanceNorm: Module, UnaryLayer {
 
-    let dimensions: Int
-    let eps: Float
+    public let dimensions: Int
+    public let eps: Float
 
-    let weight: MLXArray?
-    let bias: MLXArray?
+    public let weight: MLXArray?
+    public let bias: MLXArray?
 
     /// Applies instance normalization [1] on the inputs.
     ///
@@ -68,13 +68,13 @@ public class InstanceNorm: Module, UnaryLayer {
 ///
 /// ### See also
 /// - <doc:normalization>
-public class LayerNorm: Module, UnaryLayer {
+open class LayerNorm: Module, UnaryLayer {
 
-    let dimensions: Int
-    let eps: Float
+    public let dimensions: Int
+    public let eps: Float
 
-    let weight: MLXArray?
-    let bias: MLXArray?
+    public let weight: MLXArray?
+    public let bias: MLXArray?
 
     /// Applies layer normalization [1] on the inputs.
     ///
@@ -129,10 +129,10 @@ public class LayerNorm: Module, UnaryLayer {
 ///
 /// ### See also
 /// - <doc:normalization>
-public class RMSNorm: Module, UnaryLayer {
+open class RMSNorm: Module, UnaryLayer {
 
-    let weight: MLXArray
-    let eps: Float
+    public let weight: MLXArray
+    public let eps: Float
 
     public init(dimensions: Int, eps: Float = 1e-5) {
         self.weight = MLXArray.ones([dimensions])
@@ -169,15 +169,15 @@ public class RMSNorm: Module, UnaryLayer {
 ///
 /// ### See also
 /// - <doc:normalization>
-public class GroupNorm: Module, UnaryLayer {
+open class GroupNorm: Module, UnaryLayer {
 
-    let groupCount: Int
-    let dimensions: Int
-    let eps: Float
-    let pytorchCompatible: Bool
+    public let groupCount: Int
+    public let dimensions: Int
+    public let eps: Float
+    public let pytorchCompatible: Bool
 
-    let weight: MLXArray?
-    let bias: MLXArray?
+    public let weight: MLXArray?
+    public let bias: MLXArray?
 
     /// Applies Group Normalization [1] on the inputs.
     ///
@@ -262,14 +262,14 @@ public class GroupNorm: Module, UnaryLayer {
 ///
 /// ### See also
 /// - <doc:normalization>
-public class BatchNorm: Module, UnaryLayer {
+open class BatchNorm: Module, UnaryLayer {
 
-    let featureCount: Int
-    let eps: Float
-    let momentum: Float
+    public let featureCount: Int
+    public let eps: Float
+    public let momentum: Float
 
-    let weight: MLXArray?
-    let bias: MLXArray?
+    public let weight: MLXArray?
+    public let bias: MLXArray?
 
     @ParameterInfo(key: "running_mean") var runningMean: MLXArray?
     @ParameterInfo(key: "running_var") var runningVar: MLXArray?

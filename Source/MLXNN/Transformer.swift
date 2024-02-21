@@ -8,14 +8,14 @@ import MLX
 /// ### See Also
 /// - <doc:transformers>
 /// - ``init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)``
-public class MultiHeadAttention: Module {
+open class MultiHeadAttention: Module {
 
-    let numHeads: Int
+    public let numHeads: Int
 
-    @ModuleInfo(key: "query_proj") var queryProjection: Linear
-    @ModuleInfo(key: "key_proj") var keyProjection: Linear
-    @ModuleInfo(key: "value_proj") var valueProjection: Linear
-    @ModuleInfo(key: "out_proj") var outProjection: Linear
+    @ModuleInfo(key: "query_proj") public var queryProjection: Linear
+    @ModuleInfo(key: "key_proj") public var keyProjection: Linear
+    @ModuleInfo(key: "value_proj") public var valueProjection: Linear
+    @ModuleInfo(key: "out_proj") public var outProjection: Linear
 
     /// Implements the scaled dot product attention with multiple heads.
     ///
@@ -324,7 +324,7 @@ class TransformerDecoder: Module {
 /// ### See Also
 /// - <doc:transformers>
 /// - <https://arxiv.org/abs/1706.03762>
-public class Transformer: Module {
+open class Transformer: Module {
 
     let encoder: TransformerEncoder
     let decoder: TransformerDecoder

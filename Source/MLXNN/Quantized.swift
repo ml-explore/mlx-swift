@@ -22,13 +22,13 @@ import MLXRandom
 ///
 /// ### See Also
 /// - ``init(weight:bias:groupSize:bits:)``
-public class QuantizedLinear: Linear {
+open class QuantizedLinear: Linear {
 
-    let groupSize: Int
-    let bits: Int
+    public let groupSize: Int
+    public let bits: Int
 
-    let scales: MLXArray
-    let biases: MLXArray
+    public let scales: MLXArray
+    public let biases: MLXArray
 
     /// Applies an affine transformation to the input using a quantized weight matrix.
     ///

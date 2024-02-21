@@ -242,7 +242,7 @@ class TransformTests: XCTestCase {
 
     func testCompilePerformance() {
         // this is the code from compilation.md
-        
+
         // disabling until we pick up the fix for https://github.com/ml-explore/mlx/issues/31
         return
 

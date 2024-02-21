@@ -13,9 +13,9 @@ import MLXRandom
 /// ### See Also
 /// - ``Dropout2d``
 /// - ``Dropout3d``
-public class Dropout: Module, UnaryLayer {
+open class Dropout: Module, UnaryLayer {
 
-    let p1: Float
+    public let p1: Float
 
     public init(p: Float = 0.5) {
         precondition((0 ..< 1).contains(p))
@@ -53,9 +53,9 @@ public class Dropout: Module, UnaryLayer {
 /// ### See Also
 /// - ``Dropout``
 /// - ``Dropout3d``
-public class Dropout2d: Module, UnaryLayer {
+open class Dropout2d: Module, UnaryLayer {
 
-    let p1: Float
+    public let p1: Float
 
     public init(p: Float = 0.5) {
         precondition((0 ..< 1).contains(p))
@@ -100,9 +100,9 @@ public class Dropout2d: Module, UnaryLayer {
 /// ### See Also
 /// - ``Dropout``
 /// - ``Dropout2d``
-public class Dropout3d: Module, UnaryLayer {
+open class Dropout3d: Module, UnaryLayer {
 
-    let p1: Float
+    public let p1: Float
 
     public init(p: Float = 0.5) {
         precondition((0 ..< 1).contains(p))

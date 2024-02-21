@@ -68,10 +68,10 @@ public class Identity: Module, UnaryLayer {
 /// - <doc:custom-layers>
 /// - ``QuantizedLinear``
 /// - ``Bilinear``
-public class Linear: Module, UnaryLayer {
+open class Linear: Module, UnaryLayer {
 
-    let weight: MLXArray
-    let bias: MLXArray?
+    public let weight: MLXArray
+    public let bias: MLXArray?
 
     public var shape: (Int, Int) {
         (weight.dim(0), weight.dim(1))
@@ -139,10 +139,10 @@ public class Linear: Module, UnaryLayer {
 /// ### See Also
 /// - <doc:custom-layers>
 /// - ``Linear``
-public class Bilinear: Module {
+open class Bilinear: Module {
 
-    let weight: MLXArray
-    let bias: MLXArray?
+    public let weight: MLXArray
+    public let bias: MLXArray?
 
     public init(
         _ inputDimensions1: Int, _ inputDimensions2: Int, _ outputDimensions: Int, bias: Bool = true
