@@ -12,6 +12,7 @@ See also <doc:activations> for Activation Layers and <doc:custom-layers> for exa
 Layers that provide an interface that takes a single MLXArray and produces a single MLXArray.
 These can be used with ``Sequential``.
 
+- ``AvgPool2d``
 - ``Conv1d``
 - ``Conv2d``
 - ``Dropout``
@@ -20,6 +21,8 @@ These can be used with ``Sequential``.
 - ``Embedding``
 - ``Identity``
 - ``Linear``
+- ``MaxPool2d``
+- ``MinPool2d``
 - ``QuantizedLinear``
 - ``RMSNorm``
 - ``Sequential``
