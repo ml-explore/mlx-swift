@@ -362,11 +362,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.14204177260398865,
-            accuracy: -0.002840835452079773)
+            result.mean().item(Float.self), 0.28858500719070435,
+            accuracy: 0.005771700143814087)
         XCTAssertEqual(
-            result.sum().item(Float.self), -1.7045011520385742,
-            accuracy: -0.03409002304077149)
+            result.sum().item(Float.self), 3.463019847869873,
+            accuracy: 0.06926039695739747)
     }
 
     func testModOp1() {
@@ -385,11 +385,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.39097175002098083,
-            accuracy: 0.007819435000419617)
+            result.mean().item(Float.self), -0.029992982745170593,
+            accuracy: -0.0005998596549034119)
         XCTAssertEqual(
-            result.sum().item(Float.self), 4.6916608810424805,
-            accuracy: 0.09383321762084962)
+            result.sum().item(Float.self), -0.3599157929420471,
+            accuracy: -0.007198315858840942)
     }
 
     func testModOp2() {
@@ -408,11 +408,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.018092799931764603,
-            accuracy: -0.00036185599863529204)
+            result.mean().item(Float.self), 0.6319072246551514,
+            accuracy: 0.012638144493103028)
         XCTAssertEqual(
-            result.sum().item(Float.self), -0.21711358428001404,
-            accuracy: -0.0043422716856002805)
+            result.sum().item(Float.self), 7.582886219024658,
+            accuracy: 0.15165772438049316)
     }
 
     func testPowOp() {
@@ -3851,11 +3851,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [4, 3])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.09767231345176697,
-            accuracy: 0.0019534462690353393)
+            result.mean().item(Float.self), -0.007391604594886303,
+            accuracy: -0.00014783209189772606)
         XCTAssertEqual(
-            result.sum().item(Float.self), 1.1720677614212036,
-            accuracy: 0.023441355228424072)
+            result.sum().item(Float.self), -0.08869925141334534,
+            accuracy: -0.0017739850282669067)
     }
 
     func testSubtract() {
@@ -6459,11 +6459,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.982857882976532,
-            accuracy: 0.01965715765953064)
+            result.mean().item(Float.self), 0.9828577637672424,
+            accuracy: 0.01965715527534485)
         XCTAssertEqual(
-            result.sum().item(Float.self), 251.6116180419922,
-            accuracy: 5.032232360839844)
+            result.sum().item(Float.self), 251.61158752441406,
+            accuracy: 5.032231750488282)
     }
 
     func testSoftsign() {
@@ -6569,11 +6569,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), -0.47959864139556885,
-            accuracy: -0.009591972827911377)
+            result.mean().item(Float.self), -0.4795985519886017,
+            accuracy: -0.009591971039772034)
         XCTAssertEqual(
-            result.sum().item(Float.self), -122.77725219726562,
-            accuracy: -2.4555450439453126)
+            result.sum().item(Float.self), -122.77722930908203,
+            accuracy: -2.4555445861816407)
     }
 
     func testPReLU() {
@@ -6613,11 +6613,11 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
-            result.mean().item(Float.self), 0.3656384348869324,
-            accuracy: 0.007312768697738648)
+            result.mean().item(Float.self), 0.3656383752822876,
+            accuracy: 0.007312767505645752)
         XCTAssertEqual(
-            result.sum().item(Float.self), 93.60343933105469,
-            accuracy: 1.8720687866210939)
+            result.sum().item(Float.self), 93.60342407226562,
+            accuracy: 1.8720684814453126)
     }
 
     func testTanh1() {

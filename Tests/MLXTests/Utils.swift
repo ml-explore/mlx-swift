@@ -25,6 +25,5 @@ func assertEqual(
 }
 
 func setDefaultDevice() {
-    // run tests on CPU for now until we pick up https://github.com/ml-explore/mlx/issues/31
-    MLX.Device.setDefault(device: .cpu)
+    MLX.Device.setDefault(device: .gpu)
 }
