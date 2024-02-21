@@ -49,6 +49,23 @@ public class Pool: Module, UnaryLayer {
     }
 }
 
+/// Applies 1-dimensional max pooling.
+public class MaxPool1d: Pool {
+
+    /// Applies 1-dimensional max pooling.
+    ///
+    /// The input is expected to be `NLC`. The output will have the same N/C dimensions with the new L = floor((L - kernel)/stride) + 1
+    ///
+    /// See [MaxPool1d python docs](https://ml-explore.github.io/mlx/build/html/python/nn/_autosummary/mlx.nn.MaxPool1d.html) for more information.
+    ///
+    /// - Parameters:
+    ///   - kernelSize: size of the pooling window
+    ///   - stride: stride of the pooling window
+    public init(kernelSize: Int, stride: Int) {
+        super.init(kernelSize: [kernelSize], stride: [stride], poolingOp: { $0.max(axes: $1) })
+    }
+}
+
 /// Applies 2-dimensional max pooling.
 public class MaxPool2d: Pool {
 
@@ -69,21 +86,20 @@ public class MaxPool2d: Pool {
     }
 }
 
-/// Applies 2-dimensional min pooling.
-public class MinPool2d: Pool {
+/// Applies 1-dimensional average pooling.
+public class AvgPool1d: Pool {
 
-    /// Applies 2-dimensional min pooling.
+    /// Applies 1-dimensional average pooling.
     ///
-    /// The input is expected to be `NHWC`. The output will have the same N/C dimensions with the new H/W = floor((H/W - kernel)/stride) + 1
+    /// The input is expected to be `NLC`. The output will have the same N/C dimensions with the new L = floor((L - kernel)/stride) + 1
+    ///
+    /// See [AvgPool2d python docs](https://ml-explore.github.io/mlx/build/html/python/nn/_autosummary/mlx.nn.AvgPool2d.html) for more information.
     ///
     /// - Parameters:
     ///   - kernelSize: size of the pooling window
     ///   - stride: stride of the pooling window
-    public init(kernelSize: IntOrPair, stride: IntOrPair) {
-        super.init(
-            kernelSize: [kernelSize.first, kernelSize.second],
-            stride: [stride.first, stride.second],
-            poolingOp: { $0.min(axes: $1) })
+    public init(kernelSize: Int, stride: Int) {
+        super.init(kernelSize: [kernelSize], stride: [stride], poolingOp: { $0.mean(axes: $1) })
     }
 }
 
