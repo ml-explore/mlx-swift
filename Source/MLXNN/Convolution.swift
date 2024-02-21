@@ -9,12 +9,12 @@ import MLXRandom
 /// ### See Also
 /// - ``Conv2d``
 /// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
-public class Conv1d: Module, UnaryLayer {
+open class Conv1d: Module, UnaryLayer {
 
-    let weight: MLXArray
-    let bias: MLXArray?
-    let padding: Int
-    let stride: Int
+    public let weight: MLXArray
+    public let bias: MLXArray?
+    public let padding: Int
+    public let stride: Int
 
     /// Applies a 1-dimensional convolution over the multi-channel input sequence.
     ///
@@ -62,12 +62,12 @@ public class Conv1d: Module, UnaryLayer {
 /// ### See Also
 /// - ``Conv1d``
 /// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
-public class Conv2d: Module, UnaryLayer {
+open class Conv2d: Module, UnaryLayer {
 
-    let weight: MLXArray
-    let bias: MLXArray?
-    let padding: (Int, Int)
-    let stride: (Int, Int)
+    public let weight: MLXArray
+    public let bias: MLXArray?
+    public let padding: (Int, Int)
+    public let stride: (Int, Int)
 
     /// Applies a 2-dimensional convolution over the multi-channel input image.
     ///

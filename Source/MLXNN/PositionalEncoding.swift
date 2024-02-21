@@ -124,11 +124,11 @@ final public class RoPE: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - <doc:positional-encoding>
-public class SinusoidalPositionalEncoding: Module, UnaryLayer {
+open class SinusoidalPositionalEncoding: Module, UnaryLayer {
 
     let _sigmas: MLXArray
-    let scale: Float
-    let cosineFirst: Bool
+    public let scale: Float
+    public let cosineFirst: Bool
 
     /// Initialize the layer.
     /// - Parameters:
