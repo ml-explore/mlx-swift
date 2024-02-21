@@ -54,7 +54,9 @@ public class MaxPool2d: Pool {
 
     /// Applies 2-dimensional max pooling.
     ///
-    /// The input is expected to be `NHWC`
+    /// The input is expected to be `NHWC`. The output will have the same N/C dimensions with the new H/W = floor((H/W - kernel)/stride) + 1
+    ///
+    /// See [MaxPool2d python docs](https://ml-explore.github.io/mlx/build/html/python/nn/_autosummary/mlx.nn.MaxPool2d.html) for more information.
     ///
     /// - Parameters:
     ///   - kernelSize: size of the pooling window
@@ -72,7 +74,7 @@ public class MinPool2d: Pool {
 
     /// Applies 2-dimensional min pooling.
     ///
-    /// The input is expected to be `NHWC`
+    /// The input is expected to be `NHWC`. The output will have the same N/C dimensions with the new H/W = floor((H/W - kernel)/stride) + 1
     ///
     /// - Parameters:
     ///   - kernelSize: size of the pooling window
@@ -90,7 +92,9 @@ public class AvgPool2d: Pool {
 
     /// Applies 2-dimensional average pooling.
     ///
-    /// The input is expected to be `NHWC`
+    /// The input is expected to be `NHWC`. The output will have the same N/C dimensions with the new H/W = floor((H/W - kernel)/stride) + 1
+    ///
+    /// See [AvgPool2d python docs](https://ml-explore.github.io/mlx/build/html/python/nn/_autosummary/mlx.nn.AvgPool2d.html) for more information.
     ///
     /// - Parameters:
     ///   - kernelSize: size of the pooling window
