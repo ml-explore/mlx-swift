@@ -13,7 +13,7 @@ dependency and link `MLX`, `MLXNN` and `MLXRandom` as needed.
 
 To use ``MLX`` with SwiftPm you can add this to your `Package.swift`:
 
-```
+```swift
 dependencies: [
     .package(url: "https://github.com/ml-explore/mlx-swift", from: "0.10.0")
 ]
@@ -21,7 +21,7 @@ dependencies: [
 
 and add the libraries (as needed) as dependencies:
 
-```
+```swift
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXRandom", package: "mlx-swift"),
                .product(name: "MLXNN", package: "mlx-swift"),
