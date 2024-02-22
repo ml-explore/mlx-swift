@@ -1,0 +1,166 @@
+{
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/Equatable-Implementations"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "MLXLinalg"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "Equatable Implementations"
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/!=(_:_:)"
+      ],
+      "title" : "Operators"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxlinalg\/normkind\/equatable-implementations"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg": {
+  "abstract" : [
+    {
+      "text" : "Linear Algebra Functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXLinalg",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/NormKind": {
+  "abstract" : [
+    {
+      "text" : "Types of norms available.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NormKind"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NormKind"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NormKind",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/normkind"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/NormKind/!=(_:_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "!="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/!=(_:_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "!=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/normkind\/!=(_:_:)"
+}
+}
+}

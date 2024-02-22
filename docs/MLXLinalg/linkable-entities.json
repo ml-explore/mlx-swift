@@ -1,0 +1,1135 @@
+[
+  {
+    "abstract" : [
+      {
+        "text" : "The QR factorization of the input matrix.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "qr"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> ("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/qr(_:stream:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/qr(_:stream:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "qr(_:stream:)",
+    "usr" : "s:9MLXLinalg2qr_6stream3MLX8MLXArrayC_AFtAF_AD14StreamOrDeviceVtF"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "init"
+      },
+      {
+        "kind" : "text",
+        "text" : "?("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "rawValue"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:SS",
+        "text" : "String"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.initializer",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/init(rawvalue:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/init(rawValue:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "init(rawValue:)",
+    "usr" : "s:9MLXLinalg8NormKindO8rawValueACSgSS_tcfc"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "var"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "hashValue"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.instanceProperty",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/hashvalue",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/hashValue",
+    "taskGroups" : [
+
+    ],
+    "title" : "hashValue",
+    "usr" : "s:SYsSHRzSH8RawValueSYRpzrlE04hashB0Sivp::SYNTHESIZED::s:9MLXLinalg8NormKindO"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "static"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "!="
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "Self"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "Self"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.operator",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/!=(_:_:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/!=(_:_:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "!=(_:_:)",
+    "usr" : "s:SQsE2neoiySbx_xtFZ::SYNTHESIZED::s:9MLXLinalg8NormKindO"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "kind" : "org.swift.docc.kind.collectionGroup",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/equatable-implementations",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/Equatable-Implementations",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/!=(_:_:)"
+        ],
+        "title" : "Operators"
+      }
+    ],
+    "title" : "Equatable Implementations"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "kind" : "org.swift.docc.kind.collectionGroup",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/rawrepresentable-implementations",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/RawRepresentable-Implementations",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/hashValue"
+        ],
+        "title" : "Instance Properties"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/hash(into:)"
+        ],
+        "title" : "Instance Methods"
+      }
+    ],
+    "title" : "RawRepresentable Implementations"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Types of norms available.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "enum"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "NormKind"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.enumeration",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/fro"
+        ],
+        "title" : "Enumeration Cases"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/init(rawValue:)"
+        ],
+        "title" : "Initializers"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/Equatable-Implementations",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/RawRepresentable-Implementations"
+        ],
+        "title" : "Default Implementations"
+      }
+    ],
+    "title" : "NormKind",
+    "usr" : "s:9MLXLinalg8NormKindO"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Matrix or vector norm.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "norm"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "ord"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sd",
+        "text" : "Double"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "keepDims"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/norm(_:ord:keepdims:stream:)-84g34",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-84g34",
+    "taskGroups" : [
+
+    ],
+    "title" : "norm(_:ord:keepDims:stream:)",
+    "usr" : "s:9MLXLinalg4norm_3ord8keepDims6stream3MLX8MLXArrayCAH_SdSbAF14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Matrix or vector norm.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "norm"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "ord"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sd",
+        "text" : "Double"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "keepDims"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axis:keepdims:stream:)-7fnqw",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-7fnqw",
+    "taskGroups" : [
+
+    ],
+    "title" : "norm(_:ord:axis:keepDims:stream:)",
+    "usr" : "s:9MLXLinalg4norm_3ord4axis8keepDims6stream3MLX8MLXArrayCAI_SdSiSbAG14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Matrix or vector norm.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "norm"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "ord"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sd",
+        "text" : "Double"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axes"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "keepDims"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axes:keepdims:stream:)-3t3ay",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-3t3ay",
+    "taskGroups" : [
+
+    ],
+    "title" : "norm(_:ord:axes:keepDims:stream:)",
+    "usr" : "s:9MLXLinalg4norm_3ord4axes8keepDims6stream3MLX8MLXArrayCAI_SdSaySiGSbAG14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Matrix or vector norm.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "norm"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "ord"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:9MLXLinalg8NormKindO",
+        "text" : "NormKind"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axis"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "keepDims"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axis:keepdims:stream:)-guvw",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-guvw",
+    "taskGroups" : [
+
+    ],
+    "title" : "norm(_:ord:axis:keepDims:stream:)",
+    "usr" : "s:9MLXLinalg4norm_3ord4axis8keepDims6stream3MLX8MLXArrayCAI_AA8NormKindOSgSiSbAG14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Matrix or vector norm.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "norm"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "ord"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:9MLXLinalg8NormKindO",
+        "text" : "NormKind"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "axes"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Si",
+        "text" : "Int"
+      },
+      {
+        "kind" : "text",
+        "text" : "], "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "keepDims"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axes:keepdims:stream:)-4dwwp",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-4dwwp",
+    "taskGroups" : [
+
+    ],
+    "title" : "norm(_:ord:axes:keepDims:stream:)",
+    "usr" : "s:9MLXLinalg4norm_3ord4axes8keepDims6stream3MLX8MLXArrayCAI_AA8NormKindOSgSaySiGSbAG14StreamOrDeviceVtF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Frobenius norm",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "case"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "fro"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.enumerationCase",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/fro",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/fro",
+    "taskGroups" : [
+
+    ],
+    "title" : "NormKind.fro",
+    "usr" : "s:9MLXLinalg8NormKindO3froyA2CmF"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Matrix or vector norm.",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "norm"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "ord"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:9MLXLinalg8NormKindO",
+        "text" : "NormKind"
+      },
+      {
+        "kind" : "text",
+        "text" : "?, "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "keepDims"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "stream"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+        "text" : "StreamOrDevice"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:3MLX8MLXArrayC",
+        "text" : "MLXArray"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.function",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/norm(_:ord:keepdims:stream:)-2be8x",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-2be8x",
+    "taskGroups" : [
+
+    ],
+    "title" : "norm(_:ord:keepDims:stream:)",
+    "usr" : "s:9MLXLinalg4norm_3ord8keepDims6stream3MLX8MLXArrayCAH_AA8NormKindOSgSbAF14StreamOrDeviceVtF"
+  },
+  {
+    "availableLanguages" : [
+      "swift"
+    ],
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "hash"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "into"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "keyword",
+        "text" : "inout"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:s6HasherV",
+        "text" : "Hasher"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "kind" : "org.swift.docc.kind.instanceMethod",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg\/normkind\/hash(into:)",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/hash(into:)",
+    "taskGroups" : [
+
+    ],
+    "title" : "hash(into:)",
+    "usr" : "s:SYsSHRzSH8RawValueSYRpzrlE4hash4intoys6HasherVz_tF::SYNTHESIZED::s:9MLXLinalg8NormKindO"
+  },
+  {
+    "abstract" : [
+      {
+        "text" : "Linear Algebra Functions",
+        "type" : "text"
+      }
+    ],
+    "availableLanguages" : [
+      "swift"
+    ],
+    "kind" : "org.swift.docc.kind.module",
+    "language" : "swift",
+    "path" : "\/documentation\/mlxlinalg",
+    "referenceURL" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg",
+    "taskGroups" : [
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-3t3ay",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-4dwwp",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-7fnqw",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-guvw",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-2be8x",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-84g34",
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/qr(_:stream:)"
+        ],
+        "title" : "Functions"
+      },
+      {
+        "identifiers" : [
+          "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind"
+        ],
+        "title" : "Enumerations"
+      }
+    ],
+    "title" : "MLXLinalg",
+    "usr" : "MLXLinalg"
+  }
+]

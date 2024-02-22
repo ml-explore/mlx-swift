@@ -1,0 +1,179 @@
+{
+  "abstract" : [
+    {
+      "text" : "Frobenius norm",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/fro"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9MLXLinalg8NormKindO3froyA2CmF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "case"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "fro"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "MLXLinalg"
+      }
+    ],
+    "remoteSource" : {
+      "fileName" : "Linalg.swift",
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXLinalg\/Linalg.swift#L15"
+    },
+    "role" : "symbol",
+    "roleHeading" : "Case",
+    "symbolKind" : "case",
+    "title" : "NormKind.fro"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "case"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "fro"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxlinalg\/normkind\/fro"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg": {
+  "abstract" : [
+    {
+      "text" : "Linear Algebra Functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXLinalg",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/NormKind": {
+  "abstract" : [
+    {
+      "text" : "Types of norms available.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NormKind"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NormKind"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NormKind",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/normkind"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/NormKind/fro": {
+  "abstract" : [
+    {
+      "text" : "Frobenius norm",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "fro"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/fro",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "NormKind.fro",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/normkind\/fro"
+}
+}
+}

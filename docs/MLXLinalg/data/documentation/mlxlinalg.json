@@ -1,0 +1,1053 @@
+{
+  "abstract" : [
+    {
+      "text" : "Linear Algebra Functions",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "MLXLinalg",
+    "modules" : [
+      {
+        "name" : "MLXLinalg"
+      }
+    ],
+    "role" : "collection",
+    "roleHeading" : "Framework",
+    "symbolKind" : "module",
+    "title" : "MLXLinalg"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Other-MLX-Packages",
+          "level" : 2,
+          "text" : "Other MLX Packages",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXLinalg\/documentation\/mlxlinalg\/",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-3t3ay",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-4dwwp",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-7fnqw",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-guvw",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-2be8x",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-84g34",
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/qr(_:stream:)"
+      ],
+      "title" : "Functions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind"
+      ],
+      "title" : "Enumerations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/mlxlinalg"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg": {
+  "abstract" : [
+    {
+      "text" : "Linear Algebra Functions",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "MLXLinalg",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/NormKind": {
+  "abstract" : [
+    {
+      "text" : "Types of norms available.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NormKind"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NormKind"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NormKind",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/normkind"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/norm(_:ord:axes:keepDims:stream:)-3t3ay": {
+  "abstract" : [
+    {
+      "text" : "Matrix or vector norm.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "norm"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ord"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-3t3ay",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "norm(_:ord:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/norm(_:ord:axes:keepdims:stream:)-3t3ay"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/norm(_:ord:axes:keepDims:stream:)-4dwwp": {
+  "abstract" : [
+    {
+      "text" : "Matrix or vector norm.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "norm"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ord"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9MLXLinalg8NormKindO",
+      "text" : "NormKind"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-4dwwp",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "norm(_:ord:axes:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/norm(_:ord:axes:keepdims:stream:)-4dwwp"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/norm(_:ord:axis:keepDims:stream:)-7fnqw": {
+  "abstract" : [
+    {
+      "text" : "Matrix or vector norm.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "norm"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ord"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-7fnqw",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "norm(_:ord:axis:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/norm(_:ord:axis:keepdims:stream:)-7fnqw"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/norm(_:ord:axis:keepDims:stream:)-guvw": {
+  "abstract" : [
+    {
+      "text" : "Matrix or vector norm.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "norm"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ord"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9MLXLinalg8NormKindO",
+      "text" : "NormKind"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-guvw",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "norm(_:ord:axis:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/norm(_:ord:axis:keepdims:stream:)-guvw"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/norm(_:ord:keepDims:stream:)-2be8x": {
+  "abstract" : [
+    {
+      "text" : "Matrix or vector norm.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "norm"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ord"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9MLXLinalg8NormKindO",
+      "text" : "NormKind"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-2be8x",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "norm(_:ord:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/norm(_:ord:keepdims:stream:)-2be8x"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/norm(_:ord:keepDims:stream:)-84g34": {
+  "abstract" : [
+    {
+      "text" : "Matrix or vector norm.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "norm"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ord"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "keepDims"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-84g34",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "norm(_:ord:keepDims:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/norm(_:ord:keepdims:stream:)-84g34"
+},
+"doc://mlx.swift.mlxlinalg/documentation/MLXLinalg/qr(_:stream:)": {
+  "abstract" : [
+    {
+      "text" : "The QR factorization of the input matrix.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "qr"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "stream"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX14StreamOrDeviceV",
+      "text" : "StreamOrDevice"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/qr(_:stream:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "qr(_:stream:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxlinalg\/qr(_:stream:)"
+},
+"https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/",
+  "title" : "MLX",
+  "titleInlineContent" : [
+    {
+      "text" : "MLX",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLX\/documentation\/mlx\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/",
+  "title" : "MLXFFT",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXFFT",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXFFT\/documentation\/mlxfft\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXLinalg/documentation/mlxlinalg/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXLinalg\/documentation\/mlxlinalg\/",
+  "title" : "MLXLinalg",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXLinalg",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXLinalg\/documentation\/mlxlinalg\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/",
+  "title" : "MLXNN",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXNN",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXNN\/documentation\/mlxnn\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/",
+  "title" : "MLXOptimizers",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXOptimizers",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXOptimizers\/documentation\/mlxoptimizers\/"
+},
+"https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/",
+  "title" : "MLXRandom",
+  "titleInlineContent" : [
+    {
+      "text" : "MLXRandom",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/MLXRandom\/documentation\/mlxrandom\/"
+},
+"https://ml-explore.github.io/mlx/build/html/index.html": {
+  "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",
+  "title" : "Python mlx",
+  "titleInlineContent" : [
+    {
+      "text" : "Python ",
+      "type" : "text"
+    },
+    {
+      "code" : "mlx",
+      "type" : "codeVoice"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html"
+}
+}
+}

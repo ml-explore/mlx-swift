@@ -1,0 +1,263 @@
+[
+  {
+    "headings" : [
+      "Return Value",
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/qr(_:stream:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "The QR factorization of the input matrix.  Return Value the Q and R matrices Discussion This function supports arrays with at least 2 dimensions. The matrices which are factorized are assumed to be in the last two dimensions of the input.",
+    "summary" : "The QR factorization of the input matrix.",
+    "title" : "qr(_:stream:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/init(rawValue:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inherited from RawRepresentable.init(rawValue:). ",
+    "summary" : "Inherited from RawRepresentable.init(rawValue:).",
+    "title" : "init(rawValue:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/hashValue"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inherited from RawRepresentable.hashValue. ",
+    "summary" : "Inherited from RawRepresentable.hashValue.",
+    "title" : "hashValue"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/!=(_:_:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inherited from Equatable.!=(_:_:). ",
+    "summary" : "Inherited from Equatable.!=(_:_:).",
+    "title" : "!=(_:_:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "article",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/Equatable-Implementations"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "",
+    "summary" : "",
+    "title" : "Equatable Implementations"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "article",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/RawRepresentable-Implementations"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "",
+    "summary" : "",
+    "title" : "RawRepresentable Implementations"
+  },
+  {
+    "headings" : [
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Types of norms available.  See Also norm(_:ord:axes:keepDims:stream:) norm(_:ord:axes:keepDims:stream:) MLXLinalg",
+    "summary" : "Types of norms available.",
+    "title" : "NormKind"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-84g34"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Matrix or vector norm.  Discussion See norm(_:ord:axes:keepDims:stream:)",
+    "summary" : "Matrix or vector norm.",
+    "title" : "norm(_:ord:keepDims:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-7fnqw"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Matrix or vector norm.  Discussion See norm(_:ord:axes:keepDims:stream:)",
+    "summary" : "Matrix or vector norm.",
+    "title" : "norm(_:ord:axis:keepDims:stream:)"
+  },
+  {
+    "headings" : [
+      "Return Value",
+      "Discussion",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-3t3ay"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Matrix or vector norm.  input array order of the norm, see table axes that hold 2d matrices if true the axes which are normed over are left in the result as dimensions with size one stream to evaluate on Return Value output containing the norm(s) Discussion For values of ord < 1, the result is, strictly speaking, not a mathematical norm, but it may still be useful for various numerical purposes. The following norms can be calculated: ord norm for matrices norm for vectors None Frobenius norm 2-norm ‘fro’ Frobenius norm – inf max(sum(abs(x), axis-1)) max(abs(x)) -inf min(sum(abs(x), axis-1)) min(abs(x)) 0 – sum(x !- 0) 1 max(sum(abs(x), axis-0)) as below -1 min(sum(abs(x), axis-0)) as below 2 2-norm (largest sing. value) as below -2 smallest singular value as below other – sum(abs(x)ord)(1.\/ord)  Nuclear norm and norms based on singular values are not yet implemented. The Frobenius norm is given by G. H. Golub and C. F. Van Loan, Matrix Computations, Baltimore, MD, Johns Hopkins University Press, 1985, pg. 15 The nuclear norm is the sum of the singular values. Both the Frobenius and nuclear norm orders are only defined for matrices and produce a fatal error when array.ndim != 2 See Also norm(_:ord:axes:keepDims:stream:)",
+    "summary" : "Matrix or vector norm.",
+    "title" : "norm(_:ord:axes:keepDims:stream:)"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axis:keepDims:stream:)-guvw"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Matrix or vector norm.  Discussion See norm(_:ord:axes:keepDims:stream:)",
+    "summary" : "Matrix or vector norm.",
+    "title" : "norm(_:ord:axis:keepDims:stream:)"
+  },
+  {
+    "headings" : [
+      "Return Value",
+      "Discussion",
+      "See Also"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:axes:keepDims:stream:)-4dwwp"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Matrix or vector norm.  input array order of the norm, see table axes that hold 2d matrices if true the axes which are normed over are left in the result as dimensions with size one stream to evaluate on Return Value output containing the norm(s) Discussion For values of ord < 1, the result is, strictly speaking, not a mathematical norm, but it may still be useful for various numerical purposes. The following norms can be calculated: ord norm for matrices norm for vectors None Frobenius norm 2-norm ‘fro’ Frobenius norm – inf max(sum(abs(x), axis-1)) max(abs(x)) -inf min(sum(abs(x), axis-1)) min(abs(x)) 0 – sum(x !- 0) 1 max(sum(abs(x), axis-0)) as below -1 min(sum(abs(x), axis-0)) as below 2 2-norm (largest sing. value) as below -2 smallest singular value as below other – sum(abs(x)ord)(1.\/ord)  Nuclear norm and norms based on singular values are not yet implemented. The Frobenius norm is given by G. H. Golub and C. F. Van Loan, Matrix Computations, Baltimore, MD, Johns Hopkins University Press, 1985, pg. 15 The nuclear norm is the sum of the singular values. Both the Frobenius and nuclear norm orders are only defined for matrices and produce a fatal error when array.ndim != 2 See Also norm(_:ord:axes:keepDims:stream:)",
+    "summary" : "Matrix or vector norm.",
+    "title" : "norm(_:ord:axes:keepDims:stream:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/fro"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Frobenius norm ",
+    "summary" : "Frobenius norm",
+    "title" : "NormKind.fro"
+  },
+  {
+    "headings" : [
+      "Discussion"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/norm(_:ord:keepDims:stream:)-2be8x"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Matrix or vector norm.  Discussion See norm(_:ord:axes:keepDims:stream:)",
+    "summary" : "Matrix or vector norm.",
+    "title" : "norm(_:ord:keepDims:stream:)"
+  },
+  {
+    "headings" : [
+
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg\/NormKind\/hash(into:)"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Inherited from RawRepresentable.hash(into:). ",
+    "summary" : "Inherited from RawRepresentable.hash(into:).",
+    "title" : "hash(into:)"
+  },
+  {
+    "headings" : [
+      "Other MLX Packages"
+    ],
+    "kind" : "symbol",
+    "location" : {
+      "reference" : {
+        "interfaceLanguage" : "swift",
+        "url" : "doc:\/\/mlx.swift.mlxlinalg\/documentation\/MLXLinalg"
+      },
+      "type" : "topLevelPage"
+    },
+    "rawIndexableTextContent" : "Linear Algebra Functions Other MLX Packages MLX MLXRandom MLXNN MLXOptimizers MLXFFT MLXLinalg Python mlx",
+    "summary" : "Linear Algebra Functions",
+    "title" : "MLXLinalg"
+  }
+]

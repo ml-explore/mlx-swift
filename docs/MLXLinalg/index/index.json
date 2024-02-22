@@ -1,0 +1,131 @@
+{
+  "interfaceLanguages" : {
+    "swift" : [
+      {
+        "children" : [
+          {
+            "title" : "Functions",
+            "type" : "groupMarker"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axes:keepdims:stream:)-3t3ay",
+            "title" : "func norm(MLXArray, ord: Double, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axes:keepdims:stream:)-4dwwp",
+            "title" : "func norm(MLXArray, ord: NormKind?, axes: [Int], keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axis:keepdims:stream:)-7fnqw",
+            "title" : "func norm(MLXArray, ord: Double, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/norm(_:ord:axis:keepdims:stream:)-guvw",
+            "title" : "func norm(MLXArray, ord: NormKind?, axis: Int, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/norm(_:ord:keepdims:stream:)-2be8x",
+            "title" : "func norm(MLXArray, ord: NormKind?, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/norm(_:ord:keepdims:stream:)-84g34",
+            "title" : "func norm(MLXArray, ord: Double, keepDims: Bool, stream: StreamOrDevice) -> MLXArray",
+            "type" : "func"
+          },
+          {
+            "path" : "\/documentation\/mlxlinalg\/qr(_:stream:)",
+            "title" : "func qr(MLXArray, stream: StreamOrDevice) -> (MLXArray, MLXArray)",
+            "type" : "func"
+          },
+          {
+            "title" : "Enumerations",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Enumeration Cases",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxlinalg\/normkind\/fro",
+                "title" : "case fro",
+                "type" : "case"
+              },
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxlinalg\/normkind\/init(rawvalue:)",
+                "title" : "init?(rawValue: String)",
+                "type" : "init"
+              },
+              {
+                "title" : "Default Implementations",
+                "type" : "groupMarker"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Operators",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxlinalg\/normkind\/!=(_:_:)",
+                    "title" : "static func != (Self, Self) -> Bool",
+                    "type" : "op"
+                  }
+                ],
+                "path" : "\/documentation\/mlxlinalg\/normkind\/equatable-implementations",
+                "title" : "Equatable Implementations",
+                "type" : "symbol"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxlinalg\/normkind\/hashvalue",
+                    "title" : "var hashValue: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "title" : "Instance Methods",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxlinalg\/normkind\/hash(into:)",
+                    "title" : "func hash(into: inout Hasher)",
+                    "type" : "method"
+                  }
+                ],
+                "path" : "\/documentation\/mlxlinalg\/normkind\/rawrepresentable-implementations",
+                "title" : "RawRepresentable Implementations",
+                "type" : "symbol"
+              }
+            ],
+            "path" : "\/documentation\/mlxlinalg\/normkind",
+            "title" : "NormKind",
+            "type" : "enum"
+          }
+        ],
+        "path" : "\/documentation\/mlxlinalg",
+        "title" : "MLXLinalg",
+        "type" : "module"
+      }
+    ]
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 1,
+    "patch" : 1
+  }
+}
