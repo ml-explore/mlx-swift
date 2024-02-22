@@ -20,7 +20,7 @@ fi
 export DOCC_JSON_PRETTYPRINT=YES
 
 export MLX_SWIFT_BUILD_DOC=1
-for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT; do
+for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT MLXLinalg; do
     swift package \
 	--allow-writing-to-directory ./docs \
 	generate-documentation \
@@ -35,6 +35,3 @@ for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT; do
 	--source-service-base-url https://github.com/ml-explore/mlx-swift/blob/main \
 	--checkout-path `pwd`
 done
-
-mkdir -p docs/mlx-swift/MLX/downloads
-cp Source/MLX/Documentation.docc/Resources/mlx-examples-swift.zip docs
