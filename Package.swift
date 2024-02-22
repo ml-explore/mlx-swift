@@ -30,9 +30,6 @@ let package = Package(
     dependencies: [
         // for Complex type
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
-
-        // docc builder
-        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main"),
     ],
     targets: [
         // plugin to help build the metal shaders
@@ -171,3 +168,10 @@ let package = Package(
     ],
     cxxLanguageStandard: .gnucxx17
 )
+
+if Context.environment["MLX_SWIFT_BUILD_DOC"] == "1" {
+    // docc builder
+    package.dependencies.append(
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0")
+    )
+}
