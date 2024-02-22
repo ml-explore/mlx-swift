@@ -19,6 +19,7 @@ fi
 
 export DOCC_JSON_PRETTYPRINT=YES
 
+export MLX_SWIFT_BUILD_DOC=1
 for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT; do
     swift package \
 	--allow-writing-to-directory ./docs \
