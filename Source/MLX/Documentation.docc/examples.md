@@ -5,13 +5,15 @@ Swift example code for MLX and MLXNN.
 @Metadata {
     @CallToAction(
         purpose: download,
-        url: "https://ml-explore.github.io/mlx-swift/mlx-examples-swift.zip")
+        url: "https://github.com/ml-explore/mlx-swift-examples/archive/refs/heads/main.zip")
     @PageKind(sampleCode)
 }
 
 ## Overview
 
-Example software for ``MLX`` and `MLXNN`.
+Example software for ``MLX`` and `MLXNN`.  Browse it in GitHub at:
+
+- [https://github.com/ml-explore/mlx-swift-examples](https://github.com/ml-explore/mlx-swift-examples)
 
 ### LinearModelTraining
 
