@@ -213,6 +213,12 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU\/alpha"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -294,6 +300,40 @@
   "title" : "CELU",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/celu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/CELU/alpha": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "alpha"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/CELU\/alpha",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "alpha",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/celu\/alpha"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/CELU/callAsFunction(_:)": {
   "abstract" : [

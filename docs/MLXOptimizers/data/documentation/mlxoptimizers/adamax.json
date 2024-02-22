@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L378"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L380"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -194,6 +194,13 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/init(learningRate:betas:eps:)"
       ],
       "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/applySingle(gradient:parameter:state:)",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/newState(parameter:)"
+      ],
+      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -438,6 +445,104 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adamax"
 },
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax/applySingle(gradient:parameter:state:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "applySingle"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "gradient"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers10TupleStateV",
+      "text" : "TupleState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers10TupleStateV",
+      "text" : "TupleState"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/applySingle(gradient:parameter:state:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "applySingle(gradient:parameter:state:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adamax\/applysingle(gradient:parameter:state:)"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax/init(learningRate:betas:eps:)": {
   "abstract" : [
     {
@@ -521,6 +626,57 @@
   "title" : "init(learningRate:betas:eps:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adamax\/init(learningrate:betas:eps:)"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adamax/newState(parameter:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "newState"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers10TupleStateV",
+      "text" : "TupleState"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adamax\/newState(parameter:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "newState(parameter:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adamax\/newstate(parameter:)"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Lion": {
   "abstract" : [

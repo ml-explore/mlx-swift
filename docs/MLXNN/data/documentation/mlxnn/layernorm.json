@@ -188,6 +188,15 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/bias",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/dimensions",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/eps",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/weight"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -372,6 +381,44 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/layernorm"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm/bias": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/bias",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bias",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/layernorm\/bias"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm/callAsFunction(_:)": {
   "abstract" : [
 
@@ -414,6 +461,74 @@
   "title" : "callAsFunction(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/layernorm\/callasfunction(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm/dimensions": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/dimensions",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dimensions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/layernorm\/dimensions"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm/eps": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eps"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/eps",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eps",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/layernorm\/eps"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm/init(dimensions:eps:affine:)": {
   "abstract" : [
@@ -489,6 +604,44 @@
   "title" : "init(dimensions:eps:affine:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/layernorm\/init(dimensions:eps:affine:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/LayerNorm/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/LayerNorm\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/layernorm\/weight"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
   "abstract" : [

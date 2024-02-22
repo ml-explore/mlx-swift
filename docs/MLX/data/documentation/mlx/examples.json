@@ -56,11 +56,30 @@
               "type" : "codeVoice"
             },
             {
-              "text" : ".",
+              "text" : ".  Browse it in GitHub at:",
               "type" : "text"
             }
           ],
           "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "identifier" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
         },
         {
           "anchor" : "LinearModelTraining",
@@ -113,7 +132,7 @@
   ],
   "sampleCodeDownload" : {
     "action" : {
-      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip",
+      "identifier" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples\/archive\/refs\/heads\/main.zip",
       "isActive" : true,
       "overridingTitle" : "Download",
       "type" : "reference"
@@ -456,11 +475,23 @@
   "type" : "topic",
   "url" : "\/documentation\/mlx\/using-streams"
 },
-"https://ml-explore.github.io/mlx-swift/mlx-examples-swift.zip": {
+"https://github.com/ml-explore/mlx-swift-examples": {
+  "identifier" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples",
+  "title" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples",
+  "titleInlineContent" : [
+    {
+      "text" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples"
+},
+"https://github.com/ml-explore/mlx-swift-examples/archive/refs/heads/main.zip": {
   "checksum" : null,
-  "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip",
+  "identifier" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples\/archive\/refs\/heads\/main.zip",
   "type" : "download",
-  "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip"
+  "url" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples\/archive\/refs\/heads\/main.zip"
 },
 "https://ml-explore.github.io/mlx/build/html/index.html": {
   "identifier" : "https:\/\/ml-explore.github.io\/mlx\/build\/html\/index.html",

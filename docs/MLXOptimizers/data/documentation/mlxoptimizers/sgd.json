@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L112"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L114"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -162,6 +162,13 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/init(learningRate:momentum:weightDecay:dampening:nesterov:)"
       ],
       "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/applySingle(gradient:parameter:state:)",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/newState(parameter:)"
+      ],
+      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -584,6 +591,104 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd"
 },
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/SGD/applySingle(gradient:parameter:state:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "applySingle"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "gradient"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/applySingle(gradient:parameter:state:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "applySingle(gradient:parameter:state:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/sgd\/applysingle(gradient:parameter:state:)"
+},
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/SGD/init(learningRate:momentum:weightDecay:dampening:nesterov:)": {
   "abstract" : [
     {
@@ -692,6 +797,57 @@
   "title" : "init(learningRate:momentum:weightDecay:dampening:nesterov:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/sgd\/init(learningrate:momentum:weightdecay:dampening:nesterov:)"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/SGD/newState(parameter:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "newState"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/SGD\/newState(parameter:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "newState(parameter:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/sgd\/newstate(parameter:)"
 }
 }
 }

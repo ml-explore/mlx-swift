@@ -213,6 +213,12 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU\/weight"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -698,6 +704,40 @@
   "title" : "init(count:value:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/prelu\/init(count:value:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/PReLU/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/prelu\/weight"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/ReLU": {
   "abstract" : [

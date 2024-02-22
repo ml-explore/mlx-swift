@@ -54,7 +54,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L81"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L83"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -167,6 +167,14 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBase"
       ],
       "title" : "Base Classes and Protocols"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState\/newState(parameter:)"
+      ],
+      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -392,6 +400,57 @@
   "title" : "OptimizerBaseArrayState",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/OptimizerBaseArrayState/newState(parameter:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "newState"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/OptimizerBaseArrayState\/newState(parameter:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "newState(parameter:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/optimizerbasearraystate\/newstate(parameter:)"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/RMSprop": {
   "abstract" : [

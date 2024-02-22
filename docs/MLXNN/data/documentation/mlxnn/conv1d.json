@@ -160,6 +160,8 @@
     {
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool1d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool2d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout2d",
@@ -167,6 +169,8 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Embedding",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool1d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool2d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
@@ -181,6 +185,15 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)"
       ],
       "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/bias",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/padding",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/stride",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/weight"
+      ],
+      "title" : "Instance Properties"
     },
     {
       "identifiers" : [
@@ -232,6 +245,74 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/AvgPool1d": {
+  "abstract" : [
+    {
+      "text" : "Applies 1-dimensional average pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool1d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool1d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool1d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AvgPool1d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/avgpool1d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/AvgPool2d": {
+  "abstract" : [
+    {
+      "text" : "Applies 2-dimensional average pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AvgPool2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/avgpool2d"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d": {
   "abstract" : [
     {
@@ -265,6 +346,44 @@
   "title" : "Conv1d",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/conv1d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d/bias": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/bias",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bias",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv1d\/bias"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d/callAsFunction(_:)": {
   "abstract" : [
@@ -434,6 +553,108 @@
   "title" : "init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/conv1d\/init(inputchannels:outputchannels:kernelsize:stride:padding:bias:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d/padding": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "padding"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/padding",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "padding",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv1d\/padding"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d/stride": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stride"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/stride",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stride",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv1d\/stride"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Conv1d/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/conv1d\/weight"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Conv2d": {
   "abstract" : [
@@ -672,6 +893,74 @@
   "title" : "Linear",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/linear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MaxPool1d": {
+  "abstract" : [
+    {
+      "text" : "Applies 1-dimensional max pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool1d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool1d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool1d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MaxPool1d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/maxpool1d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MaxPool2d": {
+  "abstract" : [
+    {
+      "text" : "Applies 2-dimensional max pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MaxPool2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/maxpool2d"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
   "abstract" : [

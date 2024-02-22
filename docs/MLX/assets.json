@@ -2,9 +2,9 @@
   "downloads" : [
     {
       "checksum" : null,
-      "identifier" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip",
+      "identifier" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples\/archive\/refs\/heads\/main.zip",
       "type" : "download",
-      "url" : "https:\/\/ml-explore.github.io\/mlx-swift\/mlx-examples-swift.zip"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift-examples\/archive\/refs\/heads\/main.zip"
     }
   ],
   "images" : [

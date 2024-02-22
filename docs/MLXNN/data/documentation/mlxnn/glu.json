@@ -246,6 +246,12 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU\/axis"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -395,6 +401,40 @@
   "title" : "GLU",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/glu"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GLU/axis": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "axis"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GLU\/axis",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "axis",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/glu\/axis"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/GLU/callAsFunction(_:)": {
   "abstract" : [

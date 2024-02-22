@@ -143,7 +143,7 @@
             "    .package(url: \"https:\/\/github.com\/ml-explore\/mlx-swift\", from: \"0.10.0\")",
             "]"
           ],
-          "syntax" : null,
+          "syntax" : "swift",
           "type" : "codeListing"
         },
         {
@@ -163,7 +163,7 @@
             "               .product(name: \"MLXOptimziers\", package: \"mlx-swift\"),",
             "               .product(name: \"MLXFFT\", package: \"mlx-swift\")]"
           ],
-          "syntax" : null,
+          "syntax" : "swift",
           "type" : "codeListing"
         },
         {
@@ -216,7 +216,7 @@
               "type" : "reference"
             },
             {
-              "text" : " (Runnging From Command Line) for information about running command line tools from the shell.",
+              "text" : " (Running From Command Line) for information about running command line tools from the shell.",
               "type" : "text"
             }
           ],

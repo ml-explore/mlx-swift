@@ -46,7 +46,7 @@
     ],
     "remoteSource" : {
       "fileName" : "Optimizers.swift",
-      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L469"
+      "url" : "https:\/\/github.com\/ml-explore\/mlx-swift\/blob\/main\/Source\/MLXOptimizers\/Optimizers.swift#L471"
     },
     "role" : "symbol",
     "roleHeading" : "Class",
@@ -200,6 +200,13 @@
         "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)"
       ],
       "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/applySingle(gradient:parameter:state:)",
+        "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/newState(parameter:)"
+      ],
+      "title" : "Instance Methods"
     }
   ],
   "variants" : [
@@ -372,6 +379,122 @@
   "title" : "Adafactor.State",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adafactor\/state"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor/applySingle(gradient:parameter:state:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "applySingle"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "gradient"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers9AdafactorC",
+      "text" : "Adafactor"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers9AdafactorC5StateV",
+      "text" : "State"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers9AdafactorC",
+      "text" : "Adafactor"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers9AdafactorC5StateV",
+      "text" : "State"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/applySingle(gradient:parameter:state:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "applySingle(gradient:parameter:state:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adafactor\/applysingle(gradient:parameter:state:)"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor/init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)": {
   "abstract" : [
@@ -558,6 +681,66 @@
   "title" : "init(learningRate:eps:clipThreshold:decayRate:beta1:weightDecay:scaleParameter:relativeStep:warmupInit:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxoptimizers\/adafactor\/init(learningrate:eps:clipthreshold:decayrate:beta1:weightdecay:scaleparameter:relativestep:warmupinit:)"
+},
+"doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adafactor/newState(parameter:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "newState"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers9AdafactorC",
+      "text" : "Adafactor"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:13MLXOptimizers9AdafactorC5StateV",
+      "text" : "State"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxoptimizers\/documentation\/MLXOptimizers\/Adafactor\/newState(parameter:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "newState(parameter:)",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxoptimizers\/adafactor\/newstate(parameter:)"
 },
 "doc://mlx.swift.mlxoptimizers/documentation/MLXOptimizers/Adam": {
   "abstract" : [

@@ -173,6 +173,16 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/keyProjection",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/numHeads",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/outProjection",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/queryProjection",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/valueProjection"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/callAsFunction(_:keys:values:mask:)"
       ],
       "title" : "Instance Methods"
@@ -658,6 +668,176 @@
   "title" : "init(dimensions:numHeads:queryInputDimensions:keyInputDimensions:valueInputDimensions:valueDimensions:valueOutputDimensions:bias:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/keyProjection": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "keyProjection"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6LinearC",
+      "text" : "Linear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/keyProjection",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "keyProjection",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/keyprojection"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/numHeads": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "numHeads"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/numHeads",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "numHeads",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/numheads"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/outProjection": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "outProjection"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6LinearC",
+      "text" : "Linear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/outProjection",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "outProjection",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/outprojection"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/queryProjection": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "queryProjection"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6LinearC",
+      "text" : "Linear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/queryProjection",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "queryProjection",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/queryprojection"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MultiHeadAttention/valueProjection": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueProjection"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN6LinearC",
+      "text" : "Linear"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention\/valueProjection",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueProjection",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/multiheadattention\/valueprojection"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/transformers": {
   "abstract" : [

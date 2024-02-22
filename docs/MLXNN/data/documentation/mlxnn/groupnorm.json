@@ -188,6 +188,17 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/bias",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/dimensions",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/eps",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/groupCount",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/pytorchCompatible",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/weight"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -304,6 +315,44 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/groupnorm"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/bias": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/bias",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bias",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm\/bias"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/callAsFunction(_:)": {
   "abstract" : [
 
@@ -346,6 +395,108 @@
   "title" : "callAsFunction(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/groupnorm\/callasfunction(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/dimensions": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dimensions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/dimensions",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dimensions",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm\/dimensions"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/eps": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eps"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/eps",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eps",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm\/eps"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/groupCount": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "groupCount"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/groupCount",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "groupCount",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm\/groupcount"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/init(groupCount:dimensions:eps:affine:pytorchCompatible:)": {
   "abstract" : [
@@ -455,6 +606,78 @@
   "title" : "init(groupCount:dimensions:eps:affine:pytorchCompatible:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/groupnorm\/init(groupcount:dimensions:eps:affine:pytorchcompatible:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/pytorchCompatible": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "pytorchCompatible"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/pytorchCompatible",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "pytorchCompatible",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm\/pytorchcompatible"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GroupNorm\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/groupnorm\/weight"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/InstanceNorm": {
   "abstract" : [

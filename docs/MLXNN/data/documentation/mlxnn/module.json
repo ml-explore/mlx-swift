@@ -621,6 +621,7 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Mish",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MultiHeadAttention",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/PReLU",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Pool",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/ReLU6",
@@ -5198,6 +5199,37 @@
   "title" : "ParameterInfo",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/parameterinfo"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Pool": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Pool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Pool",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Pool"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Pool",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/pool"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/RMSNorm": {
   "abstract" : [

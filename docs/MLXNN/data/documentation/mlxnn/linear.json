@@ -408,6 +408,8 @@
     {
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool1d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool2d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv1d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Conv2d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout",
@@ -415,6 +417,8 @@
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Dropout3d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Embedding",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Identity",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool1d",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool2d",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/QuantizedLinear",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RoPE",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/RMSNorm",
@@ -432,7 +436,9 @@
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/shape"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/bias",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/shape",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/weight"
       ],
       "title" : "Instance Properties"
     },
@@ -486,6 +492,74 @@
   "title" : "MLXNN",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/AvgPool1d": {
+  "abstract" : [
+    {
+      "text" : "Applies 1-dimensional average pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool1d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool1d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool1d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AvgPool1d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/avgpool1d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/AvgPool2d": {
+  "abstract" : [
+    {
+      "text" : "Applies 2-dimensional average pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/AvgPool2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "AvgPool2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "AvgPool2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/avgpool2d"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear": {
   "abstract" : [
@@ -793,6 +867,44 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/linear"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/bias": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/bias",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bias",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear\/bias"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/callAsFunction(_:)": {
   "abstract" : [
 
@@ -1003,6 +1115,108 @@
   "title" : "shape",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/linear\/shape"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Linear/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Linear\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/linear\/weight"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MaxPool1d": {
+  "abstract" : [
+    {
+      "text" : "Applies 1-dimensional max pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool1d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool1d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool1d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MaxPool1d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/maxpool1d"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/MaxPool2d": {
+  "abstract" : [
+    {
+      "text" : "Applies 2-dimensional max pooling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool2d"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/MaxPool2d",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "MaxPool2d"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "MaxPool2d",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/maxpool2d"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Module": {
   "abstract" : [

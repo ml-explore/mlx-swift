@@ -105,7 +105,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation\/none",
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum\/none",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -119,7 +119,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation\/precise",
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum\/precise",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -133,7 +133,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation\/fast",
+                      "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum\/fast",
                       "isActive" : true,
                       "type" : "reference"
                     }
@@ -281,13 +281,19 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/approximation-swift.property"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
     },
     {
       "identifiers" : [
-        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation"
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum"
       ],
       "title" : "Enumerations"
     }
@@ -403,7 +409,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/gelu"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation-swift.enum": {
   "abstract" : [
 
   ],
@@ -421,7 +427,7 @@
       "text" : "Approximation"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
@@ -432,9 +438,9 @@
   "role" : "symbol",
   "title" : "GELU.Approximation",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/gelu\/approximation"
+  "url" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation/fast": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation-swift.enum/fast": {
   "abstract" : [
     {
       "text" : "See ",
@@ -460,14 +466,14 @@
       "text" : "fast"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation\/fast",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum\/fast",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "GELU.Approximation.fast",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/gelu\/approximation\/fast"
+  "url" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/fast"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation/none": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation-swift.enum/none": {
   "abstract" : [
     {
       "text" : "See ",
@@ -493,14 +499,14 @@
       "text" : "none"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation\/none",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum\/none",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "GELU.Approximation.none",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/gelu\/approximation\/none"
+  "url" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/none"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation/precise": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation-swift.enum/precise": {
   "abstract" : [
     {
       "text" : "See ",
@@ -526,12 +532,55 @@
       "text" : "precise"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation\/precise",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum\/precise",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "GELU.Approximation.precise",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/gelu\/approximation\/precise"
+  "url" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/precise"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/approximation-swift.property": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "approximation"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN4GELUC",
+      "text" : "GELU"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:5MLXNN4GELUC13ApproximationO",
+      "text" : "Approximation"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/approximation-swift.property",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "approximation",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/gelu\/approximation-swift.property"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/callAsFunction(_:)": {
   "abstract" : [

@@ -755,9 +755,65 @@
                 "type" : "groupMarker"
               },
               {
+                "path" : "\/documentation\/mlxnn\/avgpool1d\/init(kernelsize:stride:)",
+                "title" : "init(kernelSize: Int, stride: Int)",
+                "type" : "init"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/avgpool1d",
+            "title" : "AvgPool1d",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/avgpool2d\/init(kernelsize:stride:)",
+                "title" : "init(kernelSize: IntOrPair, stride: IntOrPair)",
+                "type" : "init"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/avgpool2d",
+            "title" : "AvgPool2d",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
                 "path" : "\/documentation\/mlxnn\/conv1d\/init(inputchannels:outputchannels:kernelsize:stride:padding:bias:)",
                 "title" : "init(inputChannels: Int, outputChannels: Int, kernelSize: Int, stride: Int, padding: Int, bias: Bool)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv1d\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv1d\/padding",
+                "title" : "let padding: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv1d\/stride",
+                "title" : "let stride: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv1d\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -785,6 +841,30 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv2d\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv2d\/padding",
+                "title" : "let padding: (Int, Int)",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv2d\/stride",
+                "title" : "let stride: (Int, Int)",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/conv2d\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -808,6 +888,15 @@
                 "path" : "\/documentation\/mlxnn\/dropout\/init(p:)",
                 "title" : "init(p: Float)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/dropout\/p1",
+                "title" : "let p1: Float",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -835,6 +924,15 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/dropout2d\/p1",
+                "title" : "let p1: Float",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -860,6 +958,15 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/dropout3d\/p1",
+                "title" : "let p1: Float",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -883,6 +990,15 @@
                 "path" : "\/documentation\/mlxnn\/embedding\/init(embeddingcount:dimensions:)",
                 "title" : "init(embeddingCount: Int, dimensions: Int)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/embedding\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -935,8 +1051,18 @@
                 "type" : "groupMarker"
               },
               {
+                "path" : "\/documentation\/mlxnn\/linear\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
                 "path" : "\/documentation\/mlxnn\/linear\/shape",
                 "title" : "var shape: (Int, Int)",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/linear\/weight",
+                "title" : "let weight: MLXArray",
                 "type" : "property"
               },
               {
@@ -965,6 +1091,38 @@
                 "type" : "groupMarker"
               },
               {
+                "path" : "\/documentation\/mlxnn\/maxpool1d\/init(kernelsize:stride:)",
+                "title" : "init(kernelSize: Int, stride: Int)",
+                "type" : "init"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/maxpool1d",
+            "title" : "MaxPool1d",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/maxpool2d\/init(kernelsize:stride:)",
+                "title" : "init(kernelSize: IntOrPair, stride: IntOrPair)",
+                "type" : "init"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/maxpool2d",
+            "title" : "MaxPool2d",
+            "type" : "class"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Initializers",
+                "type" : "groupMarker"
+              },
+              {
                 "path" : "\/documentation\/mlxnn\/quantizedlinear\/init(_:_:bias:groupsize:bits:)",
                 "title" : "convenience init(Int, Int, bias: Bool, groupSize: Int, bits: Int)",
                 "type" : "init"
@@ -973,6 +1131,30 @@
                 "path" : "\/documentation\/mlxnn\/quantizedlinear\/init(weight:bias:groupsize:bits:)",
                 "title" : "init(weight: MLXArray, bias: MLXArray?, groupSize: Int, bits: Int)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/quantizedlinear\/biases",
+                "title" : "let biases: MLXArray",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/quantizedlinear\/bits",
+                "title" : "let bits: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/quantizedlinear\/groupsize",
+                "title" : "let groupSize: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/quantizedlinear\/scales",
+                "title" : "let scales: MLXArray",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1049,6 +1231,20 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/eps",
+                "title" : "let eps: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1089,6 +1285,15 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/sequential\/layers",
+                "title" : "let layers: [UnaryLayer]",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1116,6 +1321,20 @@
                 "path" : "\/documentation\/mlxnn\/bilinear\/init(_:_:_:bias:)",
                 "title" : "init(Int, Int, Int, bias: Bool)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/bilinear\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/bilinear\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1146,6 +1365,35 @@
                 "path" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)",
                 "title" : "init(dimensions: Int, numHeads: Int, queryInputDimensions: Int?, keyInputDimensions: Int?, valueInputDimensions: Int?, valueDimensions: Int?, valueOutputDimensions: Int?, bias: Bool)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/keyprojection",
+                "title" : "var keyProjection: Linear",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/numheads",
+                "title" : "let numHeads: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/outprojection",
+                "title" : "var outProjection: Linear",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/queryprojection",
+                "title" : "var queryProjection: Linear",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/valueprojection",
+                "title" : "var valueProjection: Linear",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1290,6 +1538,15 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/celu\/alpha",
+                "title" : "let alpha: Float",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1315,6 +1572,15 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.property",
+                "title" : "let approximation: GELU.Approximation",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1334,17 +1600,17 @@
                     "type" : "groupMarker"
                   },
                   {
-                    "path" : "\/documentation\/mlxnn\/gelu\/approximation\/fast",
+                    "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/fast",
                     "title" : "case fast",
                     "type" : "case"
                   },
                   {
-                    "path" : "\/documentation\/mlxnn\/gelu\/approximation\/none",
+                    "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/none",
                     "title" : "case none",
                     "type" : "case"
                   },
                   {
-                    "path" : "\/documentation\/mlxnn\/gelu\/approximation\/precise",
+                    "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/precise",
                     "title" : "case precise",
                     "type" : "case"
                   },
@@ -1359,17 +1625,17 @@
                         "type" : "groupMarker"
                       },
                       {
-                        "path" : "\/documentation\/mlxnn\/gelu\/approximation\/!=(_:_:)",
+                        "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/!=(_:_:)",
                         "title" : "static func != (Self, Self) -> Bool",
                         "type" : "op"
                       }
                     ],
-                    "path" : "\/documentation\/mlxnn\/gelu\/approximation\/equatable-implementations",
+                    "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/equatable-implementations",
                     "title" : "Equatable Implementations",
                     "type" : "symbol"
                   }
                 ],
-                "path" : "\/documentation\/mlxnn\/gelu\/approximation",
+                "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum",
                 "title" : "GELU.Approximation",
                 "type" : "enum"
               }
@@ -1388,6 +1654,15 @@
                 "path" : "\/documentation\/mlxnn\/glu\/init(axis:)",
                 "title" : "init(axis: Int)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/glu\/axis",
+                "title" : "let axis: Int",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1493,6 +1768,15 @@
                 "path" : "\/documentation\/mlxnn\/prelu\/init(count:value:)",
                 "title" : "init(count: Int, value: Float)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/prelu\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1648,6 +1932,15 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/step\/threshold",
+                "title" : "let threshold: Float",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1757,6 +2050,30 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/instancenorm\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/instancenorm\/dimensions",
+                "title" : "let dimensions: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/instancenorm\/eps",
+                "title" : "let eps: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/instancenorm\/weight",
+                "title" : "let weight: MLXArray?",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1782,6 +2099,30 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/layernorm\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/layernorm\/dimensions",
+                "title" : "let dimensions: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/layernorm\/eps",
+                "title" : "let eps: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/layernorm\/weight",
+                "title" : "let weight: MLXArray?",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1805,6 +2146,20 @@
                 "path" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)",
                 "title" : "init(dimensions: Int, eps: Float)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/eps",
+                "title" : "let eps: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/rmsnorm\/weight",
+                "title" : "let weight: MLXArray",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1837,6 +2192,40 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/dimensions",
+                "title" : "let dimensions: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/eps",
+                "title" : "let eps: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/groupcount",
+                "title" : "let groupCount: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/pytorchcompatible",
+                "title" : "let pytorchCompatible: Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/groupnorm\/weight",
+                "title" : "let weight: MLXArray?",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1860,6 +2249,35 @@
                 "path" : "\/documentation\/mlxnn\/batchnorm\/init(featurecount:eps:momentum:affine:trackrunningstats:)",
                 "title" : "init(featureCount: Int, eps: Float, momentum: Float, affine: Bool, trackRunningStats: Bool)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/bias",
+                "title" : "let bias: MLXArray?",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/eps",
+                "title" : "let eps: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/featurecount",
+                "title" : "let featureCount: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/momentum",
+                "title" : "let momentum: Float",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/batchnorm\/weight",
+                "title" : "let weight: MLXArray?",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -1926,6 +2344,20 @@
                 "type" : "init"
               },
               {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/cosinefirst",
+                "title" : "let cosineFirst: Bool",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/scale",
+                "title" : "let scale: Float",
+                "type" : "property"
+              },
+              {
                 "title" : "Instance Methods",
                 "type" : "groupMarker"
               },
@@ -1978,6 +2410,35 @@
                 "path" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)",
                 "title" : "init(dimensions: Int, numHeads: Int, queryInputDimensions: Int?, keyInputDimensions: Int?, valueInputDimensions: Int?, valueDimensions: Int?, valueOutputDimensions: Int?, bias: Bool)",
                 "type" : "init"
+              },
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/keyprojection",
+                "title" : "var keyProjection: Linear",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/numheads",
+                "title" : "let numHeads: Int",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/outprojection",
+                "title" : "var outProjection: Linear",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/queryprojection",
+                "title" : "var queryProjection: Linear",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/multiheadattention\/valueprojection",
+                "title" : "var valueProjection: Linear",
+                "type" : "property"
               },
               {
                 "title" : "Instance Methods",
@@ -2172,6 +2633,15 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/celu\/alpha",
+                    "title" : "let alpha: Float",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2197,6 +2667,15 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.property",
+                    "title" : "let approximation: GELU.Approximation",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2216,17 +2695,17 @@
                         "type" : "groupMarker"
                       },
                       {
-                        "path" : "\/documentation\/mlxnn\/gelu\/approximation\/fast",
+                        "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/fast",
                         "title" : "case fast",
                         "type" : "case"
                       },
                       {
-                        "path" : "\/documentation\/mlxnn\/gelu\/approximation\/none",
+                        "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/none",
                         "title" : "case none",
                         "type" : "case"
                       },
                       {
-                        "path" : "\/documentation\/mlxnn\/gelu\/approximation\/precise",
+                        "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/precise",
                         "title" : "case precise",
                         "type" : "case"
                       },
@@ -2241,17 +2720,17 @@
                             "type" : "groupMarker"
                           },
                           {
-                            "path" : "\/documentation\/mlxnn\/gelu\/approximation\/!=(_:_:)",
+                            "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/!=(_:_:)",
                             "title" : "static func != (Self, Self) -> Bool",
                             "type" : "op"
                           }
                         ],
-                        "path" : "\/documentation\/mlxnn\/gelu\/approximation\/equatable-implementations",
+                        "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum\/equatable-implementations",
                         "title" : "Equatable Implementations",
                         "type" : "symbol"
                       }
                     ],
-                    "path" : "\/documentation\/mlxnn\/gelu\/approximation",
+                    "path" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum",
                     "title" : "GELU.Approximation",
                     "type" : "enum"
                   }
@@ -2270,6 +2749,15 @@
                     "path" : "\/documentation\/mlxnn\/glu\/init(axis:)",
                     "title" : "init(axis: Int)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/glu\/axis",
+                    "title" : "let axis: Int",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2375,6 +2863,15 @@
                     "path" : "\/documentation\/mlxnn\/prelu\/init(count:value:)",
                     "title" : "init(count: Int, value: Float)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/prelu\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2530,6 +3027,15 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/step\/threshold",
+                    "title" : "let threshold: Float",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2577,9 +3083,65 @@
                     "type" : "groupMarker"
                   },
                   {
+                    "path" : "\/documentation\/mlxnn\/avgpool1d\/init(kernelsize:stride:)",
+                    "title" : "init(kernelSize: Int, stride: Int)",
+                    "type" : "init"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/avgpool1d",
+                "title" : "AvgPool1d",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/avgpool2d\/init(kernelsize:stride:)",
+                    "title" : "init(kernelSize: IntOrPair, stride: IntOrPair)",
+                    "type" : "init"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/avgpool2d",
+                "title" : "AvgPool2d",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
                     "path" : "\/documentation\/mlxnn\/conv1d\/init(inputchannels:outputchannels:kernelsize:stride:padding:bias:)",
                     "title" : "init(inputChannels: Int, outputChannels: Int, kernelSize: Int, stride: Int, padding: Int, bias: Bool)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv1d\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv1d\/padding",
+                    "title" : "let padding: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv1d\/stride",
+                    "title" : "let stride: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv1d\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2607,6 +3169,30 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv2d\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv2d\/padding",
+                    "title" : "let padding: (Int, Int)",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv2d\/stride",
+                    "title" : "let stride: (Int, Int)",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/conv2d\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2630,6 +3216,15 @@
                     "path" : "\/documentation\/mlxnn\/dropout\/init(p:)",
                     "title" : "init(p: Float)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/dropout\/p1",
+                    "title" : "let p1: Float",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2657,6 +3252,15 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/dropout2d\/p1",
+                    "title" : "let p1: Float",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2682,6 +3286,15 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/dropout3d\/p1",
+                    "title" : "let p1: Float",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2705,6 +3318,15 @@
                     "path" : "\/documentation\/mlxnn\/embedding\/init(embeddingcount:dimensions:)",
                     "title" : "init(embeddingCount: Int, dimensions: Int)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/embedding\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2757,8 +3379,18 @@
                     "type" : "groupMarker"
                   },
                   {
+                    "path" : "\/documentation\/mlxnn\/linear\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
                     "path" : "\/documentation\/mlxnn\/linear\/shape",
                     "title" : "var shape: (Int, Int)",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/linear\/weight",
+                    "title" : "let weight: MLXArray",
                     "type" : "property"
                   },
                   {
@@ -2787,6 +3419,38 @@
                     "type" : "groupMarker"
                   },
                   {
+                    "path" : "\/documentation\/mlxnn\/maxpool1d\/init(kernelsize:stride:)",
+                    "title" : "init(kernelSize: Int, stride: Int)",
+                    "type" : "init"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/maxpool1d",
+                "title" : "MaxPool1d",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/maxpool2d\/init(kernelsize:stride:)",
+                    "title" : "init(kernelSize: IntOrPair, stride: IntOrPair)",
+                    "type" : "init"
+                  }
+                ],
+                "path" : "\/documentation\/mlxnn\/maxpool2d",
+                "title" : "MaxPool2d",
+                "type" : "class"
+              },
+              {
+                "children" : [
+                  {
+                    "title" : "Initializers",
+                    "type" : "groupMarker"
+                  },
+                  {
                     "path" : "\/documentation\/mlxnn\/quantizedlinear\/init(_:_:bias:groupsize:bits:)",
                     "title" : "convenience init(Int, Int, bias: Bool, groupSize: Int, bits: Int)",
                     "type" : "init"
@@ -2795,6 +3459,30 @@
                     "path" : "\/documentation\/mlxnn\/quantizedlinear\/init(weight:bias:groupsize:bits:)",
                     "title" : "init(weight: MLXArray, bias: MLXArray?, groupSize: Int, bits: Int)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/quantizedlinear\/biases",
+                    "title" : "let biases: MLXArray",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/quantizedlinear\/bits",
+                    "title" : "let bits: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/quantizedlinear\/groupsize",
+                    "title" : "let groupSize: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/quantizedlinear\/scales",
+                    "title" : "let scales: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2841,6 +3529,20 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/eps",
+                    "title" : "let eps: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2881,6 +3583,15 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/sequential\/layers",
+                    "title" : "let layers: [UnaryLayer]",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -2908,6 +3619,20 @@
                     "path" : "\/documentation\/mlxnn\/bilinear\/init(_:_:_:bias:)",
                     "title" : "init(Int, Int, Int, bias: Bool)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/bilinear\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/bilinear\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -2938,6 +3663,35 @@
                     "path" : "\/documentation\/mlxnn\/multiheadattention\/init(dimensions:numheads:queryinputdimensions:keyinputdimensions:valueinputdimensions:valuedimensions:valueoutputdimensions:bias:)",
                     "title" : "init(dimensions: Int, numHeads: Int, queryInputDimensions: Int?, keyInputDimensions: Int?, valueInputDimensions: Int?, valueDimensions: Int?, valueOutputDimensions: Int?, bias: Bool)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/keyprojection",
+                    "title" : "var keyProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/numheads",
+                    "title" : "let numHeads: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/outprojection",
+                    "title" : "var outProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/queryprojection",
+                    "title" : "var queryProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/valueprojection",
+                    "title" : "var valueProjection: Linear",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -3056,6 +3810,30 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/instancenorm\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/instancenorm\/dimensions",
+                    "title" : "let dimensions: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/instancenorm\/eps",
+                    "title" : "let eps: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/instancenorm\/weight",
+                    "title" : "let weight: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -3081,6 +3859,30 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/layernorm\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/layernorm\/dimensions",
+                    "title" : "let dimensions: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/layernorm\/eps",
+                    "title" : "let eps: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/layernorm\/weight",
+                    "title" : "let weight: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -3104,6 +3906,20 @@
                     "path" : "\/documentation\/mlxnn\/rmsnorm\/init(dimensions:eps:)",
                     "title" : "init(dimensions: Int, eps: Float)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/eps",
+                    "title" : "let eps: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/rmsnorm\/weight",
+                    "title" : "let weight: MLXArray",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -3136,6 +3952,40 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/dimensions",
+                    "title" : "let dimensions: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/eps",
+                    "title" : "let eps: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/groupcount",
+                    "title" : "let groupCount: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/pytorchcompatible",
+                    "title" : "let pytorchCompatible: Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/groupnorm\/weight",
+                    "title" : "let weight: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -3159,6 +4009,35 @@
                     "path" : "\/documentation\/mlxnn\/batchnorm\/init(featurecount:eps:momentum:affine:trackrunningstats:)",
                     "title" : "init(featureCount: Int, eps: Float, momentum: Float, affine: Bool, trackRunningStats: Bool)",
                     "type" : "init"
+                  },
+                  {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/bias",
+                    "title" : "let bias: MLXArray?",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/eps",
+                    "title" : "let eps: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/featurecount",
+                    "title" : "let featureCount: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/momentum",
+                    "title" : "let momentum: Float",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/batchnorm\/weight",
+                    "title" : "let weight: MLXArray?",
+                    "type" : "property"
                   },
                   {
                     "title" : "Instance Methods",
@@ -3232,6 +4111,20 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/cosinefirst",
+                    "title" : "let cosineFirst: Bool",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/scale",
+                    "title" : "let scale: Float",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -3293,6 +4186,35 @@
                     "type" : "init"
                   },
                   {
+                    "title" : "Instance Properties",
+                    "type" : "groupMarker"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/keyprojection",
+                    "title" : "var keyProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/numheads",
+                    "title" : "let numHeads: Int",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/outprojection",
+                    "title" : "var outProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/queryprojection",
+                    "title" : "var queryProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
+                    "path" : "\/documentation\/mlxnn\/multiheadattention\/valueprojection",
+                    "title" : "var valueProjection: Linear",
+                    "type" : "property"
+                  },
+                  {
                     "title" : "Instance Methods",
                     "type" : "groupMarker"
                   },
@@ -3344,6 +4266,50 @@
             "path" : "\/documentation\/mlxnn\/transformers",
             "title" : "Transformer",
             "type" : "symbol"
+          },
+          {
+            "title" : "Classes",
+            "type" : "groupMarker"
+          },
+          {
+            "children" : [
+              {
+                "title" : "Instance Properties",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/pool\/axes",
+                "title" : "let axes: [Int]",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/pool\/kernelsize",
+                "title" : "let kernelSize: [Int]",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/pool\/poolingop",
+                "title" : "let poolingOp: (MLXArray, [Int]) -> MLXArray",
+                "type" : "property"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/pool\/stride",
+                "title" : "let stride: [Int]",
+                "type" : "property"
+              },
+              {
+                "title" : "Instance Methods",
+                "type" : "groupMarker"
+              },
+              {
+                "path" : "\/documentation\/mlxnn\/pool\/callasfunction(_:)",
+                "title" : "func callAsFunction(MLXArray) -> MLXArray",
+                "type" : "method"
+              }
+            ],
+            "path" : "\/documentation\/mlxnn\/pool",
+            "title" : "Pool",
+            "type" : "class"
           },
           {
             "title" : "Structures",

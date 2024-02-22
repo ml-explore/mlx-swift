@@ -189,6 +189,13 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding\/cosineFirst",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding\/scale"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -413,6 +420,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/callasfunction(_:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SinusoidalPositionalEncoding/cosineFirst": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cosineFirst"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding\/cosineFirst",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cosineFirst",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/cosinefirst"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/SinusoidalPositionalEncoding/init(dimensions:minFrequency:maxFrequency:scale:cosineFirst:fullTurns:)": {
   "abstract" : [
     {
@@ -538,6 +579,40 @@
   "title" : "init(dimensions:minFrequency:maxFrequency:scale:cosineFirst:fullTurns:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/init(dimensions:minfrequency:maxfrequency:scale:cosinefirst:fullturns:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/SinusoidalPositionalEncoding/scale": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "scale"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/SinusoidalPositionalEncoding\/scale",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "scale",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/sinusoidalpositionalencoding\/scale"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/UnaryLayer": {
   "abstract" : [

@@ -230,6 +230,12 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Step\/threshold"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Step\/callAsFunction(_:)"
       ],
       "title" : "Instance Methods"
@@ -1004,6 +1010,40 @@
   "title" : "init(threshold:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/step\/init(threshold:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Step/threshold": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "threshold"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Step\/threshold",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "threshold",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/step\/threshold"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Tanh": {
   "abstract" : [

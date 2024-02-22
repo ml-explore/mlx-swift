@@ -188,6 +188,16 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/bias",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/eps",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/featureCount",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/momentum",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/weight"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/callAsFunction(_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/unfreeze(recursive:keys:strict:)"
       ],
@@ -271,6 +281,44 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/batchnorm"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/bias": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/bias",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bias",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm\/bias"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/callAsFunction(_:)": {
   "abstract" : [
 
@@ -313,6 +361,74 @@
   "title" : "callAsFunction(_:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/batchnorm\/callasfunction(_:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/eps": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "eps"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/eps",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "eps",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm\/eps"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/featureCount": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "featureCount"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/featureCount",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "featureCount",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm\/featurecount"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/init(featureCount:eps:momentum:affine:trackRunningStats:)": {
   "abstract" : [
@@ -423,6 +539,40 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/batchnorm\/init(featurecount:eps:momentum:affine:trackrunningstats:)"
 },
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/momentum": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "momentum"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sf",
+      "text" : "Float"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/momentum",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "momentum",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm\/momentum"
+},
 "doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/unfreeze(recursive:keys:strict:)": {
   "abstract" : [
 
@@ -506,6 +656,44 @@
   "title" : "unfreeze(recursive:keys:strict:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/batchnorm\/unfreeze(recursive:keys:strict:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/BatchNorm/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/BatchNorm\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/batchnorm\/weight"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/GroupNorm": {
   "abstract" : [

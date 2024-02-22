@@ -102,7 +102,7 @@
               "text" : "."
             },
             {
-              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation",
+              "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum",
               "kind" : "typeIdentifier",
               "preciseIdentifier" : "s:5MLXNN4GELUC13ApproximationO",
               "text" : "Approximation"
@@ -187,7 +187,7 @@
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/gelu"
 },
-"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation": {
+"doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/Approximation-swift.enum": {
   "abstract" : [
 
   ],
@@ -205,7 +205,7 @@
       "text" : "Approximation"
     }
   ],
-  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation",
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/GELU\/Approximation-swift.enum",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
@@ -216,7 +216,7 @@
   "role" : "symbol",
   "title" : "GELU.Approximation",
   "type" : "topic",
-  "url" : "\/documentation\/mlxnn\/gelu\/approximation"
+  "url" : "\/documentation\/mlxnn\/gelu\/approximation-swift.enum"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/GELU/init(approximation:)": {
   "abstract" : [

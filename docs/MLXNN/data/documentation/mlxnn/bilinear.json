@@ -264,6 +264,13 @@
     },
     {
       "identifiers" : [
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear\/bias",
+        "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear\/weight"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "identifiers" : [
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear\/callAsFunction(_:_:)",
         "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear\/describeExtra(_:)"
       ],
@@ -346,6 +353,44 @@
   "title" : "Bilinear",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/bilinear"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear/bias": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "bias"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear\/bias",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "bias",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/bilinear\/bias"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear/callAsFunction(_:_:)": {
   "abstract" : [
@@ -525,6 +570,40 @@
   "title" : "init(_:_:_:bias:)",
   "type" : "topic",
   "url" : "\/documentation\/mlxnn\/bilinear\/init(_:_:_:bias:)"
+},
+"doc://mlx.swift.mlxnn/documentation/MLXNN/Bilinear/weight": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "weight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:3MLX8MLXArrayC",
+      "text" : "MLXArray"
+    }
+  ],
+  "identifier" : "doc:\/\/mlx.swift.mlxnn\/documentation\/MLXNN\/Bilinear\/weight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "weight",
+  "type" : "topic",
+  "url" : "\/documentation\/mlxnn\/bilinear\/weight"
 },
 "doc://mlx.swift.mlxnn/documentation/MLXNN/Linear": {
   "abstract" : [
