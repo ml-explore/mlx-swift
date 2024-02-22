@@ -11,7 +11,7 @@ endif()
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
-  GIT_TAG "main")
+  GIT_TAG "v0.0.2")
 FetchContent_MakeAvailable(mlx-c)
 
 # MLX package
