@@ -28,7 +28,7 @@ open class Embedding: Module, UnaryLayer {
         weight.shape.description
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         weight[x]
     }
 }

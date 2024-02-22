@@ -22,7 +22,7 @@ open class Dropout: Module, UnaryLayer {
         self.p1 = 1 - p
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         if p1 == 1 || !self.training {
             return x
         }
@@ -62,7 +62,7 @@ open class Dropout2d: Module, UnaryLayer {
         self.p1 = 1 - p
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         let ndim = x.ndim
         precondition(ndim == 3 || ndim == 4)
 
@@ -109,7 +109,7 @@ open class Dropout3d: Module, UnaryLayer {
         self.p1 = 1 - p
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         let ndim = x.ndim
         precondition(ndim == 3 || ndim == 4)
 

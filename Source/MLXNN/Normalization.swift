@@ -42,7 +42,7 @@ open class InstanceNorm: Module, UnaryLayer {
         }
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         let reductionAxes = Array(1 ..< x.ndim - 1)
 
         // compute stats
@@ -100,7 +100,7 @@ open class LayerNorm: Module, UnaryLayer {
         }
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         let means = mean(x, axis: -1, keepDims: true)
         let variance = variance(x, axis: -1, keepDims: true)
         let x = (x - means) * rsqrt(variance + eps)
@@ -145,7 +145,7 @@ open class RMSNorm: Module, UnaryLayer {
         "(dimensions=\(weight.dim(0)), eps=\(self.eps))"
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         // S is 1/sqrt(N) where N is the size of the features of x and is used
         // to compute a numerically more stable RMS of x by multiplying with S
         // first and summing.
@@ -250,7 +250,7 @@ open class GroupNorm: Module, UnaryLayer {
         return x
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         pytorchCompatible ? pytorchGroupNorm(x) : groupNorm(x)
     }
 }
@@ -341,7 +341,7 @@ open class BatchNorm: Module, UnaryLayer {
         return (mean, variance)
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         precondition((2 ... 4).contains(x.ndim))
 
         // Calculate the mean and variance used to normalize the input x. If we

@@ -48,7 +48,7 @@ open class Conv1d: Module, UnaryLayer {
         self.stride = stride
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var y = conv1d(x, weight, stride: stride, padding: padding)
         if let bias {
             y = y + bias
@@ -103,7 +103,7 @@ open class Conv2d: Module, UnaryLayer {
         self.stride = stride.values
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var y = conv2d(x, weight, stride: .init(stride), padding: .init(padding))
         if let bias {
             y = y + bias

@@ -334,7 +334,7 @@ open class GLU: Module, UnaryLayer {
         super.init()
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         glu(x, axis: axis)
     }
 }
@@ -354,7 +354,7 @@ open class GLU: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``sigmoid(_:)``
 open class Sigmoid: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         sigmoid(x)
     }
 }
@@ -375,7 +375,7 @@ open class Sigmoid: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``mish(_:)``
 open class Mish: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         mish(x)
     }
 }
@@ -392,7 +392,7 @@ open class Mish: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``relu(_:)``
 open class ReLU: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         relu(x)
     }
 }
@@ -409,7 +409,7 @@ open class ReLU: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``leakyRelu(_:negativeSlope:)``
 open class LeakyReLU: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         leakyRelu(x)
     }
 }
@@ -426,7 +426,7 @@ open class LeakyReLU: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``relu6(_:)``
 open class ReLU6: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         relu6(x)
     }
 }
@@ -442,7 +442,7 @@ open class ReLU6: Module, UnaryLayer {
 /// ### See Also
 /// - <doc:activations>
 open class SoftMax: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softMax(x, axis: -1)
     }
 }
@@ -459,7 +459,7 @@ open class SoftMax: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``softPlus(_:)``
 open class SoftPlus: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softPlus(x)
     }
 }
@@ -476,7 +476,7 @@ open class SoftPlus: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``softSign(_:)``
 open class SoftSign: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softSign(x)
     }
 }
@@ -500,7 +500,7 @@ open class CELU: Module, UnaryLayer {
         super.init()
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         celu(x, alpha: alpha)
     }
 }
@@ -517,7 +517,7 @@ open class CELU: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``silu(_:)``
 open class SiLU: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         silu(x)
     }
 }
@@ -534,7 +534,7 @@ open class SiLU: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``logSoftMax(_:axis:)``
 open class LogSoftMax: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         logSoftMax(x)
     }
 }
@@ -551,7 +551,7 @@ open class LogSoftMax: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``logSigmoid(_:)``
 open class LogSigmoid: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         logSigmoid(x)
     }
 }
@@ -576,7 +576,7 @@ open class PReLU: Module, UnaryLayer {
         super.init()
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         prelu(x, alpha: weight)
     }
 }
@@ -612,7 +612,7 @@ open class GELU: Module, UnaryLayer {
         super.init()
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         switch approximation {
         case .none:
             gelu(x)
@@ -626,7 +626,7 @@ open class GELU: Module, UnaryLayer {
 
 /// Applies the hyperbolic tangent function
 open class Tanh: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         tanh(x)
     }
 }
@@ -643,7 +643,7 @@ open class Tanh: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``hardSwish(_:)``
 open class HardSwish: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         hardSwish(x)
     }
 }
@@ -671,7 +671,7 @@ open class Step: Module, UnaryLayer {
         super.init()
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         step(x, threshold: threshold)
     }
 }
@@ -688,7 +688,7 @@ open class Step: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``selu(_:)``
 open class SELU: Module, UnaryLayer {
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         selu(x)
     }
 }
