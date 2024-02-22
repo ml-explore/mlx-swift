@@ -3899,7 +3899,7 @@ class MLXIntegrationTests: XCTestCase {
             wq.mean().item(Float.self), 1684202.0,
             accuracy: 33684.04)
         XCTAssertEqual(
-            wq.sum().item(Float.self), 3_449_245_613,
+            wq.sum().item(Float.self), 3_449_245_696,
             accuracy: 68984912.26)
 
         XCTAssertEqual(scales.shape, [32, 4])
