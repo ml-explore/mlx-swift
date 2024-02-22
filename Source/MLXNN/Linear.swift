@@ -106,7 +106,7 @@ open class Linear: Module, UnaryLayer {
         "(inputDimensions=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var result = x.matmul(weight.T)
         if let bias {
             result = result + bias
@@ -163,7 +163,7 @@ open class Bilinear: Module {
         "(inputDimensions1=\(weight.dim(2)), inputDimensions2=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
 
-    public func callAsFunction(_ x1: MLXArray, _ x2: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x1: MLXArray, _ x2: MLXArray) -> MLXArray {
         // normalize shapes
         let out = weight.dim(0)
         let in1 = weight.dim(2)

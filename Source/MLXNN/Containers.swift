@@ -85,7 +85,7 @@ open class Sequential: Module, UnaryLayer {
         self.layers = layers()
     }
 
-    public func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var x = x
         for layer in layers {
             x = layer(x)

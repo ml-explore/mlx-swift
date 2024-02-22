@@ -74,7 +74,7 @@ open class QuantizedLinear: Linear {
         self.freeze(recursive: false)
     }
 
-    public override func callAsFunction(_ x: MLXArray) -> MLXArray {
+    open override func callAsFunction(_ x: MLXArray) -> MLXArray {
         var x = quantizedMatmul(
             x,
             weight,

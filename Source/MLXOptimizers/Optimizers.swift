@@ -24,7 +24,7 @@ public protocol Optimizer: Updatable, Evaluatable {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class OptimizerBase<State: Updatable>: Optimizer {
+open class OptimizerBase<State: Updatable>: Optimizer {
 
     /// Stores a `State` value in a structure that matches the model parameters
     var stateStorage = NestedDictionary<String, State>()
@@ -39,11 +39,11 @@ public class OptimizerBase<State: Updatable>: Optimizer {
     ///     MLXArray.zeros(like: gradient)
     /// }
     /// ```
-    func newState(parameter: MLXArray) -> State {
+    open func newState(parameter: MLXArray) -> State {
         fatalError("newState() not implemented \(type(of: self))")
     }
 
-    public func innerState() -> [MLXArray] {
+    open func innerState() -> [MLXArray] {
         stateStorage
             .flattenedValues()
             .flatMap { $0.innerState() }
@@ -69,7 +69,9 @@ public class OptimizerBase<State: Updatable>: Optimizer {
         return p
     }
 
-    func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (MLXArray, State) {
+    open func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
+        MLXArray, State
+    ) {
         fatalError("applySingle() not implemented \(type(of: self))")
     }
 }
@@ -78,8 +80,8 @@ public class OptimizerBase<State: Updatable>: Optimizer {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
-    override func newState(parameter: MLXArray) -> MLXArray {
+open class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
+    override open func newState(parameter: MLXArray) -> MLXArray {
         MLXArray.zeros(like: parameter)
     }
 }
@@ -109,7 +111,7 @@ public struct TupleState: Updatable {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class SGD: OptimizerBaseArrayState {
+open class SGD: OptimizerBaseArrayState {
 
     var learningRate: Float
     var momentum: Float = 0
@@ -138,11 +140,11 @@ public class SGD: OptimizerBaseArrayState {
         self.nesterov = nesterov
     }
 
-    override func newState(parameter: MLXArray) -> MLXArray {
+    override open func newState(parameter: MLXArray) -> MLXArray {
         MLXArray.zeros(like: parameter)
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
         MLXArray, MLXArray
     ) {
         var gradient = gradient
@@ -180,7 +182,7 @@ public class SGD: OptimizerBaseArrayState {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class RMSprop: OptimizerBaseArrayState {
+open class RMSprop: OptimizerBaseArrayState {
 
     var learningRate: Float
     var alpha: Float = 0.99
@@ -200,7 +202,7 @@ public class RMSprop: OptimizerBaseArrayState {
         self.eps = eps
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
         MLXArray, MLXArray
     ) {
         let v = alpha * state + (1 - alpha) * square(gradient)
@@ -216,7 +218,7 @@ public class RMSprop: OptimizerBaseArrayState {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class AdaGrad: OptimizerBaseArrayState {
+open class AdaGrad: OptimizerBaseArrayState {
 
     var learningRate: Float
     var eps: Float = 1e-8
@@ -232,7 +234,7 @@ public class AdaGrad: OptimizerBaseArrayState {
         self.eps = eps
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
         MLXArray, MLXArray
     ) {
         let v = state + square(gradient)
@@ -248,7 +250,7 @@ public class AdaGrad: OptimizerBaseArrayState {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class AdaDelta: OptimizerBase<TupleState> {
+open class AdaDelta: OptimizerBase<TupleState> {
 
     var learningRate: Float
     var rho: Float = 0.99
@@ -268,11 +270,11 @@ public class AdaDelta: OptimizerBase<TupleState> {
         self.eps = eps
     }
 
-    override func newState(parameter: MLXArray) -> TupleState {
+    override open func newState(parameter: MLXArray) -> TupleState {
         TupleState(zeros: parameter)
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
         MLXArray, TupleState
     ) {
         var (v, u) = state.values
@@ -294,7 +296,7 @@ public class AdaDelta: OptimizerBase<TupleState> {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class Adam: OptimizerBase<TupleState> {
+open class Adam: OptimizerBase<TupleState> {
 
     var learningRate: Float
     var betas: (Float, Float) = (0.9, 0.999)
@@ -311,11 +313,11 @@ public class Adam: OptimizerBase<TupleState> {
         self.eps = eps
     }
 
-    override func newState(parameter: MLXArray) -> TupleState {
+    override open func newState(parameter: MLXArray) -> TupleState {
         TupleState(zeros: parameter)
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
         MLXArray, TupleState
     ) {
         let (b1, b2) = betas
@@ -339,7 +341,7 @@ public class Adam: OptimizerBase<TupleState> {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class AdamW: Adam {
+open class AdamW: Adam {
 
     var weightDecay: Float = 0.01
 
@@ -357,7 +359,7 @@ public class AdamW: Adam {
         super.init(learningRate: learningRate, betas: betas, eps: eps)
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
         MLXArray, TupleState
     ) {
         return super.applySingle(
@@ -375,7 +377,7 @@ public class AdamW: Adam {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class Adamax: OptimizerBase<TupleState> {
+open class Adamax: OptimizerBase<TupleState> {
 
     var learningRate: Float
     var betas: (Float, Float) = (0.9, 0.999)
@@ -392,11 +394,11 @@ public class Adamax: OptimizerBase<TupleState> {
         self.eps = eps
     }
 
-    override func newState(parameter: MLXArray) -> TupleState {
+    override open func newState(parameter: MLXArray) -> TupleState {
         TupleState(zeros: parameter)
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
         MLXArray, TupleState
     ) {
         let (b1, b2) = betas
@@ -423,7 +425,7 @@ public class Adamax: OptimizerBase<TupleState> {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class Lion: OptimizerBaseArrayState {
+open class Lion: OptimizerBaseArrayState {
 
     var learningRate: Float
     var betas: (Float, Float) = (0.9, 0.999)
@@ -441,7 +443,7 @@ public class Lion: OptimizerBaseArrayState {
         self.weightDecay = weightDecay
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
         MLXArray, MLXArray
     ) {
         let (b1, b2) = betas
@@ -466,7 +468,7 @@ public class Lion: OptimizerBaseArrayState {
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-public class Adafactor: OptimizerBase<Adafactor.State> {
+open class Adafactor: OptimizerBase<Adafactor.State> {
 
     var learningRate: Float? = nil
     var eps: (Float, Float) = (1e-30, 1e-3)
@@ -520,7 +522,7 @@ public class Adafactor: OptimizerBase<Adafactor.State> {
         self.warmupInit = warmupInit
     }
 
-    override func newState(parameter: MLXArray) -> State {
+    override open func newState(parameter: MLXArray) -> State {
         var s = State()
         if parameter.ndim >= 2 {
             let shape = parameter.shape
@@ -567,7 +569,7 @@ public class Adafactor: OptimizerBase<Adafactor.State> {
         return matmul(rFactor.expandedDimensions(axis: -1), cFactor.expandedDimensions(axis: 0))
     }
 
-    override func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
         MLXArray, State
     ) {
         var state = state

@@ -71,7 +71,7 @@ open class MultiHeadAttention: Module {
             valueDimensions, valueOutputDimensions, bias: bias)
     }
 
-    public func callAsFunction(
+    open func callAsFunction(
         _ queries: MLXArray, keys: MLXArray, values: MLXArray, mask: MLXArray? = nil
     ) -> MLXArray {
         var queries = queryProjection(queries)
@@ -358,7 +358,7 @@ open class Transformer: Module {
             normFirst: normFirst)
     }
 
-    public func callAsFunction(
+    open func callAsFunction(
         source: MLXArray, target: MLXArray, sourceMask: MLXArray, targetMask: MLXArray,
         memoryMask: MLXArray
     ) -> MLXArray {
