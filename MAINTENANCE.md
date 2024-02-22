@@ -118,7 +118,9 @@ import MLXFFT
 for x in MLX MLXRandom MLXNN MLXOptimizers MLXFFT; do
 ```
 
-13. Run `pre-commit`
+13. Add to `.spi.yml` for swift package index
+
+14. Run `pre-commit`
 
 ```
 pre-commit run --all-files
