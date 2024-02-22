@@ -78,6 +78,8 @@ See <doc:training>
 Layers that provide an interface that takes a single MLXArray and produces a single MLXArray.
 These can be used with ``Sequential``.
 
+- ``AvgPool1d``
+- ``AvgPool2d``
 - ``Conv1d``
 - ``Conv2d``
 - ``Dropout``
@@ -86,6 +88,8 @@ These can be used with ``Sequential``.
 - ``Embedding``
 - ``Identity``
 - ``Linear``
+- ``MaxPool1d``
+- ``MaxPool2d``
 - ``QuantizedLinear``
 - ``RoPE``
 - ``RMSNorm``
