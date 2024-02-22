@@ -22,7 +22,7 @@ open class Pool: Module, UnaryLayer {
         self.poolingOp = poolingOp
     }
 
-    public func callAsFunction(_ x: MLX.MLXArray) -> MLX.MLXArray {
+    open func callAsFunction(_ x: MLX.MLXArray) -> MLX.MLXArray {
         let shape = x.shape
 
         var finalShape = [shape[0]]
