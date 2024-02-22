@@ -114,7 +114,7 @@ for batch in dataset {
 
 An important behavior to be aware of is when the graph will be implicitly
 evaluated. Anytime you `print` an array, or otherwise access it's memory,
-the graph will be evaluated. Saving arrays via ``save(arrays:url:stream:)`` 
+the graph will be evaluated. Saving arrays via ``save(arrays:metadata:url:stream:)`` 
 (or any other MLX saving functions) will also evaluate the array.
 
 

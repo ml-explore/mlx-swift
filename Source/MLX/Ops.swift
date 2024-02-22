@@ -779,7 +779,7 @@ enum LoadSaveError: Error {
 /// ### See Also
 /// - ``loadArrays(url:stream:)``
 /// - ``save(array:url:stream:)``
-/// - ``save(arrays:url:stream:)``
+/// - ``save(arrays:metadata:url:stream:)``
 public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
@@ -809,8 +809,9 @@ public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLX
 ///
 /// ### See Also
 /// - ``loadArray(url:stream:)``
+/// - ``loadArraysAndMetadata(url:stream:)``
 /// - ``save(array:url:stream:)``
-/// - ``save(arrays:url:stream:)``
+/// - ``save(arrays:metadata:url:stream:)``
 public func loadArrays(url: URL, stream: StreamOrDevice = .default) throws -> [String: MLXArray] {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
@@ -819,10 +820,47 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .default) throws -> [S
 
     switch url.pathExtension {
     case "safetensors":
-        let mlx_map = mlx_load_safetensors(filename, stream.ctx)!
-        defer { mlx_free(mlx_map) }
+        let mlx_safetensors = mlx_load_safetensors(filename, stream.ctx)!
+        defer { mlx_free(mlx_safetensors) }
 
-        return mlx_map_values(mlx_map)
+        let mlx_arrays = mlx_safetensors_data(mlx_safetensors)!
+        defer { mlx_free(mlx_arrays) }
+
+        return mlx_map_array_values(mlx_arrays)
+    default:
+        throw LoadSaveError.unknownExtension(url.pathExtension)
+    }
+}
+
+/// Load dictionary of ``MLXArray`` and metadata `[String:String]` from a `safetensors` file.
+///
+/// - Parameters:
+///     - url: URL of file to load
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``loadArrays(url:stream:)``
+/// - ``loadArray(url:stream:)``
+public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .default) throws -> (
+    [String: MLXArray], [String: String]
+) {
+    precondition(url.isFileURL)
+    let path = url.path(percentEncoded: false)
+    let filename = mlx_string_new(path.cString(using: .utf8))!
+    defer { mlx_free(filename) }
+
+    switch url.pathExtension {
+    case "safetensors":
+        let mlx_safetensors = mlx_load_safetensors(filename, stream.ctx)!
+        defer { mlx_free(mlx_safetensors) }
+
+        let mlx_arrays = mlx_safetensors_data(mlx_safetensors)!
+        defer { mlx_free(mlx_arrays) }
+
+        let mlx_metadata = mlx_safetensors_metadata(mlx_safetensors)!
+        defer { mlx_free(mlx_metadata) }
+
+        return (mlx_map_array_values(mlx_arrays), mlx_map_string_values(mlx_metadata))
     default:
         throw LoadSaveError.unknownExtension(url.pathExtension)
     }
@@ -1162,7 +1200,7 @@ public func remainder<A: ScalarOrArray, B: ScalarOrArray>(
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``save(arrays:url:stream:)``
+/// - ``save(arrays:metadata:url:stream:)``
 /// - ``loadArray(url:stream:)``
 /// - ``loadArrays(url:stream:)``
 public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) throws {
@@ -1188,26 +1226,33 @@ public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) t
 ///
 /// - Parameters:
 ///     - a: array to save
+///     - metadata: metadata to save
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``save(arrays:url:stream:)``
+/// - ``save(arrays:metadata:url:stream:)``
 /// - ``loadArray(url:stream:)``
 /// - ``loadArrays(url:stream:)``
-public func save(arrays: [String: MLXArray], url: URL, stream: StreamOrDevice = .default) throws {
+public func save(
+    arrays: [String: MLXArray], metadata: [String: String] = [:], url: URL,
+    stream: StreamOrDevice = .default
+) throws {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
 
-    let mlx_map = new_mlx_map(arrays)
-    defer { mlx_free(mlx_map) }
+    let mlx_arrays = new_mlx_array_map(arrays)
+    defer { mlx_free(mlx_arrays) }
+
+    let mlx_metadata = new_mlx_string_map(metadata)
+    defer { mlx_free(mlx_metadata) }
 
     switch url.pathExtension {
     case "safetensors":
         if let fp = fopen(path, "r") {
             defer { fclose(fp) }
 
-            mlx_save_safetensors_file(fp, mlx_map)
+            mlx_save_safetensors_file(fp, mlx_arrays, mlx_metadata)
 
         } else {
             let message = String(cString: strerror(errno))

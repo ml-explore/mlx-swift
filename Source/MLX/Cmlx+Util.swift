@@ -35,7 +35,7 @@ func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
         }
 }
 
-func mlx_map_values(_ mlx_map: mlx_map_string_to_array) -> [String: MLXArray] {
+func mlx_map_array_values(_ mlx_map: mlx_map_string_to_array) -> [String: MLXArray] {
     var result = [String: MLXArray]()
 
     let iterator = mlx_map_string_to_array_iterate(mlx_map)!
@@ -58,7 +58,31 @@ func mlx_map_values(_ mlx_map: mlx_map_string_to_array) -> [String: MLXArray] {
     return result
 }
 
-func new_mlx_map(_ dictionary: [String: MLXArray]) -> mlx_map_string_to_array {
+func mlx_map_string_values(_ mlx_map: mlx_map_string_to_string) -> [String: String] {
+    var result = [String: String]()
+
+    let iterator = mlx_map_string_to_string_iterate(mlx_map)!
+    defer { mlx_free(iterator) }
+
+    while !mlx_map_string_to_string_iterator_end(iterator) {
+        let mlx_key = mlx_map_string_to_string_iterator_key(iterator)!
+        defer { mlx_free(mlx_key) }
+        let key = String(cString: mlx_string_data(mlx_key))
+
+        // note: transfer ownership
+        let mlx_value = mlx_map_string_to_string_iterator_value(iterator)!
+        defer { mlx_free(mlx_value) }
+        let value = String(cString: mlx_string_data(mlx_value))
+
+        result[key] = value
+
+        mlx_map_string_to_string_iterator_next(iterator)
+    }
+
+    return result
+}
+
+func new_mlx_array_map(_ dictionary: [String: MLXArray]) -> mlx_map_string_to_array {
     let mlx_map = mlx_map_string_to_array_new()!
 
     for (key, array) in dictionary {
@@ -66,6 +90,22 @@ func new_mlx_map(_ dictionary: [String: MLXArray]) -> mlx_map_string_to_array {
         defer { mlx_free(mlx_key) }
 
         mlx_map_string_to_array_insert(mlx_map, mlx_key, array.ctx)
+    }
+
+    return mlx_map
+}
+
+func new_mlx_string_map(_ dictionary: [String: String]) -> mlx_map_string_to_string {
+    let mlx_map = mlx_map_string_to_string_new()!
+
+    for (key, value) in dictionary {
+        let mlx_key = mlx_string_new(key.cString(using: .utf8))!
+        defer { mlx_free(mlx_key) }
+
+        let mlx_value = mlx_string_new(value.cString(using: .utf8))!
+        defer { mlx_free(mlx_value) }
+
+        mlx_map_string_to_string_insert(mlx_map, mlx_key, mlx_value)
     }
 
     return mlx_map
