@@ -91,6 +91,9 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 
 /// Approximate comparison of two arrays.
 ///
+/// Infinite values are considered equal if they have the same sign, NaN values are not equal unless
+/// `equalNAN` is `true`.
+///
 /// The arrays are considered equal if:
 ///
 /// ```swift
@@ -120,6 +123,7 @@ public func all(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 ///
 /// ### See Also
 /// - <doc:logical>
+/// - ``isClose(_:_:rtol:atol:equalNaN:stream:)``
 /// - ``arrayEqual(_:_:equalNAN:stream:)``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func allClose<T: ScalarOrArray>(
@@ -318,6 +322,7 @@ public func argMin(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 /// ### See Also
 /// - <doc:logical>
 /// - ``allClose(_:_:rtol:atol:equalNaN:stream:)``
+/// - ``isClose(_:_:rtol:atol:equalNaN:stream:)``
 /// - ``MLXArray/.==(_:_:)-56m0a``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func arrayEqual<T: ScalarOrArray>(
@@ -504,6 +509,49 @@ public func cumsum(
     return MLXArray(mlx_cumsum(flat, 0, reverse, inclusive, stream.ctx))
 }
 
+/// Extract a diagonal or construct a diagonal matrix.
+///
+/// If `array` is 1-D then a diagonal matrix is constructed with `array` on the
+/// `k`-th diagonal. If `array` is 2-D then the `k`-th diagonal is
+/// returned.
+///
+/// - Parameters:
+///   - array: input array
+///   - k: the diagonal to extract or construct
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``diagonal(_:offset:axis1:axis2:stream:)``
+public func diag(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_diag(array.ctx, k.int32, stream.ctx))
+}
+
+/// Return specified diagonals.
+///
+/// If `array` is 2-D, then a 1-D array containing the diagonal at the given
+/// `offset` is returned.
+///
+/// If `array` has more than two dimensions, then `axis1` and `axis2`
+/// determine the 2D subarrays from which diagonals are extracted. The new
+/// shape is the original shape with `axis1` and `axis2` removed and a
+/// new dimension inserted at the end corresponding to the diagonal.
+///
+/// - Parameters:
+///   - array: input array
+///   - offset: offset of the diagonal.  Can be positive or negative
+///   - axis1: first axis of the 2-D sub-array from which the diagonals should be taken
+///   - axis2: second axis of the 2-D sub-array from which the diagonals should be taken
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``diag(_:k:stream:)``
+public func diagonal(
+    _ array: MLXArray, offset: Int = 0, axis1: Int = 0, axis2: Int = 1,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_diagonal(array.ctx, offset.int32, axis1.int32, axis2.int32, stream.ctx))
+}
+
 /// Element-wise exponential.
 ///
 /// ### See Also
@@ -514,6 +562,11 @@ public func exp(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 }
 
 /// Flatten an array.
+///
+/// The axes flattened will be between `start` and `end`,
+/// inclusive. Negative axes are supported. After converting negative axis to
+/// positive, axes outside the valid range will be clamped to a valid value,
+/// `start` to `0` and `end` to `ndim - 1`.
 ///
 /// For example:
 ///
@@ -731,6 +784,7 @@ public func logSumExp(_ array: MLXArray, keepDims: Bool = false, stream: StreamO
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``multiply(_:_:stream:)``
+/// - ``addmm(_:_:_:alpha:beta:stream:)``
 /// - ``MLXArray/matmul(_:stream:)``
 public func matmul(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_matmul(a.ctx, b.ctx, stream.ctx))

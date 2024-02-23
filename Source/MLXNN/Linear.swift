@@ -107,9 +107,11 @@ open class Linear: Module, UnaryLayer {
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var result = x.matmul(weight.T)
+        let result: MLXArray
         if let bias {
-            result = result + bias
+            result = addmm(bias, x, weight.T)
+        } else {
+            result = matmul(x, weight.T)
         }
         return result
     }

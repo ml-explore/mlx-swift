@@ -43,7 +43,7 @@ and add the libraries as dependencies:
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXRandom", package: "mlx-swift"),
                .product(name: "MLXNN", package: "mlx-swift"),
-               .product(name: "MLXOptimziers", package: "mlx-swift"),
+               .product(name: "MLXOptimizers", package: "mlx-swift"),
                .product(name: "MLXFFT", package: "mlx-swift")]
 ```
 
@@ -92,5 +92,7 @@ Ronan Collobert.
 
 ## Versions
 
-The software generally matches the API and implementation of MLX as of tag 
+The ``MLX`` array functions should match MLX as of tag 
+[v0.3.0](https://github.com/ml-explore/mlx/releases/tag/v0.3.0).  The `MLXNN`
+package should match MLX (`mlx.nn`) as of tag
 [v0.0.10](https://github.com/ml-explore/mlx/releases/tag/v0.0.10).

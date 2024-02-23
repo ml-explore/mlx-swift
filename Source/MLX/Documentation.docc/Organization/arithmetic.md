@@ -73,9 +73,6 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``MLXArray/+(_:_:)-1rv98``
 - ``MLXArray/+(_:_:)-2vili``
 - ``MLXArray/+(_:_:)-1jn5i``
-- ``MLXArray/-(_:_:)-7frdo``
-- ``MLXArray/-(_:_:)-9mf3``
-- ``MLXArray/-(_:_:)-971j0``
 - ``MLXArray/-(_:)``
 - ``MLXArray/*(_:_:)-1z2ck``
 - ``MLXArray/*(_:_:)-sw3w``
@@ -127,6 +124,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``acos(_:stream:)``
 - ``acosh(_:stream:)``
 - ``add(_:_:stream:)``
+- ``addmm(_:_:_:alpha:beta:stream:)``
 - ``asin(_:stream:)``
 - ``asinh(_:stream:)``
 - ``atan(_:stream:)``

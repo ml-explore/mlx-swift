@@ -35,6 +35,37 @@ public func add<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_add(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Matrix multiplication with addition and optional scaling.
+///
+/// Perform the (possibly batched) matrix multiplication of two arrays and add to the result
+/// with optional scaling factors.
+///
+/// Equivalent to:
+///
+/// ```swift
+/// alpha * matmul(a, b) + beta * c
+/// ```
+///
+/// > Note the ordering of the parameters
+///
+/// - Parameters:
+///   - c: input array or scalar
+///   - a: input array or scalar
+///   - b: input array or scalar
+///   - alpha: optional scaling for the matrix product of `a` and `b`
+///   - beta: optional scaling factor for `c`
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``matmul(_:_:stream:)``
+public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
+    _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    let (_, c) = toArrays(a, c)
+    return MLXArray(mlx_addmm(c.ctx, a.ctx, b.ctx, alpha, beta, stream.ctx))
+}
+
 /// Element-wise inverse cosine.
 ///
 /// - Parameters:
@@ -705,6 +736,37 @@ public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     return MLXArray(mlx_greater_equal(a.ctx, b.ctx, stream.ctx))
+}
+
+/// Returns a boolean array where two arrays are element-wise equal within a tolerance.
+///
+/// Infinite values are considered equal if they have the same sign, NaN values are not equal unless
+/// `equalNAN` is `true`.
+///
+/// Two values are considered close if:
+///
+/// ```swift
+/// abs(a - b) <= (atol + rtol * abs(b))
+/// ```
+///
+/// Unlike ``arrayEqual(_:_:equalNAN:stream:)`` this function supports <doc:broadcasting>.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - rtol: relative tolerance (see discussion)
+///   - atol: absolute tolerance (see discussion)
+///   - equalNaN: if `true` treat NaN values as equal to each other
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``allClose(_:_:rtol:atol:equalNaN:stream:)``
+/// - ``arrayEqual(_:_:equalNAN:stream:)``
+public func isClose(
+    _ a: MLXArray, _ b: MLXArray, rtol: Double = 1e-5, atol: Double = 1e-8, equalNaN: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_isclose(a.ctx, b.ctx, rtol, atol, equalNaN, stream.ctx))
 }
 
 /// Element-wise less than.

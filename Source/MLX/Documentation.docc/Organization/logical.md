@@ -53,6 +53,7 @@ if (a < b).all().item() {
 - ``equal(_:_:stream:)``
 - ``greater(_:_:stream:)``
 - ``greaterEqual(_:_:stream:)``
+- ``isClose(_:_:rtol:atol:equalNaN:stream:)``
 - ``less(_:_:stream:)``
 - ``lessEqual(_:_:stream:)``
 - ``logicalNot(_:stream:)``
