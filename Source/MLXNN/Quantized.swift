@@ -114,11 +114,15 @@ open class QuantizedLinear: Linear {
         model: Module,
         groupSize: Int = 64,
         bits: Int = 4,
-        predicate: (Module) -> Bool = { $0 is Linear }
+        predicate: (Linear) -> Bool = { _ in true }
     ) {
         let updates = model.leafModules().compactMapValues { m -> Module? in
             guard let linear = m as? Linear else { return nil }
-            return Self.from(linear: linear, groupSize: groupSize, bits: bits)
+            if predicate(linear) {
+                return Self.from(linear: linear, groupSize: groupSize, bits: bits)
+            } else {
+                return nil
+            }
         }
 
         model.update(modules: updates)
