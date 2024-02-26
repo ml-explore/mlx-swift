@@ -13,16 +13,16 @@ FetchContent_Declare(
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
   GIT_TAG "v0.0.2")
 FetchContent_MakeAvailable(mlx-c)
-set(swift_numerics_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/cmake/swift-numerics.patch)
+
+# swift-numerics
+set(swift_numerics_patch git apply
+                         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/swift-numerics.patch)
 FetchContent_Declare(
   swift-numerics
   GIT_REPOSITORY "https://github.com/apple/swift-numerics.git"
   GIT_TAG "1.0.2"
-  PATCH_COMMAND ${swift_numerics_patch} || true
-)
+  PATCH_COMMAND ${swift_numerics_patch} || true)
 FetchContent_MakeAvailable(swift-numerics)
-
-# swift-numerics
 
 # MLX package
 file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
@@ -44,7 +44,8 @@ add_library(MLXNN STATIC ${MLXNN-src})
 target_link_libraries(MLXNN PRIVATE MLX MLXRandom)
 
 # MLXOptimizers package
-file(GLOB MLXOptimizers-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXOptimizers/*.swift)
+file(GLOB MLXOptimizers-src
+     ${CMAKE_CURRENT_LIST_DIR}/Source/MLXOptimizers/*.swift)
 add_library(MLXOptimizers STATIC ${MLXOptimizers-src})
 target_link_libraries(MLXOptimizers PRIVATE MLX MLXNN)
 
