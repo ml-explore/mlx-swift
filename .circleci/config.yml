@@ -39,6 +39,7 @@ jobs:
           name: Build (cmake)
           command: |
             brew install cmake ninja
+            mkdir build
             cd build
             cmake .. -G Ninja
             ninja
