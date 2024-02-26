@@ -365,6 +365,29 @@ class ModuleTests: XCTestCase {
         XCTAssertTrue(m.module.child is QuantizedLinear)
     }
 
+    func testQuantizePredicate() throws {
+        class C: Module {
+            @ModuleInfo
+            var child1 = Linear(256, 256)
+
+            @ModuleInfo
+            var child2 = Linear(256, 8)
+
+            var other = Sigmoid()
+        }
+        class M: Module {
+            let module = C()
+        }
+
+        let m = M()
+        QuantizedLinear.quantize(model: m) { layer in
+            layer.weight.dim(0) > 8
+        }
+
+        XCTAssertTrue(m.module.child1 is QuantizedLinear)
+        XCTAssertFalse(m.module.child2 is QuantizedLinear)
+    }
+
     func testNilParameters() {
         class M: Module {
             @ParameterInfo var a: MLXArray?
