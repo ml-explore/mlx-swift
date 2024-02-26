@@ -15,7 +15,7 @@ for _ in 0 ..< 3:
 which will print a sequence of unique pseudo random numbers. Alternatively you can explicitly set the key:
 
 ```swift
-ley key = MLXRandom.key(0)
+let key = MLXRandom.key(0)
 for _ in 0 ..< 3:
   print(MLXRandom.uniform(key: key))
 ```
