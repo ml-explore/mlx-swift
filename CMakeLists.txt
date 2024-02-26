@@ -13,6 +13,16 @@ FetchContent_Declare(
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
   GIT_TAG "v0.0.2")
 FetchContent_MakeAvailable(mlx-c)
+set(swift_numerics_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/cmake/swift-numerics.patch)
+FetchContent_Declare(
+  swift-numerics
+  GIT_REPOSITORY "https://github.com/apple/swift-numerics.git"
+  GIT_TAG "1.0.2"
+  PATCH_COMMAND ${swift_numerics_patch} || true
+)
+FetchContent_MakeAvailable(swift-numerics)
+
+# swift-numerics
 
 # MLX package
 file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
@@ -20,7 +30,8 @@ add_library(MLX STATIC ${MLX-src})
 target_include_directories(MLX
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
 # Note: mlxc is target name exported by mlx-c
-target_link_libraries(MLX PUBLIC mlxc)
+target_link_libraries(MLX PUBLIC mlxc Numerics)
+target_compile_options(MLX PRIVATE -package-name MLX)
 
 # MLXRandom package
 file(GLOB MLXRandom-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXRandom/*.swift)
@@ -57,8 +68,3 @@ add_executable(tutorial
                ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Tutorial.swift)
 target_link_libraries(tutorial PRIVATE MLX)
 target_compile_options(tutorial PRIVATE -parse-as-library)
-
-add_executable(llama-mlx-bench
-               ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/LlamaMLXBench.swift)
-target_link_libraries(llama-mlx-bench PRIVATE MLX MLXNN)
-target_compile_options(llama-mlx-bench PRIVATE -parse-as-library)
