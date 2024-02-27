@@ -580,11 +580,38 @@ public func dequantized(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
+/// - ``divmod(_:_:stream:)``
 public func divide<A: ScalarOrArray, B: ScalarOrArray>(
     _ a: A, _ b: B, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     return MLXArray(mlx_divide(a.ctx, b.ctx, stream.ctx))
+}
+
+/// Element-wise quotient and remainder.
+///
+/// The fuction `divmod(a, b)` is equivalent to but faster than
+/// `(a // b, a % b)`. The function uses numpy-style broadcasting
+/// semantics. Either or both input arrays can also be scalars.
+///
+/// - Parameters:
+///   - a: input array or scalar
+///   - b: input array or scalar
+///   - stream: stream or device to evaluate on
+/// - Returns: The quotient `a / b` and remainder `a % b`
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``divide(_:_:stream:)``
+/// - ``remainder(_:_:stream:)``
+public func divmod<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> (MLXArray, MLXArray) {
+    let (a, b) = toArrays(a, b)
+    let arrays = mlx_divmod(a.ctx, b.ctx, stream.ctx)!
+    defer { mlx_free(arrays) }
+    let result = mlx_vector_array_values(arrays)
+    return (result[0], result[1])
 }
 
 /// Element-wise equality.
@@ -738,6 +765,22 @@ public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_greater_equal(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Ordinary inner product of vectors for 1-D arrays, in higher dimensions a sum product over the last axes.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: inner product
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func inner(
+    _ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_inner(a.ctx, b.ctx, stream.ctx))
+}
+
 /// Returns a boolean array where two arrays are element-wise equal within a tolerance.
 ///
 /// Infinite values are considered equal if they have the same sign, NaN values are not equal unless
@@ -767,6 +810,58 @@ public func isClose(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(mlx_isclose(a.ctx, b.ctx, rtol, atol, equalNaN, stream.ctx))
+}
+
+/// Return a boolean array indicating which elements are NaN.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: The boolean array indicating which elements are NaN.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func isNaN(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_isnan(array.ctx, stream.ctx))
+}
+
+/// Return a boolean array indicating which elements are infinity.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: The boolean array indicating which elements are infinity.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func isInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_isinf(array.ctx, stream.ctx))
+}
+
+/// Return a boolean array indicating which elements are negative infinity.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: The boolean array indicating which elements are negative infinity.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func isNegativeInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_isneginf(array.ctx, stream.ctx))
+}
+
+/// Return a boolean array indicating which elements are positive infinity.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: The boolean array indicating which elements are positive infinity.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func isPositiveInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_isposinf(array.ctx, stream.ctx))
 }
 
 /// Element-wise less than.
@@ -949,6 +1044,37 @@ public func logAddExp<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_logaddexp(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Element-wise logical and.
+///
+/// Logical and on two arrays with <doc:broadcasting>.
+///
+/// For example:
+///
+/// ```swift
+/// let a = MLXArray(0 ..< 12, [4, 3])
+/// let b = a + 1
+///
+/// // equivalent
+/// let r = (a .< b) .&& ((a + 1) .> b)
+/// let r2 = logicalAnd((a .< b), ((a + 1) .> b))
+/// ```
+///
+/// - Parameters:
+///   - a: input array or scalar
+///   - b: input array or scalar
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - <doc:logical>
+/// - ``MLXArray/.&&(_:_:)``
+public func logicalAnd<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_logical_and(a.ctx, b.ctx, stream.ctx))
+}
+
 /// Element-wise logical not.
 ///
 /// For example:
@@ -968,6 +1094,37 @@ public func logAddExp<A: ScalarOrArray, B: ScalarOrArray>(
 /// - <doc:logical>
 public func logicalNot(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_logical_not(array.ctx, stream.ctx))
+}
+
+/// Element-wise logical or.
+///
+/// Logical or on two arrays with <doc:broadcasting>.
+///
+/// For example:
+///
+/// ```swift
+/// let a = MLXArray(0 ..< 12, [4, 3])
+/// let b = a + 1
+///
+/// // equivalent
+/// let r = (a .< b) .|| ((a + 1) .> b)
+/// let r2 = logicalOr((a .< b), ((a + 1) .> b))
+/// ```
+///
+/// - Parameters:
+///   - a: input array or scalar
+///   - b: input array or scalar
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - <doc:logical>
+/// - ``MLXArray/.||(_:_:)``
+public func logicalOr<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_logical_or(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise maximum.
@@ -1086,6 +1243,22 @@ public func notEqual<A: ScalarOrArray, B: ScalarOrArray>(
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     return MLXArray(mlx_not_equal(a.ctx, b.ctx, stream.ctx))
+}
+
+/// Compute the outer product of two 1-D arrays, if the array's passed are not 1-D a flatten op will be run beforehand.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: outer product
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func outer(
+    _ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_outer(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Pad an array with a constant value.
@@ -1561,6 +1734,57 @@ public func tan(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// - <doc:arithmetic>
 public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_tanh(array.ctx, stream.ctx))
+}
+
+/// Computer tensor dot product.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - dimensions: sum over the last `dimensions` dimensions
+///   - stream: stream or device to evaluate on
+/// - Returns: tensor dot product
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func tensordot(
+    _ a: MLXArray, _ b: MLXArray, dimensions: Int = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_tensordot(a.ctx, b.ctx, dimensions.int32, stream.ctx))
+}
+
+/// Construct array by repeating given array the number of times given by `repetitions`.
+///
+/// - Parameters:
+///   - array: input array
+///   - repetitions: number of repetitions for each axis
+///   - stream: stream or device to evaluate on
+/// - Returns: tiled array
+///
+/// ### See Also
+/// - <doc:shapes>
+/// - ``tiled(_:repetitions:stream:)-eouf``
+public func tiled(_ array: MLXArray, repetitions: [Int], stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_tile(array.ctx, repetitions.asInt32, repetitions.count, stream.ctx))
+}
+
+/// Construct array by repeating given array the number of times given by `repetitions`.
+///
+/// - Parameters:
+///   - array: input array
+///   - repetitions: number of repetitions for all axes
+///   - stream: stream or device to evaluate on
+/// - Returns: tiled array
+///
+/// ### See Also
+/// - <doc:shapes>
+/// - ``tiled(_:repetitions:stream:)-72ntc``
+public func tiled(_ array: MLXArray, repetitions: Int, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_tile(array.ctx, [repetitions.int32], 1, stream.ctx))
 }
 
 /// Returns the `k` largest elements from the input along a given axis.
