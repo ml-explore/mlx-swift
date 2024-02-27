@@ -169,7 +169,9 @@ let package = Package(
     cxxLanguageStandard: .gnucxx17
 )
 
-if Context.environment["MLX_SWIFT_BUILD_DOC"] == "1" || Context.environment["SPI_GENERATE_DOCS"] == "1" {
+if Context.environment["MLX_SWIFT_BUILD_DOC"] == "1"
+    || Context.environment["SPI_GENERATE_DOCS"] == "1"
+{
     // docc builder
     package.dependencies.append(
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0")
