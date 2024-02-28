@@ -63,4 +63,6 @@ These methods manipulate the shape and contents of the array:
 - ``split(_:parts:axis:stream:)``
 - ``stacked(_:axis:stream:)``
 - ``swappedAxes(_:_:_:stream:)``
+- ``tiled(_:repetitions:stream:)-72ntc``
+- ``tiled(_:repetitions:stream:)-eouf``
 - ``transposed(_:axes:stream:)``

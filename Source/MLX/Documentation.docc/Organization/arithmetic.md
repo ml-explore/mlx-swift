@@ -134,17 +134,24 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``cos(_:stream:)``
 - ``cosh(_:stream:)``
 - ``divide(_:_:stream:)``
+- ``divmod(_:_:stream:)``
 - ``erf(_:stream:)``
 - ``erfInverse(_:stream:)``
 - ``exp(_:stream:)``
 - ``floor(_:stream:)``
 - ``floorDivide(_:_:stream:)``
+- ``isNaN(_:stream:)``
+- ``isInf(_:stream:)``
+- ``isPosInf(_:stream:)``
+- ``isNegInf(_:stream:)``
 - ``log(_:stream:)``
 - ``log10(_:stream:)``
 - ``log1p(_:stream:)``
 - ``log2(_:stream:)``
 - ``logAddExp(_:_:stream:)``
+- ``logicalAnd(_:_:stream:)``
 - ``logicalNot(_:stream:)``
+- ``logicalOr(_:_:stream:)``
 - ``matmul(_:_:stream:)``
 - ``maximum(_:_:stream:)``
 - ``minimum(_:_:stream:)``
@@ -170,7 +177,10 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``tanh(_:stream:)``
 - ``which(_:_:_:stream:)``
 
-### Matrix Multiply
+### Vector, Matrix, and Tensor Products
 
 - ``MLXArray/matmul(_:stream:)``
 - ``matmul(_:_:stream:)``
+- ``inner(_:_:stream:)``
+- ``outer(_:_:stream:)``
+- ``tensordot(_:_:dimensions:stream:)``

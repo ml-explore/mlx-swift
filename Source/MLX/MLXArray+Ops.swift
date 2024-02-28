@@ -536,11 +536,12 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a .< b) .&& ((a + 1) .> b)
+    /// let r = (a .< b) .&& ((a + 1) .> b)
     /// ```
     ///
     /// ### See Also
     /// - <doc:logical>
+    /// - ``logicalAnd(_:_:stream:)``
     public static func .&& (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_and(lhs.ctx, rhs.ctx, s.ctx))
@@ -556,11 +557,12 @@ extension MLXArray {
     /// let a = MLXArray(0 ..< 12, [4, 3])
     /// let b = a + 1
     ///
-    /// if (a .< b) .|| ((a + 1) .> b)
+    /// let r = (a .< b) .|| ((a + 1) .> b)
     /// ```
     ///
     /// ### See Also
     /// - <doc:logical>
+    /// - ``logicalOr(_:_:stream:)``
     public static func .|| (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         return MLXArray(mlx_logical_or(lhs.ctx, rhs.ctx, s.ctx))
