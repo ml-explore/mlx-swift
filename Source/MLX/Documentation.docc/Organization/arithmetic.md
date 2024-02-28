@@ -142,8 +142,8 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``floorDivide(_:_:stream:)``
 - ``isNaN(_:stream:)``
 - ``isInf(_:stream:)``
-- ``isPositiveInf(_:stream:)``
-- ``isNegativeInf(_:stream:)``
+- ``isPosInf(_:stream:)``
+- ``isNegInf(_:stream:)``
 - ``log(_:stream:)``
 - ``log10(_:stream:)``
 - ``log1p(_:stream:)``

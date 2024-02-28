@@ -847,7 +847,7 @@ public func isInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func isNegativeInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+public func isNegInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_isneginf(array.ctx, stream.ctx))
 }
 
@@ -860,7 +860,7 @@ public func isNegativeInf(_ array: MLXArray, stream: StreamOrDevice = .default) 
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func isPositiveInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+public func isPosInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_isposinf(array.ctx, stream.ctx))
 }
 
