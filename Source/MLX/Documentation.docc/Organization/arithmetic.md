@@ -177,7 +177,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``tanh(_:stream:)``
 - ``which(_:_:_:stream:)``
 
-### Matrix Multiply and Dot Products
+### Vector, Matrix, and Tensor Products
 
 - ``MLXArray/matmul(_:stream:)``
 - ``matmul(_:_:stream:)``
