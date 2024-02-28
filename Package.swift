@@ -120,7 +120,7 @@ let package = Package(
         ),
         .target(
             name: "MLXNN",
-            dependencies: ["MLX", "MLXRandom"]
+            dependencies: ["MLX", "MLXRandom", "Cmlx"]
         ),
         .target(
             name: "MLXOptimizers",

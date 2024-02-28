@@ -91,7 +91,6 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/-(_:_:)-7frdo``
     public static func - <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
@@ -102,7 +101,6 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/-(_:_:)-7frdo``
     public static func - <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         let lhs = lhs.asMLXArray(dtype: rhs.dtype)
@@ -1305,6 +1303,46 @@ extension MLXArray {
         return MLXArray(mlx_cumsum(flat, 0, reverse, inclusive, stream.ctx))
     }
 
+    /// Extract a diagonal or construct a diagonal matrix.
+    ///
+    /// If self is 1-D then a diagonal matrix is constructed with self on the
+    /// `k`-th diagonal. If self is 2-D then the `k`-th diagonal is
+    /// returned.
+    ///
+    /// - Parameters:
+    ///   - k: the diagonal to extract or construct
+    ///   - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - ``diagonal(offset:axis1:axis2:stream:)``
+    public func diag(k: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_diag(ctx, k.int32, stream.ctx))
+    }
+
+    /// Return specified diagonals.
+    ///
+    /// If self is 2-D, then a 1-D array containing the diagonal at the given
+    /// `offset` is returned.
+    ///
+    /// If self has more than two dimensions, then `axis1` and `axis2`
+    /// determine the 2D subarrays from which diagonals are extracted. The new
+    /// shape is the original shape with `axis1` and `axis2` removed and a
+    /// new dimension inserted at the end corresponding to the diagonal.
+    ///
+    /// - Parameters:
+    ///   - offset: offset of the diagonal.  Can be positive or negative
+    ///   - axis1: first axis of the 2-D sub-array from which the diagonals should be taken
+    ///   - axis2: second axis of the 2-D sub-array from which the diagonals should be taken
+    ///   - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - ``diag(k:stream:)``
+    public func diagonal(
+        offset: Int = 0, axis1: Int = 0, axis2: Int = 1, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLXArray(mlx_diagonal(ctx, offset.int32, axis1.int32, axis2.int32, stream.ctx))
+    }
+
     /// Element-wise exponential.
     ///
     /// ### See Also
@@ -1347,6 +1385,11 @@ extension MLXArray {
     }
 
     /// Flatten an array.
+    ///
+    /// The axes flattened will be between `start` and `end`,
+    /// inclusive. Negative axes are supported. After converting negative axis to
+    /// positive, axes outside the valid range will be clamped to a valid value,
+    /// `start` to `0` and `end` to `ndim - 1`.
     ///
     /// For example:
     ///

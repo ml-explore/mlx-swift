@@ -210,3 +210,8 @@ operations as methods for convenience.
 - ``stopGradient(_:stream:)``
 - ``jvp(_:primals:tangents:)``
 - ``vjp(_:primals:cotangents:)``
+
+### Other
+
+- ``diag(_:k:stream:)``
+- ``diagonal(_:offset:axis1:axis2:stream:)``

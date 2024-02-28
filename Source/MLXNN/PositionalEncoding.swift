@@ -1,5 +1,6 @@
 // Copyright © 2024 Apple Inc.
 
+import Cmlx
 import Foundation
 import MLX
 
@@ -21,18 +22,6 @@ final public class RoPE: Module, UnaryLayer {
     let base: Float
     let scale: Float
 
-    struct Key: Hashable {
-        let N: Int
-        let D: Int
-        let offset: Int
-        let base: Float
-        let scale: Float
-        let dtype: DType
-    }
-
-    // a cache of pre-computed (cos(theta), sin(theta)) by key
-    static let cache = Cache<Key, (MLXArray, MLXArray)>()
-
     /// Initialize ``RoPE``.
     ///
     /// - Parameters:
@@ -48,67 +37,14 @@ final public class RoPE: Module, UnaryLayer {
         self.scale = scale
     }
 
-    static func cosSinTheta(key: Key) -> (MLXArray, MLXArray) {
-        if let values = cache[key] {
-            return values
-        }
-
-        let D = key.D / 2
-        let positions = MLXArray(key.offset ..< key.N).asType(key.dtype) * key.scale
-        let freqs = exp(-MLXArray(0 ..< D).asType(key.dtype) * (log(key.base) / Float(D)))
-        let theta = positions.reshaped(-1, 1) * freqs.reshaped(1, -1)
-
-        let result = (cos(theta), sin(theta))
-        cache[key] = result
-
-        return result
-    }
-
-    func rope(costheta: MLXArray, sintheta: MLXArray, x: MLXArray) -> MLXArray {
-        let x1 = x[0 ..< (self.dimensions / 2), axis: -1]
-        let x2 = x[(self.dimensions / 2) ..< self.dimensions, axis: -1]
-
-        let rx1 = x1 * costheta - x2 * sintheta
-        let rx2 = x1 * sintheta + x2 * costheta
-
-        let rx: MLXArray
-        if self.dimensions < x.dim(-1) {
-            rx = concatenated([rx1, rx2, x[self.dimensions..., axis: -1]], axis: -1)
-        } else {
-            rx = concatenated([rx1, rx2], axis: -1)
-        }
-        return rx
-    }
-
-    func traditionalRope(costheta: MLXArray, sintheta: MLXArray, x: MLXArray) -> MLXArray {
-        let x1 = x[stride: 2, axis: -1]
-        let x2 = x[from: 1, stride: 2, axis: -1]
-
-        let rx1 = x1 * costheta - x2 * sintheta
-        let rx2 = x1 * sintheta + x2 * costheta
-
-        if dimensions < x.dim(-1) {
-            fatalError("RoPE doesn't implement partial traditional application")
-        }
-
-        let rx = concatenated(
-            [expandedDimensions(rx1, axis: -1), expandedDimensions(rx2, axis: -1)], axis: -1)
-
-        return rx
-    }
-
     public func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray {
         let shape = x.shape
-        let x = x.reshaped(-1, shape[shape.endIndex - 2], shape[shape.endIndex - 1])
-        let N = x.dim(1) + offset
-
-        let key = Key(N: N, D: dimensions, offset: offset, base: base, scale: scale, dtype: x.dtype)
-        let (costheta, sintheta) = Self.cosSinTheta(key: key)
-
-        let f = traditional ? traditionalRope : rope
-        let rx = f(costheta, sintheta, x)
-
-        return rx.reshaped(shape)
+        var x = x.reshaped(-1, x.dim(-2), x.dim(-1))
+        let stream = StreamOrDevice.default
+        x = MLXArray(
+            mlx_fast_rope(
+                x.ctx, Int32(dimensions), traditional, base, scale, Int32(offset), stream.ctx))
+        return x.reshaped(shape)
     }
 
     /// Evaluate with `offset` of `0`.
@@ -168,7 +104,6 @@ open class SinusoidalPositionalEncoding: Module, UnaryLayer {
         } else {
             y = concatenated([siny, cosy], axis: -1)
         }
-
         if scale != 1 {
             y = y * scale
         }

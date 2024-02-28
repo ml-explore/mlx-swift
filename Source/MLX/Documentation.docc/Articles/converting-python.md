@@ -218,8 +218,8 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `reshape` | ``MLX/reshaped(_:_:stream:)-5x3y0``
 `round` | ``MLX/round(_:decimals:stream:)``
 `rsqrt` | ``MLX/rsqrt(_:stream:)``
-`save` | ``MLX/save(array:url:stream:)`` and ``MLX/save(arrays:url:stream:)``
-`save_safetensors` | ``MLX/save(arrays:url:stream:)``
+`save` | ``MLX/save(array:url:stream:)`` and ``MLX/save(arrays:metadata:url:stream:)``
+`save_safetensors` | ``MLX/save(arrays:metadata:url:stream:)``
 `savez` | not supported
 `savez_compressed` | not supported
 `sigmoid` | ``MLX/sigmoid(_:stream:)``
