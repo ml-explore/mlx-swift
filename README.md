@@ -1,6 +1,6 @@
 # MLX Swift
 
-[**Installation**](#installation) | [**Documentation**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | [**Examples**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/examples)
+[**Installation**](#installation) | [**Documentation**](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx) | [**Examples**](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples)
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
@@ -11,7 +11,7 @@ not for production deployment of models in apps.
 
 ## Examples
 
-MLX Swift has a [few examples](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/examples), including:
+MLX Swift has a [few examples](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples), including:
 
 - Large-scale text generation with Mistral 7B
 - Training a simple multt-layer perceoptron on MNSIT
@@ -20,7 +20,7 @@ MLX Swift has a [few examples](https://ml-explore.github.io/mlx-swift/MLX/docume
 
 The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake install is also provided. 
 
-More details are in the [documentation](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/install).
+More details are in the [documentation](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/install).
 
 ### Xcode
 
@@ -76,7 +76,7 @@ ninja
 
 Check out the [contribution guidelines](CONTRIBUTING.md) for more information
 on contributing to MLX. See the
-[docs](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/install) for more
+[docs](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/install) for more
 information on building from source, and running tests.
 
 We are grateful for all of [our

@@ -61,10 +61,12 @@ target_link_libraries(MLXFFT PRIVATE MLX)
 ```
 ## Other MLX Packages
 
-- [MLX](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/)
-- [MLXRandom](https://ml-explore.github.io/mlx-swift/MLXRandom/documentation/mlxrandom/)
-- [MLXNN](https://ml-explore.github.io/mlx-swift/MLXNN/documentation/mlxnn/)
-- [MLXOptimizers](https://ml-explore.github.io/mlx-swift/MLXOptimizers/documentation/mlxoptimizers/)
+- [MLX](../mlx)
+- [MLXRandom](../mlxrandom)
+- [MLXNN](../mlxnn)
+- [MLXOptimizers](../mlxoptimizers)
+- [MLXFFT](../mlxfft)
+- [MLXLinalg](../mlxlinalg)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 ```
@@ -75,14 +77,10 @@ target_link_libraries(MLXFFT PRIVATE MLX)
 ## Other MLX Packages
 
 ...
-- [MLXFFT](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/)
+- [MLXFFT](../mlxfft/)
 ```
 
 8. Update README.md
-
-```
-[**Installation**](#installation) | [**MLX**](https://ml-explore.github.io/mlx-swift/MLX/documentation/mlx/) | ... | [**MLXFFT**](https://ml-explore.github.io/mlx-swift/MLXFFT/documentation/mlxfft/) | [**Examples**](#examples) 
-```
 
 ```
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
