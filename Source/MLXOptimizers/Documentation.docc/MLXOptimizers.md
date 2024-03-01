@@ -31,12 +31,12 @@ for _ in 0 ..< epochs {
 
 ## Other MLX Packages
 
-- [MLX](../../../MLX/documentation/mlx/)
-- [MLXRandom](../../../MLXRandom/documentation/mlxrandom/)
-- [MLXNN](../../../MLXNN/documentation/mlxnn/)
-- [MLXOptimizers](../../../MLXOptimizers/documentation/mlxoptimizers/)
-- [MLXFFT](../../../MLXFFT/documentation/mlxfft/)
-- [MLXLinalg](../../../MLXLinalg/documentation/mlxlinalg/)
+- [MLX](../mlx)
+- [MLXRandom](../mlxrandom)
+- [MLXNN](../mlxnn)
+- [MLXOptimizers](../mlxoptimizers)
+- [MLXFFT](../mlxfft)
+- [MLXLinalg](../mlxlinalg)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 
