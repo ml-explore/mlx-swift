@@ -1,9 +1,0 @@
-{
-  "bundleDisplayName" : "MLXOptimizers",
-  "bundleIdentifier" : "mlx.swift.mlxoptimizers",
-  "schemaVersion" : {
-    "major" : 0,
-    "minor" : 1,
-    "patch" : 0
-  }
-}
