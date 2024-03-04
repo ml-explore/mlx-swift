@@ -3,7 +3,7 @@
 import Cmlx
 import Foundation
 
-/// Properties to control the
+/// Properties to control the the GPU memory allocation and buffer reuse.
 public enum GPU {
 
     /// Relaxed parameter for ``memoryLimit``.
