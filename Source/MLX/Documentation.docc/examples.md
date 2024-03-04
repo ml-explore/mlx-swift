@@ -23,8 +23,8 @@ data and trains an MNIST model.
 ## LLMEval
 
 An example that runs on both iOS and macOS that downloads a LLM model
-weights and tokenizer configuration from Hugging Face and evaluates
-a prompt in-process.
+weights and tokenizer configuration from Hugging Face and generates text
+from a given prompt.
 
 ### LinearModelTraining
 
