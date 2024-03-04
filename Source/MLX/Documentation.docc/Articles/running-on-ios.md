@@ -23,7 +23,7 @@ but you may wish to limit this further.
 For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache:
 
 ```
-MLX.GPU.cacheLimit = 1024 * 200
+MLX.GPU.set(cacheLimit: 20 * 1024 * 1024)
 ```
 
 Decreasing this number to 0 will result in decreased performance due to the

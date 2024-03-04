@@ -6,13 +6,7 @@ import Foundation
 /// Properties to control the the GPU memory allocation and buffer reuse.
 public enum GPU {
 
-    /// Relaxed parameter for ``memoryLimit``.
-    public static var relaxedMemoryLimit = true {
-        didSet {
-            mlx_metal_set_memory_limit(self.memoryLimit, relaxedMemoryLimit)
-        }
-    }
-
+    static var _relaxedMemoryLimit = true
     static var _cacheLimit: Int?
     static var _memoryLimit: Int?
 
@@ -40,7 +34,28 @@ public enum GPU {
         mlx_metal_get_peak_memory()
     }
 
-    /// Get or set the free cache limit.
+    /// Get the free cache limit.
+    ///
+    /// If using more than the given limit, free memory will be reclaimed
+    /// from the cache on the next allocation.
+    /// The cache limit defaults to the memory limit.
+    ///
+    /// ### See Also
+    /// - ``set(cacheLimit:)``
+    public static var cacheLimit: Int {
+        if let cacheLimit = _cacheLimit {
+            return cacheLimit
+        }
+
+        // set it to a reasonable value in order to read it, then set it back
+        // to current
+        let current = mlx_metal_set_cache_limit(cacheMemory)
+        mlx_metal_set_cache_limit(current)
+        _cacheLimit = current
+        return current
+    }
+
+    /// Set the free cache limit.
     ///
     /// If using more than the given limit, free memory will be reclaimed
     /// from the cache on the next allocation. To disable the cache,
@@ -49,48 +64,44 @@ public enum GPU {
     /// The cache limit defaults to the memory limit.
     ///
     /// Returns the previous cache limit.
-    public static var cacheLimit: Int {
-        get {
-            if let cacheLimit = _cacheLimit {
-                return cacheLimit
-            }
-
-            // set it to a reasonable value in order to read it, then set it back
-            // to current
-            let current = mlx_metal_set_cache_limit(cacheMemory)
-            mlx_metal_set_cache_limit(current)
-            self.cacheLimit = current
-            return current
-        }
-        set {
-            mlx_metal_set_cache_limit(newValue)
-        }
+    public static func set(cacheLimit: Int) {
+        _cacheLimit = cacheLimit
+        mlx_metal_set_cache_limit(cacheLimit)
     }
 
-    /// Get or set the memory limit.
+    /// Get the memory limit.
+    ///
+    /// Calls to malloc will wait on scheduled tasks if the limit is exceeded. The
+    /// memory limit defaults to 1.5 times the maximum recommended working set
+    /// size reported by the device.
+    ///
+    /// ### See Also
+    /// - ``set(memoryLimit:relaxed:)``
+    public static var memoryLimit: Int {
+        if let memoryLimit = _memoryLimit {
+            return memoryLimit
+        }
+
+        let current = mlx_metal_set_memory_limit(activeMemory, _relaxedMemoryLimit)
+        mlx_metal_set_memory_limit(current, _relaxedMemoryLimit)
+        return current
+    }
+
+    /// Set the memory limit.
     ///
     /// Calls to malloc will wait on scheduled tasks if the limit is exceeded.  If
-    /// there are no more scheduled tasks an error will be raised if ``relaxedMemoryLimit``
+    /// there are no more scheduled tasks an error will be raised if `relaxed`
     /// is false or memory will be allocated (including the potential for
-    /// swap) if `relaxedMemoryLimit` is true.
+    /// swap) if `relaxed` is true.
     ///
     /// The memory limit defaults to 1.5 times the maximum recommended working set
     /// size reported by the device.
     ///
     /// ### See Also
     /// - ``relaxedMemoryLimit``
-    public static var memoryLimit: Int {
-        get {
-            if let memoryLimit = _memoryLimit {
-                return memoryLimit
-            }
-
-            let current = mlx_metal_set_memory_limit(activeMemory, relaxedMemoryLimit)
-            mlx_metal_set_memory_limit(current, relaxedMemoryLimit)
-            return current
-        }
-        set {
-            mlx_metal_set_memory_limit(newValue, relaxedMemoryLimit)
-        }
+    public static func set(memoryLimit: Int, relaxed: Bool = true) {
+        _relaxedMemoryLimit = relaxed
+        _memoryLimit = memoryLimit
+        mlx_metal_set_memory_limit(memoryLimit, relaxed)
     }
 }
