@@ -48,7 +48,8 @@ public func relu(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``LeakyReLU``
 public func leakyRelu(_ x: MLXArray, negativeSlope: Float = 0.01) -> MLXArray {
-    maximum(negativeSlope * x, x)
+    let negativeSlope = negativeSlope.asMLXArray(dtype: x.dtype)
+    return compiledLeakyRelu(x, negativeSlope)
 }
 
 /// Applies the Log Softmax function.
@@ -77,7 +78,8 @@ public func logSoftMax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
 /// ### See Also
 /// - <doc:activations>
 public func elu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
-    which(x .> 0, x, alpha * (MLX.exp(x) - 1))
+    let alpha = alpha.asMLXArray(dtype: x.dtype)
+    return compiledElu(x, alpha)
 }
 
 /// Applies the Rectified Linear Unit 6.
@@ -92,7 +94,7 @@ public func elu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
 /// - <doc:activations>
 /// - ``ReLU6``
 public func relu6(_ x: MLXArray) -> MLXArray {
-    minimum(maximum(x, 0), 6)
+    compiledRelu6(x)
 }
 
 /// Applies the Softplus function.
@@ -122,7 +124,7 @@ public func softPlus(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``SoftSign``
 public func softSign(_ x: MLXArray) -> MLXArray {
-    x / (1 + abs(x))
+    compiledSoftSign(x)
 }
 
 /// Applies the Continuously Differentiable Exponential Linear Unit.
@@ -137,7 +139,8 @@ public func softSign(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``CELU``
 public func celu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
-    maximum(x, 0.0) + alpha * (exp(minimum(x, 0.0) / alpha) - 1)
+    let alpha = alpha.asMLXArray(dtype: x.dtype)
+    return compiledCelu(x, alpha)
 }
 
 /// Applies the Sigmoid Linear Unit. Also known as Swish.
@@ -152,7 +155,7 @@ public func celu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
 /// - <doc:activations>
 /// - ``SiLU``
 public func silu(_ x: MLXArray) -> MLXArray {
-    x * sigmoid(x)
+    compiledSilu(x)
 }
 
 /// Applies the Log Sigmoid function.
@@ -167,7 +170,7 @@ public func silu(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``LogSigmoid``
 public func logSigmoid(_ x: MLXArray) -> MLXArray {
-    -softPlus(-x)
+    compiledLogSigmoid(x)
 }
 
 /// Applies the Gaussian Error Linear Units function.
@@ -184,7 +187,7 @@ public func logSigmoid(_ x: MLXArray) -> MLXArray {
 /// - ``geluApproximate(_:)``
 /// - ``geluFastApproximate(_:)``
 public func gelu(_ x: MLXArray) -> MLXArray {
-    x * (1 + erf(x / sqrt(2))) / 2
+    compiledGelu(x)
 }
 
 /// An approximation to Gaussian Error Linear Unit.
@@ -201,7 +204,7 @@ public func gelu(_ x: MLXArray) -> MLXArray {
 /// - ``gelu(_:)``
 /// - ``geluFastApproximate(_:)``
 public func geluApproximate(_ x: MLXArray) -> MLXArray {
-    x * sigmoid(1.60033 * x * (1 + 0.0433603 * x.square()))
+    compiledGeluApproximate(x)
 }
 
 /// A fast approximation to Gaussian Error Linear Unit.
@@ -218,7 +221,7 @@ public func geluApproximate(_ x: MLXArray) -> MLXArray {
 /// - ``gelu(_:)``
 /// - ``geluApproximate(_:)``
 public func geluFastApproximate(_ x: MLXArray) -> MLXArray {
-    x * sigmoid(1.773 * x)
+    compiledGeluFastApproximate(x)
 }
 
 /// Applies the gated linear unit function.
@@ -265,7 +268,7 @@ public func step(_ x: MLXArray, threshold: Float = 0.0) -> MLXArray {
 /// - ``SELU``
 /// - ``elu(_:alpha:)``
 public func selu(_ x: MLXArray) -> MLXArray {
-    elu(x, alpha: 1.67326) * 1.0507
+    compiledSelu(x)
 }
 
 /// Applies the element-wise parametric ReLU.
@@ -280,7 +283,7 @@ public func selu(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``PReLU``
 public func prelu(_ x: MLXArray, alpha: MLXArray) -> MLXArray {
-    maximum(0, x) + alpha * minimum(0, x)
+    compiledPrelu(x, alpha)
 }
 
 /// Applies the Mish function, element-wise.
@@ -299,7 +302,7 @@ public func prelu(_ x: MLXArray, alpha: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``Mish``
 public func mish(_ x: MLXArray) -> MLXArray {
-    x * tanh(softPlus(x))
+    compiledMish(x)
 }
 
 /// Applies the hardswish function, element-wise
@@ -314,8 +317,7 @@ public func mish(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``HardSwish``
 public func hardSwish(_ x: MLXArray) -> MLXArray {
-    let maxXPlus3 = maximum(x + 3, 0)
-    return x * minimum(maxXPlus3, 6) / 6
+    compiledHardSwish(x)
 }
 
 /// Applies the gated linear unit function.
@@ -692,3 +694,90 @@ open class SELU: Module, UnaryLayer {
         selu(x)
     }
 }
+
+// MARK: - Compiled Activation Functions
+
+private let compiledLeakyRelu: (MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, negativeSlope in
+        maximum(negativeSlope * x, x)
+    }
+}()
+
+private let compiledElu: (MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, alpha in
+        which(x .> 0, x, alpha * (MLX.exp(x) - 1))
+    }
+}()
+
+private let compiledRelu6: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        minimum(maximum(x, 0), 6)
+    }
+}()
+
+private let compiledSoftSign: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        x / (1 + abs(x))
+    }
+}()
+
+private let compiledCelu: (MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, alpha in
+        maximum(x, 0.0) + alpha * (exp(minimum(x, 0.0) / alpha) - 1)
+    }
+}()
+
+private let compiledSilu: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        x * sigmoid(x)
+    }
+}()
+
+private let compiledLogSigmoid: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        -softPlus(-x)
+    }
+}()
+
+private let compiledGelu: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        x * (1 + erf(x / sqrt(2))) / 2
+    }
+}()
+
+private let compiledGeluApproximate: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        x * sigmoid(1.60033 * x * (1 + 0.0433603 * x.square()))
+    }
+}()
+
+private let compiledGeluFastApproximate: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        x * sigmoid(1.773 * x)
+    }
+}()
+
+private let compiledSelu: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        elu(x, alpha: 1.67326) * 1.0507
+    }
+}()
+
+private let compiledPrelu: (MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, alpha in
+        maximum(0, x) + alpha * minimum(0, x)
+    }
+}()
+
+private let compiledMish: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        x * tanh(softPlus(x))
+    }
+}()
+
+private let compiledHardSwish: (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        let maxXPlus3 = maximum(x + 3, 0)
+        return x * minimum(maxXPlus3, 6) / 6
+    }
+}()

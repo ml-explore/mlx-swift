@@ -412,6 +412,12 @@ constexpr complex64_t operator/(complex64_t a, complex64_t b) {
 constexpr complex64_t operator%(complex64_t a, complex64_t b) {
   auto real = a.real - (b.real * static_cast<int64_t>(a.real / b.real));
   auto imag = a.imag - (b.imag * static_cast<int64_t>(a.imag / b.imag));
+  if (real != 0 && (real < 0 != b.real < 0)) {
+    real += b.real;
+  }
+  if (imag != 0 && (imag < 0 != b.imag < 0)) {
+    imag += b.imag;
+  }
   return {real, imag};
 }
 # 8 "Source/Cmlx/mlx/mlx/backend/metal/kernels/utils.h" 2
@@ -457,7 +463,7 @@ inline size_t elem_to_loc(
     device const size_t* strides,
     int ndim) {
   size_t loc = 0;
-  for (int i = ndim - 1; i >= 0; --i) {
+  for (int i = ndim - 1; i >= 0 && elem > 0; --i) {
     loc += (elem % shape[i]) * strides[i];
     elem /= shape[i];
   }
@@ -470,9 +476,33 @@ inline size_t elem_to_loc(
     constant const size_t* strides,
     int ndim) {
   size_t loc = 0;
-  for (int i = ndim - 1; i >= 0; --i) {
+  for (int i = ndim - 1; i >= 0 && elem > 0; --i) {
     loc += (elem % shape[i]) * strides[i];
     elem /= shape[i];
+  }
+  return loc;
+}
+
+template <int NDIM>
+inline uint3 elem_to_loc_3_nd(
+    uint3 elem,
+    constant const int shape[NDIM],
+    constant const size_t a_strides[NDIM],
+    constant const size_t b_strides[NDIM],
+    constant const size_t c_strides[NDIM]) {
+  uint3 loc = {
+      static_cast<uint>(
+          elem.x * a_strides[NDIM - 1] + elem.y * a_strides[NDIM - 2]),
+      static_cast<uint>(
+          elem.x * b_strides[NDIM - 1] + elem.y * b_strides[NDIM - 2]),
+      static_cast<uint>(
+          elem.x * c_strides[NDIM - 1] + elem.y * c_strides[NDIM - 2])};
+  for (int d = NDIM - 3; d >= 0; --d) {
+    uint l = elem.z % shape[d];
+    loc.x += l * a_strides[d];
+    loc.y += l * b_strides[d];
+    loc.z += l * c_strides[d];
+    elem.z /= shape[d];
   }
   return loc;
 }
@@ -531,6 +561,30 @@ inline size_t elem_to_loc(
   size_t loc = elem.x * strides[ndim - 1] + elem.y * strides[ndim - 2];
   for (int d = ndim - 3; d >= 0; --d) {
     loc += (elem.z % shape[d]) * strides[d];
+    elem.z /= shape[d];
+  }
+  return loc;
+}
+
+inline uint3 elem_to_loc_3_nd(
+    uint3 elem,
+    constant const int* shape,
+    constant const size_t* a_strides,
+    constant const size_t* b_strides,
+    constant const size_t* c_strides,
+    int ndim) {
+  uint3 loc = {
+      static_cast<uint>(
+          elem.x * a_strides[ndim - 1] + elem.y * a_strides[ndim - 2]),
+      static_cast<uint>(
+          elem.x * b_strides[ndim - 1] + elem.y * b_strides[ndim - 2]),
+      static_cast<uint>(
+          elem.x * c_strides[ndim - 1] + elem.y * c_strides[ndim - 2])};
+  for (int d = ndim - 3; d >= 0; --d) {
+    uint l = elem.z % shape[d];
+    loc.x += l * a_strides[d];
+    loc.y += l * b_strides[d];
+    loc.z += l * c_strides[d];
     elem.z /= shape[d];
   }
   return loc;
@@ -678,20 +732,30 @@ struct Divide {
 
 struct Remainder {
   template <typename T>
-  T operator()(T x, T y) {
+  metal::enable_if_t<metal::is_integral_v<T> & !metal::is_signed_v<T>, T>
+  operator()(T x, T y) {
     return x % y;
   }
-  template <>
-  float operator()(float x, float y) {
-    return fmod(x, y);
+  template <typename T>
+  metal::enable_if_t<metal::is_integral_v<T> & metal::is_signed_v<T>, T>
+  operator()(T x, T y) {
+    auto r = x % y;
+    if (r != 0 && (r < 0 != y < 0)) {
+      r += y;
+    }
+    return r;
+  }
+  template <typename T>
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) {
+    T r = fmod(x, y);
+    if (r != 0 && (r < 0 != y < 0)) {
+      r += y;
+    }
+    return r;
   }
   template <>
-  half operator()(half x, half y) {
-    return fmod(x, y);
-  }
-  template <>
-  bfloat16_t operator()(bfloat16_t x, bfloat16_t y) {
-    return fmod(x, y);
+  complex64_t operator()(complex64_t x, complex64_t y) {
+    return x % y;
   }
 };
 
@@ -874,6 +938,18 @@ struct LogicalOr {
   };
 };
 # 4 "Source/Cmlx/mlx/mlx/backend/metal/kernels/compiled_preamble.h" 2
+# 1 "Source/Cmlx/mlx/mlx/backend/metal/kernels/ternary.h" 1
+
+
+
+
+struct Select {
+  template <typename T>
+  T operator()(bool condition, T x, T y) {
+    return condition ? x : y;
+  }
+};
+# 5 "Source/Cmlx/mlx/mlx/backend/metal/kernels/compiled_preamble.h" 2
 # 1 "Source/Cmlx/mlx/mlx/backend/metal/kernels/unary.h" 1
 
 
@@ -946,6 +1022,10 @@ float erfinv(float a) {
 }
 # 10 "Source/Cmlx/mlx/mlx/backend/metal/kernels/unary.h" 2
 
+
+namespace {
+constant float inf = metal::numeric_limits<float>::infinity();
+}
 
 struct Abs {
   template <typename T>
@@ -1312,7 +1392,9 @@ struct Tanh {
     return {(tanh_a + tan_b * t1) / denom, (tan_b - tanh_a * t1) / denom};
   };
 };
-# 5 "Source/Cmlx/mlx/mlx/backend/metal/kernels/compiled_preamble.h" 2
+# 6 "Source/Cmlx/mlx/mlx/backend/metal/kernels/compiled_preamble.h" 2
+
+typedef half float16_t;
 )preamble";
 
 }

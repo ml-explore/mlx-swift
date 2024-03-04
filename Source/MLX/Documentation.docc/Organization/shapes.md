@@ -31,6 +31,9 @@ and ``MLXArray/shape`` of the dimensions without changing the number of elements
 - ``expandedDimensions(_:axis:stream:)``
 - ``expandedDimensions(_:axes:stream:)``
 - ``asStrided(_:_:strides:offset:stream:)``
+- ``atLeast1D(_:stream:)``
+- ``atLeast2D(_:stream:)``
+- ``atLeast3D(_:stream:)``
 
 - ``flattened(_:start:end:stream:)``
 - ``reshaped(_:_:stream:)-5x3y0``
