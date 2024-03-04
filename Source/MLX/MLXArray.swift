@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Numerics
 
 public final class MLXArray {
 
@@ -129,6 +130,7 @@ public final class MLXArray {
         var free = false
         if type.dtype != self.dtype {
             array_ctx = mlx_astype(self.ctx, type.dtype.cmlxDtype, StreamOrDevice.default.ctx)
+            mlx_array_eval(array_ctx)
             free = true
         }
 
@@ -151,6 +153,11 @@ public final class MLXArray {
         #endif
         case is Float32.Type: return mlx_array_item_float32(array_ctx) as! T
         case is Float.Type: return mlx_array_item_float32(array_ctx) as! T
+        case is Complex<Float32>.Type:
+            // mlx_array_item_complex64() isn't visible in swift so read the array
+            // contents
+            let ptr = UnsafePointer<Complex<Float32>>(mlx_array_data_complex64(ctx))!
+            return ptr.pointee as! T
         default:
             fatalError("Unable to get item() as \(type)")
         }
@@ -211,37 +218,51 @@ public final class MLXArray {
     /// ### See Also
     /// - <doc:conversion>
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
-        precondition(T.dtype == self.dtype, "\(T.dtype) != \(self.dtype)")
+        self.eval()
 
-        // make sure the contents are realized
-        mlx_array_eval(ctx)
+        var array_ctx = self.ctx
+        var free = false
+        if type.dtype != self.dtype {
+            array_ctx = mlx_astype(self.ctx, type.dtype.cmlxDtype, StreamOrDevice.default.ctx)
+            mlx_array_eval(array_ctx)
+            free = true
+        }
+
+        // can't do it inside the else as it will free at the end of the block
+        defer { if free { mlx_free(array_ctx) } }
 
         func convert(_ ptr: UnsafePointer<T>) -> [T] {
             Array(UnsafeBufferPointer(start: ptr, count: self.size))
         }
 
         switch type {
-        case is Bool.Type: return convert(mlx_array_data_bool(ctx) as! UnsafePointer<T>)
-        case is UInt8.Type: return convert(mlx_array_data_uint8(ctx) as! UnsafePointer<T>)
-        case is UInt16.Type: return convert(mlx_array_data_uint16(ctx) as! UnsafePointer<T>)
-        case is UInt32.Type: return convert(mlx_array_data_uint32(ctx) as! UnsafePointer<T>)
-        case is UInt64.Type: return convert(mlx_array_data_uint64(ctx) as! UnsafePointer<T>)
-        case is Int8.Type: return convert(mlx_array_data_int8(ctx) as! UnsafePointer<T>)
-        case is Int16.Type: return convert(mlx_array_data_int16(ctx) as! UnsafePointer<T>)
-        case is Int32.Type: return convert(mlx_array_data_int32(ctx) as! UnsafePointer<T>)
-        case is Int64.Type: return convert(mlx_array_data_int64(ctx) as! UnsafePointer<T>)
+        case is Bool.Type: return convert(mlx_array_data_bool(array_ctx) as! UnsafePointer<T>)
+        case is UInt8.Type: return convert(mlx_array_data_uint8(array_ctx) as! UnsafePointer<T>)
+        case is UInt16.Type: return convert(mlx_array_data_uint16(array_ctx) as! UnsafePointer<T>)
+        case is UInt32.Type: return convert(mlx_array_data_uint32(array_ctx) as! UnsafePointer<T>)
+        case is UInt64.Type: return convert(mlx_array_data_uint64(array_ctx) as! UnsafePointer<T>)
+        case is Int8.Type: return convert(mlx_array_data_int8(array_ctx) as! UnsafePointer<T>)
+        case is Int16.Type: return convert(mlx_array_data_int16(array_ctx) as! UnsafePointer<T>)
+        case is Int32.Type: return convert(mlx_array_data_int32(array_ctx) as! UnsafePointer<T>)
+        case is Int64.Type: return convert(mlx_array_data_int64(array_ctx) as! UnsafePointer<T>)
         case is Int.Type:
             // Int and Int64 are the same bits but distinct types. coerce pointers as needed
-            let pointer = mlx_array_data_int64(ctx)
+            let pointer = mlx_array_data_int64(array_ctx)
             let bufferPointer = UnsafeBufferPointer(start: pointer, count: self.size)
             return bufferPointer.withMemoryRebound(to: Int.self) { buffer in
                 Array(buffer) as! [T]
             }
         #if !arch(x86_64)
-            case is Float16.Type: return convert(mlx_array_data_float16(ctx) as! UnsafePointer<T>)
+            case is Float16.Type:
+                return convert(mlx_array_data_float16(array_ctx) as! UnsafePointer<T>)
         #endif
-        case is Float32.Type: return convert(mlx_array_data_float32(ctx) as! UnsafePointer<T>)
-        case is Float.Type: return convert(mlx_array_data_float32(ctx) as! UnsafePointer<T>)
+        case is Float32.Type: return convert(mlx_array_data_float32(array_ctx) as! UnsafePointer<T>)
+        case is Float.Type: return convert(mlx_array_data_float32(array_ctx) as! UnsafePointer<T>)
+        case is Complex<Float32>.Type:
+            let ptr = UnsafeBufferPointer(
+                start: UnsafePointer<Complex<Float32>>(mlx_array_data_complex64(ctx)),
+                count: self.size)
+            return Array(ptr) as! [T]
         default:
             fatalError("Unable to get item() as \(type)")
         }

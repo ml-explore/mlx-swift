@@ -1,6 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
+import Numerics
 import XCTest
 
 @testable import MLX
@@ -133,6 +134,41 @@ class MLXArrayOpsTests: XCTestCase {
 
         XCTAssertEqual((x * 15.5).dtype, .float16)
         XCTAssertEqual((15.5 * x).dtype, .float16)
+    }
+
+    public func testBFloat16() {
+        let x = MLXArray([1, 5, 9]).asType(.bfloat16)
+        let y = x * x
+        XCTAssertEqual(y.dtype, .bfloat16)
+
+        // this will convert the 3 to bfloat16 via init<T: HasDType>(_ value: T, dtype: DType)
+        let z = (y + 3).sum()
+        XCTAssertEqual(z.dtype, .bfloat16)
+
+        // read out the value as a usable type
+        let r1 = z.item(Float32.self)
+        XCTAssertEqual(r1, 116)
+
+        let r2 = z.asArray(Float.self)
+        XCTAssertEqual(r2, [116])
+    }
+
+    public func testComplexPromote() {
+        let x = MLXArray(Complex(3, 4))
+        let y = x * x
+        XCTAssertEqual(y.dtype, .complex64)
+
+        // this will convert the 3 to (3, 0i) via init<T: HasDType>(_ value: T, dtype: DType)
+        let z = y + 3
+        XCTAssertEqual(z.dtype, .complex64)
+
+        // read out as complex
+        let r1 = z.item(Complex.self)
+        XCTAssertEqual(r1, Complex(-4, 24))
+
+        // read out the value as a usable type
+        let r2 = z.asArray(Complex.self)
+        XCTAssertEqual(r2, [Complex(-4, 24)])
     }
 
 }
