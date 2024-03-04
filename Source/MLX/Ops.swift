@@ -1915,10 +1915,32 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
+/// - ``tensordot(_:_:axes:stream:)-6gt4h``
 public func tensordot(
     _ a: MLXArray, _ b: MLXArray, axes: Int = 1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_tensordot(a.ctx, b.ctx, axes.int32, stream.ctx))
+    MLXArray(mlx_tensordot_along_axis(a.ctx, b.ctx, axes.int32, stream.ctx))
+}
+
+/// Computer tensor dot product.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - axes: two ranges for the `a` and `b` dimensions
+///   - stream: stream or device to evaluate on
+/// - Returns: tensor dot product
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``tensordot(_:_:axes:stream:)-3qkgq``
+public func tensordot(
+    _ a: MLXArray, _ b: MLXArray, axes: ((Int, Int), (Int, Int)), stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_tensordot(
+            a.ctx, b.ctx, [axes.0.0, axes.0.1].asInt32, 2, [axes.1.0, axes.1.1].asInt32, 2,
+            stream.ctx))
 }
 
 /// Construct array by repeating given array the number of times given by `repetitions`.
