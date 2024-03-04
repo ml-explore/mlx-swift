@@ -18,7 +18,6 @@ open class Pool: Module, UnaryLayer {
         self.kernelSize = kernelSize
         self.stride = stride
         self.axes = Array((-1 * kernelSize.count - 1) ..< -1)
-        print(axes)
         self.poolingOp = poolingOp
     }
 

@@ -11,30 +11,24 @@ Swift example code for MLX and MLXNN.
 
 ## Overview
 
-Example software for ``MLX`` and `MLXNN`.  Browse it in GitHub at:
+Examples using ``MLX`` and `MLXNN` are available on
+[GitHub](https://github.com/ml-explore/mlx-swift-examples). The examples
+include:
 
-- [https://github.com/ml-explore/mlx-swift-examples](https://github.com/ml-explore/mlx-swift-examples)
+- [MNISTTrainer](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MNISTTrainer/README.md):
+  An example that runs on both iOS and macOS that downloads MNIST training data
+  and trains a [LeNet](https://en.wikipedia.org/wiki/LeNet).
 
-## MNISTTrainer
+- [LLMEval](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/LLMEval/README.md):
+  An example that runs on both iOS and macOS that downloads an LLM and
+  tokenizer from Hugging Face and  and generates text from a given prompt.
 
-An example that runs on both iOS and macOS that downloads MNIST training
-data and trains an MNIST model.
+- [LinearModelTraining](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/LinearModelTraining/README.md):
+  An example that trains a simple linear model.
 
-## LLMEval
+- [llm-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md):
+  A command line tool for generating text using a variety of LLMs available on
+  the Hugging Face hub.
 
-An example that runs on both iOS and macOS that downloads a LLM model
-weights and tokenizer configuration from Hugging Face and generates text
-from a given prompt.
-
-### LinearModelTraining
-
-A simple linear model and a training loop.
-
-### llm-tool
-
-A command line tool for generating text using a Llama / Mistral model.
-
-### mnist-tool
-
-A command line tool for training an MNIST (MLP) model.
-
+- [mnist-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/mnist-tool/README.md):
+  A command line tool for training a LeNet on MNIST.

@@ -11,11 +11,16 @@ not for production deployment of models in apps.
 
 ## Examples
 
-MLX Swift has a [few examples](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples), including:
+MLX Swift has a [few
+examples](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples),
+including:
 
 - Large-scale text generation with Mistral 7B
-- Training a simple multi-layer perceptron on MNIST
+- Training a simple LeNet on MNIST
 - Examples that run on macOS or iOS
+
+The [MLX Swift Examples repo](https://github.com/ml-explore/mlx-swift-examples)
+contains the complete code and documentation for these examples.
 
 ## Installation
 
