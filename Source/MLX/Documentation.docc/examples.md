@@ -15,6 +15,17 @@ Example software for ``MLX`` and `MLXNN`.  Browse it in GitHub at:
 
 - [https://github.com/ml-explore/mlx-swift-examples](https://github.com/ml-explore/mlx-swift-examples)
 
+## MNISTTrainer
+
+An example that runs on both iOS and macOS that downloads MNIST training
+data and trains an MNIST model.
+
+## LLMEval
+
+An example that runs on both iOS and macOS that downloads a LLM model
+weights and tokenizer configuration from Hugging Face and generates text
+from a given prompt.
+
 ### LinearModelTraining
 
 A simple linear model and a training loop.

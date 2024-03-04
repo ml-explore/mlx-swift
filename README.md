@@ -14,7 +14,8 @@ not for production deployment of models in apps.
 MLX Swift has a [few examples](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples), including:
 
 - Large-scale text generation with Mistral 7B
-- Training a simple multt-layer perceoptron on MNSIT
+- Training a simple multi-layer perceptron on MNIST
+- Examples that run on macOS or iOS
 
 ## Installation
 
