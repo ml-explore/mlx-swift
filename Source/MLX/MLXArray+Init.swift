@@ -103,6 +103,23 @@ extension MLXArray {
             })
     }
 
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` with a ``DType/bfloat16``
+    /// from a ``Float32``.
+    ///
+    /// ```swift
+    /// let a = MLXArray(bfloat16: 35)
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    public convenience init(bfloat16 value: Float32) {
+        let stream = StreamOrDevice.default
+        let v_mlx = mlx_array_from_float(Float32(value))!
+        defer { mlx_free(v_mlx) }
+        let v_bfloat = mlx_astype(v_mlx, DType.bfloat16.cmlxDtype, stream.ctx)!
+        self.init(v_bfloat)
+    }
+
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value
     /// with a conversion to a given ``DType``.
     ///
@@ -160,8 +177,10 @@ extension MLXArray {
                 #endif
                 case .float32:
                     self.init(Float32(v))
-                case .bfloat16, .complex64:
-                    fatalError("dtype \(dtype) not supported")
+                case .bfloat16:
+                    self.init(bfloat16: Float32(v))
+                case .complex64:
+                    self.init(real: Float32(v), imaginary: 0)
                 }
 
             } else if let v = value as? (any BinaryInteger) {
@@ -194,8 +213,10 @@ extension MLXArray {
                 #endif
                 case .float32:
                     self.init(Float32(v))
-                case .bfloat16, .complex64:
-                    fatalError("dtype \(dtype) not supported")
+                case .bfloat16:
+                    self.init(bfloat16: Float32(v))
+                case .complex64:
+                    self.init(real: Float32(v), imaginary: 0)
                 }
 
             } else {

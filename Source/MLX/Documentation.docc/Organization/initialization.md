@@ -202,6 +202,7 @@ let c = r + i.asImaginary()
 - ``MLXArray/init(_:)-10m``
 - ``MLXArray/init(_:)-96nyv``
 - ``MLXArray/init(_:dtype:)``
+- ``MLXArray/init(bfloat16:)``
 
 ### MLXArray Int Overrides
 
