@@ -10,6 +10,42 @@ public enum GPU {
     static var _cacheLimit: Int?
     static var _memoryLimit: Int?
 
+    /// Snapshot of memory stats
+    ///
+    /// ### See Also
+    /// - ``snapshot()``
+    public struct Snapshot: CustomStringConvertible, Codable {
+        var activeMemory: Int
+        var cacheMemory: Int
+        var peakMemory: Int
+
+        public func delta(_ other: Snapshot) -> Snapshot {
+            .init(
+                activeMemory: other.activeMemory - activeMemory,
+                cacheMemory: other.cacheMemory - cacheMemory,
+                peakMemory: other.peakMemory - peakMemory)
+        }
+
+        public var description: String {
+            func scale(_ value: Int, width: Int = 12) -> String {
+                let v: String
+                if value > 1024 * 1024 * 10 {
+                    v = "\(value / (1024 * 1024))M"
+                } else {
+                    v = "\(value / 1024)K"
+                }
+                let pad = String(repeating: " ", count: max(0, width - v.count))
+                return v + pad
+            }
+
+            return """
+                Peak:   \(scale(peakMemory)) (\(peakMemory))
+                Active: \(scale(activeMemory)) (\(activeMemory))
+                Cache:  \(scale(cacheMemory)) (\(cacheMemory))
+                """
+        }
+    }
+
     /// Get the actively used memory in bytes.
     ///
     /// Note, this will not always match memory use reported by the system because
@@ -32,6 +68,11 @@ public enum GPU {
     /// execution.
     public static var peakMemory: Int {
         mlx_metal_get_peak_memory()
+    }
+
+    /// Return a snapshot of memory stats.
+    public static func snapshot() -> Snapshot {
+        Snapshot(activeMemory: activeMemory, cacheMemory: cacheMemory, peakMemory: peakMemory)
     }
 
     /// Get the free cache limit.
