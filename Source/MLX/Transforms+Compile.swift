@@ -15,12 +15,16 @@ class CompiledFunction {
     let inputs: [any Updatable]
     let outputs: [any Updatable]
 
+    let shapeless: Bool
+
     init(
-        inputs: [any Updatable], outputs: [any Updatable], _ f: @escaping ([MLXArray]) -> [MLXArray]
+        inputs: [any Updatable], outputs: [any Updatable], shapeless: Bool,
+        _ f: @escaping ([MLXArray]) -> [MLXArray]
     ) {
         self.f = f
         self.inputs = inputs
         self.outputs = outputs
+        self.shapeless = shapeless
         self.id = Int(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
 
@@ -73,7 +77,7 @@ class CompiledFunction {
 
         // note: this will use the cached compile (via the id)
         // but will be able to re-evaluate with fresh state if needed
-        let compiled = mlx_detail_compile(innerClosure, id)!
+        let compiled = mlx_detail_compile(innerClosure, id, shapeless, [], 0)!
         defer { mlx_free(compiled) }
 
         let innerInputs = arguments + stateInputs
@@ -108,39 +112,45 @@ class CompiledFunction {
 /// - Parameters:
 ///   - inputs: input state
 ///   - outputs: output state
+///   - shapeless: A function compiled with the `shapeless`
+///     option enabled will not be recompiled when the input shape changes. Not all
+///     functions can be compiled with `shapeless` enabled. Attempting to compile
+///     such functions with shapeless enabled will throw. Note, changing the number
+///     of dimensions or type of any input will result in a recompilation even with
+///     `shapeless` set to `true`
 ///   - f: function to compile
 /// - Returns: a new function that produces the same output as `f()`
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:_:)-7qwto``
-/// - ``compile(inputs:outputs:_:)-5mp7m``
+/// - ``compile(inputs:outputs:shapeless:_:)-29n3k``
+/// - ``compile(inputs:outputs:shapeless:_:)-4msdm``
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [],
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping ([MLXArray]) -> [MLXArray]
 ) -> (
     [MLXArray]
 ) -> [MLXArray] {
-    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, f)
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless, f)
 
     return { arrays in
         compileState.call(arrays)
     }
 }
 
-/// Overload of ``compile(inputs:outputs:_:)-96gqs`` that takes a single ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes a single ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:_:)-96gqs``
+/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [],
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray) -> MLXArray
 ) -> (
     MLXArray
 ) -> MLXArray {
-    let compileState = CompiledFunction(inputs: inputs, outputs: outputs) {
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
         [f($0[0])]
     }
 
@@ -149,19 +159,19 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:_:)-96gqs`` that takes a two ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes a two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:_:)-96gqs``
+/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [],
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray) -> MLXArray
 )
     -> (MLXArray, MLXArray) -> MLXArray
 {
-    let compileState = CompiledFunction(inputs: inputs, outputs: outputs) {
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
         [f($0[0], $0[1])]
     }
 
@@ -170,7 +180,7 @@ public func compile(
     }
 }
 
-/// Globally enable or disable ``compile(inputs:outputs:_:)-96gqs``.
+/// Globally enable or disable ``compile(inputs:outputs:shapeless:_:)-7korq``.
 ///
 /// Default is enabled.
 public func compile(enable: Bool = true) {

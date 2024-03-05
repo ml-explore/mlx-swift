@@ -45,6 +45,9 @@ public struct StreamOrDevice: CustomStringConvertible {
     public static let cpu = device(.cpu)
 
     /// The ``Stream/defaultStream(_:)`` on the ``Device/gpu``
+    ///
+    /// ### See Also
+    /// - ``GPU``
     public static let gpu = device(.gpu)
 
     public static func stream(_ stream: Stream) -> StreamOrDevice {

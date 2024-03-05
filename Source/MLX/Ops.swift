@@ -144,6 +144,30 @@ public func atanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
     MLXArray(mlx_arctanh(array.ctx, stream.ctx))
 }
 
+/// Convert array to have at least 1 dimension.
+///
+/// ### See Also
+/// - <doc:shapes>
+public func atLeast1D(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_atleast_1d(array.ctx, stream.ctx))
+}
+
+/// Convert array to have at least 2 dimensions.
+///
+/// ### See Also
+/// - <doc:shapes>
+public func atLeast2D(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_atleast_2d(array.ctx, stream.ctx))
+}
+
+/// Convert array to have at least 3 dimensions.
+///
+/// ### See Also
+/// - <doc:shapes>
+public func atLeast3D(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_atleast_3d(array.ctx, stream.ctx))
+}
+
 /// Returns the indices that partition the array.
 ///
 /// The ordering of the elements within a partition in given by the indices is undefined.
@@ -396,13 +420,16 @@ public func conv1d(
             stream.ctx))
 }
 
-/// Parameter for convolutions allowing single integers or arrays.
+/// Parameter for convolutions allowing single integers or tuples.
 ///
 /// For example the numeric parameters here:
 ///
 /// ```swift
 /// conv2d(input, weights, stride: 3, padding: [2, 2], padding: .init((2, 3)))
 /// ```
+///
+/// ### See Also:
+/// - ``IntOrArray``
 public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
     public let values: (Int, Int)
 
@@ -426,6 +453,57 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral 
     public init(_ values: (Int, Int)) {
         self.values = values
     }
+}
+
+/// Parameter for convolutions allowing single integers or arrays.
+///
+/// For example the numeric parameters here:
+///
+/// ```swift
+/// convGeneral(input, weights, strides: 3, padding: [2, 2, 1, 0, 0], ...)
+/// ```
+///
+/// ### See Also:
+/// - ``IntOrPair``
+public enum IntOrArray: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
+    case int(Int)
+    case array([Int])
+
+    public init(integerLiteral value: Int) {
+        self = .int(value)
+    }
+
+    public init(arrayLiteral elements: Int...) {
+        self = .array(elements)
+    }
+
+    public var asArray: [Int] {
+        switch self {
+        case .int(let v):
+            [v]
+        case .array(let v):
+            v
+        }
+    }
+
+    public var asInt32Array: [Int32] {
+        switch self {
+        case .int(let v):
+            [Int32(v)]
+        case .array(let v):
+            v.asInt32
+        }
+    }
+
+    public var count: Int {
+        switch self {
+        case .int:
+            1
+        case .array(let array):
+            array.count
+        }
+    }
+
 }
 
 /// 2D convolution over an input with several channels.
@@ -460,6 +538,7 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral 
 /// - ``IntOrPair``
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
 public func conv2d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrPair = 1, padding: IntOrPair = 0,
     dilation: IntOrPair = 1, groups: Int = 1, stream: StreamOrDevice = .default
@@ -469,6 +548,95 @@ public func conv2d(
             array.ctx, weight.ctx, stride.first.int32, stride.second.int32, padding.first.int32,
             padding.second.int32, dilation.first.int32, dilation.second.int32, groups.int32,
             stream.ctx))
+}
+
+/// General convolution over an input with several channels.
+///
+/// > Only 1d and 2d convolutions are supported at the moment
+///
+/// > the default `groups: 1` is currently supported
+///
+/// - Parameters:
+///   - array: Input array of shape `(N, ..., C_in)`
+///   - weight: Weight array of shape `(C_out, ..., C_in)`
+///   - strides: `Int` or `[Int]` with kernel strides.  All dimensions get the
+///   same stride if only one number is specified.
+///   - padding: `Int` or `[Int]` with input padding.  All dimensions get the
+///   same padding if only one number is specified.
+///   - kernelDilation: `Int` or `[Int]` with kernel dilation.  All dimensions get the
+///   same dilation if only one number is specified.
+///   - inputDilation: `Int` or `[Int]` with input dilation.  All dimensions get the
+///   same dilation if only one number is specified.
+///   - groups: input feature groups
+///   - flip: Flip the order in which the spatial dimensions of the weights are processed.
+///   Performs the cross-correlation operator when `flip` is `false` and the convolution
+///   operator otherwise.
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:convolution>
+/// - ``IntOrArray``
+/// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-6j1nr``
+public func convGeneral(
+    _ array: MLXArray, _ weight: MLXArray, strides: IntOrArray = 1, padding: IntOrArray = 0,
+    kernelDilation: IntOrArray = 1, inputDilation: IntOrArray = 1, groups: Int = 1,
+    flip: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_conv_general(
+            array.ctx, weight.ctx,
+            strides.asInt32Array, strides.count,
+            padding.asInt32Array, padding.count,
+            padding.asInt32Array, padding.count,
+            kernelDilation.asInt32Array, kernelDilation.count,
+            inputDilation.asInt32Array, inputDilation.count,
+            groups.int32, flip, stream.ctx))
+}
+
+/// General convolution over an input with several channels with a padding pair.
+///
+/// > Only 1d and 2d convolutions are supported at the moment
+///
+/// > the default `groups: 1` is currently supported
+///
+/// - Parameters:
+///   - array: Input array of shape `(N, ..., C_in)`
+///   - weight: Weight array of shape `(C_out, ..., C_in)`
+///   - strides: `Int` or `[Int]` with kernel strides.  All dimensions get the
+///   same stride if only one number is specified.
+///   - padding: pair of padding values to apply to all dimensions
+///   - kernelDilation: `Int` or `[Int]` with kernel dilation.  All dimensions get the
+///   same dilation if only one number is specified.
+///   - inputDilation: `Int` or `[Int]` with input dilation.  All dimensions get the
+///   same dilation if only one number is specified.
+///   - groups: input feature groups
+///   - flip: Flip the order in which the spatial dimensions of the weights are processed.
+///   Performs the cross-correlation operator when `flip` is `false` and the convolution
+///   operator otherwise.
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:convolution>
+/// - ``IntOrArray``
+/// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-6j1nr``
+public func convGeneral(
+    _ array: MLXArray, _ weight: MLXArray, strides: IntOrArray = 1, padding: (Int, Int),
+    kernelDilation: IntOrArray = 1, inputDilation: IntOrArray = 1, groups: Int = 1,
+    flip: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_conv_general(
+            array.ctx, weight.ctx,
+            strides.asInt32Array, strides.count,
+            [padding.0.int32], 1,
+            [padding.1.int32], 1,
+            kernelDilation.asInt32Array, kernelDilation.count,
+            inputDilation.asInt32Array, inputDilation.count,
+            groups.int32, flip, stream.ctx))
 }
 
 /// Mode for ``convolve(_:_:mode:stream:)``
@@ -1741,16 +1909,38 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - Parameters:
 ///   - a: input array
 ///   - b: input array
-///   - dimensions: sum over the last `dimensions` dimensions
+///   - axes: sum over the last `axes` dimensions
 ///   - stream: stream or device to evaluate on
 /// - Returns: tensor dot product
 ///
 /// ### See Also
 /// - <doc:arithmetic>
+/// - ``tensordot(_:_:axes:stream:)-6gt4h``
 public func tensordot(
-    _ a: MLXArray, _ b: MLXArray, dimensions: Int = 1, stream: StreamOrDevice = .default
+    _ a: MLXArray, _ b: MLXArray, axes: Int = 1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_tensordot(a.ctx, b.ctx, dimensions.int32, stream.ctx))
+    MLXArray(mlx_tensordot_along_axis(a.ctx, b.ctx, axes.int32, stream.ctx))
+}
+
+/// Computer tensor dot product.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - axes: two ranges for the `a` and `b` dimensions
+///   - stream: stream or device to evaluate on
+/// - Returns: tensor dot product
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``tensordot(_:_:axes:stream:)-3qkgq``
+public func tensordot(
+    _ a: MLXArray, _ b: MLXArray, axes: ((Int, Int), (Int, Int)), stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_tensordot(
+            a.ctx, b.ctx, [axes.0.0, axes.0.1].asInt32, 2, [axes.1.0, axes.1.1].asInt32, 2,
+            stream.ctx))
 }
 
 /// Construct array by repeating given array the number of times given by `repetitions`.
