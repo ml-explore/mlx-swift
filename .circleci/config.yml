@@ -29,12 +29,16 @@ jobs:
             pre-commit run --all
             if ! git diff --quiet; then echo 'Style checks failed, please install pre-commit and run pre-commit run --all and push the change'; exit 1; fi
       - run:
-          name: Run Tests (Xcode)
+          name: Run Tests (Xcode, macOS)
           command: |
             xcodebuild -version
             xcrun --show-sdk-build-version
             swift --version
             xcodebuild test -scheme mlx-swift-Package -destination 'platform=OS X'
+      - run:
+          name: Run Tests (Xcode, iOS)
+          command: |
+            xcodebuild test -scheme mlx-swift-Package -destination 'platform=iOS' -sdk iphoneos
       - run:
           name: Build (cmake)
           command: |
