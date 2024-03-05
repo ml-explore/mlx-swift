@@ -50,6 +50,11 @@ let package = Package(
                 // vendored library, do not include driver
                 "gguf-tools/gguf-tools.c",
 
+                // these are selected conditionally
+                // via mlx-conditional/compiled_conditional.cpp
+                "mlx/mlx/backend/common/compiled_nocpu.cpp",
+                "mlx/mlx/backend/common/compiled_cpu.cpp",
+
                 // mlx files that are not part of the build
                 "mlx/ACKNOWLEDGMENTS.md",
                 "mlx/CMakeLists.txt",
