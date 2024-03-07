@@ -5,7 +5,25 @@ import Numerics
 
 /// Enum wrapping `Cmlx.mlx_array_dtype`.
 ///
-/// This is typically not used directly, rather it is inferred from parameters that are ``HasDType``.
+/// This is typically not used directly, rather it is inferred from parameters that are ``HasDType``, for example:
+///
+/// ```swift
+/// let ones = MLXArray.ones([2, 2], type: Int32.self)
+/// ```
+///
+/// provides ``int32`` via ``HasDType/dtype``.
+///
+/// Some methods take a `dtype` directly for cases where it may not be possible to use a Swift type:
+///
+/// ```swift
+/// let bf = MLXArray(10.5, dtype: .bfloat16)
+/// ```
+///
+/// ### See Also
+/// - ``HasDType``
+/// - ``MLXArray/asType(_:stream:)-6d44y``
+/// - ``MLXArray/asType(_:stream:)-4eqoc``
+/// - ``MLXArray/init(_:dtype:)``
 public enum DType: Hashable {
     case bool
     case uint8

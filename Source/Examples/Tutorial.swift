@@ -3,8 +3,11 @@
 import Foundation
 import MLX
 
+/// Tutorial program.
+///
 /// mlx-swift tutorial based on:
-/// https://github.com/ml-explore/mlx/blob/main/examples/cpp/tutorial.cpp
+///
+/// - [](https://github.com/ml-explore/mlx/blob/main/examples/cpp/tutorial.cpp)
 @main
 struct Tutorial {
 

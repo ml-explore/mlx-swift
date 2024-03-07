@@ -16,6 +16,15 @@ public protocol Updatable {
 
 /// An object that can be passed to ``eval(_:)-3b2g9`` and can produce a list
 /// of interior ``MLXArray`` to be evaluated.
+///
+/// Types such as:
+///
+/// - ``MLXArray``
+/// - `MLXRandom.state`
+/// - `MLXNN.Module`
+/// - `MLXOptimizers.Optimizer`
+///
+/// Are all evaluatable.
 public protocol Evaluatable {
     func innerState() -> [MLXArray]
 }

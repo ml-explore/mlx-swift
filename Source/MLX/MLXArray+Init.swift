@@ -104,7 +104,7 @@ extension MLXArray {
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` with a ``DType/bfloat16``
-    /// from a ``Float32``.
+    /// from a `Float32`.
     ///
     /// ```swift
     /// let a = MLXArray(bfloat16: 35)

@@ -4,21 +4,93 @@ import Cmlx
 import Foundation
 
 /// Properties to control the the GPU memory allocation and buffer reuse.
+///
+/// ``activeMemory`` + ``cacheMemory`` is the total memory allocated by MLX.
+/// ``activeMemory`` is in currently active ``MLXArray`` and ``cacheMemory``
+/// is recently used memory that can be recycled.
+///
+/// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
+/// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
+///
+/// Examine memory use over time with ``snapshot()`` and ``Snapshot``.
+///
+/// ### See Also
+/// - <doc:running-on-ios>
+/// - ``set(cacheLimit:)``
+/// - ``set(memoryLimit:relaxed:)``
+/// - ``snapshot()``
 public enum GPU {
 
     static var _relaxedMemoryLimit = true
     static var _cacheLimit: Int?
     static var _memoryLimit: Int?
 
-    /// Snapshot of memory stats
+    /// Snapshot of memory stats.
+    ///
+    /// ``activeMemory`` + ``cacheMemory`` is the total memory allocated by MLX.
+    /// ``activeMemory`` is in currently active ``MLXArray`` and ``cacheMemory``
+    /// is recently used memory that can be recycled.
+    ///
+    /// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
+    /// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
+    ///
+    /// This might be used to eamine memory use over a run or sample it during a run:
+    ///
+    /// ```swift
+    /// // load model & weights
+    /// ...
+    ///
+    /// let startMemory = GPU.snapshot()
+    ///
+    /// // work
+    /// ...
+    ///
+    /// let endMemory = GPU.snapshot()
+    ///
+    /// // what stats are interesting to you?
+    ///
+    /// print("=======")
+    /// print("Memory size: \(GPU.memoryLimit / 1024)K")
+    /// print("Cache size:  \(GPU.cacheLimit / 1024)K")
+    ///
+    /// print("")
+    /// print("=======")
+    /// print("Starting memory")
+    /// print(startMemory.description)
+    ///
+    /// print("")
+    /// print("=======")
+    /// print("Ending memory")
+    /// print(endMemory.description)
+    ///
+    /// print("")
+    /// print("=======")
+    /// print("Growth")
+    /// print(startMemory.delta(endMemory).description)
+    /// ```
     ///
     /// ### See Also
     /// - ``snapshot()``
+    /// - <doc:running-on-ios>
     public struct Snapshot: CustomStringConvertible, Codable {
-        var activeMemory: Int
-        var cacheMemory: Int
-        var peakMemory: Int
 
+        /// See ``GPU/activeMemory``.
+        public var activeMemory: Int
+
+        /// See ``GPU/cacheMemory``.
+        public var cacheMemory: Int
+
+        /// See ``GPU/peakMemory``.
+        public var peakMemory: Int
+
+        /// Compute the difference between two snapshots:
+        ///
+        /// ```swift
+        /// let startMemory = GPU.snapshot()
+        /// ...
+        /// let endMemory = GPU.snapshot()
+        /// print(startMemory.delta(endMemory))
+        /// ```
         public func delta(_ other: Snapshot) -> Snapshot {
             .init(
                 activeMemory: other.activeMemory - activeMemory,
@@ -62,7 +134,7 @@ public enum GPU {
         mlx_metal_get_cache_memory()
     }
 
-    /// Get the peak amount of used memory in bytes.
+    /// Get the peak amount of active memory in bytes.
     ///
     /// The maximum memory used is recorded from the beginning of the program
     /// execution.
@@ -70,7 +142,14 @@ public enum GPU {
         mlx_metal_get_peak_memory()
     }
 
-    /// Return a snapshot of memory stats.
+    /// Return a snapshot of memory stats -- see ``Snapshot`` for more details.
+    ///
+    /// Get the current memory use.  This can be used to measure before/after and current memory use:
+    ///
+    /// ```swift
+    /// let currentMemory = GPU.snapshot()
+    /// print(currentMemory)
+    /// ```
     public static func snapshot() -> Snapshot {
         Snapshot(activeMemory: activeMemory, cacheMemory: cacheMemory, peakMemory: peakMemory)
     }
@@ -136,10 +215,7 @@ public enum GPU {
     /// swap) if `relaxed` is true.
     ///
     /// The memory limit defaults to 1.5 times the maximum recommended working set
-    /// size reported by the device.
-    ///
-    /// ### See Also
-    /// - ``relaxedMemoryLimit``
+    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize))
     public static func set(memoryLimit: Int, relaxed: Bool = true) {
         _relaxedMemoryLimit = relaxed
         _memoryLimit = memoryLimit

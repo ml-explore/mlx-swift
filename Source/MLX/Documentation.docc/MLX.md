@@ -58,6 +58,7 @@ are the CPU and GPU.
 - <doc:unified-memory>
 - <doc:compilation>
 - <doc:using-streams>
+- <doc:running-on-ios>
 
 ### MLXArray
 
@@ -67,11 +68,20 @@ are the CPU and GPU.
 
 - <doc:free-functions>
 
+### Memory
+
+- ``GPU``
+
 ### Data Types
 
 - ``DType``
 - ``HasDType``
 - ``ScalarOrArray``
+
+### Argument Types
+
+- ``IntOrPair``
+- ``IntOrArray``
 
 ### Nested Data
 
