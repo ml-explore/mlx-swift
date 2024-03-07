@@ -184,4 +184,4 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``
-- ``tensordot(_:_:axes:stream:)-6gt4h``
+- ``tensordot(_:_:axes:stream:)-8yqyi``

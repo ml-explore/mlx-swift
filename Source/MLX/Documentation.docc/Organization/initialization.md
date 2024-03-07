@@ -244,6 +244,8 @@ there are specific initializers to request it:
 - ``MLXArray/identity(_:type:stream:)``
 - ``MLXArray/linspace(_:_:count:stream:)-92x6l``
 - ``MLXArray/linspace(_:_:count:stream:)-7m7eg``
+- ``MLXArray/repeated(_:count:axis:stream:)``
+- ``MLXArray/repeated(_:count:stream:)``
 - ``MLXArray/repeat(_:count:axis:stream:)``
 - ``MLXArray/repeat(_:count:stream:)``
 - ``MLXArray/tri(_:m:k:type:stream:)``
@@ -260,6 +262,8 @@ there are specific initializers to request it:
 - ``MLX/identity(_:type:stream:)``
 - ``MLX/linspace(_:_:count:stream:)-7vj0o``
 - ``MLX/linspace(_:_:count:stream:)-6w959``
+- ``MLXArray/repeated(_:count:axis:stream:)``
+- ``MLXArray/repeated(_:count:stream:)``
 - ``MLX/repeat(_:count:axis:stream:)``
 - ``MLX/repeat(_:count:stream:)``
 - ``MLX/tri(_:m:k:type:stream:)``

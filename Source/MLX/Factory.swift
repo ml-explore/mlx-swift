@@ -186,7 +186,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     /// - ``full(_:values:stream:)``
-    /// - ``repeat(_:count:axis:stream:)``
+    /// - ``repeated(_:count:axis:stream:)``
     static public func full<T: HasDType>(
         _ shape: [Int], values: MLXArray, type: T.Type, stream: StreamOrDevice = .default
     ) -> MLXArray {
@@ -213,7 +213,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     /// - ``full(_:values:type:stream:)``
-    /// - ``repeat(_:count:axis:stream:)``
+    /// - ``repeated(_:count:axis:stream:)``
     static public func full(_ shape: [Int], values: MLXArray, stream: StreamOrDevice = .default)
         -> MLXArray
     {
@@ -296,11 +296,41 @@ extension MLXArray {
 
     /// Repeat an array along a specified axis.
     ///
+    /// > Deprected in favor of the more consistently named ``repeated(_:count:axis:stream:)``
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``repeated(_:count:stream:)``
+    /// - ``full(_:values:stream:)``
+    @available(*, deprecated, renamed: "repeated(_:count:axis:stream:)")
+    static public func `repeat`(
+        _ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLXArray(mlx_repeat(array.ctx, count.int32, axis.int32, stream.ctx))
+    }
+
+    /// Repeat a flattened array along axis 0.
+    ///
+    /// > Deprected in favor of the more consistently named ``repeated(_:count:stream:)``
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``repeated(_:count:axis:stream:)``
+    /// - ``full(_:values:stream:)``
+    @available(*, deprecated, renamed: "repeated(_:count:stream:)")
+    static public func `repeat`(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
+        MLXArray(mlx_repeat_all(array.ctx, count.int32, stream.ctx))
+    }
+
+    /// Repeat an array along a specified axis.
+    ///
     /// Example:
     ///
     /// ```swift
     /// // repeat a [2, 2] array 4 times along axis 1
-    /// let r = MLXArray.repeat(MLXArray(0 ..< 4, [2, 2]), count: 4, axis: 1)
+    /// let r = MLXArray.repeated(MLXArray(0 ..< 4, [2, 2]), count: 4, axis: 1)
     /// ```
     ///
     /// - Parameters:
@@ -311,9 +341,9 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``repeat(_:count:stream:)``
+    /// - ``repeated(_:count:stream:)``
     /// - ``full(_:values:stream:)``
-    static public func `repeat`(
+    static public func repeated(
         _ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLXArray(mlx_repeat(array.ctx, count.int32, axis.int32, stream.ctx))
@@ -325,7 +355,7 @@ extension MLXArray {
     ///
     /// ```swift
     /// // repeat a 4 element array 4 times along axis 0
-    /// let r = MLXArray.repeat(MLXArray(0 ..< 4, [2, 2]), count: 4)
+    /// let r = MLXArray.repeated(MLXArray(0 ..< 4, [2, 2]), count: 4)
     /// ```
     ///
     /// - Parameters:
@@ -335,9 +365,9 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``repeat(_:count:axis:stream:)``
+    /// - ``repeated(_:count:axis:stream:)``
     /// - ``full(_:values:stream:)``
-    static public func `repeat`(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default)
+    static public func repeated(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default)
         -> MLXArray
     {
         MLXArray(mlx_repeat_all(array.ctx, count.int32, stream.ctx))
@@ -505,7 +535,7 @@ public func eye<T: HasDType>(
 /// ### See Also
 /// - <doc:initialization>
 /// - ``full(_:values:stream:)``
-/// - ``repeat(_:count:axis:stream:)``
+/// - ``repeated(_:count:axis:stream:)``
 public func full<T: HasDType>(
     _ shape: [Int], values: MLXArray, type: T.Type, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -532,7 +562,7 @@ public func full<T: HasDType>(
 /// ### See Also
 /// - <doc:initialization>
 /// - ``full(_:values:type:stream:)``
-/// - ``repeat(_:count:axis:stream:)``
+/// - ``repeated(_:count:axis:stream:)``
 public func full(_ shape: [Int], values: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_full(shape.asInt32, shape.count, values.ctx, values.dtype.cmlxDtype, stream.ctx))
 }
@@ -610,11 +640,39 @@ public func linspace<T: HasDType>(
 
 /// Repeat an array along a specified axis.
 ///
+/// > Deprected in favor of the more consistently named ``repeated(_:count:axis:stream:)``
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``repeated(_:count:stream:)``
+/// - ``full(_:values:stream:)``
+@available(*, deprecated, renamed: "repeated(_:count:axis:stream:)")
+public func `repeat`(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_repeat(array.ctx, count.int32, axis.int32, stream.ctx))
+}
+
+/// Repeat a flattened array along axis 0.
+///
+/// > Deprected in favor of the more consistently named ``repeated(_:count:stream:)``
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``repeated(_:count:axis:stream:)``
+/// - ``full(_:values:stream:)``
+@available(*, deprecated, renamed: "repeated(_:count:stream:)")
+public func `repeat`(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_repeat_all(array.ctx, count.int32, stream.ctx))
+}
+
+/// Repeat an array along a specified axis.
+///
 /// Example:
 ///
 /// ```swift
 /// // repeat a [2, 2] array 4 times along axis 1
-/// let r = MLXArray.repeat(MLXArray(0 ..< 4, [2, 2]), count: 4, axis: 1)
+/// let r = MLXArray.repeated(MLXArray(0 ..< 4, [2, 2]), count: 4, axis: 1)
 /// ```
 ///
 /// - Parameters:
@@ -625,9 +683,9 @@ public func linspace<T: HasDType>(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``repeat(_:count:stream:)``
+/// - ``repeated(_:count:stream:)``
 /// - ``full(_:values:stream:)``
-public func `repeat`(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default)
+public func repeated(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_repeat(array.ctx, count.int32, axis.int32, stream.ctx))
@@ -639,7 +697,7 @@ public func `repeat`(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrD
 ///
 /// ```swift
 /// // repeat a 4 element array 4 times along axis 0
-/// let r = MLXArray.repeat(MLXArray(0 ..< 4, [2, 2]), count: 4)
+/// let r = MLXArray.repeated(MLXArray(0 ..< 4, [2, 2]), count: 4)
 /// ```
 ///
 /// - Parameters:
@@ -649,9 +707,9 @@ public func `repeat`(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrD
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``repeat(_:count:axis:stream:)``
+/// - ``repeated(_:count:axis:stream:)``
 /// - ``full(_:values:stream:)``
-public func `repeat`(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default) -> MLXArray {
+public func repeated(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_repeat_all(array.ctx, count.int32, stream.ctx))
 }
 

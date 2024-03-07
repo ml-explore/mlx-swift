@@ -20,6 +20,16 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 ///
 /// Add two arrays with <doc:broadcasting>.
 ///
+/// For example:
+///
+/// ```swift
+/// let a = MLXArray(0 ..< 12, [4, 3])
+/// let b = MLXArray([4, 5, 6])
+///
+/// // equivalent to a + b + 7
+/// let r = sum(sum(a, b), 7)
+/// ```
+///
 /// - Parameters:
 ///     - a: the left hand side array
 ///     - b: the right hand side array

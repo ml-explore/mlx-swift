@@ -96,6 +96,16 @@ open class Linear: Module, UnaryLayer {
         super.init()
     }
 
+    /// Convenience initializer giving parameter names.
+    ///
+    /// - Parameters:
+    ///   - inputDimensions: number of input dimensions
+    ///   - outputDimensions: number of output dimensions
+    ///   - bias: if `true` this layer will apply a bias
+    convenience init(inputDimensions: Int, outputDimensions: Int, bias: Bool = true) {
+        self.init(inputDimensions, outputDimensions, bias: bias)
+    }
+
     internal init(weight: MLXArray, bias: MLXArray? = nil) {
         self.weight = weight
         self.bias = bias
