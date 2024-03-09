@@ -64,7 +64,7 @@ print(startMemory.delta(endMemory).description)
 It may be interesting to print the current memory statistics during evaluation if
 you want to see performance over time.
 
-Decreasing this number to 0 will result in decreased performance due to the
+Decreasing the cache limit to 0 will result in decreased performance due to the
 lack of buffer reuse, but it will also result in smaller memory use.
 Tune this value for your needs.
 
