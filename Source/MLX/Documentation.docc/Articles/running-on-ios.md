@@ -20,13 +20,51 @@ buffers after they are disposed.  The limit on this cache is determined by
 Metal's [recommendedMaxWorkingSetSize()](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize)
 but you may wish to limit this further.
 
-For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache:
+For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache via ``GPU/set(cacheLimit:)``.
 
-```
+```swift
 MLX.GPU.set(cacheLimit: 20 * 1024 * 1024)
 ```
 
-Decreasing this number to 0 will result in decreased performance due to the
+``GPU/snapshot()`` can be used to monitor memory use over time:
+
+```swift
+// load model & weights
+...
+
+let startMemory = GPU.snapshot()
+
+// work
+...
+
+let endMemory = GPU.snapshot()
+
+// what stats are interesting to you?
+
+print("=======")
+print("Memory size: \(GPU.memoryLimit / 1024)K")
+print("Cache size:  \(GPU.cacheLimit / 1024)K")
+
+print("")
+print("=======")
+print("Starting memory")
+print(startMemory.description)
+
+print("")
+print("=======")
+print("Ending memory")
+print(endMemory.description)
+
+print("")
+print("=======")
+print("Growth")
+print(startMemory.delta(endMemory).description)
+```
+
+It may be interesting to print the current memory statistics during evaluation if
+you want to see performance over time.
+
+Decreasing the cache limit to 0 will result in decreased performance due to the
 lack of buffer reuse, but it will also result in smaller memory use.
 Tune this value for your needs.
 

@@ -54,9 +54,21 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 ```
 
 > [!Note] 
-> SwiftPM cannot build the Metal shaders so the ultimate build has to be done
+> SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done
 > via Xcode.
 
+### xcodebuild
+
+Although `SwiftPM` (command line) cannot build the Metal shaders, `xcodebuild` can and
+it can be used to do command line builds:
+
+```
+# build and run tests
+xcodebuild test -scheme mlx-swift-Package -destination 'platform=OS X'
+
+# build Tutorial
+xcodebuild build -scheme Tutorial -destination 'platform=OS X'
+```
 
 ### CMake
 

@@ -422,7 +422,7 @@ public func conv1d(
 
 /// Parameter for convolutions allowing single integers or tuples.
 ///
-/// For example the numeric parameters here:
+/// For example the numeric parameters here are all ``IntOrPair``:
 ///
 /// ```swift
 /// conv2d(input, weights, stride: 3, padding: [2, 2], padding: .init((2, 3)))
@@ -457,7 +457,7 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral 
 
 /// Parameter for convolutions allowing single integers or arrays.
 ///
-/// For example the numeric parameters here:
+/// For example the numeric parameters here are all ``IntOrArray``:
 ///
 /// ```swift
 /// convGeneral(input, weights, strides: 3, padding: [2, 2, 1, 0, 0], ...)
@@ -1915,7 +1915,7 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``tensordot(_:_:axes:stream:)-6gt4h``
+/// - ``tensordot(_:_:axes:stream:)-8yqyi``
 public func tensordot(
     _ a: MLXArray, _ b: MLXArray, axes: Int = 1, stream: StreamOrDevice = .default
 ) -> MLXArray {
