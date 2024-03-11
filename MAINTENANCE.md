@@ -67,6 +67,7 @@ target_link_libraries(MLXFFT PRIVATE MLX)
 - [MLXOptimizers](mlxoptimizers)
 - [MLXFFT](mlxfft)
 - [MLXLinalg](mlxlinalg)
+- [MLXFast](mlxfast)
 
 - [Python `mlx`](https://ml-explore.github.io/mlx/build/html/index.html)
 ```

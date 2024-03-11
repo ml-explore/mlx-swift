@@ -38,10 +38,15 @@ file(GLOB MLXRandom-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXRandom/*.swift)
 add_library(MLXRandom STATIC ${MLXRandom-src})
 target_link_libraries(MLXRandom PRIVATE MLX)
 
+# MLXFast package
+file(GLOB MLXFast-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXFast/*.swift)
+add_library(MLXFast STATIC ${MLXFast-src})
+target_link_libraries(MLXFast PRIVATE MLX)
+
 # MLXNN package
 file(GLOB MLXNN-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLXNN/*.swift)
 add_library(MLXNN STATIC ${MLXNN-src})
-target_link_libraries(MLXNN PRIVATE MLX MLXRandom)
+target_link_libraries(MLXNN PRIVATE MLX MLXRandom MLXFast)
 
 # MLXOptimizers package
 file(GLOB MLXOptimizers-src

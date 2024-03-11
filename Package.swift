@@ -20,6 +20,7 @@ let package = Package(
         .library(name: "MLXOptimizers", targets: ["MLXOptimizers"]),
         .library(name: "MLXFFT", targets: ["MLXFFT"]),
         .library(name: "MLXLinalg", targets: ["MLXLinalg"]),
+        .library(name: "MLXFast", targets: ["MLXFast"]),
 
         // build support & back end
         .plugin(
@@ -124,8 +125,12 @@ let package = Package(
             dependencies: ["MLX"]
         ),
         .target(
+            name: "MLXFast",
+            dependencies: ["MLX", "Cmlx"]
+        ),
+        .target(
             name: "MLXNN",
-            dependencies: ["MLX", "MLXRandom", "Cmlx"]
+            dependencies: ["MLX", "MLXRandom", "MLXFast"]
         ),
         .target(
             name: "MLXOptimizers",
@@ -142,7 +147,9 @@ let package = Package(
 
         .testTarget(
             name: "MLXTests",
-            dependencies: ["MLX", "MLXRandom", "MLXNN", "MLXOptimizers", "MLXFFT", "MLXLinalg"]
+            dependencies: [
+                "MLX", "MLXRandom", "MLXNN", "MLXOptimizers", "MLXFFT", "MLXLinalg", "MLXFast",
+            ]
         ),
 
         // ------

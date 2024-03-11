@@ -1,6 +1,10 @@
-# ``MLXLinalg``
+# ``MLXFast``
 
-Linear Algebra Functions
+Optimized implementations of array and NN algorithms.
+
+## Overview
+
+`MLXFast` provides optimized implementations of several array and NN algorithms.
 
 ## Other MLX Packages
 
