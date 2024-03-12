@@ -53,8 +53,6 @@ public func RoPE(
 ///
 /// return matmul(scores, values).transposed(0, 2, 1, 3)
 /// ```
-///
-/// > Note: users must call this when appropriate.  `mlx-swift-examples` has been updated to call this.
 public func scaledDotProductAttention(
     queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
     stream: StreamOrDevice = .default
