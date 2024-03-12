@@ -27,7 +27,7 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 /// let b = MLXArray([4, 5, 6])
 ///
 /// // equivalent to a + b + 7
-/// let r = sum(sum(a, b), 7)
+/// let r = add(add(a, b), 7)
 /// ```
 ///
 /// - Parameters:
