@@ -1,4 +1,4 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [MLX, MLXRandom, MLXNN, MLXOptimizers, MLXFFT, MLXLinalg]
+    - documentation_targets: [MLX, MLXRandom, MLXNN, MLXOptimizers, MLXFFT, MLXLinalg, MLXFast]

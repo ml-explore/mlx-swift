@@ -1,6 +1,10 @@
-# ``MLXLinalg``
+# ``MLXFast``
 
-Linear Algebra Functions
+Fast implementations of commonly used multi-op functions.
+
+## Overview
+
+`MLXFast` provides optimized implementations of commonly used multi-op functions.
 
 ## Other MLX Packages
 
