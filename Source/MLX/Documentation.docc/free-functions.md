@@ -107,6 +107,8 @@ operations as methods for convenience.
 - ``MLX/identity(_:type:stream:)``
 - ``MLX/linspace(_:_:count:stream:)-7vj0o``
 - ``MLX/linspace(_:_:count:stream:)-6w959``
+- ``MLX/repeated(_:count:axis:stream:)``
+- ``MLX/repeated(_:count:stream:)``
 - ``MLX/repeat(_:count:axis:stream:)``
 - ``MLX/repeat(_:count:stream:)``
 - ``MLX/tri(_:m:k:type:stream:)``

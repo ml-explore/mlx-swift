@@ -214,7 +214,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `quantized_matmul` | ``MLX/quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
 `reciprocal` | ``MLX/reciprocal(_:stream:)``
 `remainder` | ``MLX/remainder(_:_:stream:)``
-`repeat` | ``MLX/repeat(_:count:axis:stream:)``
+`repeat` | ``MLX/repeated(_:count:axis:stream:)``
 `reshape` | ``MLX/reshaped(_:_:stream:)-5x3y0``
 `round` | ``MLX/round(_:decimals:stream:)``
 `rsqrt` | ``MLX/rsqrt(_:stream:)``
