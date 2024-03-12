@@ -1,6 +1,6 @@
 # ``MLXFast``
 
-Optimized implementations of array and NN algorithms.
+Fast implementations of commonly used multi-op functions.
 
 ## Overview
 
