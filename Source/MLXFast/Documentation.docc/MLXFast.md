@@ -4,7 +4,7 @@ Fast implementations of commonly used multi-op functions.
 
 ## Overview
 
-`MLXFast` provides optimized implementations of several array and NN algorithms.
+`MLXFast` provides optimized implementations of commonly used multi-op functions.
 
 ## Other MLX Packages
 
