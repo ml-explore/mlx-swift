@@ -93,7 +93,7 @@ This is an indication that it is trying to use an unsupported Metal feature.
 There are two recommended workarounds that can be employed:
 
 - add the `Mac (Designed for iPad)` destination to your target in Xcode
-    - MLX requires Apple Silicon and this feature let's you build an iPad application that will run on macOS
+    - MLX requires Apple silicon and this feature let's you build an iPad application that will run on macOS
     - the UI may present with differences to iOS but this will allow you to build an iOS binary that runs with a fully featured Metal GPU
 
 - make a Universal application that can run on macOS, iOS and iPadOS
