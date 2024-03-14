@@ -70,3 +70,34 @@ Tune this value for your needs.
 
 Finally, if the device your code runs on has more RAM than the jetsam limit would
 normally allow, you can use the [Increased Memory Limit](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_kernel_increased-memory-limit) entitlement.
+
+## Developing for iOS
+
+Typically developers use the 
+ [iOS simulator](https://developer.apple.com/documentation/xcode/running-your-app-in-simulator-or-on-a-device/) 
+to develop new iOS applications.  It gives you an easy way to configure different
+device types.
+
+It isn't possible to use the iOS simulator for developing MLX applications -- MLX requires
+a modern [Metal MTLGPUFamily](https://developer.apple.com/documentation/metal/mtlgpufamily)
+and the simulator does not provide that.
+
+If you try to use the simulator you may encounter error messages like this:
+
+```
+failed assertion `Dispatch Threads with Non-Uniform Threadgroup Size is not supported on this device'
+```
+
+This is an indication that it is trying to use an unsupported Metal feature.
+
+Here are two recommended workarounds:
+
+- add the `Mac (Designed for iPad)` destination to your target in Xcode
+    - MLX requires Apple silicon and this feature let's you build an iPad application that will run on macOS
+    - the UI may present with differences to iOS but this will allow you to build an iOS binary that runs with a fully featured Metal GPU
+
+- make a [multiplatform](https://developer.apple.com/documentation/xcode/configuring-a-multiplatform-app-target) application that can run on macOS, iOS and iPadOS
+    - using SwiftUI it is possible to do most of your development in a macOS application and fine tune it for iOS by running it on an actual device
+
+Of course you can also use the simulator for developing UI features, you just won't be 
+able to evaluate any ``MLXArray``.
