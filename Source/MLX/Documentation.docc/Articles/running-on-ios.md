@@ -96,7 +96,7 @@ Here are two recommended workarounds:
     - MLX requires Apple silicon and this feature let's you build an iPad application that will run on macOS
     - the UI may present with differences to iOS but this will allow you to build an iOS binary that runs with a fully featured Metal GPU
 
-- make a Universal application that can run on macOS, iOS and iPadOS
+- make a [multiplatform](https://developer.apple.com/documentation/xcode/configuring-a-multiplatform-app-target) application that can run on macOS, iOS and iPadOS
     - using SwiftUI it is possible to do most of your development in a macOS application and fine tune it for iOS by running it on an actual device
 
 Of course you can also use the simulator for developing UI features, you just won't be 
