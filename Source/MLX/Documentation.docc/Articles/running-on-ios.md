@@ -90,7 +90,7 @@ failed assertion `Dispatch Threads with Non-Uniform Threadgroup Size is not supp
 
 This is an indication that it is trying to use an unsupported Metal feature.
 
-There are two recommended workarounds that can be employed:
+Here are two recommended workarounds:
 
 - add the `Mac (Designed for iPad)` destination to your target in Xcode
     - MLX requires Apple silicon and this feature let's you build an iPad application that will run on macOS
