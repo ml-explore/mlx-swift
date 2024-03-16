@@ -3,6 +3,14 @@
 We want to make contributing to this project as easy and transparent as
 possible.
 
+## Build from Source
+We use git submodules to organize [mlx](https://github.com/ml-explore/mlx), [mlx-c](https://github.com/ml-explore/mlx-c), and [mlx-swift](https://github.com/ml-explore/mlx-swift) as a single project.
+
+1. Clone mlx-swift `git clone git@github.com:ml-explore/mlx-swift.git`
+1. Init submodules `git submodule init`
+1. Update submodules `git submodule update --recursive`
+1. Open your clonded `mlx-swift` folder in Xcode to build, edit, and debug
+
 ## Pull Requests
 
 1. Fork and submit pull requests to the repo. 
