@@ -226,6 +226,18 @@ class MLXArrayIndexingTests: XCTestCase {
         }
     }
 
+    public func testReversed() {
+        // tests for [::-1]
+        let a = MLXArray(0 ..< 4)
+
+        // reverse last dimension (only in this case)
+        assertEqual(a[stride: -1], MLXArray([3, 2, 1, 0]))
+
+        // reverse first dimension
+        assertEqual(a.reshaped(1, 1, 4)[stride: -1, axis: 0], MLXArray(0 ..< 4).reshaped(1, 1, 4))
+
+    }
+
     public func testStridedBy2() {
         let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
 

@@ -26,6 +26,8 @@ Python code | Swift Code
 `array[..., None]` | `array.expandedDimensions(axis: -1)`
 `array[:, -1, :]` | `array[-1, axis: 1]`
 `array[..., ::2]` | `array[stride: 2, axis: -1]`
+`array[::-1]` | `array[stride: -1, axis: 0]` -- reverse first dimension of array
+`array[..., ::-1]` | `array[stride: -1, axis: -1]` or `array[stride: -1]` -- reverse last dimension of array
 `[array] * 4` | `Array(repeating: array, count: 4)`
 `array.shape[:-1]` | `array.shape.dropLast()`
 
