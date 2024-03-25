@@ -6895,7 +6895,7 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 126.12872314453125,
             accuracy: 2.522574462890625)
-        let result = LayerNorm(dimensions: 16)(a)[0, axis: -1]
+        let result = LayerNorm(dimensions: 16)(a)[.ellipsis, 0]
         XCTAssertEqual(result.shape, [2, 8])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(

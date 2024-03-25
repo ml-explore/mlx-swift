@@ -482,7 +482,7 @@ def test_unary_layer(
     swift_subset = ""
     python_subset = ""
     if test_subset == "column":
-        swift_subset = "[0, axis: -1]"
+        swift_subset = "[.ellipsis, 0]"
         python_subset = "[..., 0]"
     elif test_subset == "0, 0":
         swift_subset = "[0, 0]"
