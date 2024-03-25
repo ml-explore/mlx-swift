@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXFast
 
 /// Applies instance normalization [1] on the inputs.
 ///
@@ -101,15 +102,7 @@ open class LayerNorm: Module, UnaryLayer {
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        let means = mean(x, axis: -1, keepDims: true)
-        let variance = variance(x, axis: -1, keepDims: true)
-        let x = (x - means) * rsqrt(variance + eps)
-
-        if let weight, let bias {
-            return weight * x + bias
-        } else {
-            return x
-        }
+        MLXFast.layerNorm(x, weight: weight, bias: bias, eps: eps)
     }
 }
 
@@ -146,19 +139,7 @@ open class RMSNorm: Module, UnaryLayer {
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        // S is 1/sqrt(N) where N is the size of the features of x and is used
-        // to compute a numerically more stable RMS of x by multiplying with S
-        // first and summing.
-        //
-        // This way we prefer underflow over overflow which is controlled with
-        // the parameter epsilon anyway.
-
-        let S = 1.0 / sqrt(Float(x.dim(-1)))
-
-        var n = (x * S).square().sum(axis: -1, keepDims: true)
-        n = rsqrt(n + eps)
-
-        return weight * x * n
+        MLXFast.rmsNorm(x, weight: weight, eps: eps)
     }
 }
 

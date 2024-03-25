@@ -89,12 +89,12 @@ typedef uint64_t uint_fast64_t;
 # 1 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types.h" 1 3 4
 # 32 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types.h" 3 4
 # 1 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 1 3 4
-# 678 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 3 4
+# 769 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 3 4
 # 1 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_symbol_aliasing.h" 1 3 4
-# 679 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 2 3 4
-# 744 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 3 4
+# 770 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 2 3 4
+# 835 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 3 4
 # 1 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_posix_availability.h" 1 3 4
-# 745 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 2 3 4
+# 836 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h" 2 3 4
 # 33 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types.h" 2 3 4
 # 1 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/machine/_types.h" 1 3 4
 # 34 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/machine/_types.h" 3 4
@@ -458,9 +458,28 @@ inline float operator/(float16_t lhs, bfloat16_t rhs) { return static_cast<float
 namespace mlx::core {
 
 struct complex64_t;
+struct complex128_t;
 
 template <typename T>
-static constexpr bool can_convert_to_complex64 =
+inline constexpr bool can_convert_to_complex128 =
+    !std::is_same_v<T, complex128_t> && std::is_convertible_v<T, double>;
+
+struct complex128_t : public std::complex<double> {
+  complex128_t(double v, double u) : std::complex<double>(v, u){};
+  complex128_t(std::complex<double> v) : std::complex<double>(v){};
+
+  template <
+      typename T,
+      typename = typename std::enable_if<can_convert_to_complex128<T>>::type>
+  complex128_t(T x) : std::complex<double>(x){};
+
+  operator float() const {
+    return real();
+  };
+};
+
+template <typename T>
+inline constexpr bool can_convert_to_complex64 =
     !std::is_same_v<T, complex64_t> && std::is_convertible_v<T, float>;
 
 struct complex64_t : public std::complex<float> {
@@ -507,7 +526,7 @@ inline bool operator<(const complex64_t& a, const complex64_t& b) {
 inline complex64_t operator-(const complex64_t& v) {
   return -static_cast<std::complex<float>>(v);
 }
-# 90 "Source/Cmlx/mlx/mlx/types/complex.h"
+# 109 "Source/Cmlx/mlx/mlx/types/complex.h"
 inline complex64_t operator+(const std::complex<float>& x, const complex64_t& y) { return x + static_cast<std::complex<float>>(y); } inline complex64_t operator+(const complex64_t& x, const std::complex<float>& y) { return static_cast<std::complex<float>>(x) + y; } inline complex64_t operator+(const complex64_t& x, const complex64_t& y) { return static_cast<std::complex<float>>(x) + static_cast<std::complex<float>>(y); } inline complex64_t operator+(bool x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, bool y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(uint32_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, uint32_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(uint64_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, uint64_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(int32_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, int32_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(int64_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, int64_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(float16_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, float16_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(bfloat16_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, bfloat16_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(float x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, float y) { return x + static_cast<complex64_t>(y); }
 
 }

@@ -61,3 +61,38 @@ public func scaledDotProductAttention(
         mlx_fast_scaled_dot_product_attention(
             queries.ctx, keys.ctx, values.ctx, scale, mask?.ctx, stream.ctx))
 }
+
+/// Root Mean Square normalization (RMS norm).
+///
+/// The normalization is with respect to the last axis of the input `x`.
+///
+/// - Parameters:
+///   - x: input array
+///   - weight: A multiplicative weight to scale the result by. The `weight` should be one-dimensional
+///     with the same size as the last axis of `x`.
+///   - eps: A small additive constant for numerical stability
+///   - stream: stream or device to evaluate on
+public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_fast_rms_norm(x.ctx, weight.ctx, eps, stream.ctx))
+}
+
+/// Layer normalization.
+///
+/// The normalization is with respect to the last axis of the input `x`.
+///
+/// - Parameters:
+///   - x: input array
+///   - weight: A multiplicative weight to scale the result by. The `weight` should be one-dimensional
+///     with the same size as the last axis of `x`.  If not given no scaling will occur.
+///   - bias: An additive offset to be added to the result. The `bias` should be one-dimensional
+///     with the same size as the last axis of `x`.  It not given no offset will occur.
+///   - eps: A small additive constant for numerical stability
+///   - stream: stream or device to evaluate on
+public func layerNorm(
+    _ x: MLXArray, weight: MLXArray? = nil, bias: MLXArray? = nil, eps: Float,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_fast_layer_norm(x.ctx, weight?.ctx, bias?.ctx, eps, stream.ctx))
+}
