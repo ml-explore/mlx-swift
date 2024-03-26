@@ -388,9 +388,7 @@ func getItem(array: MLXArray, operation: MLXArrayIndexOperation, stream: StreamO
 
 func getItemND(array: MLXArray, operations: [MLXArrayIndexOperation], stream: StreamOrDevice = .default) -> MLXArray {
     var array = array
-    
-    print("READ \(operations)")
-    
+        
     // The plan is as follows:
     // 1. Replace the ellipsis with a series of slice(None)
     // 2. Loop over the indices and calculate the gather indices
@@ -424,7 +422,6 @@ func getItemND(array: MLXArray, operations: [MLXArrayIndexOperation], stream: St
     
     var remainingIndices = [MLXArrayIndexOperation]()
     if haveArray {
-        print("haveArray")
         let lastArrayOrIndex = operations.lastIndex { $0.isArrayOrIndex }!
         
         let gatherIndices = operations.prefix(through: lastArrayOrIndex).filter { !$0.isNewAxis }
@@ -433,7 +430,6 @@ func getItemND(array: MLXArray, operations: [MLXArrayIndexOperation], stream: St
         
         // Reassemble the indices for the slicing or reshaping if there are any
         if gatherFirst {
-            print("gatherFirst")
             remainingIndices.append(contentsOf: Array(repeating: .slice(.full), count: maxDimensions))
             for item in operations.prefix(upTo: lastArrayOrIndex) {
                 if item.isNewAxis {
@@ -445,7 +441,6 @@ func getItemND(array: MLXArray, operations: [MLXArrayIndexOperation], stream: St
             remainingIndices.append(contentsOf: operations.suffix(from: lastArrayOrIndex + 1))
             
         } else {
-            print("NOT gatherFirst")
             for item in operations {
                 if item.isArrayOrIndex {
                     break
@@ -555,7 +550,6 @@ func gatherND(array: MLXArray, operations: [MLXArrayIndexOperation], gatherFirst
     
     // reshape them so that the int/array indices are first
     if gatherFirst {
-        print("gatherFirst (interior)")
         if sliceCount > 0 {
             var sliceIndex = 0
             for (i, item) in gatherIndices.enumerated() {
@@ -573,7 +567,6 @@ func gatherND(array: MLXArray, operations: [MLXArrayIndexOperation], gatherFirst
         }
         
     } else {
-        print("NOT gatherFirst (interior)")
         // reshape them so that the int/array indices are last
         for (i, item) in gatherIndices.prefix(sliceCount).enumerated() {
             var newShape = Array(repeating: 1, count: maxDimensions + sliceCount)
@@ -839,28 +832,4 @@ extension MLXArrayIndex where Self == MLXSlice {
     public static func stride(from start: Int? = nil, to end: Int? = nil, by stride: Int? = nil) -> MLXSlice {
         MLXSlice(start: start?.int32, end: end?.int32, stride: stride?.int32)
     }
-}
-
-
-let ellipsis = MLXEllipsisIndex()
-let etc = MLXEllipsisHelper()
-let None = MLXNewAxisIndex()
-
-
-func test() {
-    let a = [1, 2, 3]
-    let b = a[...]
-    
-    let x = MLXArray(0)
-
-    let x2 = x[ellipsis, 0, 1]
-    let z2 = x[0, 1, ellipsis]
-
-    let x3 = x[None, ...etc, 0, 1]
-    let z3 = x[0, 1, etc...]
-    
-    let m = x[.ellipsis]
-    
-    let s = stride(from: 0, to: 10, by: 2)
-
 }
