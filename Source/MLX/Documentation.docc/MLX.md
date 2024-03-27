@@ -79,10 +79,11 @@ are the CPU and GPU.
 - ``HasDType``
 - ``ScalarOrArray``
 
-### Argument Types
+### Parameter Types
 
 - ``IntOrPair``
 - ``IntOrArray``
+- ``FloatOrArray``
 
 ### Nested Data
 

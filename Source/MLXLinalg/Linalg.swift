@@ -184,3 +184,37 @@ public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArra
     let arrays = mlx_vector_array_values(result_vector)
     return (arrays[0], arrays[1])
 }
+
+/// The Singular Value Decomposition (SVD) of the input matrix.
+///
+/// This function supports arrays with at least 2 dimensions. When the input
+/// has more than two dimensions, the function iterates over all indices of the first
+/// `array.ndim - 2` dimensions and for each combination SVD is applied to the last two indices.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: The `U`, `S`, and `Vt` matrices, such that `A = matmul(U, matmul(diag(S), Vt))`
+public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
+    MLXArray, MLXArray, MLXArray
+) {
+    let mlx_arrays = mlx_linalg_svd(array.ctx, stream.ctx)!
+    defer { mlx_free(mlx_arrays) }
+
+    let arrays = mlx_vector_array_values(mlx_arrays)
+    return (arrays[0], arrays[1], arrays[2])
+}
+
+/// Compute the inverse of a square matrix.
+///
+/// This function supports arrays with at least 2 dimensions. When the input
+/// has more than two dimensions, the inverse is computed for each matrix
+/// in the last two dimensions of `array`.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: `ainv` such that `dot(a, ainv) = dot(ainv, a) = eye(a.shape[0])`
+public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_linalg_inv(array.ctx, stream.ctx))
+}
