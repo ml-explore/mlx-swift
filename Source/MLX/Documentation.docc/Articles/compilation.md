@@ -295,7 +295,7 @@ To compile the update we can put it all in a function and compile it with the
 appropriate input and output captures. Here's the same example but compiled:
 
 ```swift
-let step = compile(inputs: [model, optimizer], outputs: inputs: [model, optimizer]) { x, y in
+let step = compile(inputs: [model, optimizer], outputs: [model, optimizer]) { x, y in
     let (loss, grads) = lg(model, x, y)
     optimizer.update(model: model, gradients: grads)
     return loss
