@@ -3,6 +3,13 @@
 import Foundation
 import MLX
 
+/// Abstract pooling layer.
+///
+/// ### See Also
+/// - ``MaxPool1d``
+/// - ``MaxPool2d``
+/// - ``AvgPool1d``
+/// - ``AvgPool2d``
 open class Pool: Module, UnaryLayer {
 
     public let kernelSize: [Int]

@@ -365,10 +365,12 @@ public func ceil(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``clip(_:max:stream:)``
-public func clip(
-    _ array: MLXArray, min: MLXArray, max: MLXArray? = nil, stream: StreamOrDevice = .default
+public func clip<A: ScalarOrArray, B: ScalarOrArray>(
+    _ array: MLXArray, min: A, max: B? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_clip(array.ctx, min.ctx, max?.ctx, stream.ctx))
+    let (array, min) = toArrays(array, min)
+    let (_, max) = max == nil ? (array, nil) : toArrays(array, max!)
+    return MLXArray(mlx_clip(array.ctx, min.ctx, max?.ctx, stream.ctx))
 }
 
 /// Clip the values of the array up to the given maximum.
@@ -381,8 +383,11 @@ public func clip(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``clip(_:min:max:stream:)``
-public func clip(_ array: MLXArray, max: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_clip(array.ctx, nil, max.ctx, stream.ctx))
+public func clip<A: ScalarOrArray>(_ array: MLXArray, max: A, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    let (array, max) = toArrays(array, max)
+    return MLXArray(mlx_clip(array.ctx, nil, max.ctx, stream.ctx))
 }
 
 /// Concatenate the arrays along the given axis.
