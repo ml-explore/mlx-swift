@@ -461,6 +461,21 @@ extension MLXArray {
         }
     }
 
+    /// General array indexing.
+    ///
+    /// See ``MLXArray/subscript(_:stream:)-375a0``
+    public subscript(indices: [MLXArrayIndex], stream stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
+        get {
+            // convert the e.g. Int, MLXArray, Range, etc. into operations
+            self[operations: indices.map { $0.mlxArrayIndexOperation }, stream: stream]
+        }
+        set {
+            self[operations: indices.map { $0.mlxArrayIndexOperation }, stream: stream] = newValue
+        }
+    }
+
 }
 
 // MARK: - Support
