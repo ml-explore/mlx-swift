@@ -990,10 +990,11 @@ func scatterArguments(
         case .slice(let slice):
             haveNonArray = haveArray
             countSlices += 1
-            if slice.stride == 1 {
-                countSimpleSlicesPost += 1
-            } else {
+            if slice.stride != 1 {
                 countStridedSlices += 1
+                countSimpleSlicesPost = 0
+            } else {
+                countSimpleSlicesPost += 1
             }
 
         case .array(let array):
@@ -1049,7 +1050,7 @@ func scatterArguments(
             var indexShape = Array(repeating: 1, count: indexDimensions)
 
             // If it's a simple slice, we only need to add the start index
-            if arrayNumber >= countArrays && stride == 1 {
+            if arrayNumber >= countArrays && countStridedSlices <= 0 && stride == 1 {
                 let index = MLXArray(start).reshaped(indexShape, stream: stream)
                 sliceShapes.append(Int(end - start))
                 arrayIndices.append(index)
