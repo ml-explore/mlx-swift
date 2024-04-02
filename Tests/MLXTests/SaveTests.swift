@@ -1,6 +1,6 @@
 //
 //  SaveTests.swift
-//  
+//
 //
 //  Created by Rounak Jain on 4/2/24.
 //
@@ -34,10 +34,10 @@ final class SaveTests: XCTestCase {
         )
 
         let arrays: [String: MLXArray] = [
-            "foo": MLX.ones([1,2]),
-            "bar": MLX.zeros([2,1])
+            "foo": MLX.ones([1, 2]),
+            "bar": MLX.zeros([2, 1]),
         ]
-        
+
         try MLX.save(arrays: arrays, url: safetensorsPath)
 
         let loadedArrays = try MLX.loadArrays(url: safetensorsPath)
