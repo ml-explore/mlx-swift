@@ -1576,7 +1576,7 @@ public func save(
 
     switch url.pathExtension {
     case "safetensors":
-        if let fp = fopen(path, "r") {
+        if let fp = fopen(path, "w") {
             defer { fclose(fp) }
 
             mlx_save_safetensors_file(fp, mlx_arrays, mlx_metadata)
