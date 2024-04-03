@@ -7,7 +7,7 @@ import MLX
 public typealias ModuleParameters = NestedDictionary<String, MLXArray>
 
 /// `NestedDictionary` structure of `Module`
-public typealias ModuleChilren = NestedDictionary<String, Module>
+public typealias ModuleChildren = NestedDictionary<String, Module>
 
 /// `NestedDictionary` structure of `ModuleValue` from ``Module/items()``
 public typealias ModuleItems = NestedDictionary<String, ModuleValue>
@@ -356,7 +356,7 @@ open class Module {
     }
 
     /// Produces a `NestedDictionary<String, Module>` for all direct children of the module.
-    public func children() -> ModuleChilren {
+    public func children() -> ModuleChildren {
         filterMap(filter: Self.filterValidChild, map: Self.mapModule(), isLeaf: Self.isLeafModule)
     }
 
@@ -364,7 +364,7 @@ open class Module {
     ///
     /// ### See Also
     /// - ``isLeafModuleNoChildren``
-    public func leafModules() -> ModuleChilren {
+    public func leafModules() -> ModuleChildren {
         filterMap(
             filter: Self.filterValidChild, map: Self.mapModule(),
             isLeaf: Self.isLeafModuleNoChildren)
@@ -501,14 +501,14 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `Module` is set on a `MLXArray`.
-    public func update(modules: ModuleChilren) {
+    public func update(modules: ModuleChildren) {
         try! update(modules: modules, verify: .none)
     }
 
     /// Replace the child modules of this `Module` with the provided replacements.
     ///
     /// This will replace the parameters in the `Module` recursively with the given
-    /// ``ModuleChilren`` structure.  For example this is typically called via
+    /// ``ModuleChildren`` structure.  For example this is typically called via
     /// a helper function:
     ///
     /// ```swift
@@ -547,7 +547,7 @@ open class Module {
     /// - ``children()``
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
-    public func update(modules: ModuleChilren, verify: VerifyUpdate) throws {
+    public func update(modules: ModuleChildren, verify: VerifyUpdate) throws {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
