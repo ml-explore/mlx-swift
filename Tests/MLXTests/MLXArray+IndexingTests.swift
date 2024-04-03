@@ -5,6 +5,21 @@ import XCTest
 
 @testable import MLX
 
+// Not required in general but useful for tests
+extension MLXArrayIndexOperation: Equatable {
+
+    public static func == (lhs: MLX.MLXArrayIndexOperation, rhs: MLX.MLXArrayIndexOperation) -> Bool
+    {
+        switch (lhs, rhs) {
+        case (.ellipsis, .ellipsis), (.newAxis, .newAxis): true
+        case (let .index(l), let .index(r)): l == r
+        case (let .slice(l), let .slice(r)): l == r
+        case (let .array(l), let .array(r)): arrayEqual(l, r).item()
+        default: false
+        }
+    }
+}
+
 class MLXArrayIndexingTests: XCTestCase {
 
     override class func setUp() {
@@ -20,25 +35,6 @@ class MLXArrayIndexingTests: XCTestCase {
         XCTAssertEqual(s.shape, [8, 8])
 
         assertEqual(s, MLXArray(64 ..< 128, [8, 8]))
-    }
-
-    func testArraySubscriptIntAxis() {
-        let a = MLXArray(0 ..< 512, [8, 8, 8])
-        let s = a[1, axis: -1]
-        XCTAssertEqual(s.ndim, 2)
-        XCTAssertEqual(s.shape, [8, 8])
-
-        // array([[1, 9, 17, ..., 41, 49, 57],
-        //        [65, 73, 81, ..., 105, 113, 121],
-        //        [129, 137, 145, ..., 169, 177, 185],
-        //        ...,
-        //        [321, 329, 337, ..., 361, 369, 377],
-        //        [385, 393, 401, ..., 425, 433, 441],
-        //        [449, 457, 465, ..., 489, 497, 505]], dtype=int64)
-
-        XCTAssertEqual(s[0, 0].item(Int.self), 1)
-        XCTAssertEqual(s[0, 1].item(Int.self), 9)
-        XCTAssertEqual(s[0, 2].item(Int.self), 17)
     }
 
     func testArraySubscriptIntArray() {
@@ -226,6 +222,30 @@ class MLXArrayIndexingTests: XCTestCase {
         }
     }
 
+    // MARK: - Stride (Deprecated)
+
+    // These calls are still tested but have been deprecated in favor of the full python indexing,
+    // e.g. array[.ellipsis, .stride(by: 2)]
+
+    func testArraySubscriptIntAxis() {
+        let a = MLXArray(0 ..< 512, [8, 8, 8])
+        let s = a[1, axis: -1]
+        XCTAssertEqual(s.ndim, 2)
+        XCTAssertEqual(s.shape, [8, 8])
+
+        // array([[1, 9, 17, ..., 41, 49, 57],
+        //        [65, 73, 81, ..., 105, 113, 121],
+        //        [129, 137, 145, ..., 169, 177, 185],
+        //        ...,
+        //        [321, 329, 337, ..., 361, 369, 377],
+        //        [385, 393, 401, ..., 425, 433, 441],
+        //        [449, 457, 465, ..., 489, 497, 505]], dtype=int64)
+
+        XCTAssertEqual(s[0, 0].item(Int.self), 1)
+        XCTAssertEqual(s[0, 1].item(Int.self), 9)
+        XCTAssertEqual(s[0, 2].item(Int.self), 17)
+    }
+
     public func testReversed() {
         // tests for [::-1]
         let a = MLXArray(0 ..< 4)
@@ -346,6 +366,278 @@ class MLXArrayIndexingTests: XCTestCase {
                 77, 66,
             ], [2, 3, 4])
         assertEqual(a, expected)
+    }
+
+    // MARK: - Full Indexing - Read
+
+    public func testExpandEllipsisOperations() {
+        // test equivalent of mlx_expand_ellipsis
+        let shape: [Int32] = [4, 6, 8, 8, 2]
+
+        let operations1: [MLXArrayIndexOperation] = [.ellipsis, .index(0), .index(0)]
+        let result1 = expandEllipsisOperations(shape: shape, operations: operations1)
+        XCTAssertEqual(
+            result1,
+            [
+                .slice(.init(start: 0, end: 4, stride: 1)),
+                .slice(.init(start: 0, end: 6, stride: 1)),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .index(0),
+                .index(0),
+            ])
+
+        let operations2: [MLXArrayIndexOperation] = [.index(0), .index(0), .ellipsis]
+        let result2 = expandEllipsisOperations(shape: shape, operations: operations2)
+        XCTAssertEqual(
+            result2,
+            [
+                .index(0),
+                .index(0),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .slice(.init(start: 0, end: 2, stride: 1)),
+            ])
+
+        let operations3: [MLXArrayIndexOperation] = [.index(0), .ellipsis, .index(0)]
+        let result3 = expandEllipsisOperations(shape: shape, operations: operations3)
+        XCTAssertEqual(
+            result3,
+            [
+                .index(0),
+                .slice(.init(start: 0, end: 6, stride: 1)),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .index(0),
+            ])
+
+        let operations4: [MLXArrayIndexOperation] = [
+            .newAxis, .index(0), .ellipsis, .index(0), .newAxis,
+        ]
+        let result4 = expandEllipsisOperations(shape: shape, operations: operations4)
+        XCTAssertEqual(
+            result4,
+            [
+                .newAxis,
+                .index(0),
+                .slice(.init(start: 0, end: 6, stride: 1)),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .slice(.init(start: 0, end: 8, stride: 1)),
+                .index(0),
+                .newAxis,
+            ])
+    }
+
+    func check(
+        _ result: MLXArray, _ shape: [Int], _ sum: Int, file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(result.shape, shape, file: file, line: line)
+        XCTAssertEqual(result.sum().item(Int.self), sum, file: file, line: line)
+    }
+
+    public func testFullIndexReadSingle() {
+        // single operators go through an optimized path
+
+        // a = mx.arange(60).reshape(3, 4, 5)
+        let a = MLXArray(0 ..< 60, [3, 4, 5])
+
+        // a[...]
+        check(a[.ellipsis], [3, 4, 5], 1770)
+
+        // a[None]
+        check(a[.newAxis], [1, 3, 4, 5], 1770)
+
+        // a[0]
+        check(a[0], [4, 5], 190)
+
+        // a[1:3]
+        check(a[1 ..< 3], [2, 4, 5], 1580)
+
+        // i = mx.array([2, 1])
+        let i = MLXArray([2, 1])
+
+        // a[i]
+        check(a[i], [2, 4, 5], 1580)
+    }
+
+    public func testFullIndexReadNoArray() {
+        // a = mx.arange(360).reshape(2, 3, 4, 5, 3)
+        let a = MLXArray(0 ..< 360, [2, 3, 4, 5, 3])
+
+        // a[..., 0]
+        check(a[.ellipsis, 0], [2, 3, 4, 5], 21420)
+
+        // a[0, ...]
+        check(a[0, .ellipsis], [3, 4, 5, 3], 16110)
+
+        // a[0, ..., 0]
+        check(a[0, .ellipsis, 0], [3, 4, 5], 5310)
+
+        // a[..., ::2, :]
+        check(a[.ellipsis, .stride(by: 2), 0...], [2, 3, 4, 3, 3], 38772)
+
+        // a[..., None, ::2, -1]
+        check(a[.ellipsis, .newAxis, stride(by: 2), -1], [2, 3, 4, 1, 3], 12996)
+
+        // a[:, 2:, 0]
+        check(a[0..., 2..., 0], [2, 1, 5, 3], 6510)
+
+        // a[::-1, :2, 2:, ..., None, ::2]
+        check(
+            a[.stride(by: -1), ..<2, 2..., .ellipsis, .newAxis, .stride(by: 2)],
+            [2, 2, 2, 5, 1, 2], 13160)
+    }
+
+    public func testFullIndexReadArray() {
+        // these have an MLXArray as a source of indexes and go through the gather path
+
+        // a = mx.arange(540).reshape(3, 3, 4, 5, 3)
+        let a = MLXArray(0 ..< 540, [3, 3, 4, 5, 3])
+
+        // i = mx.array([2, 1])
+        let i = MLXArray([2, 1])
+
+        // a[0, i]
+        check(a[0, i], [2, 4, 5, 3], 14340)
+
+        // a[..., i, 0]
+        check(a[.ellipsis, i, 0], [3, 3, 4, 2], 19224)
+
+        // a[i, 0, ...]
+        check(a[i, 0, .ellipsis], [2, 4, 5, 3], 35940)
+
+        // gatherFirst path
+        // a[i, ..., i]
+        check(a[i, .ellipsis, i], [2, 3, 4, 5], 43200)
+
+        // a[i, ..., ::2, :]
+        check(a[i, .ellipsis, .stride(by: 2), 0...], [2, 3, 4, 3, 3], 77652)
+
+        // gatherFirst path
+        // a[..., i, None, ::2, -1]
+        check(a[.ellipsis, i, .newAxis, stride(by: 2), -1], [2, 3, 3, 1, 3], 14607)
+
+        // a[:, 2:, i]
+        check(a[0..., 2..., i], [3, 1, 2, 5, 3], 29655)
+
+        // a[::-1, :2, i, 2:, ..., None, ::2]
+        check(
+            a[.stride(by: -1), ..<2, i, 2..., .ellipsis, .newAxis, .stride(by: 2)],
+            [3, 2, 2, 3, 1, 2], 17460)
+    }
+
+    // MARK: - Full Indexing - Write
+
+    public func testFullIndexWriteSingle() {
+        // single operators go through an optimized path
+
+        func check(
+            _ indexes: [MLXArrayIndex], _ sum: Int, file: StaticString = #filePath,
+            line: UInt = #line
+        ) {
+            // a = mx.arange(60).reshape(3, 4, 5)
+            let a = MLXArray(0 ..< 60, [3, 4, 5])
+
+            a[operations: indexes.map { $0.mlxArrayIndexOperation }] = MLXArray(1)
+            XCTAssertEqual(a.sum().item(Int.self), sum, file: file, line: line)
+        }
+
+        // a[...]
+        // not valid
+
+        // a[None]
+        check([.newAxis], 60)
+
+        // a[0]
+        check([0], 1600)
+
+        // a[1:3]
+        check([1 ..< 3], 230)
+
+        // i = mx.array([2, 1])
+        let i = MLXArray([2, 1])
+
+        // a[i]
+        check([i], 230)
+    }
+
+    public func testFullIndexWriteNoArray() {
+        func check(
+            _ indexes: [MLXArrayIndex], _ sum: Int, file: StaticString = #filePath,
+            line: UInt = #line
+        ) {
+            // a = mx.arange(360).reshape(2, 3, 4, 5, 3)
+            let a = MLXArray(0 ..< 360, [2, 3, 4, 5, 3])
+
+            a[operations: indexes.map { $0.mlxArrayIndexOperation }] = MLXArray(1)
+            XCTAssertEqual(a.sum().item(Int.self), sum, file: file, line: line)
+        }
+
+        // a[..., 0] = 1
+        check([.ellipsis, 0], 43320)
+
+        // a[0, ...] = 1
+        check([0, .ellipsis], 48690)
+
+        // a[0, ..., 0] = 1
+        check([0, .ellipsis, 0], 59370)
+
+        // a[..., ::2, :] = 1
+        check([.ellipsis, .stride(by: 2), 0...], 26064)
+
+        // a[..., None, ::2, -1] = 1
+        check([.ellipsis, .newAxis, stride(by: 2), -1], 51696)
+
+        // a[:, 2:, 0] = 1
+        check([0..., 2..., 0], 58140)
+
+        // a[::-1, :2, 2:, ..., None, ::2] = 1
+        check(
+            [.stride(by: -1), ..<2, 2..., .ellipsis, .newAxis, .stride(by: 2)],
+            51540)
+    }
+
+    public func testFullIndexWriteArray() {
+        // these have an MLXArray as a source of indexes and go through the gather path
+
+        func check(
+            _ indexes: [MLXArrayIndex], _ sum: Int, file: StaticString = #filePath,
+            line: UInt = #line
+        ) {
+            // a = mx.arange(540).reshape(3, 3, 4, 5, 3)
+            let a = MLXArray(0 ..< 540, [3, 3, 4, 5, 3])
+
+            a[operations: indexes.map { $0.mlxArrayIndexOperation }] = MLXArray(1)
+            XCTAssertEqual(a.sum().item(Int.self), sum, file: file, line: line)
+        }
+
+        // i = mx.array([2, 1])
+        let i = MLXArray([2, 1])
+
+        // a[0, i] = 1
+        check([0, i], 131310)
+
+        // a[..., i, 0] = 1
+        check([.ellipsis, i, 0], 126378)
+
+        // a[i, 0, ...] = 1
+        check([i, 0, .ellipsis], 109710)
+
+        // a[i, ..., i] = 1
+        check([i, .ellipsis, i], 102450)
+
+        // a[i, ..., ::2, :] = 1
+        check([i, .ellipsis, .stride(by: 2), 0...], 68094)
+
+        // a[..., i, None, ::2, -1] = 1
+        check([.ellipsis, i, .newAxis, stride(by: 2), -1], 130977)
+
+        // a[:, 2:, i] = 1
+        check([0..., 2..., i], 115965)
+
+        // a[::-1, :2, i, 2:, ..., None, ::2] = 1
+        check(
+            [.stride(by: -1), ..<2, i, 2..., .ellipsis, .newAxis, .stride(by: 2)], 128142)
     }
 
 }

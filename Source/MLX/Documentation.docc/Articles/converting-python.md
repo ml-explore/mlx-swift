@@ -4,9 +4,10 @@ Common patterns from python and mapping `mlx` function names.
 
 ## Indexing
 
-``MLXArray`` supports many types of indexes (see <doc:indexing>) -- some
-of the python `mx.array` indexing modes are supported directly, though written
-differenty.  Some of them require different calls.
+``MLXArray`` supports all the same indexing (see <doc:indexing>) as 
+the python `mx.array`, though in some cases they are written differently.
+In all cases both `MLXArray` and `mx.array` indexing strive to match
+[numpy indexing](https://numpy.org/doc/stable/user/basics.indexing.html).
 
 Here is a mapping of some observed calls:
 
@@ -20,16 +21,17 @@ Python code | Swift Code
 `array[2:8]` | `array[2 ..< 8]`
 `array[:, :8, 8:]` | `array[0..., ..<8, 8...]`
 `array[array2]` | `array[array2]`
-`array[array2, array3]` | `array[array2, array3]` -- numpy style advanced indexing
-`array[None]` | `array.expandedDimensions(axis: 0)`
-`array[:, None]` | `array.expandedDimensions(axis: 1)`
-`array[..., None]` | `array.expandedDimensions(axis: -1)`
-`array[:, -1, :]` | `array[-1, axis: 1]`
-`array[..., ::2]` | `array[stride: 2, axis: -1]`
-`array[::-1]` | `array[stride: -1, axis: 0]` -- reverse first dimension of array
-`array[..., ::-1]` | `array[stride: -1, axis: -1]` or `array[stride: -1]` -- reverse last dimension of array
-`[array] * 4` | `Array(repeating: array, count: 4)`
+`array[array2, array3]` | `array[array2, array3]` -- [numpy style advanced indexing](https://numpy.org/doc/stable/user/basics.indexing.html#advanced-indexing)
+`array[None]` | `array[.newAxis]`
+`array[:, None]` | `array[0..., .newAxis]`
+`array[..., None]` | `array[.ellipsis, .newAxis]`
+`array[:, -1, :]` | `array[0..., -1, 0...]`
+`array[..., ::2]` | `array[.ellipsis, .stride(by: 2)]`
+`array[::-1]` | `array[.stride(by: -1)]` -- reverse first dimension of array
+`array[..., ::-1]` | `array[.ellipsis, stride(by: -1)]` -- reverse last dimension of array
 `array.shape[:-1]` | `array.shape.dropLast()`
+
+See <doc:indexing> for more information.
 
 ## Name Mapping
 
@@ -72,10 +74,7 @@ Note: some of the symbols are not linkable.
 `item` | ``MLXArray/item(_:)``
 `tolist` | ``MLXArray/asArray(_:)``
 `astype` | ``MLXArray/asType(_:stream:)-4eqoc`` or ``MLXArray/asType(_:stream:)-6d44y``
-`__getitem__ [1]` | ``MLXArray/subscript(_:stream:)-od5g``
-`"__getitem__ [1, 2]"` | ``MLXArray/subscript(_:stream:)-7n5nw``
-`__getitem__ [1:3]` | ``MLXArray/subscript(_:stream:)-4z56f``
-`__getitem__ [mlx.array]` | ``MLXArray/subscript(_:stream:)-82jwt``
+`__getitem__` | ``MLXArray/subscript(_:stream:)``
 `__len__` | ``MLXArray/count``
 `__iter__` | implements `Sequence`
 `__add__` | ``MLXArray/+(_:_:)-1rv98``
