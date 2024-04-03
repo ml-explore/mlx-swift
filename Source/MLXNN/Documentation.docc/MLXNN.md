@@ -69,7 +69,7 @@ See <doc:training>
 - ``ParameterInfo``
 
 - ``ModuleParameters``
-- ``ModuleChilren``
+- ``ModuleChildren``
 - ``ModuleItem``
 - ``ModuleItems``
 - ``ModuleValue``
