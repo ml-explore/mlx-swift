@@ -933,8 +933,8 @@ extension Module {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .value(.parameters), .value(.module):
-            return !key.hasPrefix("_") && !module.noGrad.contains(key)
-        default: return false
+            !key.hasPrefix("_") && !module.noGrad.contains(key)
+        default: false
         }
     }
 
