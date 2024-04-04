@@ -933,8 +933,11 @@ extension Module {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .value(.parameters), .value(.module):
-            !key.hasPrefix("_") && !module.noGrad.contains(key)
-        default: false
+            if !key.hasPrefix("_") && !module.noGrad.contains(key) && key == "weight" {
+                print(key)
+            }
+            return !key.hasPrefix("_") && !module.noGrad.contains(key)
+        default: return false
         }
     }
 
@@ -1205,8 +1208,14 @@ public enum ModuleValue {
                 // do not allow set because the info cache on Module will not
                 // see the new value
                 fatalError("please call update() on the array rather than setting it")
+
             } else {
+                // value is nil, we allow set, e.g. from Module init
                 value = newValue
+
+                if unwrapProperty(self) == nil {
+                    fatalError("Unable to apply @ParameterInfo to \(T.self)")
+                }
             }
         }
     }
@@ -1224,9 +1233,7 @@ public enum ModuleValue {
         self.value = nil
         self.key = key
 
-        if unwrapProperty(self) == nil {
-            fatalError("Unable to apply @ParameterInfo to \(T.self)")
-        }
+        // cannot check via unwapProperty -- see wrappedValue.set
     }
 }
 
@@ -1304,7 +1311,15 @@ private protocol TypeErasedSetterProvider {
             module!
         }
         set {
-            module = newValue
+            if module != nil {
+                // do not allow set because the info cache on Module will not
+                // see the new value
+                fatalError(
+                    "please use Model.update(modules:) rather than "
+                        + "mutating the Module property directly")
+            } else {
+                module = newValue
+            }
         }
     }
 
@@ -1331,7 +1346,7 @@ private protocol TypeErasedSetterProvider {
 
         func updateModule(_ value: Any) throws {
             if let value = value as? T {
-                info.wrappedValue = value
+                info.module = value
             } else {
                 throw UpdateError.unableToCast
             }
