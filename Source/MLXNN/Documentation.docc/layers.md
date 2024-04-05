@@ -28,6 +28,16 @@ These can be used with ``Sequential``.
 - ``RMSNorm``
 - ``Sequential``
 
+### Sampling
+
+- ``Upsample``
+
+### Recurrent
+
+- ``RNN``
+- ``GRU``
+- ``LSTM``
+
 ### Other Layers
 
 - ``Bilinear``
