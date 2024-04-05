@@ -145,14 +145,28 @@ private func upsampleLinear(_ x: MLXArray, scale: [Float], alignCorners: Bool) -
 }
 
 private func product(pairs: [(IndexWeight, IndexWeight)]) -> [[IndexWeight]] {
-    // in the pytho code this uses itertools.product() but we can get by with a
-    // simple implementation for this constrained case
+    // in the python code this uses itertools.product() but we can get by with a
+    // simple implementation for this constrained case.
+    //
+    // Given [(A, B), (C, D)] this will produce an array of all the
+    // combinations of the pairs, e.g. [[A, C], [A, D], [B, C], [B, D]]
+
     precondition(pairs.count <= UInt.bitWidth)
 
     // all combinations of the L0 or R0 ... Ln / Rn
     var result = [[IndexWeight]]()
 
-    // we can generate all the combinations with bits
+    // we can generate all the combinations with bits -- we are
+    // selecting between the first or second of the input tuples,
+    // so we can map like this:
+    //
+    // [(A, B), (C, D)] ->
+    //  00 - [A, C]
+    //  01 - [A, D]
+    //  10 - [B, C]
+    //  11 - [B, D]
+
+    // the pattern to generate the bits and the mask for the width
     var pattern: UInt = 0
     let mask: UInt = (1 << pairs.count) - 1
 
@@ -161,15 +175,21 @@ private func product(pairs: [(IndexWeight, IndexWeight)]) -> [[IndexWeight]] {
             pairs
             .enumerated()
             .map { (index, pair) in
+
+                // select the .0 or .1 element depending on the bit
                 if pattern & (1 << index) == 0 {
                     return pair.0
                 } else {
                     return pair.1
                 }
             }
+
         result.append(item)
 
+        // next bit pattern
         pattern = (pattern + 1) & mask
+
+        // if it "wraps" around to 0 that means we covered all the patterns
         if pattern == 0 {
             break
         }
