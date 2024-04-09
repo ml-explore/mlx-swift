@@ -69,7 +69,7 @@ Note: some of the symbols are not linkable.
 `ndim` | ``MLXArray/ndim``
 `itemsize` | ``MLXArray/itemSize``
 `nbytes` | ``MLXArray/nbytes``
-`shape` | ``MLXArray/shape``
+`shape` | ``MLXArray/shape`` or ``MLXArray/shape2`` ... ``MLXArray/shape4`` (destructuring)
 `dtype` | ``MLXArray/dtype``
 `item` | ``MLXArray/item(_:)``
 `tolist` | ``MLXArray/asArray(_:)``
@@ -122,7 +122,7 @@ Note: some of the symbols are not linkable.
 `round` | ``MLXArray/round(decimals:stream:)``
 `rsqrt` | ``MLXArray/rsqrt(stream:)``
 `sin` | ``MLXArray/sin(stream:)``
-`split` | ``MLXArray/split(parts:axis:stream:)``
+`split` | ``MLXArray/split(parts:axis:stream:)`` or ``MLXArray/split(axis:stream:)`` (destructuring)
 `sqrt` | ``MLXArray/sqrt(stream:)``
 `square` | ``MLXArray/square(stream:)``
 `squeeze` | ``MLXArray/squeezed(axes:stream:)``

@@ -38,6 +38,13 @@ to the build directory.
 Note: applications will link the `MLX` and `Cmlx` libraries which will automatically
 provide access to the metal libraries as a resource of your application.
 
+[mlx-swift-examples](https://github.com/ml-explore/mlx-swift-examples) contains a wrapper script, `mlx-run`
+that can be used to run the example command line tools:
+
+```
+./mlx-run llm-tool --help
+```
+
 ## Building
 
 Specific build issues you may encounter.

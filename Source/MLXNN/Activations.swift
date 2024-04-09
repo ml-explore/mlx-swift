@@ -233,8 +233,8 @@ public func geluFastApproximate(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``GLU``
 public func glu(_ x: MLXArray, axis: Int = -1) -> MLXArray {
-    let pieces = split(x, parts: 2, axis: axis)
-    return pieces[0] * sigmoid(pieces[1])
+    let (a, b) = x.split(axis: axis)
+    return a * sigmoid(b)
 }
 
 /// Applies the Step Activation Function.

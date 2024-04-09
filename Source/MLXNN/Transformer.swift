@@ -76,14 +76,14 @@ open class MultiHeadAttention: Module {
     ) -> MLXArray {
         var queries = queryProjection(queries)
         var keys = keyProjection(keys)
-        let values = valueProjection(values)
+        var values = valueProjection(values)
 
         let (B, L) = (queries.dim(0), queries.dim(1))
         let S = keys.dim(1)
 
         queries = queries.reshaped(B, L, numHeads, -1).transposed(0, 2, 1, 3)
         keys = keys.reshaped(B, S, numHeads, -1).transposed(0, 2, 3, 1)
-        queries = queries.reshaped(B, S, numHeads, -1).transposed(0, 2, 1, 3)
+        values = values.reshaped(B, S, numHeads, -1).transposed(0, 2, 1, 3)
 
         // Dimensions are [batch x num heads x sequence x hidden dim]
         let scale = sqrt(1 / Float(queries.dim(-1)))

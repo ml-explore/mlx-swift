@@ -171,6 +171,7 @@ operations as methods for convenience.
 - ``reshaped(_:_:stream:)-96lgr``
 - ``split(_:indices:axis:stream:)``
 - ``split(_:parts:axis:stream:)``
+- ``split(_:axis:stream:)``
 - ``squeezed(_:stream:)``
 - ``squeezed(_:axis:stream:)``
 - ``squeezed(_:axes:stream:)``

@@ -232,7 +232,12 @@ open class GroupNorm: Module, UnaryLayer {
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        pytorchCompatible ? pytorchGroupNorm(x) : groupNorm(x)
+        let x = pytorchCompatible ? pytorchGroupNorm(x) : groupNorm(x)
+        if let weight, let bias {
+            return weight * x + bias
+        } else {
+            return x
+        }
     }
 }
 
