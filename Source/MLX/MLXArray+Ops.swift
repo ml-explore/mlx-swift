@@ -2049,12 +2049,38 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:shapes>
+    /// - ``split(axis:stream:)``
     /// - ``split(indices:axis:stream:)``
     /// - ``split(_:parts:axis:stream:)``
     public func split(parts: Int, axis: Int = 0, stream: StreamOrDevice = .default) -> [MLXArray] {
         let vec = mlx_split_equal_parts(ctx, parts.int32, axis.int32, stream.ctx)!
         defer { mlx_free(vec) }
         return mlx_vector_array_values(vec)
+    }
+
+    /// Split an array into 2 pieces along an axis and returns a tuple -- convenient for destructuring.
+    ///
+    /// Splits the array into 2 pieces along a given axis and returns an tuple of `MLXArray`:
+    ///
+    /// ```swift
+    /// let array = MLXArray(0 ..< 12, (4, 3))
+    ///
+    /// let (a, b) = array.split()
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - axis: axis to split along
+    ///
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``split(parts:axis:stream:)``
+    /// - ``split(indices:axis:stream:)``
+    /// - ``split(_:parts:axis:stream:)``
+    public func split(axis: Int = 0, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
+        let vec = mlx_split_equal_parts(ctx, 2, axis.int32, stream.ctx)!
+        defer { mlx_free(vec) }
+        let pieces = mlx_vector_array_values(vec)
+        return (pieces[0], pieces[1])
     }
 
     /// Split an array along a given axis.

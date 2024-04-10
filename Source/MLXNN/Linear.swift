@@ -74,7 +74,7 @@ open class Linear: Module, UnaryLayer {
     public let bias: MLXArray?
 
     public var shape: (Int, Int) {
-        (weight.dim(0), weight.dim(1))
+        weight.shape2
     }
 
     /// Applies an affine transformation to the input.
@@ -177,9 +177,7 @@ open class Bilinear: Module {
 
     open func callAsFunction(_ x1: MLXArray, _ x2: MLXArray) -> MLXArray {
         // normalize shapes
-        let out = weight.dim(0)
-        let in1 = weight.dim(2)
-        let in2 = weight.dim(1)
+        let (out, in2, in1) = weight.shape3
         let xShape = x1.shape.dropLast()
         let x1 = x1.reshaped(-1, in1)
         let x2 = x2.reshaped(-1, 1, in2)

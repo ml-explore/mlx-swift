@@ -13,6 +13,9 @@ will moves rows and columns as they modify the shape.
 ### Reading Shapes
 
 - ``MLXArray/shape``
+- ``MLXArray/shape2``
+- ``MLXArray/shape3``
+- ``MLXArray/shape4``
 - ``MLXArray/dim(_:)``
 
 ### MLXArray Shape Methods (Same Size)
@@ -46,6 +49,7 @@ These methods manipulate the shape and contents of the array:
 - ``MLXArray/movedAxis(source:destination:stream:)``
 - ``MLXArray/split(parts:axis:stream:)``
 - ``MLXArray/split(indices:axis:stream:)``
+- ``MLXArray/split(axis:stream:)``
 - ``MLXArray/swappedAxes(_:_:stream:)``
 - ``MLXArray/transposed(stream:)``
 - ``MLXArray/transposed(axis:stream:)``
@@ -64,6 +68,7 @@ These methods manipulate the shape and contents of the array:
 - ``padded(_:widths:value:stream:)``
 - ``split(_:indices:axis:stream:)``
 - ``split(_:parts:axis:stream:)``
+- ``split(_:axis:stream:)``
 - ``stacked(_:axis:stream:)``
 - ``swappedAxes(_:_:_:stream:)``
 - ``tiled(_:repetitions:stream:)-72ntc``

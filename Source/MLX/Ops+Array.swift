@@ -1262,7 +1262,7 @@ public func sin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// ```swift
 /// let array = MLXArray(0 ..< 12, (4, 3))
 ///
-/// let halves = array.split(2)
+/// let halves = split(array, 2)
 /// print(halves)
 ///
 /// [array([[0, 1, 2],
@@ -1278,6 +1278,7 @@ public func sin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///
 /// ### See Also
 /// - <doc:shapes>
+/// - ``split(_:parts:axis:stream:)``
 /// - ``split(_:indices:axis:stream:)``
 /// - ``MLXArray/split(parts:axis:stream:)``
 public func split(_ array: MLXArray, parts: Int, axis: Int = 0, stream: StreamOrDevice = .default)
@@ -1286,6 +1287,35 @@ public func split(_ array: MLXArray, parts: Int, axis: Int = 0, stream: StreamOr
     let vec = mlx_split_equal_parts(array.ctx, parts.int32, axis.int32, stream.ctx)!
     defer { mlx_free(vec) }
     return mlx_vector_array_values(vec)
+}
+
+/// Split an array into 2 equal size pieces along a given axis.
+///
+/// Splits the array into 2 pieces along a given axis and returns an tuple of `MLXArray`:
+///
+/// ```swift
+/// let array = MLXArray(0 ..< 12, (4, 3))
+///
+/// let (a, b) = split(array)
+/// ```
+///
+/// - Parameters:
+///     - array: input array
+///     - parts: array is split into that many sections of equal size. It is a fatal error if this is not possible
+///     - axis: axis to split along
+///
+/// ### See Also
+/// - <doc:shapes>
+/// - ``split(_:parts:axis:stream:)``
+/// - ``split(_:indices:axis:stream:)``
+/// - ``MLXArray/split(parts:axis:stream:)``
+public func split(_ array: MLXArray, axis: Int = 0, stream: StreamOrDevice = .default)
+    -> (MLXArray, MLXArray)
+{
+    let vec = mlx_split_equal_parts(array.ctx, 2, axis.int32, stream.ctx)!
+    defer { mlx_free(vec) }
+    let pieces = mlx_vector_array_values(vec)
+    return (pieces[0], pieces[1])
 }
 
 /// Split an array along a given axis.

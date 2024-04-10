@@ -83,6 +83,42 @@ public final class MLXArray {
         return (0 ..< ndim).map { Int(cShape[$0]) }
     }
 
+    /// Dimensions of the 2d array as a tuple.
+    ///
+    /// ```swift
+    /// let (w, h) = array.shape2
+    /// ```
+    public var shape2: (Int, Int) {
+        let ndim = mlx_array_ndim(ctx)
+        precondition(ndim == 2)
+        let cShape = mlx_array_shape(ctx)!
+        return (Int(cShape[0]), Int(cShape[1]))
+    }
+
+    /// Dimensions of the 3d array as a tuple.
+    ///
+    /// ```swift
+    /// let (w, h, c) = array.shape3
+    /// ```
+    public var shape3: (Int, Int, Int) {
+        let ndim = mlx_array_ndim(ctx)
+        precondition(ndim == 3)
+        let cShape = mlx_array_shape(ctx)!
+        return (Int(cShape[0]), Int(cShape[1]), Int(cShape[2]))
+    }
+
+    /// Dimensions of the 4d array as a tuple.
+    ///
+    /// ```swift
+    /// let (b, w, h, c) = array.shape4
+    /// ```
+    public var shape4: (Int, Int, Int, Int) {
+        let ndim = mlx_array_ndim(ctx)
+        precondition(ndim == 4)
+        let cShape = mlx_array_shape(ctx)!
+        return (Int(cShape[0]), Int(cShape[1]), Int(cShape[2]), Int(cShape[3]))
+    }
+
     /// Strides of the array.
     ///
     /// ```swift
@@ -217,6 +253,7 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
+    /// - ``asData(noCopy:)``
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
         self.eval()
 
@@ -265,6 +302,49 @@ public final class MLXArray {
             return Array(ptr) as! [T]
         default:
             fatalError("Unable to get item() as \(type)")
+        }
+    }
+
+    /// Return the contents as contiguous bytes in the native ``dtype``.
+    ///
+    /// > If you can guarantee the lifetime of the ``MLXArray`` will exceed the Data and that
+    /// the array will not be mutated (e.g. using indexing or other means) it is possible to pass `noCopy: true`
+    /// to reference the backing bytes.
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
+    /// - ``asArray(_:)``
+    public func asData(noCopy: Bool = false) -> Data {
+        self.eval()
+
+        func convert<T>(_ ptr: UnsafePointer<T>) -> Data {
+            if noCopy {
+                Data(
+                    bytesNoCopy: UnsafeMutableRawPointer(mutating: ptr), count: self.nbytes,
+                    deallocator: .none)
+            } else {
+                Data(buffer: UnsafeBufferPointer(start: ptr, count: self.size))
+            }
+        }
+
+        switch self.dtype {
+        case .bool: return convert(mlx_array_data_bool(ctx))
+        case .uint8: return convert(mlx_array_data_uint8(ctx))
+        case .uint16: return convert(mlx_array_data_uint16(ctx))
+        case .uint32: return convert(mlx_array_data_uint32(ctx))
+        case .uint64: return convert(mlx_array_data_uint64(ctx))
+        case .int8: return convert(mlx_array_data_int8(ctx))
+        case .int16: return convert(mlx_array_data_int16(ctx))
+        case .int32: return convert(mlx_array_data_int32(ctx))
+        case .int64: return convert(mlx_array_data_int64(ctx))
+        #if !arch(x86_64)
+            case .float16: return convert(mlx_array_data_float16(ctx))
+        #endif
+        case .float32: return convert(mlx_array_data_float32(ctx))
+        case .complex64:
+            return convert(UnsafePointer<Complex<Float32>>(mlx_array_data_complex64(ctx)))
+        default:
+            fatalError("Unable to get asData() for \(self.dtype)")
         }
     }
 

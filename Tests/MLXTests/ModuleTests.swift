@@ -171,6 +171,150 @@ class ModuleTests: XCTestCase {
         }
     }
 
+    func testTupleParameters() {
+        // make sure tuples of MLXArray work
+        class Test: Module {
+            let tuple: (MLXArray, MLXArray)
+            let array: [MLXArray]
+
+            override init() {
+                tuple = (MLXArray(0), MLXArray(1))
+                array = [MLXArray(2), MLXArray(3)]
+            }
+        }
+
+        let t = Test()
+        let p = t.parameters()
+
+        XCTAssertEqual(p.count, 2)
+        switch p["array"] {
+        case .array(let items):
+            XCTAssertEqual(items.count, 2)
+        default:
+            XCTFail("should be a .array with 2 MLXArray: \(String(describing: p["item"]))")
+        }
+        switch p["tuple"] {
+        case .array(let items):
+            XCTAssertEqual(items.count, 2)
+        default:
+            XCTFail("should be a .array with 2 MLXArray: \(String(describing: p["item"]))")
+        }
+
+        // update the second item on the array
+        var u1 = ModuleParameters()
+        u1["array"] = .array([.none, .value(MLXArray(7))])
+        t.update(parameters: u1)
+
+        // make sure it was written
+        if let v1 = t.parameters()["array"]?.flattenedValues() {
+            XCTAssertEqual(v1.count, 2)
+            XCTAssertEqual(v1[1].item(Int.self), 7)
+        } else {
+            XCTFail("unable to read array")
+        }
+
+        // update the second item on the tuple
+        var u2 = ModuleParameters()
+        u2["tuple"] = .array([.none, .value(MLXArray(11))])
+        t.update(parameters: u2)
+
+        // make sure it was written
+        if let v2 = t.parameters()["tuple"]?.flattenedValues() {
+            XCTAssertEqual(v2.count, 2)
+            XCTAssertEqual(v2[1].item(Int.self), 11)
+        } else {
+            XCTFail("unable to read tuple")
+        }
+    }
+
+    func testTupleModules() {
+        class Layer1: Module {
+            let x: MLXArray
+
+            init(_ v: Int = 0) {
+                self.x = MLXArray(v)
+            }
+        }
+        class Layer2: Module {
+            let y: MLXArray
+
+            init(_ v: Int = 1) {
+                self.y = MLXArray(v)
+            }
+        }
+
+        class Test: Module {
+            var tuple: (Layer1, Layer2)
+            var array: [Module]
+
+            override init() {
+                tuple = (Layer1(), Layer2())
+                array = [Layer1(), Layer2()]
+            }
+        }
+
+        let t = Test()
+
+        // top level + 2 + 2
+        XCTAssertEqual(t.modules().count, 5)
+
+        // update the second item on the array
+        var u1 = ModuleParameters()
+        u1["array"] = .array([
+            .none,
+            .dictionary(["y": .value(MLXArray(7))]),
+        ])
+        t.update(parameters: u1)
+
+        // make sure it was written
+        if let v1 = t.parameters()["array"]?.flattenedValues() {
+            XCTAssertEqual(v1.count, 2)
+            XCTAssertEqual(v1[1].item(Int.self), 7)
+        } else {
+            XCTFail("unable to read array")
+        }
+
+        // update the second item on the tuple
+        var u2 = ModuleParameters()
+        u2["tuple"] = .array([
+            .none,
+            .dictionary(["y": .value(MLXArray(11))]),
+        ])
+        t.update(parameters: u2)
+
+        // make sure it was written
+        if let v2 = t.parameters()["tuple"]?.flattenedValues() {
+            XCTAssertEqual(v2.count, 2)
+            XCTAssertEqual(v2[1].item(Int.self), 11)
+        } else {
+            XCTFail("unable to read tuple")
+        }
+
+        print(t.parameters())
+        print(t.parameters().flattened())
+    }
+
+    func testOptionInfos() {
+        class Layer1: Module {
+            @ParameterInfo var x: MLXArray?
+        }
+
+        class Test: Module {
+            @ModuleInfo var a: Layer1
+            @ModuleInfo var b: Layer1?
+
+            override init() {
+                self._a.wrappedValue = Layer1()
+            }
+        }
+
+        let t = Test()
+
+        XCTAssertNil(t.b)
+        XCTAssertNotNil(t.a)
+        XCTAssertNil(t.a.x)
+    }
+
     func testChildren() {
         let m = newTestModule()
 

@@ -1127,7 +1127,7 @@ public enum ModuleValue {
     /// ```
     case other(Any)
 
-    /// Recursive build of ``ModuleItem`` from a value.
+    /// Recursive build of ``ModuleValue`` from a value.
     private static func build(value: Any?) -> ModuleItem {
         guard let value else {
             return .none
@@ -1140,6 +1140,23 @@ public enum ModuleValue {
             return .value(.module(v))
         case let v as [Any]:
             return .array(v.map { build(value: $0) })
+
+        // handle tuples like arrays.  sadly we can't use parameter packs here
+        // so we have to enumerate the allowed tuples (up to 5 for now)
+        case let v as (Any, Any):
+            return .array([build(value: v.0), build(value: v.1)])
+        case let v as (Any, Any, Any):
+            return .array([build(value: v.0), build(value: v.1), build(value: v.2)])
+        case let v as (Any, Any, Any, Any):
+            return .array([
+                build(value: v.0), build(value: v.1), build(value: v.2), build(value: v.3),
+            ])
+        case let v as (Any, Any, Any, Any, Any):
+            return .array([
+                build(value: v.0), build(value: v.1), build(value: v.2), build(value: v.3),
+                build(value: v.4),
+            ])
+
         case let v as [String: Any]:
             return .dictionary(
                 Dictionary(uniqueKeysWithValues: v.map { ($0.key, build(value: $0.value)) }))
@@ -1160,7 +1177,7 @@ public enum ModuleValue {
         // has a label of `_items`
         if let (nl, nv) = unwrapProperty(value) {
             label = nl ?? label?.dropFirst().description
-            value = nv!
+            value = nv ?? (Optional<MLXArray>.none as Any)
         }
         if let (nl, nv) = unwrapModule(value) {
             label = nl ?? label?.dropFirst().description
@@ -1198,7 +1215,13 @@ public enum ModuleValue {
 
     public var wrappedValue: T {
         get {
-            value!
+            // note: this gives a warning but it does in fact do something
+            // in the case where this is e.g. ParameterInfo<MLXArray?>
+            if let value = value as? T {
+                return value
+            } else {
+                return value!
+            }
         }
         set {
             if value != nil {
@@ -1305,7 +1328,13 @@ private protocol TypeErasedSetterProvider {
 
     public var wrappedValue: T {
         get {
-            module!
+            // note: this gives a warning but it does in fact do something
+            // in the case where this is e.g. ModuleInfo<Linear?>
+            if let module = module as? T {
+                return module
+            } else {
+                return module!
+            }
         }
         set {
             if module != nil {

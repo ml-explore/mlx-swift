@@ -35,6 +35,10 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral 
     public init(_ values: (Int, Int)) {
         self.values = values
     }
+
+    public init(_ value: Int) {
+        self.values = (value, value)
+    }
 }
 
 /// Parameter for convolutions allowing single integers or arrays.
@@ -58,6 +62,14 @@ public enum IntOrArray: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
 
     public init(arrayLiteral elements: Int...) {
         self = .array(elements)
+    }
+
+    public init(_ values: [Int]) {
+        self = .array(values)
+    }
+
+    public init(_ value: Int) {
+        self = .int(value)
     }
 
     public var asArray: [Int] {
@@ -110,6 +122,14 @@ public enum FloatOrArray: ExpressibleByFloatLiteral, ExpressibleByArrayLiteral {
 
     public init(arrayLiteral elements: Float...) {
         self = .array(elements)
+    }
+
+    public init(_ values: [Float]) {
+        self = .array(values)
+    }
+
+    public init(_ value: Float) {
+        self = .float(value)
     }
 
     public var asArray: [Float] {
