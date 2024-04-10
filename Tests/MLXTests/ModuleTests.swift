@@ -203,6 +203,32 @@ class ModuleTests: XCTestCase {
         XCTAssertEqual(s.layers.count, 5)
     }
 
+    func testInit() {
+        // ensure that different types of vars and init work
+
+        class Test: Module {
+            @ParameterInfo var a: MLXArray
+            @ParameterInfo var b: MLXArray?
+            @ModuleInfo var c: Linear
+            @ModuleInfo var d: Linear?
+
+            override init() {
+                _a.wrappedValue = MLXArray.zeros([10])
+                _b.wrappedValue = MLXArray.zeros([10])
+                _c.wrappedValue = Linear(10, 10)
+                _d.wrappedValue = Linear(10, 10)
+            }
+        }
+
+        let t = Test()
+
+        // 2 + 2 * 2 (Linear)
+        XCTAssertEqual(t.parameters().flattenedValues().count, 6)
+
+        // self + 2 Linears
+        XCTAssertEqual(t.modules().count, 3)
+    }
+
     func newStructureModule() -> Module {
 
         class Leaf: Module {
