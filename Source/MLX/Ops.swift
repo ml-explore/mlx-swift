@@ -1652,8 +1652,10 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - <doc:arithmetic>
 /// - ``softMax(_:axis:stream:)``
 /// - ``softMax(_:stream:)``
-public func softMax(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_softmax(array.ctx, axes.asInt32, axes.count, stream.ctx))
+public func softMax(
+    _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_softmax(array.ctx, axes.asInt32, axes.count, precise, stream.ctx))
 }
 
 /// Perform the softmax along the given axis.
@@ -1672,8 +1674,10 @@ public func softMax(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .de
 /// - <doc:arithmetic>
 /// - ``softMax(_:axes:stream:)``
 /// - ``softMax(_:stream:)``
-public func softMax(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_softmax(array.ctx, [axis.int32], 1, stream.ctx))
+public func softMax(
+    _ array: MLXArray, axis: Int, precise: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_softmax(array.ctx, [axis.int32], 1, precise, stream.ctx))
 }
 
 /// Perform the softmax along the given axis.
@@ -1691,8 +1695,10 @@ public func softMax(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .defa
 /// ### See Also
 /// - ``softMax(_:axes:stream:)``
 /// - ``softMax(_:axis:stream:)``
-public func softMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_softmax_all(array.ctx, stream.ctx))
+public func softMax(_ array: MLXArray, precise: Bool = false, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_softmax_all(array.ctx, precise, stream.ctx))
 }
 
 /// Returns a sorted copy of the array.

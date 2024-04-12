@@ -6,7 +6,7 @@ import Foundation
 class CompiledFunction {
 
     /// unique (for the lifetime of the object) identifier for the compiled function
-    var id: Int!
+    var id: UInt!
 
     /// the function to compile
     let f: ([MLXArray]) -> [MLXArray]
@@ -25,7 +25,7 @@ class CompiledFunction {
         self.inputs = inputs
         self.outputs = outputs
         self.shapeless = shapeless
-        self.id = Int(bitPattern: Unmanaged.passUnretained(self).toOpaque())
+        self.id = UInt(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
 
     deinit {
