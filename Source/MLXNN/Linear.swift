@@ -102,17 +102,21 @@ open class Linear: Module, UnaryLayer {
     ///   - inputDimensions: number of input dimensions
     ///   - outputDimensions: number of output dimensions
     ///   - bias: if `true` this layer will apply a bias
-    convenience init(inputDimensions: Int, outputDimensions: Int, bias: Bool = true) {
+    public convenience init(inputDimensions: Int, outputDimensions: Int, bias: Bool = true) {
         self.init(inputDimensions, outputDimensions, bias: bias)
     }
 
-    internal init(weight: MLXArray, bias: MLXArray? = nil) {
+    /// Initializer meant for subclasses to provide weight and bias arrays directly.
+    ///
+    /// This is used e.g. by ``QuantizedLinear`` to provide quantized weights and biases
+    /// rather than have ``Linear`` compute them.
+    public init(weight: MLXArray, bias: MLXArray? = nil) {
         self.weight = weight
         self.bias = bias
     }
 
     /// Describe the `inputDimensions` and `outputDimensions`.
-    public override func describeExtra(_ indent: Int) -> String {
+    open override func describeExtra(_ indent: Int) -> String {
         "(inputDimensions=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
     }
 

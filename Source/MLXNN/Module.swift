@@ -162,7 +162,7 @@ open class Module {
     ///
     /// ### See Also
     /// - ``description(indent:)``
-    public func describeExtra(_ indent: Int) -> String {
+    open func describeExtra(_ indent: Int) -> String {
         let other = filterMap(filter: Self.filterOther, map: Self.mapOther())
         let kv = other.sorted { lhs, rhs in lhs.key < rhs.key }
 
@@ -760,7 +760,7 @@ open class Module {
     /// ### See Also
     /// - ``freeze(recursive:keys:)``
     /// - ``unfreeze(recursive:keys:strict:)``
-    public func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
+    open func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0.noGrad.formUnion($1)
         }
@@ -797,8 +797,7 @@ open class Module {
     /// ### See Also
     /// - ``Module/freeze(recursive:keys:)``
     /// - ``Module/unfreeze(recursive:keys:strict:)``
-    public func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws
-    {
+    open func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0.noGrad.subtract($1)
         }

@@ -52,6 +52,7 @@ open class QuantizedLinear: Linear {
         self.init(weight: weight, bias: bias, groupSize: groupSize, bits: bits)
     }
 
+    /// Initialize a ``QuantizedLinear`` with non-quantized weights and bias.
     public init(weight: MLXArray, bias: MLXArray?, groupSize: Int = 64, bits: Int = 4) {
         self.groupSize = groupSize
         self.bits = bits
@@ -65,6 +66,21 @@ open class QuantizedLinear: Linear {
         super.init(weight: quantizedWeight, bias: bias)
 
         self.freeze()
+    }
+
+    /// Initializer meant for subclasses to provide arrays directly.
+    ///
+    /// ### See Also
+    /// - ``Linear/init(weight:bias:)``
+    public init(
+        weight: MLXArray, bias: MLXArray? = nil, scales: MLXArray, biases: MLXArray, groupSize: Int,
+        bits: Int
+    ) {
+        self.groupSize = groupSize
+        self.bits = bits
+        self.scales = scales
+        self.biases = biases
+        super.init(weight: weight, bias: bias)
     }
 
     public override func unfreeze(
