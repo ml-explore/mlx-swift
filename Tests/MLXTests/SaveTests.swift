@@ -46,4 +46,21 @@ final class SaveTests: XCTestCase {
         assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
         assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
     }
+    
+    public func testSaveArray() throws {
+        // single array npy file
+        let path = temporaryPath.appending(
+            path: "array.npy",
+            directoryHint: .notDirectory
+        )
+        
+        let array = MLX.ones([2, 4])
+
+        try MLX.save(array: array, url: path)
+
+        let loaded = try MLX.loadArray(url: path)
+        
+        assertEqual(array, loaded)
+    }
+
 }
