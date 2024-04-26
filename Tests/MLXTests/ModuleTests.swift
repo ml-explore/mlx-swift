@@ -530,7 +530,7 @@ class ModuleTests: XCTestCase {
         }
 
         let m = M()
-        QuantizedLinear.quantize(model: m)
+        quantize(model: m)
 
         XCTAssertTrue(m.module.child is QuantizedLinear)
     }
@@ -550,9 +550,15 @@ class ModuleTests: XCTestCase {
         }
 
         let m = M()
-        QuantizedLinear.quantize(model: m) { layer in
-            layer.weight.dim(0) > 8
-        }
+        quantize(
+            model: m,
+            filter: { _, layer in
+                if let layer = layer as? Linear {
+                    layer.weight.dim(0) > 8
+                } else {
+                    false
+                }
+            })
 
         XCTAssertTrue(m.module.child1 is QuantizedLinear)
         XCTAssertFalse(m.module.child2 is QuantizedLinear)

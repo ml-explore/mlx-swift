@@ -8,7 +8,6 @@ import MLXRandom
 ///
 /// Typically used to embed discrete tokens for processing by neural networks.
 open class Embedding: Module, UnaryLayer {
-
     public let weight: MLXArray
 
     /// Implements a simple lookup table that maps each input integer to a high-dimensional vector.
@@ -23,6 +22,11 @@ open class Embedding: Module, UnaryLayer {
         self.weight = MLXRandom.normal([embeddingCount, dimensions]) * scale
     }
 
+    /// Initializer meant for subclasses to provide weight directly.
+    public init(weight: MLXArray) {
+        self.weight = weight
+    }
+
     /// Describe the shape of the `weight`.
     public override func describeExtra(_ indent: Int) -> String {
         weight.shape.description
@@ -30,5 +34,13 @@ open class Embedding: Module, UnaryLayer {
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         weight[x]
+    }
+
+    /// Call the embedding layer as a linear layer.
+    ///
+    /// Use this for example when input embedding and output projection
+    /// weights are tied.
+    open func asLinear(_ x: MLXArray) -> MLXArray {
+        matmul(x, weight.T)
     }
 }
