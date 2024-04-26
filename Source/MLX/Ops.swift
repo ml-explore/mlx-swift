@@ -1037,21 +1037,15 @@ enum LoadSaveError: Error {
 public func loadArray(url: URL, stream: StreamOrDevice = .default) throws -> MLXArray {
     precondition(url.isFileURL)
     let path = url.path(percentEncoded: false)
+    let filename = mlx_string_new(path.cString(using: .utf8))!
+    defer { mlx_free(filename) }
 
-    if let fp = fopen(path, "r") {
-        defer { fclose(fp) }
+    switch url.pathExtension {
+    case "npy":
+        return MLXArray(mlx_load(filename, stream.ctx))
 
-        switch url.pathExtension {
-        case "npy":
-            return MLXArray(mlx_load_file(fp, stream.ctx))
-
-        default:
-            throw LoadSaveError.unknownExtension(url.pathExtension)
-        }
-
-    } else {
-        let message = String(cString: strerror(errno))
-        throw LoadSaveError.unableToOpen(url, message)
+    default:
+        throw LoadSaveError.unknownExtension(url.pathExtension)
     }
 }
 
