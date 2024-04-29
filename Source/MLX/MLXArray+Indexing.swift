@@ -884,9 +884,10 @@ func updateSlice(
             let index = index < 0 ? index + size : index
             starts[axis] = index
             ends[axis] = index + 1
-            if ndim - axis < update.ndim {
-                updateExpandDimensions.append(axis - ndim)
-            }
+            //            if ndim - axis < update.ndim {
+            //                updateExpandDimensions.append(axis - ndim)
+            //            }
+            updateExpandDimensions.append(axis)
 
             axis += 1
 
