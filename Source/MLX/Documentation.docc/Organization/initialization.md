@@ -267,3 +267,7 @@ there are specific initializers to request it:
 - ``MLX/repeat(_:count:axis:stream:)``
 - ``MLX/repeat(_:count:stream:)``
 - ``MLX/tri(_:m:k:type:stream:)``
+
+### Copy
+
+- ``MLXArray/copy()``

@@ -1026,6 +1026,56 @@ float erfinv(float a) {
   return a * p;
 }
 # 10 "Source/Cmlx/mlx/mlx/backend/metal/kernels/unary.h" 2
+# 1 "Source/Cmlx/mlx/mlx/backend/metal/kernels/expm1f.h" 1
+# 43 "Source/Cmlx/mlx/mlx/backend/metal/kernels/expm1f.h"
+float expm1f_scaled_unchecked(float a, float b) {
+  float f, j, r, s, t, u, v, x, y;
+  int i;
+
+
+  j = fma(1.442695f, a, 12582912.f);
+  j = j - 12582912.0f;
+  i = (int)j;
+  f = fma(j, -6.93145752e-1f, a);
+
+
+  s = f * f;
+  if (a == 0.0f)
+    s = a;
+
+  r = 1.97350979e-4f;
+  r = fma(r, f, 1.39309070e-3f);
+  r = fma(r, f, 8.33343994e-3f);
+  r = fma(r, f, 4.16668020e-2f);
+  r = fma(r, f, 1.66666716e-1f);
+  r = fma(r, f, 4.99999970e-1f);
+  u = (j == 1) ? (f + 0.5f) : f;
+  v = fma(r, s, u);
+  s = 0.5f * b;
+  t = ldexp(s, i);
+  y = t - s;
+  x = (t - y) - s;
+  r = fma(v, t, x) + y;
+  r = r + r;
+  if (j == 0)
+    r = v;
+  if (j == 1)
+    r = v + v;
+  return r;
+}
+
+
+float expm1f(float a) {
+  float r;
+
+  r = expm1f_scaled_unchecked(a, 1.0f);
+
+  if (abs(a - 1.0f) > 88.0f) {
+    r = fma(r, r, -1.0f);
+  }
+  return r;
+}
+# 11 "Source/Cmlx/mlx/mlx/backend/metal/kernels/unary.h" 2
 
 
 namespace {
@@ -1200,6 +1250,13 @@ struct Exp {
     auto m = metal::precise::exp(x.real);
     return {m * metal::precise::cos(x.imag), m * metal::precise::sin(x.imag)};
   }
+};
+
+struct Expm1 {
+  template <typename T>
+  T operator()(T x) {
+    return static_cast<T>(expm1f(static_cast<float>(x)));
+  };
 };
 
 struct Floor {

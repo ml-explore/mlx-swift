@@ -227,7 +227,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `sign` | ``MLX/sign(_:stream:)``
 `sin` | ``MLX/sin(_:stream:)``
 `sinh` | ``MLX/sinh(_:stream:)``
-`softmax` | ``MLX/softMax(_:axes:stream:)``
+`softmax` | ``MLX/softMax(_:axes:precise:stream:)``
 `sort` | ``MLX/sorted(_:axis:stream:)``
 `split` | ``MLX/split(_:parts:axis:stream:)``
 `sqrt` | ``MLX/sqrt(_:stream:)``

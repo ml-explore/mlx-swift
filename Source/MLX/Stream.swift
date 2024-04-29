@@ -100,6 +100,11 @@ public final class Stream {
         mlx_free(ctx)
     }
 
+    /// Synchronize with the given stream
+    public func synchronize() {
+        mlx_synchronize(ctx)
+    }
+
     static public func defaultStream(_ device: Device) -> Stream {
         return Stream(mlx_default_stream(device.ctx))
     }
