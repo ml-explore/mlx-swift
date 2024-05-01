@@ -1396,11 +1396,11 @@ enum UpdateError: Error {
 extension UpdateError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .unableToCollectModulesFromContainer(base: let base, key: let key):
+        case .unableToCollectModulesFromContainer(let base, let key):
             return "Unable to collect modules from container: \(base) \(key)"
-        case .mismatchedContainers(base: let base, key: let key):
+        case .mismatchedContainers(let base, let key):
             return "Mismatched containers: \(base) \(key)"
-        case .keyNotFound(base: let base, key: let key):
+        case .keyNotFound(let base, let key):
             return "Key \(key) not found in \(base)"
         case .needModuleInfo(let string):
             return string
@@ -1408,7 +1408,7 @@ extension UpdateError: LocalizedError {
             return string
         case .unableToCast:
             return "Unable to cast value"
-        case .unhandledKeys(base: let base, keys: let keys):
+        case .unhandledKeys(let base, let keys):
             return "Unhandled keys \(keys) in \(base)"
         }
     }
