@@ -32,7 +32,7 @@ See related items in <doc:indexes>.
 ### Index Producing Functions
 
 These functions produce indexes for sorting and partitioning.  
-``MLXArray/subscript(_:stream:)`` or ``MLXArray/take(_:stream:)`` must
+``MLXArray/subscript(_:stream:)-375a0`` or ``MLXArray/take(_:stream:)`` must
 be used to apply them to an array (if needed).
 
 - ``argSort(_:axis:stream:)``

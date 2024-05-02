@@ -1702,6 +1702,14 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
     MLXArray(mlx_sinh(array.ctx, stream.ctx))
 }
 
+@available(*, deprecated, renamed: "softmax(_:axes:precise:stream:)")
+@_documentation(visibility:internal)
+public func softMax(
+    _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    softmax(array, axes: axes, precise: precise, stream: stream)
+}
+
 /// Perform the softmax along the given axis.
 ///
 /// This operation is a numerically stable version of:
@@ -1716,34 +1724,20 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``softMax(_:axis:precise:stream:)``
-/// - ``softMax(_:precise:stream:)``
-public func softMax(
+/// - ``softmax(_:axis:precise:stream:)``
+/// - ``softmax(_:precise:stream:)``
+public func softmax(
     _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(mlx_softmax(array.ctx, axes.asInt32, axes.count, precise, stream.ctx))
 }
 
-/// Perform the softmax along the given axis.
-///
-/// This operation is a numerically stable version of:
-///
-/// ```swift
-///exp(a) / sum(exp(a), axis, keepdims: true)
-/// ```
-///
-/// - Parameters:
-///     - array: input array
-///     - stream: stream or device to evaluate on
-///
-/// ### See Also
-/// - <doc:arithmetic>
-/// - ``softMax(_:axes:precise:stream:)``
-/// - ``softMax(_:precise:stream:)``
+@available(*, deprecated, renamed: "softmax(_:axis:precise:stream:)")
+@_documentation(visibility:internal)
 public func softMax(
     _ array: MLXArray, axis: Int, precise: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_softmax(array.ctx, [axis.int32], 1, precise, stream.ctx))
+    softmax(array, axis: axis, precise: precise, stream: stream)
 }
 
 /// Perform the softmax along the given axis.
@@ -1759,9 +1753,39 @@ public func softMax(
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``softMax(_:axes:precise:stream:)``
-/// - ``softMax(_:axis:precise:stream:)``
+/// - <doc:arithmetic>
+/// - ``softmax(_:axes:precise:stream:)``
+/// - ``softmax(_:precise:stream:)``
+public func softmax(
+    _ array: MLXArray, axis: Int, precise: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_softmax(array.ctx, [axis.int32], 1, precise, stream.ctx))
+}
+
+@available(*, deprecated, renamed: "softmax(_:axis:precise:stream:)")
+@_documentation(visibility:internal)
 public func softMax(_ array: MLXArray, precise: Bool = false, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    softmax(array, precise: precise, stream: stream)
+}
+
+/// Perform the softmax along the given axis.
+///
+/// This operation is a numerically stable version of:
+///
+/// ```swift
+///exp(a) / sum(exp(a), axis, keepdims: true)
+/// ```
+///
+/// - Parameters:
+///     - array: input array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``softmax(_:axes:precise:stream:)``
+/// - ``softmax(_:axis:precise:stream:)``
+public func softmax(_ array: MLXArray, precise: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_softmax_all(array.ctx, precise, stream.ctx))

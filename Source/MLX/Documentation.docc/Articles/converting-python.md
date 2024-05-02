@@ -74,7 +74,7 @@ Note: some of the symbols are not linkable.
 `item` | ``MLXArray/item(_:)``
 `tolist` | ``MLXArray/asArray(_:)``
 `astype` | ``MLXArray/asType(_:stream:)-4eqoc`` or ``MLXArray/asType(_:stream:)-6d44y``
-`__getitem__` | ``MLXArray/subscript(_:stream:)``
+`__getitem__` | ``MLXArray/subscript(_:stream:)-375a0``
 `__len__` | ``MLXArray/count``
 `__iter__` | implements `Sequence`
 `__add__` | ``MLXArray/+(_:_:)-1rv98``
@@ -227,7 +227,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `sign` | ``MLX/sign(_:stream:)``
 `sin` | ``MLX/sin(_:stream:)``
 `sinh` | ``MLX/sinh(_:stream:)``
-`softmax` | ``MLX/softMax(_:axes:precise:stream:)``
+`softmax` | ``MLX/softmax(_:axes:precise:stream:)``
 `sort` | ``MLX/sorted(_:axis:stream:)``
 `split` | ``MLX/split(_:parts:axis:stream:)``
 `sqrt` | ``MLX/sqrt(_:stream:)``

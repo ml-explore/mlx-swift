@@ -91,7 +91,7 @@ open class MultiHeadAttention: Module {
         if let mask {
             scores = scores + mask.asType(scores.dtype)
         }
-        scores = softMax(scores, axis: -1)
+        scores = softmax(scores, axis: -1)
         let valuesHat = matmul(scores, values).transposed(0, 2, 1, 3).reshaped(B, L, -1)
 
         return outProjection(valuesHat)

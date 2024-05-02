@@ -403,7 +403,8 @@ public final class MLXArray {
         }
     }
 
-    public func copy() -> MLXArray {
+    /// Internal function for copying the backing `mlx::core::array` context.
+    func copyContext() -> MLXArray {
         mlx_retain(ctx)
         return MLXArray(ctx)
     }

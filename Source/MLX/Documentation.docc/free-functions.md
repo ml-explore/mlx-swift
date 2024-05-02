@@ -51,9 +51,9 @@ operations as methods for convenience.
 - ``sign(_:stream:)``
 - ``sin(_:stream:)``
 - ``sinh(_:stream:)``
-- ``softMax(_:precise:stream:)``
-- ``softMax(_:axis:precise:stream:)``
-- ``softMax(_:axes:precise:stream:)``
+- ``softmax(_:precise:stream:)``
+- ``softmax(_:axis:precise:stream:)``
+- ``softmax(_:axes:precise:stream:)``
 - ``sqrt(_:stream:)``
 - ``square(_:stream:)``
 - ``subtract(_:_:stream:)``

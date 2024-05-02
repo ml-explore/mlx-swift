@@ -170,7 +170,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``sign(_:stream:)``
 - ``sin(_:stream:)``
 - ``sinh(_:stream:)``
-- ``softMax(_:axes:precise:stream:)``
+- ``softmax(_:axes:precise:stream:)``
 - ``sqrt(_:stream:)``
 - ``square(_:stream:)``
 - ``subtract(_:_:stream:)``
