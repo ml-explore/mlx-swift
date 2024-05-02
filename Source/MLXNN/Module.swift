@@ -1383,8 +1383,6 @@ private protocol TypeErasedSetterProvider {
     }
 }
 
-// MARK: - Private Functions
-
 enum UpdateError: Error {
     case unableToCollectModulesFromContainer(base: String, key: String)
     case mismatchedContainers(base: String, key: String)
@@ -1394,6 +1392,29 @@ enum UpdateError: Error {
     case unableToCast
     case unhandledKeys(base: String, keys: [String])
 }
+
+extension UpdateError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .unableToCollectModulesFromContainer(let base, let key):
+            return "Unable to collect modules from container: \(base) \(key)"
+        case .mismatchedContainers(let base, let key):
+            return "Mismatched containers: \(base) \(key)"
+        case .keyNotFound(let base, let key):
+            return "Key \(key) not found in \(base)"
+        case .needModuleInfo(let string):
+            return string
+        case .unableToSet(let string):
+            return string
+        case .unableToCast:
+            return "Unable to cast value"
+        case .unhandledKeys(let base, let keys):
+            return "Unhandled keys \(keys) in \(base)"
+        }
+    }
+}
+
+// MARK: - Private Functions
 
 private func unwrapProperty(_ property: Any) -> (String?, Any?)? {
     let label: String?

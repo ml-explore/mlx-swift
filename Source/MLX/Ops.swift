@@ -1024,6 +1024,17 @@ enum LoadSaveError: Error {
     case unknownExtension(String)
 }
 
+extension LoadSaveError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .unableToOpen(let url, let message):
+            return "\(message) \(url)"
+        case .unknownExtension(let fileExtension):
+            return "Unknown extension \(fileExtension)"
+        }
+    }
+}
+
 /// Load array from a binary file in `.npy`format.
 ///
 /// - Parameters:
