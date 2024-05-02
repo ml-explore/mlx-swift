@@ -350,6 +350,48 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
         }
     }
 
+    /// A combination of ``mapValues(_:)``, ``flattened(prefix:)`` and ``unflattened(_:)``.
+    ///
+    /// This transforms a nested structure into a new nested structure with the same shape but transformed
+    /// values.  The `transform` function receives a dotted path and the value to transform.
+    public func mapValues<Result>(
+        prefix: String? = nil, _ transform: (String, Element) throws -> Result
+    ) rethrows -> NestedItem<Key, Result> {
+        func newPrefix(_ i: CustomStringConvertible) -> String {
+            if let prefix {
+                return "\(prefix).\(i)"
+            } else {
+                return i.description
+            }
+        }
+        switch self {
+        case .none:
+            return .none
+        case .value(let element):
+            return try .value(transform(prefix ?? "", element))
+        case .array(let array):
+            return try .array(
+                array.enumerated().map { (index, value) in
+                    try value.mapValues(prefix: newPrefix(index), transform)
+                })
+        case .dictionary(let dictionary):
+            // produce the dictionary in canonical order (sorted keys)
+            return try .dictionary(
+                Dictionary(
+                    uniqueKeysWithValues:
+                        dictionary
+                        .sorted { lhs, rhs in String(describing: lhs.0) < String(describing: rhs.0)
+                        }
+                        .map { (key, value) in
+                            try (
+                                key,
+                                value.mapValues(
+                                    prefix: newPrefix(String(describing: key)), transform)
+                            )
+                        }))
+        }
+    }
+
     /// Return a flattened representation of the structured contents as an array of key/value tuples.
     ///
     /// This is typically called via ``NestedDictionary/flattened(prefix:)``.
@@ -833,6 +875,26 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
         -> NestedDictionary<Key, Result>
     {
         switch try NestedItem.dictionary(contents).compactMapValues(transform) {
+        case .dictionary(let values):
+            return NestedDictionary<Key, Result>(values: values)
+        default:
+            fatalError()
+        }
+    }
+
+    /// Transform the values in the nested structure using the `transform()` function.
+    ///
+    /// This function receives both keys in dotted form and values.  This is roughly equivalent
+    /// to:
+    ///
+    /// ```swift
+    /// let transformed = nd.flattened().map { key, value in (key, transformedValue) }
+    /// let result = NestedDictionary.unflattened(transformed)
+    /// ```
+    public func mapValues<Result>(transform: (String, Element) throws -> Result) rethrows
+        -> NestedDictionary<Key, Result>
+    {
+        switch try asItem().mapValues(transform) {
         case .dictionary(let values):
             return NestedDictionary<Key, Result>(values: values)
         default:

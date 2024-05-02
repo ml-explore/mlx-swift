@@ -557,6 +557,7 @@ public func diagonal(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``MLXArray/exp(stream:)``
+/// - ``expm1(_:stream:)``
 public func exp(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_exp(array.ctx, stream.ctx))
 }
