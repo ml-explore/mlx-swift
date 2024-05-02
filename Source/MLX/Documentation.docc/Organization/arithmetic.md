@@ -182,8 +182,8 @@ Note: the `-` and `/` operators are not able to be linked here.
 
 - ``MLXArray/matmul(_:stream:)``
 - ``matmul(_:_:stream:)``
-- ``blockMaskedMatmul(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
-- ``addmm(_:_:_:alpha:beta:stream:)``
+- ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
+- ``addMM(_:_:_:alpha:beta:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``

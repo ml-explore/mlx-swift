@@ -45,6 +45,14 @@ public func add<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_add(a.ctx, b.ctx, stream.ctx))
 }
 
+@available(*, deprecated, renamed: "addMM(_:_:_:alpha:beta:stream:)")
+@_documentation(visibility:internal)
+public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
+    _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
+) -> MLXArray {
+    addMM(c, a, b, alpha: alpha, beta: beta, stream: stream)
+}
+
 /// Matrix multiplication with addition and optional scaling.
 ///
 /// Perform the (possibly batched) matrix multiplication of two arrays and add to the result
@@ -68,8 +76,8 @@ public func add<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - ``matmul(_:_:stream:)``
-/// - ``blockMaskedMatmul(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
-public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
+/// - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
+public func addMM<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
     _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
@@ -355,10 +363,10 @@ public func asStrided(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``multiply(_:_:stream:)``
-/// - ``addmm(_:_:_:alpha:beta:stream:)``
+/// - ``addMM(_:_:_:alpha:beta:stream:)``
 /// - ``MLXArray/matmul(_:stream:)``
 /// - ``matmul(_:_:stream:)``
-public func blockMaskedMatmul(
+public func blockMaskedMM(
     _ a: MLXArray, _ b: MLXArray, blockSize: Int = 64, maskOut: MLXArray? = nil,
     maskLHS: MLXArray? = nil, maskRHS: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {

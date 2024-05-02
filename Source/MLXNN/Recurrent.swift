@@ -53,7 +53,7 @@ open class RNN: Module {
         var x = x
 
         if let bias {
-            x = addmm(bias, x, wxh)
+            x = addMM(bias, x, wxh)
         } else {
             x = matmul(x, wxh)
         }
@@ -123,7 +123,7 @@ open class GRU: Module {
         var x = x
 
         if let b {
-            x = addmm(b, x, wx)
+            x = addMM(b, x, wx)
         } else {
             x = matmul(x, wx)
         }
@@ -220,7 +220,7 @@ open class LSTM: Module {
         var x = x
 
         if let bias {
-            x = addmm(bias, x, wx)
+            x = addMM(bias, x, wx)
         } else {
             x = matmul(x, wx)
         }

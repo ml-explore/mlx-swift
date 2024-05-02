@@ -73,7 +73,6 @@ public func logSoftmax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
     x - logSumExp(x, axis: axis, keepDims: true)
 }
 
-
 /// Applies the Exponential Linear Unit.
 ///
 /// This is:
