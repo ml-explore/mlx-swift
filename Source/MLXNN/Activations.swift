@@ -52,6 +52,12 @@ public func leakyRelu(_ x: MLXArray, negativeSlope: Float = 0.01) -> MLXArray {
     return compiledLeakyRelu(x, negativeSlope)
 }
 
+@available(*, deprecated, renamed: "logSoftmax(_:axis:)")
+@_documentation(visibility:internal)
+public func logSoftMax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
+    logSoftmax(x, axis: axis)
+}
+
 /// Applies the Log Softmax function.
 ///
 /// This is:
@@ -62,8 +68,8 @@ public func leakyRelu(_ x: MLXArray, negativeSlope: Float = 0.01) -> MLXArray {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``LogSoftMax``
-public func logSoftMax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
+/// - ``LogSoftmax``
+public func logSoftmax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
     x - logSumExp(x, axis: axis, keepDims: true)
 }
 
@@ -97,6 +103,12 @@ public func relu6(_ x: MLXArray) -> MLXArray {
     compiledRelu6(x)
 }
 
+@available(*, deprecated, renamed: "softplus(_:)")
+@_documentation(visibility:internal)
+public func softPlus(_ x: MLXArray) -> MLXArray {
+    softplus(x)
+}
+
 /// Applies the Softplus function.
 ///
 /// This is:
@@ -107,9 +119,15 @@ public func relu6(_ x: MLXArray) -> MLXArray {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``SoftPlus``
-public func softPlus(_ x: MLXArray) -> MLXArray {
+/// - ``Softplus``
+public func softplus(_ x: MLXArray) -> MLXArray {
     logAddExp(x, 0)
+}
+
+@available(*, deprecated, renamed: "softplus(_:)")
+@_documentation(visibility:internal)
+public func softSign(_ x: MLXArray) -> MLXArray {
+    softsign(x)
 }
 
 /// Applies the Softsign function.
@@ -122,9 +140,9 @@ public func softPlus(_ x: MLXArray) -> MLXArray {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``SoftSign``
-public func softSign(_ x: MLXArray) -> MLXArray {
-    compiledSoftSign(x)
+/// - ``Softsign``
+public func softsign(_ x: MLXArray) -> MLXArray {
+    compiledSoftsign(x)
 }
 
 /// Applies the Continuously Differentiable Exponential Linear Unit.
@@ -438,14 +456,22 @@ open class ReLU6: Module, UnaryLayer {
 /// This is:
 ///
 /// ```swift
-/// MLX.softMax(x)
+/// MLX.softmax(x)
 /// ```
 ///
 /// ### See Also
 /// - <doc:activations>
 open class SoftMax: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        softMax(x, axis: -1)
+        softmax(x, axis: -1)
+    }
+}
+
+@available(*, deprecated, renamed: "Softplus")
+@_documentation(visibility:internal)
+open class SoftPlus: Module, UnaryLayer {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        softPlus(x)
     }
 }
 
@@ -459,10 +485,18 @@ open class SoftMax: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``softPlus(_:)``
-open class SoftPlus: Module, UnaryLayer {
+/// - ``softplus(_:)``
+open class Softplus: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        softPlus(x)
+        softplus(x)
+    }
+}
+
+@available(*, deprecated, renamed: "Softsign")
+@_documentation(visibility:internal)
+open class SoftSign: Module, UnaryLayer {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        softsign(x)
     }
 }
 
@@ -476,10 +510,10 @@ open class SoftPlus: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``softSign(_:)``
-open class SoftSign: Module, UnaryLayer {
+/// - ``softsign(_:)``
+open class Softsign: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        softSign(x)
+        softsign(x)
     }
 }
 
@@ -524,6 +558,14 @@ open class SiLU: Module, UnaryLayer {
     }
 }
 
+@available(*, deprecated, renamed: "LogSoftmax")
+@_documentation(visibility:internal)
+open class LogSoftMax: Module, UnaryLayer {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        logSoftmax(x)
+    }
+}
+
 /// Applies the Log Softmax function.
 ///
 /// This is:
@@ -534,10 +576,10 @@ open class SiLU: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - <doc:activations>
-/// - ``logSoftMax(_:axis:)``
-open class LogSoftMax: Module, UnaryLayer {
+/// - ``logSoftmax(_:axis:)``
+open class LogSoftmax: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        logSoftMax(x)
+        logSoftmax(x)
     }
 }
 
@@ -715,7 +757,7 @@ private let compiledRelu6: (MLXArray) -> MLXArray = {
     }
 }()
 
-private let compiledSoftSign: (MLXArray) -> MLXArray = {
+private let compiledSoftsign: (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         x / (1 + abs(x))
     }
@@ -735,7 +777,7 @@ private let compiledSilu: (MLXArray) -> MLXArray = {
 
 private let compiledLogSigmoid: (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
-        -softPlus(-x)
+        -softplus(-x)
     }
 }()
 
@@ -771,7 +813,7 @@ private let compiledPrelu: (MLXArray, MLXArray) -> MLXArray = {
 
 private let compiledMish: (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
-        x * tanh(softPlus(x))
+        x * tanh(softplus(x))
     }
 }()
 

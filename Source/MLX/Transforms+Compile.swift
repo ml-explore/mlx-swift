@@ -49,7 +49,7 @@ class CompiledFunction {
             let tracerArguments = Array(tracers.prefix(argumentsCount))
 
             // save a snapshot of the inner state
-            let savedStateInputs = stateInputs.map { $0.copy() }
+            let savedStateInputs = stateInputs.map { $0.copyContext() }
 
             // replace the inner state with the tracers
             for (s, tracer) in zip(stateInputs, tracers[argumentsCount...]) {
@@ -61,7 +61,7 @@ class CompiledFunction {
             let result = f(tracerArguments)
 
             // recapture the state as it may have changed
-            let stateOutputTracers = outputs.flatMap { $0.innerState() }.map { $0.copy() }
+            let stateOutputTracers = outputs.flatMap { $0.innerState() }.map { $0.copyContext() }
 
             // put the original values back in the state
             for (s, saved) in zip(stateInputs, savedStateInputs) {

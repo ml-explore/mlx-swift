@@ -221,4 +221,34 @@ public enum GPU {
         _memoryLimit = memoryLimit
         mlx_metal_set_memory_limit(memoryLimit, relaxed)
     }
+
+    /// Cause all cached metal buffers to be deallocated.
+    public static func clearCache() {
+        mlx_metal_clear_cache()
+    }
+
+    /// Start capturing a metal trace into the given file.
+    ///
+    /// > There are several requirements for this to be used.
+    ///
+    /// - `mlx` must be built with `MLX_METAL_DEBUG`
+    ///   - in Package.swift add `.define("MLX_METAL_DEBUG"),` to `Cmlx` `cxxSettings`
+    /// - when running set the `MTL_CAPTURE_ENABLED=1` environment variable
+    /// - make sure the file at the given path does not already exist
+    ///
+    /// See [the documentation](https://ml-explore.github.io/mlx/build/html/dev/metal_debugger.html)
+    /// for more information.
+    public static func startCapture(url: URL) {
+        let path = mlx_string_new(url.path().cString(using: .utf8))!
+        defer { mlx_free(path) }
+        mlx_metal_start_capture(path)
+    }
+
+    /// Stop the metal capture.
+    ///
+    /// See ``startCapture(url:)``.
+    public static func stopCapture(url: URL) {
+        mlx_metal_stop_capture()
+    }
+
 }

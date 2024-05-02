@@ -20,7 +20,7 @@ such as `alpha`.
 - ``hardSwish(_:)``
 - ``leakyRelu(_:negativeSlope:)``
 - ``logSigmoid(_:)``
-- ``logSoftMax(_:axis:)``
+- ``logSoftmax(_:axis:)``
 - ``mish(_:)``
 - ``prelu(_:alpha:)``
 - ``relu(_:)``
@@ -28,8 +28,8 @@ such as `alpha`.
 - ``selu(_:)``
 - ``silu(_:)``
 - ``sigmoid(_:)``
-- ``softPlus(_:)``
-- ``softSign(_:)``
+- ``softplus(_:)``
+- ``softsign(_:)``
 - ``step(_:threshold:)``
 
 ### Activation Modules
@@ -40,7 +40,7 @@ such as `alpha`.
 - ``HardSwish``
 - ``LeakyReLU``
 - ``LogSigmoid``
-- ``LogSoftMax``
+- ``LogSoftmax``
 - ``Mish``
 - ``PReLU``
 - ``ReLU``
@@ -49,8 +49,8 @@ such as `alpha`.
 - ``SiLU``
 - ``Sigmoid``
 - ``SoftMax``
-- ``SoftPlus``
-- ``SoftSign``
+- ``Softplus``
+- ``Softsign``
 - ``Step``
 - ``Tanh``
 

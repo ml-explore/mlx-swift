@@ -784,7 +784,8 @@ public func logSumExp(_ array: MLXArray, keepDims: Bool = false, stream: StreamO
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``multiply(_:_:stream:)``
-/// - ``addmm(_:_:_:alpha:beta:stream:)``
+/// - ``addMM(_:_:_:alpha:beta:stream:)``
+/// - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
 /// - ``MLXArray/matmul(_:stream:)``
 public func matmul(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_matmul(a.ctx, b.ctx, stream.ctx))

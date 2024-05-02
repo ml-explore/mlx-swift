@@ -122,7 +122,7 @@ These can be used with ``Sequential``.
 - ``hardSwish(_:)``
 - ``leakyRelu(_:negativeSlope:)``
 - ``logSigmoid(_:)``
-- ``logSoftMax(_:axis:)``
+- ``logSoftmax(_:axis:)``
 - ``mish(_:)``
 - ``prelu(_:alpha:)``
 - ``relu(_:)``
@@ -130,8 +130,8 @@ These can be used with ``Sequential``.
 - ``selu(_:)``
 - ``silu(_:)``
 - ``sigmoid(_:)``
-- ``softPlus(_:)``
-- ``softSign(_:)``
+- ``softplus(_:)``
+- ``softsign(_:)``
 - ``step(_:threshold:)``
 
 ### Activation Modules
@@ -142,7 +142,7 @@ These can be used with ``Sequential``.
 - ``HardSwish``
 - ``LeakyReLU``
 - ``LogSigmoid``
-- ``LogSoftMax``
+- ``LogSoftmax``
 - ``Mish``
 - ``PReLU``
 - ``ReLU``
@@ -151,8 +151,8 @@ These can be used with ``Sequential``.
 - ``SiLU``
 - ``Sigmoid``
 - ``SoftMax``
-- ``SoftPlus``
-- ``SoftSign``
+- ``Softplus``
+- ``Softsign``
 - ``Step``
 - ``Tanh``
 

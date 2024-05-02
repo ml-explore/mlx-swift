@@ -1328,7 +1328,7 @@ public enum MLXArrayIndexOperation: CustomStringConvertible {
 ///
 /// ### See Also
 /// - <doc:indexing>
-/// - ``MLXArray/subscript(indices:stream:)``
+/// - ``MLXArray/subscript(_:stream:)-375a0``
 public protocol MLXArrayIndex {
 
     /// Provide the represeting ``MLXArrayIndexOperation``

@@ -45,6 +45,14 @@ public func add<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_add(a.ctx, b.ctx, stream.ctx))
 }
 
+@available(*, deprecated, renamed: "addMM(_:_:_:alpha:beta:stream:)")
+@_documentation(visibility:internal)
+public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
+    _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
+) -> MLXArray {
+    addMM(c, a, b, alpha: alpha, beta: beta, stream: stream)
+}
+
 /// Matrix multiplication with addition and optional scaling.
 ///
 /// Perform the (possibly batched) matrix multiplication of two arrays and add to the result
@@ -68,7 +76,8 @@ public func add<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - ``matmul(_:_:stream:)``
-public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
+/// - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
+public func addMM<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
     _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
@@ -325,6 +334,45 @@ public func asStrided(
         mlx_as_strided(
             array.ctx, shape.asInt32, shape.count, resolvedStrides, resolvedStrides.count, offset,
             stream.ctx))
+}
+
+/// Matrix multiplication with block masking.
+///
+/// Perform the (possibly batched) matrix multiplication of two arrays and with blocks
+/// of size `blockSize x blockSize` optionally masked out.
+///
+/// Assuming `a` with shape (..., `M`, `K`) and b with shape (..., `K`, `N`)
+///
+/// * `maskLHS` must have shape (..., ceil(`M` / `blockSize`), ceil(`K` / `blockSize`))
+///
+/// * `maskRHS` must have shape (..., ceil(`K` / `blockSize`), ceil(`N` / `blockSize`))
+///
+/// * `maskOut` must have shape (..., ceil(`M` / `blockSize`), ceil(`N` / `blockSize`))
+///
+/// > Note: Only `block_size=64` and `block_size=32` are currently supported
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - blockSize: Size of blocks to be masked. Must be `32` or `64`
+///   - maskOut: Boolean mask for output
+///   - maskLHS: Boolean mask for a
+///   - maskRHS: Boolean mask for b
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``multiply(_:_:stream:)``
+/// - ``addMM(_:_:_:alpha:beta:stream:)``
+/// - ``MLXArray/matmul(_:stream:)``
+/// - ``matmul(_:_:stream:)``
+public func blockMaskedMM(
+    _ a: MLXArray, _ b: MLXArray, blockSize: Int = 64, maskOut: MLXArray? = nil,
+    maskLHS: MLXArray? = nil, maskRHS: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_block_masked_mm(
+            a.ctx, b.ctx, blockSize.int32, maskOut?.ctx, maskLHS?.ctx, maskRHS?.ctx, stream.ctx))
 }
 
 /// Broadcast an array to the given shape.
@@ -639,6 +687,19 @@ public func convolve<A: ScalarOrArray, B: ScalarOrArray>(
 /// - ``cos(_:stream:)``
 public func cosh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_cosh(array.ctx, stream.ctx))
+}
+
+/// Convert angles from radians to degrees.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``radians(_:stream:)``
+public func degrees(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_degrees(array.ctx, stream.ctx))
 }
 
 /// Dequantize the matrix `w` using the provided `scales` and
@@ -1503,6 +1564,19 @@ public func quantizedMatmul(
         ))
 }
 
+/// Convert angles from degrees to radians.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``degrees(_:stream:)``
+public func radians(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_radians(array.ctx, stream.ctx))
+}
+
 /// Element-wise remainder of division.
 ///
 /// Computes the remainder of dividing `lhs` with `rhs` with <doc:broadcasting>.
@@ -1641,6 +1715,14 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
     MLXArray(mlx_sinh(array.ctx, stream.ctx))
 }
 
+@available(*, deprecated, renamed: "softmax(_:axes:precise:stream:)")
+@_documentation(visibility:internal)
+public func softMax(
+    _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    softmax(array, axes: axes, precise: precise, stream: stream)
+}
+
 /// Perform the softmax along the given axis.
 ///
 /// This operation is a numerically stable version of:
@@ -1655,34 +1737,20 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``softMax(_:axis:stream:)``
-/// - ``softMax(_:stream:)``
-public func softMax(
+/// - ``softmax(_:axis:precise:stream:)``
+/// - ``softmax(_:precise:stream:)``
+public func softmax(
     _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(mlx_softmax(array.ctx, axes.asInt32, axes.count, precise, stream.ctx))
 }
 
-/// Perform the softmax along the given axis.
-///
-/// This operation is a numerically stable version of:
-///
-/// ```swift
-///exp(a) / sum(exp(a), axis, keepdims: true)
-/// ```
-///
-/// - Parameters:
-///     - array: input array
-///     - stream: stream or device to evaluate on
-///
-/// ### See Also
-/// - <doc:arithmetic>
-/// - ``softMax(_:axes:stream:)``
-/// - ``softMax(_:stream:)``
+@available(*, deprecated, renamed: "softmax(_:axis:precise:stream:)")
+@_documentation(visibility:internal)
 public func softMax(
     _ array: MLXArray, axis: Int, precise: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_softmax(array.ctx, [axis.int32], 1, precise, stream.ctx))
+    softmax(array, axis: axis, precise: precise, stream: stream)
 }
 
 /// Perform the softmax along the given axis.
@@ -1698,9 +1766,39 @@ public func softMax(
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``softMax(_:axes:stream:)``
-/// - ``softMax(_:axis:stream:)``
+/// - <doc:arithmetic>
+/// - ``softmax(_:axes:precise:stream:)``
+/// - ``softmax(_:precise:stream:)``
+public func softmax(
+    _ array: MLXArray, axis: Int, precise: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_softmax(array.ctx, [axis.int32], 1, precise, stream.ctx))
+}
+
+@available(*, deprecated, renamed: "softmax(_:axis:precise:stream:)")
+@_documentation(visibility:internal)
 public func softMax(_ array: MLXArray, precise: Bool = false, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    softmax(array, precise: precise, stream: stream)
+}
+
+/// Perform the softmax along the given axis.
+///
+/// This operation is a numerically stable version of:
+///
+/// ```swift
+///exp(a) / sum(exp(a), axis, keepdims: true)
+/// ```
+///
+/// - Parameters:
+///     - array: input array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``softmax(_:axes:precise:stream:)``
+/// - ``softmax(_:axis:precise:stream:)``
+public func softmax(_ array: MLXArray, precise: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     MLXArray(mlx_softmax_all(array.ctx, precise, stream.ctx))

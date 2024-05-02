@@ -51,9 +51,9 @@ operations as methods for convenience.
 - ``sign(_:stream:)``
 - ``sin(_:stream:)``
 - ``sinh(_:stream:)``
-- ``softMax(_:stream:)``
-- ``softMax(_:axis:stream:)``
-- ``softMax(_:axes:stream:)``
+- ``softmax(_:precise:stream:)``
+- ``softmax(_:axis:precise:stream:)``
+- ``softmax(_:axes:precise:stream:)``
 - ``sqrt(_:stream:)``
 - ``square(_:stream:)``
 - ``subtract(_:_:stream:)``
@@ -204,6 +204,9 @@ operations as methods for convenience.
 - ``eval(_:)-3b2g9``
 - ``eval(_:)-8fexv``
 - ``eval(_:)-91pbd``
+- ``asyncEval(_:)-6j4zg``
+- ``asyncEval(_:)-6uc2e``
+- ``asyncEval(_:)-11gzm``
 - ``grad(_:)-r8dv``
 - ``grad(_:)-7z6i``
 - ``grad(_:argumentNumbers:)-2ictk``

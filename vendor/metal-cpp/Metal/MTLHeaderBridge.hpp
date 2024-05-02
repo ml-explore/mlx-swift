@@ -1918,6 +1918,9 @@ _MTL_PRIVATE_DEF_SEL(setShouldMaximizeConcurrentCompilation_,
     "setShouldMaximizeConcurrentCompilation:");
 _MTL_PRIVATE_DEF_SEL(setSignaledValue_,
     "setSignaledValue:");
+_MTL_PRIVATE_DEF_SEL(
+    waitUntilSignaledValue_timeoutMS_,
+    "waitUntilSignaledValue:timeoutMS:");
 _MTL_PRIVATE_DEF_SEL(setSize_,
     "setSize:");
 _MTL_PRIVATE_DEF_SEL(setSlice_,

@@ -124,7 +124,6 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``acos(_:stream:)``
 - ``acosh(_:stream:)``
 - ``add(_:_:stream:)``
-- ``addmm(_:_:_:alpha:beta:stream:)``
 - ``asin(_:stream:)``
 - ``asinh(_:stream:)``
 - ``atan(_:stream:)``
@@ -133,6 +132,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``clip(_:min:max:stream:)``
 - ``cos(_:stream:)``
 - ``cosh(_:stream:)``
+- ``degrees(_:stream:)``
 - ``divide(_:_:stream:)``
 - ``divmod(_:_:stream:)``
 - ``erf(_:stream:)``
@@ -161,6 +161,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``pow(_:_:stream:)-7pe7j``
 - ``pow(_:_:stream:)-49xi0``
 - ``pow(_:_:stream:)-8ie9c``
+- ``radians(_:stream:)``
 - ``reciprocal(_:stream:)``
 - ``remainder(_:_:stream:)``
 - ``round(_:decimals:stream:)``
@@ -169,7 +170,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``sign(_:stream:)``
 - ``sin(_:stream:)``
 - ``sinh(_:stream:)``
-- ``softMax(_:axes:stream:)``
+- ``softmax(_:axes:precise:stream:)``
 - ``sqrt(_:stream:)``
 - ``square(_:stream:)``
 - ``subtract(_:_:stream:)``
@@ -181,6 +182,8 @@ Note: the `-` and `/` operators are not able to be linked here.
 
 - ``MLXArray/matmul(_:stream:)``
 - ``matmul(_:_:stream:)``
+- ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
+- ``addMM(_:_:_:alpha:beta:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``

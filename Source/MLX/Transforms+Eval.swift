@@ -23,6 +23,17 @@ public func eval(_ arrays: [MLXArray]) {
     mlx_free(vector_array)
 }
 
+/// Evaluate one or more `MLXArray` asynchronously.
+///
+/// ### See Also
+/// - <doc:lazy-evaluation>
+/// - ``asyncEval(_:)-6j4zg``
+public func asyncEval(_ arrays: [MLXArray]) {
+    let vector_array = new_mlx_vector_array(arrays)
+    mlx_async_eval(vector_array)
+    mlx_free(vector_array)
+}
+
 /// Evaluate one or more `MLXArray`.
 ///
 /// This variant allows several structured types:
@@ -43,6 +54,7 @@ public func eval(_ arrays: [MLXArray]) {
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
+/// - ``asyncEval(_:)-6j4zg``
 public func eval(_ values: Any...) {
     var arrays = [MLXArray]()
 
@@ -64,6 +76,49 @@ public func eval(_ values: [Any]) {
     }
 
     eval(arrays)
+}
+
+/// Evaluate one or more `MLXArray` asynchronously.
+///
+/// This variant allows several structured types:
+///
+/// ```swift
+/// let a: MLXArray
+/// let b: [MLXArray]
+/// let c: [String:MLXArray]
+/// let d: [String:[MLXArray]]
+/// let e: (MLXArray, MLXArray)
+/// let f: [(String, MLXArray)]
+/// let nested: [(MLXArray, [MLXArray])]
+///
+/// asyncEval(a, b, c, d, e, f)
+/// ```
+///
+/// Other structured types may be supported -- check the implementation.
+///
+/// ### See Also
+/// - <doc:lazy-evaluation>
+public func asyncEval(_ values: Any...) {
+    var arrays = [MLXArray]()
+
+    for item in values {
+        collect(item, into: &arrays)
+    }
+
+    asyncEval(arrays)
+}
+
+/// Evaluate one or more `MLXArray` asynchronously.
+///
+/// See ``asyncEval(_:)-6j4zg``
+public func asyncEval(_ values: [Any]) {
+    var arrays = [MLXArray]()
+
+    for item in values {
+        collect(item, into: &arrays)
+    }
+
+    asyncEval(arrays)
 }
 
 private func collect(_ item: Any, into arrays: inout [MLXArray]) {

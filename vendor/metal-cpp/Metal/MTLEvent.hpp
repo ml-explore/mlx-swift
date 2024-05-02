@@ -62,6 +62,7 @@ public:
 
     uint64_t                 signaledValue() const;
     void                     setSignaledValue(uint64_t signaledValue);
+    bool                     waitUntilSignaledValue(uint64_t signaledValue, uint64_t timeoutMS);
 };
 
 class SharedEventHandle : public NS::SecureCoding<SharedEventHandle>
@@ -138,6 +139,11 @@ _MTL_INLINE uint64_t MTL::SharedEvent::signaledValue() const
 _MTL_INLINE void MTL::SharedEvent::setSignaledValue(uint64_t signaledValue)
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setSignaledValue_), signaledValue);
+}
+
+// method: waitUntilSignaledValue
+_MTL_INLINE bool MTL::SharedEvent::waitUntilSignaledValue(uint64_t signaledValue, uint64_t timeoutMS) {
+    return Object::sendMessage<bool>(this, _MTL_PRIVATE_SEL(waitUntilSignaledValue_timeoutMS_), signaledValue, timeoutMS);
 }
 
 // static method: alloc
