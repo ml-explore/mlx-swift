@@ -392,7 +392,7 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `MLXArray` is set on a `Module`.
-    public func update(parameters: ModuleParameters) {
+    public func update(parameters: ModuleParameters) -> Self {
         try! update(parameters: parameters, verify: .none)
     }
 
@@ -427,7 +427,7 @@ open class Module {
     /// - ``parameters()``
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:)``
-    public func update(parameters: ModuleParameters, verify: VerifyUpdate) throws {
+    public func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
             if case .none = value {
@@ -475,6 +475,8 @@ open class Module {
             throw UpdateError.unhandledKeys(
                 base: describeType(self), keys: processed.sorted())
         }
+
+        return self
     }
 
     /// Apply a closure to the parameters in a `Module` recursively.
@@ -493,7 +495,7 @@ open class Module {
     public func apply(
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
-    ) {
+    ) -> Self {
         update(parameters: mapParameters(map: map))
     }
 
@@ -501,7 +503,7 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `Module` is set on a `MLXArray`.
-    public func update(modules: ModuleChildren) {
+    public func update(modules: ModuleChildren) -> Self {
         try! update(modules: modules, verify: .none)
     }
 
@@ -547,7 +549,7 @@ open class Module {
     /// - ``children()``
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
-    public func update(modules: ModuleChildren, verify: VerifyUpdate) throws {
+    public func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
@@ -648,6 +650,8 @@ open class Module {
 
         // rebuild the caches because the modules may have changed
         buildCaches()
+
+        return self
     }
 
     private func updateModule(key: String, _ value: Any) throws {

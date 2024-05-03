@@ -81,6 +81,9 @@ See also <doc:logical> and <doc:cumulative>
 - ``min(_:keepDims:stream:)``
 - ``min(_:axis:keepDims:stream:)``
 - ``min(_:axes:keepDims:stream:)``
+- ``std(_:axes:keepDims:ddof:stream:)``
+- ``std(_:axis:keepDims:ddof:stream:)``
+- ``std(_:keepDims:ddof:stream:)``
 - ``sum(_:keepDims:stream:)``
 - ``sum(_:axis:keepDims:stream:)``
 - ``sum(_:axes:keepDims:stream:)``

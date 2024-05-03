@@ -138,6 +138,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``erf(_:stream:)``
 - ``erfInverse(_:stream:)``
 - ``exp(_:stream:)``
+- ``expm1(_:stream:)``
 - ``floor(_:stream:)``
 - ``floorDivide(_:_:stream:)``
 - ``isNaN(_:stream:)``

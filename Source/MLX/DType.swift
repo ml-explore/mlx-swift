@@ -90,6 +90,21 @@ public enum DType: Hashable {
         default: false
         }
     }
+
+    public var isInteger: Bool {
+        switch self {
+        case .uint8, .uint16, .uint32, .uint64: true
+        case .int8, .int16, .int32, .int64: true
+        default: false
+        }
+    }
+
+    public var isSignedInteger: Bool {
+        switch self {
+        case .int8, .int16, .int32, .int64: true
+        default: false
+        }
+    }
 }
 
 /// Protocol for types that can provide a ``DType``

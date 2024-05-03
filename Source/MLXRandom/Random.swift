@@ -203,6 +203,33 @@ public func normal(
             shape.asInt32, shape.count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx))
 }
 
+/// Generate jointly-normal random samples given a mean and covariance.
+///
+/// The matrix `covariance` must be positive semi-definite. The behavior is
+/// undefined if it is not.  The only supported `dtype` is `.float32`.
+///
+/// - Parameters:
+///   - mean: array of shape `[..., n]`, the mean of the distribution.
+///   - covariance: array  of shape `[..., n, n]`, the covariance
+/// matrix of the distribution. The batch shape `...` must be
+/// broadcast-compatible with that of `mean`.
+///   - shape:  The output shape must be
+/// broadcast-compatible with `mean.shape.dropLast()` and `covariance.shape.dropLast(2)`.
+/// If empty, the result shape is determined by broadcasting the batch
+/// shapes of `mean` and `covariance`.
+///   - dtype: DType of the result
+///   - key: PRNG key
+public func multivariateNormal(
+    mean: MLXArray, covariance: MLXArray, shape: [Int] = [], dtype: DType = .float32,
+    key: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let key = key ?? globalState.next()
+    return MLXArray(
+        mlx_random_multivariate_normal(
+            mean.ctx, covariance.ctx, shape.asInt32, shape.count, dtype.cmlxDtype, key.ctx,
+            stream.ctx))
+}
+
 /// Generate random integers from the given interval using a `RangeExpression<Int>`.
 ///
 /// The values are sampled with equal probability from the integers in

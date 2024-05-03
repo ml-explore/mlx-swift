@@ -15,6 +15,10 @@ open class Upsample: Module, UnaryLayer {
         /// Linear interpolation subsampling.  If `alignCorners` is `true` then the top
         /// and left edge of the input and output will match as will the bottom right edge.
         case linear(alignCorners: Bool = false)
+
+        /// Cubic interpolation subsampling.  If `alignCorners` is `true` then the top
+        /// and left edge of the input and output will match as will the bottom right edge.
+        case cubic(alignCorners: Bool = false)
     }
 
     public let scaleFactor: FloatOrArray
@@ -28,10 +32,13 @@ open class Upsample: Module, UnaryLayer {
     /// For example, an audio signal would be 3D with 1 spatial dimension, an image
     /// 4D with 2 and so on and so forth.
     ///
-    /// There are two upsampling algorithms implemented nearest neighbor
-    /// (``Upsample/Mode/nearest``) upsampling
-    /// and linear interpolation (``Upsample/Mode/linear(alignCorners:)``). Both can be
-    /// applied to any number of spatial
+    /// There are three upsampling algorithms implemented:
+    ///
+    /// - ``Upsample/Mode-swift.enum/nearest``
+    /// - ``Upsample/Mode-swift.enum/linear(alignCorners:)``
+    /// - ``Upsample/Mode-swift.enum/cubic(alignCorners:)``
+    ///
+    /// All can be applied to any number of spatial
     /// dimensions and the linear interpolation will be bilinear, trilinear etc
     /// when applied to more than one spatial dimension.
     ///
@@ -63,7 +70,11 @@ open class Upsample: Module, UnaryLayer {
         case .nearest:
             return upsampleNearest(x, scale: scaleFactor)
         case .linear(let alignCorners):
-            return upsampleLinear(x, scale: scaleFactor, alignCorners: alignCorners)
+            return interpolate(
+                x, scale: scaleFactor, indexes: linearIndices, alignCorners: alignCorners)
+        case .cubic(let alignCorners):
+            return interpolate(
+                x, scale: scaleFactor, indexes: cubicIndices, alignCorners: alignCorners)
         }
     }
 }
@@ -112,7 +123,10 @@ private func upsampleNearest(_ x: MLXArray, scale: [Float]) -> MLXArray {
 
 private typealias IndexWeight = (MLXArray, MLXArray)
 
-private func upsampleLinear(_ x: MLXArray, scale: [Float], alignCorners: Bool) -> MLXArray {
+private func interpolate(
+    _ x: MLXArray, scale: [Float], indexes: (Int, Float, Bool, Int, Int) -> [IndexWeight],
+    alignCorners: Bool
+) -> MLXArray {
     let dimensions = x.ndim - 2
     precondition(
         dimensions == scale.count, "A scale needs to be provided for each spatial dimension")
@@ -120,17 +134,15 @@ private func upsampleLinear(_ x: MLXArray, scale: [Float], alignCorners: Bool) -
     let N = x.shape.dropFirst().dropLast()
 
     // compute the sampling grid
-    var indexWeights = [(IndexWeight, IndexWeight)]()
+    var indexWeights = [[IndexWeight]]()
     for (i, (n, s)) in zip(N, scale).enumerated() {
-        indexWeights.append(
-            linearIndices(
-                dimension: n, scale: s, alignCorners: alignCorners, dim: i, ndim: dimensions))
+        indexWeights.append(indexes(n, s, alignCorners, i, dimensions))
     }
 
     // sample and compute the weights
     var samples = [MLXArray]()
     var weights = [MLXArray]()
-    for indexWeight in product(pairs: indexWeights) {
+    for indexWeight in product(values: indexWeights) {
         let index = indexWeight.map { $0.0 }
         let weight = indexWeight.map { $0.1 }
         samples.append(x[[0...] + index])
@@ -144,55 +156,54 @@ private func upsampleLinear(_ x: MLXArray, scale: [Float], alignCorners: Bool) -
         }
 }
 
-private func product(pairs: [(IndexWeight, IndexWeight)]) -> [[IndexWeight]] {
-    // in the python code this uses itertools.product() but we can get by with a
-    // simple implementation for this constrained case.
-    //
-    // Given [(A, B), (C, D)] this will produce an array of all the
-    // combinations of the pairs, e.g. [[A, C], [A, D], [B, C], [B, D]]
+/// Return the product (element-wise permutation) across the given arrays.
+///
+/// Given an values like this:
+///
+/// ```swift
+/// [
+///     [1, 2, 3],
+///     [4, 5, 6],
+///     [7, 8, 9],
+/// ]
+/// ```
+///
+/// this will produce all permutations of `values[0]` with `values[...N]`:
+///
+/// ```swift
+/// [
+///     [1, 4, 7],
+///     [2, 4, 7],
+///     [3, 4, 7],
+///     [1, 5, 7],
+///     ...
+///     [3, 6, 9],
+/// ]
+/// ```
+///
+/// - Parameter values: input values
+private func product<T>(values: [[T]]) -> [[T]] {
+    guard !values.isEmpty else { return [] }
 
-    precondition(pairs.count <= UInt.bitWidth)
+    // if there are N items in values and M values per tuple there
+    // will be M^N values in the result
+    let perTuple = values[0].count
+    let count = (0 ..< values.count).reduce(1) { c, _ in c * perTuple }
 
-    // all combinations of the L0 or R0 ... Ln / Rn
-    var result = [[IndexWeight]]()
+    var result = [[T]]()
+    for resultIndex in 0 ..< count {
+        var items = [T]()
 
-    // we can generate all the combinations with bits -- we are
-    // selecting between the first or second of the input tuples,
-    // so we can map like this:
-    //
-    // [(A, B), (C, D)] ->
-    //  00 - [A, C]
-    //  01 - [A, D]
-    //  10 - [B, C]
-    //  11 - [B, D]
-
-    // the pattern to generate the bits and the mask for the width
-    var pattern: UInt = 0
-    let mask: UInt = (1 << pairs.count) - 1
-
-    while true {
-        let item =
-            pairs
-            .enumerated()
-            .map { (index, pair) in
-
-                // select the .0 or .1 element depending on the bit
-                if pattern & (1 << index) == 0 {
-                    return pair.0
-                } else {
-                    return pair.1
-                }
-            }
-
-        result.append(item)
-
-        // next bit pattern
-        pattern = (pattern + 1) & mask
-
-        // if it "wraps" around to 0 that means we covered all the patterns
-        if pattern == 0 {
-            break
+        // use % and / to compute which item will be used from
+        // each value[i]
+        var indexGenerator = resultIndex
+        for i in 0 ..< values.count {
+            let index = indexGenerator % perTuple
+            items.append(values[i][index])
+            indexGenerator = indexGenerator / perTuple
         }
+
+        result.append(items)
     }
 
     return result
@@ -204,18 +215,71 @@ private func nearestIndices(dimension: Int, scale: Float, dim: Int, ndim: Int) -
 }
 
 private func linearIndices(dimension: Int, scale: Float, alignCorners: Bool, dim: Int, ndim: Int)
-    -> (IndexWeight, IndexWeight)
+    -> [IndexWeight]
 {
-    let indices = scaledIndices(
+    var indices = scaledIndices(
         dimension: dimension, scale: scale, alignCorners: alignCorners, dim: dim, ndim: ndim)
+    indices = clip(indices, min: 0, max: dimension - 1)
     let indicesLeft = floor(indices)
     let indicesRight = ceil(indices)
     let weight = expandedDimensions(indices - indicesLeft, axis: -1)
 
-    return (
+    return [
         (indicesLeft.asType(.int32), 1 - weight),
-        (indicesRight.asType(.int32), weight)
-    )
+        (indicesRight.asType(.int32), weight),
+    ]
+}
+
+private let compiledGetWeight1: (MLXArray, MLXArray) -> MLXArray = {
+    // PyTorch uses -0.5 for antialiasing=true (compatibility with PIL)
+    // and uses -0.75 for antialiasing=false (compatibility with OpenCV)
+
+    compile(shapeless: true) { ind, grid in
+        let a = -0.75
+        let x = abs(ind - grid)
+        return ((a + 2.0) * x - (a + 3.0)) * x * x + 1
+    }
+}()
+
+private let compiledGetWeight2: (MLXArray, MLXArray) -> MLXArray = {
+    // PyTorch uses -0.5 for antialiasing=true (compatibility with PIL)
+    // and uses -0.75 for antialiasing=false (compatibility with OpenCV)
+
+    compile(shapeless: true) { ind, grid in
+        let a = -0.75
+        let x = abs(ind - grid)
+        return (((x - 5) * x + 8) * x - 4) * a
+    }
+}()
+
+private func cubicIndices(dimension: Int, scale: Float, alignCorners: Bool, dim: Int, ndim: Int)
+    -> [IndexWeight]
+{
+    let indices = scaledIndices(
+        dimension: dimension, scale: scale, alignCorners: alignCorners, dim: dim, ndim: ndim)
+
+    var indicesL1 = floor(indices)
+    var indicesR1 = floor(indices + 1)
+    var indicesL2 = indicesL1 - 1
+    var indicesR2 = indicesR1 + 1
+
+    let weightL1 = compiledGetWeight1(indices, indicesL1)[.ellipsis, .newAxis]
+    let weightR1 = compiledGetWeight1(indices, indicesR1)[.ellipsis, .newAxis]
+    let weightL2 = compiledGetWeight2(indices, indicesL2)[.ellipsis, .newAxis]
+    let weightR2 = compiledGetWeight2(indices, indicesR2)[.ellipsis, .newAxis]
+
+    // padding with border value
+    indicesL1 = clip(indicesL1, min: 0, max: dimension - 1)
+    indicesR1 = clip(indicesR1, min: 0, max: dimension - 1)
+    indicesL2 = clip(indicesL2, min: 0, max: dimension - 1)
+    indicesR2 = clip(indicesR2, min: 0, max: dimension - 1)
+
+    return [
+        (indicesL1.asType(.int32), weightL1),
+        (indicesR1.asType(.int32), weightR1),
+        (indicesL2.asType(.int32), weightL2),
+        (indicesR2.asType(.int32), weightR2),
+    ]
 }
 
 private func scaledIndices(dimension N: Int, scale: Float, alignCorners: Bool, dim: Int, ndim: Int)
@@ -230,7 +294,6 @@ private func scaledIndices(dimension N: Int, scale: Float, alignCorners: Bool, d
         let step = 1 / scale
         let start = ((Float(M) - 1) * step - Float(N) + 1) / 2
         indices = MLXArray(0 ..< M).asType(.float32) * step - start
-        indices = clip(indices, min: 0, max: N - 1)
     }
 
     var shape = Array(repeating: 1, count: ndim)

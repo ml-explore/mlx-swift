@@ -159,7 +159,7 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes a two ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
@@ -177,6 +177,27 @@ public func compile(
 
     return { a, b in
         compileState.call([a, b])[0]
+    }
+}
+
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes three ``MLXArray`` and
+/// produces a single ``MLXArray``.
+///
+/// ### See Also
+/// - <doc:compilation>
+/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+public func compile(
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
+    _ f: @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
+)
+    -> (MLXArray, MLXArray, MLXArray) -> MLXArray
+{
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
+        [f($0[0], $0[1], $0[2])]
+    }
+
+    return { a, b, c in
+        compileState.call([a, b, c])[0]
     }
 }
 

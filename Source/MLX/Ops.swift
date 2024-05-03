@@ -865,6 +865,21 @@ public func expandedDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDev
     MLXArray(mlx_expand_dims(array.ctx, [axis.int32], 1, stream.ctx))
 }
 
+/// Element-wise exponential minus 1.
+///
+/// Computes `exp(x) - 1` with greater precision for small `x`.
+///
+/// - Parameters:
+///   - array: input array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``exp(_:stream:)``
+public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_expm1(array.ctx, stream.ctx))
+}
+
 /// Element-wise greater than.
 ///
 /// Greater than on two arrays with <doc:broadcasting>.
@@ -1288,6 +1303,39 @@ public func logicalOr<A: ScalarOrArray, B: ScalarOrArray>(
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     return MLXArray(mlx_logical_or(a.ctx, b.ctx, stream.ctx))
+}
+
+/// Indexing mode for ``meshGrid(_:sparse:indexing:stream:)``.
+public enum MeshGridIndexing: String {
+    /// cartesian indexing
+    case xy
+
+    /// matrix indexing
+    case ij
+}
+
+/// Generate multidimensional coordinate grids from 1-D coordinate arrays
+///
+/// - Parameters:
+///   - arrays: input arrays
+///   - sparse: if `true` a parse grid is returned in which each output array has a single
+///     non-zero element, otherwise a dense grid is returned.
+///   - indexing: indexing mode
+///   - stream: stream or device to evaluate on
+public func meshGrid(
+    _ arrays: [MLXArray], sparse: Bool = false, indexing: MeshGridIndexing = .xy,
+    stream: StreamOrDevice = .default
+) -> [MLXArray] {
+    let mlxArrays = new_mlx_vector_array(arrays)
+    defer { mlx_free(mlxArrays) }
+
+    let indexingString = mlx_string_new(indexing.rawValue.cString(using: .utf8))!
+    defer { mlx_free(indexingString) }
+
+    let result = mlx_meshgrid(mlxArrays, sparse, indexingString, stream.ctx)!
+    defer { mlx_free(result) }
+
+    return mlx_vector_array_values(result)
 }
 
 /// Element-wise maximum.
@@ -1831,6 +1879,64 @@ public func sorted(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .defau
 /// - ``argSort(_:axis:stream:)``
 public func sorted(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_sort_all(array.ctx, stream.ctx))
+}
+
+/// Compute the standard deviation(s) over the given axes.
+///
+/// - Parameters:
+///   - array: input array
+///   - axes: axes to reduce over
+///   - keepDims: if `true`keep reduced axis as singleton dimension
+///   - ddof: the divisor to compute the varian is `N - ddof`
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+/// - ``std(_:axis:keepDims:ddof:stream:)``
+/// - ``std(_:keepDims:ddof:stream:)``
+public func std(
+    _ array: MLXArray, axes: [Int], keepDims: Bool = false, ddof: Int = 0,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_std(array.ctx, axes.asInt32, axes.count, keepDims, ddof.int32, stream.ctx))
+}
+
+/// Compute the standard deviation over the given axis.
+///
+/// - Parameters:
+///   - array: input array
+///   - axis: axis to reduce over
+///   - keepDims: if `true`keep reduced axis as singleton dimension
+///   - ddof: the divisor to compute the varian is `N - ddof`
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+/// - ``std(_:axes:keepDims:ddof:stream:)``
+/// - ``std(_:keepDims:ddof:stream:)``
+public func std(
+    _ array: MLXArray, axis: Int, keepDims: Bool = false, ddof: Int = 0,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_std(array.ctx, [axis.int32], 1, keepDims, ddof.int32, stream.ctx))
+}
+
+/// Compute the standard deviations over all axes.
+///
+/// - Parameters:
+///   - array: input array
+///   - keepDims: if `true`keep reduced axis as singleton dimension
+///   - ddof: the divisor to compute the varian is `N - ddof`
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+/// - ``std(_:axes:keepDims:ddof:stream:)``
+/// - ``std(_:axis:keepDims:ddof:stream:)``
+public func std(
+    _ array: MLXArray, keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_std_all(array.ctx, keepDims, ddof.int32, stream.ctx))
 }
 
 /// Stacks the arrays along a new axis.

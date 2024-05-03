@@ -213,7 +213,7 @@ public func gelu(_ x: MLXArray) -> MLXArray {
 /// This is:
 ///
 /// ```swift
-/// x * MLX.sigmoid(1.60033 * x * (1 + 0.0433603 * x.square()))
+/// 0.5 * x * (1 + tanh(sqrt(2 / Float.pi) * (x + 0.044715 * x**3)))
 /// ```
 ///
 /// ### See Also
@@ -789,7 +789,7 @@ private let compiledGelu: (MLXArray) -> MLXArray = {
 
 private let compiledGeluApproximate: (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
-        x * sigmoid(1.60033 * x * (1 + 0.0433603 * x.square()))
+        0.5 * x * (1 + tanh(sqrt(2 / Float.pi) * (x + 0.044715 * x ** 3)))
     }
 }()
 
