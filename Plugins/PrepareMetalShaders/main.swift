@@ -208,7 +208,7 @@ struct PrepareMetalShaders: BuildToolPlugin {
 
         // a prebuild command to inject the output directory so swiftpm knows to pick it up
         commands.append(
-            ._prebuildCommand(
+            .prebuildCommand(
                 displayName: "Install Headers",
                 executable: .init("/bin/echo"),
                 arguments: [],
