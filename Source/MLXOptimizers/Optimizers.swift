@@ -113,11 +113,16 @@ public struct TupleState: Updatable {
 /// - <doc:MLXOptimizers>
 open class SGD: OptimizerBaseArrayState {
 
-    var learningRate: Float
-    var momentum: Float = 0
-    var weightDecay: Float = 0
-    var dampening: Float = 0
-    var nesterov = false
+    /// The learning rate
+    public var learningRate: Float
+    /// Momentum strength
+    public var momentum: Float = 0
+    /// Weight decay (L2 penalty)
+    public var weightDecay: Float = 0
+    /// Dampening for momentum
+    public var dampening: Float = 0
+    /// Enables Nesterov momentum
+    public var nesterov = false
 
     /// Initialize the SGD optimizer.
     ///
@@ -184,9 +189,12 @@ open class SGD: OptimizerBaseArrayState {
 /// - <doc:MLXOptimizers>
 open class RMSprop: OptimizerBaseArrayState {
 
-    var learningRate: Float
-    var alpha: Float = 0.99
-    var eps: Float = 1e-8
+    /// The learning rate
+    public var learningRate: Float
+    /// The smoothing constant
+    public var alpha: Float = 0.99
+    /// The epsilon added to the denominator to improve numerical stability 
+    public var eps: Float = 1e-8
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -220,8 +228,10 @@ open class RMSprop: OptimizerBaseArrayState {
 /// - <doc:MLXOptimizers>
 open class AdaGrad: OptimizerBaseArrayState {
 
-    var learningRate: Float
-    var eps: Float = 1e-8
+    /// The learning rate
+    public var learningRate: Float
+    /// The epsilon added to the denominator to improve numerical stability
+    public var eps: Float = 1e-8
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -252,9 +262,12 @@ open class AdaGrad: OptimizerBaseArrayState {
 /// - <doc:MLXOptimizers>
 open class AdaDelta: OptimizerBase<TupleState> {
 
-    var learningRate: Float
-    var rho: Float = 0.99
-    var eps: Float = 1e-6
+    /// The learning rate
+    public var learningRate: Float
+    /// The coefficient used for computing a running average of squared gradients
+    public var rho: Float = 0.99
+    /// The epsilon added to the denominator to improve numerical stability
+    public var eps: Float = 1e-6
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -298,9 +311,12 @@ open class AdaDelta: OptimizerBase<TupleState> {
 /// - <doc:MLXOptimizers>
 open class Adam: OptimizerBase<TupleState> {
 
-    var learningRate: Float
-    var betas: (Float, Float) = (0.9, 0.999)
-    var eps: Float = 1e-8
+    /// The learning rate
+    public var learningRate: Float
+    /// The coefficients used for computing running averages of the gradient and its square
+    public var betas: (Float, Float) = (0.9, 0.999)
+    /// The epsilon added to the denominator to improve numerical stability
+    public var eps: Float = 1e-8
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -343,7 +359,8 @@ open class Adam: OptimizerBase<TupleState> {
 /// - <doc:MLXOptimizers>
 open class AdamW: Adam {
 
-    var weightDecay: Float = 0.01
+    /// The weight decay
+    public var weightDecay: Float = 0.01
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -379,9 +396,12 @@ open class AdamW: Adam {
 /// - <doc:MLXOptimizers>
 open class Adamax: OptimizerBase<TupleState> {
 
-    var learningRate: Float
-    var betas: (Float, Float) = (0.9, 0.999)
-    var eps: Float = 1e-8
+    /// The learning rate
+    public var learningRate: Float
+    /// The coefficients used for computing running averages of the gradient and its square
+    public var betas: (Float, Float) = (0.9, 0.999)
+    /// The epsilon added to the denominator to improve numerical stability
+    public var eps: Float = 1e-8
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -427,9 +447,12 @@ open class Adamax: OptimizerBase<TupleState> {
 /// - <doc:MLXOptimizers>
 open class Lion: OptimizerBaseArrayState {
 
-    var learningRate: Float
-    var betas: (Float, Float) = (0.9, 0.999)
-    var weightDecay: Float = 0.0
+    /// The learning rate
+    public var learningRate: Float
+    /// The coefficients used for computing running averages of the gradient and its square
+    public var betas: (Float, Float) = (0.9, 0.999)
+    /// The weight decay
+    public var weightDecay: Float = 0.0
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -470,15 +493,24 @@ open class Lion: OptimizerBaseArrayState {
 /// - <doc:MLXOptimizers>
 open class Adafactor: OptimizerBase<Adafactor.State> {
 
-    var learningRate: Float? = nil
-    var eps: (Float, Float) = (1e-30, 1e-3)
-    var clipThreshold: Float = 1
-    var decayRate: Float = -0.8
-    var beta1: Float? = nil
-    var weightDecay: Float = 0
-    var scaleParameter = true
-    var relativeStep = true
-    var warmupInit = false
+    /// The learning rate
+    public var learningRate: Float? = nil
+    /// The first term is added to the square of the gradients to improve numerical stability
+    public var eps: (Float, Float) = (1e-30, 1e-3)
+    /// Clips the unscaled update
+    public var clipThreshold: Float = 1
+    /// Coefficient for the running average of the squared gradient
+    public var decayRate: Float = -0.8
+    /// If set then the first moment will be used
+    public var beta1: Float? = nil
+    /// The weight decay
+    public var weightDecay: Float = 0
+    /// If `true` the `learningRate` will be scaled by `max(eps.0, RMS(parameter))`
+    public var scaleParameter = true
+    /// If `true` the `learningRate` will be ignored and the relative step size will be computed
+    public var relativeStep = true
+    /// If `true` the relative step size will be calculated by the current step
+    public var warmupInit = false
 
     public struct State: Updatable {
         var step = MLXArray(0)
