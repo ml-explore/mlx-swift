@@ -392,6 +392,7 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `MLXArray` is set on a `Module`.
+    @discardableResult
     public func update(parameters: ModuleParameters) -> Self {
         try! update(parameters: parameters, verify: .none)
     }
@@ -427,6 +428,7 @@ open class Module {
     /// - ``parameters()``
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:)``
+    @discardableResult
     public func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
@@ -492,6 +494,7 @@ open class Module {
     /// - Parameters:
     ///   - filter: filter for parameters to apply to
     ///   - map: function to apply to the matched parameters
+    @discardableResult
     public func apply(
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
@@ -503,6 +506,7 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `Module` is set on a `MLXArray`.
+    @discardableResult
     public func update(modules: ModuleChildren) -> Self {
         try! update(modules: modules, verify: .none)
     }
@@ -549,6 +553,7 @@ open class Module {
     /// - ``children()``
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
+    @discardableResult
     public func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {

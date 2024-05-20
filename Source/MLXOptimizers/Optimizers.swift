@@ -193,7 +193,7 @@ open class RMSprop: OptimizerBaseArrayState {
     public var learningRate: Float
     /// The smoothing constant
     public var alpha: Float = 0.99
-    /// The epsilon added to the denominator to improve numerical stability 
+    /// The epsilon added to the denominator to improve numerical stability
     public var eps: Float = 1e-8
 
     /// Initialize the optimizer.
