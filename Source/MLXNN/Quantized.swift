@@ -29,7 +29,6 @@ public func quantize(
     filter: (String, Module) -> Bool = { _, _ in true },
     apply: (Module, Int, Int) -> Module? = quantizeSingle(layer:groupSize:bits:)
 ) {
-    var leaves = model.leafModules()
     let updates =
         model
         .leafModules()
@@ -86,7 +85,7 @@ open class QuantizedEmbedding: Embedding {
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
         let s = x.shape
-        var x = x.flattened()
+        let x = x.flattened()
         let out = dequantized(
             weight[x], scales: scales[x], biases: biases[x], groupSize: groupSize, bits: bits)
         return out.reshaped(s + [-1])
