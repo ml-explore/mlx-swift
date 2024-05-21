@@ -25,6 +25,16 @@ class MLXArrayOpsTests: XCTestCase {
         XCTAssertEqual(r.shape, [3])
         XCTAssertEqual(r.dtype, .float32)
         assertEqual(r, MLXArray(converting: [-5, 38.5, 6]))
+
+        a += b
+        XCTAssertEqual(a.shape, [3])
+        XCTAssertEqual(a.dtype, .float32)
+        assertEqual(a, MLXArray(converting: [-4, 39.5, 7]))
+
+        a += 1
+        XCTAssertEqual(a.shape, [3])
+        XCTAssertEqual(a.dtype, .float32)
+        assertEqual(a, MLXArray(converting: [-3, 40.5, 8]))
     }
 
     func testArithmeticMatrix() {
