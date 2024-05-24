@@ -70,9 +70,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/+(_:_:)-1rv98``
     public static func + <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
+        lhs + rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise addition with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
@@ -90,9 +88,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/+(_:_:)-1rv98``
     public static func + <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
-        return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
+        lhs.asMLXArray(dtype: rhs.dtype) + rhs
     }
 
     /// Element-wise subtraction.
@@ -141,9 +137,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     public static func - <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
+        lhs - rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise subtraction with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
@@ -159,9 +153,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     public static func - <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
-        return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
+        lhs.asMLXArray(dtype: rhs.dtype) - rhs
     }
 
     /// Unary element-wise negation.
@@ -233,9 +225,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/*(_:_:)-1z2ck``
     public static func * <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
+        lhs * rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise multiplication with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
@@ -253,9 +243,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/*(_:_:)-1z2ck``
     public static func * <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
-        return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
+        lhs.asMLXArray(dtype: rhs.dtype) * rhs
     }
 
     /// Element-wise power operation.
@@ -288,9 +276,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/**(_:_:)-8xxt3``
     public static func ** <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
+        lhs ** rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise power with a ``ScalarOrArray`` (scalar) argument.
@@ -299,9 +285,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/**(_:_:)-8xxt3``
     public static func ** <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
-        return MLXArray(mlx_power(lhs.ctx, rhs.ctx, s.ctx))
+        lhs.asMLXArray(dtype: rhs.dtype) ** rhs
     }
 
     /// Element-wise division.
@@ -352,9 +336,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     public static func / <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
+        lhs / rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise division with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
@@ -370,9 +352,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     public static func / <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
-        return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
+        lhs.asMLXArray(dtype: rhs.dtype) / rhs
     }
 
     /// Element-wise remainder of division.
@@ -401,9 +381,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/%(_:_:)-3ubwd``
     public static func % <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
-        let s = StreamOrDevice.default
-        let lhs = lhs.asMLXArray(dtype: rhs.dtype)
-        return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
+        lhs.asMLXArray(dtype: rhs.dtype) % rhs
     }
 
     /// Element-wise remainder with a ``ScalarOrArray`` (scalar) argument.
@@ -412,9 +390,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/%(_:_:)-3ubwd``
     public static func % <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_remainder(lhs.ctx, rhs.ctx, s.ctx))
+        lhs % rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     // MARK: - Logical Operators
@@ -468,9 +444,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/.==(_:_:)-56m0a``
     public static func .== <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_equal(lhs.ctx, rhs.ctx, s.ctx))
+        lhs .== rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise less than or equal.
@@ -502,9 +476,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/.<=(_:_:)-2a0s9``
     public static func .<= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_less_equal(lhs.ctx, rhs.ctx, s.ctx))
+        lhs .<= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise less greater than or equal.
@@ -536,9 +508,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/.>=(_:_:)-2gqml``
     public static func .>= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_greater_equal(lhs.ctx, rhs.ctx, s.ctx))
+        lhs .>= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise not equal.
@@ -570,9 +540,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/.!=(_:_:)-mbw0``
     public static func .!= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_not_equal(lhs.ctx, rhs.ctx, s.ctx))
+        lhs .!= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise less than.
@@ -604,9 +572,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/.<(_:_:)-9rzup``
     public static func .< <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_less(lhs.ctx, rhs.ctx, s.ctx))
+        lhs .< rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise greater than.
@@ -638,9 +604,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``MLXArray/.>(_:_:)-fwi1``
     public static func .> <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
-        let s = StreamOrDevice.default
-        let rhs = rhs.asMLXArray(dtype: lhs.dtype)
-        return MLXArray(mlx_greater(lhs.ctx, rhs.ctx, s.ctx))
+        lhs .> rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise logical and.
