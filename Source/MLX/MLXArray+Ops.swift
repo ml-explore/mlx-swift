@@ -44,6 +44,26 @@ extension MLXArray {
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    /// Element-wise addition.
+    ///
+    /// Add two arrays with <doc:broadcasting> and store the result in the left-hand side array.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// let a = MLXArray(0 ..< 12, [4, 3])
+    /// let b = MLXArray([4, 5, 6])
+    ///
+    /// a += b
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``add(_:_:stream:)``
+    public static func += (lhs: MLXArray, rhs: MLXArray) {
+        lhs.update(lhs + rhs)
+    }
+
     /// Element-wise addition with a ``ScalarOrArray`` (scalar) argument.
     ///
     /// ### See Also
@@ -53,6 +73,15 @@ extension MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_add(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise addition with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``MLXArray/+(_:_:)-1rv98``
+    public static func += <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+        lhs += rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise addition with a ``ScalarOrArray`` (scalar) argument.
@@ -87,6 +116,26 @@ extension MLXArray {
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    /// Element-wise subtraction.
+    ///
+    /// Subtract two arrays with <doc:broadcasting> and store the result in the left-hand side array.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// let a = MLXArray(0 ..< 12, [4, 3])
+    /// let b = MLXArray([4, 5, 6])
+    ///
+    /// a -= b
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``subtract(_:_:stream:)``
+    public static func -= (lhs: MLXArray, rhs: MLXArray) {
+        lhs.update(lhs - rhs)
+    }
+
     /// Element-wise subtraction with a ``ScalarOrArray`` (scalar) argument.
     ///
     /// ### See Also
@@ -95,6 +144,14 @@ extension MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_subtract(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise subtraction with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    public static func -= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+        lhs -= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise subtraction with a ``ScalarOrArray`` (scalar) argument.
@@ -148,6 +205,28 @@ extension MLXArray {
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    /// Element-wise multiplication.
+    ///
+    /// Multiply two arrays with <doc:broadcasting> and store the result in the left-hand side array.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// let a = MLXArray(0 ..< 12, [4, 3])
+    /// let b = MLXArray([4, 5, 6])
+    ///
+    /// a *= b
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``multiply(_:_:stream:)``
+    /// - ``matmul(_:stream:)``
+    /// - ``matmul(_:_:stream:)``
+    public static func *= (lhs: MLXArray, rhs: MLXArray) {
+        lhs.update(lhs * rhs)
+    }
+
     /// Element-wise multiplication with a ``ScalarOrArray`` (scalar) argument.
     ///
     /// ### See Also
@@ -157,6 +236,15 @@ extension MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_multiply(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise multiplication with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``MLXArray/*(_:_:)-1z2ck``
+    public static func *= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+        lhs *= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise multiplication with a ``ScalarOrArray`` (scalar) argument.
@@ -238,6 +326,27 @@ extension MLXArray {
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    /// Element-wise division.
+    ///
+    /// Divide two arrays with <doc:broadcasting> and store the result in the left-hand side array.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// let a = MLXArray(0 ..< 12, [4, 3])
+    /// let b = MLXArray([4, 5, 6])
+    ///
+    /// a /= b
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``divide(_:_:stream:)``
+    /// - ``floorDivide(_:_:stream:)``
+    public static func /= (lhs: MLXArray, rhs: MLXArray) {
+        lhs.update(lhs / rhs)
+    }
+
     /// Element-wise division with a ``ScalarOrArray`` (scalar) argument.
     ///
     /// ### See Also
@@ -246,6 +355,14 @@ extension MLXArray {
         let s = StreamOrDevice.default
         let rhs = rhs.asMLXArray(dtype: lhs.dtype)
         return MLXArray(mlx_divide(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise division with a ``ScalarOrArray`` (scalar) argument and store the result in the left-hand side array.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    public static func /= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+        lhs /= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
     /// Element-wise division with a ``ScalarOrArray`` (scalar) argument.

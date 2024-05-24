@@ -78,10 +78,14 @@ Note: some of the symbols are not linkable.
 `__len__` | ``MLXArray/count``
 `__iter__` | implements `Sequence`
 `__add__` | ``MLXArray/+(_:_:)-1rv98``
+`__iadd__` | ``MLXArray/+=(_:_:)-3feg7``
 `__sub__` | `-`
+`__isub__` | `-=`
 `__mul__` | ``MLXArray/*(_:_:)-1z2ck``
+`__imul__` | ``MLXArray/*=(_:_:)-9ukv3``
 `__truediv__` | `/`
 `__div__` | `/`
+`__idiv__` | `/=`
 `__floordiv__` | ``MLXArray/floorDivide(_:stream:)``
 `__mod__` | ``MLXArray/%(_:_:)-3ubwd``
 `__eq__` | ``MLXArray/.==(_:_:)-56m0a``
