@@ -499,7 +499,7 @@ open class Module {
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
     ) -> Self {
-        update(parameters: mapParameters(map: map))
+        update(parameters: filterMap(filter: filter, map: Self.mapParameters(map: map)))
     }
 
     /// A non-throwing version of ``update(modules:verify:)``.

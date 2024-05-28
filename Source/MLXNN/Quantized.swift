@@ -4,6 +4,100 @@ import Foundation
 import MLX
 import MLXRandom
 
+public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Module? {
+    if let linear = layer as? Linear {
+        return QuantizedLinear(linear, groupSize: groupSize, bits: bits)
+
+    } else if let embedding = layer as? Embedding {
+        return QuantizedEmbedding(embedding, groupSize: groupSize, bits: bits)
+    }
+    return nil
+}
+
+/// Quantize the sub-modules of a module according to a filter.
+///
+/// By default all ``Linear`` and ``Embedding`` layers will be quantized.
+///
+/// - Parameters:
+///   - model: model to quantize
+///   - groupSize: quantization group size
+///   - bits: bits per parameter
+///   - filter: filter receiving path and module -- return `false` to skip a layer
+///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding``
+public func quantize(
+    model: Module, groupSize: Int = 64, bits: Int = 4,
+    filter: (String, Module) -> Bool = { _, _ in true },
+    apply: (Module, Int, Int) -> Module? = quantizeSingle(layer:groupSize:bits:)
+) {
+    let updates =
+        model
+        .leafModules()
+        .flattened()
+        .compactMap { (path, m) -> (String, Module)? in
+            if filter(path, m) {
+                if let quantized = apply(m, groupSize, bits) {
+                    return (path, quantized)
+                }
+            }
+
+            return nil
+        }
+
+    model.update(modules: ModuleChildren.unflattened(updates))
+}
+
+/// The same as ``Embedding`` but with a quantized weight matrix.
+open class QuantizedEmbedding: Embedding {
+
+    public let groupSize: Int
+    public let bits: Int
+
+    public let scales: MLXArray
+    public let biases: MLXArray
+
+    convenience public init(
+        embeddingCount: Int, dimensions: Int, groupSize: Int = 64, bits: Int = 4
+    ) {
+        let scale = sqrt(1 / Float(dimensions))
+        let weight = MLXRandom.normal([embeddingCount, dimensions]) * scale
+
+        self.init(weight: weight, groupSize: groupSize, bits: bits)
+    }
+
+    public convenience init(_ other: Embedding, groupSize: Int = 64, bits: Int = 4) {
+        self.init(weight: other.weight, groupSize: groupSize, bits: bits)
+    }
+
+    public init(weight: MLXArray, groupSize: Int = 64, bits: Int = 4) {
+        self.groupSize = groupSize
+        self.bits = bits
+
+        let (quantizedWeight, scales, biases) = MLX.quantized(
+            weight, groupSize: groupSize, bits: bits)
+
+        self.scales = scales
+        self.biases = biases
+
+        super.init(weight: quantizedWeight)
+
+        self.freeze()
+    }
+
+    open override func callAsFunction(_ x: MLXArray) -> MLXArray {
+        let s = x.shape
+        let x = x.flattened()
+        let out = dequantized(
+            weight[x], scales: scales[x], biases: biases[x], groupSize: groupSize, bits: bits)
+        return out.reshaped(s + [-1])
+    }
+
+    open override func asLinear(_ x: MLXArray) -> MLXArray {
+        quantizedMatmul(
+            x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize,
+            bits: bits)
+    }
+}
+
 /// Applies an affine transformation to the input using a quantized weight matrix.
 ///
 /// It is the quantized equivalent of ``Linear``.  For now its
@@ -50,6 +144,16 @@ open class QuantizedLinear: Linear {
         let bias = bias ? MLXArray.zeros([outputDimensions]) : nil
 
         self.init(weight: weight, bias: bias, groupSize: groupSize, bits: bits)
+    }
+
+    /// Initialize a QuantizedLinear layer that applies the same linear transformation up to the quantization error.
+    ///
+    /// - Parameters:
+    ///   - other: a `Linear` layer
+    ///   - groupSize: The group size to use for the quantized weight
+    ///   - bits: The bit width to use for the quantized weight
+    public convenience init(_ other: Linear, groupSize: Int = 64, bits: Int = 4) {
+        self.init(weight: other.weight, bias: other.bias, groupSize: groupSize, bits: bits)
     }
 
     /// Initialize a ``QuantizedLinear`` with non-quantized weights and bias.
@@ -113,8 +217,9 @@ open class QuantizedLinear: Linear {
     ///   - groupSize: The group size to use for the quantized weight
     ///   - bits: The bit width to use for the quantized weight
     /// - Returns: a new `QuantizedLayer`
+    @available(*, deprecated, renamed: "init(_:groupSize:bits:)")
     static public func from(linear: Linear, groupSize: Int = 64, bits: Int = 4) -> QuantizedLinear {
-        QuantizedLinear(weight: linear.weight, bias: linear.bias, groupSize: groupSize, bits: bits)
+        QuantizedLinear(linear, groupSize: groupSize, bits: bits)
     }
 
     /// Replace ``Linear`` layers with `QuantizedLinear`.
@@ -126,6 +231,7 @@ open class QuantizedLinear: Linear {
     ///   - groupSize: The group size to use for the quantized weight
     ///   - bits: The bit width to use for the quantized weight
     ///   - predicate: optional predicate for identifying layers to change -- default finds all `Linear` layers
+    @available(*, deprecated, renamed: "quantize(model:groupSize:bits:filter:apply:)")
     static public func quantize(
         model: Module,
         groupSize: Int = 64,
@@ -135,7 +241,7 @@ open class QuantizedLinear: Linear {
         let updates = model.leafModules().compactMapValues { m -> Module? in
             guard let linear = m as? Linear else { return nil }
             if predicate(linear) {
-                return Self.from(linear: linear, groupSize: groupSize, bits: bits)
+                return QuantizedLinear(linear, groupSize: groupSize, bits: bits)
             } else {
                 return nil
             }
