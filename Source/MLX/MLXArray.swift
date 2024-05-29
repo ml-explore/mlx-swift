@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Metal
 import Numerics
 
 public final class MLXArray {
@@ -254,6 +255,7 @@ public final class MLXArray {
     /// ### See Also
     /// - <doc:conversion>
     /// - ``asData(noCopy:)``
+    /// - ``asMTLBuffer(device:noCopy:)``
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
         self.eval()
 
@@ -314,6 +316,7 @@ public final class MLXArray {
     /// ### See Also
     /// - <doc:conversion>
     /// - ``asArray(_:)``
+    /// - ``asMTLBuffer(device:noCopy:)``
     public func asData(noCopy: Bool = false) -> Data {
         self.eval()
 
@@ -324,6 +327,50 @@ public final class MLXArray {
                     deallocator: .none)
             } else {
                 Data(buffer: UnsafeBufferPointer(start: ptr, count: self.size))
+            }
+        }
+
+        switch self.dtype {
+        case .bool: return convert(mlx_array_data_bool(ctx))
+        case .uint8: return convert(mlx_array_data_uint8(ctx))
+        case .uint16: return convert(mlx_array_data_uint16(ctx))
+        case .uint32: return convert(mlx_array_data_uint32(ctx))
+        case .uint64: return convert(mlx_array_data_uint64(ctx))
+        case .int8: return convert(mlx_array_data_int8(ctx))
+        case .int16: return convert(mlx_array_data_int16(ctx))
+        case .int32: return convert(mlx_array_data_int32(ctx))
+        case .int64: return convert(mlx_array_data_int64(ctx))
+        #if !arch(x86_64)
+            case .float16: return convert(mlx_array_data_float16(ctx))
+        #endif
+        case .float32: return convert(mlx_array_data_float32(ctx))
+        case .complex64:
+            return convert(UnsafePointer<Complex<Float32>>(mlx_array_data_complex64(ctx)))
+        default:
+            fatalError("Unable to get asData() for \(self.dtype)")
+        }
+    }
+
+    /// Return the contents as a Metal buffer in the native ``dtype``.
+    ///
+    /// > If you can guarantee the lifetime of the ``MLXArray`` will exceed the MTLBuffer and that
+    /// the array will not be mutated (e.g. using indexing or other means) it is possible to pass `noCopy: true`
+    /// to reference the backing bytes.
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
+    /// - ``asArray(_:)``
+    /// - ``asData(noCopy:)``
+    public func asMTLBuffer(device: any MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
+        self.eval()
+
+        func convert<T>(_ ptr: UnsafePointer<T>) -> (any MTLBuffer)? {
+            if noCopy {
+                return device.makeBuffer(
+                    bytesNoCopy: UnsafeMutableRawPointer(mutating: ptr), length: self.size)
+            } else {
+                return device.makeBuffer(
+                    bytes: UnsafeMutableRawPointer(mutating: ptr), length: self.size)
             }
         }
 
