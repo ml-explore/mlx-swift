@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Metal
 import Numerics
 
 public final class MLXArray {
@@ -352,6 +353,7 @@ public final class MLXArray {
     /// ### See Also
     /// - <doc:conversion>
     /// - ``asData(noCopy:)``
+    /// - ``asMTLBuffer(device:noCopy:)``
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
         if type.dtype != self.dtype {
             return self.asType(type).asArray(type)
@@ -376,6 +378,7 @@ public final class MLXArray {
     /// ### See Also
     /// - <doc:conversion>
     /// - ``asArray(_:)``
+    /// - ``asMTLBuffer(device:noCopy:)``
     public func asData(noCopy: Bool = false) -> Data {
         self.eval()
 
@@ -395,6 +398,31 @@ public final class MLXArray {
                 copy(from: source, to: destination)
             }
             return data
+        }
+    }
+
+    /// Return the contents as a Metal buffer in the native ``dtype``.
+    ///
+    /// > If you can guarantee the lifetime of the ``MLXArray`` will exceed the MTLBuffer and that
+    /// the array will not be mutated (e.g. using indexing or other means) it is possible to pass `noCopy: true`
+    /// to reference the backing bytes.
+    ///
+    /// ### See Also
+    /// - <doc:conversion>
+    /// - ``asArray(_:)``
+    /// - ``asData(noCopy:)``
+    public func asMTLBuffer(device: any MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
+        self.eval()
+
+        if noCopy && self.contiguousToDimension() == 0 {
+            // the backing is contiguous, we can provide a wrapper
+            // for the contents without a copy (if requested)
+            let source = UnsafeMutableRawPointer(mutating: mlx_array_data_uint8(self.ctx))!
+            return device.makeBuffer(bytesNoCopy: source, length: self.nbytes)
+        } else {
+            let source = UnsafeRawBufferPointer(
+                start: mlx_array_data_uint8(self.ctx), count: physicalSize * itemSize)
+            return device.makeBuffer(bytes: source.baseAddress!, length: self.nbytes)
         }
     }
 

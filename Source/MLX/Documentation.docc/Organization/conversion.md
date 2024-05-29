@@ -12,6 +12,7 @@ MLX has several functions to support converting between ``DType``:
 - ``MLXArray/asType(_:stream:)-6d44y``
 - ``MLXArray/asArray(_:)``
 - ``MLXArray/asData(noCopy:)``
+- ``MLXArray/asMTLBuffer(device:noCopy:)``
 - ``MLXArray/asImaginary(stream:)``
 - ``MLXArray/imaginaryPart(stream:)``
 - ``MLXArray/realPart(stream:)``
