@@ -93,4 +93,19 @@ class MLXArrayTests: XCTestCase {
         XCTAssertEqual(s_arr, expected)
     }
 
+    func testAsArrayNonContiguous4() {
+        // buffer with holes (last dimension has stride of 2 and
+        // thus larger storage than it physically needs)
+        let a = MLXArray(0 ..< 16, [4, 4])
+        let s = a[0..., .stride(by: 2)]
+
+        let expected: [Int32] = [0, 2, 4, 6, 8, 10, 12, 14]
+        assertEqual(s, MLXArray(expected, [4, 2]))
+
+        XCTAssertEqual(s.strides, [4, 2])
+
+        let s_arr = s.asArray(Int32.self)
+        XCTAssertEqual(s_arr, expected)
+    }
+
 }
