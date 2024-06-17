@@ -82,6 +82,7 @@ are the CPU and GPU.
 ### Parameter Types
 
 - ``IntOrPair``
+- ``IntOrTriple``
 - ``IntOrArray``
 - ``FloatOrArray``
 

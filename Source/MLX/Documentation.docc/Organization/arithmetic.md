@@ -117,6 +117,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 ### MLXArray Element-wise Arithmetic Functions
 
 - ``MLXArray/abs(stream:)``
+- ``MLXArray/conjugate(stream:)``
 - ``MLXArray/cos(stream:)``
 - ``MLXArray/exp(stream:)``
 - ``MLXArray/floor(stream:)``
@@ -142,12 +143,14 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``asin(_:stream:)``
 - ``asinh(_:stream:)``
 - ``atan(_:stream:)``
+- ``atan2(_:_:stream:)``
 - ``atanh(_:stream:)``
 - ``bitwiseAnd(_:_:stream:)``
 - ``bitwiseOr(_:_:stream:)``
 - ``bitwiseXOr(_:_:stream:)``
 - ``ceil(_:stream:)``
 - ``clip(_:min:max:stream:)``
+- ``conjugate(_:stream:)``
 - ``cos(_:stream:)``
 - ``cosh(_:stream:)``
 - ``degrees(_:stream:)``
@@ -172,7 +175,6 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``logicalAnd(_:_:stream:)``
 - ``logicalNot(_:stream:)``
 - ``logicalOr(_:_:stream:)``
-- ``matmul(_:_:stream:)``
 - ``maximum(_:_:stream:)``
 - ``minimum(_:_:stream:)``
 - ``multiply(_:_:stream:)``
@@ -197,14 +199,18 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``subtract(_:_:stream:)``
 - ``tan(_:stream:)``
 - ``tanh(_:stream:)``
+- ``trace(_:offset:axis1:axis2:dtype:stream:)``
 - ``which(_:_:_:stream:)``
 
 ### Vector, Matrix, and Tensor Products
 
 - ``MLXArray/matmul(_:stream:)``
 - ``matmul(_:_:stream:)``
+- ``gatherMatmul(_:_:lhsIndices:rhsIndices:stream:)``
 - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
 - ``addMM(_:_:_:alpha:beta:stream:)``
+- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
+- ``gatherQuantizedMatmul(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``

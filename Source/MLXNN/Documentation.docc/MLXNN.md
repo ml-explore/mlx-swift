@@ -64,6 +64,7 @@ See <doc:training>
 
 - ``Module``
 - ``UnaryLayer``
+- ``Quantizable``
 
 - ``ModuleInfo``
 - ``ParameterInfo``

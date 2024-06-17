@@ -393,6 +393,31 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
         }
     }
 
+    /// Reduces the contents of the NestedDictionary by visiting each value and applying the `reducer`
+    /// function, accumulating the result.
+    ///
+    /// Typically called via ``NestedDictionary/reduce(_:_:)``.
+    public func reduce<R>(_ initialValue: R, _ reducer: (R, Element) throws -> R) rethrows -> R {
+        switch self {
+        case .none:
+            return initialValue
+        case .value(let element):
+            return try reducer(initialValue, element)
+        case .array(let array):
+            var v = initialValue
+            for item in array {
+                v = try item.reduce(v, reducer)
+            }
+            return v
+        case .dictionary(let dictionary):
+            var v = initialValue
+            for item in dictionary.values {
+                v = try item.reduce(v, reducer)
+            }
+            return v
+        }
+    }
+
     /// Return a flattened representation of the structured contents as an array of key/value tuples.
     ///
     /// This is typically called via ``NestedDictionary/flattened(prefix:)``.
@@ -872,6 +897,12 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
         default:
             fatalError()
         }
+    }
+
+    /// Reduces the contents of the NestedDictionary by visiting each value and applying the `reducer`
+    /// function, accumulating the result.
+    public func reduce<R>(_ initialValue: R, _ reducer: (R, Element) throws -> R) rethrows -> R {
+        try NestedItem.dictionary(contents).reduce(initialValue, reducer)
     }
 
     /// Transform the values in the nested structure using the `transform()` function.

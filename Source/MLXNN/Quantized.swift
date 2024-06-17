@@ -4,14 +4,19 @@ import Foundation
 import MLX
 import MLXRandom
 
-public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Module? {
-    if let linear = layer as? Linear {
-        return QuantizedLinear(linear, groupSize: groupSize, bits: bits)
+/// Protocol for layers that can be quantized
+public protocol Quantizable {
 
-    } else if let embedding = layer as? Embedding {
-        return QuantizedEmbedding(embedding, groupSize: groupSize, bits: bits)
+    /// Return the module as a quantized representation
+    func toQuantized(groupSize: Int, bits: Int) -> Module
+}
+
+public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Module? {
+    if let quantizable = layer as? Quantizable {
+        quantizable.toQuantized(groupSize: groupSize, bits: bits)
+    } else {
+        nil
     }
-    return nil
 }
 
 /// Quantize the sub-modules of a module according to a filter.

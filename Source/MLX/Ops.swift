@@ -150,6 +150,15 @@ public func atan(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
     MLXArray(mlx_arctan(array.ctx, stream.ctx))
 }
 
+/// Element-wise inverse tangent of the ratio of two arrays.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``atan(_:stream:)``
+public func atan2(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_arctan2(a.ctx, b.ctx, stream.ctx))
+}
+
 /// Element-wise inverse hyperbolic tangent.
 ///
 /// - Parameters:
@@ -472,6 +481,7 @@ public func concatenated(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDe
 /// ### See Also
 /// - <doc:convolution>
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``conv3d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
 public func conv1d(
     _ array: MLXArray, _ weight: MLXArray, stride: Int = 1, padding: Int = 0, dilation: Int = 1,
@@ -514,6 +524,7 @@ public func conv1d(
 /// - <doc:convolution>
 /// - ``IntOrPair``
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``conv3d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
 /// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
 public func conv2d(
@@ -525,6 +536,53 @@ public func conv2d(
             array.ctx, weight.ctx, stride.first.int32, stride.second.int32, padding.first.int32,
             padding.second.int32, dilation.first.int32, dilation.second.int32, groups.int32,
             stream.ctx))
+}
+
+/// 3D convolution over an input with several channels.
+///
+/// > Only the default `groups=1` is currently supported.
+///
+/// The numeric parameters may be given as single values:
+///
+/// ```swift
+/// padding: 1
+/// ```
+///
+/// This will produce a padding of `(1, 1, 1)`.  You can also give an array:
+///
+/// ```swift
+/// padding: [2, 3, 3]
+/// ```
+///
+/// See ``IntOrTriple`` for more information.
+///
+/// - Parameters:
+///     - array: input array of shape `[N, D, H, W, C_in]`
+///     - weight: weight array of shape `[C_out, D, H, W, C_in]`
+///     - stride: kernel stride
+///     - padding: input padding
+///     - dilation: kernel dilation
+///     - groups: input feature groups
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:convolution>
+/// - ``IntOrTriple``
+/// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convolve(_:_:mode:stream:)``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+public func conv3d(
+    _ array: MLXArray, _ weight: MLXArray, stride: IntOrTriple = 1, padding: IntOrTriple = 0,
+    dilation: IntOrTriple = 1, groups: Int = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_conv3d(
+            array.ctx, weight.ctx,
+            stride.first.int32, stride.second.int32, stride.third.int32,
+            padding.first.int32, padding.second.int32, padding.third.int32,
+            dilation.first.int32, dilation.second.int32, dilation.third.int32,
+            groups.int32, stream.ctx))
 }
 
 /// General convolution over an input with several channels.
@@ -878,6 +936,55 @@ public func expandedDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDev
 /// - ``exp(_:stream:)``
 public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_expm1(array.ctx, stream.ctx))
+}
+
+/// Matrix multiplication with matrix-level gather.
+///
+/// Performs a gather of the operands with the given indices followed by a
+/// (possibly batched) matrix multiplication of two arrays.  This operation
+/// is more efficient than explicitly applying a `take` followed by a
+/// `matmul`.
+///
+/// The indices `lhsIndices` and `rhsIndices` contain flat indices
+/// along the batch dimensions (i.e. all but the last two dimensions) of
+/// `a` and `b` respectively.
+///
+/// For `a` with shape `(A1, A2, ..., AS, M, K)`, `lhsIndices`
+/// contains indices from the range `[0, A1 * A2 * ... * AS)`
+///
+/// For `b` with shape `(B1, B2, ..., BS, M, K)`, `rhsIndices`
+/// contains indices from the range `[0, B1 * B2 * ... * BS)`
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``matmul(_:_:stream:)``
+public func gatherMatmul(
+    _ a: MLXArray, _ b: MLXArray, lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_gather_mm(a.ctx, b.ctx, lhsIndices?.ctx, rhsIndices?.ctx, stream.ctx))
+}
+
+/// Perform quantized matrix multiplication with matrix-level gather.
+///
+/// This operation is the quantized equivalent to ``gatherMatmul(_:_:lhsIndices:rhsIndices:stream:)``
+///
+/// Note that ``scales`` and ``biases`` must have the same batch dimensions
+/// as ``w`` since they represent the same quantized matrix.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
+public func gatherQuantizedMatmul(
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray,
+    lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
+    transpose: Bool = true, groupSize: Int = 64, bits: Int = 4,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_gather_qmm(
+            x.ctx, w.ctx, scales.ctx, biases.ctx, lhsIndices?.ctx, rhsIndices?.ctx, transpose,
+            groupSize.int32, bits.int32, stream.ctx))
 }
 
 /// Element-wise greater than.
@@ -2154,6 +2261,29 @@ public func top(_ array: MLXArray, k: Int, axis: Int = -1, stream: StreamOrDevic
 /// - ``top(_:k:axis:stream:)``
 public func top(_ array: MLXArray, k: Int, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_topk_all(array.ctx, k.int32, stream.ctx))
+}
+
+/// Return the sum along a specified diagonal in the given array.
+///
+/// - Parameters:
+///   - array: input array
+///   - offset: Offset of the diagonal from the main diagonal
+///   - axis1: The first axis of the 2-D sub-arrays from which the diagonals should be taken
+///   - axis2: The second axis of the 2-D sub-arrays from which the diagonals should be taken
+///   - dtype: Data type of the output array. If unspecified the output type is inferred from the input array.
+///   - stream: stream or device to evaluate on
+/// - Returns: sum of specified diagonal.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func trace(
+    _ array: MLXArray, offset: Int = 0, axis1: Int = 0, axis2: Int = 1, dtype: DType? = nil,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_trace(
+            array.ctx, offset.int32, axis1.int32, axis2.int32, (dtype ?? array.dtype).cmlxDtype,
+            stream.ctx))
 }
 
 /// Zeros the array above the given diagonal.

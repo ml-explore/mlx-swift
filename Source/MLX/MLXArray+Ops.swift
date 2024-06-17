@@ -1408,6 +1408,15 @@ extension MLXArray {
         return MLXArray(mlx_array_equal(ctx, other.ctx, equalNAN, stream.ctx))
     }
 
+    /// Element-wise complex conjugate of the input.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``conjugate(_:stream:)``
+    public func conjugate(stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_conjugate(ctx, stream.ctx))
+    }
+
     /// Element-wise cosine.
     ///
     /// ### See Also

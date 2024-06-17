@@ -3896,29 +3896,29 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(wq.shape, [32, 64])
         XCTAssertEqual(wq.dtype, .uint32)
         XCTAssertEqual(
-            wq.mean().item(Float.self), 1684202.0,
-            accuracy: 33684.04)
+            wq.mean().item(Float.self), 732984.1875,
+            accuracy: 14659.68375)
         XCTAssertEqual(
-            wq.sum().item(Float.self), 3_449_245_696,
-            accuracy: 68984912.26)
+            wq.sum().item(Float.self), 1_501_151_616,
+            accuracy: 30023031.62)
 
         XCTAssertEqual(scales.shape, [32, 4])
         XCTAssertEqual(scales.dtype, .float32)
         XCTAssertEqual(
-            scales.mean().item(Float.self), 0.0037989525590091944,
-            accuracy: 7.597905118018388e-05)
+            scales.mean().item(Float.self), -0.0037985900416970253,
+            accuracy: -7.597180083394051e-05)
         XCTAssertEqual(
-            scales.sum().item(Float.self), 0.4862659275531769,
-            accuracy: 0.009725318551063537)
+            scales.sum().item(Float.self), -0.48621952533721924,
+            accuracy: -0.009724390506744385)
 
         XCTAssertEqual(biases.shape, [32, 4])
         XCTAssertEqual(biases.dtype, .float32)
         XCTAssertEqual(
-            biases.mean().item(Float.self), 0.01748880185186863,
-            accuracy: 0.0003497760370373726)
+            biases.mean().item(Float.self), 0.9862217307090759,
+            accuracy: 0.01972443461418152)
         XCTAssertEqual(
-            biases.sum().item(Float.self), 2.2385666370391846,
-            accuracy: 0.044771332740783695)
+            biases.sum().item(Float.self), 126.23638153076172,
+            accuracy: 2.5247276306152346)
 
     }
 

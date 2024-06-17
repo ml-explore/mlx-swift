@@ -383,6 +383,14 @@ public func cos(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
     MLXArray(mlx_cos(array.ctx, stream.ctx))
 }
 
+/// Element-wise complex conjugate of the input.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func conjugate(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_conjugate(array.ctx, stream.ctx))
+}
+
 /// Return the cumulative maximum of the elements along the given axis.
 ///
 /// ```swift

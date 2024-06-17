@@ -8,6 +8,7 @@ import MLXRandom
 ///
 /// ### See Also
 /// - ``Conv2d``
+/// - ``Conv3d``
 /// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
 open class Conv1d: Module, UnaryLayer {
 
@@ -61,6 +62,7 @@ open class Conv1d: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - ``Conv1d``
+/// - ``Conv3d``
 /// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
 open class Conv2d: Module, UnaryLayer {
 
@@ -105,6 +107,64 @@ open class Conv2d: Module, UnaryLayer {
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var y = conv2d(x, weight, stride: .init(stride), padding: .init(padding))
+        if let bias {
+            y = y + bias
+        }
+        return y
+    }
+}
+
+/// Applies a 3-dimensional convolution over the multi-channel input image.
+///
+/// ### See Also
+/// - ``Conv1d``
+/// - ``Conv2d``
+/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
+open class Conv3d: Module, UnaryLayer {
+
+    public let weight: MLXArray
+    public let bias: MLXArray?
+    public let padding: (Int, Int, Int)
+    public let stride: (Int, Int, Int)
+
+    /// Applies a 3-dimensional convolution over the multi-channel input image.
+    ///
+    /// The channels are expected to be last i.e. the input shape should be `NDHWC` where:
+    ///
+    /// - `N` is the batch dimension
+    /// - `D` is the input image depth
+    /// - `H` is the input image height
+    /// - `W` is the input image width
+    /// - `C` is the number of input channels
+    ///
+    /// - Parameters:
+    ///   - inputChannels: number of input channels (`C` from the discussion)
+    ///   - outputChannels: number of output channels
+    ///   - kernelSize: size of the convolution filters
+    ///   - stride: stride when applying the filter
+    ///   - padding: many positions to 0-pad the input with
+    ///   - bias: if `true` add a learnable bias to the output
+    public init(
+        inputChannels: Int,
+        outputChannels: Int,
+        kernelSize: IntOrTriple,
+        stride: IntOrTriple = 1,
+        padding: IntOrTriple = 0,
+        bias: Bool = true
+    ) {
+        let scale = sqrt(
+            1 / Float(inputChannels * kernelSize.first * kernelSize.second * kernelSize.third))
+
+        self.weight = uniform(
+            low: -scale, high: scale,
+            [outputChannels, kernelSize.first, kernelSize.second, kernelSize.third, inputChannels])
+        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.padding = padding.values
+        self.stride = stride.values
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        var y = conv3d(x, weight, stride: .init(stride), padding: .init(padding))
         if let bias {
             y = y + bias
         }

@@ -41,6 +41,46 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral,
     }
 }
 
+/// Parameter for convolutions allowing single integers or triples.
+///
+/// For example the numeric parameters here are all ``IntOrTriple``:
+///
+/// ```swift
+/// conv3d(input, weights, stride: 3, padding: [2, 2, 1], padding: .init((2, 3, 1)))
+/// ```
+///
+/// ### See Also:
+/// - ``IntOrPair``
+public struct IntOrTriple: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
+    public let values: (Int, Int, Int)
+
+    public var first: Int { values.0 }
+    public var second: Int { values.1 }
+    public var third: Int { values.2 }
+
+    public init(integerLiteral value: Int) {
+        self.values = (value, value, value)
+    }
+
+    public init(arrayLiteral elements: Int...) {
+        precondition(elements.count == 3)
+        self.values = (elements[0], elements[1], elements[2])
+    }
+
+    public init(_ values: [Int]) {
+        precondition(values.count == 3)
+        self.values = (values[0], values[1], values[2])
+    }
+
+    public init(_ values: (Int, Int, Int)) {
+        self.values = values
+    }
+
+    public init(_ value: Int) {
+        self.values = (value, value, value)
+    }
+}
+
 /// Parameter for convolutions allowing single integers or arrays.
 ///
 /// For example the numeric parameters here are all ``IntOrArray``:
