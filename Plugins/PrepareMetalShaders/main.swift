@@ -44,7 +44,6 @@ struct PrepareMetalShaders: BuildToolPlugin {
         "scaled_dot_product_attention.metal",
     ]
 
-
     func transformIncludes(url: URL) throws {
         let contents = try String(contentsOf: url, encoding: .utf8)
 
@@ -93,7 +92,7 @@ struct PrepareMetalShaders: BuildToolPlugin {
                 guard url.lastPathComponent != "CMakeLists.txt" else {
                     continue
                 }
-                
+
                 if url.pathExtension == "h" || kernels.contains(url.lastPathComponent) {
                     // ok
                 } else {
@@ -164,7 +163,7 @@ struct PrepareMetalShaders: BuildToolPlugin {
 
     func createBuildCommands(context: PluginContext, target: Target) throws -> [Command] {
         var commands = [Command]()
-        
+
         let sourcePath = target.directory.appending(["mlx", "mlx", "backend", "metal", "kernels"])
         let source = URL(fileURLWithPath: sourcePath.string)
 
@@ -204,7 +203,7 @@ struct PrepareMetalShaders: BuildToolPlugin {
                     }
                 }
             }
-            
+
             // remove any kernels that are not in the list
             if let enumerator = FileManager.default.enumerator(
                 at: destination, includingPropertiesForKeys: [.isRegularFileKey],
