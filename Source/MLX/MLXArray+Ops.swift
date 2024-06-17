@@ -649,6 +649,197 @@ extension MLXArray {
         return MLXArray(mlx_logical_or(lhs.ctx, rhs.ctx, s.ctx))
     }
 
+    /// Element-wise bitwise and.
+    ///
+    /// Take the bitwise and of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseAnd(_:_:stream:)``
+    public static func & (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        return MLXArray(mlx_bitwise_and(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise bitwise and.
+    ///
+    /// Take the bitwise and of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseAnd(_:_:stream:)``
+    public static func & <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        lhs & rhs.asMLXArray(dtype: lhs.dtype)
+    }
+
+    /// Element-wise bitwise and.
+    ///
+    /// Take the bitwise and of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseAnd(_:_:stream:)``
+    public static func & <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
+        lhs.asMLXArray(dtype: rhs.dtype) & rhs
+    }
+
+    /// Element-wise bitwise or.
+    ///
+    /// Take the bitwise or of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseOr(_:_:stream:)``
+    public static func | (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        return MLXArray(mlx_bitwise_or(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise bitwise or.
+    ///
+    /// Take the bitwise or of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseOr(_:_:stream:)``
+    public static func | <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        lhs | rhs.asMLXArray(dtype: lhs.dtype)
+    }
+
+    /// Element-wise bitwise or.
+    ///
+    /// Take the bitwise or of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseOr(_:_:stream:)``
+    public static func | <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
+        lhs.asMLXArray(dtype: rhs.dtype) | rhs
+    }
+
+    /// Element-wise bitwise xor.
+    ///
+    /// Take the bitwise xor of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseXOr(_:_:stream:)``
+    public static func ^ (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        return MLXArray(mlx_bitwise_xor(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise bitwise xor.
+    ///
+    /// Take the bitwise xor of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseXOr(_:_:stream:)``
+    public static func ^ <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        lhs ^ rhs.asMLXArray(dtype: lhs.dtype)
+    }
+
+    /// Element-wise bitwise xor.
+    ///
+    /// Take the bitwise xor of two arrays with numpy-style broadcasting
+    /// semantics. Either or both input arrays can also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseXOr(_:_:stream:)``
+    public static func ^ <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
+        lhs.asMLXArray(dtype: rhs.dtype) ^ rhs
+    }
+
+    /// Element-wise left shift.
+    ///
+    /// Shift the bits of the first input to the left by the second using
+    /// numpy-style broadcasting semantics. Either or both input arrays can
+    /// also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``leftShift(_:_:stream:)``
+    public static func << (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        return MLXArray(mlx_left_shift(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise left shift.
+    ///
+    /// Shift the bits of the first input to the left by the second using
+    /// numpy-style broadcasting semantics. Either or both input arrays can
+    /// also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``leftShift(_:_:stream:)``
+    public static func << <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        lhs << rhs.asMLXArray(dtype: lhs.dtype)
+    }
+
+    /// Element-wise left shift.
+    ///
+    /// Shift the bits of the first input to the left by the second using
+    /// numpy-style broadcasting semantics. Either or both input arrays can
+    /// also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``leftShift(_:_:stream:)``
+    public static func << <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
+        lhs.asMLXArray(dtype: rhs.dtype) << rhs
+    }
+
+    /// Element-wise right shift.
+    ///
+    /// Shift the bits of the first input to the right by the second using
+    /// numpy-style broadcasting semantics. Either or both input arrays can
+    /// also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``rightShift(_:_:stream:)``
+    public static func >> (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        return MLXArray(mlx_right_shift(lhs.ctx, rhs.ctx, s.ctx))
+    }
+
+    /// Element-wise right shift.
+    ///
+    /// Shift the bits of the first input to the right by the second using
+    /// numpy-style broadcasting semantics. Either or both input arrays can
+    /// also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``rightShift(_:_:stream:)``
+    public static func >> <T: ScalarOrArray>(lhs: MLXArray, rhs: T) -> MLXArray {
+        lhs >> rhs.asMLXArray(dtype: lhs.dtype)
+    }
+
+    /// Element-wise right shift.
+    ///
+    /// Shift the bits of the first input to the right by the second using
+    /// numpy-style broadcasting semantics. Either or both input arrays can
+    /// also be scalars.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``rightShift(_:_:stream:)``
+    public static func >> <T: ScalarOrArray>(lhs: T, rhs: MLXArray) -> MLXArray {
+        lhs.asMLXArray(dtype: rhs.dtype) >> rhs
+    }
+
 }
 
 extension MLXArray {

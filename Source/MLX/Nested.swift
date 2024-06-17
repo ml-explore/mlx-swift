@@ -36,7 +36,8 @@ public func indentedDescription(_ value: Any, _ indent: Int) -> String {
 ///
 /// ### See Also
 /// - ``NestedDictionary``
-/// - ``NestedDictionary/mapValues(transform:)``
+/// - ``NestedDictionary/mapValues(transform:)-1ehvq``
+/// - ``NestedDictionary/mapValues(transform:)-4q1m3``
 /// - ``NestedDictionary/flattened(prefix:)``
 /// - ``NestedDictionary/unflattened(_:)-4p8bn``
 public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
@@ -62,10 +63,10 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
 
     /// Transform the values in the nested structure using the `transform()` function.
     ///
-    /// This is typically called via ``NestedDictionary/mapValues(transform:)``.
+    /// This is typically called via ``NestedDictionary/mapValues(transform:)-1ehvq``.
     ///
     /// ### See Also
-    /// - ``NestedDictionary/mapValues(transform:)``
+    /// - ``NestedDictionary/mapValues(transform:)-1ehvq``
     public func mapValues<Result>(_ transform: (Element) throws -> Result) rethrows -> NestedItem<
         Key, Result
     > {

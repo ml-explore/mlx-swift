@@ -98,6 +98,21 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``MLXArray/.>=(_:_:)-6zxj9``
 - ``MLXArray/.&&(_:_:)``
 - ``MLXArray/.||(_:_:)``
+- ``MLXArray/&(_:_:)-9in7a``
+- ``MLXArray/&(_:_:)-8js41``
+- ``MLXArray/&(_:_:)-7iu4h``
+- ``MLXArray/|(_:_:)-2upd6``
+- ``MLXArray/|(_:_:)-35lfz``
+- ``MLXArray/|(_:_:)-7c6lr``
+- ``MLXArray/^(_:_:)-8hj69``
+- ``MLXArray/^(_:_:)-2oktd``
+- ``MLXArray/^(_:_:)-dik7``
+- ``MLXArray/<<(_:_:)-1dfss``
+- ``MLXArray/<<(_:_:)-1dfss``
+- ``MLXArray/<<(_:_:)-7hmgt``
+- ``MLXArray/>>(_:_:)-zpp3``
+- ``MLXArray/>>(_:_:)-4z891``
+- ``MLXArray/>>(_:_:)-89b4j``
 
 ### MLXArray Element-wise Arithmetic Functions
 
@@ -128,6 +143,9 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``asinh(_:stream:)``
 - ``atan(_:stream:)``
 - ``atanh(_:stream:)``
+- ``bitwiseAnd(_:_:stream:)``
+- ``bitwiseOr(_:_:stream:)``
+- ``bitwiseXOr(_:_:stream:)``
 - ``ceil(_:stream:)``
 - ``clip(_:min:max:stream:)``
 - ``cos(_:stream:)``
@@ -145,6 +163,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``isInf(_:stream:)``
 - ``isPosInf(_:stream:)``
 - ``isNegInf(_:stream:)``
+- ``leftShift(_:_:stream:)``
 - ``log(_:stream:)``
 - ``log10(_:stream:)``
 - ``log1p(_:stream:)``
@@ -165,6 +184,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``radians(_:stream:)``
 - ``reciprocal(_:stream:)``
 - ``remainder(_:_:stream:)``
+- ``rightShift(_:_:stream:)``
 - ``round(_:decimals:stream:)``
 - ``rsqrt(_:stream:)``
 - ``sigmoid(_:stream:)``

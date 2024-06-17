@@ -332,6 +332,48 @@ public func arrayEqual<T: ScalarOrArray>(
     return MLXArray(mlx_array_equal(array.ctx, other.ctx, equalNAN, stream.ctx))
 }
 
+/// Element-wise bitwise and.
+///
+/// Take the bitwise and of two arrays with numpy-style broadcasting
+/// semantics. Either or both input arrays can also be scalars.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func bitwiseAnd<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_bitwise_and(a.ctx, b.ctx, stream.ctx))
+}
+
+/// Element-wise bitwise or.
+///
+/// Take the bitwise or of two arrays with numpy-style broadcasting
+/// semantics. Either or both input arrays can also be scalars.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func bitwiseOr<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_bitwise_or(a.ctx, b.ctx, stream.ctx))
+}
+
+/// Element-wise bitwise xor.
+///
+/// Take the bitwise xor of two arrays with numpy-style broadcasting
+/// semantics. Either or both input arrays can also be scalars.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func bitwiseXOr<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_bitwise_xor(a.ctx, b.ctx, stream.ctx))
+}
+
 /// Element-wise cosine.
 ///
 /// ### See Also
@@ -631,6 +673,21 @@ public func floorDivide<T: ScalarOrArray>(
 ) -> MLXArray {
     let other = other.asMLXArray(dtype: array.dtype)
     return MLXArray(mlx_floor_divide(array.ctx, other.ctx, stream.ctx))
+}
+
+/// Element-wise left shift.
+///
+/// Shift the bits of the first input to the left by the second using
+/// numpy-style broadcasting semantics. Either or both input arrays can
+/// also be scalars.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func leftShift<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_left_shift(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Element-wise natural logarithm.
@@ -1216,6 +1273,21 @@ public func reshaped(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevi
     -> MLXArray
 {
     MLXArray(mlx_reshape(array.ctx, newShape.asInt32, newShape.count, stream.ctx))
+}
+
+/// Element-wise right shift.
+///
+/// Shift the bits of the first input to the right by the second using
+/// numpy-style broadcasting semantics. Either or both input arrays can
+/// also be scalars.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func rightShift<A: ScalarOrArray, B: ScalarOrArray>(
+    _ a: A, _ b: B, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    return MLXArray(mlx_right_shift(a.ctx, b.ctx, stream.ctx))
 }
 
 /// Round to the given number of decimals.
