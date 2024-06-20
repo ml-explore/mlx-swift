@@ -371,7 +371,7 @@ open class Module {
     }
 
     /// Options for verifying ``update(parameters:verify:)`` and ``update(modules:verify:)``.
-    public struct VerifyUpdate: OptionSet {
+    public struct VerifyUpdate: OptionSet, Sendable {
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }

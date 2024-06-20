@@ -1347,7 +1347,7 @@ extension MLXArray: MLXArrayIndex {
     }
 }
 
-public struct MLXEllipsisIndex: MLXArrayIndex {
+public struct MLXEllipsisIndex: MLXArrayIndex, Sendable {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .ellipsis
     }
@@ -1379,7 +1379,7 @@ extension MLXArrayIndex where Self == MLXEllipsisIndex {
     public static var ellipsis: Self { Self() }
 }
 
-public struct MLXNewAxisIndex: MLXArrayIndex {
+public struct MLXNewAxisIndex: MLXArrayIndex, Sendable {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .newAxis
     }
@@ -1425,7 +1425,7 @@ extension MLXArrayIndex where Self == MLXNewAxisIndex {
 /// ### See Also
 /// - <doc:indexing>
 /// - ``MLXArrayIndex/stride(from:to:by:)``
-public struct MLXSlice: Equatable, CustomStringConvertible {
+public struct MLXSlice: Equatable, CustomStringConvertible, Sendable {
 
     private let _start: Int32?
     private let _end: Int32?

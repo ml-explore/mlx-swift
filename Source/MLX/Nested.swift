@@ -609,6 +609,9 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
 extension NestedItem: Equatable where Element: Equatable {
 }
 
+extension NestedItem: Sendable where Element: Sendable, Key: Sendable {
+}
+
 /// Nested structure of arrays, dictionaries and values.
 ///
 /// Some of the capabilities of `MLX` (especially in `MLXNN`) need to deal with arbitrarily structured
@@ -963,6 +966,9 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
 }
 
 extension NestedDictionary: Equatable where Element: Equatable {
+}
+
+extension NestedDictionary: Sendable where Element: Sendable, Key: Sendable {
 }
 
 extension NestedDictionary: Collection {

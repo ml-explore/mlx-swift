@@ -12,7 +12,7 @@ import Foundation
 ///
 /// ### See Also:
 /// - ``IntOrArray``
-public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
+public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral, Sendable {
     public let values: (Int, Int)
 
     public var first: Int { values.0 }
@@ -52,7 +52,7 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral 
 /// ### See Also:
 /// - ``IntOrPair``
 /// - ``FloatOrArray``
-public enum IntOrArray: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
+public enum IntOrArray: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral, Sendable {
     case int(Int)
     case array([Int])
 
@@ -112,7 +112,7 @@ public enum IntOrArray: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
 ///
 /// ### See Also:
 /// - ``IntOrArray``
-public enum FloatOrArray: ExpressibleByFloatLiteral, ExpressibleByArrayLiteral {
+public enum FloatOrArray: ExpressibleByFloatLiteral, ExpressibleByArrayLiteral, Sendable {
     case float(Float)
     case array([Float])
 

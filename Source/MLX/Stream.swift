@@ -21,7 +21,7 @@ import Cmlx
 /// - <doc:using-streams>
 /// - ``Stream``
 /// - ``Device``
-public struct StreamOrDevice: CustomStringConvertible {
+public struct StreamOrDevice: CustomStringConvertible, Sendable {
 
     private let stream: Stream
 
@@ -78,7 +78,7 @@ public struct StreamOrDevice: CustomStringConvertible {
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
-public final class Stream {
+public final class Stream: @unchecked Sendable {
 
     let ctx: mlx_stream
 

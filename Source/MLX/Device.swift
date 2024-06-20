@@ -6,7 +6,7 @@ import Foundation
 ///Type of device.
 ///
 ///See ``Device`` and ``StreamOrDevice``.
-public enum DeviceType: String {
+public enum DeviceType: String, Sendable {
     case cpu
     case gpu
 }
@@ -25,7 +25,7 @@ public enum DeviceType: String {
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
-public final class Device {
+public final class Device: @unchecked Sendable {
 
     let ctx: mlx_device
 

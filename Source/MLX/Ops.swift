@@ -617,7 +617,7 @@ public func convGeneral(
 }
 
 /// Mode for ``convolve(_:_:mode:stream:)``
-public enum ConvolveMode {
+public enum ConvolveMode: Sendable {
     case full
     case valid
     case same
@@ -1306,7 +1306,7 @@ public func logicalOr<A: ScalarOrArray, B: ScalarOrArray>(
 }
 
 /// Indexing mode for ``meshGrid(_:sparse:indexing:stream:)``.
-public enum MeshGridIndexing: String {
+public enum MeshGridIndexing: String, Sendable {
     /// cartesian indexing
     case xy
 
