@@ -24,7 +24,7 @@ import Numerics
 /// - ``MLXArray/asType(_:stream:)-6d44y``
 /// - ``MLXArray/asType(_:stream:)-4eqoc``
 /// - ``MLXArray/init(_:dtype:)``
-public enum DType: Hashable {
+public enum DType: Hashable, Sendable {
     case bool
     case uint8
     case uint16

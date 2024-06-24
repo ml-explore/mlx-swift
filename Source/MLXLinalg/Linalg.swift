@@ -10,7 +10,7 @@ import MLX
 /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
 /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
 /// - ``MLXLinalg``
-public enum NormKind: String {
+public enum NormKind: String, Sendable {
     /// Frobenius norm
     case fro
 }

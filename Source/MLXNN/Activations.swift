@@ -640,7 +640,7 @@ open class PReLU: Module, UnaryLayer {
 /// - ``geluFastApproximate(_:)``
 open class GELU: Module, UnaryLayer {
 
-    public enum Approximation {
+    public enum Approximation: Sendable {
         /// See ``gelu(_:)``
         case none
         /// See ``geluApproximate(_:)``

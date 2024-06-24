@@ -4,7 +4,7 @@ import Foundation
 import MLX
 
 /// Different types of loss reductions
-public enum LossReduction: String {
+public enum LossReduction: String, Sendable {
     /// take the `mean` of the loss. This produces a a scalar array
     case mean
     /// take the `sum` of the loss.  This produces a a scalar array.

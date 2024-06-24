@@ -8,7 +8,7 @@ import MLX
 /// See ``Upsample/init(scaleFactor:mode:)`` for more information.
 open class Upsample: Module, UnaryLayer {
 
-    public enum Mode {
+    public enum Mode: Sendable {
         /// Nearest neighbor upsampling
         case nearest
 
