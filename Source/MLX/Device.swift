@@ -6,7 +6,7 @@ import Foundation
 ///Type of device.
 ///
 ///See ``Device`` and ``StreamOrDevice``.
-public enum DeviceType: String, Sendable {
+public enum DeviceType: String, Hashable, Sendable {
     case cpu
     case gpu
 }
@@ -25,7 +25,7 @@ public enum DeviceType: String, Sendable {
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
-public final class Device: @unchecked Sendable {
+public final class Device: @unchecked Sendable, Equatable {
 
     let ctx: mlx_device
 
@@ -59,6 +59,14 @@ public final class Device: @unchecked Sendable {
         return Device()
     }
 
+    public var deviceType: DeviceType? {
+        switch mlx_device_get_type(ctx) {
+        case MLX_CPU: .cpu
+        case MLX_GPU: .gpu
+        default: nil
+        }
+    }
+
     /// Set the default device.
     ///
     /// For example:
@@ -75,6 +83,10 @@ public final class Device: @unchecked Sendable {
         mlx_set_default_device(device.ctx)
     }
 
+    /// Compare two ``Device`` for equality -- this does not compare the index, just the device type.
+    public static func == (lhs: Device, rhs: Device) -> Bool {
+        mlx_device_get_type(lhs.ctx) == mlx_device_get_type(rhs.ctx)
+    }
 }
 
 extension Device: CustomStringConvertible {

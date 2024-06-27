@@ -21,7 +21,7 @@ import Cmlx
 /// - <doc:using-streams>
 /// - ``Stream``
 /// - ``Device``
-public struct StreamOrDevice: CustomStringConvertible, Sendable {
+public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
 
     private let stream: Stream
 
@@ -78,7 +78,7 @@ public struct StreamOrDevice: CustomStringConvertible, Sendable {
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
-public final class Stream: @unchecked Sendable {
+public final class Stream: @unchecked Sendable, Equatable {
 
     let ctx: mlx_stream
 
@@ -107,6 +107,10 @@ public final class Stream: @unchecked Sendable {
 
     static public func defaultStream(_ device: Device) -> Stream {
         return Stream(mlx_default_stream(device.ctx))
+    }
+
+    public static func == (lhs: Stream, rhs: Stream) -> Bool {
+        mlx_stream_equal(lhs.ctx, rhs.ctx)
     }
 }
 
