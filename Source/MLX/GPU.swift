@@ -285,7 +285,7 @@ public enum GPU {
 
         if let device = MTLCreateSystemDefaultDevice() {
             let architecture: String
-            if #available(macOS 14.0, *) {
+            if #available(macOS 14.0, iOS 17.0, *) {
                 architecture = device.architecture.name
             } else {
                 architecture = device.name
