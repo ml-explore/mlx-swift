@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Metal
 
 /// Properties to control the the GPU memory allocation and buffer reuse.
 ///
@@ -261,4 +262,43 @@ public enum GPU {
         mlx_metal_stop_capture()
     }
 
+    /// Reset the peak memory to zero.
+    ///
+    /// See ``Snapshot/peakMemory``.
+    public static func resetPeakMemory() {
+        mlx_metal_reset_peak_memory()
+    }
+
+    public struct DeviceInfo {
+        let architecture: String
+        let maxBufferSize: Int
+        let maxRecommendedWorkingSetSize: UInt64
+        let memorySize: Int
+    }
+
+    /// Get information about the GPU device and system settings
+    public static func deviceInfo() -> DeviceInfo {
+        var mib = [CTL_HW, HW_MEMSIZE]
+        var memSize: size_t = 0
+        var length: size_t = MemoryLayout.size(ofValue: memSize)
+        sysctl(&mib, 2, &memSize, &length, nil, 0)
+
+        if let device = MTLCreateSystemDefaultDevice() {
+            let architecture: String
+            if #available(macOS 14.0, iOS 17.0, *) {
+                architecture = device.architecture.name
+            } else {
+                architecture = device.name
+            }
+
+            return DeviceInfo(
+                architecture: architecture, maxBufferSize: device.maxBufferLength,
+                maxRecommendedWorkingSetSize: device.recommendedMaxWorkingSetSize,
+                memorySize: memSize)
+        } else {
+            return DeviceInfo(
+                architecture: "Unknown", maxBufferSize: 0, maxRecommendedWorkingSetSize: 0,
+                memorySize: memSize)
+        }
+    }
 }

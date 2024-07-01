@@ -18,3 +18,6 @@ This comes from https://developer.apple.com/metal/cpp/ specifically:
 
 Note that `metal-cpp.patch` has been applied to the contents of that zip.
 
+## fmt
+
+This is https://github.com/fmtlib/fmt.git tag 10.2.1

@@ -7,7 +7,7 @@ import MLXRandom
 /// Implements a simple lookup table that maps each input integer to a high-dimensional vector.
 ///
 /// Typically used to embed discrete tokens for processing by neural networks.
-open class Embedding: Module, UnaryLayer {
+open class Embedding: Module, UnaryLayer, Quantizable {
     public let weight: MLXArray
 
     /// Implements a simple lookup table that maps each input integer to a high-dimensional vector.
@@ -42,5 +42,9 @@ open class Embedding: Module, UnaryLayer {
     /// weights are tied.
     open func asLinear(_ x: MLXArray) -> MLXArray {
         matmul(x, weight.T)
+    }
+
+    public func toQuantized(groupSize: Int, bits: Int) -> Module {
+        QuantizedEmbedding(self, groupSize: groupSize, bits: bits)
     }
 }

@@ -30,6 +30,19 @@ struct PrepareMetalShaders: BuildToolPlugin {
     /// pattern to rewrite
     private let include = try! Regex("#include \"mlx/backend/metal/kernels/([^\"]*)\"")
 
+    // see Source/Cmlx/mlx/mlx/backend/metal/kernels/CMakeLists.txt
+    let kernels: Set = [
+        "arg_reduce.metal",
+        "conv.metal",
+        "gemv.metal",
+        "gemv_masked.metal",
+        "random.metal",
+        "rms_norm.metal",
+        "layer_norm.metal",
+        "rope.metal",
+        "scaled_dot_product_attention.metal",
+    ]
+
     func transformIncludes(url: URL) throws {
         let contents = try String(contentsOf: url, encoding: .utf8)
 
@@ -76,6 +89,12 @@ struct PrepareMetalShaders: BuildToolPlugin {
                     continue
                 }
                 guard url.lastPathComponent != "CMakeLists.txt" else {
+                    continue
+                }
+
+                if url.pathExtension == "h" || kernels.contains(url.lastPathComponent) {
+                    // ok
+                } else {
                     continue
                 }
 
@@ -180,6 +199,28 @@ struct PrepareMetalShaders: BuildToolPlugin {
                     if url.pathExtension == "metal" {
                         try FileManager.default.moveItem(
                             at: url, to: destination.appending(component: url.lastPathComponent))
+                    }
+                }
+            }
+
+            // remove any kernels that are not in the list
+            if let enumerator = FileManager.default.enumerator(
+                at: destination, includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants])
+            {
+                for case let url as URL in enumerator {
+                    let isRegularFile =
+                        try url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile ?? false
+                    guard isRegularFile else {
+                        continue
+                    }
+
+                    if url.pathExtension == "h" || kernels.contains(url.lastPathComponent) {
+                        // keep it
+                        print("keeping \(url.lastPathComponent)")
+                    } else {
+                        print("removing \(url.lastPathComponent)")
+                        try FileManager.default.removeItem(at: url)
                     }
                 }
             }

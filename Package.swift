@@ -52,6 +52,13 @@ let package = Package(
                 // vendored library, do not include driver
                 "gguf-tools/gguf-tools.c",
 
+                // vendored library
+                "fmt/test",
+                "fmt/doc",
+                "fmt/support",
+                "fmt/src/os.cc",
+                "fmt/src/fmt.cc",
+
                 // these are selected conditionally
                 // via mlx-conditional/compiled_conditional.cpp
                 "mlx/mlx/backend/common/compiled_nocpu.cpp",
@@ -77,10 +84,27 @@ let package = Package(
 
                 // opt-out of these backends (using metal)
                 "mlx/mlx/backend/no_metal",
-                "mlx/mlx/backend/accelerate",
+                "mlx/mlx/backend/no_cpu",
+
+                "mlx/mlx/backend/common/default_primitives.cpp",
+
+                // this uses neon code and will not build on x86 (e.g. via Release).
+                // see mlx-conditional/accelerate-softmax.cpp
+                "mlx/mlx/backend/accelerate/softmax.cpp",
+
+                // build variants (we are opting _out_ of these)
+                "mlx/mlx/io/no_safetensors.cpp",
+                "mlx/mlx/io/gguf.cpp",
+                "mlx/mlx/io/gguf_quants.cpp",
 
                 // see PrepareMetalShaders -- don't build the kernels in place
                 "mlx/mlx/backend/metal/kernels",
+                "mlx/mlx/backend/metal/nojit_kernels.cpp",
+
+                // do not build distributed support (yet)
+                "mlx/mlx/distributed/mpi",
+                "mlx/mlx/distributed/ops.cpp",
+                "mlx/mlx/distributed/primitives.cpp",
             ],
 
             cSettings: [
@@ -94,6 +118,7 @@ let package = Package(
                 .headerSearchPath("metal-cpp"),
                 .headerSearchPath("json/single_include/nlohmann"),
                 .headerSearchPath("gguf-tools"),
+                .headerSearchPath("fmt/include"),
 
                 .define("ACCELERATE_NEW_LAPACK"),
                 .define("_METAL_"),

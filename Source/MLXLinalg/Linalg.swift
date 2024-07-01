@@ -218,3 +218,22 @@ public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
 public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_linalg_inv(array.ctx, stream.ctx))
 }
+
+/// Compute the Cholesky decomposition of a real symmetric positive semi-definite matrix.
+///
+/// This function supports arrays with at least 2 dimensions. When the input
+/// has more than two dimensions, the Cholesky decomposition is computed for each matrix
+/// in the last two dimensions of `a`.
+///
+/// If the input matrix is not symmetric positive semi-definite, behavior is undefined.
+///
+/// - Parameters:
+///   - array: input array
+///   - upper: if true return the upper triangular Cholesky factor, otherwise the lower triangular
+///         Cholesky factor.
+///   - stream: stream or device to evaluate on
+public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_linalg_cholesky(array.ctx, upper, stream.ctx))
+}

@@ -654,3 +654,43 @@ open class Adafactor: OptimizerBase<Adafactor.State> {
         return (parameter - update, state)
     }
 }
+
+/// Clips the global norm of the gradients.
+///
+/// This function ensures that the global norm of the gradients does not exceed
+/// `max_norm`. It scales down the gradients proportionally if their norm is
+/// greater than `max_norm`.
+///
+/// - Parameters:
+///     - gradients: an array of MLXArray
+///     - maxNorm: the maximum allowed global norm of th gradients
+public func clipGradNorm(gradients: [MLXArray], maxNorm: Float) -> ([MLXArray], MLXArray) {
+    let normSquared = gradients.reduce(MLXArray(0)) { $0 + $1.square().sum() }
+    let totalNorm = sqrt(normSquared)
+    let normalizer = maxNorm / (totalNorm + 1e-6)
+
+    let clippedGradients = gradients.map { which(totalNorm .< maxNorm, $0, $0 * normalizer) }
+
+    return (clippedGradients, totalNorm)
+}
+
+/// Clips the global norm of the gradients.
+///
+/// This function ensures that the global norm of the gradients does not exceed
+/// `max_norm`. It scales down the gradients proportionally if their norm is
+/// greater than `max_norm`.
+///
+/// - Parameters:
+///     - gradients: a NestedDictionary of MLXArray
+///     - maxNorm: the maximum allowed global norm of th gradients
+public func clipGradNorm(gradients: ModuleParameters, maxNorm: Float) -> (
+    ModuleParameters, MLXArray
+) {
+    let normSquared = gradients.reduce(MLXArray(0)) { $0 + $1.square().sum() }
+    let totalNorm = sqrt(normSquared)
+    let normalizer = maxNorm / (totalNorm + 1e-6)
+
+    let clippedGradients = gradients.mapValues { which(totalNorm .< maxNorm, $0, $0 * normalizer) }
+
+    return (clippedGradients, totalNorm)
+}
