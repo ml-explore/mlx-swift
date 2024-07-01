@@ -16,6 +16,12 @@ mkdir build
 cd build
 cmake ../Source/Cmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0
 
+# NOTE:
+# until mlx supports overriding the METAL_VERSION you will need to edit
+# Source/Cmlx/mlx/mlx/backend/metal/CMakeLists.txt and manually set the METAL_VERSION.
+#
+# Also Plugins/PrepareMetalShaders/main.swift kernels needs to be in sync.
+
 # run the cmake build to generate the source files
 cd mlx/backend/metal
 make \
