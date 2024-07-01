@@ -25,8 +25,10 @@ make \
     binary_two \
     conv \
     copy \
+    fft \
     gather \
     gemm \
+    quantized \
     reduce \
     reduce_utils \
     scan \

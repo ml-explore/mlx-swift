@@ -293,7 +293,7 @@ template <typename U = bool>
 struct And {
   bool simd_reduce(bool val) {
     return simd_all(val);
-  };
+  }
   static constexpr constant bool init = true;
   void atomic_update(
       device mlx_atomic<unsigned int>* out,
@@ -323,7 +323,7 @@ template <typename U = bool>
 struct Or {
   bool simd_reduce(bool val) {
     return simd_any(val);
-  };
+  }
   static constexpr constant bool init = false;
   void atomic_update(
       device mlx_atomic<unsigned int>* out,
@@ -354,7 +354,7 @@ struct Sum {
   template <typename T>
   T simd_reduce(T val) {
     return simd_sum(val);
-  };
+  }
   static constexpr constant U init = U(0);
   template <typename T>
   void atomic_update(device mlx_atomic<T>* out, T val, uint offset = 0) {
@@ -369,7 +369,7 @@ struct Prod {
   template <typename T>
   T simd_reduce(T val) {
     return simd_product(val);
-  };
+  }
   static constexpr constant U init = U(1);
   template <typename T>
   void atomic_update(device mlx_atomic<T>* out, T val, uint offset = 0) {
@@ -384,7 +384,7 @@ struct Min {
   template <typename T>
   T simd_reduce(T val) {
     return simd_min(val);
-  };
+  }
   static constexpr constant U init = Limits<U>::max;
   template <typename T>
   void atomic_update(device mlx_atomic<T>* out, T val, uint offset = 0) {
@@ -399,7 +399,7 @@ struct Max {
   template <typename T>
   T simd_reduce(T val) {
     return simd_max(val);
-  };
+  }
   static constexpr constant U init = Limits<U>::min;
   template <typename T>
   void atomic_update(device mlx_atomic<T>* out, T val, uint offset = 0) {

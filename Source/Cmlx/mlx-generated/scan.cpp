@@ -253,6 +253,7 @@ template <
         }
       }
     }
+    threadgroup_barrier(mem_flags::mem_threadgroup);
     if (simd_group_id == simd_groups - 1 && simd_lane_id == simd_size - 1) {
       simdgroup_sums[0] = values[N_READS - 1];
     }
