@@ -12,8 +12,7 @@
 
 namespace mlx::core {
     void Softmax::eval_cpu(const std::vector<array>& inputs, array& out) {
-        throw std::invalid_argument(
-            "Softmax is not available on x86 cpu");
+        Softmax::eval(inputs, out);
     }
 }
 

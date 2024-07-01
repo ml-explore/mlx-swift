@@ -34,9 +34,8 @@ struct PrepareMetalShaders: BuildToolPlugin {
     let kernels: Set = [
         "arg_reduce.metal",
         "conv.metal",
-        "fft.metal",
         "gemv.metal",
-        "quantized.metal",
+        "gemv_masked.metal",
         "random.metal",
         "rms_norm.metal",
         "layer_norm.metal",
