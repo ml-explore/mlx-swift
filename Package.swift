@@ -105,6 +105,10 @@ let package = Package(
                 "mlx/mlx/distributed/mpi",
                 "mlx/mlx/distributed/ops.cpp",
                 "mlx/mlx/distributed/primitives.cpp",
+
+                // the mlx-c side of distributed
+                "include/mlx/c/distributed.cpp",
+                "include/mlx/c/distributed_group.cpp",
             ],
 
             cSettings: [

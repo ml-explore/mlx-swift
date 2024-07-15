@@ -11,16 +11,8 @@ endif()
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
-  GIT_TAG "v0.0.8")
+  GIT_TAG "v0.0.9")
 FetchContent_MakeAvailable(mlx-c)
-
-# TEMPORARY OVERRIDE -- 0.0.8 depends on v0.14.0 but we need v0.15.2 for iOS /
-# float16 issues
-FetchContent_Declare(
-  mlx
-  GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
-  GIT_TAG v0.15.2)
-FetchContent_MakeAvailable(mlx)
 
 # swift-numerics
 set(swift_numerics_patch git apply
