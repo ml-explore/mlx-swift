@@ -269,7 +269,7 @@ public enum GPU {
         mlx_metal_reset_peak_memory()
     }
 
-    public struct DeviceInfo {
+    public struct DeviceInfo: Sendable {
         let architecture: String
         let maxBufferSize: Int
         let maxRecommendedWorkingSetSize: UInt64

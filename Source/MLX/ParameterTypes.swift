@@ -51,7 +51,7 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral,
 ///
 /// ### See Also:
 /// - ``IntOrPair``
-public struct IntOrTriple: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral {
+public struct IntOrTriple: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral, Sendable {
     public let values: (Int, Int, Int)
 
     public var first: Int { values.0 }
