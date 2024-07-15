@@ -2658,4 +2658,20 @@ extension MLXArray {
         MLXArray(mlx_var_all(ctx, keepDims, ddof.int32, stream.ctx))
     }
 
+    /// View the array as a different type.
+    ///
+    /// The output array will change along the last axis if the input array's
+    /// type and the output array's type do not have the same size.
+    ///
+    /// Note: the view op does not imply that the input and output arrays share
+    /// their underlying data. The view only gaurantees that the binary
+    /// representation of each element (or group of elements) is the same.
+    ///
+    /// - Parameters:
+    ///   - dtype: type to change to
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: array with the new type
+    public func view(dtype: DType, stream: StreamOrDevice = .default) -> MLXArray {
+        MLXArray(mlx_view(ctx, dtype.cmlxDtype, stream.ctx))
+    }
 }

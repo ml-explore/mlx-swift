@@ -222,3 +222,4 @@ operations as methods for convenience.
 
 - ``diag(_:k:stream:)``
 - ``diagonal(_:offset:axis1:axis2:stream:)``
+- ``view(_:dtype:stream:)``
