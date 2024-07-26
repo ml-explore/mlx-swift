@@ -94,3 +94,22 @@ extension Device: CustomStringConvertible {
         mlx_describe(ctx) ?? String(describing: type(of: self))
     }
 }
+
+/// Execute a block of code using a specific device.
+///
+/// Example:
+/// ```swift
+/// using(device: .gpu) {
+///    // code here will run on the GPU
+/// }
+/// ```
+///
+/// - Parameters:
+///     - device: device to be used
+///     - fn: function to be executed
+public func using<R>(device: Device, fn: () throws -> R) rethrows -> R {
+    let defaultDevice = MLX.Device.defaultDevice()
+    MLX.Device.setDefault(device: device)
+    defer { MLX.Device.setDefault(device: defaultDevice) }
+    return try fn()
+}

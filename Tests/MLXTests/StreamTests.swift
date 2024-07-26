@@ -37,4 +37,18 @@ class StreamTests: XCTestCase {
         XCTAssertNotEqual(s1, s3)
         XCTAssertNotEqual(s2, s3)
     }
+
+    func testUsingDevice() {
+        let defaultDevice = Device.defaultDevice()
+
+        using(device: .cpu) {
+            XCTAssertEqual(Device.defaultDevice(), .cpu)
+        }
+        XCTAssertEqual(defaultDevice, Device.defaultDevice())
+
+        using(device: .gpu) {
+            XCTAssertEqual(Device.defaultDevice(), .gpu)
+        }
+        XCTAssertEqual(defaultDevice, Device.defaultDevice())
+    }
 }
