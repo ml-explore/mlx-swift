@@ -218,6 +218,10 @@ operations as methods for convenience.
 - ``jvp(_:primals:tangents:)``
 - ``vjp(_:primals:cotangents:)``
 
+### Device
+
+- ``using(device:fn:)``
+
 ### Other
 
 - ``diag(_:k:stream:)``

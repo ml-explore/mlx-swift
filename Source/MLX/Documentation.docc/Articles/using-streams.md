@@ -25,4 +25,17 @@ let b = MLXRandom.uniform([100, 100], stream: .gpu)
 The parameter is of type ``StreamOrDevice`` and can be initialized with
 a stream, device, or some defaults like ``StreamOrDevice/gpu``.
 
+If you want to execute a block of code on a specific device you can use
+``using(device:fn:)``.
+
+For example:
+
+```swift
+using(device: .gpu) {
+    // this code will run on gpu
+    let a = MLXRandom.uniform([100, 100])
+    let b = MLXRandom.uniform([100, 100])
+}
+```
+
 Read more in <doc:unified-memory>.
