@@ -518,6 +518,26 @@ class ModuleTests: XCTestCase {
         }
     }
 
+    func testLinearUpdateParameters() throws {
+        let linear = Linear(1, 2, bias: false)
+
+        XCTAssertEqual(linear.weight.shape, [2, 1])
+
+        let transposedWeights = MLXArray(0 ..< 2).reshaped([1, 2])
+        try linear.update(
+            parameters: .init(item: .dictionary(["weight": .value(transposedWeights)])),
+            verify: .all)
+
+        XCTAssertEqual(linear.weight.shape, [2, 1])
+
+        let mismatchedWeights = MLXArray(0 ..< 3).reshaped([1, 3])
+        try linear.update(
+            parameters: .init(item: .dictionary(["weight": .value(mismatchedWeights)])),
+            verify: .all)
+
+        XCTAssertEqual(linear.weight.shape, [2, 1])
+    }
+
     func testQuantize() throws {
         class C: Module {
             @ModuleInfo
