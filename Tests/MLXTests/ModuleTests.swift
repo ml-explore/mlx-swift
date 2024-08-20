@@ -518,7 +518,43 @@ class ModuleTests: XCTestCase {
         }
     }
 
-    func testLinearUpdateParameters() throws {
+    func testLinearUpdateParametersVerifyAll() throws {
+        let linear = Linear(1, 2, bias: false)
+
+        XCTAssertEqual(linear.weight.shape, [2, 1])
+
+        let correctWeights = MLXArray(0 ..< 2).reshaped([2, 1])
+
+        try linear.update(
+            parameters: .init(item: .dictionary(["weight": .value(correctWeights)])),
+            verify: .all)
+
+        XCTAssertEqual(linear.weight.shape, [2, 1])
+
+        let transposedWeights = MLXArray(0 ..< 2).reshaped([1, 2])
+        XCTAssertThrowsError(
+            try linear.update(
+                parameters: .init(item: .dictionary(["weight": .value(transposedWeights)])),
+                verify: .all)
+        ) { error in
+            guard let error = error as? UpdateError,
+                case let .mismatchedSize(
+                    key: key, expectedShape: expectedShape, actualShape: actualShape) =
+                    error
+            else {
+                XCTFail("Expected to fail with UpdateError.mismatchedSize, but got: \(error)")
+                return
+            }
+            XCTAssertEqual(expectedShape, [2, 1])
+            XCTAssertEqual(actualShape, [1, 2])
+            XCTAssertEqual(key, "weight")
+            XCTAssertEqual(
+                error.errorDescription,
+                "Mismatched parameter weight shape. Actual [1, 2], expected [2, 1]")
+        }
+    }
+
+    func testLinearUpdateParametersVerifyNone() throws {
         let linear = Linear(1, 2, bias: false)
 
         XCTAssertEqual(linear.weight.shape, [2, 1])
@@ -526,16 +562,11 @@ class ModuleTests: XCTestCase {
         let transposedWeights = MLXArray(0 ..< 2).reshaped([1, 2])
         try linear.update(
             parameters: .init(item: .dictionary(["weight": .value(transposedWeights)])),
-            verify: .all)
+            verify: .none)
 
-        XCTAssertEqual(linear.weight.shape, [2, 1])
-
-        let mismatchedWeights = MLXArray(0 ..< 3).reshaped([1, 3])
-        try linear.update(
-            parameters: .init(item: .dictionary(["weight": .value(mismatchedWeights)])),
-            verify: .all)
-
-        XCTAssertEqual(linear.weight.shape, [2, 1])
+        XCTAssertEqual(
+            linear.weight.shape, [1, 2],
+            "In verify none mode, parameters can be updated with a different shape")
     }
 
     func testQuantize() throws {

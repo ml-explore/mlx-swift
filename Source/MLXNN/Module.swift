@@ -443,6 +443,10 @@ open class Module {
 
             switch (item, value) {
             case (.value(.parameters(let p)), .value(let newArray)):
+                if p.shape != newArray.shape, verify.contains(.all) {
+                    throw UpdateError.mismatchedSize(
+                        key: key, expectedShape: p.shape, actualShape: newArray.shape)
+                }
                 p.update(newArray)
 
             case (.array(let array), .array(let values)):
@@ -1395,6 +1399,7 @@ private protocol TypeErasedSetterProvider {
 enum UpdateError: Error {
     case unableToCollectModulesFromContainer(base: String, key: String)
     case mismatchedContainers(base: String, key: String)
+    case mismatchedSize(key: String, expectedShape: [Int], actualShape: [Int])
     case keyNotFound(base: String, key: String)
     case needModuleInfo(String)
     case unableToSet(String)
@@ -1409,6 +1414,9 @@ extension UpdateError: LocalizedError {
             return "Unable to collect modules from container: \(base) \(key)"
         case .mismatchedContainers(let base, let key):
             return "Mismatched containers: \(base) \(key)"
+        case let .mismatchedSize(key: key, expectedShape: expectedShape, actualShape: actualShape):
+            return
+                "Mismatched parameter \(key) shape. Actual \(actualShape), expected \(expectedShape)"
         case .keyNotFound(let base, let key):
             return "Key \(key) not found in \(base)"
         case .needModuleInfo(let string):
