@@ -443,7 +443,7 @@ open class Module {
 
             switch (item, value) {
             case (.value(.parameters(let p)), .value(let newArray)):
-                if p.shape != newArray.shape, verify.contains(.all) {
+                if verify.contains(.all), p.shape != newArray.shape {
                     throw UpdateError.mismatchedSize(
                         key: key, expectedShape: p.shape, actualShape: newArray.shape)
                 }
