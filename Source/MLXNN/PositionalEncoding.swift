@@ -168,115 +168,49 @@ final public class ALiBi: Module {
     }
 }
 
-public class SuScaledRotaryEmbedding {
+public class SuScaledRotaryEmbedding: Module {
     let dimensions: Int
     let base: Float
-    let scale: Float
     let maxPositionEmbeddings: Int
     let originalMaxPositionEmbeddings: Int
-    let shortFactor: [Float]
-    let longFactor: [Float]
+    let scale: Float
+    let _freqs: MLXArray
 
-    var invFreqShort: [Float]
-    var invFreqLong: [Float]
-    var scalingFactor: Float
-
-    /// Initialize the embedding layer.
-    ///
-    /// - Parameters:
-    ///   - dimensions: The feature dimensions to be rotated.
-    ///   - base: Base for the exponential scaling.
-    ///   - scale: The scale used to scale the positions.
-    ///   - maxPositionEmbeddings: The maximum sequence length that this model was trained with. This is used to determine the size of the original RoPE embeddings when using long scaling.
-    ///   - originalMaxPositionEmbeddings: The maximum sequence length for original scaling. This is used to determine the size of the original RoPE embeddings when using long scaling.
-    ///   - shortFactor: Scaling factors for sequences of length less than `originalMaxPositionEmbeddings`.
-    ///   - longFactor: Scaling factors for sequences of length greater than `originalMaxPositionEmbeddings`.
     public init(
-        dimensions: Int, base: Float = 10_000, scale: Float = 1.0,
-        maxPositionEmbeddings: Int = 131072, originalMaxPositionEmbeddings: Int = 4096,
-        shortFactor: [Float] = [1.0], longFactor: [Float] = [1.0]
+        dimensions: Int,
+        base: Float = 10000.0,
+        maxPositionEmbeddings: Int = 131072,
+        originalMaxPositionEmbeddings: Int = 4096,
+        // !! shortFactor is not used in the new Python implementation
+        longFactor: [Float] = [1.0]
     ) {
+        precondition(dimensions % 2 == 0, "Dimensions must be even")
+
         self.dimensions = dimensions
         self.base = base
-        self.scale = scale
         self.maxPositionEmbeddings = maxPositionEmbeddings
         self.originalMaxPositionEmbeddings = originalMaxPositionEmbeddings
-        self.shortFactor = shortFactor
-        self.longFactor = longFactor
 
-        // Precompute inverse frequency arrays
-        invFreqShort = (0 ..< dimensions / 2).map { i in
-            1.0 / (shortFactor[i % shortFactor.count] * pow(base, Float(i) / Float(dimensions)))
-        }
-        invFreqLong = (0 ..< dimensions / 2).map { i in
-            1.0
-                / (scale * longFactor[i % longFactor.count]
-                    * pow(base, Float(i) / Float(dimensions)))
-        }
+        let exponent =
+            MLXArray(stride(from: 0, to: dimensions, by: 2)).asType(.float32) / Float(dimensions)
+        let freqs = MLX.pow(MLXArray(base), exponent)
+        self._freqs = MLXArray(longFactor).asType(.float32) * freqs
 
-        // Compute scaling factor
-        scalingFactor = sqrt(
-            1.0 + log(Float(maxPositionEmbeddings) / Float(originalMaxPositionEmbeddings))
-                / log(Float(originalMaxPositionEmbeddings)))
-
-        print("invFreqShort: \(invFreqShort.count) elements")
-        print("invFreqLong: \(invFreqLong.count) elements")
-        print("Scaling Factor: \(scalingFactor)")
-    }
-
-    /// Get cosine and sine embeddings.
-    private func getCosSin(offset: Int, length: Int) -> (cos: MLXArray, sin: MLXArray) {
-        let positionIDs = MLXArray(offset ..< offset + length).reshaped([1, 1, -1, 1])
-        print("positionIDs in getCosSin: \(positionIDs.description)")
-        let invFreq = (offset + length) > originalMaxPositionEmbeddings ? invFreqLong : invFreqShort
-        print("Using \(invFreq == invFreqLong ? "long" : "short") inverse frequency")
-        let freqs = positionIDs * MLXArray(invFreq).reshaped([1, 1, 1, -1])
-        let emb = MLX.concatenated([freqs, freqs], axis: -1)
-        let cos = emb.cos() * scalingFactor
-        let sin = emb.sin() * scalingFactor
-        print(
-            "cos.shape in getCosSin: \(cos.shape.description), sin.shape in getCosSin: \(sin.shape.description)"
+        self.scale = sqrt(
+            1 + log(Float(maxPositionEmbeddings) / Float(originalMaxPositionEmbeddings))
+                / log(Float(originalMaxPositionEmbeddings))
         )
-        return (cos, sin)
     }
 
-    private func rotateHalf(_ x: MLXArray) -> MLXArray {
-        guard let lastShape = x.shape.last else {
-            fatalError(
-                "Last dimension size of `x` in `rotateHalf` could not be determined. `x.description`: \(x.description)"
-            )
-        }
-        guard lastShape % 2 == 0 else {
-            fatalError(
-                "Last dimension size of `x` in `rotateHalf` is \(lastShape), which is not an even number."
-            )
-        }
-        let midpoint = lastShape / 2
-        print("midpoint in rotateHalf: \(midpoint)")
-        let x1 = x[.ellipsis, ..<midpoint]
-        let x2 = x[.ellipsis, midpoint...]
-        print("x1 shape: \(x1.shape.description), x2 shape: \(x2.shape.description)")
-        return MLX.concatenated([-x2, x1], axis: -1)
-    }
-
-    /// Apply the embedding rotation.
-    ///
-    /// - Parameters:
-    ///   - x: Input array.
-    ///   - offset: Position offset.
     public func callAsFunction(_ x: MLXArray, offset: Int = 0) -> MLXArray {
-        print("x.shape in callAsFunction: \(x.shape.description)")
-        guard let lastShape = x.shape.last, lastShape == dimensions else {
-            fatalError(
-                "Expected the last dimension of x to be \(dimensions), but got \(String(describing: x.shape.last))"
-            )
-        }
-        let (cos, sin) = getCosSin(offset: offset, length: x.shape[2])
-        print("x.shape in callAsFunction: \(x.shape.description)")
-        print("cos.shape in callAsFunction: \(cos.shape.description)")
-        print("sin.shape in callAsFunction: \(sin.shape.description)")
-        let result = (x * cos) + (rotateHalf(x) * sin)
-        print("Result shape: \(result.shape.description)")
-        return result
+        return MLXFast.RoPE(
+            self.scale * x,
+            dimensions: x.shape.last!,
+            traditional: false,
+            base: self.base,  // !! Here the Python implementation passes in `None`, but this is not compatible with the Swift implementation of `MLXFast.RoPE`
+            scale: 1.0,
+            offset: offset
+                // !! Here the Python implementation passes self._freqs as argument `freqs` to `mx.fast.rope`, but this parameter does not exist in the Swift implementation of `MLXFast.RoPE`
+        )
     }
 }
