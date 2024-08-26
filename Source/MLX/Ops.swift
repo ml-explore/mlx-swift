@@ -2194,6 +2194,29 @@ public func tensordot(
             stream.ctx))
 }
 
+
+/// Computer tensor dot product.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - axes: sum over for the axes.0 of `a` and  axes.1 of`b` dimensions
+///   - stream: stream or device to evaluate on
+/// - Returns: tensor dot product
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``tensordot(_:_:axes:stream:)``
+public func tensordot(
+    _ a: MLXArray, _ b: MLXArray, axes: ((Int), (Int)), stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_tensordot(
+            a.ctx, b.ctx, [axes.0].asInt32, 1, [axes.1].asInt32, 1,
+            stream.ctx))
+}
+
+
 /// Construct array by repeating given array the number of times given by `repetitions`.
 ///
 /// - Parameters:
