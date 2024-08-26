@@ -2208,11 +2208,11 @@ public func tensordot(
 /// - <doc:arithmetic>
 /// - ``tensordot(_:_:axes:stream:)``
 public func tensordot(
-    _ a: MLXArray, _ b: MLXArray, axes: ((Int), (Int)), stream: StreamOrDevice = .default
+    _ a: MLXArray, _ b: MLXArray, axes: ([Int], [Int]), stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(
         mlx_tensordot(
-            a.ctx, b.ctx, [axes.0].asInt32, 1, [axes.1].asInt32, 1,
+            a.ctx, b.ctx, axes.0.asInt32, axes.0.count, axes.1.asInt32, axes.1.count,
             stream.ctx))
 }
 
