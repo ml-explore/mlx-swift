@@ -2185,14 +2185,14 @@ public func tensordot(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``tensordot(_:_:axes:stream:)-3qkgq``
-//public func tensordot(
-//    _ a: MLXArray, _ b: MLXArray, axes: ((Int, Int), (Int, Int)), stream: StreamOrDevice = .default
-//) -> MLXArray {
-//    MLXArray(
-//        mlx_tensordot(
-//            a.ctx, b.ctx, [axes.0.0, axes.0.1].asInt32, 2, [axes.1.0, axes.1.1].asInt32, 2,
-//            stream.ctx))
-//}
+public func tensordot(
+    _ a: MLXArray, _ b: MLXArray, axes: ((Int, Int), (Int, Int)), stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_tensordot(
+            a.ctx, b.ctx, [axes.0.0, axes.0.1].asInt32, 2, [axes.1.0, axes.1.1].asInt32, 2,
+            stream.ctx))
+}
 
 
 /// Computer tensor dot product.
