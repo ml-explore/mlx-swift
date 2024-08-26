@@ -134,7 +134,7 @@ extension Int: HasDType {
 
     public func asMLXArray(dtype: DType?) -> MLXArray {
         // callers can use Int64() to get explicit .int64 behavior
-        let dtype = dtype ?? Self.dtype
+        let dtype = dtype ?? .int32
         return MLXArray(self, dtype: dtype == .bool ? .int32 : dtype)
     }
 }
