@@ -280,7 +280,8 @@ public final class MLXArray {
         case is Float.Type: return mlx_array_item_float32(self.ctx) as! T
         case is Complex<Float32>.Type:
             // mlx_array_item_complex64() isn't visible in swift so read the array
-            // contents
+            // contents.  call self.eval() as this doesn't end up in item()
+            self.eval()
             let ptr = UnsafePointer<Complex<Float32>>(mlx_array_data_complex64(ctx))!
             return ptr.pointee as! T
         default:
