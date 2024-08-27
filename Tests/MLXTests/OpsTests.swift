@@ -46,4 +46,36 @@ class OpsTests: XCTestCase {
         assertEqual(b, expected)
     }
 
+    func testConvertScalarInt() {
+        let a = MLXArray(0 ..< 10)
+        let b = a .< (a + 1)
+        let c = b * 25
+        XCTAssertEqual(b.dtype, .bool)
+        XCTAssertEqual(c.dtype, .int32)
+    }
+
+    func testConvertScalarFloat16() {
+        let a = MLXArray(0 ..< 10)
+        let b = a .< (a + 1)
+        let c = b * Float16(2.5)
+        XCTAssertEqual(b.dtype, .bool)
+        XCTAssertEqual(c.dtype, .float16)
+    }
+
+    func testConvertScalarFloat() {
+        let a = MLXArray(0 ..< 10)
+        let b = a .< (a + 1)
+        let c = b * Float(2.5)
+        XCTAssertEqual(b.dtype, .bool)
+        XCTAssertEqual(c.dtype, .float32)
+    }
+
+    func testConvertScalarDouble() {
+        let a = MLXArray(0 ..< 10)
+        let b = a .< (a + 1)
+        let c = b * 2.5
+        XCTAssertEqual(b.dtype, .bool)
+        XCTAssertEqual(c.dtype, .float32)
+    }
+
 }
