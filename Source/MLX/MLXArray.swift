@@ -239,7 +239,8 @@ public final class MLXArray {
             }
         #if !arch(x86_64)
             case is Float.Type, is Float32.Type, is Float16.Type:
-                if self.dtype.isFloatingPoint {
+                switch self.dtype {
+                case .float16, .float32:
                     switch type {
                     case is Float.Type: return Float(itemFloat()) as! T
                     case is Float32.Type: return Float32(itemFloat()) as! T
@@ -248,6 +249,8 @@ public final class MLXArray {
                         // fall through to default handling
                         break
                     }
+                default:
+                    break
                 }
         #endif
         default:
