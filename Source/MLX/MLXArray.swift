@@ -149,6 +149,49 @@ public final class MLXArray {
         item(T.self)
     }
 
+    /// specialized conversion between integer types -- see ``item(_:)``
+    private func itemInt() -> Int {
+        switch self.dtype {
+        case .bool: mlx_array_item_bool(self.ctx) ? 1 : 0
+        case .uint8: Int(mlx_array_item_uint8(self.ctx))
+        case .uint16: Int(mlx_array_item_uint16(self.ctx))
+        case .uint32: Int(mlx_array_item_uint32(self.ctx))
+        case .uint64: Int(mlx_array_item_uint64(self.ctx))
+        case .int8: Int(mlx_array_item_int8(self.ctx))
+        case .int16: Int(mlx_array_item_int16(self.ctx))
+        case .int32: Int(mlx_array_item_int32(self.ctx))
+        case .int64: Int(mlx_array_item_int64(self.ctx))
+        default: fatalError("itemInt expected an integer dtype: \(self.dtype)")
+        }
+    }
+
+    /// specialized conversion between integer types -- see ``item(_:)``
+    private func itemUInt() -> UInt {
+        switch self.dtype {
+        case .bool: mlx_array_item_bool(self.ctx) ? 1 : 0
+        case .uint8: UInt(mlx_array_item_uint8(self.ctx))
+        case .uint16: UInt(mlx_array_item_uint16(self.ctx))
+        case .uint32: UInt(mlx_array_item_uint32(self.ctx))
+        case .uint64: UInt(mlx_array_item_uint64(self.ctx))
+        case .int8: UInt(mlx_array_item_int8(self.ctx))
+        case .int16: UInt(mlx_array_item_int16(self.ctx))
+        case .int32: UInt(mlx_array_item_int32(self.ctx))
+        case .int64: UInt(mlx_array_item_int64(self.ctx))
+        default: fatalError("itemUInt expected an integer dtype: \(self.dtype)")
+        }
+    }
+
+    /// specialized conversion between float types -- see ``item(_:)``
+    private func itemFloat() -> Float {
+        switch self.dtype {
+        #if !arch(x86_64)
+            case .float16: Float(mlx_array_item_float16(self.ctx))
+        #endif
+        case .float32: Float(mlx_array_item_float32(self.ctx))
+        default: fatalError("itemFloat expected a floating point dtype: \(self.dtype)")
+        }
+    }
+
     /// Return the scalar value of the array.
     ///
     /// It is a contract violation to call this on an array with more than one element.
@@ -163,11 +206,58 @@ public final class MLXArray {
     public func item<T: HasDType>(_ type: T.Type) -> T {
         precondition(self.size == 1)
 
+        // special cases for reading integers and floats from (roughly)
+        // same typed arrays -- this avoids doing a conversion which
+        // might end up as an unexpected operation that would mess up
+        // async evaluation
+        switch type {
+        case is Int.Type, is Int8.Type, is Int16.Type, is Int32.Type, is Int64.Type:
+            if self.dtype.isInteger {
+                switch type {
+                case is Int.Type: return Int(itemInt()) as! T
+                case is Int8.Type: return Int8(itemInt()) as! T
+                case is Int16.Type: return Int16(itemInt()) as! T
+                case is Int32.Type: return Int32(itemInt()) as! T
+                case is Int64.Type: return Int64(itemInt()) as! T
+                default:
+                    // fall through to default handling
+                    break
+                }
+            }
+        case is UInt8.Type, is UInt16.Type, is UInt32.Type, is UInt64.Type, is UInt.Type:
+            if self.dtype.isInteger {
+                switch type {
+                case is UInt8.Type: return UInt8(itemUInt()) as! T
+                case is UInt16.Type: return UInt16(itemUInt()) as! T
+                case is UInt32.Type: return UInt32(itemUInt()) as! T
+                case is UInt64.Type: return UInt64(itemUInt()) as! T
+                case is UInt.Type: return UInt(itemUInt()) as! T
+                default:
+                    // fall through to default handling
+                    break
+                }
+            }
+        #if !arch(x86_64)
+            case is Float.Type, is Float32.Type, is Float16.Type:
+                if self.dtype.isFloatingPoint {
+                    switch type {
+                    case is Float.Type: return Float(itemFloat()) as! T
+                    case is Float32.Type: return Float32(itemFloat()) as! T
+                    case is Float16.Type: return Float16(itemFloat()) as! T
+                    default:
+                        // fall through to default handling
+                        break
+                    }
+                }
+        #endif
+        default:
+            break
+        }
+
+        // default handling -- convert the type if needed
         if type.dtype != self.dtype {
             return self.asType(type).item(type)
         }
-
-        self.eval()
 
         switch type {
         case is Bool.Type: return mlx_array_item_bool(self.ctx) as! T

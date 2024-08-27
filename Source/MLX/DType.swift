@@ -204,6 +204,14 @@ extension UInt64: HasDType {
         return MLXArray(self, dtype: dtype == .bool ? Self.dtype : dtype)
     }
 }
+extension UInt: HasDType {
+    static public var dtype: DType { .uint64 }
+
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        let dtype = dtype ?? Self.dtype
+        return MLXArray(self, dtype: dtype == .bool ? Self.dtype : dtype)
+    }
+}
 
 #if !arch(x86_64)
     extension Float16: HasDType {
