@@ -2155,7 +2155,7 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
     MLXArray(mlx_tanh(array.ctx, stream.ctx))
 }
 
-/// Computer tensor dot product.
+/// Compute tensor dot product.
 ///
 /// - Parameters:
 ///   - a: input array
@@ -2173,7 +2173,7 @@ public func tensordot(
     MLXArray(mlx_tensordot_along_axis(a.ctx, b.ctx, axes.int32, stream.ctx))
 }
 
-/// Computer tensor dot product.
+/// Compute tensor dot product.
 ///
 /// - Parameters:
 ///   - a: input array
@@ -2194,8 +2194,7 @@ public func tensordot(
             stream.ctx))
 }
 
-
-/// Computer tensor dot product.
+/// Compute tensor dot product.
 ///
 /// - Parameters:
 ///   - a: input array
@@ -2215,7 +2214,6 @@ public func tensordot(
             a.ctx, b.ctx, axes.0.asInt32, axes.0.count, axes.1.asInt32, axes.1.count,
             stream.ctx))
 }
-
 
 /// Construct array by repeating given array the number of times given by `repetitions`.
 ///
