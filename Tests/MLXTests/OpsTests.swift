@@ -60,6 +60,7 @@ class OpsTests: XCTestCase {
                 4928.0, 5306.0,
             ], [5, 2])
         assertEqual(c, expected)
+    }
 
     func testConvertScalarInt() {
         let a = MLXArray(0 ..< 10)
