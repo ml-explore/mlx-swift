@@ -46,6 +46,22 @@ class OpsTests: XCTestCase {
         assertEqual(b, expected)
     }
 
+    func testTensordot() {
+        let a = MLXArray(0 ..< 60, [3, 4, 5]).asType(.float32)
+        let b = MLXArray(0 ..< 24, [4, 3, 2]).asType(.float32)
+        let c = tensordot(a, b, axes: ([1, 0], [0, 1]))
+
+        let expected = MLXArray(
+            converting: [
+                4400.0, 4730.0,
+                4532.0, 4874.0,
+                4664.0, 5018.0,
+                4796.0, 5162.0,
+                4928.0, 5306.0,
+            ], [5, 2])
+        assertEqual(c, expected)
+    }
+
     func testConvertScalarInt() {
         let a = MLXArray(0 ..< 10)
         let b = a .< (a + 1)
