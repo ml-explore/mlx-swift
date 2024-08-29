@@ -429,8 +429,15 @@ open class ReLU: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``leakyRelu(_:negativeSlope:)``
 open class LeakyReLU: Module, UnaryLayer {
+
+    public let negativeSlope: Float
+
+    public init(negativeSlope: Float = 0.01) {
+        self.negativeSlope = negativeSlope
+    }
+
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        leakyRelu(x)
+        leakyRelu(x, negativeSlope: negativeSlope)
     }
 }
 
