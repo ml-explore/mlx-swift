@@ -56,9 +56,9 @@ class MLXArrayTests: XCTestCase {
         XCTAssertEqual(s.physicalSize, 3 * 2)
 
         // evaluating s (the comparison above) will realize the strides.
-        // if we eamine these before they might be [2, 1] which are the
+        // if we examine these before they might be [2, 1] which are the
         // "logical" strides
-        XCTAssertEqual(s.strides, [3, 1])
+        XCTAssertEqual(s.internalStrides, [3, 1])
 
         let s_arr = s.asArray(Int32.self)
         XCTAssertEqual(s_arr, [1, 2, 4, 5])
@@ -102,10 +102,79 @@ class MLXArrayTests: XCTestCase {
         let expected: [Int32] = [0, 2, 4, 6, 8, 10, 12, 14]
         assertEqual(s, MLXArray(expected, [4, 2]))
 
-        XCTAssertEqual(s.strides, [4, 2])
+        XCTAssertEqual(s.internalStrides, [4, 2])
 
         let s_arr = s.asArray(Int32.self)
         XCTAssertEqual(s_arr, expected)
+    }
+
+    func testContiguousStrides() {
+        XCTAssertEqual(contiguousStrides(shape: [1, 1, 1]), [1, 1, 1])
+        XCTAssertEqual(contiguousStrides(shape: [4, 4]), [4, 1])
+        XCTAssertEqual(contiguousStrides(shape: [4, 2]), [2, 1])
+        XCTAssertEqual(contiguousStrides(shape: [3, 2, 1, 5]), [10, 5, 5, 1])
+    }
+
+    func testAsDataContiguous() {
+        // contiguous source
+        let a = MLXArray(0 ..< 16, [4, 4])
+
+        let result = a.asData()
+        XCTAssertEqual(result.shape, [4, 4])
+        XCTAssertEqual(result.strides, [4, 1])
+        XCTAssertEqual(result.dType, .int32)
+    }
+
+    func testAsDataContiguousNoCopy() {
+        // contiguous source
+        let a = MLXArray(0 ..< 16, [4, 4])
+
+        do {
+            let result = a.asData(access: .noCopy)
+            XCTAssertEqual(result.shape, [4, 4])
+            XCTAssertEqual(result.strides, [4, 1])
+            XCTAssertEqual(result.dType, .int32)
+        }
+        do {
+            let result = a.asData(access: .noCopyIfContiguous)
+            XCTAssertEqual(result.shape, [4, 4])
+            XCTAssertEqual(result.strides, [4, 1])
+            XCTAssertEqual(result.dType, .int32)
+        }
+    }
+
+    func testAsDataNonContiguous() {
+        // buffer with holes (last dimension has stride of 2 and
+        // thus larger storage than it physically needs)
+        let a = MLXArray(0 ..< 16, [4, 4])
+        let s = a[0..., .stride(by: 2)]
+
+        let result = s.asData()
+        XCTAssertEqual(result.shape, [4, 2])
+        XCTAssertEqual(result.strides, [2, 1])
+        XCTAssertEqual(result.dType, .int32)
+    }
+
+    func testAsDataNonContiguousNoCopy() {
+        // buffer with holes (last dimension has stride of 2 and
+        // thus larger storage than it physically needs)
+        let a = MLXArray(0 ..< 16, [4, 4])
+        let s = a[0..., .stride(by: 2)]
+
+        do {
+            // the strides will match the strided array
+            let result = s.asData(access: .noCopy)
+            XCTAssertEqual(result.shape, [4, 2])
+            XCTAssertEqual(result.strides, [4, 2])
+            XCTAssertEqual(result.dType, .int32)
+        }
+        do {
+            // it isn't contiguous so we will get a contiguous copy
+            let result = s.asData(access: .noCopyIfContiguous)
+            XCTAssertEqual(result.shape, [4, 2])
+            XCTAssertEqual(result.strides, [2, 1])
+            XCTAssertEqual(result.dType, .int32)
+        }
     }
 
 }
