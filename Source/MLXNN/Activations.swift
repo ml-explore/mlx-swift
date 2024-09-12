@@ -469,8 +469,14 @@ open class ReLU6: Module, UnaryLayer {
 /// ### See Also
 /// - <doc:activations>
 open class SoftMax: Module, UnaryLayer {
+    public var axis: Int
+
+    internal init(axis: Int = -1) {
+        self.axis = axis
+    }
+
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        softmax(x, axis: -1)
+        softmax(x, axis: axis)
     }
 }
 
@@ -585,8 +591,14 @@ open class LogSoftMax: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``logSoftmax(_:axis:)``
 open class LogSoftmax: Module, UnaryLayer {
+    public var axis: Int
+
+    internal init(axis: Int = -1) {
+        self.axis = axis
+    }
+
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        logSoftmax(x)
+        logSoftmax(x, axis: axis)
     }
 }
 
