@@ -347,7 +347,7 @@ public func hardSwish(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``glu(_:axis:)``
 open class GLU: Module, UnaryLayer {
-    public let axis: Int
+    public var axis: Int
 
     public init(axis: Int = -1) {
         self.axis = axis
@@ -430,7 +430,7 @@ open class ReLU: Module, UnaryLayer {
 /// - ``leakyRelu(_:negativeSlope:)``
 open class LeakyReLU: Module, UnaryLayer {
 
-    public let negativeSlope: Float
+    public var negativeSlope: Float
 
     public init(negativeSlope: Float = 0.01) {
         self.negativeSlope = negativeSlope
@@ -550,7 +550,7 @@ open class Softsign: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``celu(_:alpha:)``
 open class CELU: Module, UnaryLayer {
-    public let alpha: Float
+    public var alpha: Float
 
     public init(alpha: Float = 1.0) {
         self.alpha = alpha
@@ -735,7 +735,7 @@ open class HardSwish: Module, UnaryLayer {
 /// - ``step(_:threshold:)``
 open class Step: Module, UnaryLayer {
 
-    public let threshold: Float
+    public var threshold: Float
 
     public init(threshold: Float = 0.0) {
         self.threshold = threshold
