@@ -24,11 +24,12 @@ import MLX
 /// > Note: `MLXNN.RoPE` uses this implementation internally.
 public func RoPE(
     _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float, scale: Float, offset: Int,
-    stream: StreamOrDevice = .default
+    freqs: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(
         mlx_fast_rope(
-            array.ctx, Int32(dimensions), traditional, base, scale, Int32(offset), stream.ctx))
+            array.ctx, Int32(dimensions), traditional, base, scale, Int32(offset),
+            freqs?.ctx, stream.ctx))
 }
 
 /// A fast implementation of multi-head attention: `O = softmax(Q @ K.T, dim=-1) @ V`
@@ -55,11 +56,12 @@ public func RoPE(
 /// ```
 public func scaledDotProductAttention(
     queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
-    stream: StreamOrDevice = .default
+    memoryEfficientThreshold: Int = 1_000_000, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXArray(
         mlx_fast_scaled_dot_product_attention(
-            queries.ctx, keys.ctx, values.ctx, scale, mask?.ctx, stream.ctx))
+            queries.ctx, keys.ctx, values.ctx, scale, mask?.ctx,
+            Int32(memoryEfficientThreshold), stream.ctx))
 }
 
 /// Root Mean Square normalization (RMS norm).

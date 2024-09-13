@@ -35,7 +35,6 @@ struct PrepareMetalShaders: BuildToolPlugin {
         "arg_reduce.metal",
         "conv.metal",
         "gemv.metal",
-        "gemv_masked.metal",
         "random.metal",
         "rms_norm.metal",
         "layer_norm.metal",

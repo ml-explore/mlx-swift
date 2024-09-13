@@ -178,11 +178,10 @@ public func norm(
 ///
 /// - Returns: the `Q` and `R` matrices
 public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
-    let result_vector = mlx_linalg_qr(array.ctx, stream.ctx)!
-    defer { mlx_free(result_vector) }
+    let result_tuple = mlx_linalg_qr(array.ctx, stream.ctx)!
+    defer { mlx_free(result_tuple) }
 
-    let arrays = mlx_vector_array_values(result_vector)
-    return (arrays[0], arrays[1])
+    return mlx_tuple_values(result_tuple)
 }
 
 /// The Singular Value Decomposition (SVD) of the input matrix.

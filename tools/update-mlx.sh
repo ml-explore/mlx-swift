@@ -35,6 +35,7 @@ make \
     fft \
     gather \
     gemm \
+    gemv_masked \
     hadamard \
     quantized \
     reduce \

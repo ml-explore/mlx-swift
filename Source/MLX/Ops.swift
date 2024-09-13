@@ -1579,12 +1579,21 @@ public func outer(
     MLXArray(mlx_outer(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Mode for ``padded(_:width:value:stream:)``
+public enum PadMode: String {
+    /// pads with constant value
+    case constant
+    /// pads with the edge values of the array
+    case edge
+}
+
 /// Pad an array with a constant value.
 ///
 /// - Parameters:
 ///     - array: the array to pad
 ///     - width: either an `Int` number of values to pad before AND after each axis or an array of 2 giving the
 ///             before and after counts
+///     - mode: padding mode, see ``PadMode``
 ///     - value: constant value to pad the edges with
 ///     - stream: stream or device to evaluate on
 ///
@@ -1592,7 +1601,8 @@ public func outer(
 /// - <doc:shapes>
 /// - ``padded(_:widths:value:stream:)``
 public func padded(
-    _ array: MLXArray, width: IntOrPair, value: MLXArray? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, width: IntOrPair, mode: PadMode = .constant, value: MLXArray? = nil,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
     let axes = Array(Int32(0) ..< Int32(ndim))
@@ -1600,8 +1610,12 @@ public func padded(
     let highPads = (0 ..< ndim).map { _ in width.second.int32 }
     let value = value ?? MLXArray(0, dtype: array.dtype)
 
+    let mlx_mode = mlx_string_new(mode.rawValue.cString(using: .utf8))!
+    defer { mlx_free(mlx_mode) }
+
     return MLXArray(
-        mlx_pad(array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, stream.ctx))
+        mlx_pad(
+            array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, mlx_mode, stream.ctx))
 }
 
 /// Pad an array with a constant value.
@@ -1609,6 +1623,7 @@ public func padded(
 /// - Parameters:
 ///     - array: the array to pad
 ///     - widths: array of int or pairs giving the before/after amounts for each axis
+///     - mode: padding mode, see ``PadMode``
 ///     - value: constant value to pad the edges with
 ///     - stream: stream or device to evaluate on
 ///
@@ -1616,7 +1631,7 @@ public func padded(
 /// - <doc:shapes>
 /// - ``padded(_:width:value:stream:)``
 public func padded(
-    _ array: MLXArray, widths: [IntOrPair], value: MLXArray? = nil,
+    _ array: MLXArray, widths: [IntOrPair], mode: PadMode = .constant, value: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
@@ -1625,8 +1640,12 @@ public func padded(
     let highPads = widths.map { $0.second.int32 }
     let value = value ?? MLXArray(0, dtype: array.dtype)
 
+    let mlx_mode = mlx_string_new(mode.rawValue.cString(using: .utf8))!
+    defer { mlx_free(mlx_mode) }
+
     return MLXArray(
-        mlx_pad(array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, stream.ctx))
+        mlx_pad(
+            array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, mlx_mode, stream.ctx))
 }
 
 /// Returns a partitioned copy of the array such that the smaller `kth`
@@ -1694,11 +1713,10 @@ public func partitioned(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .d
 public func quantized(
     _ w: MLXArray, groupSize: Int = 64, bits: Int = 4, stream: StreamOrDevice = .default
 ) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray) {
-    let result = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)!
-    defer { mlx_free(result) }
+    let result_tuple = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)!
+    defer { mlx_free(result_tuple) }
 
-    let arrays = mlx_vector_array_values(result)
-    return (arrays[0], arrays[1], arrays[2])
+    return mlx_tuple_values(result_tuple)
 }
 
 /// Perform the matrix multiplication with the quantized matrix `w`. The

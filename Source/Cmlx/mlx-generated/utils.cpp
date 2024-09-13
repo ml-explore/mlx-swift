@@ -176,6 +176,8 @@ struct complex64_t {
   float real;
   float imag;
   constexpr complex64_t(float real, float imag) : real(real), imag(imag) {};
+  constexpr complex64_t() : real(0), imag(0) {};
+  constexpr complex64_t() threadgroup : real(0), imag(0) {};
   template <
       typename T,
       typename = typename enable_if<can_convert_to_complex64<T>>::type>
@@ -262,7 +264,8 @@ constexpr complex64_t operator%(complex64_t a, complex64_t b) {
   return {real, imag};
 }
 static constant constexpr int MAX_REDUCE_SPECIALIZED_DIMS = 4;
-static constant constexpr int REDUCE_N_READS = 16;
+static constant constexpr int REDUCE_N_READS = 4;
+static constant constexpr int REDUCE_N_WRITES = 4;
 static constant constexpr int SOFTMAX_N_READS = 4;
 static constant constexpr int RMS_N_READS = 4;
 static constant constexpr int RMS_LOOPED_LIMIT = 4096;
@@ -291,6 +294,15 @@ struct Limits<bool> {
   static constexpr constant bool max = true;
   static constexpr constant bool min = false;
 };
+template <>
+struct Limits<complex64_t> {
+  static constexpr constant complex64_t max = complex64_t(
+      metal::numeric_limits<float>::infinity(),
+      metal::numeric_limits<float>::infinity());
+  static constexpr constant complex64_t min = complex64_t(
+      -metal::numeric_limits<float>::infinity(),
+      -metal::numeric_limits<float>::infinity());
+};
 template <typename stride_t>
 METAL_FUNC stride_t elem_to_loc(
     uint elem,
@@ -307,6 +319,32 @@ METAL_FUNC stride_t elem_to_loc(
 template <typename stride_t>
 METAL_FUNC stride_t elem_to_loc(
     uint elem,
+    constant const int* shape,
+    constant const stride_t* strides,
+    int ndim) {
+  stride_t loc = 0;
+  for (int i = ndim - 1; i >= 0 && elem > 0; --i) {
+    loc += (elem % shape[i]) * strides[i];
+    elem /= shape[i];
+  }
+  return loc;
+}
+template <typename stride_t>
+METAL_FUNC stride_t elem_to_loc(
+    stride_t elem,
+    device const int* shape,
+    device const stride_t* strides,
+    int ndim) {
+  stride_t loc = 0;
+  for (int i = ndim - 1; i >= 0 && elem > 0; --i) {
+    loc += (elem % shape[i]) * strides[i];
+    elem /= shape[i];
+  }
+  return loc;
+}
+template <typename stride_t>
+METAL_FUNC stride_t elem_to_loc(
+    stride_t elem,
     constant const int* shape,
     constant const stride_t* strides,
     int ndim) {
@@ -478,7 +516,66 @@ METAL_FUNC uint3 elem_to_loc_3_nd(
   }
   return loc;
 }
-inline size_t ceildiv(size_t N, size_t M) {
+template <int dim, typename offset_t = size_t>
+struct looped_elem_to_loc {
+  looped_elem_to_loc<dim - 1, offset_t> inner_looper;
+  offset_t offset{0};
+  int index{0};
+  void next(const constant int* shape, const constant size_t* strides) {
+    index++;
+    offset += strides[dim - 1];
+    if (index >= shape[dim - 1]) {
+      index = 0;
+      inner_looper.next(shape, strides);
+      offset = inner_looper.offset;
+    }
+  }
+  void next(int n, const constant int* shape, const constant size_t* strides) {
+    index += n;
+    offset += n * strides[dim - 1];
+    if (index >= shape[dim - 1]) {
+      int extra = index - shape[dim - 1];
+      index = 0;
+      inner_looper.next(shape, strides);
+      offset = inner_looper.offset;
+      if (extra > 0) {
+        next(extra, shape, strides);
+      }
+    }
+  }
+  offset_t
+  location(offset_t, const constant int*, const constant size_t*, int) {
+    return offset;
+  }
+};
+template <typename offset_t>
+struct looped_elem_to_loc<1, offset_t> {
+  offset_t offset{0};
+  void next(const constant int*, const constant size_t* strides) {
+    offset += strides[0];
+  }
+  void next(int n, const constant int*, const constant size_t* strides) {
+    offset += n * strides[0];
+  }
+  offset_t
+  location(offset_t, const constant int*, const constant size_t*, int) {
+    return offset;
+  }
+};
+template <typename offset_t>
+struct looped_elem_to_loc<0, offset_t> {
+  void next(const constant int*, const constant size_t*) {}
+  void next(int, const constant int*, const constant size_t*) {}
+  offset_t location(
+      offset_t idx,
+      const constant int* shape,
+      const constant size_t* strides,
+      int ndim) {
+    return elem_to_loc(idx, shape, strides, ndim);
+  }
+};
+template <typename T, typename U>
+inline T ceildiv(T N, U M) {
   return (N + M - 1) / M;
 }
 inline float log1p(float x) {
@@ -511,6 +608,10 @@ inline int64_t simd_shuffle_down(int64_t data, uint16_t delta) {
 }
 inline bool simd_shuffle_down(bool data, uint16_t delta) {
   return simd_shuffle_down(static_cast<uint32_t>(data), delta);
+}
+inline complex64_t simd_shuffle_down(complex64_t data, uint16_t delta) {
+  return complex64_t(
+      simd_shuffle_down(data.real, delta), simd_shuffle_down(data.imag, delta));
 }
 )preamble";
 }
