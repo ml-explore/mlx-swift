@@ -164,6 +164,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``floorDivide(_:_:stream:)``
 - ``isNaN(_:stream:)``
 - ``isInf(_:stream:)``
+- ``isFinite(_:stream:)``
 - ``isPosInf(_:stream:)``
 - ``isNegInf(_:stream:)``
 - ``leftShift(_:_:stream:)``

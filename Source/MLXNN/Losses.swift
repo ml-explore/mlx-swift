@@ -74,18 +74,38 @@ public func crossEntropy(
 
 /// Computes the binary cross entropy loss.
 ///
+/// By default, this function takes the pre-sigmoid logits, which results in a faster
+/// and more precise loss. For improved numerical stability when `withLogits` is true,
+/// the loss calculation clips the input probabilities (in log-space) to a minimum value
+/// of `-100`.
+///
 /// - Parameters:
 ///   - logits: unnormalized predicted logits
 ///   - targets: binary target values in {0, 1}
+///   - weights: optional weights for each target
+///   - withLogits: whether the `logits` parameter is logits or probabilities
 ///   - reduction: reduction type
 /// - Returns: computed binary cross entropy loss
 ///
 /// ### See Also
 /// - <doc:losses>
 public func binaryCrossEntropy(
-    logits: MLXArray, targets: MLXArray, reduction: LossReduction = .none
+    logits: MLXArray, targets: MLXArray,
+    weights: MLXArray? = nil, withLogits: Bool = true,
+    reduction: LossReduction = .none
 ) -> MLXArray {
-    let loss = logAddExp(0, logits) - targets * logits
+    var loss: MLXArray
+    if withLogits {
+        loss = logAddExp(0, logits) - targets * logits
+    } else {
+        let logInputsClip = clip(log(logits), min: -100)
+        let logInputsInverseClip = clip(log(1 - logits), min: -100)
+        loss = -(targets * logInputsClip + (1 - targets) * logInputsInverseClip)
+    }
+    if let weights {
+        precondition(weights.shape == loss.shape)
+        loss *= weights
+    }
     return reduction.reduce(loss: loss)
 }
 

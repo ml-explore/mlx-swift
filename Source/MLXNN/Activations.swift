@@ -230,7 +230,7 @@ public func geluApproximate(_ x: MLXArray) -> MLXArray {
 /// This is:
 ///
 /// ```swift
-/// x * sigmoid(1.773 * x)
+/// x * sigmoid(1.702 * x)
 /// ```
 ///
 /// ### See Also
@@ -652,6 +652,8 @@ open class GELU: Module, UnaryLayer {
         case none
         /// See ``geluApproximate(_:)``
         case precise
+        /// Alias for ``precise`` -- see ``geluApproximate(_:)``
+        case tanh
         /// See ``geluFastApproximate(_:)``
         case fast
     }
@@ -667,7 +669,7 @@ open class GELU: Module, UnaryLayer {
         switch approximation {
         case .none:
             gelu(x)
-        case .precise:
+        case .precise, .tanh:
             geluApproximate(x)
         case .fast:
             geluFastApproximate(x)
@@ -802,7 +804,7 @@ private let compiledGeluApproximate: (MLXArray) -> MLXArray = {
 
 private let compiledGeluFastApproximate: (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
-        x * sigmoid(1.773 * x)
+        x * sigmoid(1.702 * x)
     }
 }()
 

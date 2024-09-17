@@ -28,7 +28,7 @@ open class Dropout: Module, UnaryLayer {
         }
 
         let mask = bernoulli(p1, x.shape)
-        return (1 / p1) * mask * x
+        return (mask * x) * (1 / p1)
     }
 }
 
@@ -79,7 +79,7 @@ open class Dropout2d: Module, UnaryLayer {
         maskShape[maskShape.endIndex - 3] = 1
 
         let mask = bernoulli(p1, maskShape)
-        return (1 / p1) * mask * x
+        return (mask * x) * (1 / p1)
     }
 }
 
@@ -127,6 +127,6 @@ open class Dropout3d: Module, UnaryLayer {
         maskShape[maskShape.endIndex - 4] = 1
 
         let mask = bernoulli(p1, maskShape)
-        return (1 / p1) * mask * x
+        return (mask * x) * (1 / p1)
     }
 }

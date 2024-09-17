@@ -562,3 +562,20 @@ public func categorical(
         mlx_random_categorical_num_samples(
             logits.ctx, axis.int32, count.int32, key.ctx, stream.ctx))
 }
+
+/// Sample numbers from a Laplace distribution.
+///
+/// - Parameters:
+///   - shape: shape of the output
+///   - dtype: type of the output
+///   - loc: mean of the distribution
+///   - scale: scale "b" of the distribution
+public func laplace(
+    _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
+    key: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let key = key ?? globalState.next()
+    return MLXArray(
+        mlx_random_laplace(
+            shape.asInt32, shape.count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx))
+}
