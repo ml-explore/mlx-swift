@@ -148,31 +148,52 @@ let package = Package(
             dependencies: [
                 "Cmlx",
                 .product(name: "Numerics", package: "swift-numerics"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .target(
             name: "MLXRandom",
-            dependencies: ["MLX"]
+            dependencies: ["MLX"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .target(
             name: "MLXFast",
-            dependencies: ["MLX", "Cmlx"]
+            dependencies: ["MLX", "Cmlx"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .target(
             name: "MLXNN",
-            dependencies: ["MLX", "MLXRandom", "MLXFast"]
+            dependencies: ["MLX", "MLXRandom", "MLXFast"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .target(
             name: "MLXOptimizers",
-            dependencies: ["MLX", "MLXNN"]
+            dependencies: ["MLX", "MLXNN"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .target(
             name: "MLXFFT",
-            dependencies: ["MLX"]
+            dependencies: ["MLX"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .target(
             name: "MLXLinalg",
-            dependencies: ["MLX"]
+            dependencies: ["MLX"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
 
         .testTarget(

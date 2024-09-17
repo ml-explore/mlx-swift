@@ -3,10 +3,11 @@
 import Cmlx
 import Foundation
 
-class CompiledFunction {
+// Note: this is all immutable state -- the `id` property is only set at init time
+final class CompiledFunction: @unchecked (Sendable) {
 
     /// unique (for the lifetime of the object) identifier for the compiled function
-    var id: UInt!
+    private var id: UInt!
 
     /// the function to compile
     let f: ([MLXArray]) -> [MLXArray]
@@ -128,9 +129,7 @@ class CompiledFunction {
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping ([MLXArray]) -> [MLXArray]
-) -> (
-    [MLXArray]
-) -> [MLXArray] {
+) -> @Sendable ([MLXArray]) -> [MLXArray] {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless, f)
 
     return { arrays in
@@ -147,9 +146,7 @@ public func compile(
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray) -> MLXArray
-) -> (
-    MLXArray
-) -> MLXArray {
+) -> @Sendable (MLXArray) -> MLXArray {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
         [f($0[0])]
     }
@@ -169,7 +166,7 @@ public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray) -> MLXArray
 )
-    -> (MLXArray, MLXArray) -> MLXArray
+    -> @Sendable (MLXArray, MLXArray) -> MLXArray
 {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
         [f($0[0], $0[1])]
@@ -188,7 +185,7 @@ public func compile(
 /// - ``compile(inputs:outputs:shapeless:_:)-7korq``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
-    _ f: @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
+    _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
 )
     -> (MLXArray, MLXArray, MLXArray) -> MLXArray
 {

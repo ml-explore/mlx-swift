@@ -53,7 +53,7 @@ public func leakyRelu(_ x: MLXArray, negativeSlope: Float = 0.01) -> MLXArray {
 }
 
 @available(*, deprecated, renamed: "logSoftmax(_:axis:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func logSoftMax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
     logSoftmax(x, axis: axis)
 }
@@ -104,7 +104,7 @@ public func relu6(_ x: MLXArray) -> MLXArray {
 }
 
 @available(*, deprecated, renamed: "softplus(_:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softPlus(_ x: MLXArray) -> MLXArray {
     softplus(x)
 }
@@ -125,7 +125,7 @@ public func softplus(_ x: MLXArray) -> MLXArray {
 }
 
 @available(*, deprecated, renamed: "softplus(_:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softSign(_ x: MLXArray) -> MLXArray {
     softsign(x)
 }
@@ -475,7 +475,7 @@ open class SoftMax: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "Softplus")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class SoftPlus: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softPlus(x)
@@ -500,7 +500,7 @@ open class Softplus: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "Softsign")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class SoftSign: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softsign(x)
@@ -566,7 +566,7 @@ open class SiLU: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "LogSoftmax")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class LogSoftMax: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         logSoftmax(x)
@@ -748,85 +748,85 @@ open class SELU: Module, UnaryLayer {
 
 // MARK: - Compiled Activation Functions
 
-private let compiledLeakyRelu: (MLXArray, MLXArray) -> MLXArray = {
+private let compiledLeakyRelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     compile(shapeless: true) { x, negativeSlope in
         maximum(negativeSlope * x, x)
     }
 }()
 
-private let compiledElu: (MLXArray, MLXArray) -> MLXArray = {
+private let compiledElu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     compile(shapeless: true) { x, alpha in
         which(x .> 0, x, alpha * (MLX.exp(x) - 1))
     }
 }()
 
-private let compiledRelu6: (MLXArray) -> MLXArray = {
+private let compiledRelu6: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         minimum(maximum(x, 0), 6)
     }
 }()
 
-private let compiledSoftsign: (MLXArray) -> MLXArray = {
+private let compiledSoftsign: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         x / (1 + abs(x))
     }
 }()
 
-private let compiledCelu: (MLXArray, MLXArray) -> MLXArray = {
+private let compiledCelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     compile(shapeless: true) { x, alpha in
         maximum(x, 0.0) + alpha * (exp(minimum(x, 0.0) / alpha) - 1)
     }
 }()
 
-private let compiledSilu: (MLXArray) -> MLXArray = {
+private let compiledSilu: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         x * sigmoid(x)
     }
 }()
 
-private let compiledLogSigmoid: (MLXArray) -> MLXArray = {
+private let compiledLogSigmoid: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         -softplus(-x)
     }
 }()
 
-private let compiledGelu: (MLXArray) -> MLXArray = {
+private let compiledGelu: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         x * (1 + erf(x / sqrt(2))) / 2
     }
 }()
 
-private let compiledGeluApproximate: (MLXArray) -> MLXArray = {
+private let compiledGeluApproximate: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         0.5 * x * (1 + tanh(sqrt(2 / Float.pi) * (x + 0.044715 * x ** 3)))
     }
 }()
 
-private let compiledGeluFastApproximate: (MLXArray) -> MLXArray = {
+private let compiledGeluFastApproximate: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         x * sigmoid(1.702 * x)
     }
 }()
 
-private let compiledSelu: (MLXArray) -> MLXArray = {
+private let compiledSelu: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         elu(x, alpha: 1.67326) * 1.0507
     }
 }()
 
-private let compiledPrelu: (MLXArray, MLXArray) -> MLXArray = {
+private let compiledPrelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     compile(shapeless: true) { x, alpha in
         maximum(0, x) + alpha * minimum(0, x)
     }
 }()
 
-private let compiledMish: (MLXArray) -> MLXArray = {
+private let compiledMish: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         x * tanh(softplus(x))
     }
 }()
 
-private let compiledHardSwish: (MLXArray) -> MLXArray = {
+private let compiledHardSwish: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         let maxXPlus3 = maximum(x + 3, 0)
         return x * minimum(maxXPlus3, 6) / 6

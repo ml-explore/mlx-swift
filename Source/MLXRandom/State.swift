@@ -3,9 +3,14 @@
 import Foundation
 import MLX
 
-/// Global random state
-public class RandomState: Updatable, Evaluatable {
+/// Global random state.
+///
+/// Note: although this type is thread-safe, the MLXArrays that it returns are not -- do not
+/// evaluate these values or expressions that depend on them across multiple threads
+/// simultaneously.
+public class RandomState: Updatable, Evaluatable, @unchecked (Sendable) {
     private var state: MLXArray
+    private let lock = NSLock()
 
     init() {
         let now = mach_approximate_time()
@@ -13,17 +18,23 @@ public class RandomState: Updatable, Evaluatable {
     }
 
     public func innerState() -> [MLXArray] {
-        [state]
+        lock.withLock {
+            [state]
+        }
     }
 
     public func next() -> MLXArray {
-        let (a, b) = split(key: state)
-        self.state = a
-        return b
+        lock.withLock {
+            let (a, b) = split(key: state)
+            self.state = a
+            return b
+        }
     }
 
     public func seed(_ seed: UInt64) {
-        state = key(seed)
+        lock.withLock {
+            state = key(seed)
+        }
     }
 }
 
