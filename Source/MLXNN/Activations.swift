@@ -53,7 +53,7 @@ public func leakyRelu(_ x: MLXArray, negativeSlope: Float = 0.01) -> MLXArray {
 }
 
 @available(*, deprecated, renamed: "logSoftmax(_:axis:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func logSoftMax(_ x: MLXArray, axis: Int = -1) -> MLXArray {
     logSoftmax(x, axis: axis)
 }
@@ -104,7 +104,7 @@ public func relu6(_ x: MLXArray) -> MLXArray {
 }
 
 @available(*, deprecated, renamed: "softplus(_:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softPlus(_ x: MLXArray) -> MLXArray {
     softplus(x)
 }
@@ -125,7 +125,7 @@ public func softplus(_ x: MLXArray) -> MLXArray {
 }
 
 @available(*, deprecated, renamed: "softplus(_:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softSign(_ x: MLXArray) -> MLXArray {
     softsign(x)
 }
@@ -475,7 +475,7 @@ open class SoftMax: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "Softplus")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class SoftPlus: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softPlus(x)
@@ -500,7 +500,7 @@ open class Softplus: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "Softsign")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class SoftSign: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softsign(x)
@@ -566,7 +566,7 @@ open class SiLU: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "LogSoftmax")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class LogSoftMax: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         logSoftmax(x)

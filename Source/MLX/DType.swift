@@ -298,7 +298,7 @@ extension Array: ScalarOrArray where Element: HasDType {
 /// - If neither is an array convert to arrays but leave their types alone
 ///
 /// See also ``ScalarOrArray``.
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func toArrays<T1: ScalarOrArray, T2: ScalarOrArray>(_ a: T1, _ b: T2) -> (MLXArray, MLXArray)
 {
     if let a = a as? MLXArray {
