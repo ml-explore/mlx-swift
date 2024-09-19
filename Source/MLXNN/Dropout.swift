@@ -111,7 +111,7 @@ open class Dropout3d: Module, UnaryLayer {
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         let ndim = x.ndim
-        precondition(ndim == 3 || ndim == 4)
+        precondition(ndim == 4 || ndim == 5)
 
         if p1 == 1 || !self.training {
             return x
