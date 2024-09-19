@@ -46,7 +46,7 @@ public func add<A: ScalarOrArray, B: ScalarOrArray>(
 }
 
 @available(*, deprecated, renamed: "addMM(_:_:_:alpha:beta:stream:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
     _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1871,7 +1871,7 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 }
 
 @available(*, deprecated, renamed: "softmax(_:axes:precise:stream:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softMax(
     _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1901,7 +1901,7 @@ public func softmax(
 }
 
 @available(*, deprecated, renamed: "softmax(_:axis:precise:stream:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softMax(
     _ array: MLXArray, axis: Int, precise: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1931,7 +1931,7 @@ public func softmax(
 }
 
 @available(*, deprecated, renamed: "softmax(_:axis:precise:stream:)")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func softMax(_ array: MLXArray, precise: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {

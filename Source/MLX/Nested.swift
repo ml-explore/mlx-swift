@@ -19,7 +19,7 @@ extension IndentedDescription {
 }
 
 /// Return `description` or ``IndentedDescription/description(indent:)`` if possible.
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 public func indentedDescription(_ value: Any, _ indent: Int) -> String {
     if let value = value as? IndentedDescription {
         return value.description(indent: indent)
