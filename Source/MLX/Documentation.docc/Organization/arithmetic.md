@@ -179,6 +179,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``maximum(_:_:stream:)``
 - ``minimum(_:_:stream:)``
 - ``multiply(_:_:stream:)``
+- ``nanToNum(_:nan:posInf:negInf:stream:)``
 - ``negative(_:stream:)``
 - ``notEqual(_:_:stream:)``
 - ``pow(_:_:stream:)-7pe7j``

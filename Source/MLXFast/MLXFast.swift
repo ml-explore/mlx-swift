@@ -23,11 +23,11 @@ import MLX
 ///
 /// > Note: `MLXNN.RoPE` uses this implementation internally.
 public func RoPE(
-    _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float, scale: Float, offset: Int,
+    _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float?, scale: Float, offset: Int,
     freqs: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    // TODO base and freqs (scalars) should be optional and mutually exclusive -- perhaps an enum?
-    MLXArray(
+    let base = mlx_optional_float(value: base ?? 0, has_value: base != nil)
+    return MLXArray(
         mlx_fast_rope(
             array.ctx, Int32(dimensions), traditional, base, scale, Int32(offset),
             freqs?.ctx, stream.ctx))
@@ -57,14 +57,14 @@ public func RoPE(
 /// ```
 public func scaledDotProductAttention(
     queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
-    memoryEfficientThreshold: Int = 1_000_000, stream: StreamOrDevice = .default
+    memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(
-        // TODO ideally memoryEfficientThreshold is an optional scalar -- leave the
-        // default value to the backing implementation
+    let memoryEfficientThreshold = mlx_optional_int(
+        value: Int32(memoryEfficientThreshold ?? 0), has_value: memoryEfficientThreshold != nil)
+    return MLXArray(
         mlx_fast_scaled_dot_product_attention(
             queries.ctx, keys.ctx, values.ctx, scale, mask?.ctx,
-            Int32(memoryEfficientThreshold), stream.ctx))
+            memoryEfficientThreshold, stream.ctx))
 }
 
 /// Root Mean Square normalization (RMS norm).

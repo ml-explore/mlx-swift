@@ -972,20 +972,35 @@ public func divmod<A: ScalarOrArray, B: ScalarOrArray>(
     return (result[0], result[1])
 }
 
-// TODO einsum, einsum_path
-//public func einsum(_ subscripts: String, _ operands: MLXArray..., stream: StreamOrDevice = .default) -> MLXArray {
-//    einsum(subscripts, operands: operands, stream: stream)
-//}
-//
-//public func einsum(_ subscripts: String, operands: [MLXArray], stream: StreamOrDevice = .default) -> MLXArray {
-//    let subscripts = mlx_string_new(subscripts.cString(using: .utf8))!
-//    defer { mlx_free(subscripts) }
-//
-//    let operands = new_mlx_vector_array(operands)
-//    defer { mlx_free(operands) }
-//
-//    return MLXArray()
-//}
+/// Perform the Einstein summation convention on the operands.
+///
+/// - Parameters:
+///   - subscripts: Einstein summation convention equation
+///   - operands: input arrays
+///   - stream: stream or device to evaluate on
+public func einsum(_ subscripts: String, _ operands: MLXArray..., stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    einsum(subscripts, operands: operands, stream: stream)
+}
+
+/// Perform the Einstein summation convention on the operands.
+///
+/// - Parameters:
+///   - subscripts: Einstein summation convention equation
+///   - operands: input arrays
+///   - stream: stream or device to evaluate on
+public func einsum(_ subscripts: String, operands: [MLXArray], stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    let subscripts = mlx_string_new(subscripts.cString(using: .utf8))!
+    defer { mlx_free(subscripts) }
+
+    let operands = new_mlx_vector_array(operands)
+    defer { mlx_free(operands) }
+
+    return MLXArray(mlx_einsum(subscripts, operands, stream.ctx))
+}
 
 /// Element-wise equality.
 ///
@@ -1214,9 +1229,7 @@ public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(
 public func hadamardTransform(
     _ array: MLXArray, scale: Float? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    // Default to an orthonormal Hadamard matrix scaled by 1/sqrt(N)
-    let scale = if let scale { scale } else { 1.0 / sqrt(Float(array.dim(-1))) }
-
+    let scale = mlx_optional_float(value: scale ?? 0, has_value: scale != nil)
     return MLXArray(mlx_hadamard_transform(array.ctx, scale, stream.ctx))
 }
 
@@ -1700,7 +1713,28 @@ public func multiply<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_multiply(a.ctx, b.ctx, stream.ctx))
 }
 
-// TODO nanToNum -- requires support of optional<Float> in mlx-c
+/// Replace NaN and Inf values with finite numbers.
+///
+/// - Parameters:
+///   - array: input array
+///   - nan: value to replace NaN with
+///   - posInf: value to replace positive inifinites with.  If not specified will use
+///     the largest finite value for the given dtype.
+///   - negInf: value to replace negative inifinites with.  If not specified will use
+///     the negative of the largest finite value for the given dtype.
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func nanToNum(
+    _ array: MLXArray,
+    nan: Float = 0, posInf: Float? = 0, negInf: Float? = 0,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    let posInf = mlx_optional_float(value: posInf ?? 0, has_value: posInf != nil)
+    let negInf = mlx_optional_float(value: negInf ?? 0, has_value: negInf != nil)
+    return MLXArray(mlx_nan_to_num(array.ctx, nan, posInf, negInf, stream.ctx))
+}
 
 /// Element-wise negation.
 ///
