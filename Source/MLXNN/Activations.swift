@@ -347,7 +347,7 @@ public func hardSwish(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``glu(_:axis:)``
 open class GLU: Module, UnaryLayer {
-    public let axis: Int
+    public var axis: Int
 
     public init(axis: Int = -1) {
         self.axis = axis
@@ -430,7 +430,7 @@ open class ReLU: Module, UnaryLayer {
 /// - ``leakyRelu(_:negativeSlope:)``
 open class LeakyReLU: Module, UnaryLayer {
 
-    public let negativeSlope: Float
+    public var negativeSlope: Float
 
     public init(negativeSlope: Float = 0.01) {
         self.negativeSlope = negativeSlope
@@ -458,6 +458,14 @@ open class ReLU6: Module, UnaryLayer {
     }
 }
 
+@available(*, deprecated, renamed: "Softmax")
+@_documentation(visibility:internal)
+open class SoftMax: Module, UnaryLayer {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        softmax(x)
+    }
+}
+
 /// Applies the Softmax function.
 ///
 /// This is:
@@ -468,9 +476,15 @@ open class ReLU6: Module, UnaryLayer {
 ///
 /// ### See Also
 /// - <doc:activations>
-open class SoftMax: Module, UnaryLayer {
+open class Softmax: Module, UnaryLayer {
+    public var axis: Int
+
+    public init(axis: Int = -1) {
+        self.axis = axis
+    }
+
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        softmax(x, axis: -1)
+        softmax(x, axis: axis)
     }
 }
 
@@ -536,7 +550,7 @@ open class Softsign: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``celu(_:alpha:)``
 open class CELU: Module, UnaryLayer {
-    public let alpha: Float
+    public var alpha: Float
 
     public init(alpha: Float = 1.0) {
         self.alpha = alpha
@@ -585,8 +599,14 @@ open class LogSoftMax: Module, UnaryLayer {
 /// - <doc:activations>
 /// - ``logSoftmax(_:axis:)``
 open class LogSoftmax: Module, UnaryLayer {
+    public var axis: Int
+
+    public init(axis: Int = -1) {
+        self.axis = axis
+    }
+
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        logSoftmax(x)
+        logSoftmax(x, axis: axis)
     }
 }
 
@@ -715,7 +735,7 @@ open class HardSwish: Module, UnaryLayer {
 /// - ``step(_:threshold:)``
 open class Step: Module, UnaryLayer {
 
-    public let threshold: Float
+    public var threshold: Float
 
     public init(threshold: Float = 0.0) {
         self.threshold = threshold

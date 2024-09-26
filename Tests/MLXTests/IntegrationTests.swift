@@ -6433,7 +6433,7 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(
             a.sum().item(Float.self), 131.68545532226562,
             accuracy: 2.6337091064453126)
-        let result = SoftMax()(a)
+        let result = Softmax()(a)
         XCTAssertEqual(result.shape, [2, 8, 16])
         XCTAssertEqual(result.dtype, .float32)
         XCTAssertEqual(
