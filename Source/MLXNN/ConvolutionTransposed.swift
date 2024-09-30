@@ -71,7 +71,7 @@ open class ConvTransposed2d: Module, UnaryLayer {
     public let padding: (Int, Int)
     public let stride: (Int, Int)
 
-    /// Applies a 2-dimensional convolution over the multi-channel input image.
+    /// Applies a 2-dimensional transposed convolution over the multi-channel input image.
     ///
     /// The channels are expected to be last i.e. the input shape should be `NHWC` where:
     ///
