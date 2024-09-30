@@ -279,3 +279,20 @@ public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOr
 {
     MLXArray(mlx_linalg_cholesky_inv(array.ctx, upper, stream.ctx))
 }
+
+/// Compute the cross product of two arrays along a specified axis.
+///
+/// The cross product is defined for arrays with size 2 or 3 in the
+/// specified axis. If the size is 2 then the third value is assumed
+/// to be zero.
+///
+/// - Parameters:
+///   - a: input array
+///   - b: input array
+///   - axis: axis along which to compute the cross product
+///   - stream: stream or device to evaluate on
+public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    MLXArray(mlx_linalg_cross(a.ctx, b.ctx, axis.int32, stream.ctx))
+}

@@ -2550,7 +2550,8 @@ extension MLXArray {
     /// - ``take(_:axis:stream:)``
     /// - ``take(_:_:axis:stream:)``
     public func take(_ indices: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        MLXArray(mlx_take_all(ctx, indices.ctx, stream.ctx))
+        let input = self.reshaped([-1], stream: stream)
+        return MLXArray(mlx_take(input.ctx, indices.ctx, 0, stream.ctx))
     }
 
     /// Transpose the dimensions of the array.

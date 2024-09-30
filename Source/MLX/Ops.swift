@@ -1919,6 +1919,46 @@ public func partitioned(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .d
     MLXArray(mlx_partition_all(array.ctx, kth.int32, stream.ctx))
 }
 
+/// Put values along an axis at the specified indices.
+///
+/// - Parameters:
+///     - array: destination array
+///     - indices: Indices array. These should be broadcastable with the input array excluding the `axis` dimension.
+///     - values: Values array. These should be broadcastable with the indices.
+///     - axis: Axis in the destination to put the values to
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:indexes>
+/// - ``takeAlong(_:_:stream:)``
+public func putAlong(
+    _ array: MLXArray, _ indices: MLXArray, values: MLXArray, axis: Int,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_put_along_axis(array.ctx, indices.ctx, values.ctx, axis.int32, stream.ctx))
+}
+
+/// Put values along an axis at the specified indices in a flattened array.
+///
+/// - Parameters:
+///     - array: destination array
+///     - indices: Indices array. These should be broadcastable with the flattened input array
+///     - values: Values array. These should be broadcastable with the flattened input array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:indexes>
+/// - ``takeAlong(_:_:axis:stream:)
+public func putAlong(
+    _ array: MLXArray, _ indices: MLXArray, values: MLXArray, stream: StreamOrDevice = .default
+)
+    -> MLXArray
+{
+    let input = array.reshaped([-1], stream: stream)
+    let result = MLXArray(mlx_put_along_axis(input.ctx, indices.ctx, values.ctx, 0, stream.ctx))
+    return result.reshaped(array.shape, stream: stream)
+}
+
 /// Quantize the matrix `w` using `bits` bits per element.
 ///
 /// Note, every `group_size` elements in a row of `w` are quantized

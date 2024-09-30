@@ -1598,7 +1598,8 @@ public func take(
 public func take(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    MLXArray(mlx_take_all(array.ctx, indices.ctx, stream.ctx))
+    let input = array.reshaped([-1], stream: stream)
+    return MLXArray(mlx_take(input.ctx, indices.ctx, 0, stream.ctx))
 }
 
 /// Transpose the dimensions of the array.
