@@ -85,7 +85,7 @@ open class ConvTransposed2d: Module, UnaryLayer {
     ///   - outputChannels: number of output channels
     ///   - kernelSize: size of the convolution filters
     ///   - stride: stride when applying the filter
-    ///   - padding: many positions to 0-pad the input with
+    ///   - padding: how many positions to 0-pad the input with
     ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
