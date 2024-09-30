@@ -17,7 +17,7 @@ open class ConvTransposed1d: Module, UnaryLayer {
     public let padding: Int
     public let stride: Int
 
-    /// Applies a 1-dimensional convolution over the multi-channel input sequence.
+    /// Applies a 1-dimensional transposed convolution over the multi-channel input sequence.
     ///
     /// The channels are expected to be last i.e. the input shape should be `NLC` where:
     ///
