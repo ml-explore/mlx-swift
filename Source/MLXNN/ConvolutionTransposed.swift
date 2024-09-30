@@ -127,7 +127,7 @@ open class ConvTransposed3d: Module, UnaryLayer {
     public let padding: (Int, Int, Int)
     public let stride: (Int, Int, Int)
 
-    /// Applies a 3-dimensional convolution over the multi-channel input image.
+    /// Applies a 3-dimensional transposed convolution over the multi-channel input image.
     ///
     /// The channels are expected to be last i.e. the input shape should be `NDHWC` where:
     ///
