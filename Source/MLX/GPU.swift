@@ -25,9 +25,15 @@ public enum GPU {
     static let queue = DispatchQueue(label: "GPUEnum")
 
     // note: these are guarded by the queue above
-    nonisolated(unsafe) static var _relaxedMemoryLimit = true
-    nonisolated(unsafe) static var _cacheLimit: Int?
-    nonisolated(unsafe) static var _memoryLimit: Int?
+    #if swift(>=5.10)
+        nonisolated(unsafe) static var _relaxedMemoryLimit = true
+        nonisolated(unsafe) static var _cacheLimit: Int?
+        nonisolated(unsafe) static var _memoryLimit: Int?
+    #else
+        static var _relaxedMemoryLimit = true
+        static var _cacheLimit: Int?
+        static var _memoryLimit: Int?
+    #endif
 
     /// Snapshot of memory stats.
     ///
