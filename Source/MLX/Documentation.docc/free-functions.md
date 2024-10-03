@@ -226,4 +226,7 @@ operations as methods for convenience.
 
 - ``diag(_:k:stream:)``
 - ``diagonal(_:offset:axis1:axis2:stream:)``
+- ``einsum(_:operands:stream:)``
+- ``einsum(_:_:stream:)``
+- ``hadamardTransform(_:scale:stream:)``
 - ``view(_:dtype:stream:)``

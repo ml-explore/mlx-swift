@@ -29,13 +29,7 @@ public func jvp(
 
     mlx_free(closure)
 
-    let v1 = mlx_vector_vector_array_get(vector_pair, 0)!
-    defer { mlx_free((v1)) }
-
-    let v2 = mlx_vector_vector_array_get(vector_pair, 1)!
-    defer { mlx_free((v2)) }
-
-    return (mlx_vector_array_values(v1), mlx_vector_array_values(v2))
+    return mlx_tuple_vectors(vector_pair)
 }
 
 /// Compute the vector-Jacobian product.
@@ -64,13 +58,7 @@ public func vjp(
 
     mlx_free(closure)
 
-    let v1 = mlx_vector_vector_array_get(vector_pair, 0)!
-    defer { mlx_free((v1)) }
-
-    let v2 = mlx_vector_vector_array_get(vector_pair, 1)!
-    defer { mlx_free((v2)) }
-
-    return (mlx_vector_array_values(v1), mlx_vector_array_values(v2))
+    return mlx_tuple_vectors(vector_pair)
 }
 
 /// Returns a function that computes the gradient and result of `f`, computing the gradient with respect to the ``NestedDictionary``.

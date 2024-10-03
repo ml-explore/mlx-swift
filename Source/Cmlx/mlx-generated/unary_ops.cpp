@@ -91,6 +91,7 @@ float expm1f(float a) {
   float r;
   r = expm1f_scaled_unchecked(a, 1.0f);
   if (abs(a - 1.0f) > 88.0f) {
+    r = pow(2, a);
     r = fma(r, r, -1.0f);
   }
   return r;
@@ -368,6 +369,14 @@ struct Sign {
   template <>
   uint32_t operator()(uint32_t x) {
     return x != 0;
+  };
+  template <>
+  complex64_t operator()(complex64_t x) {
+    if (x == complex64_t(0)) {
+      return x;
+    }
+    return x /
+        (complex64_t)metal::precise::sqrt(x.real * x.real + x.imag * x.imag);
   };
 };
 struct Sin {

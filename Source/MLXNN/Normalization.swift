@@ -199,17 +199,17 @@ open class GroupNorm: Module, UnaryLayer {
         let batch = x.dim(0)
         let dims = x.dim(-1)
         let rest = x.shape.dropFirst().dropLast()
+        let groupSize = dims / groupCount
 
         // split into groups
-        var x = x.reshaped(batch, -1, groupCount, dims / groupCount)
-        x = x.transposed(0, 1, 3, 2).reshaped(batch, -1, groupCount)
+        var x = x.reshaped(batch, -1, groupCount, groupSize)
+        x = x.transposed(0, 2, 1, 3).reshaped(batch, groupCount, -1)
 
         // normalize
-        let means = mean(x, axis: 1, keepDims: true)
-        let variance = variance(x, axis: 1, keepDims: true)
-        x = (x - means) * rsqrt(variance + eps)
-        x = x.reshaped(batch, -1, dims / groupCount, groupCount)
-        x = x.transposed(0, 1, 3, 2).reshaped([batch] + rest + [dims])
+        x = MLXFast.layerNorm(x, weight: nil, bias: nil, eps: eps)
+
+        x = x.reshaped(batch, groupCount, -1, groupSize)
+        x = x.transposed(0, 2, 1, 3).reshaped([batch] + rest + [dims])
 
         return x
     }

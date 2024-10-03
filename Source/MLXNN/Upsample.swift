@@ -230,7 +230,7 @@ private func linearIndices(dimension: Int, scale: Float, alignCorners: Bool, dim
     ]
 }
 
-private let compiledGetWeight1: (MLXArray, MLXArray) -> MLXArray = {
+private let compiledGetWeight1: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     // PyTorch uses -0.5 for antialiasing=true (compatibility with PIL)
     // and uses -0.75 for antialiasing=false (compatibility with OpenCV)
 
@@ -241,7 +241,7 @@ private let compiledGetWeight1: (MLXArray, MLXArray) -> MLXArray = {
     }
 }()
 
-private let compiledGetWeight2: (MLXArray, MLXArray) -> MLXArray = {
+private let compiledGetWeight2: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     // PyTorch uses -0.5 for antialiasing=true (compatibility with PIL)
     // and uses -0.75 for antialiasing=false (compatibility with OpenCV)
 

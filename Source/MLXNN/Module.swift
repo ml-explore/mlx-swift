@@ -887,7 +887,8 @@ extension Module {
     ///
     /// ### See Also
     /// - <doc:module-filters>
-    static public let filterAll = { (module: Module, key: String, item: ModuleItem) in
+    static public let filterAll: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         true
     }
 
@@ -895,7 +896,8 @@ extension Module {
     ///
     /// ### See Also
     /// - <doc:module-filters>
-    static public let filterValidChild = { (module: Module, key: String, item: ModuleItem) in
+    static public let filterValidChild: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary: true
         case .value(.module): true
@@ -910,7 +912,8 @@ extension Module {
     /// - <doc:module-filters>
     /// - ``filterLocalParameters``
     /// - ``filterTrainableParameters``
-    static public let filterValidParameters = { (module: Module, key: String, item: ModuleItem) in
+    static public let filterValidParameters: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary: !key.hasPrefix("_")
         case .value(.parameters), .value(.module): !key.hasPrefix("_")
@@ -925,7 +928,8 @@ extension Module {
     /// - <doc:module-filters>
     /// - ``filterValidParameters``
     /// - ``filterTrainableParameters``
-    static public let filterLocalParameters = { (module: Module, key: String, item: ModuleItem) in
+    static public let filterLocalParameters: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary: !key.hasPrefix("_")
         case .value(.parameters): !key.hasPrefix("_")
@@ -941,7 +945,7 @@ extension Module {
     /// - ``freeze(recursive:keys:strict:)``
     /// - ``filterValidParameters``
     /// - ``filterLocalParameters``
-    static public let filterTrainableParameters = {
+    static public let filterTrainableParameters: @Sendable (Module, String, ModuleItem) -> Bool = {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .value(.parameters), .value(.module):
@@ -954,7 +958,8 @@ extension Module {
     ///
     /// ### See Also
     /// - <doc:module-filters>
-    static public let filterOther = { (module: Module, key: String, item: ModuleItem) in
+    static public let filterOther: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .value(.other): true
         default: false
@@ -1062,7 +1067,8 @@ extension Module {
     /// ### See Also
     /// - <doc:module-filters>
     /// - ``filterMap(filter:map:isLeaf:)``
-    static public let isLeafDefault = { (module: Module, key: String, item: ModuleItem) in
+    static public let isLeafDefault: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .none, .value(.module): false
         case .value(.parameters), .value(.other), .value(.none): true
@@ -1074,7 +1080,8 @@ extension Module {
     /// ### See Also
     /// - <doc:module-filters>
     /// - ``filterMap(filter:map:isLeaf:)``
-    static public let isLeafModule = { (module: Module, key: String, item: ModuleItem) in
+    static public let isLeafModule: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .none: false
         case .value(.module): true
@@ -1087,7 +1094,8 @@ extension Module {
     /// ### See Also
     /// - <doc:module-filters>
     /// - ``filterMap(filter:map:isLeaf:)``
-    static public let isLeafModuleNoChildren = { (module: Module, key: String, item: ModuleItem) in
+    static public let isLeafModuleNoChildren: @Sendable (Module, String, ModuleItem) -> Bool = {
+        (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .none: false
         case .value(.module(let m)): m.children().isEmpty

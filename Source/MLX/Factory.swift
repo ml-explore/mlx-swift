@@ -537,9 +537,10 @@ public func eye<T: HasDType>(
 /// - ``full(_:values:stream:)``
 /// - ``repeated(_:count:axis:stream:)``
 public func full<T: HasDType>(
-    _ shape: [Int], values: MLXArray, type: T.Type, stream: StreamOrDevice = .default
+    _ shape: [Int], values: ScalarOrArray, type: T.Type, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_full(shape.asInt32, shape.count, values.ctx, T.dtype.cmlxDtype, stream.ctx))
+    let values = values.asMLXArray(dtype: nil)
+    return MLXArray(mlx_full(shape.asInt32, shape.count, values.ctx, T.dtype.cmlxDtype, stream.ctx))
 }
 
 /// Construct an array with the given value.
@@ -563,8 +564,12 @@ public func full<T: HasDType>(
 /// - <doc:initialization>
 /// - ``full(_:values:type:stream:)``
 /// - ``repeated(_:count:axis:stream:)``
-public func full(_ shape: [Int], values: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_full(shape.asInt32, shape.count, values.ctx, values.dtype.cmlxDtype, stream.ctx))
+public func full(_ shape: [Int], values: ScalarOrArray, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    let values = values.asMLXArray(dtype: nil)
+    return MLXArray(
+        mlx_full(shape.asInt32, shape.count, values.ctx, values.dtype.cmlxDtype, stream.ctx))
 }
 
 /// Create a square identity matrix.

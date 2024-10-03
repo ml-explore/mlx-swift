@@ -60,7 +60,7 @@ template <typename T, int N, int max_radix, int read_width>
     radix_func<max_radix>(x);
 #pragma clang loop unroll(full)
     for (short r = 0; r < max_radix; r++) {
-      buf[j + h * r] = x[r];
+      buf[j + h * r] = T(x[r]);
     }
     h <<= logR;
     threadgroup_barrier(mem_flags::mem_threadgroup);
@@ -78,7 +78,7 @@ template <typename T, int N, int max_radix, int read_width>
       radix_func<final_radix>(x);
 #pragma clang loop unroll(full)
       for (short r = 0; r < final_radix; r++) {
-        buf[j + h * r] = x[r];
+        buf[j + h * r] = T(x[r]);
       }
     }
     threadgroup_barrier(mem_flags::mem_threadgroup);
@@ -88,7 +88,7 @@ template <typename T, int N, int max_radix, int read_width>
     short index = j * read_width * num_threads + i * read_width;
 #pragma clang loop unroll(full)
     for (short r = 0; r < read_width; r++) {
-      out[batch_idx + index + r] = buf[index + r] * scale;
+      out[batch_idx + index + r] = T(buf[index + r] * scale);
     }
   }
 }
@@ -118,7 +118,7 @@ template <typename T, int N, int M, int read_width>
   for (short c = 0; c < M; c++) {
 #pragma clang loop unroll(full)
     for (short r = 0; r < read_width; r++) {
-      out[batch_idx + c * N + i * read_width + r] = x[r][c] * scale;
+      out[batch_idx + c * N + i * read_width + r] = T(x[r][c] * scale);
     }
   }
 }

@@ -37,8 +37,9 @@ public func split(key: MLXArray, into num: Int, stream: StreamOrDevice = .defaul
 /// ### See Also
 /// - ``split(key:into:stream:)``
 public func split(key: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
-    let keys = MLXArray(mlx_random_split_equal_parts(key.ctx, 2, stream.ctx))
-    return (keys[0], keys[1])
+    let keys = mlx_random_split(key.ctx, stream.ctx)!
+    defer { mlx_free(keys) }
+    return mlx_tuple_values(keys)
 }
 
 /// Generate uniformly distributed random numbers with a `RangeExpression`.
@@ -560,4 +561,21 @@ public func categorical(
     return MLXArray(
         mlx_random_categorical_num_samples(
             logits.ctx, axis.int32, count.int32, key.ctx, stream.ctx))
+}
+
+/// Sample numbers from a Laplace distribution.
+///
+/// - Parameters:
+///   - shape: shape of the output
+///   - dtype: type of the output
+///   - loc: mean of the distribution
+///   - scale: scale "b" of the distribution
+public func laplace(
+    _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
+    key: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let key = key ?? globalState.next()
+    return MLXArray(
+        mlx_random_laplace(
+            shape.asInt32, shape.count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx))
 }

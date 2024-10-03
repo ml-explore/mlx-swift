@@ -5,7 +5,7 @@ import Foundation
 /// Simple cache for holding prepared MLXArrays, etc.
 ///
 /// See ``RoPE``
-class Cache<Key: Hashable, Element> {
+class Cache<Key: Hashable, Element>: @unchecked (Sendable) {
 
     let queue = DispatchQueue(label: "Cache")
 

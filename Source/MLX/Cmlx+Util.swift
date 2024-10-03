@@ -22,7 +22,7 @@ func mlx_describe(_ ptr: OpaquePointer) -> String? {
 // return a +1 mlx_vector_array containing the given arrays
 func new_mlx_vector_array(_ arrays: [MLXArray]) -> mlx_vector_array {
     let result = mlx_vector_array_new()!
-    mlx_vector_array_add_arrays(result, arrays.map { $0.ctx }, arrays.count)
+    mlx_vector_array_add_data(result, arrays.map { $0.ctx }, arrays.count)
     return result
 }
 
@@ -141,4 +141,25 @@ func new_mlx_closure(_ f: @escaping ([MLXArray]) -> [MLXArray]) -> mlx_closure {
     }
 
     return mlx_closure_new_with_payload(trampoline, payload, free)!
+}
+
+func mlx_tuple_values(_ tuple: mlx_tuple_array_array) -> (MLXArray, MLXArray) {
+    let a = mlx_tuple_array_array_get_0(tuple)!
+    let b = mlx_tuple_array_array_get_1(tuple)!
+    return (MLXArray(a), MLXArray(b))
+}
+
+func mlx_tuple_vectors(_ tuple: mlx_tuple_vector_array_vector_array) -> ([MLXArray], [MLXArray]) {
+    let a = mlx_tuple_vector_array_vector_array_get_0(tuple)!
+    defer { mlx_free(a) }
+    let b = mlx_tuple_vector_array_vector_array_get_1(tuple)!
+    defer { mlx_free(b) }
+    return (mlx_vector_array_values(a), mlx_vector_array_values(b))
+}
+
+func mlx_tuple_values(_ tuple: mlx_tuple_array_array_array) -> (MLXArray, MLXArray, MLXArray) {
+    let a = mlx_tuple_array_array_array_get_0(tuple)!
+    let b = mlx_tuple_array_array_array_get_1(tuple)!
+    let c = mlx_tuple_array_array_array_get_2(tuple)!
+    return (MLXArray(a), MLXArray(b), MLXArray(c))
 }

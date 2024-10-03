@@ -14,13 +14,8 @@ private func valueAndGradient(apply valueAndGrad: mlx_closure_value_and_grad, ar
     let vector_pair = mlx_closure_value_and_grad_apply(valueAndGrad, input_vector)!
     defer { mlx_free(vector_pair) }
 
-    let values = mlx_vector_vector_array_get(vector_pair, 0)!
-    defer { mlx_free((values)) }
-
-    let gradient = mlx_vector_vector_array_get(vector_pair, 1)!
-    defer { mlx_free((gradient)) }
-
-    return (mlx_vector_array_values(values), mlx_vector_array_values(gradient))
+    let (values, gradient) = mlx_tuple_vectors(vector_pair)
+    return (values, gradient)
 }
 
 func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (

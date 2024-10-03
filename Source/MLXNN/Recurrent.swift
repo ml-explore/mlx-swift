@@ -39,7 +39,7 @@ open class RNN: Module {
 
         let scale = 1 / sqrt(Float(hiddenSize))
         self._wxh.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [inputSize, hiddenSize])
+            low: -scale, high: scale, [hiddenSize, inputSize])
         self._whh.wrappedValue = MLXRandom.uniform(
             low: -scale, high: scale, [hiddenSize, hiddenSize])
         if bias {
@@ -53,16 +53,16 @@ open class RNN: Module {
         var x = x
 
         if let bias {
-            x = addMM(bias, x, wxh)
+            x = addMM(bias, x, wxh.T)
         } else {
-            x = matmul(x, wxh)
+            x = matmul(x, wxh.T)
         }
 
         var hidden: MLXArray! = hidden
         var allHidden = [MLXArray]()
         for index in 0 ..< x.dim(-2) {
             if hidden != nil {
-                hidden = x[.ellipsis, index, 0...] + matmul(hidden, whh)
+                hidden = addMM(x[.ellipsis, index, 0...], hidden, whh.T)
             } else {
                 hidden = x[.ellipsis, index, 0...]
             }
@@ -107,9 +107,9 @@ open class GRU: Module {
         self.hiddenSize = hiddenSize
         let scale = 1 / sqrt(Float(hiddenSize))
         self._wx.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [inputSize, 3 * hiddenSize])
+            low: -scale, high: scale, [3 * hiddenSize, inputSize])
         self._wh.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [hiddenSize, 3 * hiddenSize])
+            low: -scale, high: scale, [3 * hiddenSize, inputSize])
         if bias {
             self.b = MLXRandom.uniform(low: -scale, high: scale, [3 * hiddenSize])
             self.bhn = MLXRandom.uniform(low: -scale, high: scale, [hiddenSize])
@@ -123,9 +123,9 @@ open class GRU: Module {
         var x = x
 
         if let b {
-            x = addMM(b, x, wx)
+            x = addMM(b, x, wx.T)
         } else {
-            x = matmul(x, wx)
+            x = matmul(x, wx.T)
         }
 
         let x_rz = x[.ellipsis, .stride(to: -hiddenSize)]
@@ -138,7 +138,7 @@ open class GRU: Module {
             var rz = x_rz[.ellipsis, index, 0...]
             var hProj_n: MLXArray!
             if hidden != nil {
-                let hProj = matmul(hidden, wh)
+                let hProj = matmul(hidden, wh.T)
                 let hProj_rz = hProj[.ellipsis, .stride(to: -hiddenSize)]
                 hProj_n = hProj[.ellipsis, .stride(from: -hiddenSize)]
 
@@ -204,9 +204,9 @@ open class LSTM: Module {
     public init(inputSize: Int, hiddenSize: Int, bias: Bool = true) {
         let scale = 1 / sqrt(Float(hiddenSize))
         self._wx.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [inputSize, 4 * hiddenSize])
+            low: -scale, high: scale, [4 * hiddenSize, inputSize])
         self._wh.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [hiddenSize, 4 * hiddenSize])
+            low: -scale, high: scale, [4 * hiddenSize, inputSize])
         if bias {
             self.bias = MLXRandom.uniform(low: -scale, high: scale, [4 * hiddenSize])
         } else {
@@ -220,9 +220,9 @@ open class LSTM: Module {
         var x = x
 
         if let bias {
-            x = addMM(bias, x, wx)
+            x = addMM(bias, x, wx.T)
         } else {
-            x = matmul(x, wx)
+            x = matmul(x, wx.T)
         }
 
         var hidden: MLXArray! = hidden
@@ -233,7 +233,7 @@ open class LSTM: Module {
         for index in 0 ..< x.dim(-2) {
             var ifgo = x[.ellipsis, index, 0...]
             if hidden != nil {
-                ifgo = ifgo + matmul(hidden, wh)
+                ifgo = addMM(ifgo, hidden, wh.T)
             }
 
             let pieces = split(ifgo, parts: 4, axis: -1)

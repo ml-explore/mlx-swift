@@ -416,6 +416,24 @@ public func ceil(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - Parameters:
 ///     - array: input array
 ///     - min: minimum value (must broadcast to `array`)
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``clip(_:max:stream:)``
+/// - ``clip(_:min:max:stream:)``
+public func clip<A: ScalarOrArray>(
+    _ array: MLXArray, min: A, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (array, min) = toArrays(array, min)
+    return MLXArray(mlx_clip(array.ctx, min.ctx, nil, stream.ctx))
+}
+
+/// Clip the values of the array between the given minimum and maximum.
+///
+/// - Parameters:
+///     - array: input array
+///     - min: minimum value (must broadcast to `array`)
 ///     - max: maximum value (must broadcast to `array`).  If omitted only the `min` will be honored.
 ///     - stream: stream or device to evaluate on
 ///
@@ -423,11 +441,11 @@ public func ceil(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - <doc:arithmetic>
 /// - ``clip(_:max:stream:)``
 public func clip<A: ScalarOrArray, B: ScalarOrArray>(
-    _ array: MLXArray, min: A, max: B? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, min: A, max: B, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (array, min) = toArrays(array, min)
-    let (_, max) = max == nil ? (array, nil) : toArrays(array, max!)
-    return MLXArray(mlx_clip(array.ctx, min.ctx, max?.ctx, stream.ctx))
+    let (_, max) = toArrays(array, max)
+    return MLXArray(mlx_clip(array.ctx, min.ctx, max.ctx, stream.ctx))
 }
 
 /// Clip the values of the array up to the given maximum.
@@ -439,6 +457,7 @@ public func clip<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
+/// - ``clip(_:min:stream:)``
 /// - ``clip(_:min:max:stream:)``
 public func clip<A: ScalarOrArray>(_ array: MLXArray, max: A, stream: StreamOrDevice = .default)
     -> MLXArray
@@ -674,6 +693,129 @@ public func convGeneral(
             groups.int32, flip, stream.ctx))
 }
 
+/// 1D transposed convolution over an input with several channels.
+///
+/// > Only the default `groups=1` is currently supported.
+///
+/// - Parameters:
+///     - array: input array of shape `[N, H, C_in]`
+///     - weight: weight array of shape `[C_out, H, C_in]`
+///     - stride: kernel stride
+///     - padding: input padding
+///     - dilation: kernel dilation
+///     - groups: input feature groups
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:convolution>
+/// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed2d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convolve(_:_:mode:stream:)``
+public func convTransposed1d(
+    _ array: MLXArray, _ weight: MLXArray, stride: Int = 1, padding: Int = 0, dilation: Int = 1,
+    groups: Int = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_conv_transpose1d(
+            array.ctx, weight.ctx, stride.int32, padding.int32, dilation.int32, groups.int32,
+            stream.ctx))
+}
+
+/// 2D transposed convolution over an input with several channels.
+///
+/// > Only the default `groups=1` is currently supported.
+///
+/// The numeric parameters may be given as single values:
+///
+/// ```swift
+/// padding: 1
+/// ```
+///
+/// This will produce a padding of `(1, 1)`.  You can also give an array:
+///
+/// ```swift
+/// padding: [2, 3]
+/// ```
+///
+/// See ``IntOrPair`` for more information.
+///
+/// - Parameters:
+///     - array: input array of shape `[N, H, W, C_in]`
+///     - weight: weight array of shape `[C_out, H, W, C_in]`
+///     - stride: kernel stride
+///     - padding: input padding
+///     - dilation: kernel dilation
+///     - groups: input feature groups
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:convolution>
+/// - ``IntOrPair``
+/// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convolve(_:_:mode:stream:)``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+public func convTransposed2d(
+    _ array: MLXArray, _ weight: MLXArray, stride: IntOrPair = 1, padding: IntOrPair = 0,
+    dilation: IntOrPair = 1, groups: Int = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_conv_transpose2d(
+            array.ctx, weight.ctx, stride.first.int32, stride.second.int32, padding.first.int32,
+            padding.second.int32, dilation.first.int32, dilation.second.int32, groups.int32,
+            stream.ctx))
+}
+
+/// 3D transposed convolution over an input with several channels.
+///
+/// > Only the default `groups=1` is currently supported.
+///
+/// The numeric parameters may be given as single values:
+///
+/// ```swift
+/// padding: 1
+/// ```
+///
+/// This will produce a padding of `(1, 1, 1)`.  You can also give an array:
+///
+/// ```swift
+/// padding: [2, 3, 3]
+/// ```
+///
+/// See ``IntOrTriple`` for more information.
+///
+/// - Parameters:
+///     - array: input array of shape `[N, D, H, W, C_in]`
+///     - weight: weight array of shape `[C_out, D, H, W, C_in]`
+///     - stride: kernel stride
+///     - padding: input padding
+///     - dilation: kernel dilation
+///     - groups: input feature groups
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:convolution>
+/// - ``IntOrTriple``
+/// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed1d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convolve(_:_:mode:stream:)``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+public func convTransposed3d(
+    _ array: MLXArray, _ weight: MLXArray, stride: IntOrTriple = 1, padding: IntOrTriple = 0,
+    dilation: IntOrTriple = 1, groups: Int = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(
+        mlx_conv_transpose3d(
+            array.ctx, weight.ctx,
+            stride.first.int32, stride.second.int32, stride.third.int32,
+            padding.first.int32, padding.second.int32, padding.third.int32,
+            dilation.first.int32, dilation.second.int32, dilation.third.int32,
+            groups.int32, stream.ctx))
+}
+
 /// Mode for ``convolve(_:_:mode:stream:)``
 public enum ConvolveMode: Sendable {
     case full
@@ -828,6 +970,36 @@ public func divmod<A: ScalarOrArray, B: ScalarOrArray>(
     defer { mlx_free(arrays) }
     let result = mlx_vector_array_values(arrays)
     return (result[0], result[1])
+}
+
+/// Perform the Einstein summation convention on the operands.
+///
+/// - Parameters:
+///   - subscripts: Einstein summation convention equation
+///   - operands: input arrays
+///   - stream: stream or device to evaluate on
+public func einsum(_ subscripts: String, _ operands: MLXArray..., stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    einsum(subscripts, operands: operands, stream: stream)
+}
+
+/// Perform the Einstein summation convention on the operands.
+///
+/// - Parameters:
+///   - subscripts: Einstein summation convention equation
+///   - operands: input arrays
+///   - stream: stream or device to evaluate on
+public func einsum(_ subscripts: String, operands: [MLXArray], stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    let subscripts = mlx_string_new(subscripts.cString(using: .utf8))!
+    defer { mlx_free(subscripts) }
+
+    let operands = new_mlx_vector_array(operands)
+    defer { mlx_free(operands) }
+
+    return MLXArray(mlx_einsum(subscripts, operands, stream.ctx))
 }
 
 /// Element-wise equality.
@@ -1045,6 +1217,22 @@ public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_greater_equal(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Perform the Walsh-Hadamard transform along the final axis.
+///
+/// Supports sizes `n = m*2^k` for `m` in `(1, 12, 20, 28)` and `2^k <= 8192`
+/// for ``DType/float32`` and `2^k <= 16384` for ``DType/float16`` and ``DType/bfloat16``.
+///
+/// - Parameters:
+///   - array: input array
+///   - scale: scale the output by this factor -- default is `1.0/sqrt(array.dim(-1))`
+///   - stream: stream to evaluate on
+public func hadamardTransform(
+    _ array: MLXArray, scale: Float? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let scale = mlx_optional_float(value: scale ?? 0, has_value: scale != nil)
+    return MLXArray(mlx_hadamard_transform(array.ctx, scale, stream.ctx))
+}
+
 /// Ordinary inner product of vectors for 1-D arrays, in higher dimensions a sum product over the last axes.
 ///
 /// - Parameters:
@@ -1116,6 +1304,19 @@ public func isNaN(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// - <doc:arithmetic>
 public func isInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     MLXArray(mlx_isinf(array.ctx, stream.ctx))
+}
+
+/// Return a boolean array indicating which elements are finite.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: The boolean array indicating which elements are infinity.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func isFinite(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    MLXArray(mlx_isfinite(array.ctx, stream.ctx))
 }
 
 /// Return a boolean array indicating which elements are negative infinity.
@@ -1512,6 +1713,29 @@ public func multiply<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(mlx_multiply(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Replace NaN and Inf values with finite numbers.
+///
+/// - Parameters:
+///   - array: input array
+///   - nan: value to replace NaN with
+///   - posInf: value to replace positive inifinites with.  If not specified will use
+///     the largest finite value for the given dtype.
+///   - negInf: value to replace negative inifinites with.  If not specified will use
+///     the negative of the largest finite value for the given dtype.
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func nanToNum(
+    _ array: MLXArray,
+    nan: Float = 0, posInf: Float? = 0, negInf: Float? = 0,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    let posInf = mlx_optional_float(value: posInf ?? 0, has_value: posInf != nil)
+    let negInf = mlx_optional_float(value: negInf ?? 0, has_value: negInf != nil)
+    return MLXArray(mlx_nan_to_num(array.ctx, nan, posInf, negInf, stream.ctx))
+}
+
 /// Element-wise negation.
 ///
 /// Negate the values in the array.
@@ -1579,12 +1803,21 @@ public func outer(
     MLXArray(mlx_outer(a.ctx, b.ctx, stream.ctx))
 }
 
+/// Mode for ``padded(_:width:value:stream:)``
+public enum PadMode: String {
+    /// pads with constant value
+    case constant
+    /// pads with the edge values of the array
+    case edge
+}
+
 /// Pad an array with a constant value.
 ///
 /// - Parameters:
 ///     - array: the array to pad
 ///     - width: either an `Int` number of values to pad before AND after each axis or an array of 2 giving the
 ///             before and after counts
+///     - mode: padding mode, see ``PadMode``
 ///     - value: constant value to pad the edges with
 ///     - stream: stream or device to evaluate on
 ///
@@ -1592,7 +1825,8 @@ public func outer(
 /// - <doc:shapes>
 /// - ``padded(_:widths:value:stream:)``
 public func padded(
-    _ array: MLXArray, width: IntOrPair, value: MLXArray? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, width: IntOrPair, mode: PadMode = .constant, value: MLXArray? = nil,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
     let axes = Array(Int32(0) ..< Int32(ndim))
@@ -1600,8 +1834,12 @@ public func padded(
     let highPads = (0 ..< ndim).map { _ in width.second.int32 }
     let value = value ?? MLXArray(0, dtype: array.dtype)
 
+    let mlx_mode = mlx_string_new(mode.rawValue.cString(using: .utf8))!
+    defer { mlx_free(mlx_mode) }
+
     return MLXArray(
-        mlx_pad(array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, stream.ctx))
+        mlx_pad(
+            array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, mlx_mode, stream.ctx))
 }
 
 /// Pad an array with a constant value.
@@ -1609,6 +1847,7 @@ public func padded(
 /// - Parameters:
 ///     - array: the array to pad
 ///     - widths: array of int or pairs giving the before/after amounts for each axis
+///     - mode: padding mode, see ``PadMode``
 ///     - value: constant value to pad the edges with
 ///     - stream: stream or device to evaluate on
 ///
@@ -1616,7 +1855,7 @@ public func padded(
 /// - <doc:shapes>
 /// - ``padded(_:width:value:stream:)``
 public func padded(
-    _ array: MLXArray, widths: [IntOrPair], value: MLXArray? = nil,
+    _ array: MLXArray, widths: [IntOrPair], mode: PadMode = .constant, value: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
@@ -1625,8 +1864,12 @@ public func padded(
     let highPads = widths.map { $0.second.int32 }
     let value = value ?? MLXArray(0, dtype: array.dtype)
 
+    let mlx_mode = mlx_string_new(mode.rawValue.cString(using: .utf8))!
+    defer { mlx_free(mlx_mode) }
+
     return MLXArray(
-        mlx_pad(array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, stream.ctx))
+        mlx_pad(
+            array.ctx, axes, ndim, lowPads, ndim, highPads, ndim, value.ctx, mlx_mode, stream.ctx))
 }
 
 /// Returns a partitioned copy of the array such that the smaller `kth`
@@ -1676,6 +1919,46 @@ public func partitioned(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .d
     MLXArray(mlx_partition_all(array.ctx, kth.int32, stream.ctx))
 }
 
+/// Put values along an axis at the specified indices.
+///
+/// - Parameters:
+///     - array: destination array
+///     - indices: Indices array. These should be broadcastable with the input array excluding the `axis` dimension.
+///     - values: Values array. These should be broadcastable with the indices.
+///     - axis: Axis in the destination to put the values to
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:indexes>
+/// - ``takeAlong(_:_:stream:)``
+public func putAlong(
+    _ array: MLXArray, _ indices: MLXArray, values: MLXArray, axis: Int,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXArray(mlx_put_along_axis(array.ctx, indices.ctx, values.ctx, axis.int32, stream.ctx))
+}
+
+/// Put values along an axis at the specified indices in a flattened array.
+///
+/// - Parameters:
+///     - array: destination array
+///     - indices: Indices array. These should be broadcastable with the flattened input array
+///     - values: Values array. These should be broadcastable with the flattened input array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:indexes>
+/// - ``takeAlong(_:_:axis:stream:)
+public func putAlong(
+    _ array: MLXArray, _ indices: MLXArray, values: MLXArray, stream: StreamOrDevice = .default
+)
+    -> MLXArray
+{
+    let input = array.reshaped([-1], stream: stream)
+    let result = MLXArray(mlx_put_along_axis(input.ctx, indices.ctx, values.ctx, 0, stream.ctx))
+    return result.reshaped(array.shape, stream: stream)
+}
+
 /// Quantize the matrix `w` using `bits` bits per element.
 ///
 /// Note, every `group_size` elements in a row of `w` are quantized
@@ -1694,11 +1977,10 @@ public func partitioned(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .d
 public func quantized(
     _ w: MLXArray, groupSize: Int = 64, bits: Int = 4, stream: StreamOrDevice = .default
 ) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray) {
-    let result = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)!
-    defer { mlx_free(result) }
+    let result_tuple = mlx_quantize(w.ctx, groupSize.int32, bits.int32, stream.ctx)!
+    defer { mlx_free(result_tuple) }
 
-    let arrays = mlx_vector_array_values(result)
-    return (arrays[0], arrays[1], arrays[2])
+    return mlx_tuple_values(result_tuple)
 }
 
 /// Perform the matrix multiplication with the quantized matrix `w`. The
