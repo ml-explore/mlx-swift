@@ -46,15 +46,15 @@ public func crossEntropy(
     }
 
     let targets_as_probs = targets.ndim == logits.ndim
-    
+
     var score: MLXArray
     if targets_as_probs {
         score = sum(logits * targets, axis: axis)
     } else {
         score = takeAlong(logits, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
-        axis: -1)
+            axis: -1)
     }
-    
+
     let logSumExpLogits = logSumExp(logits, axis: axis)
 
     var loss: MLXArray

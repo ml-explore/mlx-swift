@@ -9,7 +9,7 @@ class LossTests: XCTestCase {
     override class func setUp() {
         setDefaultDevice()
     }
-    
+
     func testCrossEntropy() {
         // This is just testing that crossEntropy supports both class indices and class
         // probabilities as targets.
