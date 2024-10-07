@@ -100,7 +100,7 @@ public func crossEntropy(
 public func binaryCrossEntropy(
     logits: MLXArray, targets: MLXArray,
     weights: MLXArray? = nil, withLogits: Bool = true,
-    reduction: LossReduction = .none
+    reduction: LossReduction = .mean
 ) -> MLXArray {
     var loss: MLXArray
     if withLogits {
