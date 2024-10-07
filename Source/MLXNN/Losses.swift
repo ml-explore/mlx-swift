@@ -28,7 +28,7 @@ public enum LossReduction: String, Sendable {
 ///
 /// - Parameters:
 ///   - logits: unnormalized predicted logits
-///   - targets: target values, as class indices
+///   - targets: target values, as class indices or class probabilities
 ///   - weights: weights for each target
 ///   - axis: axis over which to compute softmax
 ///   - labelSmoothing: label smoothing factor, range [0, 1)
@@ -45,8 +45,16 @@ public func crossEntropy(
         fatalError("labelSmoothing must be in [0, 1): \(labelSmoothing)")
     }
 
-    let score = takeAlong(logits, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
-        axis: -1)
+    let targets_as_probs = targets.ndim == logits.ndim
+
+    var score: MLXArray
+    if targets_as_probs {
+        score = sum(logits * targets, axis: axis)
+    } else {
+        score = takeAlong(logits, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
+            axis: -1)
+    }
+
     let logSumExpLogits = logSumExp(logits, axis: axis)
 
     var loss: MLXArray
