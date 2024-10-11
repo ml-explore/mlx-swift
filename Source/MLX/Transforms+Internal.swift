@@ -9,26 +9,31 @@ private func valueAndGradient(apply valueAndGrad: mlx_closure_value_and_grad, ar
     -> ([MLXArray], [MLXArray])
 {
     let input_vector = new_mlx_vector_array(arrays)
-    defer { mlx_free(input_vector) }
+    defer { mlx_vector_array_free(input_vector) }
 
-    let vector_pair = mlx_closure_value_and_grad_apply(valueAndGrad, input_vector)!
-    defer { mlx_free(vector_pair) }
+    var r0 = mlx_vector_array_new()
+    var r1 = mlx_vector_array_new()
+    mlx_closure_value_and_grad_apply(&r0, &r1, valueAndGrad, input_vector)
 
-    let (values, gradient) = mlx_tuple_vectors(vector_pair)
-    return (values, gradient)
+    defer { mlx_vector_array_free(r0) }
+    defer { mlx_vector_array_free(r1) }
+
+    return (mlx_vector_array_values(r0), mlx_vector_array_values(r1))
 }
 
 func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (
     [MLXArray]
 ) -> [MLXArray] {
     { (arrays: [MLXArray]) in
-        let closure = new_mlx_closure(f)
-        let valueAndGrad = mlx_value_and_grad(
-            closure, argumentNumbers.asInt32, argumentNumbers.count)!
-        defer { mlx_free(valueAndGrad) }
-        mlx_free(closure)
+        var vag = mlx_closure_value_and_grad_new()
 
-        return valueAndGradient(apply: valueAndGrad, arrays: arrays).1
+        let closure = new_mlx_closure(f)
+        mlx_value_and_grad(&vag, closure, argumentNumbers.asInt32, argumentNumbers.count)
+        mlx_closure_free(closure)
+
+        defer { mlx_closure_value_and_grad_free(vag) }
+
+        return valueAndGradient(apply: vag, arrays: arrays).1
     }
 }
 
@@ -36,13 +41,15 @@ func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNu
     [MLXArray]
 ) -> ([MLXArray], [MLXArray]) {
     { (arrays: [MLXArray]) in
-        let closure = new_mlx_closure(f)
-        let valueAndGrad = mlx_value_and_grad(
-            closure, argumentNumbers.asInt32, argumentNumbers.count)!
-        defer { mlx_free(valueAndGrad) }
-        mlx_free(closure)
+        var vag = mlx_closure_value_and_grad_new()
 
-        return valueAndGradient(apply: valueAndGrad, arrays: arrays)
+        let closure = new_mlx_closure(f)
+        mlx_value_and_grad(&vag, closure, argumentNumbers.asInt32, argumentNumbers.count)
+        mlx_closure_free(closure)
+
+        defer { mlx_closure_value_and_grad_free(vag) }
+
+        return valueAndGradient(apply: vag, arrays: arrays)
     }
 }
 
@@ -81,14 +88,16 @@ func buildValueAndGradient<T>(
             return f(parameters, arrays)
         }
 
-        let closure = new_mlx_closure(inner)
-        let valueAndGrad = mlx_value_and_grad(
-            closure, Array(Int32(0) ..< Int32(flattenedArrays.count)),
-            flattenedArrays.count)!
-        defer { mlx_free(valueAndGrad) }
-        mlx_free(closure)
+        var vag = mlx_closure_value_and_grad_new()
 
-        let (values, flatGradients) = valueAndGradient(apply: valueAndGrad, arrays: flattenedArrays)
+        let closure = new_mlx_closure(inner)
+        mlx_value_and_grad(
+            &vag, closure, Array(Int32(0) ..< Int32(flattenedArrays.count)), flattenedArrays.count)
+        mlx_closure_free(closure)
+
+        defer { mlx_closure_value_and_grad_free(vag) }
+
+        let (values, flatGradients) = valueAndGradient(apply: vag, arrays: flattenedArrays)
         let gradients = unflattened(flatGradients)
 
         return (values, gradients)
