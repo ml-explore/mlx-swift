@@ -55,7 +55,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     }
 
     /// Internal context -- used with Cmlx calls.
-    var ctx: mlx_stream {
+    public var ctx: mlx_stream {
         stream.ctx
     }
 
