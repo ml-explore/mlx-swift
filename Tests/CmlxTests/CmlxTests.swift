@@ -20,15 +20,14 @@ class CmlxTests: XCTestCase {
         var data: [Float] = [1, 2, 3, 4, 5, 6]
         var shape: [Int32] = [2, 3]
 
-        let arr = mlx_array_from_data(&data, &shape, 2, MLX_FLOAT32)!
+        let arr = mlx_array_new_data(&data, &shape, 2, MLX_FLOAT32)
+        defer { mlx_array_free(arr) }
 
-        let str = mlx_tostring(UnsafeMutableRawPointer(arr))!
-        defer { mlx_free(UnsafeMutableRawPointer(str)) }
+        let str = mlx_array_tostring(arr)
+        defer { mlx_string_free(str) }
         let description = String(cString: mlx_string_data(str))
 
         print(description)
-
-        mlx_free(UnsafeMutableRawPointer(arr))
     }
 
 }
