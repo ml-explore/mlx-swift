@@ -55,7 +55,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     }
 
     /// Internal context -- used with Cmlx calls.
-    public var ctx: OpaquePointer {
+    var ctx: mlx_stream {
         stream.ctx
     }
 
@@ -87,9 +87,9 @@ public final class Stream: @unchecked Sendable, Equatable {
     }
 
     public init() {
-        let dDev = mlx_default_device()!
-        ctx = mlx_default_stream(dDev)
-        mlx_free(dDev)
+        let device = mlx_default_device()
+        ctx = mlx_default_stream(device)
+        mlx_device_free(device)
     }
 
     public init(index: Int32, _ device: Device) {
@@ -97,7 +97,7 @@ public final class Stream: @unchecked Sendable, Equatable {
     }
 
     deinit {
-        mlx_free(ctx)
+        mlx_stream_free(ctx)
     }
 
     /// Synchronize with the given stream
@@ -116,6 +116,10 @@ public final class Stream: @unchecked Sendable, Equatable {
 
 extension Stream: CustomStringConvertible {
     public var description: String {
-        mlx_describe(ctx) ?? String(describing: type(of: self))
+        ""
+        // TODO
+        //        let s = mlx_stream_tostring(ctx)
+        //        defer { mlx_string_free(s) }
+        //        return String(cString: mlx_string_data(s), encoding: .utf8)!
     }
 }

@@ -13,12 +13,19 @@ public final class MLXArray {
     /// Initialize with the given +1 context (transfer ownership).
     ///
     /// This initializer is for `Cmlx` interoperation.
-    public init(_ ctx: mlx_array) {
+    public init(_ ctx: consuming mlx_array) {
         self.ctx = ctx
     }
 
+    /// return the equivalent of a `.none` MLXArray (for the C API).
+    ///
+    /// Not called `.none` to avoid abiguity with `Optional`.
+    static var mlxNone: MLXArray {
+        .init(mlx_array_new())
+    }
+
     deinit {
-        mlx_free(ctx)
+        mlx_array_free(ctx)
     }
 
     /// Number of bytes per element
@@ -68,7 +75,7 @@ public final class MLXArray {
     /// print(array.dtype)
     /// // .int64 (aka Int.dtype)
     /// ```
-    public var dtype: DType { DType(mlx_array_get_dtype(ctx)) }
+    public var dtype: DType { DType(mlx_array_dtype(ctx)) }
 
     /// Dimensions of the array.
     ///
@@ -159,31 +166,88 @@ public final class MLXArray {
     /// specialized conversion between integer types -- see ``item(_:)``
     private func itemInt() -> Int {
         switch self.dtype {
-        case .bool: mlx_array_item_bool(self.ctx) ? 1 : 0
-        case .uint8: Int(mlx_array_item_uint8(self.ctx))
-        case .uint16: Int(mlx_array_item_uint16(self.ctx))
-        case .uint32: Int(mlx_array_item_uint32(self.ctx))
-        case .uint64: Int(mlx_array_item_uint64(self.ctx))
-        case .int8: Int(mlx_array_item_int8(self.ctx))
-        case .int16: Int(mlx_array_item_int16(self.ctx))
-        case .int32: Int(mlx_array_item_int32(self.ctx))
-        case .int64: Int(mlx_array_item_int64(self.ctx))
-        default: fatalError("itemInt expected an integer dtype: \(self.dtype)")
+        case .bool:
+            var r = false
+            mlx_array_item_bool(&r, self.ctx)
+            return r ? 1 : 0
+        case .uint8:
+            var r: UInt8 = 0
+            mlx_array_item_uint8(&r, self.ctx)
+            return Int(r)
+        case .uint16:
+            var r: UInt16 = 0
+            mlx_array_item_uint16(&r, self.ctx)
+            return Int(r)
+        case .uint32:
+            var r: UInt32 = 0
+            mlx_array_item_uint32(&r, self.ctx)
+            return Int(r)
+        case .uint64:
+            var r: UInt64 = 0
+            mlx_array_item_uint64(&r, self.ctx)
+            return Int(r)
+        case .int8:
+            var r: Int8 = 0
+            mlx_array_item_int8(&r, self.ctx)
+            return Int(r)
+        case .int16:
+            var r: Int16 = 0
+            mlx_array_item_int16(&r, self.ctx)
+            return Int(r)
+        case .int32:
+            var r: Int32 = 0
+            mlx_array_item_int32(&r, self.ctx)
+            return Int(r)
+        case .int64:
+            var r: Int64 = 0
+            mlx_array_item_int64(&r, self.ctx)
+            return Int(r)
+
+        default:
+            fatalError("itemInt expected an integer dtype: \(self.dtype)")
         }
     }
 
     /// specialized conversion between integer types -- see ``item(_:)``
     private func itemUInt() -> UInt {
         switch self.dtype {
-        case .bool: mlx_array_item_bool(self.ctx) ? 1 : 0
-        case .uint8: UInt(mlx_array_item_uint8(self.ctx))
-        case .uint16: UInt(mlx_array_item_uint16(self.ctx))
-        case .uint32: UInt(mlx_array_item_uint32(self.ctx))
-        case .uint64: UInt(mlx_array_item_uint64(self.ctx))
-        case .int8: UInt(mlx_array_item_int8(self.ctx))
-        case .int16: UInt(mlx_array_item_int16(self.ctx))
-        case .int32: UInt(mlx_array_item_int32(self.ctx))
-        case .int64: UInt(mlx_array_item_int64(self.ctx))
+        case .bool:
+            var r = false
+            mlx_array_item_bool(&r, self.ctx)
+            return r ? 1 : 0
+        case .uint8:
+            var r: UInt8 = 0
+            mlx_array_item_uint8(&r, self.ctx)
+            return UInt(r)
+        case .uint16:
+            var r: UInt16 = 0
+            mlx_array_item_uint16(&r, self.ctx)
+            return UInt(r)
+        case .uint32:
+            var r: UInt32 = 0
+            mlx_array_item_uint32(&r, self.ctx)
+            return UInt(r)
+        case .uint64:
+            var r: UInt64 = 0
+            mlx_array_item_uint64(&r, self.ctx)
+            return UInt(r)
+        case .int8:
+            var r: Int8 = 0
+            mlx_array_item_int8(&r, self.ctx)
+            return UInt(r)
+        case .int16:
+            var r: Int16 = 0
+            mlx_array_item_int16(&r, self.ctx)
+            return UInt(r)
+        case .int32:
+            var r: Int32 = 0
+            mlx_array_item_int32(&r, self.ctx)
+            return UInt(r)
+        case .int64:
+            var r: Int64 = 0
+            mlx_array_item_int64(&r, self.ctx)
+            return UInt(r)
+
         default: fatalError("itemUInt expected an integer dtype: \(self.dtype)")
         }
     }
@@ -192,9 +256,16 @@ public final class MLXArray {
     private func itemFloat() -> Float {
         switch self.dtype {
         #if !arch(x86_64)
-            case .float16: Float(mlx_array_item_float16(self.ctx))
+            case .float16:
+                var r: Float16 = 0
+                mlx_array_item_float16(&r, self.ctx)
+                return Float(r)
         #endif
-        case .float32: Float(mlx_array_item_float32(self.ctx))
+        case .float32:
+            var r: Float32 = 0
+            mlx_array_item_float32(&r, self.ctx)
+            return Float(r)
+
         default: fatalError("itemFloat expected a floating point dtype: \(self.dtype)")
         }
     }
@@ -270,21 +341,60 @@ public final class MLXArray {
         }
 
         switch type {
-        case is Bool.Type: return mlx_array_item_bool(self.ctx) as! T
-        case is UInt8.Type: return mlx_array_item_uint8(self.ctx) as! T
-        case is UInt16.Type: return mlx_array_item_uint16(self.ctx) as! T
-        case is UInt32.Type: return mlx_array_item_uint32(self.ctx) as! T
-        case is UInt64.Type: return mlx_array_item_uint64(self.ctx) as! T
-        case is Int8.Type: return mlx_array_item_int8(self.ctx) as! T
-        case is Int16.Type: return mlx_array_item_int16(self.ctx) as! T
-        case is Int32.Type: return mlx_array_item_int32(self.ctx) as! T
-        case is Int64.Type: return mlx_array_item_int64(self.ctx) as! T
-        case is Int.Type: return Int(mlx_array_item_int64(self.ctx)) as! T
+        case is Bool.Type:
+            var r: Bool = false
+            mlx_array_item_bool(&r, self.ctx)
+            return r as! T
+        case is UInt8.Type:
+            var r: UInt8 = 0
+            mlx_array_item_uint8(&r, self.ctx)
+            return r as! T
+        case is UInt16.Type:
+            var r: UInt16 = 0
+            mlx_array_item_uint16(&r, self.ctx)
+            return r as! T
+        case is UInt32.Type:
+            var r: UInt32 = 0
+            mlx_array_item_uint32(&r, self.ctx)
+            return r as! T
+        case is UInt64.Type:
+            var r: UInt64 = 0
+            mlx_array_item_uint64(&r, self.ctx)
+            return r as! T
+        case is Int8.Type:
+            var r: Int8 = 0
+            mlx_array_item_int8(&r, self.ctx)
+            return r as! T
+        case is Int16.Type:
+            var r: Int16 = 0
+            mlx_array_item_int16(&r, self.ctx)
+            return r as! T
+        case is Int32.Type:
+            var r: Int32 = 0
+            mlx_array_item_int32(&r, self.ctx)
+            return r as! T
+        case is Int64.Type:
+            var r: Int64 = 0
+            mlx_array_item_int64(&r, self.ctx)
+            return r as! T
+        case is Int.Type:
+            var r: Int64 = 0
+            mlx_array_item_int64(&r, self.ctx)
+            return Int(r) as! T
         #if !arch(x86_64)
-            case is Float16.Type: return mlx_array_item_float16(self.ctx) as! T
+            case is Float16.Type:
+                var r: Float16 = 0
+                mlx_array_item_float16(&r, self.ctx)
+                return r as! T
         #endif
-        case is Float32.Type: return mlx_array_item_float32(self.ctx) as! T
-        case is Float.Type: return mlx_array_item_float32(self.ctx) as! T
+        case is Float32.Type:
+            var r: Float32 = 0
+            mlx_array_item_float32(&r, self.ctx)
+            return r as! T
+        case is Float.Type:
+            var r: Float = 0
+            mlx_array_item_float32(&r, self.ctx)
+            return r as! T
         case is Complex<Float32>.Type:
             // mlx_array_item_complex64() isn't visible in swift so read the array
             // contents.  call self.eval() as this doesn't end up in item()
@@ -330,7 +440,9 @@ public final class MLXArray {
     /// - <doc:conversion>
     public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {
         guard type != self.dtype else { return self }
-        return MLXArray(mlx_astype(ctx, type.cmlxDtype, stream.ctx))
+        var result = mlx_array_new()
+        mlx_astype(&result, ctx, type.cmlxDtype, stream.ctx)
+        return MLXArray(result)
     }
 
     /// Create a new `MLXArray` with the contents converted to the given type, e.g. `Float.self`.
@@ -391,16 +503,12 @@ public final class MLXArray {
 
     /// Replace the contents with a reference to a new array.
     public func update(_ array: MLXArray) {
-        if array.ctx != self.ctx {
-            mlx_retain(array.ctx)
-            mlx_free(ctx)
-            self.ctx = array.ctx
-        }
+        mlx_array_set(&self.ctx, array.ctx)
     }
 
     /// Internal function for copying the backing `mlx::core::array` context.
     func copyContext() -> MLXArray {
-        mlx_retain(ctx)
+        // TODO this is wrong
         return MLXArray(ctx)
     }
 }
@@ -413,6 +521,8 @@ extension MLXArray: Updatable, Evaluatable {
 
 extension MLXArray: CustomStringConvertible {
     public var description: String {
-        mlx_describe(ctx) ?? String(describing: type(of: self))
+        let s = mlx_array_tostring(ctx)
+        defer { mlx_string_free(s) }
+        return String(cString: mlx_string_data(s), encoding: .utf8)!
     }
 }

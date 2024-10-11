@@ -459,7 +459,7 @@ open class ReLU6: Module, UnaryLayer {
 }
 
 @available(*, deprecated, renamed: "Softmax")
-@_documentation(visibility:internal)
+@_documentation(visibility: internal)
 open class SoftMax: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softmax(x)

@@ -49,7 +49,7 @@ public final class Device: @unchecked Sendable, Equatable {
     }
 
     deinit {
-        mlx_free(ctx)
+        mlx_device_free(ctx)
     }
 
     static public let cpu: Device = Device(.cpu)
@@ -91,7 +91,9 @@ public final class Device: @unchecked Sendable, Equatable {
 
 extension Device: CustomStringConvertible {
     public var description: String {
-        mlx_describe(ctx) ?? String(describing: type(of: self))
+        let s = mlx_device_tostring(ctx)
+        defer { mlx_string_free(s) }
+        return String(cString: mlx_string_data(s), encoding: .utf8)!
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 public func eval(_ arrays: MLXArray...) {
     let vector_array = new_mlx_vector_array(arrays)
     mlx_eval(vector_array)
-    mlx_free(vector_array)
+    mlx_vector_array_free(vector_array)
 }
 
 /// Evaluate one or more `MLXArray`
@@ -20,7 +20,7 @@ public func eval(_ arrays: MLXArray...) {
 public func eval(_ arrays: [MLXArray]) {
     let vector_array = new_mlx_vector_array(arrays)
     mlx_eval(vector_array)
-    mlx_free(vector_array)
+    mlx_vector_array_free(vector_array)
 }
 
 /// Evaluate one or more `MLXArray` asynchronously.
@@ -31,7 +31,7 @@ public func eval(_ arrays: [MLXArray]) {
 public func asyncEval(_ arrays: [MLXArray]) {
     let vector_array = new_mlx_vector_array(arrays)
     mlx_async_eval(vector_array)
-    mlx_free(vector_array)
+    mlx_vector_array_free(vector_array)
 }
 
 /// Evaluate one or more `MLXArray`.
