@@ -19,8 +19,14 @@ public final class MLXArray {
 
     /// return the equivalent of a `.none` MLXArray (for the C API).
     ///
-    /// Not called `.none` to avoid abiguity with `Optional`.
-    static var mlxNone: MLXArray {
+    /// Not called `.none` to avoid abiguity with `Optional`.  This can be used
+    /// to pass an optional ``MLXArray`` as a non-optional (but possibly empty/null)
+    /// `mlx_array`:
+    ///
+    /// ```swift
+    /// mlx_func((freqs ?? .mlxNone).ctx)
+    /// ```
+    public static var mlxNone: MLXArray {
         .init(mlx_array_new())
     }
 
