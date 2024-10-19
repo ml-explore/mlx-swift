@@ -19,8 +19,10 @@ import MLX
 public func fft(_ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    MLXArray(
-        mlx_fft_fftn(array.ctx, [(n ?? array.dim(axis)).int32], 1, [axis.int32], 1, stream.ctx))
+    var result = mlx_array_new()
+
+    mlx_fft_fftn(&result, array.ctx, [(n ?? array.dim(axis)).int32], 1, [axis.int32], 1, stream.ctx)
+    return MLXArray(result)
 }
 
 /// One dimensional inverse discrete Fourier Transform.
@@ -38,7 +40,9 @@ public func fft(_ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: Stream
 public func ifft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_fft_ifft(array.ctx, (n ?? array.dim(axis)).int32, axis.int32, stream.ctx))
+    var result = mlx_array_new()
+    mlx_fft_ifft(&result, array.ctx, (n ?? array.dim(axis)).int32, axis.int32, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Two dimensional discrete Fourier Transform.
@@ -92,25 +96,30 @@ public func ifft2(
 public func fftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let s, let axes {
         // both supplied
-        return MLXArray(
-            mlx_fft_fft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_fft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let axes {
         // no n, compute from dim()
         let n = axes.map { array.dim($0) }
-        return MLXArray(
-            mlx_fft_fft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_fft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let s {
         // axes are the rightmost dimensions matching the number of dimensions of n
         let axes = Array(-s.count ..< 0)
-        return MLXArray(
-            mlx_fft_fft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_fft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else {
         let axes = Array(0 ..< array.ndim)
         let n = axes.map { array.dim($0) }
-        return MLXArray(
-            mlx_fft_fft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_fft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     }
 }
 
@@ -129,25 +138,30 @@ public func fftn(
 public func ifftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let s, let axes {
         // both supplied
-        return MLXArray(
-            mlx_fft_ifft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_ifft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let axes {
         // no n, compute from dim()
         let n = axes.map { array.dim($0) }
-        return MLXArray(
-            mlx_fft_ifft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_ifft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let s {
         // axes are the rightmost dimensions matching the number of dimensions of n
         let axes = Array(-s.count ..< 0)
-        return MLXArray(
-            mlx_fft_ifft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_ifft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else {
         let axes = Array(0 ..< array.ndim)
         let n = axes.map { array.dim($0) }
-        return MLXArray(
-            mlx_fft_ifft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_ifft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     }
 }
 
@@ -169,8 +183,10 @@ public func ifftn(
 public func rfft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(
-        mlx_fft_rfftn(array.ctx, [(n ?? array.dim(axis)).int32], 1, [axis.int32], 1, stream.ctx))
+    var result = mlx_array_new()
+    mlx_fft_rfftn(
+        &result, array.ctx, [(n ?? array.dim(axis)).int32], 1, [axis.int32], 1, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Inverse one dimensional discrete Fourier Transform on a real input.
@@ -192,7 +208,9 @@ public func irfft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let n = n ?? (array.dim(axis) - 1) * 2
-    return MLXArray(mlx_fft_irfft(array.ctx, n.int32, axis.int32, stream.ctx))
+    var result = mlx_array_new()
+    mlx_fft_irfft(&result, array.ctx, n.int32, axis.int32, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Two dimensional real discrete Fourier Transform.
@@ -259,25 +277,30 @@ public func irfft2(
 public func rfftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let s, let axes {
         // both supplied
-        return MLXArray(
-            mlx_fft_rfft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_rfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let axes {
         // no n, compute from dim()
         let n = axes.map { array.dim($0) }
-        return MLXArray(
-            mlx_fft_rfft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_rfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let s {
         // axes are the rightmost dimensions matching the number of dimensions of n
         let axes = Array(-s.count ..< 0)
-        return MLXArray(
-            mlx_fft_rfft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_rfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else {
         let axes = Array(0 ..< array.ndim)
         let n = axes.map { array.dim($0) }
-        return MLXArray(
-            mlx_fft_rfft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_rfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     }
 }
 
@@ -301,26 +324,31 @@ public func rfftn(
 public func irfftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let s, let axes {
         // both supplied
-        return MLXArray(
-            mlx_fft_irfft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_irfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let axes {
         // no n, compute from dim()
         var n = axes.map { array.dim($0) }
         n[n.count - 1] = (n[n.count - 1] - 1) * 2
-        return MLXArray(
-            mlx_fft_irfft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_irfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else if let s {
         // axes are the rightmost dimensions matching the number of dimensions of n
         let axes = Array(-s.count ..< 0)
-        return MLXArray(
-            mlx_fft_irfft2(array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_irfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     } else {
         let axes = Array(0 ..< array.ndim)
         var n = axes.map { array.dim($0) }
         n[n.count - 1] = (n[n.count - 1] - 1) * 2
-        return MLXArray(
-            mlx_fft_irfft2(array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx))
+
+        mlx_fft_irfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
     }
 }

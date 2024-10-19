@@ -63,11 +63,8 @@ extension MLXArray {
 
     /// Replace the interior ctx (`mlx_array` pointer) with a new value by transferring ownership
     @inline(__always)
-    func update(ctx: OpaquePointer) {
-        if ctx != self.ctx {
-            mlx_free(self.ctx)
-            self.ctx = ctx
-        }
+    func update(_ ctx: mlx_array) {
+        mlx_array_set(&self.ctx, ctx)
     }
 
     /// allow addressing as a positive index or negative (from end) using given axis
@@ -213,10 +210,12 @@ extension MLXArray {
             stops[axis] = upper
             strides[axis] = 1
 
-            return MLXArray(
-                mlx_slice(
-                    ctx, starts, starts.count, stops, stops.count, strides, strides.count,
-                    stream.ctx))
+            var result = mlx_array_new()
+            mlx_slice(
+                &result,
+                ctx, starts, starts.count, stops, stops.count, strides, strides.count,
+                stream.ctx)
+            return MLXArray(result)
         }
         set {
             // this is [0 ..., 0 ..., range] where the number of full range leading expressions
@@ -286,10 +285,12 @@ extension MLXArray {
             }
             strides[axis] = stride.int32
 
-            return MLXArray(
-                mlx_slice(
-                    ctx, starts, starts.count, stops, stops.count, strides, strides.count,
-                    stream.ctx))
+            var result = mlx_array_new()
+            mlx_slice(
+                &result,
+                ctx, starts, starts.count, stops, stops.count, strides, strides.count,
+                stream.ctx)
+            return MLXArray(result)
         }
         set {
             // see mlx_set_item_nd
@@ -387,11 +388,13 @@ extension MLXArray {
                 src: self, operations: operations, update: newValue, stream: stream)
             if !indices.isEmpty {
                 let indices_vector = new_mlx_vector_array(indices)
-                defer { mlx_free(indices_vector) }
+                defer { mlx_vector_array_free(indices_vector) }
 
-                let result = MLXArray(
-                    mlx_scatter(self.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx))
+                var result = mlx_array_new()
+                mlx_scatter(
+                    &result, self.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
                 self.update(result)
+                mlx_array_free(result)
                 return
             } else {
                 self.update(update)
@@ -552,10 +555,12 @@ func getItem(src: MLXArray, operation: MLXArrayIndexOperation, stream: StreamOrD
         ends[0] = slice.end(size)
         strides[0] = slice.stride
 
-        return MLXArray(
-            mlx_slice(
-                src.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
-                stream.ctx))
+        var result = mlx_array_new()
+        mlx_slice(
+            &result,
+            src.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
+            stream.ctx)
+        return MLXArray(result)
 
     case .array(let indices):
         return src.take(indices, axis: 0, stream: stream)
@@ -699,9 +704,11 @@ func getItemND(
         axis += 1
     }
 
-    src = MLXArray(
-        mlx_slice(
-            src.ctx, starts, starts.count, ends, ends.count, strides, strides.count, stream.ctx))
+    var result = mlx_array_new()
+    mlx_slice(
+        &result,
+        src.ctx, starts, starts.count, ends, ends.count, strides, strides.count, stream.ctx)
+    src = MLXArray(result)
 
     // Unsqueeze handling
     if remainingIndices.count > src.ndim || squeezeNeeded {
@@ -804,15 +811,16 @@ func gatherND(
 
     // Do the gather
     let indices = new_mlx_vector_array(gatherIndices)
-    defer { mlx_free(indices) }
+    defer { mlx_vector_array_free(indices) }
     let axes = Array(0 ..< operations.count.int32)
     var sliceSizes = shape32
     for i in 0 ..< operations.count {
         sliceSizes[i] = 1
     }
 
-    let gathered = MLXArray(
-        mlx_gather(src.ctx, indices, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx))
+    var tmp = mlx_array_new()
+    mlx_gather(&tmp, src.ctx, indices, axes, axes.count, sliceSizes, sliceSizes.count, stream.ctx)
+    let gathered = MLXArray(tmp)
     let gatheredShape = gathered.shape
 
     // Squeeze the dims
@@ -856,11 +864,12 @@ func updateSlice(
         ends[0] = slice.end(size)
         strides[0] = slice.stride
 
-        let result = MLXArray(
-            mlx_slice_update(
-                src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
-                stream.ctx))
-        return result
+        var result = mlx_array_new()
+        mlx_slice_update(
+            &result,
+            src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
+            stream.ctx)
+        return MLXArray(result)
     }
 
     // Expand ellipses into a series of ':' (full slice) slices
@@ -923,11 +932,12 @@ func updateSlice(
 
     update = reshaped(update, updateReshape)
 
-    let result = MLXArray(
-        mlx_slice_update(
-            src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
-            stream.ctx))
-    return result
+    var result = mlx_array_new()
+    mlx_slice_update(
+        &result,
+        src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
+        stream.ctx)
+    return MLXArray(result)
 }
 
 // MARK: - index set (scatter)

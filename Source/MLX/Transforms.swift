@@ -17,19 +17,22 @@ import Foundation
 public func jvp(
     _ f: @escaping ([MLXArray]) -> [MLXArray], primals: [MLXArray], tangents: [MLXArray]
 ) -> ([MLXArray], [MLXArray]) {
+    let primals_mlx = new_mlx_vector_array(primals)
+    defer { mlx_vector_array_free(primals_mlx) }
+    let tangents_mlx = new_mlx_vector_array(tangents)
+    defer { mlx_vector_array_free(tangents_mlx) }
+
+    var r0 = mlx_vector_array_new()
+    var r1 = mlx_vector_array_new()
 
     let closure = new_mlx_closure(f)
-    let primals_mlx = new_mlx_vector_array(primals)
-    defer { mlx_free(primals_mlx) }
-    let tangents_mlx = new_mlx_vector_array(tangents)
-    defer { mlx_free(tangents_mlx) }
+    mlx_jvp(&r0, &r1, closure, primals_mlx, tangents_mlx)
+    mlx_closure_free(closure)
 
-    let vector_pair = mlx_jvp(closure, primals_mlx, tangents_mlx)!
-    defer { mlx_free(vector_pair) }
+    defer { mlx_vector_array_free(r0) }
+    defer { mlx_vector_array_free(r1) }
 
-    mlx_free(closure)
-
-    return mlx_tuple_vectors(vector_pair)
+    return (mlx_vector_array_values(r0), mlx_vector_array_values(r1))
 }
 
 /// Compute the vector-Jacobian product.
@@ -46,19 +49,22 @@ public func jvp(
 public func vjp(
     _ f: @escaping ([MLXArray]) -> [MLXArray], primals: [MLXArray], cotangents: [MLXArray]
 ) -> ([MLXArray], [MLXArray]) {
+    let primals_mlx = new_mlx_vector_array(primals)
+    defer { mlx_vector_array_free(primals_mlx) }
+    let cotangents_mlx = new_mlx_vector_array(cotangents)
+    defer { mlx_vector_array_free(cotangents_mlx) }
+
+    var r0 = mlx_vector_array_new()
+    var r1 = mlx_vector_array_new()
 
     let closure = new_mlx_closure(f)
-    let primals_mlx = new_mlx_vector_array(primals)
-    defer { mlx_free(primals_mlx) }
-    let cotangents_mlx = new_mlx_vector_array(cotangents)
-    defer { mlx_free(cotangents_mlx) }
+    mlx_vjp(&r0, &r1, closure, primals_mlx, cotangents_mlx)
+    mlx_closure_free(closure)
 
-    let vector_pair = mlx_vjp(closure, primals_mlx, cotangents_mlx)!
-    defer { mlx_free(vector_pair) }
+    defer { mlx_vector_array_free(r0) }
+    defer { mlx_vector_array_free(r1) }
 
-    mlx_free(closure)
-
-    return mlx_tuple_vectors(vector_pair)
+    return (mlx_vector_array_values(r0), mlx_vector_array_values(r1))
 }
 
 /// Returns a function that computes the gradient and result of `f`, computing the gradient with respect to the ``NestedDictionary``.
