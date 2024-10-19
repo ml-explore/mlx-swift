@@ -60,14 +60,14 @@ public func norm(
     _ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let ord {
-        let ord_str = mlx_string_new(ord.rawValue.cString(using: .utf8))!
-        defer { mlx_free(ord_str) }
-        return MLXArray(
-            mlx_linalg_norm_ord(array.ctx, ord_str, axes.asInt32, axes.count, keepDims, stream.ctx))
+        mlx_linalg_norm_ord(
+            &result, array.ctx, ord.rawValue, axes.asInt32, axes.count, keepDims, stream.ctx)
     } else {
-        return MLXArray(mlx_linalg_norm(array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx))
+        mlx_linalg_norm(&result, array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
     }
+    return MLXArray(result)
 }
 
 /// Matrix or vector norm.
@@ -115,7 +115,9 @@ public func norm(
     _ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_linalg_norm_p(array.ctx, ord, axes.asInt32, axes.count, keepDims, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_norm_p(&result, array.ctx, ord, axes.asInt32, axes.count, keepDims, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Matrix or vector norm.
@@ -125,13 +127,14 @@ public func norm(
     _ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let ord {
-        let ord_str = mlx_string_new(ord.rawValue.cString(using: .utf8))!
-        defer { mlx_free(ord_str) }
-        return MLXArray(
-            mlx_linalg_norm_ord(array.ctx, ord_str, [axis].asInt32, 1, keepDims, stream.ctx))
+        mlx_linalg_norm_ord(
+            &result, array.ctx, ord.rawValue, [axis].asInt32, 1, keepDims, stream.ctx)
+        return MLXArray(result)
     } else {
-        return MLXArray(mlx_linalg_norm(array.ctx, [axis].asInt32, 1, keepDims, stream.ctx))
+        mlx_linalg_norm(&result, array.ctx, [axis].asInt32, 1, keepDims, stream.ctx)
+        return MLXArray(result)
     }
 }
 
@@ -142,7 +145,9 @@ public func norm(
     _ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_linalg_norm_p(array.ctx, ord, [axis].asInt32, 1, keepDims, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_norm_p(&result, array.ctx, ord, [axis].asInt32, 1, keepDims, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Matrix or vector norm.
@@ -152,15 +157,16 @@ public func norm(
     _ array: MLXArray, ord: NormKind? = nil, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     if let ord {
-        let ord_str = mlx_string_new(ord.rawValue.cString(using: .utf8))!
-        defer { mlx_free(ord_str) }
-        return MLXArray(
-            mlx_linalg_norm_ord(
-                array.ctx, ord_str, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx))
+        mlx_linalg_norm_ord(
+            &result, array.ctx, ord.rawValue, axis?.asInt32Array, axis?.count ?? 0, keepDims,
+            stream.ctx)
+        return MLXArray(result)
     } else {
-        return MLXArray(
-            mlx_linalg_norm(array.ctx, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx))
+        mlx_linalg_norm(
+            &result, array.ctx, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx)
+        return MLXArray(result)
     }
 }
 
@@ -171,9 +177,11 @@ public func norm(
     _ array: MLXArray, ord: Double, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(
-        mlx_linalg_norm_p(
-            array.ctx, ord, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx))
+    var result = mlx_array_new()
+
+    mlx_linalg_norm_p(
+        &result, array.ctx, ord, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx)
+    return MLXArray(result)
 }
 
 /// The QR factorization of the input matrix.
@@ -184,10 +192,12 @@ public func norm(
 ///
 /// - Returns: the `Q` and `R` matrices
 public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
-    let result_tuple = mlx_linalg_qr(array.ctx, stream.ctx)!
-    defer { mlx_free(result_tuple) }
+    var r0 = mlx_array_new()
+    var r1 = mlx_array_new()
 
-    return mlx_tuple_values(result_tuple)
+    mlx_linalg_qr(&r0, &r1, array.ctx, stream.ctx)
+
+    return (MLXArray(r0), MLXArray(r1))
 }
 
 /// The Singular Value Decomposition (SVD) of the input matrix.
@@ -203,10 +213,11 @@ public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArra
 public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
     MLXArray, MLXArray, MLXArray
 ) {
-    let mlx_arrays = mlx_linalg_svd(array.ctx, stream.ctx)!
-    defer { mlx_free(mlx_arrays) }
+    var vec = mlx_vector_array_new()
+    mlx_linalg_svd(&vec, array.ctx, stream.ctx)
+    defer { mlx_vector_array_free(vec) }
 
-    let arrays = mlx_vector_array_values(mlx_arrays)
+    let arrays = mlx_vector_array_values(vec)
     return (arrays[0], arrays[1], arrays[2])
 }
 
@@ -221,7 +232,9 @@ public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
 ///   - stream: stream or device to evaluate on
 /// - Returns: `ainv` such that `dot(a, ainv) = dot(ainv, a) = eye(a.shape[0])`
 public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    MLXArray(mlx_linalg_inv(array.ctx, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_inv(&result, array.ctx, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Compute the inverse of a triangular square matrix.
@@ -239,7 +252,9 @@ public func triInv(
     _ array: MLXArray, upper: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_linalg_tri_inv(array.ctx, upper, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_tri_inv(&result, array.ctx, upper, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Compute the Cholesky decomposition of a real symmetric positive semi-definite matrix.
@@ -258,7 +273,9 @@ public func triInv(
 public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    MLXArray(mlx_linalg_cholesky(array.ctx, upper, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_cholesky(&result, array.ctx, upper, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Compute the inverse of a real symmetric positive semi-definite matrix using it's Cholesky decomposition.
@@ -277,7 +294,9 @@ public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDev
 public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    MLXArray(mlx_linalg_cholesky_inv(array.ctx, upper, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_cholesky_inv(&result, array.ctx, upper, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Compute the cross product of two arrays along a specified axis.
@@ -294,5 +313,7 @@ public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOr
 public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    MLXArray(mlx_linalg_cross(a.ctx, b.ctx, axis.int32, stream.ctx))
+    var result = mlx_array_new()
+    mlx_linalg_cross(&result, a.ctx, b.ctx, axis.int32, stream.ctx)
+    return MLXArray(result)
 }
