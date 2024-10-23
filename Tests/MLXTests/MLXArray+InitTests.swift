@@ -12,8 +12,31 @@ class MLXArrayInitTests: XCTestCase {
         setDefaultDevice()
     }
 
+    // MARK: - Dtype
+    func testDtypeSize() {
+        // Checking that the size of the dtype matches the array's itemsize
+        for dtype in DType.allCases {
+            XCTAssertEqual(MLXArray(Data(), dtype: dtype).itemSize, dtype.size)
+        }
+    }
+    
+    func testDtypeCodable() {
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        // Test encoding / decoding round trip
+        for dtype in DType.allCases {
+            do {
+                let json : Data = try encoder.encode(dtype)
+                let decoded = try decoder.decode(DType.self, from: json)
+                XCTAssertEqual(decoded, dtype)
+            }
+            catch {
+                XCTFail("Encoding / decoding failed")
+            }
+        }
+    }
+    
     // MARK: - Creation
-
     func testInt() {
         // array creation with Int -- we want it to produce .int32
         let a1 = MLXArray(500)
@@ -87,8 +110,10 @@ class MLXArrayInitTests: XCTestCase {
     func testData() {
         let data = Data([1, 2, 3, 4])
         let a = MLXArray(data, [2, 2], type: UInt8.self)
+        let b = MLXArray(data, [2, 2], dtype: DType.uint8)
         let expected = MLXArray(UInt8(1) ... 4, [2, 2])
         assertEqual(a, expected)
+        assertEqual(b, expected)
     }
 
     func testUnsafeRawPointer() {
