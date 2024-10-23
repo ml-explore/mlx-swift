@@ -19,23 +19,22 @@ class MLXArrayInitTests: XCTestCase {
             XCTAssertEqual(MLXArray(Data(), dtype: dtype).itemSize, dtype.size)
         }
     }
-    
+
     func testDtypeCodable() {
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
         // Test encoding / decoding round trip
         for dtype in DType.allCases {
             do {
-                let json : Data = try encoder.encode(dtype)
+                let json: Data = try encoder.encode(dtype)
                 let decoded = try decoder.decode(DType.self, from: json)
                 XCTAssertEqual(decoded, dtype)
-            }
-            catch {
+            } catch {
                 XCTFail("Encoding / decoding failed")
             }
         }
     }
-    
+
     // MARK: - Creation
     func testInt() {
         // array creation with Int -- we want it to produce .int32

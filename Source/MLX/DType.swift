@@ -105,7 +105,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
         default: false
         }
     }
-    
+
     public var size: Int {
         mlx_array_dtype_size(cmlxDtype)
     }

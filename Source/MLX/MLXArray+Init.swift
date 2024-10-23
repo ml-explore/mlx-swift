@@ -448,21 +448,19 @@ extension MLXArray {
     /// - <doc:initialization>
     public convenience init(_ data: Data, _ shape: [Int]? = nil, dtype: DType) {
         self.init(
-            data.withUnsafeBytes{ ptr in
+            data.withUnsafeBytes { ptr in
                 shapePrecondition(shape: shape, byteCount: data.count, type: dtype)
                 precondition(data.count % dtype.size == 0)
-                let shape = shape ?? [data.count / dtype.size ]
+                let shape = shape ?? [data.count / dtype.size]
                 return mlx_array_from_data(
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, dtype.cmlxDtype)
             })
     }
-    
-    
+
     public convenience init(data: MLXArrayData) {
-        self.init(data.data,  data.shape, dtype: data.dType)
+        self.init(data.data, data.shape, dtype: data.dType)
     }
-    
-    
+
     /// Create a ``DType/complex64`` scalar.
     /// - Parameters:
     ///   - real: real part
@@ -475,7 +473,6 @@ extension MLXArray {
     public convenience init(_ value: Complex<Float>) {
         self.init(real: value.real, imaginary: value.imaginary)
     }
-    
 
 }
 
@@ -514,4 +511,3 @@ extension MLXArray: ExpressibleByArrayLiteral {
         self.init(ctx)
     }
 }
-
