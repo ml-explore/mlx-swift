@@ -66,8 +66,13 @@ public final class Device: @unchecked Sendable, Equatable {
     }
 
     static let _lock = NSLock()
-    nonisolated(unsafe) static var _defaultDevice = gpu
-    nonisolated(unsafe) static var _defaultStream = Stream(gpu)
+    #if swift(>=5.10)
+        nonisolated(unsafe) static var _defaultDevice = gpu
+        nonisolated(unsafe) static var _defaultStream = Stream(gpu)
+    #else
+        static var _defaultDevice = gpu
+        static var _defaultStream = Stream(gpu)
+    #endif
 
     static public func defaultDevice() -> Device {
         _lock.withLock {
