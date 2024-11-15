@@ -2,7 +2,7 @@
 //
 // Metal/MTLFunctionDescriptor.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ _MTL_OPTIONS(NS::UInteger, FunctionOptions) {
     FunctionOptionNone = 0,
     FunctionOptionCompileToBinary = 1,
     FunctionOptionStoreFunctionInMetalScript = 2,
+    FunctionOptionFailOnBinaryArchiveMiss = 4,
 };
 
 class FunctionDescriptor : public NS::Copying<FunctionDescriptor>

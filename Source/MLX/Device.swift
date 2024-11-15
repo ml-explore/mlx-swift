@@ -41,11 +41,13 @@ public final class Device: @unchecked Sendable, Equatable {
         case DeviceType.gpu:
             cDeviceType = MLX_GPU
         }
-        ctx = mlx_device_new(cDeviceType, index)
+        self.ctx = mlx_device_new_type(cDeviceType, index)
     }
 
     public init() {
-        ctx = mlx_default_device()
+        var ctx = mlx_device_new()
+        mlx_get_default_device(&ctx)
+        self.ctx = ctx
     }
 
     deinit {
@@ -55,15 +57,27 @@ public final class Device: @unchecked Sendable, Equatable {
     static public let cpu: Device = Device(.cpu)
     static public let gpu: Device = Device(.gpu)
 
-    static public func defaultDevice() -> Device {
-        return Device()
-    }
-
     public var deviceType: DeviceType? {
         switch mlx_device_get_type(ctx) {
         case MLX_CPU: .cpu
         case MLX_GPU: .gpu
         default: nil
+        }
+    }
+
+    static let _lock = NSLock()
+    nonisolated(unsafe) static var _defaultDevice = gpu
+    nonisolated(unsafe) static var _defaultStream = Stream(gpu)
+
+    static public func defaultDevice() -> Device {
+        _lock.withLock {
+            _defaultDevice
+        }
+    }
+
+    static func defaultStream() -> Stream {
+        _lock.withLock {
+            _defaultStream
         }
     }
 
@@ -80,7 +94,11 @@ public final class Device: @unchecked Sendable, Equatable {
     /// ### See Also
     /// - ``StreamOrDevice/default``
     static public func setDefault(device: Device) {
-        mlx_set_default_device(device.ctx)
+        _lock.withLock {
+            mlx_set_default_device(device.ctx)
+            _defaultDevice = device
+            _defaultStream = Stream(device)
+        }
     }
 
     /// Compare two ``Device`` for equality -- this does not compare the index, just the device type.
@@ -91,7 +109,8 @@ public final class Device: @unchecked Sendable, Equatable {
 
 extension Device: CustomStringConvertible {
     public var description: String {
-        let s = mlx_device_tostring(ctx)
+        var s = mlx_string_new()
+        mlx_device_tostring(&s, ctx)
         defer { mlx_string_free(s) }
         return String(cString: mlx_string_data(s), encoding: .utf8)!
     }

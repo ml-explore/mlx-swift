@@ -63,9 +63,12 @@ open class MLXFastKernel {
             source.cString(using: .utf8),
             header.cString(using: .utf8))
 
-        // TODO
-        // mlx_fast_metal_kernel_set_input_names
-        // mlx_fast_metal_kernel_set_output_names
+        for name in inputNames {
+            mlx_fast_metal_kernel_add_input_name(kernel, name)
+        }
+        for name in outputNames {
+            mlx_fast_metal_kernel_add_output_name(kernel, name)
+        }
 
         mlx_fast_metal_kernel_set_contiguous_rows(kernel, ensureRowContiguous)
         mlx_fast_metal_kernel_set_atomic_outputs(kernel, atomicOutputs)
@@ -134,7 +137,7 @@ open class MLXFastKernel {
         defer { mlx_vector_array_free(inputs) }
 
         var result = mlx_vector_array_new()
-        mlx_fast_metal_kernel_apply(kernel, inputs, stream.ctx, &result)
+        mlx_fast_metal_kernel_apply(&result, kernel, inputs, stream.ctx)
         defer { mlx_vector_array_free(result) }
 
         return mlx_vector_array_values(result)

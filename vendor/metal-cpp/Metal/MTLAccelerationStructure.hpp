@@ -2,7 +2,7 @@
 //
 // Metal/MTLAccelerationStructure.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,6 +47,11 @@ _MTL_OPTIONS(uint32_t, AccelerationStructureInstanceOptions) {
     AccelerationStructureInstanceOptionTriangleFrontFacingWindingCounterClockwise = 2,
     AccelerationStructureInstanceOptionOpaque = 4,
     AccelerationStructureInstanceOptionNonOpaque = 8,
+};
+
+_MTL_ENUM(NS::Integer, MatrixLayout) {
+    MatrixLayoutColumnMajor = 0,
+    MatrixLayoutRowMajor = 1,
 };
 
 class AccelerationStructureDescriptor : public NS::Copying<AccelerationStructureDescriptor>
@@ -162,6 +167,9 @@ public:
     NS::UInteger                                                  transformationMatrixBufferOffset() const;
     void                                                          setTransformationMatrixBufferOffset(NS::UInteger transformationMatrixBufferOffset);
 
+    MTL::MatrixLayout                                             transformationMatrixLayout() const;
+    void                                                          setTransformationMatrixLayout(MTL::MatrixLayout transformationMatrixLayout);
+
     static MTL::AccelerationStructureTriangleGeometryDescriptor*  descriptor();
 };
 
@@ -236,6 +244,9 @@ public:
 
     NS::UInteger                                                        transformationMatrixBufferOffset() const;
     void                                                                setTransformationMatrixBufferOffset(NS::UInteger transformationMatrixBufferOffset);
+
+    MTL::MatrixLayout                                                   transformationMatrixLayout() const;
+    void                                                                setTransformationMatrixLayout(MTL::MatrixLayout transformationMatrixLayout);
 
     static MTL::AccelerationStructureMotionTriangleGeometryDescriptor*  descriptor();
 };
@@ -460,6 +471,11 @@ struct IndirectAccelerationStructureMotionInstanceDescriptor
     float                                     motionEndTime;
 } _MTL_PACKED;
 
+_MTL_ENUM(NS::Integer, TransformType) {
+    TransformTypePackedFloat4x3 = 0,
+    TransformTypeComponent = 1,
+};
+
 class InstanceAccelerationStructureDescriptor : public NS::Copying<InstanceAccelerationStructureDescriptor, MTL::AccelerationStructureDescriptor>
 {
 public:
@@ -493,6 +509,15 @@ public:
 
     NS::UInteger                                          motionTransformCount() const;
     void                                                  setMotionTransformCount(NS::UInteger motionTransformCount);
+
+    MTL::MatrixLayout                                     instanceTransformationMatrixLayout() const;
+    void                                                  setInstanceTransformationMatrixLayout(MTL::MatrixLayout instanceTransformationMatrixLayout);
+
+    MTL::TransformType                                    motionTransformType() const;
+    void                                                  setMotionTransformType(MTL::TransformType motionTransformType);
+
+    NS::UInteger                                          motionTransformStride() const;
+    void                                                  setMotionTransformStride(NS::UInteger motionTransformStride);
 
     static MTL::InstanceAccelerationStructureDescriptor*  descriptor();
 };
@@ -539,6 +564,15 @@ public:
 
     NS::UInteger                                                  motionTransformCountBufferOffset() const;
     void                                                          setMotionTransformCountBufferOffset(NS::UInteger motionTransformCountBufferOffset);
+
+    MTL::MatrixLayout                                             instanceTransformationMatrixLayout() const;
+    void                                                          setInstanceTransformationMatrixLayout(MTL::MatrixLayout instanceTransformationMatrixLayout);
+
+    MTL::TransformType                                            motionTransformType() const;
+    void                                                          setMotionTransformType(MTL::TransformType motionTransformType);
+
+    NS::UInteger                                                  motionTransformStride() const;
+    void                                                          setMotionTransformStride(NS::UInteger motionTransformStride);
 
     static MTL::IndirectInstanceAccelerationStructureDescriptor*  descriptor();
 };
@@ -882,6 +916,17 @@ _MTL_INLINE void MTL::AccelerationStructureTriangleGeometryDescriptor::setTransf
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setTransformationMatrixBufferOffset_), transformationMatrixBufferOffset);
 }
 
+// property: transformationMatrixLayout
+_MTL_INLINE MTL::MatrixLayout MTL::AccelerationStructureTriangleGeometryDescriptor::transformationMatrixLayout() const
+{
+    return Object::sendMessage<MTL::MatrixLayout>(this, _MTL_PRIVATE_SEL(transformationMatrixLayout));
+}
+
+_MTL_INLINE void MTL::AccelerationStructureTriangleGeometryDescriptor::setTransformationMatrixLayout(MTL::MatrixLayout transformationMatrixLayout)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setTransformationMatrixLayout_), transformationMatrixLayout);
+}
+
 // static method: descriptor
 _MTL_INLINE MTL::AccelerationStructureTriangleGeometryDescriptor* MTL::AccelerationStructureTriangleGeometryDescriptor::descriptor()
 {
@@ -1099,6 +1144,17 @@ _MTL_INLINE NS::UInteger MTL::AccelerationStructureMotionTriangleGeometryDescrip
 _MTL_INLINE void MTL::AccelerationStructureMotionTriangleGeometryDescriptor::setTransformationMatrixBufferOffset(NS::UInteger transformationMatrixBufferOffset)
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setTransformationMatrixBufferOffset_), transformationMatrixBufferOffset);
+}
+
+// property: transformationMatrixLayout
+_MTL_INLINE MTL::MatrixLayout MTL::AccelerationStructureMotionTriangleGeometryDescriptor::transformationMatrixLayout() const
+{
+    return Object::sendMessage<MTL::MatrixLayout>(this, _MTL_PRIVATE_SEL(transformationMatrixLayout));
+}
+
+_MTL_INLINE void MTL::AccelerationStructureMotionTriangleGeometryDescriptor::setTransformationMatrixLayout(MTL::MatrixLayout transformationMatrixLayout)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setTransformationMatrixLayout_), transformationMatrixLayout);
 }
 
 // static method: descriptor
@@ -1657,6 +1713,39 @@ _MTL_INLINE void MTL::InstanceAccelerationStructureDescriptor::setMotionTransfor
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMotionTransformCount_), motionTransformCount);
 }
 
+// property: instanceTransformationMatrixLayout
+_MTL_INLINE MTL::MatrixLayout MTL::InstanceAccelerationStructureDescriptor::instanceTransformationMatrixLayout() const
+{
+    return Object::sendMessage<MTL::MatrixLayout>(this, _MTL_PRIVATE_SEL(instanceTransformationMatrixLayout));
+}
+
+_MTL_INLINE void MTL::InstanceAccelerationStructureDescriptor::setInstanceTransformationMatrixLayout(MTL::MatrixLayout instanceTransformationMatrixLayout)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setInstanceTransformationMatrixLayout_), instanceTransformationMatrixLayout);
+}
+
+// property: motionTransformType
+_MTL_INLINE MTL::TransformType MTL::InstanceAccelerationStructureDescriptor::motionTransformType() const
+{
+    return Object::sendMessage<MTL::TransformType>(this, _MTL_PRIVATE_SEL(motionTransformType));
+}
+
+_MTL_INLINE void MTL::InstanceAccelerationStructureDescriptor::setMotionTransformType(MTL::TransformType motionTransformType)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMotionTransformType_), motionTransformType);
+}
+
+// property: motionTransformStride
+_MTL_INLINE NS::UInteger MTL::InstanceAccelerationStructureDescriptor::motionTransformStride() const
+{
+    return Object::sendMessage<NS::UInteger>(this, _MTL_PRIVATE_SEL(motionTransformStride));
+}
+
+_MTL_INLINE void MTL::InstanceAccelerationStructureDescriptor::setMotionTransformStride(NS::UInteger motionTransformStride)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMotionTransformStride_), motionTransformStride);
+}
+
 // static method: descriptor
 _MTL_INLINE MTL::InstanceAccelerationStructureDescriptor* MTL::InstanceAccelerationStructureDescriptor::descriptor()
 {
@@ -1805,6 +1894,39 @@ _MTL_INLINE NS::UInteger MTL::IndirectInstanceAccelerationStructureDescriptor::m
 _MTL_INLINE void MTL::IndirectInstanceAccelerationStructureDescriptor::setMotionTransformCountBufferOffset(NS::UInteger motionTransformCountBufferOffset)
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMotionTransformCountBufferOffset_), motionTransformCountBufferOffset);
+}
+
+// property: instanceTransformationMatrixLayout
+_MTL_INLINE MTL::MatrixLayout MTL::IndirectInstanceAccelerationStructureDescriptor::instanceTransformationMatrixLayout() const
+{
+    return Object::sendMessage<MTL::MatrixLayout>(this, _MTL_PRIVATE_SEL(instanceTransformationMatrixLayout));
+}
+
+_MTL_INLINE void MTL::IndirectInstanceAccelerationStructureDescriptor::setInstanceTransformationMatrixLayout(MTL::MatrixLayout instanceTransformationMatrixLayout)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setInstanceTransformationMatrixLayout_), instanceTransformationMatrixLayout);
+}
+
+// property: motionTransformType
+_MTL_INLINE MTL::TransformType MTL::IndirectInstanceAccelerationStructureDescriptor::motionTransformType() const
+{
+    return Object::sendMessage<MTL::TransformType>(this, _MTL_PRIVATE_SEL(motionTransformType));
+}
+
+_MTL_INLINE void MTL::IndirectInstanceAccelerationStructureDescriptor::setMotionTransformType(MTL::TransformType motionTransformType)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMotionTransformType_), motionTransformType);
+}
+
+// property: motionTransformStride
+_MTL_INLINE NS::UInteger MTL::IndirectInstanceAccelerationStructureDescriptor::motionTransformStride() const
+{
+    return Object::sendMessage<NS::UInteger>(this, _MTL_PRIVATE_SEL(motionTransformStride));
+}
+
+_MTL_INLINE void MTL::IndirectInstanceAccelerationStructureDescriptor::setMotionTransformStride(NS::UInteger motionTransformStride)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMotionTransformStride_), motionTransformStride);
 }
 
 // static method: descriptor

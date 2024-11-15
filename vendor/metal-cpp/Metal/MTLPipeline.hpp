@@ -2,7 +2,7 @@
 //
 // Metal/MTLPipeline.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,6 +34,12 @@ _MTL_ENUM(NS::UInteger, Mutability) {
     MutabilityDefault = 0,
     MutabilityMutable = 1,
     MutabilityImmutable = 2,
+};
+
+_MTL_ENUM(NS::Integer, ShaderValidation) {
+    ShaderValidationDefault = 0,
+    ShaderValidationEnabled = 1,
+    ShaderValidationDisabled = 2,
 };
 
 class PipelineBufferDescriptor : public NS::Copying<PipelineBufferDescriptor>

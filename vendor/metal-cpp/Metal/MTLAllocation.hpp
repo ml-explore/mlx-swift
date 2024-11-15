@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// MetalFX/MetalFX.hpp
+// Metal/MTLAllocation.hpp
 //
 // Copyright 2020-2024 Apple Inc.
 //
@@ -20,9 +20,24 @@
 
 #pragma once
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#include "MTLDefines.hpp"
+#include "MTLHeaderBridge.hpp"
+#include "MTLPrivate.hpp"
 
-#include "MTLFXSpatialScaler.hpp"
-#include "MTLFXTemporalScaler.hpp"
+#include <Foundation/Foundation.hpp>
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+namespace MTL
+{
+class Allocation : public NS::Referencing<Allocation>
+{
+public:
+    NS::UInteger allocatedSize() const;
+};
+
+}
+
+// property: allocatedSize
+_MTL_INLINE NS::UInteger MTL::Allocation::allocatedSize() const
+{
+    return Object::sendMessage<NS::UInteger>(this, _MTL_PRIVATE_SEL(allocatedSize));
+}

@@ -514,8 +514,9 @@ public final class MLXArray {
 
     /// Internal function for copying the backing `mlx::core::array` context.
     func copyContext() -> MLXArray {
-        // TODO this is wrong
-        return MLXArray(ctx)
+        var new = mlx_array_new()
+        mlx_array_set(&new, self.ctx)
+        return MLXArray(new)
     }
 }
 
@@ -527,7 +528,8 @@ extension MLXArray: Updatable, Evaluatable {
 
 extension MLXArray: CustomStringConvertible {
     public var description: String {
-        let s = mlx_array_tostring(ctx)
+        var s = mlx_string_new()
+        mlx_array_tostring(&s, ctx)
         defer { mlx_string_free(s) }
         return String(cString: mlx_string_data(s), encoding: .utf8)!
     }

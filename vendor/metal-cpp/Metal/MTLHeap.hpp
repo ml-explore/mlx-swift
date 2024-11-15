@@ -2,7 +2,7 @@
 //
 // Metal/MTLHeap.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 #include <Foundation/Foundation.hpp>
 
+#include "MTLAllocation.hpp"
 #include "MTLDevice.hpp"
 #include "MTLHeap.hpp"
 #include "MTLResource.hpp"
@@ -67,7 +68,7 @@ public:
     void                         setType(MTL::HeapType type);
 };
 
-class Heap : public NS::Referencing<Heap>
+class Heap : public NS::Referencing<Heap, Allocation>
 {
 public:
     NS::String*                  label() const;

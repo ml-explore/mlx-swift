@@ -51,7 +51,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     public static let gpu = device(.gpu)
 
     public static func stream(_ stream: Stream) -> StreamOrDevice {
-        StreamOrDevice(stream)
+        StreamOrDevice(Device.defaultStream())
     }
 
     /// Internal context -- used with Cmlx calls.
@@ -82,18 +82,31 @@ public final class Stream: @unchecked Sendable, Equatable {
 
     let ctx: mlx_stream
 
+    public static let gpu = Stream(.gpu)
+    public static let cpu = Stream(.cpu)
+
     init(_ ctx: mlx_stream) {
         self.ctx = ctx
     }
 
     public init() {
-        let device = mlx_default_device()
-        ctx = mlx_default_stream(device)
-        mlx_device_free(device)
+        let device = Device.defaultDevice()
+        var ctx = mlx_stream_new()
+        mlx_get_default_stream(&ctx, device.ctx)
+        self.ctx = ctx
     }
 
+    @available(*, deprecated, message: "use init(Device) -- index not supported")
     public init(index: Int32, _ device: Device) {
-        ctx = mlx_stream_new(index, device.ctx)
+        var ctx = mlx_stream_new()
+        mlx_get_default_stream(&ctx, device.ctx)
+        self.ctx = ctx
+    }
+
+    public init(_ device: Device) {
+        var ctx = mlx_stream_new()
+        mlx_get_default_stream(&ctx, device.ctx)
+        self.ctx = ctx
     }
 
     deinit {
@@ -106,7 +119,11 @@ public final class Stream: @unchecked Sendable, Equatable {
     }
 
     static public func defaultStream(_ device: Device) -> Stream {
-        return Stream(mlx_default_stream(device.ctx))
+        switch device.deviceType {
+        case .cpu: .cpu
+        case .gpu: .gpu
+        default: fatalError("Unexpected device type: \(device)")
+        }
     }
 
     public static func == (lhs: Stream, rhs: Stream) -> Bool {
@@ -116,10 +133,9 @@ public final class Stream: @unchecked Sendable, Equatable {
 
 extension Stream: CustomStringConvertible {
     public var description: String {
-        ""
-        // TODO
-        //        let s = mlx_stream_tostring(ctx)
-        //        defer { mlx_string_free(s) }
-        //        return String(cString: mlx_string_data(s), encoding: .utf8)!
+        var s = mlx_string_new()
+        mlx_stream_tostring(&s, ctx)
+        defer { mlx_string_free(s) }
+        return String(cString: mlx_string_data(s), encoding: .utf8)!
     }
 }

@@ -23,7 +23,8 @@ class CmlxTests: XCTestCase {
         let arr = mlx_array_new_data(&data, &shape, 2, MLX_FLOAT32)
         defer { mlx_array_free(arr) }
 
-        let str = mlx_array_tostring(arr)
+        var str = mlx_string_new()
+        mlx_array_tostring(&str, arr)
         defer { mlx_string_free(str) }
         let description = String(cString: mlx_string_data(str))
 

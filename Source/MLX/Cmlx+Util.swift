@@ -32,7 +32,9 @@ func mlx_map_array_values(_ mlx_map: mlx_map_string_to_array) -> [String: MLXArr
         guard let mlx_key else { continue }
 
         let key = String(cString: mlx_key)
-        let array = MLXArray(mlx_value)
+        var new = mlx_array_new()
+        mlx_array_set(&new, mlx_value)
+        let array = MLXArray(new)
 
         result[key] = array
     }
