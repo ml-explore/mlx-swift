@@ -226,8 +226,9 @@ public enum GPU {
             }
 
             var current: size_t = 0
+            var discard: size_t = 0
             mlx_metal_set_memory_limit(&current, activeMemory, _relaxedMemoryLimit)
-            mlx_metal_set_memory_limit(&current, current, _relaxedMemoryLimit)
+            mlx_metal_set_memory_limit(&discard, current, _relaxedMemoryLimit)
             return current
         }
     }

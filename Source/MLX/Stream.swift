@@ -34,7 +34,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     /// This will be ``Device/gpu`` unless ``Device/setDefault(device:)``
     /// sets it otherwise.
     public static var `default`: StreamOrDevice {
-        StreamOrDevice(Stream())
+        StreamOrDevice(Device.defaultStream())
     }
 
     public static func device(_ device: Device) -> StreamOrDevice {

@@ -43,7 +43,7 @@ public func split(key: MLXArray, into num: Int, stream: StreamOrDevice = .defaul
 public func split(key: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
     var r0 = mlx_array_new()
     var r1 = mlx_array_new()
-    let keys = mlx_random_split(&r0, &r1, key.ctx, stream.ctx)
+    mlx_random_split(&r0, &r1, key.ctx, stream.ctx)
     return (MLXArray(r0), MLXArray(r1))
 }
 
