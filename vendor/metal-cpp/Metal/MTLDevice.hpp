@@ -636,7 +636,7 @@ _NS_EXPORT MTL::Device* MTL::CreateSystemDefaultDevice()
 
 _NS_EXPORT NS::Array* MTL::CopyAllDevices()
 {
-#if (defined __IPHONE_18) || (defined __MAC_10_11)
+#if (__IPHONE_OS_VERSION_MAX_ALLOWED > 180000) || (__MAC_OS_X_VERSION_MIN_REQUIRED > 101100)
     return ::MTLCopyAllDevices();
 #else
     return nullptr;
