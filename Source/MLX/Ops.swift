@@ -2133,7 +2133,7 @@ public func quantized(
     var r1 = mlx_array_new()
     var r2 = mlx_array_new()
     var r3 = mlx_array_new()
-    let result_tuple = mlx_quantize(&r1, &r2, &r3, w.ctx, groupSize.int32, bits.int32, stream.ctx)
+    mlx_quantize(&r1, &r2, &r3, w.ctx, groupSize.int32, bits.int32, stream.ctx)
 
     return (MLXArray(r1), MLXArray(r2), MLXArray(r3))
 }
