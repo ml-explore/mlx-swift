@@ -204,15 +204,6 @@ let package = Package(
             sources: ["Tutorial.swift"]
         ),
 
-        // ------
-        // Internal Tools
-
-        .executableTarget(
-            name: "GenerateGrad",
-            path: "Source/Tools",
-            sources: ["GenerateGrad.swift"]
-        ),
-
     ],
     cxxLanguageStandard: .gnucxx17
 )
