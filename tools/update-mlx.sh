@@ -20,8 +20,6 @@ cmake ../Source/Cmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0
 # until mlx supports overriding the METAL_VERSION you will need to edit
 # Source/Cmlx/mlx/mlx/backend/metal/CMakeLists.txt and manually set the METAL_VERSION
 # to "3.0"
-#
-# Also Plugins/PrepareMetalShaders/main.swift kernels needs to be in sync.
 
 # run the cmake build to generate the source files
 cd mlx/backend/metal
@@ -60,7 +58,8 @@ make cpu_compiled_preamble
 
 cd ../../../..
 
-rm Source/Cmlx/mlx-generated/*
+rm -rf Source/Cmlx/mlx-generated/metal
+rm -f Source/Cmlx/mlx-generated/*
 cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
 cp build/mlx/backend/common/compiled_preamble.cpp Source/Cmlx/mlx-generated
 
@@ -72,3 +71,6 @@ for x in Source/Cmlx/mlx-generated/*.cpp ; do \
     sed -i .tmp -e "s:`pwd`/::g" $x
 done;
 rm Source/Cmlx/mlx-generated/*.tmp
+
+# Update the headers
+./tools/fix-metal-includes.sh
