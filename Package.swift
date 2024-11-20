@@ -121,10 +121,7 @@ let package = Package(
                 .linkedFramework("Foundation"),
                 .linkedFramework("Metal"),
                 .linkedFramework("Accelerate"),
-            ],
-
-            // run the plugin to build the metal shaders
-            plugins: [.plugin(name: "PrepareMetalShaders")]
+            ]
         ),
         .testTarget(
             name: "CmlxTests",
