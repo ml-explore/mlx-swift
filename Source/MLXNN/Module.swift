@@ -587,10 +587,24 @@ open class Module {
                 case .value:
                     // update array
                     var newModules = [Module]()
-                    for item in values {
-                        switch item {
+                    for (value, item) in zip(values, items) {
+                        switch value {
                         case .value(let module):
                             newModules.append(module)
+
+                        case .none:
+                            // e.g. this is updating @ModuleInfo var mlp: (Linear, GELU, Linear)
+                            switch item {
+                            case .value(.module(let m)):
+                                // if possible just copy forward the original item
+                                newModules.append(m)
+                            default:
+                                // otherwise we don't know how to update it
+                                throw UpdateError.unableToCollectModulesFromContainer(
+                                    base: describeType(self), key: key)
+                            }
+                            break
+
                         default:
                             throw UpdateError.unableToCollectModulesFromContainer(
                                 base: describeType(self), key: key)
@@ -669,7 +683,7 @@ open class Module {
                 try setter.updateModule(value)
             } catch {
                 throw UpdateError.needModuleInfo(
-                    "Unable to set modules for \(describeType(self)).\(key) -- maybe type mismatch: \(describeType(value)))"
+                    "Unable to set modules for \(describeType(self)).\(key) -- maybe type mismatch: \(describeType(value)), \(error)"
                 )
             }
         } else {
@@ -1393,8 +1407,27 @@ private protocol TypeErasedSetterProvider {
         func updateModule(_ value: Any) throws {
             if let value = value as? T {
                 info.module = value
+            } else if let value = value as? [Module] {
+                // try to recast as a tuple, e.g.
+                // @ModuleInfo var mlp: (Linear, GELU, Linear)
+
+                if value.count == 2, let values = (value[0], value[1]) as? T {
+                    info.module = values
+                } else if value.count == 3, let values = (value[0], value[1], value[2]) as? T {
+                    info.module = values
+                } else if value.count == 4,
+                    let values = (value[0], value[1], value[2], value[3]) as? T
+                {
+                    info.module = values
+                } else if value.count == 5,
+                    let values = (value[0], value[1], value[2], value[4], value[5]) as? T
+                {
+                    info.module = values
+                } else {
+                    throw UpdateError.unableToCast(String(describing: T.self))
+                }
             } else {
-                throw UpdateError.unableToCast
+                throw UpdateError.unableToCast(String(describing: T.self))
             }
         }
     }
@@ -1411,7 +1444,7 @@ enum UpdateError: Error {
     case keyNotFound(base: String, key: String)
     case needModuleInfo(String)
     case unableToSet(String)
-    case unableToCast
+    case unableToCast(String)
     case unhandledKeys(base: String, keys: [String])
 }
 

@@ -698,4 +698,31 @@ class ModuleTests: XCTestCase {
             XCTFail("should be a .value(array)")
         }
     }
+
+    func testUpdateModulesNil() {
+
+        class PatchMerger: Module {
+            @ModuleInfo var mlp: (Linear, GELU, Linear)
+
+            override init() {
+                mlp = (
+                    Linear(128, 128),
+                    GELU(),
+                    Linear(128, 128)
+                )
+            }
+        }
+
+        let pm = PatchMerger()
+
+        // this will fail because the quantize will
+        // do an update with (QL, nil, QL) and it can't
+        // replace the GELU with nil.  With the fix
+        // this works and forward the GELU
+
+        quantize(model: pm, groupSize: 64, bits: 8)
+
+        XCTAssertTrue(pm.mlp.0 is QuantizedLinear)
+        XCTAssertTrue(pm.mlp.2 is QuantizedLinear)
+    }
 }
