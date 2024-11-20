@@ -587,23 +587,28 @@ open class Module {
                 case .value:
                     // update array
                     var newModules = [Module]()
-                    for (value, item) in zip(values, items) {
+                    for (index, value) in values.enumerated() {
                         switch value {
                         case .value(let module):
                             newModules.append(module)
 
                         case .none:
                             // e.g. this is updating @ModuleInfo var mlp: (Linear, GELU, Linear)
-                            switch item {
-                            case .value(.module(let m)):
-                                // if possible just copy forward the original item
-                                newModules.append(m)
-                            default:
-                                // otherwise we don't know how to update it
+                            if index < items.count {
+                                switch items[index] {
+                                case .value(.module(let m)):
+                                    // if possible just copy forward the original item
+                                    newModules.append(m)
+                                default:
+                                    // otherwise we don't know how to update it
+                                    throw UpdateError.unableToCollectModulesFromContainer(
+                                        base: describeType(self), key: key)
+                                }
+                            } else {
+                                // past the end of items
                                 throw UpdateError.unableToCollectModulesFromContainer(
                                     base: describeType(self), key: key)
                             }
-                            break
 
                         default:
                             throw UpdateError.unableToCollectModulesFromContainer(
