@@ -58,7 +58,8 @@ make cpu_compiled_preamble
 
 cd ../../../..
 
-rm Source/Cmlx/mlx-generated/*
+rm -rf Source/Cmlx/mlx-generated/metal
+rm -f Source/Cmlx/mlx-generated/*
 cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
 cp build/mlx/backend/common/compiled_preamble.cpp Source/Cmlx/mlx-generated
 
