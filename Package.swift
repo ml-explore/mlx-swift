@@ -22,24 +22,12 @@ let package = Package(
         .library(name: "MLXFFT", targets: ["MLXFFT"]),
         .library(name: "MLXLinalg", targets: ["MLXLinalg"]),
         .library(name: "MLXFast", targets: ["MLXFast"]),
-
-        // build support & back end
-        .plugin(
-            name: "PrepareMetalShaders",
-            targets: ["PrepareMetalShaders"]
-        ),
     ],
     dependencies: [
         // for Complex type
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0")
     ],
     targets: [
-        // plugin to help build the metal shaders
-        .plugin(
-            name: "PrepareMetalShaders",
-            capability: .buildTool(),
-            path: "Plugins/PrepareMetalShaders"
-        ),
         .target(
             name: "Cmlx",
             exclude: [
