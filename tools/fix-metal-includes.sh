@@ -36,7 +36,7 @@ KERNELS=$(for file in ${KERNEL_LIST}; do  echo "${KERNELS_DIR}/${file}"; done)
 # Regular expression to replace include directives
 PATTERN="^#include \"${KERNELS_INCLUDE_PATH}/([^\"]*)\""
 
-mkdir -p ${OUTPUT_DIR}
+mkdir -p "${OUTPUT_DIR}"
 
 # Mimic the original logic in  PrepareMetalShaders::transformIncludes
 # Returns rootPath, a string containing a sequence of "../../" to prefix the
