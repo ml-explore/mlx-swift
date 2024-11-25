@@ -429,7 +429,7 @@ open class Module {
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:)``
     @discardableResult
-    public func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
+    open func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
             if case .none = value {
@@ -499,7 +499,7 @@ open class Module {
     ///   - filter: filter for parameters to apply to
     ///   - map: function to apply to the matched parameters
     @discardableResult
-    public func apply(
+    open func apply(
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
     ) -> Self {
@@ -558,7 +558,7 @@ open class Module {
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
     @discardableResult
-    public func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
+    open func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
