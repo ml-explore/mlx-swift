@@ -109,7 +109,7 @@ open class GRU: Module {
         self._wx.wrappedValue = MLXRandom.uniform(
             low: -scale, high: scale, [3 * hiddenSize, inputSize])
         self._wh.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [3 * hiddenSize, inputSize])
+            low: -scale, high: scale, [3 * hiddenSize, hiddenSize])
         if bias {
             self.b = MLXRandom.uniform(low: -scale, high: scale, [3 * hiddenSize])
             self.bhn = MLXRandom.uniform(low: -scale, high: scale, [hiddenSize])
@@ -206,7 +206,7 @@ open class LSTM: Module {
         self._wx.wrappedValue = MLXRandom.uniform(
             low: -scale, high: scale, [4 * hiddenSize, inputSize])
         self._wh.wrappedValue = MLXRandom.uniform(
-            low: -scale, high: scale, [4 * hiddenSize, inputSize])
+            low: -scale, high: scale, [4 * hiddenSize, hiddenSize])
         if bias {
             self.bias = MLXRandom.uniform(low: -scale, high: scale, [4 * hiddenSize])
         } else {
