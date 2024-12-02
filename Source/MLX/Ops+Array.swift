@@ -1157,7 +1157,7 @@ public func pow<T: ScalarOrArray>(_ array: MLXArray, _ other: T, stream: StreamO
 public func pow<T: ScalarOrArray>(_ array: T, _ other: MLXArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    let array = other.asMLXArray(dtype: other.dtype)
+    let array = array.asMLXArray(dtype: other.dtype)
     return pow(array, other, stream: stream)
 }
 
