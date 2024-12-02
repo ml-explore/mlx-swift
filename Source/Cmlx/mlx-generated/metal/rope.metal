@@ -2,7 +2,6 @@
 
 #include <metal_math>
 
-#include "bf16.h"
 #include "utils.h"
 template <typename T, bool traditional, bool forward>
 void rope_single_impl(

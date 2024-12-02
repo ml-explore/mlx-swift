@@ -4,8 +4,8 @@
 #include <metal_simdgroup_matrix>
 #include <metal_stdlib>
 
-#include "bf16.h"
 #include "steel/conv/params.h"
+#include "utils.h"
 
 #define MLX_MTL_CONST static constant constexpr const
 

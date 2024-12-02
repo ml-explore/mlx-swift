@@ -110,28 +110,3 @@ public func layerNorm(
         &result, x.ctx, (weight ?? .mlxNone).ctx, (bias ?? .mlxNone).ctx, eps, stream.ctx)
     return MLXArray(result)
 }
-
-/// Quantize the matrix `w` using the provided `scales` and
-/// `biases` and the `groupSize` and `bits` configuration.
-
-/// For details, please see
-/// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.affine_quantize.html)
-///
-/// - Parameters:
-///   - w: Matrix to be quantized
-///   - scales: The scales to use per `groupSize` elements of `w`
-///   - biases: The biases to use per `groupSize` elements of `w`
-///   - groupSize: The size of the group in `w` that shares a scale and bias.
-///   - bits: The number of bits occupied by each element in `w`.
-///   - stream: stream or device to evaluate on
-/// - Returns: quantized version of `w`
-public func affineQuantized(
-    _ w: MLXArray, scales: MLXArray, biases: MLXArray, groupSize: Int = 64, bits: Int = 4,
-    stream: StreamOrDevice = .default
-) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_fast_affine_quantize(
-        &result,
-        w.ctx, scales.ctx, biases.ctx, Int32(groupSize), Int32(bits), stream.ctx)
-    return MLXArray(result)
-}

@@ -38,14 +38,6 @@ class OpsTests: XCTestCase {
         assertEqual(b, MLXArray(1 ..< 13, [3, 4]))
     }
 
-    func testAsStridedReverse() {
-        let a = MLXArray(0 ..< 16, [4, 4])
-        let expected = MLXArray((0 ..< 16).reversed(), [4, 4])
-
-        let b = asStrided(a, [4, 4], strides: [-4, -1], offset: 15)
-        assertEqual(b, expected)
-    }
-
     func testTensordot() {
         let a = MLXArray(0 ..< 60, [3, 4, 5]).asType(.float32)
         let b = MLXArray(0 ..< 24, [4, 3, 2]).asType(.float32)

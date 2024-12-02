@@ -11,7 +11,7 @@ func assertEqual(
     XCTAssertEqual(array1.shape, array2.shape, "shapes differ: \(array1.shape) != \(array2.shape)")
     XCTAssertTrue(
         array1.allClose(array2, rtol: rtol, atol: atol).item(Bool.self),
-        "contents differ:\n\(array1)\n\(array2))))")
+        "contents differ:\n\(array1)\n\(array2)")
 }
 
 func assertEqual(

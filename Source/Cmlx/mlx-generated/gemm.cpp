@@ -591,8 +591,8 @@ struct BlockMMA {
   using MMAFrag_acc_t = BaseMMAFrag<AccumType, kFragSize, kFragSize>;
   static constant constexpr const short TM_stride = kFragSize * WM;
   static constant constexpr const short TN_stride = kFragSize * WN;
-  static constant constexpr const short TM = BM / TM_stride;
-  static constant constexpr const short TN = BN / TN_stride;
+  static constant constexpr const short TM = BM / (kFragSize * WM);
+  static constant constexpr const short TN = BN / (kFragSize * WN);
   static constant constexpr const short A_str_m = transpose_a ? 1 : lda_tgp;
   static constant constexpr const short A_str_k = transpose_a ? lda_tgp : 1;
   static constant constexpr const short B_str_k = transpose_b ? 1 : ldb_tgp;
