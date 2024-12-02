@@ -700,6 +700,10 @@ class ModuleTests: XCTestCase {
     }
 
     func testUpdateModulesNil() {
+        // test where a tuple is updated with a nil value, e.g. when
+        // a triple with two Linear modules is quantized, the third value
+        // will be nil but is not nullable.  The code should copy forward
+        // the previous value (no mutation)
 
         class PatchMerger: Module {
             @ModuleInfo var mlp: (Linear, GELU, Linear)
@@ -714,11 +718,6 @@ class ModuleTests: XCTestCase {
         }
 
         let pm = PatchMerger()
-
-        // this will fail because the quantize will
-        // do an update with (QL, nil, QL) and it can't
-        // replace the GELU with nil.  With the fix
-        // this works and forward the GELU
 
         quantize(model: pm, groupSize: 64, bits: 8)
 
