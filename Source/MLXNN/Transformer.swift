@@ -267,7 +267,7 @@ class TransformerDecoderLayer: Module {
 
             y = crossAttention(y, keys: memory, values: memory, mask: memoryMask)
             y = dropout2(y)
-            x = ln1(x + y)
+            x = ln2(x + y)
 
             y = linear1(x)
             y = activation(y)
