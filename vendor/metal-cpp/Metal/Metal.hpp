@@ -2,7 +2,7 @@
 //
 // Metal/Metal.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #include "MTLAccelerationStructure.hpp"
 #include "MTLAccelerationStructureCommandEncoder.hpp"
 #include "MTLAccelerationStructureTypes.hpp"
+#include "MTLAllocation.hpp"
 #include "MTLArgument.hpp"
 #include "MTLArgumentEncoder.hpp"
 #include "MTLBinaryArchive.hpp"
@@ -62,6 +63,7 @@
 #include "MTLIOCompressor.hpp"
 #include "MTLLibrary.hpp"
 #include "MTLLinkedFunctions.hpp"
+#include "MTLLogState.hpp"
 #include "MTLParallelRenderCommandEncoder.hpp"
 #include "MTLPipeline.hpp"
 #include "MTLPixelFormat.hpp"
@@ -70,6 +72,7 @@
 #include "MTLRenderCommandEncoder.hpp"
 #include "MTLRenderPass.hpp"
 #include "MTLRenderPipeline.hpp"
+#include "MTLResidencySet.hpp"
 #include "MTLResource.hpp"
 #include "MTLResourceStateCommandEncoder.hpp"
 #include "MTLResourceStatePass.hpp"

@@ -2,7 +2,7 @@
 //
 // MetalFX/MTLFXPrivate.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ namespace MTLFX::Private
     }
 } // MTLFX::Private
 
-#if defined( __MAC_13_0 ) || defined( __MAC_14_0 ) || defined( __IPHONE_16_0 ) || defined( __IPHONE_17_0 ) || defined( __TVOS_16_0 ) || defined( __TVOS_17_0 )
+#if defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
 
 #define _MTLFX_PRIVATE_DEF_STR( type, symbol )                                                                                  \
     _MTLFX_EXTERN type const                            MTLFX##symbol _MTLFX_PRIVATE_IMPORT;                                    \
@@ -97,7 +97,7 @@ namespace MTLFX::Private
 
 #define _MTLFX_PRIVATE_DEF_WEAK_CONST( type, symbol )   _MTLFX_PRIVATE_DEF_CONST( type, symbol )
 
-#endif // defined( __MAC_13_0 ) || defined( __MAC_14_0 ) || defined( __IPHONE_16_0 ) || defined( __IPHONE_17_0 ) || defined( __TVOS_16_0 ) || defined( __TVOS_17_0 )
+#endif // defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
 
 #else
 
@@ -184,6 +184,8 @@ namespace MTLFX
                                     "isDepthReversed" );
             _MTLFX_PRIVATE_DEF_SEL( isInputContentPropertiesEnabled,
                                     "isInputContentPropertiesEnabled" );
+            _MTLFX_PRIVATE_DEF_SEL( isReactiveMaskTextureEnabled,
+                                    "isReactiveMaskTextureEnabled" );
             _MTLFX_PRIVATE_DEF_SEL( jitterOffsetX,
                                     "jitterOffsetX" );
             _MTLFX_PRIVATE_DEF_SEL( jitterOffsetY,
@@ -214,8 +216,16 @@ namespace MTLFX
                                     "outputWidth" );
             _MTLFX_PRIVATE_DEF_SEL( preExposure,
                                     "preExposure" );
+            _MTLFX_PRIVATE_DEF_SEL( reactiveMaskTextureFormat,
+                                    "reactiveMaskTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( reactiveTextureUsage,
+                                    "reactiveTextureUsage" );
+            _MTLFX_PRIVATE_DEF_SEL( reactiveMaskTexture,
+                                    "reactiveMaskTexture" );
             _MTLFX_PRIVATE_DEF_SEL( reset,
                                     "reset" );
+            _MTLFX_PRIVATE_DEF_SEL( requiresSynchronousInitialization,
+                                    "requiresSynchronousInitialization" );
             _MTLFX_PRIVATE_DEF_SEL( setAutoExposureEnabled_,
                                     "setAutoExposureEnabled:" );
             _MTLFX_PRIVATE_DEF_SEL( setColorProcessingMode_,
@@ -270,6 +280,14 @@ namespace MTLFX
                                     "setOutputWidth:" );
             _MTLFX_PRIVATE_DEF_SEL( setPreExposure_,
                                     "setPreExposure:" );
+            _MTLFX_PRIVATE_DEF_SEL( setReactiveMaskTexture_,
+                                    "setReactiveMaskTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setReactiveMaskTextureEnabled_,
+                                    "setReactiveMaskTextureEnabled:" );
+            _MTLFX_PRIVATE_DEF_SEL( setReactiveMaskTextureFormat_,
+                                    "setReactiveMaskTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setRequiresSynchronousInitialization_,
+                                    "setRequiresSynchronousInitialization:" );
             _MTLFX_PRIVATE_DEF_SEL( setReset_,
                                     "setReset:" );
             _MTLFX_PRIVATE_DEF_SEL( supportedInputContentMaxScaleForDevice_,

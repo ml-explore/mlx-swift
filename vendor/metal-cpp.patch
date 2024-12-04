@@ -59,3 +59,16 @@ diff --color -u -r Foundation/NSBundle.hpp metal-cpp/Foundation/NSBundle.hpp
   _MTL_PRIVATE_DEF_SEL(setSize_,
       "setSize:");
   _MTL_PRIVATE_DEF_SEL(setSlice_,
+diff --git a/vendor/metal-cpp/Metal/MTLDevice.hpp b/vendor/metal-cpp/Metal/MTLDevice.hpp
+index 17efb88..2b6bc3b 100644
+--- a/vendor/metal-cpp/Metal/MTLDevice.hpp
++++ b/vendor/metal-cpp/Metal/MTLDevice.hpp
+@@ -636,7 +636,7 @@ _NS_EXPORT MTL::Device* MTL::CreateSystemDefaultDevice()
+ 
+ _NS_EXPORT NS::Array* MTL::CopyAllDevices()
+ {
+-#if (defined __IPHONE_18) || (defined __MAC_10_11)
++#if (__IPHONE_OS_VERSION_MIN_REQUIRED >= 180000) || (__MAC_OS_X_VERSION_MIN_REQUIRED >= 101100)
+     return ::MTLCopyAllDevices();
+ #else
+     return nullptr;

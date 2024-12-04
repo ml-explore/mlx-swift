@@ -26,11 +26,13 @@ public func RoPE(
     _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float?, scale: Float, offset: Int,
     freqs: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     let base = mlx_optional_float(value: base ?? 0, has_value: base != nil)
-    return MLXArray(
-        mlx_fast_rope(
-            array.ctx, Int32(dimensions), traditional, base, scale, Int32(offset),
-            freqs?.ctx, stream.ctx))
+    mlx_fast_rope(
+        &result,
+        array.ctx, Int32(dimensions), traditional, base, scale, Int32(offset),
+        (freqs ?? .mlxNone).ctx, stream.ctx)
+    return MLXArray(result)
 }
 
 /// A fast implementation of multi-head attention: `O = softmax(Q @ K.T, dim=-1) @ V`
@@ -59,12 +61,14 @@ public func scaledDotProductAttention(
     queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
     memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
+    var result = mlx_array_new()
     let memoryEfficientThreshold = mlx_optional_int(
         value: Int32(memoryEfficientThreshold ?? 0), has_value: memoryEfficientThreshold != nil)
-    return MLXArray(
-        mlx_fast_scaled_dot_product_attention(
-            queries.ctx, keys.ctx, values.ctx, scale, mask?.ctx,
-            memoryEfficientThreshold, stream.ctx))
+    mlx_fast_scaled_dot_product_attention(
+        &result,
+        queries.ctx, keys.ctx, values.ctx, scale, (mask ?? .mlxNone).ctx,
+        memoryEfficientThreshold, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Root Mean Square normalization (RMS norm).
@@ -80,7 +84,9 @@ public func scaledDotProductAttention(
 public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    MLXArray(mlx_fast_rms_norm(x.ctx, weight.ctx, eps, stream.ctx))
+    var result = mlx_array_new()
+    mlx_fast_rms_norm(&result, x.ctx, weight.ctx, eps, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Layer normalization.
@@ -99,28 +105,8 @@ public func layerNorm(
     _ x: MLXArray, weight: MLXArray? = nil, bias: MLXArray? = nil, eps: Float,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    MLXArray(mlx_fast_layer_norm(x.ctx, weight?.ctx, bias?.ctx, eps, stream.ctx))
-}
-
-/// Quantize the matrix `w` using the provided `scales` and
-/// `biases` and the `groupSize` and `bits` configuration.
-
-/// For details, please see
-/// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.affine_quantize.html)
-///
-/// - Parameters:
-///   - w: Matrix to be quantized
-///   - scales: The scales to use per `groupSize` elements of `w`
-///   - biases: The biases to use per `groupSize` elements of `w`
-///   - groupSize: The size of the group in `w` that shares a scale and bias.
-///   - bits: The number of bits occupied by each element in `w`.
-///   - stream: stream or device to evaluate on
-/// - Returns: quantized version of `w`
-public func affineQuantized(
-    _ w: MLXArray, scales: MLXArray, biases: MLXArray, groupSize: Int = 64, bits: Int = 4,
-    stream: StreamOrDevice = .default
-) -> MLXArray {
-    MLXArray(
-        mlx_fast_affine_quantize(
-            w.ctx, scales.ctx, biases.ctx, Int32(groupSize), Int32(bits), stream.ctx))
+    var result = mlx_array_new()
+    mlx_fast_layer_norm(
+        &result, x.ctx, (weight ?? .mlxNone).ctx, (bias ?? .mlxNone).ctx, eps, stream.ctx)
+    return MLXArray(result)
 }

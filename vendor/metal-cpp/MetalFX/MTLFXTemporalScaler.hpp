@@ -2,7 +2,7 @@
 //
 // MetalFX/MTLFXTemporalScaler.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,6 +67,15 @@ namespace MTLFX
         bool                                        isInputContentPropertiesEnabled() const;
         void                                        setInputContentPropertiesEnabled( bool enabled );
 
+        bool                                        requiresSynchronousInitialization() const;
+        void                                        setRequiresSynchronousInitialization(bool requiresSynchronousInitialization);
+
+        bool                                        isReactiveMaskTextureEnabled() const;
+        void                                        setReactiveMaskTextureEnabled( bool enabled );
+
+        MTL::PixelFormat                            reactiveMaskTextureFormat() const;
+        void                                        setReactiveMaskTextureFormat( MTL::PixelFormat pixelFormat );
+
         float                                       inputContentMinScale() const;
         void                                        setInputContentMinScale( float scale );
 
@@ -124,6 +133,11 @@ namespace MTLFX
 
         float                                       motionVectorScaleY() const;
         void                                        setMotionVectorScaleY( float scale );
+
+        MTL::Texture*                               reactiveMaskTexture() const;
+        void                                        setReactiveMaskTexture( MTL::Texture* reactiveMaskTexture );
+
+        MTL::TextureUsage                           reactiveTextureUsage() const;
 
         bool                                        reset() const;
         void                                        setReset( bool reset );
@@ -301,6 +315,49 @@ _MTLFX_INLINE bool MTLFX::TemporalScalerDescriptor::isInputContentPropertiesEnab
 _MTLFX_INLINE void MTLFX::TemporalScalerDescriptor::setInputContentPropertiesEnabled( bool enabled )
 {
     Object::sendMessage< void >( this, _MTL_PRIVATE_SEL( setInputContentPropertiesEnabled_ ), enabled );
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE bool MTLFX::TemporalScalerDescriptor::requiresSynchronousInitialization() const
+{
+    return Object::sendMessage< bool >( this, _MTL_PRIVATE_SEL( requiresSynchronousInitialization ) );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE void MTLFX::TemporalScalerDescriptor::setRequiresSynchronousInitialization(bool requiresSynchronousInitialization)
+{
+    Object::sendMessage< void >( this, _MTL_PRIVATE_SEL( setRequiresSynchronousInitialization_ ), requiresSynchronousInitialization );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE bool MTLFX::TemporalScalerDescriptor::isReactiveMaskTextureEnabled() const
+{
+    return Object::sendMessage< bool >( this, _MTL_PRIVATE_SEL( isReactiveMaskTextureEnabled ) );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE void MTLFX::TemporalScalerDescriptor::setReactiveMaskTextureEnabled( bool enabled )
+{
+    Object::sendMessage< void >( this, _MTL_PRIVATE_SEL( setReactiveMaskTextureEnabled_ ), enabled );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE MTL::PixelFormat MTLFX::TemporalScalerDescriptor::reactiveMaskTextureFormat() const
+{
+    return Object::sendMessage< MTL::PixelFormat >( this, _MTL_PRIVATE_SEL( reactiveMaskTextureFormat ) );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE void MTLFX::TemporalScalerDescriptor::setReactiveMaskTextureFormat( MTL::PixelFormat pixelFormat )
+{
+    Object::sendMessage< void >( this, _MTL_PRIVATE_SEL( setReactiveMaskTextureFormat_ ), pixelFormat );
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -571,6 +628,27 @@ _MTLFX_INLINE float MTLFX::TemporalScaler::motionVectorScaleY() const
 _MTLFX_INLINE void MTLFX::TemporalScaler::setMotionVectorScaleY( float scale )
 {
     Object::sendMessage< void >( this, _MTL_PRIVATE_SEL( setMotionVectorScaleY_ ), scale );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE MTL::Texture* MTLFX::TemporalScaler::reactiveMaskTexture() const
+{
+    return Object::sendMessage< MTL::Texture* >( this, _MTL_PRIVATE_SEL( reactiveMaskTexture ) );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE void MTLFX::TemporalScaler::setReactiveMaskTexture( MTL::Texture* reactiveMaskTexture )
+{
+    Object::sendMessage< void >( this, _MTL_PRIVATE_SEL( setReactiveMaskTexture_ ), reactiveMaskTexture );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE MTL::TextureUsage MTLFX::TemporalScaler::reactiveTextureUsage() const
+{
+    return Object::sendMessage< MTL::TextureUsage >( this, _MTL_PRIVATE_SEL( reactiveTextureUsage ) );
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
