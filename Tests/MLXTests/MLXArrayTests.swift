@@ -129,6 +129,13 @@ class MLXArrayTests: XCTestCase {
         }
     }
 
+    func testAsDataRoundTrip() {
+        let a = MLXArray(0 ..< 16, [4, 4])
+        let arrayData = a.asData(access: .copy)
+        let result = MLXArray(arrayData.data, arrayData.shape, dtype: arrayData.dType)
+        assertEqual(a, result)
+    }
+
     func testAsDataNonContiguous() {
         // buffer with holes (last dimension has stride of 2 and
         // thus larger storage than it physically needs)

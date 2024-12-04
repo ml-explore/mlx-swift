@@ -24,7 +24,7 @@ import Numerics
 /// - ``MLXArray/asType(_:stream:)-6d44y``
 /// - ``MLXArray/asType(_:stream:)-4eqoc``
 /// - ``MLXArray/init(_:dtype:)``
-public enum DType: Hashable, Sendable {
+public enum DType: Hashable, Sendable, CaseIterable {
     case bool
     case uint8
     case uint16
@@ -104,6 +104,23 @@ public enum DType: Hashable, Sendable {
         case .int8, .int16, .int32, .int64: true
         default: false
         }
+    }
+
+    public var size: Int {
+        mlx_dtype_size(cmlxDtype)
+    }
+}
+
+extension DType: Encodable {
+    public func encode(to encoder: any Encoder) throws {
+        try self.cmlxDtype.rawValue.encode(to: encoder)
+    }
+}
+
+extension DType: Decodable {
+    public init(from decoder: any Decoder) throws {
+        let rawValue = try UInt32(from: decoder)
+        self.init(mlx_dtype(rawValue: rawValue))
     }
 }
 

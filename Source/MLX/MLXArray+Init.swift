@@ -11,6 +11,13 @@ private func shapePrecondition(shape: [Int]?, count: Int) {
     }
 }
 
+private func shapePrecondition(shape: [Int]?, byteCount: Int, type: DType) {
+    if let shape {
+        let total = shape.reduce(1, *) * type.size
+        precondition(total == byteCount, "shape \(shape) total \(total)B != \(byteCount)B (actual)")
+    }
+}
+
 extension MLXArray {
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
@@ -436,6 +443,25 @@ extension MLXArray {
             })
     }
 
+    /// Initalizer allowing creation of `MLXArray` from a `Data`  buffer values with
+    /// an optional shape and an explicit DType.
+    /// ### See Also
+    /// - <doc:initialization>
+    public convenience init(_ data: Data, _ shape: [Int]? = nil, dtype: DType) {
+        self.init(
+            data.withUnsafeBytes { ptr in
+                shapePrecondition(shape: shape, byteCount: data.count, type: dtype)
+                precondition(data.count % dtype.size == 0)
+                let shape = shape ?? [data.count / dtype.size]
+                return mlx_array_new_data(
+                    ptr.baseAddress!, shape.asInt32, shape.count.int32, dtype.cmlxDtype)
+            })
+    }
+
+    public convenience init(data: MLXArrayData) {
+        self.init(data.data, data.shape, dtype: data.dType)
+    }
+
     /// Create a ``DType/complex64`` scalar.
     /// - Parameters:
     ///   - real: real part
@@ -448,6 +474,7 @@ extension MLXArray {
     public convenience init(_ value: Complex<Float>) {
         self.init(real: value.real, imaginary: value.imaginary)
     }
+
 }
 
 // MARK: - Expressible by literals
