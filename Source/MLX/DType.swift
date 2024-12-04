@@ -107,7 +107,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
     }
 
     public var size: Int {
-        mlx_array_dtype_size(cmlxDtype)
+        mlx_dtype_size(cmlxDtype)
     }
 }
 
@@ -120,7 +120,7 @@ extension DType: Encodable {
 extension DType: Decodable {
     public init(from decoder: any Decoder) throws {
         let rawValue = try UInt32(from: decoder)
-        self.init(mlx_array_dtype(rawValue: rawValue))
+        self.init(mlx_dtype(rawValue: rawValue))
     }
 }
 

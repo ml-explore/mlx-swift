@@ -453,7 +453,7 @@ extension MLXArray {
                 shapePrecondition(shape: shape, byteCount: data.count, type: dtype)
                 precondition(data.count % dtype.size == 0)
                 let shape = shape ?? [data.count / dtype.size]
-                return mlx_array_from_data(
+                return mlx_array_new_data(
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, dtype.cmlxDtype)
             })
     }
