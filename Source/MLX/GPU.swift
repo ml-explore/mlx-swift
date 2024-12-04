@@ -133,7 +133,9 @@ public enum GPU {
     /// Note, this will not always match memory use reported by the system because
     /// it does not include cached memory buffers.
     public static var activeMemory: Int {
-        mlx_metal_get_active_memory()
+        var result: size_t = 0
+        mlx_metal_get_active_memory(&result)
+        return result
     }
 
     /// Get the cache size in bytes.
@@ -141,7 +143,9 @@ public enum GPU {
     /// The cache includes memory not currently used that has not been returned
     /// to the system allocator.
     public static var cacheMemory: Int {
-        mlx_metal_get_cache_memory()
+        var result: size_t = 0
+        mlx_metal_get_cache_memory(&result)
+        return result
     }
 
     /// Get the peak amount of active memory in bytes.
@@ -149,7 +153,9 @@ public enum GPU {
     /// The maximum memory used is recorded from the beginning of the program
     /// execution.
     public static var peakMemory: Int {
-        mlx_metal_get_peak_memory()
+        var result: size_t = 0
+        mlx_metal_get_peak_memory(&result)
+        return result
     }
 
     /// Return a snapshot of memory stats -- see ``Snapshot`` for more details.
@@ -180,8 +186,9 @@ public enum GPU {
 
             // set it to a reasonable value in order to read it, then set it back
             // to current
-            let current = mlx_metal_set_cache_limit(cacheMemory)
-            mlx_metal_set_cache_limit(current)
+            var current: size_t = 0
+            mlx_metal_set_cache_limit(&current, cacheMemory)
+            mlx_metal_set_cache_limit(&current, current)
             _cacheLimit = current
             return current
         }
@@ -199,7 +206,8 @@ public enum GPU {
     public static func set(cacheLimit: Int) {
         queue.sync {
             _cacheLimit = cacheLimit
-            mlx_metal_set_cache_limit(cacheLimit)
+            var current: size_t = 0
+            mlx_metal_set_cache_limit(&current, cacheLimit)
         }
     }
 
@@ -217,8 +225,10 @@ public enum GPU {
                 return memoryLimit
             }
 
-            let current = mlx_metal_set_memory_limit(activeMemory, _relaxedMemoryLimit)
-            mlx_metal_set_memory_limit(current, _relaxedMemoryLimit)
+            var current: size_t = 0
+            var discard: size_t = 0
+            mlx_metal_set_memory_limit(&current, activeMemory, _relaxedMemoryLimit)
+            mlx_metal_set_memory_limit(&discard, current, _relaxedMemoryLimit)
             return current
         }
     }
@@ -236,7 +246,8 @@ public enum GPU {
         queue.sync {
             _relaxedMemoryLimit = relaxed
             _memoryLimit = memoryLimit
-            mlx_metal_set_memory_limit(memoryLimit, relaxed)
+            var current: size_t = 0
+            mlx_metal_set_memory_limit(&current, memoryLimit, relaxed)
         }
     }
 
@@ -257,9 +268,7 @@ public enum GPU {
     /// See [the documentation](https://ml-explore.github.io/mlx/build/html/dev/metal_debugger.html)
     /// for more information.
     public static func startCapture(url: URL) {
-        let path = mlx_string_new(url.path().cString(using: .utf8))!
-        defer { mlx_free(path) }
-        mlx_metal_start_capture(path)
+        mlx_metal_start_capture(url.path().cString(using: .utf8))
     }
 
     /// Stop the metal capture.

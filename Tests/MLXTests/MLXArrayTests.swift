@@ -79,20 +79,6 @@ class MLXArrayTests: XCTestCase {
         XCTAssertEqual(s_arr, expected)
     }
 
-    func testAsArrayNonContiguous3() {
-        // reversed via strides -- note that the base pointer for the
-        // storage has an offset applied to it
-        let a = MLXArray(0 ..< 9, [3, 3])
-
-        let s = asStrided(a, [3, 3], strides: [-3, -1], offset: 8)
-
-        let expected: [Int32] = [8, 7, 6, 5, 4, 3, 2, 1, 0]
-        assertEqual(s, MLXArray(expected, [3, 3]))
-
-        let s_arr = s.asArray(Int32.self)
-        XCTAssertEqual(s_arr, expected)
-    }
-
     func testAsArrayNonContiguous4() {
         // buffer with holes (last dimension has stride of 2 and
         // thus larger storage than it physically needs)

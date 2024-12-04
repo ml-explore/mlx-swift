@@ -2,7 +2,7 @@
 //
 // Metal/MTLComputePipeline.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 #include <Foundation/Foundation.hpp>
 
+#include "MTLPipeline.hpp"
 #include "MTLTypes.hpp"
 
 namespace MTL
@@ -88,6 +89,9 @@ public:
 
     NS::UInteger                            maxCallStackDepth() const;
     void                                    setMaxCallStackDepth(NS::UInteger maxCallStackDepth);
+
+    MTL::ShaderValidation                   shaderValidation() const;
+    void                                    setShaderValidation(MTL::ShaderValidation shaderValidation);
 };
 
 class ComputePipelineState : public NS::Referencing<ComputePipelineState>
@@ -116,6 +120,8 @@ public:
     class VisibleFunctionTable*      newVisibleFunctionTable(const class VisibleFunctionTableDescriptor* descriptor);
 
     class IntersectionFunctionTable* newIntersectionFunctionTable(const class IntersectionFunctionTableDescriptor* descriptor);
+
+    MTL::ShaderValidation            shaderValidation() const;
 };
 
 }
@@ -300,6 +306,17 @@ _MTL_INLINE void MTL::ComputePipelineDescriptor::setMaxCallStackDepth(NS::UInteg
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMaxCallStackDepth_), maxCallStackDepth);
 }
 
+// property: shaderValidation
+_MTL_INLINE MTL::ShaderValidation MTL::ComputePipelineDescriptor::shaderValidation() const
+{
+    return Object::sendMessage<MTL::ShaderValidation>(this, _MTL_PRIVATE_SEL(shaderValidation));
+}
+
+_MTL_INLINE void MTL::ComputePipelineDescriptor::setShaderValidation(MTL::ShaderValidation shaderValidation)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setShaderValidation_), shaderValidation);
+}
+
 // property: label
 _MTL_INLINE NS::String* MTL::ComputePipelineState::label() const
 {
@@ -370,4 +387,10 @@ _MTL_INLINE MTL::VisibleFunctionTable* MTL::ComputePipelineState::newVisibleFunc
 _MTL_INLINE MTL::IntersectionFunctionTable* MTL::ComputePipelineState::newIntersectionFunctionTable(const MTL::IntersectionFunctionTableDescriptor* descriptor)
 {
     return Object::sendMessage<MTL::IntersectionFunctionTable*>(this, _MTL_PRIVATE_SEL(newIntersectionFunctionTableWithDescriptor_), descriptor);
+}
+
+// property: shaderValidation
+_MTL_INLINE MTL::ShaderValidation MTL::ComputePipelineState::shaderValidation() const
+{
+    return Object::sendMessage<MTL::ShaderValidation>(this, _MTL_PRIVATE_SEL(shaderValidation));
 }

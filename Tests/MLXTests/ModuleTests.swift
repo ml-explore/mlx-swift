@@ -698,4 +698,30 @@ class ModuleTests: XCTestCase {
             XCTFail("should be a .value(array)")
         }
     }
+
+    func testUpdateModulesNil() {
+        // test where a tuple is updated with a nil value, e.g. when
+        // a triple with two Linear modules is quantized, the third value
+        // will be nil but is not nullable.  The code should copy forward
+        // the previous value (no mutation)
+
+        class PatchMerger: Module {
+            @ModuleInfo var mlp: (Linear, GELU, Linear)
+
+            override init() {
+                mlp = (
+                    Linear(128, 128),
+                    GELU(),
+                    Linear(128, 128)
+                )
+            }
+        }
+
+        let pm = PatchMerger()
+
+        quantize(model: pm, groupSize: 64, bits: 8)
+
+        XCTAssertTrue(pm.mlp.0 is QuantizedLinear)
+        XCTAssertTrue(pm.mlp.2 is QuantizedLinear)
+    }
 }

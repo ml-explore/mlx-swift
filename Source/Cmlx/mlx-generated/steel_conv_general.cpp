@@ -315,8 +315,8 @@ implicit_gemm_conv_2d_general(
   }
   threadgroup_barrier(mem_flags::mem_none);
   {
-    int offset_m = c_row + mma_op.sm + mma_op.tm;
-    int offset_n = c_col + mma_op.sn + mma_op.tn;
+    int offset_m = c_row + mma_op.sm;
+    int offset_n = c_col + mma_op.sn;
     C += offset_n;
     if (offset_n >= gemm_params->N)
       return;
@@ -335,14 +335,14 @@ implicit_gemm_conv_2d_general(
             oh * params->out_strides[1] + ow * params->out_strides[2];
 #pragma clang loop unroll(full)
         for (int j = 0; j < mma_t::TN; j++) {
-          thread const auto& accum =
-              mma_op.results[i * mma_t::TN + j].thread_elements();
+          thread const auto& accum = mma_op.Ctile.frag_at(i, j);
           int offset = offset_cm + (j * mma_t::TN_stride);
-          if (j * mma_t::TN_stride < diff) {
-            C[offset] = Epilogue::apply(accum[0]);
-          }
-          if (j * mma_t::TN_stride + 1 < diff) {
-            C[offset + 1] = Epilogue::apply(accum[1]);
+          constexpr short kelems = decltype(mma_op.Ctile)::kElemsPerFrag;
+#pragma clang loop unroll(full)
+          for (short k = 0; k < kelems; k++) {
+            if ((j * mma_t::TN_stride + k) < diff) {
+              C[offset + k] = Epilogue::apply(accum[k]);
+            }
           }
         }
       }

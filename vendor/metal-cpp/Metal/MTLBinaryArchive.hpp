@@ -2,7 +2,7 @@
 //
 // Metal/MTLBinaryArchive.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,6 +60,10 @@ public:
     bool          addRenderPipelineFunctions(const class RenderPipelineDescriptor* descriptor, NS::Error** error);
 
     bool          addTileRenderPipelineFunctions(const class TileRenderPipelineDescriptor* descriptor, NS::Error** error);
+
+    bool          addMeshRenderPipelineFunctions(const class MeshRenderPipelineDescriptor* descriptor, NS::Error** error);
+
+    bool          addLibrary(const class StitchedLibraryDescriptor* descriptor, NS::Error** error);
 
     bool          serializeToURL(const NS::URL* url, NS::Error** error);
 
@@ -124,6 +128,18 @@ _MTL_INLINE bool MTL::BinaryArchive::addRenderPipelineFunctions(const MTL::Rende
 _MTL_INLINE bool MTL::BinaryArchive::addTileRenderPipelineFunctions(const MTL::TileRenderPipelineDescriptor* descriptor, NS::Error** error)
 {
     return Object::sendMessage<bool>(this, _MTL_PRIVATE_SEL(addTileRenderPipelineFunctionsWithDescriptor_error_), descriptor, error);
+}
+
+// method: addMeshRenderPipelineFunctionsWithDescriptor:error:
+_MTL_INLINE bool MTL::BinaryArchive::addMeshRenderPipelineFunctions(const MTL::MeshRenderPipelineDescriptor* descriptor, NS::Error** error)
+{
+    return Object::sendMessage<bool>(this, _MTL_PRIVATE_SEL(addMeshRenderPipelineFunctionsWithDescriptor_error_), descriptor, error);
+}
+
+// method: addLibraryWithDescriptor:error:
+_MTL_INLINE bool MTL::BinaryArchive::addLibrary(const MTL::StitchedLibraryDescriptor* descriptor, NS::Error** error)
+{
+    return Object::sendMessage<bool>(this, _MTL_PRIVATE_SEL(addLibraryWithDescriptor_error_), descriptor, error);
 }
 
 // method: serializeToURL:error:

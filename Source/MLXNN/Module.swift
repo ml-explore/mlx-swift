@@ -429,7 +429,7 @@ open class Module {
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:)``
     @discardableResult
-    public func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
+    open func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
             if case .none = value {
@@ -499,7 +499,7 @@ open class Module {
     ///   - filter: filter for parameters to apply to
     ///   - map: function to apply to the matched parameters
     @discardableResult
-    public func apply(
+    open func apply(
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
     ) -> Self {
@@ -558,7 +558,7 @@ open class Module {
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
     @discardableResult
-    public func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
+    open func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
             if case .none = value {
@@ -587,10 +587,29 @@ open class Module {
                 case .value:
                     // update array
                     var newModules = [Module]()
-                    for item in values {
-                        switch item {
+                    for (index, value) in values.enumerated() {
+                        switch value {
                         case .value(let module):
                             newModules.append(module)
+
+                        case .none:
+                            // e.g. this is updating @ModuleInfo var mlp: (Linear, GELU, Linear)
+                            if index < items.count {
+                                switch items[index] {
+                                case .value(.module(let m)):
+                                    // if possible just copy forward the original item
+                                    newModules.append(m)
+                                default:
+                                    // otherwise we don't know how to update it
+                                    throw UpdateError.unableToCollectModulesFromContainer(
+                                        base: describeType(self), key: key)
+                                }
+                            } else {
+                                // past the end of items
+                                throw UpdateError.unableToCollectModulesFromContainer(
+                                    base: describeType(self), key: key)
+                            }
+
                         default:
                             throw UpdateError.unableToCollectModulesFromContainer(
                                 base: describeType(self), key: key)
@@ -669,7 +688,7 @@ open class Module {
                 try setter.updateModule(value)
             } catch {
                 throw UpdateError.needModuleInfo(
-                    "Unable to set modules for \(describeType(self)).\(key) -- maybe type mismatch: \(describeType(value)))"
+                    "Unable to set modules for \(describeType(self)).\(key) -- maybe type mismatch: \(describeType(value)), \(error)"
                 )
             }
         } else {
@@ -1393,8 +1412,27 @@ private protocol TypeErasedSetterProvider {
         func updateModule(_ value: Any) throws {
             if let value = value as? T {
                 info.module = value
+            } else if let value = value as? [Module] {
+                // try to recast as a tuple, e.g.
+                // @ModuleInfo var mlp: (Linear, GELU, Linear)
+
+                if value.count == 2, let values = (value[0], value[1]) as? T {
+                    info.module = values
+                } else if value.count == 3, let values = (value[0], value[1], value[2]) as? T {
+                    info.module = values
+                } else if value.count == 4,
+                    let values = (value[0], value[1], value[2], value[3]) as? T
+                {
+                    info.module = values
+                } else if value.count == 5,
+                    let values = (value[0], value[1], value[2], value[4], value[5]) as? T
+                {
+                    info.module = values
+                } else {
+                    throw UpdateError.unableToCast(String(describing: T.self))
+                }
             } else {
-                throw UpdateError.unableToCast
+                throw UpdateError.unableToCast(String(describing: T.self))
             }
         }
     }
@@ -1411,7 +1449,7 @@ enum UpdateError: Error {
     case keyNotFound(base: String, key: String)
     case needModuleInfo(String)
     case unableToSet(String)
-    case unableToCast
+    case unableToCast(String)
     case unhandledKeys(base: String, keys: [String])
 }
 

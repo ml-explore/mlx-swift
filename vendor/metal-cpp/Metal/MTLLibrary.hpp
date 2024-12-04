@@ -2,7 +2,7 @@
 //
 // Metal/MTLLibrary.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -147,6 +147,7 @@ _MTL_ENUM(NS::UInteger, LanguageVersion) {
     LanguageVersion2_4 = 131076,
     LanguageVersion3_0 = 196608,
     LanguageVersion3_1 = 196609,
+    LanguageVersion3_2 = 196610,
 };
 
 _MTL_ENUM(NS::Integer, LibraryType) {
@@ -164,45 +165,65 @@ _MTL_ENUM(NS::Integer, CompileSymbolVisibility) {
     CompileSymbolVisibilityHidden = 1,
 };
 
+_MTL_ENUM(NS::Integer, MathMode) {
+    MathModeSafe = 0,
+    MathModeRelaxed = 1,
+    MathModeFast = 2,
+};
+
+_MTL_ENUM(NS::Integer, MathFloatingPointFunctions) {
+    MathFloatingPointFunctionsFast = 0,
+    MathFloatingPointFunctionsPrecise = 1,
+};
+
 class CompileOptions : public NS::Copying<CompileOptions>
 {
 public:
-    static class CompileOptions*  alloc();
+    static class CompileOptions*    alloc();
 
-    class CompileOptions*         init();
+    class CompileOptions*           init();
 
-    NS::Dictionary*               preprocessorMacros() const;
-    void                          setPreprocessorMacros(const NS::Dictionary* preprocessorMacros);
+    NS::Dictionary*                 preprocessorMacros() const;
+    void                            setPreprocessorMacros(const NS::Dictionary* preprocessorMacros);
 
-    bool                          fastMathEnabled() const;
-    void                          setFastMathEnabled(bool fastMathEnabled);
+    bool                            fastMathEnabled() const;
+    void                            setFastMathEnabled(bool fastMathEnabled);
 
-    MTL::LanguageVersion          languageVersion() const;
-    void                          setLanguageVersion(MTL::LanguageVersion languageVersion);
+    MTL::MathMode                   mathMode() const;
+    void                            setMathMode(MTL::MathMode mathMode);
 
-    MTL::LibraryType              libraryType() const;
-    void                          setLibraryType(MTL::LibraryType libraryType);
+    MTL::MathFloatingPointFunctions mathFloatingPointFunctions() const;
+    void                            setMathFloatingPointFunctions(MTL::MathFloatingPointFunctions mathFloatingPointFunctions);
 
-    NS::String*                   installName() const;
-    void                          setInstallName(const NS::String* installName);
+    MTL::LanguageVersion            languageVersion() const;
+    void                            setLanguageVersion(MTL::LanguageVersion languageVersion);
 
-    NS::Array*                    libraries() const;
-    void                          setLibraries(const NS::Array* libraries);
+    MTL::LibraryType                libraryType() const;
+    void                            setLibraryType(MTL::LibraryType libraryType);
 
-    bool                          preserveInvariance() const;
-    void                          setPreserveInvariance(bool preserveInvariance);
+    NS::String*                     installName() const;
+    void                            setInstallName(const NS::String* installName);
 
-    MTL::LibraryOptimizationLevel optimizationLevel() const;
-    void                          setOptimizationLevel(MTL::LibraryOptimizationLevel optimizationLevel);
+    NS::Array*                      libraries() const;
+    void                            setLibraries(const NS::Array* libraries);
 
-    MTL::CompileSymbolVisibility  compileSymbolVisibility() const;
-    void                          setCompileSymbolVisibility(MTL::CompileSymbolVisibility compileSymbolVisibility);
+    bool                            preserveInvariance() const;
+    void                            setPreserveInvariance(bool preserveInvariance);
 
-    bool                          allowReferencingUndefinedSymbols() const;
-    void                          setAllowReferencingUndefinedSymbols(bool allowReferencingUndefinedSymbols);
+    MTL::LibraryOptimizationLevel   optimizationLevel() const;
+    void                            setOptimizationLevel(MTL::LibraryOptimizationLevel optimizationLevel);
 
-    NS::UInteger                  maxTotalThreadsPerThreadgroup() const;
-    void                          setMaxTotalThreadsPerThreadgroup(NS::UInteger maxTotalThreadsPerThreadgroup);
+    MTL::CompileSymbolVisibility    compileSymbolVisibility() const;
+    void                            setCompileSymbolVisibility(MTL::CompileSymbolVisibility compileSymbolVisibility);
+
+    bool                            allowReferencingUndefinedSymbols() const;
+    void                            setAllowReferencingUndefinedSymbols(bool allowReferencingUndefinedSymbols);
+
+    NS::UInteger                    maxTotalThreadsPerThreadgroup() const;
+    void                            setMaxTotalThreadsPerThreadgroup(NS::UInteger maxTotalThreadsPerThreadgroup);
+
+    bool                            enableLogging() const;
+    void                            setEnableLogging(bool enableLogging);
 };
 
 _MTL_ENUM(NS::UInteger, LibraryError) {
@@ -494,6 +515,28 @@ _MTL_INLINE void MTL::CompileOptions::setFastMathEnabled(bool fastMathEnabled)
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setFastMathEnabled_), fastMathEnabled);
 }
 
+// property: mathMode
+_MTL_INLINE MTL::MathMode MTL::CompileOptions::mathMode() const
+{
+    return Object::sendMessage<MTL::MathMode>(this, _MTL_PRIVATE_SEL(mathMode));
+}
+
+_MTL_INLINE void MTL::CompileOptions::setMathMode(MTL::MathMode mathMode)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMathMode_), mathMode);
+}
+
+// property: mathFloatingPointFunctions
+_MTL_INLINE MTL::MathFloatingPointFunctions MTL::CompileOptions::mathFloatingPointFunctions() const
+{
+    return Object::sendMessage<MTL::MathFloatingPointFunctions>(this, _MTL_PRIVATE_SEL(mathFloatingPointFunctions));
+}
+
+_MTL_INLINE void MTL::CompileOptions::setMathFloatingPointFunctions(MTL::MathFloatingPointFunctions mathFloatingPointFunctions)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMathFloatingPointFunctions_), mathFloatingPointFunctions);
+}
+
 // property: languageVersion
 _MTL_INLINE MTL::LanguageVersion MTL::CompileOptions::languageVersion() const
 {
@@ -591,6 +634,17 @@ _MTL_INLINE NS::UInteger MTL::CompileOptions::maxTotalThreadsPerThreadgroup() co
 _MTL_INLINE void MTL::CompileOptions::setMaxTotalThreadsPerThreadgroup(NS::UInteger maxTotalThreadsPerThreadgroup)
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMaxTotalThreadsPerThreadgroup_), maxTotalThreadsPerThreadgroup);
+}
+
+// property: enableLogging
+_MTL_INLINE bool MTL::CompileOptions::enableLogging() const
+{
+    return Object::sendMessage<bool>(this, _MTL_PRIVATE_SEL(enableLogging));
+}
+
+_MTL_INLINE void MTL::CompileOptions::setEnableLogging(bool enableLogging)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setEnableLogging_), enableLogging);
 }
 
 _MTL_INLINE void MTL::Library::newFunction(const NS::String* pFunctionName, const FunctionConstantValues* pConstantValues, const std::function<void(Function* pFunction, NS::Error* pError)>& completionHandler)

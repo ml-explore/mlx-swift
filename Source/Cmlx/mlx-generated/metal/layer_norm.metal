@@ -3,8 +3,6 @@
 #include <metal_common>
 #include <metal_simdgroup>
 
-#include "bf16.h"
-#include "defines.h"
 #include "utils.h"
 
 using namespace metal;

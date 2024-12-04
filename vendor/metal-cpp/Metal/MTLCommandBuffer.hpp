@@ -2,7 +2,7 @@
 //
 // Metal/MTLCommandBuffer.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,6 +80,9 @@ public:
 
     MTL::CommandBufferErrorOption         errorOptions() const;
     void                                  setErrorOptions(MTL::CommandBufferErrorOption errorOptions);
+
+    class LogState*                       logState() const;
+    void                                  setLogState(const class LogState* logState);
 };
 
 class CommandBufferEncoderInfo : public NS::Referencing<CommandBufferEncoderInfo>
@@ -182,6 +185,10 @@ public:
     void                                       pushDebugGroup(const NS::String* string);
 
     void                                       popDebugGroup();
+
+    void                                       useResidencySet(const class ResidencySet* residencySet);
+
+    void                                       useResidencySets(const class ResidencySet* const residencySets[], NS::UInteger count);
 };
 
 }
@@ -218,6 +225,17 @@ _MTL_INLINE MTL::CommandBufferErrorOption MTL::CommandBufferDescriptor::errorOpt
 _MTL_INLINE void MTL::CommandBufferDescriptor::setErrorOptions(MTL::CommandBufferErrorOption errorOptions)
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setErrorOptions_), errorOptions);
+}
+
+// property: logState
+_MTL_INLINE MTL::LogState* MTL::CommandBufferDescriptor::logState() const
+{
+    return Object::sendMessage<MTL::LogState*>(this, _MTL_PRIVATE_SEL(logState));
+}
+
+_MTL_INLINE void MTL::CommandBufferDescriptor::setLogState(const MTL::LogState* logState)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setLogState_), logState);
 }
 
 // property: label
@@ -471,4 +489,16 @@ _MTL_INLINE void MTL::CommandBuffer::pushDebugGroup(const NS::String* string)
 _MTL_INLINE void MTL::CommandBuffer::popDebugGroup()
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(popDebugGroup));
+}
+
+// method: useResidencySet:
+_MTL_INLINE void MTL::CommandBuffer::useResidencySet(const MTL::ResidencySet* residencySet)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(useResidencySet_), residencySet);
+}
+
+// method: useResidencySets:count:
+_MTL_INLINE void MTL::CommandBuffer::useResidencySets(const MTL::ResidencySet* const residencySets[], NS::UInteger count)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(useResidencySets_count_), residencySets, count);
 }

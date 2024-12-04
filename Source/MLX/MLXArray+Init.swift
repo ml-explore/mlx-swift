@@ -29,7 +29,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     public convenience init(_ value: Int32) {
-        self.init(mlx_array_from_int(value))
+        self.init(mlx_array_new_int(value))
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
@@ -50,7 +50,7 @@ extension MLXArray {
             (Int(Int32.min) ... Int(Int32.max)).contains(value),
             "\(value) is out of range for Int32 -- please use MLXArray(int64: Int) if you need 64 bits."
         )
-        self.init(mlx_array_from_int(Int32(value)))
+        self.init(mlx_array_new_int(Int32(value)))
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
@@ -67,7 +67,7 @@ extension MLXArray {
     public convenience init(int64 value: Int) {
         self.init(
             withUnsafePointer(to: value) { ptr in
-                mlx_array_from_data(ptr, [], 0, Int.dtype.cmlxDtype)
+                mlx_array_new_data(ptr, [], 0, Int.dtype.cmlxDtype)
             })
     }
 
@@ -80,7 +80,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     public convenience init(_ value: Bool) {
-        self.init(mlx_array_from_bool(value))
+        self.init(mlx_array_new_bool(value))
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Float`.
@@ -92,7 +92,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     public convenience init(_ value: Float) {
-        self.init(mlx_array_from_float(value))
+        self.init(mlx_array_new_float(value))
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value.
@@ -106,7 +106,7 @@ extension MLXArray {
     public convenience init<T: HasDType>(_ value: T) {
         self.init(
             withUnsafePointer(to: value) { ptr in
-                mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
+                mlx_array_new_data(ptr, [], 0, T.dtype.cmlxDtype)
             })
     }
 
@@ -121,9 +121,10 @@ extension MLXArray {
     /// - <doc:initialization>
     public convenience init(bfloat16 value: Float32) {
         let stream = StreamOrDevice.default
-        let v_mlx = mlx_array_from_float(Float32(value))!
-        defer { mlx_free(v_mlx) }
-        let v_bfloat = mlx_astype(v_mlx, DType.bfloat16.cmlxDtype, stream.ctx)!
+        let v_mlx = mlx_array_new_float(Float32(value))
+        defer { mlx_array_free(v_mlx) }
+        var v_bfloat = mlx_array_new()
+        mlx_astype(&v_bfloat, v_mlx, DType.bfloat16.cmlxDtype, stream.ctx)
         self.init(v_bfloat)
     }
 
@@ -150,7 +151,7 @@ extension MLXArray {
             default:
                 self.init(
                     withUnsafePointer(to: value) { ptr in
-                        mlx_array_from_data(ptr, [], 0, T.dtype.cmlxDtype)
+                        mlx_array_new_data(ptr, [], 0, T.dtype.cmlxDtype)
                     })
             }
         } else {
@@ -248,7 +249,7 @@ extension MLXArray {
         self.init(
             value.withUnsafeBufferPointer { ptr in
                 let shape = shape ?? [value.count]
-                return mlx_array_from_data(
+                return mlx_array_new_data(
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
             })
     }
@@ -278,7 +279,7 @@ extension MLXArray {
                 .map { Int32($0) }
                 .withUnsafeBufferPointer { ptr in
                     let shape = shape ?? [value.count]
-                    return mlx_array_from_data(
+                    return mlx_array_new_data(
                         ptr.baseAddress!, shape.asInt32, shape.count.int32, Int32.dtype.cmlxDtype)
                 })
     }
@@ -301,7 +302,7 @@ extension MLXArray {
             value
                 .withUnsafeBufferPointer { ptr in
                     let shape = shape ?? [value.count]
-                    return mlx_array_from_data(
+                    return mlx_array_new_data(
                         ptr.baseAddress!, shape.asInt32, shape.count.int32, Int.dtype.cmlxDtype)
                 })
     }
@@ -323,7 +324,7 @@ extension MLXArray {
         self.init(
             floats.withUnsafeBufferPointer { ptr in
                 let shape = shape ?? [floats.count]
-                return mlx_array_from_data(
+                return mlx_array_new_data(
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, Float.dtype.cmlxDtype)
             })
     }
@@ -379,7 +380,7 @@ extension MLXArray {
         self.init(
             value.withUnsafeBufferPointer { ptr in
                 let shape = shape ?? [value.count]
-                return mlx_array_from_data(
+                return mlx_array_new_data(
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, Int.dtype.cmlxDtype)
             })
     }
@@ -400,7 +401,7 @@ extension MLXArray {
         shapePrecondition(shape: shape, count: ptr.count)
         let shape = shape ?? [ptr.count]
         self.init(
-            mlx_array_from_data(
+            mlx_array_new_data(
                 ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype))
     }
 
@@ -437,7 +438,7 @@ extension MLXArray {
                 let buffer = ptr.assumingMemoryBound(to: type)
                 shapePrecondition(shape: shape, count: buffer.count)
                 let shape = shape ?? [buffer.count]
-                return mlx_array_from_data(
+                return mlx_array_new_data(
                     ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype)
             })
     }
@@ -466,7 +467,7 @@ extension MLXArray {
     ///   - real: real part
     ///   - imaginary: imaginary part
     public convenience init(real: Float, imaginary: Float) {
-        self.init(mlx_array_from_data([real, imaginary], [], 0, DType.complex64.cmlxDtype))
+        self.init(mlx_array_new_data([real, imaginary], [], 0, DType.complex64.cmlxDtype))
     }
 
     /// Create a ``DType/complex64`` scalar from `Complex<Float>`.
@@ -505,8 +506,8 @@ extension MLXArray: ExpressibleByArrayLiteral {
     public convenience init(arrayLiteral elements: Int32...) {
         let ctx = elements.withUnsafeBufferPointer { ptr in
             let shape = [Int32(elements.count)]
-            return mlx_array_from_data(
-                ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)!
+            return mlx_array_new_data(
+                ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)
         }
         self.init(ctx)
     }

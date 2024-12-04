@@ -39,7 +39,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
     case bfloat16
     case complex64
 
-    init(_ cmlxDtype: mlx_array_dtype) {
+    init(_ cmlxDtype: mlx_dtype) {
         switch cmlxDtype {
         case MLX_BOOL: self = .bool
         case MLX_UINT8: self = .uint8
@@ -59,7 +59,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
         }
     }
 
-    public var cmlxDtype: mlx_array_dtype {
+    public var cmlxDtype: mlx_dtype {
         switch self {
         case .bool: MLX_BOOL
         case .uint8: MLX_UINT8

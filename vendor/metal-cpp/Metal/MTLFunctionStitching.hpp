@@ -2,7 +2,7 @@
 //
 // Metal/MTLFunctionStitching.hpp
 //
-// Copyright 2020-2023 Apple Inc.
+// Copyright 2020-2024 Apple Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,6 +30,12 @@
 
 namespace MTL
 {
+_MTL_OPTIONS(NS::UInteger, StitchedLibraryOptions) {
+    StitchedLibraryOptionNone = 0,
+    StitchedLibraryOptionFailOnBinaryArchiveMiss = 1,
+    StitchedLibraryOptionStoreLibraryInMetalScript = 2,
+};
+
 class FunctionStitchingAttribute : public NS::Referencing<FunctionStitchingAttribute>
 {
 public:
@@ -114,6 +120,12 @@ public:
 
     NS::Array*                              functions() const;
     void                                    setFunctions(const NS::Array* functions);
+
+    NS::Array*                              binaryArchives() const;
+    void                                    setBinaryArchives(const NS::Array* binaryArchives);
+
+    MTL::StitchedLibraryOptions             options() const;
+    void                                    setOptions(MTL::StitchedLibraryOptions options);
 };
 
 }
@@ -304,4 +316,26 @@ _MTL_INLINE NS::Array* MTL::StitchedLibraryDescriptor::functions() const
 _MTL_INLINE void MTL::StitchedLibraryDescriptor::setFunctions(const NS::Array* functions)
 {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setFunctions_), functions);
+}
+
+// property: binaryArchives
+_MTL_INLINE NS::Array* MTL::StitchedLibraryDescriptor::binaryArchives() const
+{
+    return Object::sendMessage<NS::Array*>(this, _MTL_PRIVATE_SEL(binaryArchives));
+}
+
+_MTL_INLINE void MTL::StitchedLibraryDescriptor::setBinaryArchives(const NS::Array* binaryArchives)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setBinaryArchives_), binaryArchives);
+}
+
+// property: options
+_MTL_INLINE MTL::StitchedLibraryOptions MTL::StitchedLibraryDescriptor::options() const
+{
+    return Object::sendMessage<MTL::StitchedLibraryOptions>(this, _MTL_PRIVATE_SEL(options));
+}
+
+_MTL_INLINE void MTL::StitchedLibraryDescriptor::setOptions(MTL::StitchedLibraryOptions options)
+{
+    Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setOptions_), options);
 }
