@@ -70,4 +70,30 @@ class MLXFastKernelTests: XCTestCase {
         XCTAssertTrue(allClose(out[0], full([2, 2], values: 14.0484)).all().item())
         XCTAssertTrue(allClose(out[1], full([3, 2], values: -2)).all().item())
     }
+
+    func testFastSDPA() {
+        // https://github.com/ml-explore/mlx-swift/issues/172
+        // this will just make sure the MLXFast.scaled_dot_product_attention is
+        // callable in the various cases, based on
+        // https://github.com/ml-explore/mlx/blob/main/python/tests/test_fast_sdpa.py#L65-L87
+
+        let Dk = 64
+        let scale = 1.0 / sqrt(Float(Dk))
+        let dTypes = [DType.float32, DType.float16]
+        for SEQUENCE_LENGTH in [63, 129, 400] {
+            for dtype in dTypes {
+                let B = 2
+                let H = 24
+                let q = MLXRandom.normal([B, H, SEQUENCE_LENGTH, Dk]).asType(dtype)
+                let k = MLXRandom.normal([B, H, SEQUENCE_LENGTH, Dk]).asType(dtype)
+                let v = MLXRandom.normal([B, H, SEQUENCE_LENGTH, Dk]).asType(dtype)
+
+                let result = MLXFast.scaledDotProductAttention(
+                    queries: q, keys: k, values: v, scale: scale, mask: nil,
+                    memoryEfficientThreshold: 2)
+
+                eval(result)
+            }
+        }
+    }
 }
