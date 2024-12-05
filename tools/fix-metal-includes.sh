@@ -23,11 +23,12 @@ KERNEL_LIST=" \
 arg_reduce.metal \
 conv.metal \
 gemv.metal \
+layer_norm.metal \
 random.metal \
 rms_norm.metal \
-layer_norm.metal \
 rope.metal \
-scaled_dot_product_attention.metal"
+scaled_dot_product_attention.metal \
+steel/attn/kernels/steel_attention.metal"
 
 # We fixup all the header files AND the listed kernel files
 HEADERS=$(find "${KERNELS_DIR}" -name "*.h")
