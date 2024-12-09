@@ -557,7 +557,7 @@ class ModuleTests: XCTestCase {
             guard let error = error as? UpdateError,
                 case let .keyNotFound(base: base, key: key) = error
             else {
-                XCTFail("Expected to fail with UpdateError.mismatchedSize, but got: \(error)")
+                XCTFail("Expected to fail with UpdateError.keyNotFound, but got: \(error)")
                 return
             }
             XCTAssertEqual(key, "bias")
