@@ -456,6 +456,11 @@ open class Module {
                 for (i, (arrayItem, valueItem)) in zip(array, values).enumerated() {
                     try apply(key: "\(key).\(i)", arrayItem, valueItem)
                 }
+                if verify.contains(.allModelKeysSet) {
+                    for i in values.count ..< array.count {
+                        try apply(key: "\(key).\(i)", array[i], .none)
+                    }
+                }
 
             case (.array(let array), .none):
                 for (i, arrayItem) in array.enumerated() {
