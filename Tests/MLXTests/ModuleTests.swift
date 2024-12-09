@@ -518,6 +518,52 @@ class ModuleTests: XCTestCase {
         }
     }
 
+    func testLinearUpdateParametersAllSet() throws {
+        class M: Module {
+            let a: Linear
+            let b: Linear
+
+            override init() {
+                self.a = Linear(1, 2)
+                self.b = Linear(3, 4)
+            }
+        }
+        let m = M()
+        let weightsA = MLXArray(0 ..< 2).reshaped([2, 1])
+        let weightsB = MLXArray(0 ..< 12).reshaped([4, 3])
+        let biasA = MLXArray(0 ..< 2)
+        let biasB = MLXArray(0 ..< 4)
+
+        try m.update(
+            parameters: .init(
+                item: .dictionary([
+                    "a": .dictionary(["weight": .value(weightsA), "bias": .value(biasA)]),
+                    "b": .dictionary(["weight": .value(weightsB), "bias": .value(biasB)]),
+                ])),
+            verify: .all)
+        let wA = m.a.weight.asArray(Int.self)
+        XCTAssertEqual(wA, [0, 1])
+        let wB = m.b.weight.asArray(Int.self)
+        XCTAssertEqual(wB, Array(0 ..< 12))
+        XCTAssertThrowsError(
+            try m.update(
+                parameters: .init(
+                    item: .dictionary([
+                        "a": .dictionary(["weight": .value(weightsA)]),
+                        "b": .dictionary(["weight": .value(weightsB)]),
+                    ])),
+                verify: .all)
+        ) { error in
+            guard let error = error as? UpdateError,
+                case let .keyNotFound(base: base, key: key) = error
+            else {
+                XCTFail("Expected to fail with UpdateError.mismatchedSize, but got: \(error)")
+                return
+            }
+            XCTAssertEqual(key, "bias")
+        }
+    }
+
     func testLinearUpdateParametersVerifyAll() throws {
         let linear = Linear(1, 2, bias: false)
 
