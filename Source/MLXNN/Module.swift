@@ -382,7 +382,7 @@ open class Module {
         /// are used -- there are no names that don't match.
         static public let noUnusedKeys = VerifyUpdate(rawValue: 1 << 0)
 
-        // TODO: add a load_weights style strict -- verify that all keys on the model are specified
+        static public let allModelKeysSet = VerifyUpdate(rawValue: 1 << 1)
 
         static public let all = VerifyUpdate(rawValue: -1)
         static public let none = VerifyUpdate([])
@@ -432,7 +432,7 @@ open class Module {
     open func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
-            if case .none = value {
+            if case .none = value, !verify.contains(.allModelKeysSet) {
                 return
             }
 
@@ -449,20 +449,46 @@ open class Module {
                 }
                 p.update(newArray)
 
+            case (.value(.parameters(let p)), .none):
+                throw UpdateError.keyNotFound(base: describeType(self), key: key)
+
             case (.array(let array), .array(let values)):
                 for (i, (arrayItem, valueItem)) in zip(array, values).enumerated() {
                     try apply(key: "\(key).\(i)", arrayItem, valueItem)
                 }
+                if verify.contains(.allModelKeysSet) {
+                    for i in values.count ..< array.count {
+                        try apply(key: "\(key).\(i)", array[i], .none)
+                    }
+                }
+
+            case (.array(let array), .none):
+                for (i, arrayItem) in array.enumerated() {
+                    try apply(key: "\(key).\(i)", arrayItem, .none)
+                }
 
             case (.dictionary(let dictionary), .dictionary(let values)):
-                for (valueKey, valueItem) in values {
-                    if let dictionaryItem = dictionary[key] {
-                        try apply(key: "\(key).\(valueKey)", dictionaryItem, valueItem)
+                for (dictionaryKey, dictionaryItem) in dictionary {
+                    if let valueItem = values[key] {
+                        try apply(key: "\(key).\(dictionaryKey)", dictionaryItem, valueItem)
+                    } else if verify.contains(.allModelKeysSet) {
+                        try apply(key: "\(key).\(dictionaryKey)", dictionaryItem, .none)
                     }
+                }
+
+            case (.dictionary(let dictionary), .none):
+                for (dictionaryKey, dictionaryItem) in dictionary {
+                    try apply(key: "\(key).\(dictionaryKey)", dictionaryItem, .none)
                 }
 
             case (.value(.module(let module)), .dictionary(let values)):
                 try module.update(parameters: NestedDictionary(values: values), verify: verify)
+
+            case (.value(.module(let module)), .none):
+                try module.update(parameters: NestedDictionary(), verify: verify)
+
+            case (.none, .none), (.value(.none), .none), (.value(.other(_)), .none):
+                break
 
             default:
                 fatalError("Unable to set \(key) on \(self): \(item) not compatible with \(value)")
@@ -474,6 +500,8 @@ open class Module {
             if let value = parameters[key] {
                 processed.remove(key)
                 try apply(key: key, item, value)
+            } else if verify.contains(.allModelKeysSet) {
+                try apply(key: key, item, .none)
             }
         }
 
