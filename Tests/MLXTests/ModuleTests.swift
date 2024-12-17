@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXRandom
 import XCTest
 
 @testable import MLXNN
@@ -630,6 +631,26 @@ class ModuleTests: XCTestCase {
         quantize(model: m)
 
         XCTAssertTrue(m.module.child is QuantizedLinear)
+        XCTAssertTrue(m.module.child.shape == (256, 256))
+    }
+
+    func testAlreadyQuantized() throws {
+        // should not quantize an already quantize layer -- that would be silly
+        class C: Module {
+            @ModuleInfo
+            var child: Linear = QuantizedLinear(256, 256)
+
+            var other = Sigmoid()
+        }
+        class M: Module {
+            let module = C()
+        }
+
+        let m = M()
+        quantize(model: m)
+
+        XCTAssertTrue(m.module.child is QuantizedLinear)
+        XCTAssertTrue(m.module.child.shape == (256, 256))
     }
 
     func testQuantizePredicate() throws {
@@ -769,5 +790,98 @@ class ModuleTests: XCTestCase {
 
         XCTAssertTrue(pm.mlp.0 is QuantizedLinear)
         XCTAssertTrue(pm.mlp.2 is QuantizedLinear)
+    }
+
+    func testCompositeLayer() throws {
+        // a test of making a LoRA layer as a composite -- it adapts
+        // another layer but mixes their properties.  this is not
+        // necessarily the way to implement LoRA (you can also use subclasses
+        // like Linear/QuantizedLinear) but this verifies that it can
+        // be written this way.
+
+        class LoRA: Module, UnaryLayer {
+
+            let adapts: UnaryLayer
+            let scale: Float
+
+            @ParameterInfo(key: "lora_a") var loraA: MLXArray
+            @ParameterInfo(key: "lora_b") var loraB: MLXArray
+
+            public init(
+                adapts: UnaryLayer, inputDimensions: Int, outputDimensions: Int, rank: Int = 8,
+                scale: Float = 20.0
+            ) {
+                self.adapts = adapts
+
+                self.scale = scale
+
+                let loraScale = 1 / sqrt(Float(inputDimensions))
+                self._loraA.wrappedValue = MLXRandom.uniform(
+                    low: -loraScale, high: loraScale, [inputDimensions, rank])
+                self._loraB.wrappedValue = MLXArray.zeros([rank, outputDimensions])
+
+                super.init()
+
+                freeze()
+            }
+
+            public convenience init(linear: Linear, rank: Int = 8, scale: Float = 20.0) {
+                let (outputDimensions, inputDimensions) = linear.shape
+                self.init(
+                    adapts: linear,
+                    inputDimensions: inputDimensions, outputDimensions: outputDimensions,
+                    rank: rank, scale: scale)
+            }
+
+            // produce a merged view of properties (flatten LoRA into adapts)
+            override func items() -> ModuleItems {
+                var result = adapts.items()
+                for (key, value) in super.items() {
+                    if key == "adapts" { continue }
+                    result[key] = value
+                }
+                return result
+            }
+
+            // forward module updates -> adapt
+            override func updateModule(key: String, _ value: Any) throws {
+                try adapts.updateModule(key: key, value)
+            }
+
+            override func modules() -> [Module] {
+                adapts.modules()
+            }
+
+            override func freeze(
+                recursive: Bool = true, keys: [String]? = nil, strict: Bool = false
+            ) throws {
+                try adapts.freeze(recursive: recursive, keys: keys, strict: strict)
+            }
+
+            override func noGrad() -> Set<String> {
+                adapts.noGrad()
+            }
+
+            public func callAsFunction(_ x: MLXArray) -> MLXArray {
+                let y = adapts(x)
+                let z = matmul(matmul(x, self.loraA), self.loraB)
+                return y + scale * z
+            }
+        }
+
+        let linear = Linear(10, 20)
+        let lora = LoRA(linear: linear)
+
+        let linearProperties = linear.parameters()
+        let loraProperties = lora.parameters()
+
+        XCTAssertEqual(linearProperties.count, 2)
+        XCTAssertEqual(loraProperties.count, 4)
+
+        try lora.update(parameters: loraProperties.mapValues { $0 + 1 }, verify: .all)
+
+        let trainable = lora.trainableParameters()
+        XCTAssertEqual(trainable.count, 2)
+        XCTAssertTrue(trainable["lora_a"] != nil)
     }
 }
