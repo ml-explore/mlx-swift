@@ -230,3 +230,5 @@ operations as methods for convenience.
 - ``einsum(_:_:stream:)``
 - ``hadamardTransform(_:scale:stream:)``
 - ``view(_:dtype:stream:)``
+- ``setErrorHandler(_:data:dtor:)``
+- ``fatalErrorHandler``
