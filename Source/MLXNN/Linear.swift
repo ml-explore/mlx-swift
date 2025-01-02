@@ -73,7 +73,7 @@ open class Linear: Module, UnaryLayer, Quantizable {
     public let weight: MLXArray
     public let bias: MLXArray?
 
-    public var shape: (Int, Int) {
+    open var shape: (Int, Int) {
         weight.shape2
     }
 
