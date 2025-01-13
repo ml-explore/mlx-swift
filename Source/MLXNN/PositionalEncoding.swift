@@ -70,7 +70,7 @@ open class SinusoidalPositionalEncoding: Module, UnaryLayer {
     ///   - dimensions: dimensionality of the resulting positional embeddings
     ///   - minFrequency: minimum frequency expected
     ///   - maxFrequency: maximum frequency expected
-    ///   - scale: multiplicative scale for the embeddings.  Default is `sqrt(dimensions / 2)`
+    ///   - scale: multiplicative scale for the embeddings.  Default is `sqrt(2 / dimensions)`
     ///   - cosineFirst: if `true` embed using `[cos(x), sin(x)]` instead of the reverse
     ///   - fullTurns: if `true` multiply the frequencies with `2 * pi`
     public init(
