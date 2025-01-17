@@ -16,8 +16,8 @@ open class Conv1d: Module, UnaryLayer {
     public let bias: MLXArray?
     public let padding: Int
     public let dilation: Int
-    public let groups: Int
     public let stride: Int
+    public let groups: Int
 
     /// Applies a 1-dimensional convolution over the multi-channel input sequence.
     ///
@@ -53,8 +53,8 @@ open class Conv1d: Module, UnaryLayer {
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding
         self.dilation = dilation
-        self.groups = groups
         self.stride = stride
+        self.groups = groups
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
@@ -80,6 +80,7 @@ open class Conv2d: Module, UnaryLayer {
     public let padding: (Int, Int)
     public let dilation: (Int, Int)
     public let stride: (Int, Int)
+    public let groups: Int
 
     /// Applies a 2-dimensional convolution over the multi-channel input image.
     ///
@@ -97,6 +98,7 @@ open class Conv2d: Module, UnaryLayer {
     ///   - stride: stride when applying the filter
     ///   - padding: how many positions to 0-pad the input with
     ///   - dilation: dilation of the convolution
+    ///   - groups: the number of groups for the convolution
     ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
@@ -105,6 +107,7 @@ open class Conv2d: Module, UnaryLayer {
         stride: IntOrPair = 1,
         padding: IntOrPair = 0,
         dilation: IntOrPair = 1,
+        groups: Int = 1,
         bias: Bool = true
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize.first * kernelSize.second))
@@ -116,11 +119,13 @@ open class Conv2d: Module, UnaryLayer {
         self.padding = padding.values
         self.dilation = dilation.values
         self.stride = stride.values
+        self.groups = groups
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var y = conv2d(
-            x, weight, stride: .init(stride), padding: .init(padding), dilation: .init(dilation))
+            x, weight, stride: .init(stride), padding: .init(padding), dilation: .init(dilation),
+            groups: groups)
         if let bias {
             y = y + bias
         }
@@ -141,6 +146,7 @@ open class Conv3d: Module, UnaryLayer {
     public let padding: (Int, Int, Int)
     public let dilation: (Int, Int, Int)
     public let stride: (Int, Int, Int)
+    public let groups: Int
 
     /// Applies a 3-dimensional convolution over the multi-channel input image.
     ///
@@ -159,6 +165,7 @@ open class Conv3d: Module, UnaryLayer {
     ///   - stride: stride when applying the filter
     ///   - padding: how many positions to 0-pad the input with
     ///   - dilation: dilation of the convolution
+    ///   - groups: the number of groups for the convolution
     ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
@@ -167,6 +174,7 @@ open class Conv3d: Module, UnaryLayer {
         stride: IntOrTriple = 1,
         padding: IntOrTriple = 0,
         dilation: IntOrTriple = 1,
+        groups: Int = 1,
         bias: Bool = true
     ) {
         let scale = sqrt(
@@ -179,11 +187,13 @@ open class Conv3d: Module, UnaryLayer {
         self.padding = padding.values
         self.dilation = dilation.values
         self.stride = stride.values
+        self.groups = groups
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var y = conv3d(
-            x, weight, stride: .init(stride), padding: .init(padding), dilation: .init(dilation))
+            x, weight, stride: .init(stride), padding: .init(padding), dilation: .init(dilation),
+            groups: groups)
         if let bias {
             y = y + bias
         }
