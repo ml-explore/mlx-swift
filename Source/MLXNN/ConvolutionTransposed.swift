@@ -15,7 +15,9 @@ open class ConvTransposed1d: Module, UnaryLayer {
     public let weight: MLXArray
     public let bias: MLXArray?
     public let padding: Int
+    public let dilation: Int
     public let stride: Int
+    public let groups: Int
 
     /// Applies a 1-dimensional transposed convolution over the multi-channel input sequence.
     ///
@@ -31,6 +33,8 @@ open class ConvTransposed1d: Module, UnaryLayer {
     ///   - kernelSize: size of the convolution filters
     ///   - stride: stride when applying the filter
     ///   - padding: how many positions to 0-pad the input with
+    ///   - dilation: dilation of the convolution
+    ///   - groups: the number of groups for the convolution
     ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
@@ -38,6 +42,8 @@ open class ConvTransposed1d: Module, UnaryLayer {
         kernelSize: Int,
         stride: Int = 1,
         padding: Int = 0,
+        dilation: Int = 1,
+        groups: Int = 1,
         bias: Bool = true
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize))
@@ -46,11 +52,14 @@ open class ConvTransposed1d: Module, UnaryLayer {
             low: -scale, high: scale, [outputChannels, kernelSize, inputChannels])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding
+        self.dilation = dilation
+        self.groups = groups
         self.stride = stride
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var y = convTransposed1d(x, weight, stride: stride, padding: padding)
+        var y = convTransposed1d(
+            x, weight, stride: stride, padding: padding, dilation: dilation, groups: groups)
         if let bias {
             y = y + bias
         }
@@ -69,7 +78,9 @@ open class ConvTransposed2d: Module, UnaryLayer {
     public let weight: MLXArray
     public let bias: MLXArray?
     public let padding: (Int, Int)
+    public let dilation: (Int, Int)
     public let stride: (Int, Int)
+    public let groups: Int
 
     /// Applies a 2-dimensional transposed convolution over the multi-channel input image.
     ///
@@ -86,6 +97,8 @@ open class ConvTransposed2d: Module, UnaryLayer {
     ///   - kernelSize: size of the convolution filters
     ///   - stride: stride when applying the filter
     ///   - padding: how many positions to 0-pad the input with
+    ///   - dilation: dilation of the convolution
+    ///   - groups: the number of groups for the convolution
     ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
@@ -93,6 +106,8 @@ open class ConvTransposed2d: Module, UnaryLayer {
         kernelSize: IntOrPair,
         stride: IntOrPair = 1,
         padding: IntOrPair = 0,
+        dilation: IntOrPair = 1,
+        groups: Int = 1,
         bias: Bool = true
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize.first * kernelSize.second))
@@ -102,11 +117,15 @@ open class ConvTransposed2d: Module, UnaryLayer {
             [outputChannels, kernelSize.first, kernelSize.second, inputChannels])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding.values
+        self.dilation = dilation.values
         self.stride = stride.values
+        self.groups = groups
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var y = convTransposed2d(x, weight, stride: .init(stride), padding: .init(padding))
+        var y = convTransposed2d(
+            x, weight, stride: .init(stride), padding: .init(padding), dilation: .init(dilation),
+            groups: groups)
         if let bias {
             y = y + bias
         }
@@ -125,7 +144,9 @@ open class ConvTransposed3d: Module, UnaryLayer {
     public let weight: MLXArray
     public let bias: MLXArray?
     public let padding: (Int, Int, Int)
+    public let dilation: (Int, Int, Int)
     public let stride: (Int, Int, Int)
+    public let groups: Int
 
     /// Applies a 3-dimensional transposed convolution over the multi-channel input image.
     ///
@@ -143,6 +164,8 @@ open class ConvTransposed3d: Module, UnaryLayer {
     ///   - kernelSize: size of the convolution filters
     ///   - stride: stride when applying the filter
     ///   - padding: how many positions to 0-pad the input with
+    ///   - dilation: dilation of the convolution
+    ///   - groups: the number of groups for the convolution
     ///   - bias: if `true` add a learnable bias to the output
     public init(
         inputChannels: Int,
@@ -150,6 +173,8 @@ open class ConvTransposed3d: Module, UnaryLayer {
         kernelSize: IntOrTriple,
         stride: IntOrTriple = 1,
         padding: IntOrTriple = 0,
+        dilation: IntOrTriple = 1,
+        groups: Int = 1,
         bias: Bool = true
     ) {
         let scale = sqrt(
@@ -160,11 +185,15 @@ open class ConvTransposed3d: Module, UnaryLayer {
             [outputChannels, kernelSize.first, kernelSize.second, kernelSize.third, inputChannels])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding.values
+        self.dilation = dilation.values
         self.stride = stride.values
+        self.groups = groups
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var y = convTransposed3d(x, weight, stride: .init(stride), padding: .init(padding))
+        var y = convTransposed3d(
+            x, weight, stride: .init(stride), padding: .init(padding), dilation: .init(dilation),
+            groups: groups)
         if let bias {
             y = y + bias
         }
