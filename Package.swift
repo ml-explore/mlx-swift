@@ -31,8 +31,14 @@ let package = Package(
         .target(
             name: "Cmlx",
             exclude: [
-                // exclude here -- it is part of the include directory (public api)
-                "mlx-c",
+                // vendor docs
+                "metal-cpp.patch",
+                "vendor-README.md",
+
+                // example code + mlx-c distributed
+                "mlx-c/examples",
+                "mlx-c/mlx/c/distributed.cpp",
+                "mlx-c/mlx/c/distributed_group.cpp",
 
                 // vendored library, include header only
                 "json",
@@ -98,12 +104,12 @@ let package = Package(
 
             cSettings: [
                 .headerSearchPath("mlx"),
-                .headerSearchPath("include/mlx-c"),
+                .headerSearchPath("mlx-c"),
             ],
 
             cxxSettings: [
                 .headerSearchPath("mlx"),
-                .headerSearchPath("include/mlx-c"),
+                .headerSearchPath("mlx-c"),
                 .headerSearchPath("metal-cpp"),
                 .headerSearchPath("json/single_include/nlohmann"),
                 .headerSearchPath("fmt/include"),
