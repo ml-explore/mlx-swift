@@ -10,6 +10,10 @@ then
     exit 1
 fi
 
+# copy mlx-c headers to build area
+rm -f Source/Cmlx/include/mlx/c/*
+cp Source/Cmlx/mlx-c/mlx/c/*.h Source/Cmlx/include/mlx/c
+
 # run the command to do the build-time code generation
 
 mkdir build
