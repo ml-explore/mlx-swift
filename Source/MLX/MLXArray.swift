@@ -518,6 +518,38 @@ public final class MLXArray {
         mlx_array_set(&new, self.ctx)
         return MLXArray(new)
     }
+
+    /// Used to apply update at given indices.
+    ///
+    /// An assignment through indices `array[indicies]` will produce
+    /// a result where each index will only be updated once.  For example:
+    ///
+    /// ```swift
+    /// // this references each index twice
+    /// let idx = MLXArray([0, 1, 0, 1])
+    ///
+    /// let a1 = MLXArray([0, 0])
+    /// a1[idx] += 1
+    /// assertEqual(a1, MLXArray([1, 1]))
+    ///
+    /// // this will update 0 and 1 twice
+    /// var a2 = MLXArray([0, 0])
+    /// a2 = a2.at[idx].add(1)
+    /// assertEqual(a2, MLXArray([2, 2]))
+    /// ```
+    ///
+    /// This is because the assignment through `array[indicies]` writes
+    /// a sub-array of `array` rather than performing the operation on each
+    /// resolved index.
+    ///
+    /// The `at` property produces an intermediate value that can take a subscript
+    /// `[]` and produce an ``ArrayAtIndices`` that has several methods to
+    /// update values.
+    ///
+    /// ### See Also
+    /// - ``subscript(indices:stream:)``
+    /// - ``ArrayAtIndices``
+    public var at: ArrayAt { ArrayAt(array: self) }
 }
 
 extension MLXArray: Updatable, Evaluatable {
