@@ -41,6 +41,8 @@ and ``MLXArray/shape`` of the dimensions without changing the number of elements
 - ``flattened(_:start:end:stream:)``
 - ``reshaped(_:_:stream:)-5x3y0``
 - ``squeezed(_:axes:stream:)``
+- ``roll(_:shift:axis:stream:)``
+- ``roll(_:shift:axes:stream:)``
 
 ### MLXArray Shape Methods (Change Size)
 
