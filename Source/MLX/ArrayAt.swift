@@ -3,10 +3,37 @@
 import Cmlx
 import Foundation
 
+/// Intermediate type for ``MLXArray/at``.
+///
+/// This type isn't typically used directly, rather it is the return value from the `at` property on MLXArray
+/// and provides the subscript.
+///
+/// ```swift
+/// let idx = MLXArray([0, 1, 0, 1])
+/// var a2 = MLXArray([0, 0])
+/// a2 = a2.at[idx].add(1)
+/// ```
+///
+/// ### See Also
+///     - ``MLXArray/at``
+///     - ``ArrayAtIndices``
 public struct ArrayAt {
 
     let array: MLXArray
 
+    /// Provide indices for the `at` property:
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([0, 0])
+    /// a2 = a2.at[idx].add(1)
+    /// ```
+    ///
+    /// This is specifically the `a2.at[idx]` part.
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
+    ///     - ``ArrayAtIndices``
     public subscript(indices: MLXArrayIndex..., stream stream: StreamOrDevice = .default)
         -> ArrayAtIndices
     {
@@ -18,6 +45,19 @@ public struct ArrayAt {
         }
     }
 
+    /// Provide indices for the `at` property:
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([0, 0])
+    /// a2 = a2.at[idx].add(1)
+    /// ```
+    ///
+    /// This is specifically the `a2.at[idx]` part.
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
+    ///     - ``ArrayAtIndices``
     public subscript(indices: [MLXArrayIndex], stream stream: StreamOrDevice = .default)
         -> ArrayAtIndices
     {
@@ -30,12 +70,35 @@ public struct ArrayAt {
     }
 }
 
+/// Intermediate type for ``MLXArray/at``.
+///
+/// This type allows update operations when using `array.at[indices]`, e.g.:
+///
+/// ```swift
+/// let idx = MLXArray([0, 1, 0, 1])
+/// var a2 = MLXArray([0, 0])
+/// a2 = a2.at[idx].add(1)
+/// ```
+///
+/// ### See Also
+///     - ``MLXArray/at``
+///     - ``ArrayAt``
 public struct ArrayAtIndices {
 
     let array: MLXArray
     let indexOperations: [MLXArrayIndexOperation]
     let stream: StreamOrDevice
 
+    /// Add values via `at[]` operator.
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([0, 0])
+    /// a2 = a2.at[idx].add(1)
+    /// ```
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
     public func add(_ values: ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
@@ -55,10 +118,30 @@ public struct ArrayAtIndices {
         }
     }
 
+    /// Subtract values via `at[]` operator.
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([0, 0])
+    /// a2 = a2.at[idx].subtract(1)
+    /// ```
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
     public func subtract(_ values: ScalarOrArray) -> MLXArray {
         add(-values.asMLXArray(dtype: array.dtype))
     }
 
+    /// Multiply values via `at[]` operator.
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([1, 1])
+    /// a2 = a2.at[idx].multiply(2)
+    /// ```
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
     public func multiply(_ values: ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
@@ -78,10 +161,30 @@ public struct ArrayAtIndices {
         }
     }
 
+    /// Divide values via `at[]` operator.
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([1, 1])
+    /// a2 = a2.at[idx].divide(2)
+    /// ```
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
     public func divide(_ values: ScalarOrArray) -> MLXArray {
-        multiply(1 / values.asMLXArray(dtype: array.dtype))
+        multiply(values.asMLXArray(dtype: array.dtype).reciprocal())
     }
 
+    /// Update to minimum values via `at[]` operator.
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([1, 1])
+    /// a2 = a2.at[idx].minimum(2)
+    /// ```
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
     public func minimum(_ values: ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
@@ -101,6 +204,16 @@ public struct ArrayAtIndices {
         }
     }
 
+    /// Update to maximum values via `at[]` operator.
+    ///
+    /// ```swift
+    /// let idx = MLXArray([0, 1, 0, 1])
+    /// var a2 = MLXArray([1, 1])
+    /// a2 = a2.at[idx].maximum(2)
+    /// ```
+    ///
+    /// ### See Also
+    ///     - ``MLXArray/at``
     public func maximum(_ values: ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
