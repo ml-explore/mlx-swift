@@ -2201,6 +2201,54 @@ public func remainder<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(result)
 }
 
+/// Roll array elements along a given axis.
+///
+/// Elements that are rolled beyond the end of the array are introduced at the beggining and vice-versa.
+///
+/// - Parameters:
+///   - a: input array
+///   - shift: The number of places by which elements
+///     are shifted. If positive the array is rolled to the right, if
+///     negative it is rolled to the left.
+///   - axis: the axis along which to roll the elements
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:shapes>
+public func roll(_ a: MLXArray, shift: Int, axis: Int, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    var result = mlx_array_new()
+    mlx_roll(&result, a.ctx, shift.int32, [axis.int32], 1, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Roll array elements along a given axis.
+///
+/// Elements that are rolled beyond the end of the array are introduced at the beggining and vice-versa.
+///
+/// - Parameters:
+///   - a: input array
+///   - shift: The number of places by which elements
+///     are shifted. If positive the array is rolled to the right, if
+///     negative it is rolled to the left.
+///   - axes: the axes along which to roll the elements, or all if omitted
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:shapes>
+public func roll(_ a: MLXArray, shift: Int, axes: [Int]? = nil, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    var result = mlx_array_new()
+    if let axes {
+        mlx_roll(&result, a.ctx, shift.int32, axes.asInt32, axes.count, stream.ctx)
+    } else {
+        mlx_roll_all(&result, a.ctx, shift.int32, stream.ctx)
+    }
+    return MLXArray(result)
+}
+
 /// Save array to a binary file in `.npy`format.
 ///
 /// - Parameters:
