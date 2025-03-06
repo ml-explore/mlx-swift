@@ -54,6 +54,10 @@ bool mlx_stream_equal(mlx_stream lhs, mlx_stream rhs);
  */
 int mlx_stream_get_device(mlx_device* dev, mlx_stream stream);
 /**
+ * Return the index of the stream.
+ */
+int mlx_stream_get_index(int* index, mlx_stream stream);
+/**
  * Synchronize with the provided stream.
  */
 int mlx_synchronize(mlx_stream stream);

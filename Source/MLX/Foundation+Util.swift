@@ -10,6 +10,13 @@ extension Array where Element == Int {
     var asInt32: [Int32] {
         self.map { Int32($0) }
     }
+
+    /// Convenience to coerce array of `Int` to `Int32` -- Cmlx uses `Int32` for many things but it is
+    /// more natural to use `Int` in Swift.
+    @inlinable
+    var asInt64: [Int64] {
+        self.map { Int64($0) }
+    }
 }
 
 extension Sequence where Element == Int {
@@ -20,6 +27,11 @@ extension Sequence where Element == Int {
     var asInt32: [Int32] {
         self.map { Int32($0) }
     }
+
+    @inlinable
+    var asInt64: [Int64] {
+        self.map { Int64($0) }
+    }
 }
 
 extension Int {
@@ -28,4 +40,7 @@ extension Int {
     /// more natural to use `Int` in Swift.
     @inlinable
     var int32: Int32 { Int32(self) }
+
+    @inlinable
+    var int64: Int64 { Int64(self) }
 }
