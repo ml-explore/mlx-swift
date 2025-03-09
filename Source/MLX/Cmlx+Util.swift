@@ -5,7 +5,9 @@ import Foundation
 
 // return a +1 mlx_vector_array containing the given arrays
 func new_mlx_vector_array(_ arrays: [MLXArray]) -> mlx_vector_array {
-    mlx_vector_array_new_data(arrays.map { $0.ctx }, arrays.count)
+    return withExtendedLifetime(arrays) {
+        mlx_vector_array_new_data(arrays.map { $0.ctx }, arrays.count)
+    }
 }
 
 func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
