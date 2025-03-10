@@ -884,7 +884,7 @@ class ModuleTests: XCTestCase {
         XCTAssertEqual(trainable.count, 2)
         XCTAssertTrue(trainable["lora_a"] != nil)
     }
-  
+
     func testModulesWithMLXArrayProperties() throws {
         // https://github.com/ml-explore/mlx-swift-examples/issues/218
 
