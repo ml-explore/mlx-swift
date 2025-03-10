@@ -98,12 +98,13 @@ open class Module {
 
     /// Flag to indicate whether the module is being trained.  Manipulated via
     /// ``train(_:)``.
+    ///
+    /// ### See Also
+    /// - ``didSetTrain(_:)``
     public private(set) var training = true
 
-    /// Set of property names that are frozen.  Maniupulated via
-    /// ``freeze(recursive:keys:strict:)`` and
-    /// ``unfreeze(recursive:keys:strict:)``.
-    public private(set) var noGrad = Set<String>()
+    /// See ``noGrad()``
+    private var _noGrad = Set<String>()
 
     private var _items: ModuleItems!
     private var _setters: [String: TypeErasedSetter]!
@@ -139,7 +140,7 @@ open class Module {
     /// and ``update(parameters:)`` for example.
     ///
     /// Subclasses could potentially override this to provide custom introspection.
-    public func items() -> ModuleItems {
+    open func items() -> ModuleItems {
         _items
     }
 
@@ -222,7 +223,7 @@ open class Module {
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``modules()``
     /// - ``items()``
-    public func filterMap<Result>(
+    open func filterMap<Result>(
         filter: (Module, String, ModuleItem) -> Bool,
         map: (ModuleItem) -> Result? = { $0 },
         isLeaf: (Module, String, ModuleItem) -> Bool = Module.isLeafDefault
@@ -331,7 +332,7 @@ open class Module {
     /// ### See Also
     /// - <doc:module-filters>
     /// - ``mapParameters(map:)``
-    public func mapParameters<Result>(
+    open func mapParameters<Result>(
         map: @escaping (MLXArray) -> Result? = { $0 },
         isLeaf: (Module, String, ModuleItem) -> Bool = Module.isLeafDefault
     ) -> NestedDictionary<String, Result> {
@@ -343,7 +344,7 @@ open class Module {
 
     /// Return a `NestedDictionary<String, MLXArray>` for all parameters in the
     /// model (all layers).
-    public func parameters() -> ModuleParameters {
+    open func parameters() -> ModuleParameters {
         filterMap(filter: Self.filterValidParameters, map: Self.mapParameters())
     }
 
@@ -351,12 +352,12 @@ open class Module {
     /// model (all layers).
     ///
     /// This omits ``freeze(recursive:keys:strict:)`` (frozen) parameters.
-    public func trainableParameters() -> ModuleParameters {
+    open func trainableParameters() -> ModuleParameters {
         filterMap(filter: Self.filterTrainableParameters, map: Self.mapParameters())
     }
 
     /// Produces a `NestedDictionary<String, Module>` for all direct children of the module.
-    public func children() -> ModuleChildren {
+    open func children() -> ModuleChildren {
         filterMap(filter: Self.filterValidChild, map: Self.mapModule(), isLeaf: Self.isLeafModule)
     }
 
@@ -364,7 +365,7 @@ open class Module {
     ///
     /// ### See Also
     /// - ``isLeafModuleNoChildren``
-    public func leafModules() -> ModuleChildren {
+    open func leafModules() -> ModuleChildren {
         filterMap(
             filter: Self.filterValidChild, map: Self.mapModule(),
             isLeaf: Self.isLeafModuleNoChildren)
@@ -714,7 +715,23 @@ open class Module {
         return self
     }
 
-    private func updateModule(key: String, _ value: Any) throws {
+    /// Set a module to a new value.
+    ///
+    /// The module property must be wrapped in a ``ModuleInfo``:
+    ///
+    /// ```swift
+    /// @ModuleInfo(key: "input_layernorm") var inputLayerNorm: RMSNorm
+    /// ```
+    ///
+    /// and the value must be a compatible type.
+    ///
+    /// This method is called via ``update(modules:)`` and is not typically called directly.  This
+    /// is exposed as an overridable method for subclasses.
+    ///
+    /// - Parameters:
+    ///   - key: module key, see ``ModuleInfo``
+    ///   - value: the replacement module
+    open func updateModule(key: String, _ value: Any) throws {
         if let setter = _setters[key] {
             do {
                 try setter.updateModule(value)
@@ -731,7 +748,7 @@ open class Module {
     }
 
     // `apply_to_modules()`
-    public func visit(modules visitor: (String, Module) throws -> Void) rethrows {
+    open func visit(modules visitor: (String, Module) throws -> Void) rethrows {
         var stack = [(String, Module)]()
         stack.append(("", self))
 
@@ -750,7 +767,7 @@ open class Module {
     /// - ``namedModules()``
     /// - ``children()``
     /// - ``leafModules()``
-    public func modules() -> [Module] {
+    open func modules() -> [Module] {
         var result = [Module]()
         visit {
             result.append($1)
@@ -764,7 +781,7 @@ open class Module {
     /// - ``modules()``
     /// - ``children()``
     /// - ``leafModules()``
-    public func namedModules() -> [(String, Module)] {
+    open func namedModules() -> [(String, Module)] {
         var result = [(String, Module)]()
         visit {
             result.append(($0, $1))
@@ -826,7 +843,8 @@ open class Module {
     /// - ``unfreeze(recursive:keys:strict:)``
     open func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
         let visitor = freezeVisitor(keys: keys, strict: strict) {
-            $0.noGrad.formUnion($1)
+            $0._noGrad.formUnion($1)
+            $0.didSetNoGrad($0._noGrad)
         }
 
         if recursive {
@@ -863,7 +881,8 @@ open class Module {
     /// - ``Module/unfreeze(recursive:keys:strict:)``
     open func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
         let visitor = freezeVisitor(keys: keys, strict: strict) {
-            $0.noGrad.subtract($1)
+            $0._noGrad.subtract($1)
+            $0.didSetNoGrad($0._noGrad)
         }
 
         if recursive {
@@ -871,6 +890,24 @@ open class Module {
         } else {
             try visitor("", self)
         }
+    }
+
+    /// Set of property names that are frozen.  Maniupulated via
+    /// ``freeze(recursive:keys:strict:)`` and
+    /// ``unfreeze(recursive:keys:strict:)``.
+    open func noGrad() -> Set<String> {
+        _noGrad
+    }
+
+    /// Called when ``noGrad()`` is updated.
+    ///
+    /// This is provided for subclasses to override.
+    ///
+    /// - Parameter noGrad: set of properties that are frozen
+    ///
+    /// ### See Also
+    /// - ``noGrad()``
+    open func didSetNoGrad(_ noGrad: Set<String>) {
     }
 
     /// Recursively set the model's training mode.
@@ -881,10 +918,20 @@ open class Module {
     ///
     /// ### See Also
     /// - ``training``
+    /// - ``didSetTrain(_:)``
     public func train(_ mode: Bool = true) {
         visit(modules: {
             $1.training = mode
+            $1.didSetTrain(mode)
         })
+    }
+
+    /// Called when ``train(_:)`` is updated.
+    ///
+    /// This is provided for subclasses to override.
+    ///
+    /// - Parameter mode: `true` is training
+    open func didSetTrain(_ mode: Bool) {
     }
 }
 
@@ -926,7 +973,7 @@ extension Module: Updatable, Evaluatable {
 /// ### See Also
 /// - <doc:layers>
 /// - ``Sequential``
-public protocol UnaryLayer {
+public protocol UnaryLayer: Module {
     func callAsFunction(_ x: MLXArray) -> MLXArray
 }
 
@@ -1008,7 +1055,7 @@ extension Module {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .value(.parameters), .value(.module):
-            parameterIsValid(key) && !module.noGrad.contains(key)
+            parameterIsValid(key) && !module.noGrad().contains(key)
         default: false
         }
     }

@@ -11,9 +11,18 @@ public protocol Quantizable {
     func toQuantized(groupSize: Int, bits: Int) -> Module
 }
 
-public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Module? {
-    if let quantizable = layer as? Quantizable {
-        quantizable.toQuantized(groupSize: groupSize, bits: bits)
+/// Protocol for layers that are quantized.
+public protocol Quantized: Module {
+    var groupSize: Int { get }
+    var bits: Int { get }
+}
+
+public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Quantized? {
+    if layer is Quantized {
+        // already quantized
+        nil
+    } else if let quantizable = layer as? Quantizable {
+        quantizable.toQuantized(groupSize: groupSize, bits: bits) as? Quantized
     } else {
         nil
     }
@@ -52,7 +61,7 @@ public func quantize(
 }
 
 /// The same as ``Embedding`` but with a quantized weight matrix.
-open class QuantizedEmbedding: Embedding {
+open class QuantizedEmbedding: Embedding, Quantized {
 
     public let groupSize: Int
     public let bits: Int
@@ -121,13 +130,18 @@ open class QuantizedEmbedding: Embedding {
 ///
 /// ### See Also
 /// - ``init(weight:bias:groupSize:bits:)``
-open class QuantizedLinear: Linear {
+open class QuantizedLinear: Linear, Quantized {
 
     public let groupSize: Int
     public let bits: Int
 
     public let scales: MLXArray
     public let biases: MLXArray
+
+    open override var shape: (Int, Int) {
+        let shape = weight.shape2
+        return (shape.0, shape.1 * 32 / bits)
+    }
 
     /// Applies an affine transformation to the input using a quantized weight matrix.
     ///

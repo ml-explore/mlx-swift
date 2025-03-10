@@ -12,10 +12,10 @@ open class MultiHeadAttention: Module {
 
     public let numHeads: Int
 
-    @ModuleInfo(key: "query_proj") public var queryProjection: Linear
-    @ModuleInfo(key: "key_proj") public var keyProjection: Linear
-    @ModuleInfo(key: "value_proj") public var valueProjection: Linear
-    @ModuleInfo(key: "out_proj") public var outProjection: Linear
+    @ModuleInfo(key: "query_proj") public var queryProjection: UnaryLayer
+    @ModuleInfo(key: "key_proj") public var keyProjection: UnaryLayer
+    @ModuleInfo(key: "value_proj") public var valueProjection: UnaryLayer
+    @ModuleInfo(key: "out_proj") public var outProjection: UnaryLayer
 
     /// Implements the scaled dot product attention with multiple heads.
     ///
