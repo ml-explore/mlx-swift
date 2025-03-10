@@ -62,7 +62,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``add(_:_:stream:)``
-    public static func += (lhs: MLXArray, rhs: MLXArray) {
+    public static func += (lhs: inout MLXArray, rhs: MLXArray) {
         lhs.update(lhs + rhs)
     }
 
@@ -80,7 +80,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``MLXArray/+(_:_:)-1rv98``
-    public static func += <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+    public static func += <T: ScalarOrArray>(lhs: inout MLXArray, rhs: T) {
         lhs += rhs.asMLXArray(dtype: lhs.dtype)
     }
 
@@ -132,7 +132,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``subtract(_:_:stream:)``
-    public static func -= (lhs: MLXArray, rhs: MLXArray) {
+    public static func -= (lhs: inout MLXArray, rhs: MLXArray) {
         lhs.update(lhs - rhs)
     }
 
@@ -148,7 +148,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    public static func -= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+    public static func -= <T: ScalarOrArray>(lhs: inout MLXArray, rhs: T) {
         lhs -= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
@@ -223,7 +223,7 @@ extension MLXArray {
     /// - ``multiply(_:_:stream:)``
     /// - ``matmul(_:stream:)``
     /// - ``matmul(_:_:stream:)``
-    public static func *= (lhs: MLXArray, rhs: MLXArray) {
+    public static func *= (lhs: inout MLXArray, rhs: MLXArray) {
         lhs.update(lhs * rhs)
     }
 
@@ -241,7 +241,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``MLXArray/*(_:_:)-1z2ck``
-    public static func *= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+    public static func *= <T: ScalarOrArray>(lhs: inout MLXArray, rhs: T) {
         lhs *= rhs.asMLXArray(dtype: lhs.dtype)
     }
 
@@ -339,7 +339,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``divide(_:_:stream:)``
     /// - ``floorDivide(_:_:stream:)``
-    public static func /= (lhs: MLXArray, rhs: MLXArray) {
+    public static func /= (lhs: inout MLXArray, rhs: MLXArray) {
         lhs.update(lhs / rhs)
     }
 
@@ -355,7 +355,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    public static func /= <T: ScalarOrArray>(lhs: MLXArray, rhs: T) {
+    public static func /= <T: ScalarOrArray>(lhs: inout MLXArray, rhs: T) {
         lhs /= rhs.asMLXArray(dtype: lhs.dtype)
     }
 

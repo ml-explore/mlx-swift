@@ -884,4 +884,27 @@ class ModuleTests: XCTestCase {
         XCTAssertEqual(trainable.count, 2)
         XCTAssertTrue(trainable["lora_a"] != nil)
     }
+  
+    func testModulesWithMLXArrayProperties() throws {
+        // https://github.com/ml-explore/mlx-swift-examples/issues/218
+
+        class SuScaledRotaryEmbedding: Module {
+            let _freqs: MLXArray
+
+            override init() {
+                _freqs = MLXArray(7)
+            }
+        }
+
+        let rope = SuScaledRotaryEmbedding()
+
+        // no parameters
+        XCTAssertEqual(rope.parameters().count, 0)
+
+        // but it can see the _freqs property
+        XCTAssertEqual(rope.items().count, 1)
+
+        // this should not throw because _freqs is not considered
+        try rope.update(parameters: .init(), verify: .all)
+    }
 }

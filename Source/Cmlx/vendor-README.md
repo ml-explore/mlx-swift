@@ -2,10 +2,6 @@
 
 Local copies of code that cannot be pulled as part of the swiftpm build.
 
-## gguflib
-
-This is https://github.com/antirez/gguf-tools/ commit hash af7d88d808a7608a33723fba067036202910acb3
-
 ## json
 
 This is https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz

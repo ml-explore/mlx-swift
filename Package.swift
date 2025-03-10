@@ -31,14 +31,17 @@ let package = Package(
         .target(
             name: "Cmlx",
             exclude: [
-                // exclude here -- it is part of the include directory (public api)
-                "mlx-c",
+                // vendor docs
+                "metal-cpp.patch",
+                "vendor-README.md",
+
+                // example code + mlx-c distributed
+                "mlx-c/examples",
+                "mlx-c/mlx/c/distributed.cpp",
+                "mlx-c/mlx/c/distributed_group.cpp",
 
                 // vendored library, include header only
                 "json",
-
-                // vendored library, do not include driver
-                "gguf-tools/gguf-tools.c",
 
                 // vendored library
                 "fmt/test",
@@ -93,23 +96,18 @@ let package = Package(
                 "mlx/mlx/distributed/mpi",
                 "mlx/mlx/distributed/ops.cpp",
                 "mlx/mlx/distributed/primitives.cpp",
-
-                // the mlx-c side of distributed
-                "include/mlx/c/distributed.cpp",
-                "include/mlx/c/distributed_group.cpp",
             ],
 
             cSettings: [
                 .headerSearchPath("mlx"),
-                .headerSearchPath("include/mlx-c"),
+                .headerSearchPath("mlx-c"),
             ],
 
             cxxSettings: [
                 .headerSearchPath("mlx"),
-                .headerSearchPath("include/mlx-c"),
+                .headerSearchPath("mlx-c"),
                 .headerSearchPath("metal-cpp"),
                 .headerSearchPath("json/single_include/nlohmann"),
-                .headerSearchPath("gguf-tools"),
                 .headerSearchPath("fmt/include"),
 
                 .define("ACCELERATE_NEW_LAPACK"),

@@ -452,6 +452,7 @@ extension MLXArray {
     /// - ``MLXArrayIndex/ellipsis``
     /// - ``MLXArrayIndex/newAxis``
     /// - ``MLXArrayIndex/stride(from:to:by:)``
+    /// - ``MLXArray/at``
     public subscript(indices: MLXArrayIndex..., stream stream: StreamOrDevice = .default)
         -> MLXArray
     {
