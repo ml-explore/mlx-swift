@@ -450,7 +450,11 @@ open class Module {
                 p.update(newArray)
 
             case (.value(.parameters(let p)), .none):
-                throw UpdateError.keyNotFound(base: describeType(self), key: key)
+                if Self.parameterIsValid(key) {
+                    throw UpdateError.keyNotFound(base: describeType(self), key: key)
+                } else {
+                    // ignore it -- this isn't a parameter that requires update
+                }
 
             case (.array(let array), .array(let values)):
                 for (i, (arrayItem, valueItem)) in zip(array, values).enumerated() {
@@ -930,6 +934,14 @@ public protocol UnaryLayer {
 
 extension Module {
 
+    /// Return `true` if the given parameter name is valid -- should be considered for
+    /// validation, enumeration, etc.
+    ///
+    /// Specifically this will filter out parameters with keys starting with `_`.
+    static public func parameterIsValid(_ key: String) -> Bool {
+        !key.hasPrefix("_")
+    }
+
     /// Filter that will accept all values.
     ///
     /// ### See Also
@@ -962,8 +974,8 @@ extension Module {
     static public let filterValidParameters: @Sendable (Module, String, ModuleItem) -> Bool = {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
-        case .array, .dictionary: !key.hasPrefix("_")
-        case .value(.parameters), .value(.module): !key.hasPrefix("_")
+        case .array, .dictionary: parameterIsValid(key)
+        case .value(.parameters), .value(.module): parameterIsValid(key)
         default: false
         }
     }
@@ -978,8 +990,8 @@ extension Module {
     static public let filterLocalParameters: @Sendable (Module, String, ModuleItem) -> Bool = {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
-        case .array, .dictionary: !key.hasPrefix("_")
-        case .value(.parameters): !key.hasPrefix("_")
+        case .array, .dictionary: parameterIsValid(key)
+        case .value(.parameters): parameterIsValid(key)
         default: false
         }
     }
@@ -996,7 +1008,7 @@ extension Module {
         (module: Module, key: String, item: ModuleItem) in
         switch item {
         case .array, .dictionary, .value(.parameters), .value(.module):
-            !key.hasPrefix("_") && !module.noGrad.contains(key)
+            parameterIsValid(key) && !module.noGrad.contains(key)
         default: false
         }
     }
