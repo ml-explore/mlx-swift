@@ -5,8 +5,8 @@ const char* conv() {
 METAL_FUNC ulong2 elem_to_loc_broadcast(
     uint elem,
     constant const int* shape,
-    constant const size_t* a_strides,
-    constant const size_t* b_strides,
+    constant const int64_t* a_strides,
+    constant const int64_t* b_strides,
     int ndim) {
   ulong loc_a{0};
   ulong loc_b{0};
@@ -21,9 +21,9 @@ METAL_FUNC ulong2 elem_to_loc_broadcast(
 METAL_FUNC ulong3 elem_to_loc_broadcast(
     uint elem,
     constant const int* shape,
-    constant const size_t* a_strides,
-    constant const size_t* b_strides,
-    constant const size_t* c_strides,
+    constant const int64_t* a_strides,
+    constant const int64_t* b_strides,
+    constant const int64_t* c_strides,
     int ndim) {
   ulong loc_a{0};
   ulong loc_b{0};
@@ -50,9 +50,9 @@ struct MLXConvParams {
   const int pad[NDIM];
   const int kdil[NDIM];
   const int idil[NDIM];
-  const size_t in_strides[NDIM + 2];
-  const size_t wt_strides[NDIM + 2];
-  const size_t out_strides[NDIM + 2];
+  const int64_t in_strides[NDIM + 2];
+  const int64_t wt_strides[NDIM + 2];
+  const int64_t out_strides[NDIM + 2];
   const int groups;
   const bool flip;
 };

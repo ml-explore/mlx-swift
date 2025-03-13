@@ -53,6 +53,12 @@ int mlx_linalg_eigvalsh(
     const char* UPLO,
     const mlx_stream s);
 int mlx_linalg_inv(mlx_array* res, const mlx_array a, const mlx_stream s);
+int mlx_linalg_lu(mlx_vector_array* res, const mlx_array a, const mlx_stream s);
+int mlx_linalg_lu_factor(
+    mlx_array* res_0,
+    mlx_array* res_1,
+    const mlx_array a,
+    const mlx_stream s);
 int mlx_linalg_norm_p(
     mlx_array* res,
     const mlx_array a,
@@ -81,6 +87,17 @@ int mlx_linalg_qr(
     mlx_array* res_0,
     mlx_array* res_1,
     const mlx_array a,
+    const mlx_stream s);
+int mlx_linalg_solve(
+    mlx_array* res,
+    const mlx_array a,
+    const mlx_array b,
+    const mlx_stream s);
+int mlx_linalg_solve_triangular(
+    mlx_array* res,
+    const mlx_array a,
+    const mlx_array b,
+    bool upper,
     const mlx_stream s);
 int mlx_linalg_svd(
     mlx_vector_array* res,

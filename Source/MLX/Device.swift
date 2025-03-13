@@ -58,10 +58,12 @@ public final class Device: @unchecked Sendable, Equatable {
     static public let gpu: Device = Device(.gpu)
 
     public var deviceType: DeviceType? {
-        switch mlx_device_get_type(ctx) {
-        case MLX_CPU: .cpu
-        case MLX_GPU: .gpu
-        default: nil
+        var type: mlx_device_type = MLX_GPU
+        mlx_device_get_type(&type, ctx)
+        switch type {
+        case MLX_CPU: return .cpu
+        case MLX_GPU: return .gpu
+        default: return nil
         }
     }
 
@@ -108,7 +110,12 @@ public final class Device: @unchecked Sendable, Equatable {
 
     /// Compare two ``Device`` for equality -- this does not compare the index, just the device type.
     public static func == (lhs: Device, rhs: Device) -> Bool {
-        mlx_device_get_type(lhs.ctx) == mlx_device_get_type(rhs.ctx)
+        var lType: mlx_device_type = MLX_GPU
+        var rType: mlx_device_type = MLX_GPU
+        mlx_device_get_type(&lType, lhs.ctx)
+        mlx_device_get_type(&rType, rhs.ctx)
+
+        return lType == rType
     }
 }
 
