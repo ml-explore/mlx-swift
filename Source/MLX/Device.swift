@@ -61,9 +61,9 @@ public final class Device: @unchecked Sendable, Equatable {
         var cDeviceType = MLX_CPU
         mlx_device_get_type(&cDeviceType, ctx)
         return switch cDeviceType {
-            case MLX_CPU: DeviceType.cpu
-            case MLX_GPU: DeviceType.gpu
-            default: nil
+        case MLX_CPU: DeviceType.cpu
+        case MLX_GPU: DeviceType.gpu
+        default: nil
         }
     }
 

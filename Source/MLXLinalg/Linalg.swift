@@ -377,7 +377,9 @@ public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defaul
 ///   - b: input array.
 ///   - upper: Whether the array is upper or lower triangular
 ///   - stream: stream or device
-public func solveTriangular(_ a: MLXArray, _ b: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
+public func solveTriangular(
+    _ a: MLXArray, _ b: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     var result = mlx_array_new()

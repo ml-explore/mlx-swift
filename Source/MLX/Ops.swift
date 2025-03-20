@@ -375,7 +375,8 @@ public func asStrided(
     var result = mlx_array_new()
     mlx_as_strided(
         &result,
-        array.ctx, shape.asInt32, shape.count, resolvedStrides.asInt64, resolvedStrides.count, offset,
+        array.ctx, shape.asInt32, shape.count, resolvedStrides.asInt64, resolvedStrides.count,
+        offset,
         stream.ctx)
     return MLXArray(result)
 }
