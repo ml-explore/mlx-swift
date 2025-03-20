@@ -31,6 +31,7 @@ make \
     copy \
     fft \
     gather \
+    gather_axis \
     gemm \
     gemv_masked \
     hadamard \
@@ -39,6 +40,7 @@ make \
     reduce_utils \
     scan \
     scatter \
+    scatter_axis \
     softmax \
     sort \
     steel_conv \
@@ -52,15 +54,15 @@ make \
     unary_ops \
     utils
 
-cd ../common
+cd ../../..
 make cpu_compiled_preamble
 
-cd ../../../..
+cd ..
 
 rm -rf Source/Cmlx/mlx-generated/metal
 rm -f Source/Cmlx/mlx-generated/*
 cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
-cp build/mlx/backend/common/compiled_preamble.cpp Source/Cmlx/mlx-generated
+cp build/mlx/backend/cpu/compiled_preamble.cpp Source/Cmlx/mlx-generated
 
 # we don't need the cmake build directory any more
 rm -rf build

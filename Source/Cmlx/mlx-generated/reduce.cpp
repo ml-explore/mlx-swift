@@ -64,12 +64,12 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
     const device T* in [[buffer(0)]],
     device U* out [[buffer(1)]],
     const constant size_t& reduction_size [[buffer(2)]],
-    const constant size_t& reduction_stride [[buffer(3)]],
+    const constant int64_t& reduction_stride [[buffer(3)]],
     const constant int* shape [[buffer(4)]],
-    const constant size_t* strides [[buffer(5)]],
+    const constant int64_t* strides [[buffer(5)]],
     const constant int& ndim [[buffer(6)]],
     const constant int* reduce_shape [[buffer(7)]],
-    const constant size_t* reduce_strides [[buffer(8)]],
+    const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     const constant size_t& non_col_reductions [[buffer(10)]],
     uint3 gid [[threadgroup_position_in_grid]],
@@ -90,7 +90,7 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
   }
   bool safe = column + n_reads <= reduction_stride;
   IdxT out_idx = gid.y + gsize.y * IdxT(gid.z);
-  IdxT in_idx = elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim);
+  IdxT in_idx = elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
   in += in_idx + column;
   IdxT total_rows = IdxT(non_col_reductions) * IdxT(reduction_size);
   loop.next(lid.y, reduce_shape, reduce_strides);
@@ -151,10 +151,10 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
     const constant size_t& reduction_size [[buffer(2)]],
     const constant size_t& reduction_stride [[buffer(3)]],
     const constant int* shape [[buffer(4)]],
-    const constant size_t* strides [[buffer(5)]],
+    const constant int64_t* strides [[buffer(5)]],
     const constant int& ndim [[buffer(6)]],
     const constant int* reduce_shape [[buffer(7)]],
-    const constant size_t* reduce_strides [[buffer(8)]],
+    const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     const constant size_t& non_col_reductions [[buffer(10)]],
     const constant size_t& out_size [[buffer(11)]],
@@ -166,7 +166,7 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
   LoopedElemToLoc<NDIMS, IdxT, (NDIMS > 2)> loop(reduce_ndim);
   const device T* row;
   IdxT out_idx = gid.x + gsize.x * IdxT(gid.y);
-  IdxT in_idx = elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim);
+  IdxT in_idx = elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
   in += in_idx + lid.x;
   U total = Op::init;
   IdxT total_rows = IdxT(non_col_reductions) * IdxT(reduction_size);
@@ -200,12 +200,12 @@ template <
     const device T* in [[buffer(0)]],
     device U* out [[buffer(1)]],
     const constant size_t& reduction_size [[buffer(2)]],
-    const constant size_t& reduction_stride [[buffer(3)]],
+    const constant int64_t& reduction_stride [[buffer(3)]],
     const constant int* shape [[buffer(4)]],
-    const constant size_t* strides [[buffer(5)]],
+    const constant int64_t* strides [[buffer(5)]],
     const constant int& ndim [[buffer(6)]],
     const constant int* reduce_shape [[buffer(7)]],
-    const constant size_t* reduce_strides [[buffer(8)]],
+    const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     const constant size_t& non_col_reductions [[buffer(10)]],
     uint3 gid [[threadgroup_position_in_grid]],
@@ -229,7 +229,7 @@ template <
   IdxT column = BN * gid.x + offset.x;
   bool safe = column + n_reads <= reduction_stride;
   IdxT out_idx = gid.y + gsize.y * IdxT(gid.z);
-  IdxT in_idx = elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim);
+  IdxT in_idx = elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
   in += in_idx + column;
   IdxT total = IdxT(non_col_reductions) * IdxT(reduction_size);
   loop.next(offset.y, reduce_shape, reduce_strides);
@@ -319,12 +319,12 @@ template <
     const device T* in [[buffer(0)]],
     device U* out [[buffer(1)]],
     const constant size_t& reduction_size [[buffer(2)]],
-    const constant size_t& reduction_stride [[buffer(3)]],
+    const constant int64_t& reduction_stride [[buffer(3)]],
     const constant int* shape [[buffer(4)]],
-    const constant size_t* strides [[buffer(5)]],
+    const constant int64_t* strides [[buffer(5)]],
     const constant int& ndim [[buffer(6)]],
     const constant int* reduce_shape [[buffer(7)]],
-    const constant size_t* reduce_strides [[buffer(8)]],
+    const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     const constant size_t& non_col_reductions [[buffer(10)]],
     const constant size_t& out_size [[buffer(11)]],
@@ -354,7 +354,7 @@ template <
   IdxT full_idx = gid.y + gsize.y * IdxT(gid.z);
   IdxT block_idx = full_idx / IdxT(out_size);
   IdxT out_idx = full_idx % IdxT(out_size);
-  IdxT in_idx = elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim);
+  IdxT in_idx = elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
   in += in_idx + column;
   IdxT total = IdxT(non_col_reductions) * IdxT(reduction_size);
   loop.next(offset.y + block_idx * BM, reduce_shape, reduce_strides);
@@ -476,11 +476,11 @@ template <
 METAL_FUNC void per_thread_row_reduce(
     thread U totals[N_WRITES],
     const device T* in,
-    const size_t row_idx,
+    const int64_t row_idx,
     int blocks,
     int extra,
     const constant int* shape,
-    const constant size_t* strides,
+    const constant int64_t* strides,
     const constant int& ndim,
     uint lsize_x,
     uint lid_x) {
@@ -554,13 +554,13 @@ template <
 [[kernel]] void row_reduce_small(
     const device T* in [[buffer(0)]],
     device U* out [[buffer(1)]],
-    const constant size_t& row_size [[buffer(2)]],
-    const constant size_t& non_row_reductions [[buffer(3)]],
+    const constant int64_t& row_size [[buffer(2)]],
+    const constant int64_t& non_row_reductions [[buffer(3)]],
     const constant int* shape [[buffer(4)]],
-    const constant size_t* strides [[buffer(5)]],
+    const constant int64_t* strides [[buffer(5)]],
     const constant int& ndim [[buffer(6)]],
     const constant int* reduce_shape [[buffer(7)]],
-    const constant size_t* reduce_strides [[buffer(8)]],
+    const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     uint simd_lane_id [[thread_index_in_simdgroup]],
     uint3 gid [[threadgroup_position_in_grid]],
@@ -575,7 +575,7 @@ template <
   int extra = IdxT(row_size) % N_READS;
   if ((non_row_reductions < 32 && row_size <= 8) || non_row_reductions <= 8) {
     IdxT out_idx = tid.x + tsize.y * IdxT(tid.y);
-    in += elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim);
+    in += elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
     for (uint r = 0; r < non_row_reductions; r++) {
       row = in + loop.location();
       thread_reduce<T, U, Op, N_READS>(total_val, row, blocks, extra);
@@ -584,7 +584,7 @@ template <
     out[out_idx] = total_val;
   } else {
     IdxT out_idx = gid.y + gsize.y * IdxT(gid.z);
-    in += elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim);
+    in += elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
     loop.next(simd_lane_id, reduce_shape, reduce_strides);
     for (uint r = simd_lane_id; r < non_row_reductions; r += simd_size) {
       row = in + loop.location();
@@ -601,14 +601,14 @@ template <
     typename T,
     typename U,
     typename Op,
-    typename IdxT = size_t,
+    typename IdxT = int64_t,
     int N_READS = REDUCE_N_READS,
     int N_WRITES = REDUCE_N_WRITES>
 [[kernel]] void row_reduce_simple(
     const device T* in [[buffer(0)]],
     device U* out [[buffer(1)]],
     const constant size_t& reduction_size [[buffer(2)]],
-    const constant size_t& out_size [[buffer(3)]],
+    const constant int64_t& out_size [[buffer(3)]],
     uint3 gid [[threadgroup_position_in_grid]],
     uint3 gsize [[threadgroups_per_grid]],
     uint3 lid [[thread_position_in_threadgroup]],
@@ -646,13 +646,13 @@ template <
 [[kernel]] void row_reduce_looped(
     const device T* in [[buffer(0)]],
     device U* out [[buffer(1)]],
-    const constant size_t& row_size [[buffer(2)]],
-    const constant size_t& non_row_reductions [[buffer(3)]],
+    const constant int64_t& row_size [[buffer(2)]],
+    const constant int64_t& non_row_reductions [[buffer(3)]],
     const constant int* shape [[buffer(4)]],
-    const constant size_t* strides [[buffer(5)]],
+    const constant int64_t* strides [[buffer(5)]],
     const constant int& ndim [[buffer(6)]],
     const constant int* reduce_shape [[buffer(7)]],
-    const constant size_t* reduce_strides [[buffer(8)]],
+    const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     uint3 gid [[threadgroup_position_in_grid]],
     uint3 gsize [[threadgroups_per_grid]],
@@ -665,8 +665,7 @@ template <
   threadgroup U shared_vals[simd_size];
   U total = Op::init;
   IdxT out_idx = gid.y + gsize.y * IdxT(gid.z);
-  in += elem_to_loc<size_t, IdxT>(out_idx, shape, strides, ndim) +
-      lid.x * N_READS;
+  in += elem_to_loc<IdxT>(out_idx, shape, strides, ndim) + lid.x * N_READS;
   LoopedElemToLoc<NDIMS, IdxT, (NDIMS > 2)> loop(reduce_ndim);
   const device T* row;
   int blocks = IdxT(row_size) / (lsize.x * N_READS);

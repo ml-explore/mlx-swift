@@ -166,6 +166,12 @@ struct ArcTanh {
     return metal::precise::atanh(x);
   };
 };
+struct BitwiseInvert {
+  template <typename T>
+  T operator()(T x) {
+    return ~x;
+  };
+};
 struct Ceil {
   template <typename T>
   T operator()(T x) {

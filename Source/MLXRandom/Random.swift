@@ -31,7 +31,7 @@ public func key(_ seed: UInt64) -> MLXArray {
 /// - ``split(key:stream:)``
 public func split(key: MLXArray, into num: Int, stream: StreamOrDevice = .default) -> [MLXArray] {
     var keys = mlx_array_new()
-    mlx_random_split_equal_parts(&keys, key.ctx, num.int32, stream.ctx)
+    mlx_random_split_num(&keys, key.ctx, num.int32, stream.ctx)
 
     return MLXArray(keys).map { $0 }
 }

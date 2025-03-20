@@ -375,7 +375,8 @@ public func asStrided(
     var result = mlx_array_new()
     mlx_as_strided(
         &result,
-        array.ctx, shape.asInt32, shape.count, resolvedStrides, resolvedStrides.count, offset,
+        array.ctx, shape.asInt32, shape.count, resolvedStrides.asInt64, resolvedStrides.count,
+        offset,
         stream.ctx)
     return MLXArray(result)
 }
@@ -2925,5 +2926,54 @@ public func which<A: ScalarOrArray, B: ScalarOrArray>(
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
     mlx_where(&result, condition.ctx, a.ctx, b.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Compute the Kronecker product of two arrays ``a`` and ``b``.
+///
+/// - Parameters:
+///     - a: input array
+///     - b: input array
+///     - stream: stream or device to evaluate on
+public func kron(
+    _ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_kron(&result, a.ctx, b.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Flatten an array.
+///
+/// The axes flattened will be between ``start_axis`` and ``end_axis``,
+/// inclusive. Negative axes are supported. After converting negative axis to
+/// positive, axes outside the valid range will be clamped to a valid value,
+/// ``start_axis`` to ``0`` and ``end_axis`` to ``ndim - 1``.
+///
+/// - Parameters:
+///     - a: input array
+///     - start_axis: first dim to flatten
+///     - end_axis: last dim to flatten
+///     - stream: stream or device to evaluate on
+public func flatten(
+    _ a: MLXArray, startAxis: Int, endAxis: Int = -1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_flatten(&result, a.ctx, startAxis.int32, endAxis.int32, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Unflatten an axis of an array to a shape.
+///
+/// - Parameters:
+///     - a: input array
+///     - axis: axis to unflatten
+///     - shape: shape to unflatten into
+///     - stream: stream or device to evaluate on
+public func unflatten(
+    _ a: MLXArray, axis: Int, shape: [Int], stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_unflatten(&result, a.ctx, axis.int32, shape.map { Int32($0) }, shape.count, stream.ctx)
     return MLXArray(result)
 }
