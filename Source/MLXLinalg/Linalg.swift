@@ -317,3 +317,70 @@ public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOr
     mlx_linalg_cross(&result, a.ctx, b.ctx, axis.int32, stream.ctx)
     return MLXArray(result)
 }
+
+/// Compute the LU factorization of the given matrix ``A``.
+///
+/// Note, unlike the default behavior of ``scipy.linalg.lu``, the pivots
+/// are indices. To reconstruct the input use ``L[P] @ U`` for 2
+/// dimensions or ``takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U``
+/// for more than 2 dimensions.
+///
+/// To construct the full permuation matrix do:
+///
+///   P = putAlong(zeros(L), p[.ellipsis, .newAxis], MLXArray(1.0), axis: -1)
+///
+/// -Parameters:
+///   - a: input array.
+///   - stream: stream or device
+public func lu(_ a: MLXArray, stream: StreamOrDevice = .default)
+    -> (MLXArray, MLXArray, MLXArray)
+{
+    var vec = mlx_vector_array_new()
+    mlx_linalg_lu(&vec, a.ctx, stream.ctx)
+    defer { mlx_vector_array_free(vec) }
+    let arrays = mlx_vector_array_values(vec)
+    return (arrays[0], arrays[1], arrays[2])
+}
+
+/// Computes a compact representation of the LU factorization.
+///
+/// -Parameters:
+///   - a: input array.
+///   - stream: stream or device
+public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
+    -> (MLXArray, MLXArray)
+{
+    var res_0 = mlx_array_new()
+    var res_1 = mlx_array_new()
+    mlx_linalg_lu_factor(&res_0, &res_1, a.ctx, stream.ctx)
+    return (MLXArray(res_0), MLXArray(res_1))
+}
+
+/// Compute the solution to a system of linear equations ``AX = B``.
+///
+/// -Parameters:
+///   - a: input array.
+///   - b: input array.
+///   - stream: stream or device
+public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    var result = mlx_array_new()
+    mlx_linalg_solve(&result, a.ctx, b.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
+///Computes the solution of a triangular system of linear equations ``AX = B``.
+///
+/// -Parameters:
+///   - a: input array.
+///   - b: input array.
+///   - upper: Whether the array is upper or lower triangular
+///   - stream: stream or device
+public func solveTriangular(_ a: MLXArray, _ b: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
+    -> MLXArray
+{
+    var result = mlx_array_new()
+    mlx_linalg_solve_triangular(&result, a.ctx, b.ctx, upper, stream.ctx)
+    return MLXArray(result)
+}
