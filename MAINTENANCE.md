@@ -106,7 +106,6 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 ```
 import MLXNN
 @testable import MLXOptimizers
-import MLXFFT
 ```
 
 11. Update tests as needed

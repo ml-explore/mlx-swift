@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXLinalg
 import XCTest
 
 class ArrayAtTests: XCTestCase {

@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXRandom
 
 /// Protocol for layers that can be quantized
 public protocol Quantizable {
@@ -158,7 +157,8 @@ open class QuantizedLinear: Linear, Quantized {
         bits: Int = 4
     ) {
         let scale = sqrt(1 / Float(inputDimensions))
-        let weight = uniform(low: -scale, high: scale, [outputDimensions, inputDimensions])
+        let weight = MLXRandom.uniform(
+            low: -scale, high: scale, [outputDimensions, inputDimensions])
 
         let bias = bias ? MLXArray.zeros([outputDimensions]) : nil
 
