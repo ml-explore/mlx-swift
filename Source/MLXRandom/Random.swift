@@ -80,6 +80,7 @@ public func uniform<R: HasDType, T>(
 /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
 /// ```
 @available(*, deprecated, renamed: "MLXRandom.uniform")
+@_disfavoredOverload
 public func uniform<T>(
     _ range: Range<Float> = 0 ..< 1, _ shape: [Int] = [], type: T.Type = Float.self,
     key: MLXArray? = nil, stream: StreamOrDevice = .default

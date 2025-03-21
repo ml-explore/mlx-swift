@@ -3,6 +3,13 @@
 import Cmlx
 import Foundation
 
+public func uniform<T>(
+    _ range: Range<Float> = 0 ..< 1, _ shape: [Int] = [], type: T.Type = Float.self,
+    key: MLXArray? = nil, stream: StreamOrDevice = .default
+) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
+    MLXRandom.uniform(range, shape, type: type, key: key, stream: stream)
+}
+
 public enum MLXRandom {
 
     /// Seed the global PRNG.
