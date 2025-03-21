@@ -110,12 +110,7 @@ public final class Device: @unchecked Sendable, Equatable {
 
     /// Compare two ``Device`` for equality -- this does not compare the index, just the device type.
     public static func == (lhs: Device, rhs: Device) -> Bool {
-        var lType: mlx_device_type = MLX_GPU
-        var rType: mlx_device_type = MLX_GPU
-        mlx_device_get_type(&lType, lhs.ctx)
-        mlx_device_get_type(&rType, rhs.ctx)
-
-        return lType == rType
+        mlx_device_equal(lhs.ctx, rhs.ctx)
     }
 }
 
