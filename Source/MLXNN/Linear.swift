@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXRandom
 
 /// A placeholder identity operator that is argument-insensitive.
 public class Identity: Module, UnaryLayer {

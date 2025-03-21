@@ -1,8 +1,11 @@
-// Copyright © 2024 Apple Inc.
-
-import Cmlx
 import Foundation
 import MLX
+
+@available(
+    *, deprecated,
+    message: "`import MLXFFT` is deprecated. All methods are now available through `import MLX"
+)
+public let deprecationWarning: Void = ()
 
 /// One dimensional discrete Fourier Transform.
 ///
@@ -16,13 +19,12 @@ import MLX
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "fft is now available in the main MLX module.")
+@_disfavoredOverload
 public func fft(_ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    var result = mlx_array_new()
-
-    mlx_fft_fftn(&result, array.ctx, [(n ?? array.dim(axis)).int32], 1, [axis.int32], 1, stream.ctx)
-    return MLXArray(result)
+    MLXFFT.fft(array, n: n, axis: axis, stream: stream)
 }
 
 /// One dimensional inverse discrete Fourier Transform.
@@ -37,12 +39,12 @@ public func fft(_ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: Stream
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "ifft is now available in the main MLX module.")
+@_disfavoredOverload
 public func ifft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_fft_ifft(&result, array.ctx, (n ?? array.dim(axis)).int32, axis.int32, stream.ctx)
-    return MLXArray(result)
+    MLXFFT.ifft(array, n: n, axis: axis, stream: stream)
 }
 
 /// Two dimensional discrete Fourier Transform.
@@ -57,10 +59,12 @@ public func ifft(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "fft2 is now available in the main MLX module.")
+@_disfavoredOverload
 public func fft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
-    fftn(array, s: s, axes: axes, stream: stream)
+    MLXFFT.fft2(array, s: s, axes: axes, stream: stream)
 }
 
 /// Two dimensional inverse discrete Fourier Transform.
@@ -75,10 +79,12 @@ public func fft2(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "ifft2 is now available in the main MLX module.")
+@_disfavoredOverload
 public func ifft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
-    ifftn(array, s: s, axes: axes, stream: stream)
+    MLXFFT.ifft2(array, s: s, axes: axes, stream: stream)
 }
 
 /// n-dimensional discrete Fourier Transform.
@@ -93,34 +99,12 @@ public func ifft2(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "fftn is now available in the main MLX module.")
+@_disfavoredOverload
 public func fftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let s, let axes {
-        // both supplied
-
-        mlx_fft_fft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let axes {
-        // no n, compute from dim()
-        let n = axes.map { array.dim($0) }
-
-        mlx_fft_fft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let s {
-        // axes are the rightmost dimensions matching the number of dimensions of n
-        let axes = Array(-s.count ..< 0)
-
-        mlx_fft_fft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else {
-        let axes = Array(0 ..< array.ndim)
-        let n = axes.map { array.dim($0) }
-
-        mlx_fft_fft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    }
+    MLXFFT.fftn(array, s: s, axes: axes, stream: stream)
 }
 
 /// n-dimensional inverse discrete Fourier Transform.
@@ -135,34 +119,12 @@ public func fftn(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "ifftn is now available in the main MLX module.")
+@_disfavoredOverload
 public func ifftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let s, let axes {
-        // both supplied
-
-        mlx_fft_ifft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let axes {
-        // no n, compute from dim()
-        let n = axes.map { array.dim($0) }
-
-        mlx_fft_ifft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let s {
-        // axes are the rightmost dimensions matching the number of dimensions of n
-        let axes = Array(-s.count ..< 0)
-
-        mlx_fft_ifft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else {
-        let axes = Array(0 ..< array.ndim)
-        let n = axes.map { array.dim($0) }
-
-        mlx_fft_ifft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    }
+    MLXFFT.ifftn(array, s: s, axes: axes, stream: stream)
 }
 
 /// One dimensional discrete Fourier Transform on a real input.
@@ -180,13 +142,12 @@ public func ifftn(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "rfft is now available in the main MLX module.")
+@_disfavoredOverload
 public func rfft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_fft_rfftn(
-        &result, array.ctx, [(n ?? array.dim(axis)).int32], 1, [axis.int32], 1, stream.ctx)
-    return MLXArray(result)
+    MLXFFT.rfft(array, n: n, axis: axis, stream: stream)
 }
 
 /// Inverse one dimensional discrete Fourier Transform on a real input.
@@ -207,10 +168,7 @@ public func rfft(
 public func irfft(
     _ array: MLXArray, n: Int? = nil, axis: Int = -1, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let n = n ?? (array.dim(axis) - 1) * 2
-    var result = mlx_array_new()
-    mlx_fft_irfft(&result, array.ctx, n.int32, axis.int32, stream.ctx)
-    return MLXArray(result)
+    MLXFFT.irfft(array, n: n, axis: axis, stream: stream)
 }
 
 /// Two dimensional real discrete Fourier Transform.
@@ -229,10 +187,12 @@ public func irfft(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "rfft2 is now available in the main MLX module.")
+@_disfavoredOverload
 public func rfft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
-    rfftn(array, s: s, axes: axes, stream: stream)
+    MLXFFT.rfft2(array, s: s, axes: axes, stream: stream)
 }
 
 /// Inverse two dimensional discrete Fourier Transform on a real input.
@@ -252,10 +212,12 @@ public func rfft2(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "irfft2 is now available in the main MLX module.")
+@_disfavoredOverload
 public func irfft2(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
-    irfftn(array, s: s, axes: axes, stream: stream)
+    MLXFFT.irfft2(array, s: s, axes: axes, stream: stream)
 }
 
 /// n-dimensional real discrete Fourier Transform.
@@ -274,34 +236,12 @@ public func irfft2(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "rfftn is now available in the main MLX module.")
+@_disfavoredOverload
 public func rfftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let s, let axes {
-        // both supplied
-
-        mlx_fft_rfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let axes {
-        // no n, compute from dim()
-        let n = axes.map { array.dim($0) }
-
-        mlx_fft_rfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let s {
-        // axes are the rightmost dimensions matching the number of dimensions of n
-        let axes = Array(-s.count ..< 0)
-
-        mlx_fft_rfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else {
-        let axes = Array(0 ..< array.ndim)
-        let n = axes.map { array.dim($0) }
-
-        mlx_fft_rfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    }
+    MLXFFT.rfftn(array, s: s, axes: axes, stream: stream)
 }
 
 /// Inverse n-dimensional discrete Fourier Transform on a real input.
@@ -321,34 +261,10 @@ public func rfftn(
 ///
 /// ### See Also
 /// - <doc:MLXFFT>
+@available(*, deprecated, message: "irfftn is now available in the main MLX module.")
+@_disfavoredOverload
 public func irfftn(
     _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let s, let axes {
-        // both supplied
-
-        mlx_fft_irfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let axes {
-        // no n, compute from dim()
-        var n = axes.map { array.dim($0) }
-        n[n.count - 1] = (n[n.count - 1] - 1) * 2
-
-        mlx_fft_irfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else if let s {
-        // axes are the rightmost dimensions matching the number of dimensions of n
-        let axes = Array(-s.count ..< 0)
-
-        mlx_fft_irfft2(&result, array.ctx, s.asInt32, s.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    } else {
-        let axes = Array(0 ..< array.ndim)
-        var n = axes.map { array.dim($0) }
-        n[n.count - 1] = (n[n.count - 1] - 1) * 2
-
-        mlx_fft_irfft2(&result, array.ctx, n.asInt32, n.count, axes.asInt32, axes.count, stream.ctx)
-        return MLXArray(result)
-    }
+    MLXFFT.irfftn(array, s: s, axes: axes, stream: stream)
 }

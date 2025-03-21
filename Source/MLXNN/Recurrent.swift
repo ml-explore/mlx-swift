@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXRandom
 
 /// An Elman recurrent layer.
 ///

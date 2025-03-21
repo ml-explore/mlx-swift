@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXFast
 
 /// Applies instance normalization [1] on the inputs.
 ///

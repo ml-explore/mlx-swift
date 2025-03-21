@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXFast
 
 /// Implements the rotary positional encoding.
 ///

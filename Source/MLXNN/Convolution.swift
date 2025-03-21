@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXRandom
 
 /// Applies a 1-dimensional convolution over the multi-channel input sequence.
 ///
@@ -48,7 +47,7 @@ open class Conv1d: Module, UnaryLayer {
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize))
 
-        self.weight = uniform(
+        self.weight = MLXRandom.uniform(
             low: -scale, high: scale, [outputChannels, kernelSize, inputChannels / groups])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding
@@ -112,7 +111,7 @@ open class Conv2d: Module, UnaryLayer {
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize.first * kernelSize.second))
 
-        self.weight = uniform(
+        self.weight = MLXRandom.uniform(
             low: -scale, high: scale,
             [outputChannels, kernelSize.first, kernelSize.second, inputChannels])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
@@ -180,7 +179,7 @@ open class Conv3d: Module, UnaryLayer {
         let scale = sqrt(
             1 / Float(inputChannels * kernelSize.first * kernelSize.second * kernelSize.third))
 
-        self.weight = uniform(
+        self.weight = MLXRandom.uniform(
             low: -scale, high: scale,
             [outputChannels, kernelSize.first, kernelSize.second, kernelSize.third, inputChannels])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil

@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXRandom
 
 /// Implements a simple lookup table that maps each input integer to a high-dimensional vector.
 ///

@@ -4,16 +4,11 @@ import Cmlx
 import Foundation
 import MLX
 
-/// Types of norms available.
-///
-/// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-/// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-/// - ``MLXLinalg``
-public enum NormKind: String, Sendable {
-    /// Frobenius norm
-    case fro
-}
+@available(
+    *, deprecated,
+    message: "`import MLXLinalg` is deprecated. All methods are now available through `import MLX"
+)
+public let deprecationWarning: Void = ()
 
 /// Matrix or vector norm.
 ///
@@ -56,18 +51,13 @@ public enum NormKind: String, Sendable {
 ///
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
-    _ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims: Bool = false,
+    _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let ord {
-        mlx_linalg_norm_ord(
-            &result, array.ctx, ord.rawValue, axes.asInt32, axes.count, keepDims, stream.ctx)
-    } else {
-        mlx_linalg_norm(&result, array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
-    }
-    return MLXArray(result)
+    return MLXLinalg.norm(array, ord: ord, axes: axes, keepDims: keepDims, stream: stream)
 }
 
 /// Matrix or vector norm.
@@ -111,77 +101,61 @@ public func norm(
 ///
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_linalg_norm_p(&result, array.ctx, ord, axes.asInt32, axes.count, keepDims, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.norm(array, ord: ord, axes: axes, keepDims: keepDims, stream: stream)
 }
 
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
-    _ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: Bool = false,
+    _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let ord {
-        mlx_linalg_norm_ord(
-            &result, array.ctx, ord.rawValue, [axis].asInt32, 1, keepDims, stream.ctx)
-        return MLXArray(result)
-    } else {
-        mlx_linalg_norm(&result, array.ctx, [axis].asInt32, 1, keepDims, stream.ctx)
-        return MLXArray(result)
-    }
+    return MLXLinalg.norm(array, ord: ord, axis: axis, keepDims: keepDims, stream: stream)
 }
 
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_linalg_norm_p(&result, array.ctx, ord, [axis].asInt32, 1, keepDims, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.norm(array, ord: ord, axis: axis, keepDims: keepDims, stream: stream)
 }
 
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
-    _ array: MLXArray, ord: NormKind? = nil, axis: IntOrArray? = nil,
+    _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    if let ord {
-        mlx_linalg_norm_ord(
-            &result, array.ctx, ord.rawValue, axis?.asInt32Array, axis?.count ?? 0, keepDims,
-            stream.ctx)
-        return MLXArray(result)
-    } else {
-        mlx_linalg_norm(
-            &result, array.ctx, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx)
-        return MLXArray(result)
-    }
+    return MLXLinalg.norm(array, ord: ord, axis: axis, keepDims: keepDims, stream: stream)
 }
 
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: Double, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-
-    mlx_linalg_norm_p(
-        &result, array.ctx, ord, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.norm(array, ord: ord, axis: axis, keepDims: keepDims, stream: stream)
 }
 
 /// The QR factorization of the input matrix.
@@ -191,13 +165,10 @@ public func norm(
 /// the input.
 ///
 /// - Returns: the `Q` and `R` matrices
+@available(*, deprecated, message: "qr is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
-    var r0 = mlx_array_new()
-    var r1 = mlx_array_new()
-
-    mlx_linalg_qr(&r0, &r1, array.ctx, stream.ctx)
-
-    return (MLXArray(r0), MLXArray(r1))
+    return MLXLinalg.qr(array, stream: stream)
 }
 
 /// The Singular Value Decomposition (SVD) of the input matrix.
@@ -210,15 +181,12 @@ public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArra
 ///   - array: input array
 ///   - stream: stream or device to evaluate on
 /// - Returns: The `U`, `S`, and `Vt` matrices, such that `A = matmul(U, matmul(diag(S), Vt))`
+@available(*, deprecated, message: "svd is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
     MLXArray, MLXArray, MLXArray
 ) {
-    var vec = mlx_vector_array_new()
-    mlx_linalg_svd(&vec, array.ctx, stream.ctx)
-    defer { mlx_vector_array_free(vec) }
-
-    let arrays = mlx_vector_array_values(vec)
-    return (arrays[0], arrays[1], arrays[2])
+    return MLXLinalg.svd(array, stream: stream)
 }
 
 /// Compute the inverse of a square matrix.
@@ -231,10 +199,10 @@ public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
 ///   - array: input array
 ///   - stream: stream or device to evaluate on
 /// - Returns: `ainv` such that `dot(a, ainv) = dot(ainv, a) = eye(a.shape[0])`
+@available(*, deprecated, message: "inv is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_linalg_inv(&result, array.ctx, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.inv(array, stream: stream)
 }
 
 /// Compute the inverse of a triangular square matrix.
@@ -248,13 +216,13 @@ public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///   - upper: true if the array is an upper triangular matrix
 ///   - stream: stream or device to evaluate on
 /// - Returns: `ainv` such that `dot(a, ainv) = dot(ainv, a) = eye(a.shape[0])`
+@available(*, deprecated, message: "triInv is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func triInv(
     _ array: MLXArray, upper: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_linalg_tri_inv(&result, array.ctx, upper, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.triInv(array, stream: stream)
 }
 
 /// Compute the Cholesky decomposition of a real symmetric positive semi-definite matrix.
@@ -270,12 +238,12 @@ public func triInv(
 ///   - upper: if true return the upper triangular Cholesky factor, otherwise the lower triangular
 ///         Cholesky factor.
 ///   - stream: stream or device to evaluate on
+@available(*, deprecated, message: "cholesky is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    var result = mlx_array_new()
-    mlx_linalg_cholesky(&result, array.ctx, upper, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.cholesky(array, upper: upper, stream: stream)
 }
 
 /// Compute the inverse of a real symmetric positive semi-definite matrix using it's Cholesky decomposition.
@@ -291,12 +259,12 @@ public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDev
 ///   - upper: if true return the upper triangular Cholesky factor, otherwise the lower triangular
 ///         Cholesky factor.
 ///   - stream: stream or device to evaluate on
+@available(*, deprecated, message: "choleskyInv is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    var result = mlx_array_new()
-    mlx_linalg_cholesky_inv(&result, array.ctx, upper, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.choleskyInv(array, upper: upper, stream: stream)
 }
 
 /// Compute the cross product of two arrays along a specified axis.
@@ -310,12 +278,12 @@ public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOr
 ///   - b: input array
 ///   - axis: axis along which to compute the cross product
 ///   - stream: stream or device to evaluate on
+@available(*, deprecated, message: "cross is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    var result = mlx_array_new()
-    mlx_linalg_cross(&result, a.ctx, b.ctx, axis.int32, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.cross(a, b, axis: axis, stream: stream)
 }
 
 /// Compute the LU factorization of the given matrix ``A``.
@@ -332,14 +300,12 @@ public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOr
 /// -Parameters:
 ///   - a: input array.
 ///   - stream: stream or device
+@available(*, deprecated, message: "lu is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func lu(_ a: MLXArray, stream: StreamOrDevice = .default)
     -> (MLXArray, MLXArray, MLXArray)
 {
-    var vec = mlx_vector_array_new()
-    mlx_linalg_lu(&vec, a.ctx, stream.ctx)
-    defer { mlx_vector_array_free(vec) }
-    let arrays = mlx_vector_array_values(vec)
-    return (arrays[0], arrays[1], arrays[2])
+    return MLXLinalg.lu(a, stream: stream)
 }
 
 /// Computes a compact representation of the LU factorization.
@@ -347,13 +313,12 @@ public func lu(_ a: MLXArray, stream: StreamOrDevice = .default)
 /// -Parameters:
 ///   - a: input array.
 ///   - stream: stream or device
+@available(*, deprecated, message: "lu_factor is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
     -> (MLXArray, MLXArray)
 {
-    var res_0 = mlx_array_new()
-    var res_1 = mlx_array_new()
-    mlx_linalg_lu_factor(&res_0, &res_1, a.ctx, stream.ctx)
-    return (MLXArray(res_0), MLXArray(res_1))
+    return MLXLinalg.lu_factor(a, stream: stream)
 }
 
 /// Compute the solution to a system of linear equations ``AX = B``.
@@ -362,12 +327,12 @@ public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
 ///   - a: input array.
 ///   - b: input array.
 ///   - stream: stream or device
+@available(*, deprecated, message: "solve is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    var result = mlx_array_new()
-    mlx_linalg_solve(&result, a.ctx, b.ctx, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.solve(a, b, stream: stream)
 }
 
 ///Computes the solution of a triangular system of linear equations ``AX = B``.
@@ -377,12 +342,12 @@ public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defaul
 ///   - b: input array.
 ///   - upper: Whether the array is upper or lower triangular
 ///   - stream: stream or device
+@available(*, deprecated, message: "solveTriangular is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func solveTriangular(
     _ a: MLXArray, _ b: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default
 )
     -> MLXArray
 {
-    var result = mlx_array_new()
-    mlx_linalg_solve_triangular(&result, a.ctx, b.ctx, upper, stream.ctx)
-    return MLXArray(result)
+    return MLXLinalg.solveTriangular(a, b, upper: upper, stream: stream)
 }
