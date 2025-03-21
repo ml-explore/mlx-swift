@@ -46,6 +46,7 @@ typedef enum mlx_dtype_ {
   MLX_INT64,
   MLX_FLOAT16,
   MLX_FLOAT32,
+  MLX_FLOAT64,
   MLX_BFLOAT16,
   MLX_COMPLEX64,
 } mlx_dtype;
@@ -79,9 +80,23 @@ mlx_array mlx_array_new_bool(bool val);
  */
 mlx_array mlx_array_new_int(int val);
 /**
+ * New array from a float32 scalar.
+ */
+mlx_array mlx_array_new_float32(float val);
+/**
  * New array from a float scalar.
+ * Same as float32.
  */
 mlx_array mlx_array_new_float(float val);
+/**
+ * New array from a float64 scalar.
+ */
+mlx_array mlx_array_new_float64(double val);
+/**
+ * New array from a double scalar.
+ * Same as float64.
+ */
+mlx_array mlx_array_new_double(double val);
 /**
  * New array from a complex scalar.
  */
@@ -111,9 +126,21 @@ int mlx_array_set_bool(mlx_array* arr, bool val);
  */
 int mlx_array_set_int(mlx_array* arr, int val);
 /**
+ * Set array to a float32 scalar.
+ */
+int mlx_array_set_float32(mlx_array* arr, float val);
+/**
  * Set array to a float scalar.
  */
 int mlx_array_set_float(mlx_array* arr, float val);
+/**
+ * Set array to a float64 scalar.
+ */
+int mlx_array_set_float64(mlx_array* arr, double val);
+/**
+ * Set array to a double scalar.
+ */
+int mlx_array_set_double(mlx_array* arr, double val);
 /**
  * Set array to a complex scalar.
  */
@@ -167,6 +194,7 @@ int mlx_array_dim(const mlx_array arr, int dim);
  * The array element type.
  */
 mlx_dtype mlx_array_dtype(const mlx_array arr);
+
 /**
  * Evaluate the array.
  */
@@ -212,6 +240,10 @@ int mlx_array_item_int64(int64_t* res, const mlx_array arr);
  * Access the value of a scalar array.
  */
 int mlx_array_item_float32(float* res, const mlx_array arr);
+/**
+ * Access the value of a scalar array.
+ */
+int mlx_array_item_float64(double* res, const mlx_array arr);
 /**
  * Access the value of a scalar array.
  */
@@ -282,6 +314,11 @@ const int64_t* mlx_array_data_int64(const mlx_array arr);
  */
 const float* mlx_array_data_float32(const mlx_array arr);
 /**
+ * Returns a pointer to the array data, cast to `float64*`.
+ * Array must be evaluated, otherwise returns NULL.
+ */
+const double* mlx_array_data_float64(const mlx_array arr);
+/**
  * Returns a pointer to the array data, cast to `_Complex*`.
  * Array must be evaluated, otherwise returns NULL.
  */
@@ -302,6 +339,37 @@ const float16_t* mlx_array_data_float16(const mlx_array arr);
  */
 const bfloat16_t* mlx_array_data_bfloat16(const mlx_array arr);
 #endif
+
+/**
+ * Check if the array is available.
+ * Internal function: use at your own risk.
+ */
+int _mlx_array_is_available(bool* res, const mlx_array arr);
+
+/**
+ * Wait on the array to be available. After this `_mlx_array_is_available`
+ * returns `true`. Internal function: use at your own risk.
+ */
+int _mlx_array_wait(const mlx_array arr);
+
+/**
+ * Whether the array is contiguous in memory.
+ * Internal function: use at your own risk.
+ */
+int _mlx_array_is_contiguous(bool* res, const mlx_array arr);
+
+/**
+ * Whether the array's rows are contiguous in memory.
+ * Internal function: use at your own risk.
+ */
+int _mlx_array_is_row_contiguous(bool* res, const mlx_array arr);
+
+/**
+ * Whether the array's columns are contiguous in memory.
+ * Internal function: use at your own risk.
+ */
+int _mlx_array_is_col_contiguous(bool* res, const mlx_array arr);
+
 /**@}*/
 
 #ifdef __cplusplus

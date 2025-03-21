@@ -189,6 +189,8 @@ extension MLXArray {
                     self.init(bfloat16: Float32(v))
                 case .complex64:
                     self.init(real: Float32(v), imaginary: 0)
+                case .float64:
+                    self.init(Float64(v))
                 }
 
             } else if let v = value as? (any BinaryInteger) {
@@ -225,6 +227,8 @@ extension MLXArray {
                     self.init(bfloat16: Float32(v))
                 case .complex64:
                     self.init(real: Float32(v), imaginary: 0)
+                case .float64:
+                    self.init(Float64(v))
                 }
 
             } else {

@@ -551,13 +551,13 @@ METAL_FUNC void qmv_fast_impl(
   thread U result[results_per_simdgroup] = {0};
   const int in_vec_size_w = in_vec_size * bytes_per_pack / pack_factor;
   const int in_vec_size_g = in_vec_size / group_size;
-  const int out_row = tid.x * (num_simdgroups * results_per_simdgroup) +
+  const int out_row = tid.y * (num_simdgroups * results_per_simdgroup) +
       simd_gid * results_per_simdgroup;
   ws += out_row * in_vec_size_w + simd_lid * packs_per_thread * bytes_per_pack;
   scales += out_row * in_vec_size_g + simd_lid / scale_step_per_thread;
   biases += out_row * in_vec_size_g + simd_lid / scale_step_per_thread;
-  x += tid.y * in_vec_size + simd_lid * values_per_thread;
-  y += tid.y * out_vec_size + out_row;
+  x += tid.x * in_vec_size + simd_lid * values_per_thread;
+  y += tid.x * out_vec_size + out_row;
   for (int k = 0; k < in_vec_size; k += block_size) {
     U sum = load_vector<T, U, values_per_thread, bits>(x, x_thread);
     for (int row = 0; row < results_per_simdgroup; row++) {
@@ -607,7 +607,7 @@ METAL_FUNC void qmv_impl(
   thread U result[results_per_simdgroup] = {0};
   const int in_vec_size_w = in_vec_size * bytes_per_pack / pack_factor;
   const int in_vec_size_g = in_vec_size / group_size;
-  const int out_row = tid.x * (num_simdgroups * results_per_simdgroup) +
+  const int out_row = tid.y * (num_simdgroups * results_per_simdgroup) +
       simd_gid * results_per_simdgroup;
   const int used_out_row = min(out_vec_size - results_per_simdgroup, out_row);
   if (out_row >= out_vec_size) {
@@ -618,8 +618,8 @@ METAL_FUNC void qmv_impl(
         out_row * in_vec_size_w + simd_lid * packs_per_thread * bytes_per_pack;
     scales += out_row * in_vec_size_g + simd_lid / scale_step_per_thread;
     biases += out_row * in_vec_size_g + simd_lid / scale_step_per_thread;
-    x += tid.y * in_vec_size + simd_lid * values_per_thread;
-    y += tid.y * out_vec_size + out_row;
+    x += tid.x * in_vec_size + simd_lid * values_per_thread;
+    y += tid.x * out_vec_size + out_row;
     int k = 0;
     for (; k < in_vec_size - block_size; k += block_size) {
       U sum = load_vector<T, U, values_per_thread, bits>(x, x_thread);
@@ -666,8 +666,8 @@ METAL_FUNC void qmv_impl(
         simd_lid * packs_per_thread * bytes_per_pack;
     scales += used_out_row * in_vec_size_g + simd_lid / scale_step_per_thread;
     biases += used_out_row * in_vec_size_g + simd_lid / scale_step_per_thread;
-    x += tid.y * in_vec_size + simd_lid * values_per_thread;
-    y += tid.y * out_vec_size + used_out_row;
+    x += tid.x * in_vec_size + simd_lid * values_per_thread;
+    y += tid.x * out_vec_size + used_out_row;
     int k = 0;
     for (; k < in_vec_size - block_size; k += block_size) {
       U sum = load_vector<T, U, values_per_thread, bits>(x, x_thread);
@@ -725,13 +725,15 @@ METAL_FUNC void qvm_impl(
   constexpr int power_of_2_bits = (bits & (bits - 1)) == 0;
   constexpr int num_simdgroups = 2;
   constexpr int pack_factor = bits == 3 ? 8 : bits == 6 ? 4 : 32 / bits;
-  constexpr int bytes_per_pack = power_of_2_bits ? 4 : 3;
+  constexpr int bytes_per_pack = power_of_2_bits ? 1 : 3;
   constexpr int tn = 32 / pack_factor;
   constexpr int block_size = SIMD_SIZE;
-  const device uint8_t* ws = (const device uint8_t*)w;
+  using W_T =
+      typename ConditionalType<power_of_2_bits, uint32_t, uint8_t>::type;
+  const device W_T* ws = (const device W_T*)w;
   typedef float U;
   typedef struct {
-    uint8_t wi[tn * bytes_per_pack];
+    W_T wi[tn * bytes_per_pack];
   } vec_w;
   thread vec_w w_local;
   thread U result[tn * pack_factor] = {0};
@@ -740,12 +742,12 @@ METAL_FUNC void qvm_impl(
   thread U x_local = 0;
   const int out_vec_size_w = out_vec_size * bytes_per_pack / pack_factor;
   const int out_vec_size_g = out_vec_size / group_size;
-  int out_col = pack_factor * tn * (tid.x * num_simdgroups + simd_gid);
+  int out_col = pack_factor * tn * (tid.y * num_simdgroups + simd_gid);
   ws += out_col * bytes_per_pack / pack_factor + simd_lid * out_vec_size_w;
   scales += out_col / group_size + simd_lid * out_vec_size_g;
   biases += out_col / group_size + simd_lid * out_vec_size_g;
-  x += tid.y * in_vec_size + simd_lid;
-  y += tid.y * out_vec_size + out_col;
+  x += tid.x * in_vec_size + simd_lid;
+  y += tid.x * out_vec_size + out_col;
   if (out_col >= out_vec_size) {
     return;
   }
@@ -1044,12 +1046,12 @@ METAL_FUNC void adjust_matrix_offsets(
     int output_stride,
     const constant int& x_batch_ndims,
     const constant int* x_shape,
-    const constant size_t* x_strides,
+    const constant int64_t* x_strides,
     const constant int& w_batch_ndims,
     const constant int* w_shape,
-    const constant size_t* w_strides,
-    const constant size_t* s_strides,
-    const constant size_t* b_strides,
+    const constant int64_t* w_strides,
+    const constant int64_t* s_strides,
+    const constant int64_t* b_strides,
     uint3 tid [[threadgroup_position_in_grid]]) {
   uint32_t x_idx = tid.z;
   uint32_t w_idx = tid.z;
@@ -1083,16 +1085,16 @@ METAL_FUNC void adjust_matrix_offsets(
     int output_stride,
     const constant int& batch_ndims,
     const constant int* batch_shape,
-    const constant size_t* lhs_strides,
-    const constant size_t* rhs_strides,
+    const constant int64_t* lhs_strides,
+    const constant int64_t* rhs_strides,
     const constant int& x_batch_ndims,
     const constant int* x_shape,
-    const constant size_t* x_strides,
+    const constant int64_t* x_strides,
     const constant int& w_batch_ndims,
     const constant int* w_shape,
-    const constant size_t* w_strides,
-    const constant size_t* s_strides,
-    const constant size_t* b_strides,
+    const constant int64_t* w_strides,
+    const constant int64_t* s_strides,
+    const constant int64_t* b_strides,
     uint3 tid [[threadgroup_position_in_grid]]) {
   uint32_t x_idx;
   uint32_t w_idx;
@@ -1134,23 +1136,24 @@ template <typename T, int group_size, int bits, int D, bool batched>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint quad_gid [[quadgroup_index_in_threadgroup]],
     uint quad_lid [[thread_index_in_quadgroup]]) {
   if (batched) {
+    int M = x_shape[x_batch_ndims];
     adjust_matrix_offsets<T>(
         x,
         w,
         scales,
         biases,
         y,
-        out_vec_size,
+        out_vec_size * M,
         x_batch_ndims,
         x_shape,
         x_strides,
@@ -1184,23 +1187,24 @@ template <typename T, int group_size, int bits, bool batched>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
   if (batched) {
+    int M = x_shape[x_batch_ndims];
     adjust_matrix_offsets<T>(
         x,
         w,
         scales,
         biases,
         y,
-        out_vec_size,
+        out_vec_size * M,
         x_batch_ndims,
         x_shape,
         x_strides,
@@ -1234,23 +1238,24 @@ template <typename T, const int group_size, const int bits, bool batched>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
   if (batched) {
+    int M = x_shape[x_batch_ndims];
     adjust_matrix_offsets<T>(
         x,
         w,
         scales,
         biases,
         y,
-        out_vec_size,
+        out_vec_size * M,
         x_batch_ndims,
         x_shape,
         x_strides,
@@ -1284,23 +1289,24 @@ template <typename T, const int group_size, const int bits, bool batched>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
   if (batched) {
+    int M = x_shape[x_batch_ndims];
     adjust_matrix_offsets<T>(
         x,
         w,
         scales,
         biases,
         y,
-        out_vec_size,
+        out_vec_size * M,
         x_batch_ndims,
         x_shape,
         x_strides,
@@ -1334,23 +1340,24 @@ template <typename T, const int group_size, const int bits, int split_k = 32>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     const constant int& final_block_size [[buffer(15)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
+  int M = x_shape[x_batch_ndims];
   adjust_matrix_offsets<T>(
       x,
       w,
       scales,
       biases,
       y,
-      out_vec_size,
+      out_vec_size * M,
       x_batch_ndims,
       x_shape,
       x_strides,
@@ -1394,12 +1401,12 @@ template <
     const constant int& M [[buffer(7)]],
     const constant int& x_batch_ndims [[buffer(8)]],
     const constant int* x_shape [[buffer(9)]],
-    const constant size_t* x_strides [[buffer(10)]],
+    const constant int64_t* x_strides [[buffer(10)]],
     const constant int& w_batch_ndims [[buffer(11)]],
     const constant int* w_shape [[buffer(12)]],
-    const constant size_t* w_strides [[buffer(13)]],
-    const constant size_t* s_strides [[buffer(14)]],
-    const constant size_t* b_strides [[buffer(15)]],
+    const constant int64_t* w_strides [[buffer(13)]],
+    const constant int64_t* s_strides [[buffer(14)]],
+    const constant int64_t* b_strides [[buffer(15)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint lid [[thread_index_in_threadgroup]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
@@ -1448,12 +1455,12 @@ template <
     const constant int& M [[buffer(7)]],
     const constant int& x_batch_ndims [[buffer(8)]],
     const constant int* x_shape [[buffer(9)]],
-    const constant size_t* x_strides [[buffer(10)]],
+    const constant int64_t* x_strides [[buffer(10)]],
     const constant int& w_batch_ndims [[buffer(11)]],
     const constant int* w_shape [[buffer(12)]],
-    const constant size_t* w_strides [[buffer(13)]],
-    const constant size_t* s_strides [[buffer(14)]],
-    const constant size_t* b_strides [[buffer(15)]],
+    const constant int64_t* w_strides [[buffer(13)]],
+    const constant int64_t* s_strides [[buffer(14)]],
+    const constant int64_t* b_strides [[buffer(15)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint lid [[thread_index_in_threadgroup]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
@@ -1495,21 +1502,22 @@ template <typename T, int group_size, int bits>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     const constant int& batch_ndims [[buffer(15)]],
     const constant int* batch_shape [[buffer(16)]],
     const device uint32_t* lhs_indices [[buffer(17)]],
     const device uint32_t* rhs_indices [[buffer(18)]],
-    const constant size_t* lhs_strides [[buffer(19)]],
-    const constant size_t* rhs_strides [[buffer(20)]],
+    const constant int64_t* lhs_strides [[buffer(19)]],
+    const constant int64_t* rhs_strides [[buffer(20)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
+  int M = x_shape[x_batch_ndims];
   adjust_matrix_offsets<T>(
       x,
       w,
@@ -1518,7 +1526,7 @@ template <typename T, int group_size, int bits>
       lhs_indices,
       rhs_indices,
       y,
-      out_vec_size,
+      out_vec_size * M,
       batch_ndims,
       batch_shape,
       lhs_strides,
@@ -1555,21 +1563,22 @@ template <typename T, int group_size, int bits>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     const constant int& batch_ndims [[buffer(15)]],
     const constant int* batch_shape [[buffer(16)]],
     const device uint32_t* lhs_indices [[buffer(17)]],
     const device uint32_t* rhs_indices [[buffer(18)]],
-    const constant size_t* lhs_strides [[buffer(19)]],
-    const constant size_t* rhs_strides [[buffer(20)]],
+    const constant int64_t* lhs_strides [[buffer(19)]],
+    const constant int64_t* rhs_strides [[buffer(20)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
+  int M = x_shape[x_batch_ndims];
   adjust_matrix_offsets<T>(
       x,
       w,
@@ -1578,7 +1587,7 @@ template <typename T, int group_size, int bits>
       lhs_indices,
       rhs_indices,
       y,
-      out_vec_size,
+      out_vec_size * M,
       batch_ndims,
       batch_shape,
       lhs_strides,
@@ -1615,21 +1624,22 @@ template <typename T, int group_size, int bits>
     const constant int& out_vec_size [[buffer(6)]],
     const constant int& x_batch_ndims [[buffer(7)]],
     const constant int* x_shape [[buffer(8)]],
-    const constant size_t* x_strides [[buffer(9)]],
+    const constant int64_t* x_strides [[buffer(9)]],
     const constant int& w_batch_ndims [[buffer(10)]],
     const constant int* w_shape [[buffer(11)]],
-    const constant size_t* w_strides [[buffer(12)]],
-    const constant size_t* s_strides [[buffer(13)]],
-    const constant size_t* b_strides [[buffer(14)]],
+    const constant int64_t* w_strides [[buffer(12)]],
+    const constant int64_t* s_strides [[buffer(13)]],
+    const constant int64_t* b_strides [[buffer(14)]],
     const constant int& batch_ndims [[buffer(15)]],
     const constant int* batch_shape [[buffer(16)]],
     const device uint32_t* lhs_indices [[buffer(17)]],
     const device uint32_t* rhs_indices [[buffer(18)]],
-    const constant size_t* lhs_strides [[buffer(19)]],
-    const constant size_t* rhs_strides [[buffer(20)]],
+    const constant int64_t* lhs_strides [[buffer(19)]],
+    const constant int64_t* rhs_strides [[buffer(20)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
+  int M = x_shape[x_batch_ndims];
   adjust_matrix_offsets<T>(
       x,
       w,
@@ -1638,7 +1648,7 @@ template <typename T, int group_size, int bits>
       lhs_indices,
       rhs_indices,
       y,
-      out_vec_size,
+      out_vec_size * M,
       batch_ndims,
       batch_shape,
       lhs_strides,
@@ -1683,18 +1693,18 @@ template <
     const constant int& M [[buffer(7)]],
     const constant int& x_batch_ndims [[buffer(8)]],
     const constant int* x_shape [[buffer(9)]],
-    const constant size_t* x_strides [[buffer(10)]],
+    const constant int64_t* x_strides [[buffer(10)]],
     const constant int& w_batch_ndims [[buffer(11)]],
     const constant int* w_shape [[buffer(12)]],
-    const constant size_t* w_strides [[buffer(13)]],
-    const constant size_t* s_strides [[buffer(14)]],
-    const constant size_t* b_strides [[buffer(15)]],
+    const constant int64_t* w_strides [[buffer(13)]],
+    const constant int64_t* s_strides [[buffer(14)]],
+    const constant int64_t* b_strides [[buffer(15)]],
     const constant int& batch_ndims [[buffer(16)]],
     const constant int* batch_shape [[buffer(17)]],
     const device uint32_t* lhs_indices [[buffer(18)]],
     const device uint32_t* rhs_indices [[buffer(19)]],
-    const constant size_t* lhs_strides [[buffer(20)]],
-    const constant size_t* rhs_strides [[buffer(21)]],
+    const constant int64_t* lhs_strides [[buffer(20)]],
+    const constant int64_t* rhs_strides [[buffer(21)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint lid [[thread_index_in_threadgroup]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
@@ -1746,18 +1756,18 @@ template <
     const constant int& M [[buffer(7)]],
     const constant int& x_batch_ndims [[buffer(8)]],
     const constant int* x_shape [[buffer(9)]],
-    const constant size_t* x_strides [[buffer(10)]],
+    const constant int64_t* x_strides [[buffer(10)]],
     const constant int& w_batch_ndims [[buffer(11)]],
     const constant int* w_shape [[buffer(12)]],
-    const constant size_t* w_strides [[buffer(13)]],
-    const constant size_t* s_strides [[buffer(14)]],
-    const constant size_t* b_strides [[buffer(15)]],
+    const constant int64_t* w_strides [[buffer(13)]],
+    const constant int64_t* s_strides [[buffer(14)]],
+    const constant int64_t* b_strides [[buffer(15)]],
     const constant int& batch_ndims [[buffer(16)]],
     const constant int* batch_shape [[buffer(17)]],
     const device uint32_t* lhs_indices [[buffer(18)]],
     const device uint32_t* rhs_indices [[buffer(19)]],
-    const constant size_t* lhs_strides [[buffer(20)]],
-    const constant size_t* rhs_strides [[buffer(21)]],
+    const constant int64_t* lhs_strides [[buffer(20)]],
+    const constant int64_t* rhs_strides [[buffer(21)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint lid [[thread_index_in_threadgroup]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
@@ -1800,9 +1810,9 @@ template <typename T, const int group_size, const int bits>
     device T* biases [[buffer(3)]],
     uint2 index [[thread_position_in_grid]],
     uint2 grid_dim [[threads_per_grid]]) {
-  constexpr T eps = T(1e-7);
+  constexpr float eps = 1e-7;
   constexpr int simd_size = 32;
-  constexpr T n_bins = (1 << bits) - 1;
+  constexpr float n_bins = (1 << bits) - 1;
   constexpr int packs_per_int = bits == 3 ? 8 : bits == 6 ? 4 : 8 / bits;
   constexpr int values_per_reduce = group_size / simd_size;
   constexpr int writes_per_reduce = packs_per_int / values_per_reduce;
@@ -1818,30 +1828,30 @@ template <typename T, const int group_size, const int bits>
   size_t out_index = power_of_2_bits
       ? offset * writes_per_pack
       : offset * bytes_per_pack / writes_per_reduce;
-  T w_thread[values_per_reduce];
-  T w_min = Limits<T>::max;
-  T w_max = 0;
+  float w_thread[values_per_reduce];
+  float w_min = Limits<T>::max;
+  float w_max = 0;
 #pragma clang loop unroll(full)
   for (int i = 0; i < values_per_reduce; i++) {
-    T val = w[in_index + i];
+    float val = w[in_index + i];
     w_thread[i] = val;
     w_min = min(w_min, val);
     w_max = max(w_max, val);
   }
   w_min = simd_min(w_min);
   w_max = simd_max(w_max);
-  T scale = max((w_max - w_min) / n_bins, eps);
+  float scale = max((w_max - w_min) / n_bins, eps);
   bool side = abs(w_min) > abs(w_max);
   scale = side ? scale : -scale;
-  T edge = side ? w_min : w_max;
-  T q0 = round(edge / scale);
+  float edge = side ? w_min : w_max;
+  float q0 = round(edge / scale);
   bool at_zero = q0 == 0.0f;
   scale = at_zero ? scale : edge / q0;
-  T bias = at_zero ? T(0) : edge;
+  float bias = at_zero ? 0 : edge;
   size_t gindex = in_index / group_size;
   if (in_index % group_size == 0) {
-    scales[gindex] = scale;
-    biases[gindex] = bias;
+    scales[gindex] = static_cast<T>(scale);
+    biases[gindex] = static_cast<T>(bias);
   }
   uint32_t output = 0;
 #pragma clang loop unroll(full)

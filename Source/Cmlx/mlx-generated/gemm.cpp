@@ -101,8 +101,8 @@ struct BlockLoader {
 METAL_FUNC ulong2 elem_to_loc_broadcast(
     uint elem,
     constant const int* shape,
-    constant const size_t* a_strides,
-    constant const size_t* b_strides,
+    constant const int64_t* a_strides,
+    constant const int64_t* b_strides,
     int ndim) {
   ulong loc_a{0};
   ulong loc_b{0};
@@ -117,9 +117,9 @@ METAL_FUNC ulong2 elem_to_loc_broadcast(
 METAL_FUNC ulong3 elem_to_loc_broadcast(
     uint elem,
     constant const int* shape,
-    constant const size_t* a_strides,
-    constant const size_t* b_strides,
-    constant const size_t* c_strides,
+    constant const int64_t* a_strides,
+    constant const int64_t* b_strides,
+    constant const int64_t* c_strides,
     int ndim) {
   ulong loc_a{0};
   ulong loc_b{0};
@@ -784,9 +784,9 @@ struct GEMMParams {
   const int ldd;
   const int tiles_n;
   const int tiles_m;
-  const size_t batch_stride_a;
-  const size_t batch_stride_b;
-  const size_t batch_stride_d;
+  const int64_t batch_stride_a;
+  const int64_t batch_stride_b;
+  const int64_t batch_stride_d;
   const int swizzle_log;
   const int gemm_k_iterations_aligned;
   const int batch_ndim;
@@ -808,7 +808,7 @@ struct GEMMSpiltKParams {
 struct GEMMAddMMParams {
   const int ldc;
   const int fdc;
-  const size_t batch_stride_c;
+  const int64_t batch_stride_c;
   const float alpha;
   const float beta;
 };

@@ -31,6 +31,7 @@ make \
     copy \
     fft \
     gather \
+    gather_axis \
     gemm \
     gemv_masked \
     hadamard \
@@ -39,6 +40,7 @@ make \
     reduce_utils \
     scan \
     scatter \
+    scatter_axis \
     softmax \
     sort \
     steel_conv \
@@ -52,7 +54,7 @@ make \
     unary_ops \
     utils
 
-cd ../common
+cd ../cpu
 make cpu_compiled_preamble
 
 cd ../../../..
@@ -60,7 +62,7 @@ cd ../../../..
 rm -rf Source/Cmlx/mlx-generated/metal
 rm -f Source/Cmlx/mlx-generated/*
 cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
-cp build/mlx/backend/common/compiled_preamble.cpp Source/Cmlx/mlx-generated
+cp build/mlx/backend/cpu/compiled_preamble.cpp Source/Cmlx/mlx-generated
 
 # we don't need the cmake build directory any more
 rm -rf build
@@ -73,3 +75,7 @@ rm Source/Cmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh
+
+# copy in the bf16 header from metal 3.0 (since we don't know what metal version
+# will be available at build time)
+cp Source/Cmlx/mlx-generated/metal/metal_3_0/bf16.h Source/Cmlx/mlx-generated/metal

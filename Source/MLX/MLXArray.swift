@@ -272,6 +272,33 @@ public final class MLXArray {
             mlx_array_item_float32(&r, self.ctx)
             return Float(r)
 
+        case .float64:
+            var r: Float64 = 0
+            mlx_array_item_float64(&r, self.ctx)
+            return Float(r)
+
+        default: fatalError("itemFloat expected a floating point dtype: \(self.dtype)")
+        }
+    }
+
+    private func itemDouble() -> Double {
+        switch self.dtype {
+        #if !arch(x86_64)
+            case .float16:
+                var r: Float16 = 0
+                mlx_array_item_float16(&r, self.ctx)
+                return Double(r)
+        #endif
+        case .float32:
+            var r: Float32 = 0
+            mlx_array_item_float32(&r, self.ctx)
+            return Double(r)
+
+        case .float64:
+            var r: Float64 = 0
+            mlx_array_item_float64(&r, self.ctx)
+            return Double(r)
+
         default: fatalError("itemFloat expected a floating point dtype: \(self.dtype)")
         }
     }
@@ -322,11 +349,12 @@ public final class MLXArray {
                 }
             }
         #if !arch(x86_64)
-            case is Float.Type, is Float32.Type, is Float16.Type:
+            case is Float.Type, is Float32.Type, is Float16.Type, is Double.Type:
                 switch self.dtype {
-                case .float16, .float32:
+                case .float16, .float32, .float64:
                     switch type {
                     case is Float.Type: return Float(itemFloat()) as! T
+                    case is Float64.Type: return itemDouble() as! T
                     case is Float32.Type: return Float32(itemFloat()) as! T
                     case is Float16.Type: return Float16(itemFloat()) as! T
                     default:
@@ -400,6 +428,10 @@ public final class MLXArray {
         case is Float.Type:
             var r: Float = 0
             mlx_array_item_float32(&r, self.ctx)
+            return r as! T
+        case is Double.Type:
+            var r: Float64 = 0
+            mlx_array_item_float64(&r, self.ctx)
             return r as! T
         case is Complex<Float32>.Type:
             // mlx_array_item_complex64() isn't visible in swift so read the array
