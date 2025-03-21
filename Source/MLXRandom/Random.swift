@@ -6,7 +6,7 @@ import MLX
 
 @available(
     *, deprecated,
-    message: "`import MLXRandom` is deprecated. Instead `import MLX` and use `MLXRandom.*` "
+    message: "`import MLXRandom` is deprecated. All methods are now available through `import MLX"
 )
 public let deprecationWarning: Void = ()
 
@@ -16,7 +16,8 @@ public let deprecationWarning: Void = ()
 /// - ``key(_:)``
 /// - ``RandomState``
 /// - ``globalState``
-@available(*, deprecated, renamed: "MLXRandom.seed")
+@available(*, deprecated, message: "seed is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func seed(_ seed: UInt64) {
     return MLXRandom.seed(seed)
 }
@@ -26,7 +27,8 @@ public func seed(_ seed: UInt64) {
 /// Return a value that can be used as a PRNG key.  All ``MLXRandom``
 /// functions take an optional key -- this will let you control the
 /// random number generation.
-@available(*, deprecated, renamed: "MLXRandom.key")
+@available(*, deprecated, message: "key is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func key(_ seed: UInt64) -> MLXArray {
     return MLXRandom.key(seed)
 }
@@ -35,7 +37,8 @@ public func key(_ seed: UInt64) -> MLXArray {
 ///
 /// ### See Also
 /// - ``split(key:stream:)``
-@available(*, deprecated, renamed: "MLXRandom.split")
+@available(*, deprecated, message: "split is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func split(key: MLXArray, into num: Int, stream: StreamOrDevice = .default) -> [MLXArray] {
     return MLXRandom.split(key: key, into: num, stream: stream)
 }
@@ -44,7 +47,8 @@ public func split(key: MLXArray, into num: Int, stream: StreamOrDevice = .defaul
 ///
 /// ### See Also
 /// - ``split(key:into:stream:)``
-@available(*, deprecated, renamed: "MLXRandom.split")
+@available(*, deprecated, message: "split is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func split(key: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
     return MLXRandom.split(key: key, stream: stream)
 }
@@ -63,7 +67,8 @@ public func split(key: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray
 /// // same, but in range 0.5 ..< 1
 /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.uniform")
+@available(*, deprecated, message: "uniform is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func uniform<R: HasDType, T>(
     _ range: Range<R>, _ shape: [Int] = [], type: T.Type = Float.self, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -79,7 +84,7 @@ public func uniform<R: HasDType, T>(
 /// let key = MLXRandom.key(0)
 /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.uniform")
+@available(*, deprecated, message: "uniform is now avaiable in the main MLX module")
 @_disfavoredOverload
 public func uniform<T>(
     _ range: Range<Float> = 0 ..< 1, _ shape: [Int] = [], type: T.Type = Float.self,
@@ -102,7 +107,8 @@ public func uniform<T>(
 /// // and one in the range 10 ..< 100
 /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.uniform")
+@available(*, deprecated, message: "uniform is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func uniform<T>(
     low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self,
     key: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -124,7 +130,8 @@ public func uniform<T>(
 /// // and one in the range 10 ..< 100
 /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.uniform")
+@available(*, deprecated, message: "uniform is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func uniform(
     low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
     key: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -153,7 +160,8 @@ public func uniform(
 ///   - loc: mean of the distribution
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
-@available(*, deprecated, renamed: "MLXRandom.normal")
+@available(*, deprecated, message: "normal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func normal<T>(
     _ shape: [Int] = [], type: T.Type = Float.self, loc: Float = 0, scale: Float = 1,
     key: MLXArray? = nil,
@@ -183,7 +191,8 @@ public func normal<T>(
 ///   - loc: mean of the distribution
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
-@available(*, deprecated, renamed: "MLXRandom.normal")
+@available(*, deprecated, message: "normal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func normal(
     _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
     key: MLXArray? = nil,
@@ -208,7 +217,8 @@ public func normal(
 /// shapes of `mean` and `covariance`.
 ///   - dtype: DType of the result
 ///   - key: PRNG key
-@available(*, deprecated, renamed: "MLXRandom.multivariateNormal")
+@available(*, deprecated, message: "multivariateNormal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func multivariateNormal(
     mean: MLXArray, covariance: MLXArray, shape: [Int] = [], dtype: DType = .float32,
     key: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -232,7 +242,8 @@ public func multivariateNormal(
 /// // generate an array of shape [50] random Int32
 /// let array = MLXRandom.randInt(Int32(0) ..< 100, [50], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.randInt")
+@available(*, deprecated, message: "randInt is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func randInt<T>(
     _ range: Range<T>, _ shape: [Int] = [], key: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryInteger {
@@ -252,7 +263,8 @@ public func randInt<T>(
 /// // and one in the range 10 ..< 100
 /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.randInt")
+@available(*, deprecated, message: "randInt is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func randInt(
     low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -274,7 +286,8 @@ public func randInt(
 /// // and one in the range 10 ..< 100
 /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], type: Int8.self, key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.randInt")
+@available(*, deprecated, message: "randInt is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func randInt<T>(
     low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type,
     key: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -296,7 +309,8 @@ public func randInt<T>(
 /// // generate an array of shape [50, 2] of random Bool
 /// let array = MLXRandom.bernoulli([50, 2], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.bernoulli")
+@available(*, deprecated, message: "bernoulli is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func bernoulli(_ shape: [Int] = [], key: MLXArray? = nil, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -321,7 +335,8 @@ public func bernoulli(_ shape: [Int] = [], key: MLXArray? = nil, stream: StreamO
 /// // generate an array of [3] Bool with the given p values
 /// let array = MLXRandom.bernoulli(MLXArray(convert: [0.1, 0.5, 0.8]), key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.bernoulli")
+@available(*, deprecated, message: "bernoulli is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func bernoulli(
     _ p: ScalarOrArray, _ shape: [Int]? = nil, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -347,7 +362,8 @@ public func bernoulli(
 ///
 /// ### See also
 /// - [JAX Documentation](https://jax.readthedocs.io/en/latest/_modules/jax/_src/random.html#truncated_normal)
-@available(*, deprecated, renamed: "MLXRandom.truncatedNormal")
+@available(*, deprecated, message: "truncatedNormal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func truncatedNormal<R: HasDType, T>(
     _ range: Range<R>, _ shape: [Int] = [], type: T.Type = Float.self, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -363,7 +379,8 @@ public func truncatedNormal<R: HasDType, T>(
 /// let key = MLXRandom.key(0)
 /// let array = MLXRandom.truncatedNormal(0.5 ..< 1, [50], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.truncatedNormal")
+@available(*, deprecated, message: "truncatedNormal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func truncatedNormal<T>(
     _ range: Range<Float>, _ shape: [Int] = [], type: T.Type = Float.self, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -384,7 +401,8 @@ public func truncatedNormal<T>(
 /// // and one in the range 10 ..< 100
 /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.truncatedNormal")
+@available(*, deprecated, message: "truncatedNormal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func truncatedNormal<T>(
     low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self,
     key: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -406,7 +424,8 @@ public func truncatedNormal<T>(
 /// // and one in the range 10 ..< 100
 /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.truncatedNormal")
+@available(*, deprecated, message: "truncatedNormal is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func truncatedNormal(
     low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
     key: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -429,7 +448,8 @@ public func truncatedNormal(
 /// // generate an array of Float with Gumbel distribution in shape [10, 5]
 /// let array = MLXRandom.gumbel([10, 5], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.gumbel")
+@available(*, deprecated, message: "gumbel is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func gumbel<T>(
     _ shape: [Int] = [], type: T.Type = Float.self, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -451,7 +471,8 @@ public func gumbel<T>(
 /// // generate an array of Float with Gumbel distribution in shape [10, 5]
 /// let array = MLXRandom.gumbel([10, 5], key: key)
 /// ```
-@available(*, deprecated, renamed: "MLXRandom.gumbel")
+@available(*, deprecated, message: "gumbel is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func gumbel(
     _ shape: [Int] = [], dtype: DType = .float32, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -477,7 +498,8 @@ public func gumbel(
 ///
 /// - Parameters:
 ///     - logits: The *unnormalized* categorical distribution(s).
-@available(*, deprecated, renamed: "MLXRandom.categorical")
+@available(*, deprecated, message: "categorical is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func categorical(
     _ logits: MLXArray, axis: Int = -1, shape: [Int]? = nil, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -501,7 +523,8 @@ public func categorical(
 ///
 /// - Parameters:
 ///     - logits: The *unnormalized* categorical distribution(s).
-@available(*, deprecated, renamed: "MLXRandom.categorical")
+@available(*, deprecated, message: "categorical is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func categorical(
     _ logits: MLXArray, axis: Int = -1, count: Int, key: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -516,7 +539,8 @@ public func categorical(
 ///   - dtype: type of the output
 ///   - loc: mean of the distribution
 ///   - scale: scale "b" of the distribution
-@available(*, deprecated, renamed: "MLXRandom.laplace")
+@available(*, deprecated, message: "laplace is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func laplace(
     _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
     key: MLXArray? = nil, stream: StreamOrDevice = .default

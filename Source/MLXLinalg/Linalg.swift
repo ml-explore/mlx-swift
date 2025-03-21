@@ -6,7 +6,7 @@ import MLX
 
 @available(
     *, deprecated,
-    message: "`import MLXLinalg` is deprecated. Instead `import MLX` and use `MLXLinalg.*` "
+    message: "`import MLXLinalg` is deprecated. All methods are now available through `import MLX"
 )
 public let deprecationWarning: Void = ()
 
@@ -51,7 +51,8 @@ public let deprecationWarning: Void = ()
 ///
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-@available(*, deprecated, renamed: "MLXLinalg.norm")
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -100,7 +101,8 @@ public func norm(
 ///
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-@available(*, deprecated, renamed: "MLXLinalg.norm")
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -111,7 +113,8 @@ public func norm(
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-@available(*, deprecated, renamed: "MLXLinalg.norm")
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -122,7 +125,8 @@ public func norm(
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-@available(*, deprecated, renamed: "MLXLinalg.norm")
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -133,7 +137,8 @@ public func norm(
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-@available(*, deprecated, renamed: "MLXLinalg.norm")
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -144,7 +149,8 @@ public func norm(
 /// Matrix or vector norm.
 ///
 /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
-@available(*, deprecated, renamed: "MLXLinalg.norm")
+@available(*, deprecated, message: "norm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func norm(
     _ array: MLXArray, ord: Double, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -159,7 +165,8 @@ public func norm(
 /// the input.
 ///
 /// - Returns: the `Q` and `R` matrices
-@available(*, deprecated, renamed: "MLXLinalg.qr")
+@available(*, deprecated, message: "qr is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
     return MLXLinalg.qr(array, stream: stream)
 }
@@ -174,7 +181,8 @@ public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArra
 ///   - array: input array
 ///   - stream: stream or device to evaluate on
 /// - Returns: The `U`, `S`, and `Vt` matrices, such that `A = matmul(U, matmul(diag(S), Vt))`
-@available(*, deprecated, renamed: "MLXLinalg.svd")
+@available(*, deprecated, message: "svd is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
     MLXArray, MLXArray, MLXArray
 ) {
@@ -191,7 +199,8 @@ public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
 ///   - array: input array
 ///   - stream: stream or device to evaluate on
 /// - Returns: `ainv` such that `dot(a, ainv) = dot(ainv, a) = eye(a.shape[0])`
-@available(*, deprecated, renamed: "MLXLinalg.inv")
+@available(*, deprecated, message: "inv is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     return MLXLinalg.inv(array, stream: stream)
 }
@@ -207,7 +216,8 @@ public func inv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///   - upper: true if the array is an upper triangular matrix
 ///   - stream: stream or device to evaluate on
 /// - Returns: `ainv` such that `dot(a, ainv) = dot(ainv, a) = eye(a.shape[0])`
-@available(*, deprecated, renamed: "MLXLinalg.triInv")
+@available(*, deprecated, message: "triInv is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func triInv(
     _ array: MLXArray, upper: Bool = false,
     stream: StreamOrDevice = .default
@@ -228,7 +238,8 @@ public func triInv(
 ///   - upper: if true return the upper triangular Cholesky factor, otherwise the lower triangular
 ///         Cholesky factor.
 ///   - stream: stream or device to evaluate on
-@available(*, deprecated, renamed: "MLXLinalg.cholesky")
+@available(*, deprecated, message: "cholesky is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -248,7 +259,8 @@ public func cholesky(_ array: MLXArray, upper: Bool = false, stream: StreamOrDev
 ///   - upper: if true return the upper triangular Cholesky factor, otherwise the lower triangular
 ///         Cholesky factor.
 ///   - stream: stream or device to evaluate on
-@available(*, deprecated, renamed: "MLXLinalg.choleskyInv")
+@available(*, deprecated, message: "choleskyInv is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -266,7 +278,8 @@ public func choleskyInv(_ array: MLXArray, upper: Bool = false, stream: StreamOr
 ///   - b: input array
 ///   - axis: axis along which to compute the cross product
 ///   - stream: stream or device to evaluate on
-@available(*, deprecated, renamed: "MLXLinalg.cross")
+@available(*, deprecated, message: "cross is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -287,7 +300,8 @@ public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOr
 /// -Parameters:
 ///   - a: input array.
 ///   - stream: stream or device
-@available(*, deprecated, renamed: "MLXLinalg.lu")
+@available(*, deprecated, message: "lu is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func lu(_ a: MLXArray, stream: StreamOrDevice = .default)
     -> (MLXArray, MLXArray, MLXArray)
 {
@@ -299,7 +313,8 @@ public func lu(_ a: MLXArray, stream: StreamOrDevice = .default)
 /// -Parameters:
 ///   - a: input array.
 ///   - stream: stream or device
-@available(*, deprecated, renamed: "MLXLinalg.lu_factor")
+@available(*, deprecated, message: "lu_factor is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
     -> (MLXArray, MLXArray)
 {
@@ -312,7 +327,8 @@ public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
 ///   - a: input array.
 ///   - b: input array.
 ///   - stream: stream or device
-@available(*, deprecated, renamed: "MLXLinalg.solve")
+@available(*, deprecated, message: "solve is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -326,7 +342,8 @@ public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defaul
 ///   - b: input array.
 ///   - upper: Whether the array is upper or lower triangular
 ///   - stream: stream or device
-@available(*, deprecated, renamed: "MLXLinalg.solveTriangular")
+@available(*, deprecated, message: "solveTriangular is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func solveTriangular(
     _ a: MLXArray, _ b: MLXArray, upper: Bool = false, stream: StreamOrDevice = .default
 )

@@ -5,7 +5,7 @@ import MLX
 
 @available(
     *, deprecated,
-    message: "`import MLXFast` is deprecated. Instead `import MLX` and use `MLXFast.*` "
+    message: "`import MLXFast` is deprecated. All methods are now available through `import MLX"
 )
 public let deprecationWarning: Void = ()
 
@@ -28,7 +28,8 @@ public let deprecationWarning: Void = ()
 /// ```
 ///
 /// > Note: `MLXNN.RoPE` uses this implementation internally.
-@available(*, deprecated, renamed: "MLXFast.RoPE")
+@available(*, deprecated, message: "RoPE is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func RoPE(
     _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float?, scale: Float, offset: Int,
     freqs: MLXArray? = nil, stream: StreamOrDevice = .default
@@ -60,7 +61,10 @@ public func RoPE(
 ///
 /// return matmul(scores, values).transposed(0, 2, 1, 3)
 /// ```
-@available(*, deprecated, renamed: "MLXFast.scaledDotProductAttention")
+@available(
+    *, deprecated, message: "scaledDotProductAttention is now avaiable in the main MLX module"
+)
+@_disfavoredOverload
 public func scaledDotProductAttention(
     queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
     memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
@@ -80,7 +84,8 @@ public func scaledDotProductAttention(
 ///     with the same size as the last axis of `x`.
 ///   - eps: A small additive constant for numerical stability
 ///   - stream: stream or device to evaluate on
-@available(*, deprecated, renamed: "MLXFast.rmsNorm")
+@available(*, deprecated, message: "rmsNorm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -99,6 +104,8 @@ public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamO
 ///     with the same size as the last axis of `x`.  It not given no offset will occur.
 ///   - eps: A small additive constant for numerical stability
 ///   - stream: stream or device to evaluate on
+@available(*, deprecated, message: "layerNorm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func layerNorm(
     _ x: MLXArray, weight: MLXArray? = nil, bias: MLXArray? = nil, eps: Float,
     stream: StreamOrDevice = .default
