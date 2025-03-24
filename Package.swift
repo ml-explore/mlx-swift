@@ -50,6 +50,8 @@ let package = Package(
                 "fmt/src/os.cc",
                 "fmt/src/fmt.cc",
 
+                // these are selected conditionally
+                "mlx/mlx/backend/no_cpu/compiled.cpp",
                 "mlx/mlx/backend/cpu/compiled.cpp",
 
                 // mlx files that are not part of the build
@@ -75,10 +77,6 @@ let package = Package(
                 "mlx/mlx/backend/no_cpu",
 
                 "mlx/mlx/backend/common/default_primitives.cpp",
-
-                // this uses neon code and will not build on x86 (e.g. via Release).
-                // see mlx-conditional/accelerate-softmax.cpp
-                "mlx/mlx/backend/accelerate/softmax.cpp",
 
                 // build variants (we are opting _out_ of these)
                 "mlx/mlx/io/no_safetensors.cpp",

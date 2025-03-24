@@ -155,4 +155,21 @@ class MLXArrayInitTests: XCTestCase {
 
         assertEqual(c1, c2)
     }
+
+    func testFloat64Array() {
+        let d: [Double] = [1.0, 2.0, 3.0]
+        let a = MLXArray(d)
+        XCTAssertEqual(a.dtype, .float64)
+
+        let b = MLXArray(0.5)
+        XCTAssertEqual(b.dtype, .float32)
+
+        let c = MLXArray(1.1e40)
+
+        XCTAssertEqual(c.dtype, .float64)
+
+        let e = MLXArray(float64: 0.5)
+        XCTAssertEqual(e.dtype, .float64)
+    }
+
 }

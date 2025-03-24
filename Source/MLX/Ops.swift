@@ -359,14 +359,14 @@ public func asStrided(
 ) -> MLXArray {
     let shape = shape ?? array.shape
 
-    let resolvedStrides: [Int]
+    let resolvedStrides: [Int64]
     if let strides {
-        resolvedStrides = strides
+        resolvedStrides = strides.map { .init($0) }
     } else {
-        var result = [Int]()
+        var result = [Int64]()
         var cum = 1
         for v in shape.reversed() {
-            result.append(cum)
+            result.append(Int64(cum))
             cum = cum * v
         }
         resolvedStrides = result.reversed()
@@ -375,7 +375,7 @@ public func asStrided(
     var result = mlx_array_new()
     mlx_as_strided(
         &result,
-        array.ctx, shape.asInt32, shape.count, resolvedStrides.asInt64, resolvedStrides.count,
+        array.ctx, shape.asInt32, shape.count, resolvedStrides, resolvedStrides.count,
         offset,
         stream.ctx)
     return MLXArray(result)

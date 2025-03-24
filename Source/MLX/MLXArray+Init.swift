@@ -95,6 +95,22 @@ extension MLXArray {
         self.init(mlx_array_new_float(value))
     }
 
+    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Double` as
+    /// a `Dtype.float64`.
+    ///
+    /// ```swift
+    /// let a = MLXArray(float64: 1.1e11)
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    public convenience init(float64 value: Double) {
+        self.init(
+            withUnsafePointer(to: value) { ptr in
+                mlx_array_new_data(ptr, [], 0, Double.dtype.cmlxDtype)
+            })
+    }
+
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value.
     ///
     /// ```swift
@@ -104,10 +120,19 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     public convenience init<T: HasDType>(_ value: T) {
-        self.init(
-            withUnsafePointer(to: value) { ptr in
-                mlx_array_new_data(ptr, [], 0, T.dtype.cmlxDtype)
-            })
+        let floatMax = Double(Float.greatestFiniteMagnitude)
+        let doubleValue = value as? Double
+        if doubleValue != nil && doubleValue! < floatMax && doubleValue! > -floatMax {
+            self.init(
+                withUnsafePointer(to: Float(doubleValue!)) { ptr in
+                    mlx_array_new_data(ptr, [], 0, DType.float32.cmlxDtype)
+                })
+        } else {
+            self.init(
+                withUnsafePointer(to: value) { ptr in
+                    mlx_array_new_data(ptr, [], 0, T.dtype.cmlxDtype)
+                })
+        }
     }
 
     /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` with a ``DType/bfloat16``
@@ -189,6 +214,8 @@ extension MLXArray {
                     self.init(bfloat16: Float32(v))
                 case .complex64:
                     self.init(real: Float32(v), imaginary: 0)
+                case .float64:
+                    self.init(Float64(v))
                 }
 
             } else if let v = value as? (any BinaryInteger) {
@@ -225,6 +252,8 @@ extension MLXArray {
                     self.init(bfloat16: Float32(v))
                 case .complex64:
                     self.init(real: Float32(v), imaginary: 0)
+                case .float64:
+                    self.init(Float64(v))
                 }
 
             } else {
