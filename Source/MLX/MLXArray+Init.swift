@@ -121,10 +121,9 @@ extension MLXArray {
     /// - <doc:initialization>
     public convenience init<T: HasDType>(_ value: T) {
         let floatMax = Double(Float.greatestFiniteMagnitude)
-        let doubleValue = value as? Double
-        if doubleValue != nil && doubleValue! < floatMax && doubleValue! > -floatMax {
+        if let doubleValue = value as? Double, doubleValue < floatMax && doubleValue > -floatMax {
             self.init(
-                withUnsafePointer(to: Float(doubleValue!)) { ptr in
+                withUnsafePointer(to: Float(doubleValue)) { ptr in
                     mlx_array_new_data(ptr, [], 0, DType.float32.cmlxDtype)
                 })
         } else {
