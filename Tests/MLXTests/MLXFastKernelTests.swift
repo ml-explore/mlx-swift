@@ -2,8 +2,6 @@
 
 import Foundation
 import MLX
-import MLXFast
-import MLXRandom
 import XCTest
 
 class MLXFastKernelTests: XCTestCase {
@@ -11,7 +9,7 @@ class MLXFastKernelTests: XCTestCase {
     func testCustomKernelBasic() {
         // based on def test_custom_kernel_basic
         MLXRandom.seed(7)
-        let a = normal([2, 2])
+        let a = MLXRandom.normal([2, 2])
         let kernel = MLXFast.metalKernel(
             name: "basic",
             inputNames: ["a"],
@@ -33,8 +31,8 @@ class MLXFastKernelTests: XCTestCase {
     func testCustomKernelArgs() {
         // based on def test_custom_kernel_args
         MLXRandom.seed(7)
-        let a = normal([3, 6])
-        let c = normal([2, 2]).asType(.bfloat16)
+        let a = MLXRandom.normal([3, 6])
+        let c = MLXRandom.normal([2, 2]).asType(.bfloat16)
 
         let kernel = MLXFast.metalKernel(
             name: "arg_test",

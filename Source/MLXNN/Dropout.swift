@@ -2,7 +2,6 @@
 
 import Foundation
 import MLX
-import MLXRandom
 
 /// Randomly zero a portion of the elements during training.
 ///
@@ -27,7 +26,7 @@ open class Dropout: Module, UnaryLayer {
             return x
         }
 
-        let mask = bernoulli(p1, x.shape)
+        let mask = MLXRandom.bernoulli(p1, x.shape)
         return (mask * x) * (1 / p1)
     }
 }
@@ -78,7 +77,7 @@ open class Dropout2d: Module, UnaryLayer {
         maskShape[maskShape.endIndex - 2] = 1
         maskShape[maskShape.endIndex - 3] = 1
 
-        let mask = bernoulli(p1, maskShape)
+        let mask = MLXRandom.bernoulli(p1, maskShape)
         return (mask * x) * (1 / p1)
     }
 }
@@ -126,7 +125,7 @@ open class Dropout3d: Module, UnaryLayer {
         maskShape[maskShape.endIndex - 3] = 1
         maskShape[maskShape.endIndex - 4] = 1
 
-        let mask = bernoulli(p1, maskShape)
+        let mask = MLXRandom.bernoulli(p1, maskShape)
         return (mask * x) * (1 / p1)
     }
 }
