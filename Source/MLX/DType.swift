@@ -38,6 +38,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
     case float32
     case bfloat16
     case complex64
+    case float64
 
     init(_ cmlxDtype: mlx_dtype) {
         switch cmlxDtype {
@@ -54,6 +55,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
         case MLX_FLOAT32: self = .float32
         case MLX_BFLOAT16: self = .bfloat16
         case MLX_COMPLEX64: self = .complex64
+        case MLX_FLOAT64: self = .float64
         default:
             fatalError("Unsupported dtype: \(cmlxDtype)")
         }
@@ -74,12 +76,13 @@ public enum DType: Hashable, Sendable, CaseIterable {
         case .float32: MLX_FLOAT32
         case .bfloat16: MLX_BFLOAT16
         case .complex64: MLX_COMPLEX64
+        case .float64: MLX_FLOAT64
         }
     }
 
     public var isFloatingPoint: Bool {
         switch self {
-        case .float16, .float32, .bfloat16, .complex64: true
+        case .float16, .float32, .bfloat16, .complex64, .float64: true
         default: false
         }
     }
@@ -249,6 +252,16 @@ extension Float32: HasDType {
     }
 }
 
+extension Float64: HasDType {
+    static public var dtype: DType { .float64 }
+
+    public func asMLXArray(dtype: DType?) -> MLXArray {
+        // we don't automatically promote to float64
+        let dtype = dtype ?? .float32
+        return MLXArray(self, dtype: dtype.isFloatingPoint ? dtype : .float32)
+    }
+}
+
 extension Complex: HasDType where RealType == Float {
     static public var dtype: DType { .complex64 }
 }
@@ -270,13 +283,6 @@ public protocol ScalarOrArray {
     ///
     /// See also `toArrays(_:_:)` (internal).
     func asMLXArray(dtype: DType?) -> MLXArray
-}
-
-extension Double: ScalarOrArray {
-    public func asMLXArray(dtype: DType?) -> MLXArray {
-        let dtype = dtype ?? .float32
-        return MLXArray(Float(self), dtype: dtype.isFloatingPoint ? dtype : .float32)
-    }
 }
 
 extension Complex: ScalarOrArray where RealType == Float {

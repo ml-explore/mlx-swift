@@ -89,25 +89,11 @@ struct Limits<complex64_t> {
 ///////////////////////////////////////////////////////////////////////////////
 // Single Array with generic dims
 
-template <typename StrideT, typename IdxT = StrideT>
+template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc(
-    uint elem,
+    IdxT elem,
     constant const int* shape,
-    constant const StrideT* strides,
-    int ndim) {
-  IdxT loc = 0;
-  for (int i = ndim - 1; i >= 0 && elem > 0; --i) {
-    loc += (elem % shape[i]) * IdxT(strides[i]);
-    elem /= shape[i];
-  }
-  return loc;
-}
-
-template <typename StrideT, typename IdxT = StrideT>
-METAL_FUNC IdxT elem_to_loc(
-    StrideT elem,
-    constant const int* shape,
-    constant const StrideT* strides,
+    constant const int64_t* strides,
     int ndim) {
   IdxT loc = 0;
   for (int i = ndim - 1; i >= 0 && elem > 0; --i) {
@@ -118,11 +104,11 @@ METAL_FUNC IdxT elem_to_loc(
 }
 
 // Non templated version to handle arbitrary dims
-template <typename StrideT, typename IdxT = StrideT>
+template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc(
     uint3 elem,
     constant const int* shape,
-    constant const StrideT* strides,
+    constant const int64_t* strides,
     int ndim) {
   IdxT loc =
       elem.x * IdxT(strides[ndim - 1]) + elem.y * IdxT(strides[ndim - 2]);
@@ -136,18 +122,18 @@ METAL_FUNC IdxT elem_to_loc(
 ///////////////////////////////////////////////////////////////////////////////
 // Single Array with fixed N dims
 
-template <typename StrideT, typename IdxT = StrideT>
-METAL_FUNC IdxT elem_to_loc_1(uint elem, constant const StrideT& stride) {
+template <typename IdxT = int64_t>
+METAL_FUNC IdxT elem_to_loc_1(uint elem, constant const int64_t& stride) {
   return elem * IdxT(stride);
 }
 
-template <typename StrideT, typename IdxT = StrideT>
-METAL_FUNC IdxT elem_to_loc_2(uint2 elem, constant const StrideT strides[2]) {
+template <typename IdxT = int64_t>
+METAL_FUNC IdxT elem_to_loc_2(uint2 elem, constant const int64_t strides[2]) {
   return elem.x * IdxT(strides[1]) + elem.y * IdxT(strides[0]);
 }
 
-template <typename StrideT, typename IdxT = StrideT>
-METAL_FUNC IdxT elem_to_loc_3(uint3 elem, constant const StrideT strides[3]) {
+template <typename IdxT = int64_t>
+METAL_FUNC IdxT elem_to_loc_3(uint3 elem, constant const int64_t strides[3]) {
   return elem.x * IdxT(strides[2]) + elem.y * IdxT(strides[1]) +
       elem.z * IdxT(strides[0]);
 }
@@ -155,12 +141,12 @@ METAL_FUNC IdxT elem_to_loc_3(uint3 elem, constant const StrideT strides[3]) {
 ///////////////////////////////////////////////////////////////////////////////
 // Multiple Arrays with generic dims
 
-template <typename StrideT, typename IdxT = StrideT>
+template <typename IdxT = int64_t>
 METAL_FUNC vec<IdxT, 2> elem_to_loc_2_nd(
     uint3 elem,
     constant const int* shape,
-    constant const StrideT* a_strides,
-    constant const StrideT* b_strides,
+    constant const int64_t* a_strides,
+    constant const int64_t* b_strides,
     int ndim) {
   vec<IdxT, 2> loc = {
       IdxT(
@@ -178,18 +164,21 @@ METAL_FUNC vec<IdxT, 2> elem_to_loc_2_nd(
   return loc;
 }
 
-template <typename IdxT = size_t>
+template <typename IdxT = int64_t>
 METAL_FUNC vec<IdxT, 3> elem_to_loc_3_nd(
     uint3 elem,
     constant const int* shape,
-    constant const size_t* a_strides,
-    constant const size_t* b_strides,
-    constant const size_t* c_strides,
+    constant const int64_t* a_strides,
+    constant const int64_t* b_strides,
+    constant const int64_t* c_strides,
     int ndim) {
   vec<IdxT, 3> loc = {
-      elem.x * IdxT(a_strides[ndim - 1]) + elem.y * IdxT(a_strides[ndim - 2]),
-      elem.x * IdxT(b_strides[ndim - 1]) + elem.y * IdxT(b_strides[ndim - 2]),
-      elem.x * IdxT(c_strides[ndim - 1]) + elem.y * IdxT(c_strides[ndim - 2])};
+      IdxT(elem.x * IdxT(a_strides[ndim - 1])) +
+          IdxT(elem.y * IdxT(a_strides[ndim - 2])),
+      IdxT(elem.x * IdxT(b_strides[ndim - 1])) +
+          IdxT(elem.y * IdxT(b_strides[ndim - 2])),
+      IdxT(elem.x * IdxT(c_strides[ndim - 1])) +
+          IdxT(elem.y * IdxT(c_strides[ndim - 2]))};
   for (int d = ndim - 3; d >= 0; --d) {
     uint l = elem.z % shape[d];
     loc.x += l * IdxT(a_strides[d]);
@@ -213,7 +202,7 @@ struct LoopedElemToLoc {
 
   LoopedElemToLoc(int dim) : dim(dim), inner_looper(dim - 1) {}
 
-  void next(const constant int* shape, const constant size_t* strides) {
+  void next(const constant int* shape, const constant int64_t* strides) {
     if (dim == 0) {
       return;
     }
@@ -226,7 +215,7 @@ struct LoopedElemToLoc {
     }
   }
 
-  void next(int n, const constant int* shape, const constant size_t* strides) {
+  void next(int n, const constant int* shape, const constant int64_t* strides) {
     if (dim == 0) {
       return;
     }
@@ -262,19 +251,19 @@ struct LoopedElemToLoc<1, OffsetT, true> {
 
   LoopedElemToLoc(int dim) : dim(dim) {}
 
-  void next(const constant int* shape, const constant size_t* strides) {
+  void next(const constant int* shape, const constant int64_t* strides) {
     index++;
     if (dim > 1) {
-      offset = elem_to_loc<size_t, OffsetT>(index, shape, strides, dim);
+      offset = elem_to_loc<OffsetT>(index, shape, strides, dim);
     } else {
       offset += OffsetT(strides[0]);
     }
   }
 
-  void next(int n, const constant int* shape, const constant size_t* strides) {
+  void next(int n, const constant int* shape, const constant int64_t* strides) {
     index += n;
     if (dim > 1) {
-      offset = elem_to_loc<size_t, OffsetT>(index, shape, strides, dim);
+      offset = elem_to_loc<OffsetT>(index, shape, strides, dim);
     } else {
       offset = index * OffsetT(strides[0]);
     }
@@ -291,11 +280,11 @@ struct LoopedElemToLoc<1, OffsetT, false> {
 
   LoopedElemToLoc(int) {}
 
-  void next(const constant int*, const constant size_t* strides) {
+  void next(const constant int*, const constant int64_t* strides) {
     offset += OffsetT(strides[0]);
   }
 
-  void next(int n, const constant int*, const constant size_t* strides) {
+  void next(int n, const constant int*, const constant int64_t* strides) {
     offset += n * OffsetT(strides[0]);
   }
 
@@ -421,3 +410,14 @@ inline complex64_t simd_shuffle(complex64_t data, uint16_t lane) {
   return complex64_t(
       simd_shuffle(data.real, lane), simd_shuffle(data.imag, lane));
 }
+
+// std::conditional is not included with Metal
+template <bool condition, typename T, typename U>
+struct ConditionalType {
+  using type = U;
+};
+
+template <typename T, typename U>
+struct ConditionalType<true, T, U> {
+  using type = T;
+};

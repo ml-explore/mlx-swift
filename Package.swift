@@ -51,9 +51,8 @@ let package = Package(
                 "fmt/src/fmt.cc",
 
                 // these are selected conditionally
-                // via mlx-conditional/compiled_conditional.cpp
-                "mlx/mlx/backend/common/compiled_nocpu.cpp",
-                "mlx/mlx/backend/common/compiled_cpu.cpp",
+                "mlx/mlx/backend/no_cpu/compiled.cpp",
+                "mlx/mlx/backend/cpu/compiled.cpp",
 
                 // mlx files that are not part of the build
                 "mlx/ACKNOWLEDGMENTS.md",
@@ -79,10 +78,6 @@ let package = Package(
 
                 "mlx/mlx/backend/common/default_primitives.cpp",
 
-                // this uses neon code and will not build on x86 (e.g. via Release).
-                // see mlx-conditional/accelerate-softmax.cpp
-                "mlx/mlx/backend/accelerate/softmax.cpp",
-
                 // build variants (we are opting _out_ of these)
                 "mlx/mlx/io/no_safetensors.cpp",
                 "mlx/mlx/io/gguf.cpp",
@@ -93,9 +88,13 @@ let package = Package(
                 "mlx/mlx/backend/metal/nojit_kernels.cpp",
 
                 // do not build distributed support (yet)
-                "mlx/mlx/distributed/mpi",
+                "mlx/mlx/distributed/mpi/mpi.cpp",
                 "mlx/mlx/distributed/ops.cpp",
                 "mlx/mlx/distributed/primitives.cpp",
+                "mlx/mlx/distributed/ring/ring.cpp",
+
+                "mlx/mlx/backend/cpu/gemms/no_bf16.cpp",
+                "mlx/mlx/backend/cpu/gemms/no_fp16.cpp",
             ],
 
             cSettings: [
@@ -110,6 +109,7 @@ let package = Package(
                 .headerSearchPath("json/single_include/nlohmann"),
                 .headerSearchPath("fmt/include"),
 
+                .define("MLX_USE_ACCELERATE"),
                 .define("ACCELERATE_NEW_LAPACK"),
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),

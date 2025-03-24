@@ -145,7 +145,7 @@ int mlx_as_strided(
     const mlx_array a,
     const int* shape,
     size_t shape_num,
-    const size_t* strides,
+    const int64_t* strides,
     size_t strides_num,
     size_t offset,
     const mlx_stream s);
@@ -162,6 +162,7 @@ int mlx_bitwise_and(
     const mlx_array a,
     const mlx_array b,
     const mlx_stream s);
+int mlx_bitwise_invert(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_bitwise_or(
     mlx_array* res,
     const mlx_array a,
@@ -473,6 +474,11 @@ int mlx_isinf(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_isnan(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_isneginf(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_isposinf(mlx_array* res, const mlx_array a, const mlx_stream s);
+int mlx_kron(
+    mlx_array* res,
+    const mlx_array a,
+    const mlx_array b,
+    const mlx_stream s);
 int mlx_left_shift(
     mlx_array* res,
     const mlx_array a,
@@ -757,6 +763,13 @@ int mlx_scatter_add(
     const int* axes,
     size_t axes_num,
     const mlx_stream s);
+int mlx_scatter_add_axis(
+    mlx_array* res,
+    const mlx_array a,
+    const mlx_array indices,
+    const mlx_array values,
+    int axis,
+    const mlx_stream s);
 int mlx_scatter_max(
     mlx_array* res,
     const mlx_array a,
@@ -960,6 +973,13 @@ int mlx_tri(
     const mlx_stream s);
 int mlx_tril(mlx_array* res, const mlx_array x, int k, const mlx_stream s);
 int mlx_triu(mlx_array* res, const mlx_array x, int k, const mlx_stream s);
+int mlx_unflatten(
+    mlx_array* res,
+    const mlx_array a,
+    int axis,
+    const int* shape,
+    size_t shape_num,
+    const mlx_stream s);
 int mlx_var(
     mlx_array* res,
     const mlx_array a,
