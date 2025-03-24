@@ -3,6 +3,12 @@
 import Cmlx
 import MLX
 
+@available(
+    *, deprecated,
+    message: "`import MLXFast` is deprecated. All methods are now available through `import MLX"
+)
+public let deprecationWarning: Void = ()
+
 /// Optimized implementation of `NN.RoPE`.
 ///
 /// Used like this:
@@ -22,17 +28,15 @@ import MLX
 /// ```
 ///
 /// > Note: `MLXNN.RoPE` uses this implementation internally.
+@available(*, deprecated, message: "RoPE is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func RoPE(
     _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float?, scale: Float, offset: Int,
     freqs: MLXArray? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    let base = mlx_optional_float(value: base ?? 0, has_value: base != nil)
-    mlx_fast_rope(
-        &result,
-        array.ctx, Int32(dimensions), traditional, base, scale, Int32(offset),
-        (freqs ?? .mlxNone).ctx, stream.ctx)
-    return MLXArray(result)
+    return MLXFast.RoPE(
+        array, dimensions: dimensions, traditional: traditional, base: base, scale: scale,
+        offset: offset, freqs: freqs, stream: stream)
 }
 
 /// A fast implementation of multi-head attention: `O = softmax(Q @ K.T, dim=-1) @ V`
@@ -57,18 +61,17 @@ public func RoPE(
 ///
 /// return matmul(scores, values).transposed(0, 2, 1, 3)
 /// ```
+@available(
+    *, deprecated, message: "scaledDotProductAttention is now avaiable in the main MLX module"
+)
+@_disfavoredOverload
 public func scaledDotProductAttention(
     queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
     memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    let memoryEfficientThreshold = mlx_optional_int(
-        value: Int32(memoryEfficientThreshold ?? 0), has_value: memoryEfficientThreshold != nil)
-    mlx_fast_scaled_dot_product_attention(
-        &result,
-        queries.ctx, keys.ctx, values.ctx, scale, (mask ?? .mlxNone).ctx,
-        memoryEfficientThreshold, stream.ctx)
-    return MLXArray(result)
+    return MLXFast.scaledDotProductAttention(
+        queries: queries, keys: keys, values: values, scale: scale, mask: mask,
+        memoryEfficientThreshold: memoryEfficientThreshold, stream: stream)
 }
 
 /// Root Mean Square normalization (RMS norm).
@@ -81,12 +84,12 @@ public func scaledDotProductAttention(
 ///     with the same size as the last axis of `x`.
 ///   - eps: A small additive constant for numerical stability
 ///   - stream: stream or device to evaluate on
+@available(*, deprecated, message: "rmsNorm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default)
     -> MLXArray
 {
-    var result = mlx_array_new()
-    mlx_fast_rms_norm(&result, x.ctx, weight.ctx, eps, stream.ctx)
-    return MLXArray(result)
+    return MLXFast.rmsNorm(x, weight: weight, eps: eps, stream: stream)
 }
 
 /// Layer normalization.
@@ -101,12 +104,11 @@ public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamO
 ///     with the same size as the last axis of `x`.  It not given no offset will occur.
 ///   - eps: A small additive constant for numerical stability
 ///   - stream: stream or device to evaluate on
+@available(*, deprecated, message: "layerNorm is now avaiable in the main MLX module")
+@_disfavoredOverload
 public func layerNorm(
     _ x: MLXArray, weight: MLXArray? = nil, bias: MLXArray? = nil, eps: Float,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    var result = mlx_array_new()
-    mlx_fast_layer_norm(
-        &result, x.ctx, (weight ?? .mlxNone).ctx, (bias ?? .mlxNone).ctx, eps, stream.ctx)
-    return MLXArray(result)
+    return MLXFast.layerNorm(x, weight: weight, bias: bias, eps: eps, stream: stream)
 }
