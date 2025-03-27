@@ -213,7 +213,7 @@ public func smoothL1Loss(
 ) -> MLXArray {
     precondition(predictions.shape == targets.shape)
 
-    let diff = predictions - targets
+    let diff = abs(predictions - targets)
     let loss = which(diff .< beta, 0.5 * square(diff) / beta, abs(diff) - 0.5 * beta)
 
     return reduction.reduce(loss: loss)
