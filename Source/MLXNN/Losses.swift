@@ -214,7 +214,7 @@ public func smoothL1Loss(
     precondition(predictions.shape == targets.shape)
 
     let diff = abs(predictions - targets)
-    let loss = which(diff .< beta, 0.5 * square(diff) / beta, abs(diff) - 0.5 * beta)
+    let loss = which(diff .< beta, 0.5 * square(diff) / beta, diff - 0.5 * beta)
 
     return reduction.reduce(loss: loss)
 }
