@@ -76,8 +76,6 @@ let package = Package(
                 "mlx/mlx/backend/no_metal",
                 "mlx/mlx/backend/no_cpu",
 
-                "mlx/mlx/backend/common/default_primitives.cpp",
-
                 // build variants (we are opting _out_ of these)
                 "mlx/mlx/io/no_safetensors.cpp",
                 "mlx/mlx/io/gguf.cpp",
