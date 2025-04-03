@@ -1550,7 +1550,7 @@ extension LoadSaveError: LocalizedError {
     }
 }
 
-/// Load array from a binary file in `.npy`format.
+/// Load array from a binary file in `.npy` format.
 ///
 /// - Parameters:
 ///     - url: URL of file to load
