@@ -182,7 +182,7 @@ private func getData(_ writer: mlx_io_writer) -> Data {
     return state.data
 }
 
-func new_mlx_io_vtable() -> mlx_io_vtable {
+private func new_mlx_io_vtable() -> mlx_io_vtable {
     mlx_io_vtable { ptr in
         ptr != nil
     } good: { ptr in
@@ -240,16 +240,27 @@ func new_mlx_io_vtable() -> mlx_io_vtable {
     }
 }
 
-func new_mlx_io_reader(_ data: Data) -> mlx_io_reader {
+private func new_mlx_io_reader(_ data: Data) -> mlx_io_reader {
     let ptr = Unmanaged.passRetained(IOState(data: data)).toOpaque()
     return mlx_io_reader_new(ptr, new_mlx_io_vtable())
 }
 
-func new_mlx_io_writer() -> mlx_io_writer {
+private func new_mlx_io_writer() -> mlx_io_writer {
     let ptr = Unmanaged.passRetained(IOState()).toOpaque()
     return mlx_io_writer_new(ptr, new_mlx_io_vtable())
 }
 
+/// Save dictionary of arrays in `safetensors` format into `Data`.
+///
+/// - Parameters:
+///     - a: array to save
+///     - metadata: metadata to save
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``save(arrays:metadata:url:stream:)``
+/// - ``loadArrays(data:stream:)``
+/// - ``loadArraysAndMetadata(data:stream:)``
 public func saveToData(
     arrays: [String: MLXArray], metadata: [String: String] = [:],
     stream: StreamOrDevice = .default
@@ -268,6 +279,15 @@ public func saveToData(
     return getData(writer)
 }
 
+/// Load dictionary of ``MLXArray`` from a `safetensors` `Data`.
+///
+/// - Parameters:
+///     - data: `Data` to load from
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``saveToData(arrays:metadata:stream:)``
+/// - ``loadArraysAndMetadata(data:stream:)``
 public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [String: MLXArray] {
     let reader = new_mlx_io_reader(data)
     defer { mlx_io_reader_free(reader) }
@@ -282,6 +302,15 @@ public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [Str
     return mlx_map_array_values(r0)
 }
 
+/// Load dictionary of ``MLXArray`` and metadata from a `safetensors` `Data`.
+///
+/// - Parameters:
+///     - data: `Data` to load from
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``saveToData(arrays:metadata:stream:)``
+/// - ``loadArrays(data:stream:)``
 public func loadArraysAndMetadata(data: Data, stream: StreamOrDevice = .cpu) throws -> (
     [String: MLXArray], [String: String]
 ) {
