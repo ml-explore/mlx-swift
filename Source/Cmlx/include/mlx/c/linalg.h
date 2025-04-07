@@ -12,6 +12,7 @@
 #include "mlx/c/array.h"
 #include "mlx/c/closure.h"
 #include "mlx/c/distributed_group.h"
+#include "mlx/c/io_types.h"
 #include "mlx/c/map.h"
 #include "mlx/c/stream.h"
 #include "mlx/c/string.h"
@@ -59,7 +60,7 @@ int mlx_linalg_lu_factor(
     mlx_array* res_1,
     const mlx_array a,
     const mlx_stream s);
-int mlx_linalg_norm_p(
+int mlx_linalg_norm(
     mlx_array* res,
     const mlx_array a,
     double ord,
@@ -67,7 +68,7 @@ int mlx_linalg_norm_p(
     size_t axis_num,
     bool keepdims,
     const mlx_stream s);
-int mlx_linalg_norm_ord(
+int mlx_linalg_norm_matrix(
     mlx_array* res,
     const mlx_array a,
     const char* ord,
@@ -75,7 +76,7 @@ int mlx_linalg_norm_ord(
     size_t axis_num,
     bool keepdims,
     const mlx_stream s);
-int mlx_linalg_norm(
+int mlx_linalg_norm_l2(
     mlx_array* res,
     const mlx_array a,
     const int* axis /* may be null */,
@@ -102,6 +103,7 @@ int mlx_linalg_solve_triangular(
 int mlx_linalg_svd(
     mlx_vector_array* res,
     const mlx_array a,
+    bool compute_uv,
     const mlx_stream s);
 int mlx_linalg_tri_inv(
     mlx_array* res,

@@ -500,12 +500,12 @@ METAL_FUNC void qmv_quad_impl(
   thread U result[results_per_quadgroup] = {0};
   const int in_vec_size_w = in_vec_size / pack_factor;
   const int in_vec_size_g = in_vec_size / group_size;
-  const int out_row = tid.x * quads_per_simd * results_per_quadgroup + quad_gid;
+  const int out_row = tid.y * quads_per_simd * results_per_quadgroup + quad_gid;
   w += out_row * in_vec_size_w + quad_lid * packs_per_thread;
   scales += out_row * in_vec_size_g + quad_lid / scale_step_per_thread;
   biases += out_row * in_vec_size_g + quad_lid / scale_step_per_thread;
-  x += tid.y * in_vec_size + quad_lid * values_per_thread;
-  y += tid.y * out_vec_size + out_row;
+  x += tid.x * in_vec_size + quad_lid * values_per_thread;
+  y += tid.x * out_vec_size + out_row;
   U sum = load_vector<T, U, values_per_thread, bits>(x, x_thread);
   for (int row = 0; row < results_per_quadgroup; row++) {
     auto wl = (const device uint8_t*)(w + row * in_vec_size_w * quads_per_simd);
@@ -1810,9 +1810,9 @@ template <typename T, const int group_size, const int bits>
     device T* biases [[buffer(3)]],
     uint2 index [[thread_position_in_grid]],
     uint2 grid_dim [[threads_per_grid]]) {
-  constexpr T eps = T(1e-7);
+  constexpr float eps = 1e-7;
   constexpr int simd_size = 32;
-  constexpr T n_bins = (1 << bits) - 1;
+  constexpr float n_bins = (1 << bits) - 1;
   constexpr int packs_per_int = bits == 3 ? 8 : bits == 6 ? 4 : 8 / bits;
   constexpr int values_per_reduce = group_size / simd_size;
   constexpr int writes_per_reduce = packs_per_int / values_per_reduce;
@@ -1828,30 +1828,30 @@ template <typename T, const int group_size, const int bits>
   size_t out_index = power_of_2_bits
       ? offset * writes_per_pack
       : offset * bytes_per_pack / writes_per_reduce;
-  T w_thread[values_per_reduce];
-  T w_min = Limits<T>::max;
-  T w_max = 0;
+  float w_thread[values_per_reduce];
+  float w_min = Limits<T>::max;
+  float w_max = 0;
 #pragma clang loop unroll(full)
   for (int i = 0; i < values_per_reduce; i++) {
-    T val = w[in_index + i];
+    float val = w[in_index + i];
     w_thread[i] = val;
     w_min = min(w_min, val);
     w_max = max(w_max, val);
   }
   w_min = simd_min(w_min);
   w_max = simd_max(w_max);
-  T scale = max((w_max - w_min) / n_bins, eps);
+  float scale = max((w_max - w_min) / n_bins, eps);
   bool side = abs(w_min) > abs(w_max);
   scale = side ? scale : -scale;
-  T edge = side ? w_min : w_max;
-  T q0 = round(edge / scale);
+  float edge = side ? w_min : w_max;
+  float q0 = round(edge / scale);
   bool at_zero = q0 == 0.0f;
   scale = at_zero ? scale : edge / q0;
-  T bias = at_zero ? T(0) : edge;
+  float bias = at_zero ? 0 : edge;
   size_t gindex = in_index / group_size;
   if (in_index % group_size == 0) {
-    scales[gindex] = scale;
-    biases[gindex] = bias;
+    scales[gindex] = static_cast<T>(scale);
+    biases[gindex] = static_cast<T>(bias);
   }
   uint32_t output = 0;
 #pragma clang loop unroll(full)

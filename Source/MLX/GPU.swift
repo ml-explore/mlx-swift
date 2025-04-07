@@ -26,11 +26,9 @@ public enum GPU {
 
     // note: these are guarded by the queue above
     #if swift(>=5.10)
-        nonisolated(unsafe) static var _relaxedMemoryLimit = true
         nonisolated(unsafe) static var _cacheLimit: Int?
         nonisolated(unsafe) static var _memoryLimit: Int?
     #else
-        static var _relaxedMemoryLimit = true
         static var _cacheLimit: Int?
         static var _memoryLimit: Int?
     #endif
@@ -134,7 +132,7 @@ public enum GPU {
     /// it does not include cached memory buffers.
     public static var activeMemory: Int {
         var result: size_t = 0
-        mlx_metal_get_active_memory(&result)
+        mlx_get_active_memory(&result)
         return result
     }
 
@@ -144,7 +142,7 @@ public enum GPU {
     /// to the system allocator.
     public static var cacheMemory: Int {
         var result: size_t = 0
-        mlx_metal_get_cache_memory(&result)
+        mlx_get_cache_memory(&result)
         return result
     }
 
@@ -154,7 +152,7 @@ public enum GPU {
     /// execution.
     public static var peakMemory: Int {
         var result: size_t = 0
-        mlx_metal_get_peak_memory(&result)
+        mlx_get_peak_memory(&result)
         return result
     }
 
@@ -187,8 +185,8 @@ public enum GPU {
             // set it to a reasonable value in order to read it, then set it back
             // to current
             var current: size_t = 0
-            mlx_metal_set_cache_limit(&current, cacheMemory)
-            mlx_metal_set_cache_limit(&current, current)
+            mlx_set_cache_limit(&current, cacheMemory)
+            mlx_set_cache_limit(&current, current)
             _cacheLimit = current
             return current
         }
@@ -207,7 +205,7 @@ public enum GPU {
         queue.sync {
             _cacheLimit = cacheLimit
             var current: size_t = 0
-            mlx_metal_set_cache_limit(&current, cacheLimit)
+            mlx_set_cache_limit(&current, cacheLimit)
         }
     }
 
@@ -221,15 +219,9 @@ public enum GPU {
     /// - ``set(memoryLimit:relaxed:)``
     public static var memoryLimit: Int {
         queue.sync {
-            if let memoryLimit = _memoryLimit {
-                return memoryLimit
-            }
-
             var current: size_t = 0
-            var discard: size_t = 0
-            mlx_metal_set_memory_limit(&current, activeMemory, _relaxedMemoryLimit)
-            mlx_metal_set_memory_limit(&discard, current, _relaxedMemoryLimit)
-            return current
+            mlx_get_memory_limit(&current)
+            return Int(current)
         }
     }
 
@@ -244,16 +236,15 @@ public enum GPU {
     /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize))
     public static func set(memoryLimit: Int, relaxed: Bool = true) {
         queue.sync {
-            _relaxedMemoryLimit = relaxed
             _memoryLimit = memoryLimit
             var current: size_t = 0
-            mlx_metal_set_memory_limit(&current, memoryLimit, relaxed)
+            mlx_set_memory_limit(&current, memoryLimit)
         }
     }
 
     /// Cause all cached metal buffers to be deallocated.
     public static func clearCache() {
-        mlx_metal_clear_cache()
+        mlx_clear_cache()
     }
 
     /// Start capturing a metal trace into the given file.
@@ -282,7 +273,7 @@ public enum GPU {
     ///
     /// See ``Snapshot/peakMemory``.
     public static func resetPeakMemory() {
-        mlx_metal_reset_peak_memory()
+        mlx_reset_peak_memory()
     }
 
     public struct DeviceInfo: Sendable {

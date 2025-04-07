@@ -63,10 +63,10 @@ public enum MLXLinalg {
     ) -> MLXArray {
         var result = mlx_array_new()
         if let ord {
-            mlx_linalg_norm_ord(
+            mlx_linalg_norm_matrix(
                 &result, array.ctx, ord.rawValue, axes.asInt32, axes.count, keepDims, stream.ctx)
         } else {
-            mlx_linalg_norm(&result, array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
+            mlx_linalg_norm_l2(&result, array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
         }
         return MLXArray(result)
     }
@@ -117,7 +117,7 @@ public enum MLXLinalg {
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
-        mlx_linalg_norm_p(&result, array.ctx, ord, axes.asInt32, axes.count, keepDims, stream.ctx)
+        mlx_linalg_norm(&result, array.ctx, ord, axes.asInt32, axes.count, keepDims, stream.ctx)
         return MLXArray(result)
     }
 
@@ -130,11 +130,11 @@ public enum MLXLinalg {
     ) -> MLXArray {
         var result = mlx_array_new()
         if let ord {
-            mlx_linalg_norm_ord(
+            mlx_linalg_norm_matrix(
                 &result, array.ctx, ord.rawValue, [axis].asInt32, 1, keepDims, stream.ctx)
             return MLXArray(result)
         } else {
-            mlx_linalg_norm(&result, array.ctx, [axis].asInt32, 1, keepDims, stream.ctx)
+            mlx_linalg_norm_l2(&result, array.ctx, [axis].asInt32, 1, keepDims, stream.ctx)
             return MLXArray(result)
         }
     }
@@ -147,7 +147,7 @@ public enum MLXLinalg {
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
-        mlx_linalg_norm_p(&result, array.ctx, ord, [axis].asInt32, 1, keepDims, stream.ctx)
+        mlx_linalg_norm(&result, array.ctx, ord, [axis].asInt32, 1, keepDims, stream.ctx)
         return MLXArray(result)
     }
 
@@ -160,12 +160,12 @@ public enum MLXLinalg {
     ) -> MLXArray {
         var result = mlx_array_new()
         if let ord {
-            mlx_linalg_norm_ord(
+            mlx_linalg_norm_matrix(
                 &result, array.ctx, ord.rawValue, axis?.asInt32Array, axis?.count ?? 0, keepDims,
                 stream.ctx)
             return MLXArray(result)
         } else {
-            mlx_linalg_norm(
+            mlx_linalg_norm_l2(
                 &result, array.ctx, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx)
             return MLXArray(result)
         }
@@ -180,7 +180,7 @@ public enum MLXLinalg {
     ) -> MLXArray {
         var result = mlx_array_new()
 
-        mlx_linalg_norm_p(
+        mlx_linalg_norm(
             &result, array.ctx, ord, axis?.asInt32Array, axis?.count ?? 0, keepDims, stream.ctx)
         return MLXArray(result)
     }
@@ -217,11 +217,30 @@ public enum MLXLinalg {
         MLXArray, MLXArray, MLXArray
     ) {
         var vec = mlx_vector_array_new()
-        mlx_linalg_svd(&vec, array.ctx, stream.ctx)
+        mlx_linalg_svd(&vec, array.ctx, true, stream.ctx)
         defer { mlx_vector_array_free(vec) }
 
         let arrays = mlx_vector_array_values(vec)
         return (arrays[0], arrays[1], arrays[2])
+    }
+
+    /// The Singular Value Decomposition (SVD) of the input matrix.
+    ///
+    /// This function supports arrays with at least 2 dimensions. When the input
+    /// has more than two dimensions, the function iterates over all indices of the first
+    /// `array.ndim - 2` dimensions and for each combination SVD is applied to the last two indices.
+    ///
+    /// - Parameters:
+    ///   - array: input array
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: The `S` matrix
+    public static func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+        var vec = mlx_vector_array_new()
+        mlx_linalg_svd(&vec, array.ctx, false, stream.ctx)
+        defer { mlx_vector_array_free(vec) }
+
+        let arrays = mlx_vector_array_values(vec)
+        return arrays[0]
     }
 
     /// Compute the inverse of a square matrix.
