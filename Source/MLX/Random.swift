@@ -3,6 +3,70 @@
 import Cmlx
 import Foundation
 
+/// Collection of functions related to random number generation.
+///
+/// Following [JAX’s PRNG design](https://jax.readthedocs.io/en/latest/jep/263-prng.html)
+/// we use a splittable version of Threefry, which is a counter-based PRNG.
+///
+/// Random sampling functions in MLX use an implicit global PRNG state by default.
+/// However, all functions take an optional key keyword argument for when more fine-grained
+/// control or explicit state management is needed.  Callers can also arrange for `Task` local
+/// random state -- useful in multithreaded situations.
+///
+/// For example, you can generate random numbers with:
+///
+/// ```swift
+/// for _ in 0 ..< 3 {
+///   print(MLXRandom.uniform())
+/// }
+/// ```
+///
+/// which will print a sequence of unique pseudo random numbers. Alternatively you can explicitly set the key:
+///
+/// ```swift
+/// let key = MLXRandom.key(0)
+/// for _ in 0 ..< 3 {
+///   print(MLXRandom.uniform(key: key))
+/// }
+/// ```
+///
+/// which will yield the same pseudo random number at each iteration as the key doesn't change.
+///
+/// You can also use a ``RandomState`` to generate different random numbers but the same sequence
+/// each time:
+///
+/// ```swift
+/// let state = RandomState(seed: 0)
+/// for _ in 0 ..< 3 {
+///   print(MLXRandom.uniform(key: state))
+/// }
+/// ```
+///
+/// Finally, if you need to control random state in deeply nested calls to `MLXRandom` or you need
+/// thread-safe random state for multi-threaded evaluation you can use ``withRandomState(_:body:)-6i2p1``:
+///
+/// ```swift
+/// await withTaskGroup { group in
+///     for i in 0 ..< 10 {
+///         group.addTask {
+///             let state = MLXRandom.RandomState(seed: UInt64(i))
+///             return withRandomState(state) {
+///                 var t: Float = 0.0
+///                 for _ in 0 ..< 100 {
+///                     t += uniform(0 ..< 1, [10, 10]).sum().item(Float.self)
+///                 }
+///                 return t
+///             }
+///         }
+///     }
+///
+///     for await v in group {
+///         ...
+///     }
+/// }
+/// ```
+///
+/// Each task will have separate ``RandomState`` that will be used implicitly (if no other key is passed in).
 public enum MLXRandom {
 
     /// Seed the global PRNG.
