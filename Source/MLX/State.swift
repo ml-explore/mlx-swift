@@ -76,11 +76,11 @@ extension MLXRandom {
     /// - ``seed(_:)``
     public static let globalState = RandomState()
 
-}  // MLXRandom
+    /// See ``withRandomState(_:body:)`` and ``resolve(key:)``
+    @TaskLocal
+    static fileprivate var taskLocalRandomState: MLXRandom.RandomState?
 
-/// See ``withRandomState(_:body:)`` and ``resolve(key:)``
-@TaskLocal
-private var taskLocalRandomState: MLXRandom.RandomState?
+}  // MLXRandom
 
 /// Resolve the given key to a concrete MLXArray (random key).
 ///
@@ -91,17 +91,18 @@ private var taskLocalRandomState: MLXRandom.RandomState?
 /// - the task-local ``MLXRandom/RandomState``, see ``withRandomState(_:body:)-6i2p1``
 /// - the global RandomState, ``MLXRandom/globalState``
 public func resolve(key: RandomStateOrKey?) -> MLXArray {
-    key?.asRandomKey() ?? taskLocalRandomState?.asRandomKey() ?? MLXRandom.globalState.next()
+    key?.asRandomKey() ?? MLXRandom.taskLocalRandomState?.asRandomKey()
+        ?? MLXRandom.globalState.next()
 }
 
 /// Use the given ``MLXRandom/RandomState`` scoped to the current task and body.
 public func withRandomState<R>(_ state: MLXRandom.RandomState, body: () throws -> R) rethrows -> R {
-    try $taskLocalRandomState.withValue(state, operation: body)
+    try MLXRandom.$taskLocalRandomState.withValue(state, operation: body)
 }
 
 /// Use the given ``MLXRandom/RandomState`` scoped to the current task and body.
 public func withRandomState<R>(_ state: MLXRandom.RandomState, body: () async throws -> R)
     async rethrows -> R
 {
-    try await $taskLocalRandomState.withValue(state, operation: body)
+    try await MLXRandom.$taskLocalRandomState.withValue(state, operation: body)
 }
