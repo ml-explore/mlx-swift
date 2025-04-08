@@ -159,4 +159,106 @@ class MLXRandomTests: XCTestCase {
         assertEqual(result, expected)
     }
 
+    func testRandomStateOrKeySame() {
+        // these should all produce the same value since they
+        // all resolve to the same key
+
+        let key = MLXRandom.key(0)
+        let (_, k1) = split(key: key)
+
+        let state = MLXRandom.RandomState(seed: 0)
+        MLXRandom.seed(0)
+
+        // global state
+        let v0 = uniform(0 ..< 1, [5])
+
+        // explicit key
+        let v1 = uniform(0 ..< 1, [5], key: k1)
+
+        // local RandomState
+        let v2 = uniform(0 ..< 1, [5], key: state)
+
+        assertEqual(v0, v1)
+        assertEqual(v1, v2)
+    }
+
+    func testRandomStateOrKeyDifferent() {
+        // these should all produce different values as they
+        // use different keys -- note this is otherwise identical
+        // to testRandomStateOrKeySame
+
+        let key = MLXRandom.key(7)
+        let (_, k1) = split(key: key)
+
+        let state = MLXRandom.RandomState(seed: 11)
+        MLXRandom.seed(31)
+
+        // global state
+        let v0 = uniform(0 ..< 1, [5])
+
+        // explicit key
+        let v1 = uniform(0 ..< 1, [5], key: k1)
+
+        // local RandomState
+        let v2 = uniform(0 ..< 1, [5], key: state)
+
+        assertNotEqual(v0, v1)
+        assertNotEqual(v1, v2)
+        assertNotEqual(v0, v2)
+    }
+
+    func testRandomThreadsSame() async {
+        // several threads using task local random state with a constant
+        // seed will produce the same value
+        await withTaskGroup { group in
+            for _ in 0 ..< 10 {
+                group.addTask {
+                    let state = MLXRandom.RandomState(seed: 23)
+                    return withRandomState(state) {
+                        var t: Float = 0.0
+                        for _ in 0 ..< 100 {
+                            t += uniform(0 ..< 1, [10, 10]).sum().item(Float.self)
+                        }
+                        return t
+                    }
+                }
+            }
+
+            var result = [Float]()
+            for await v in group {
+                result.append(v)
+            }
+
+            let unique = Set(result)
+            XCTAssertEqual(unique.count, 1, "Different values: \(result)")
+        }
+    }
+
+    func testRandomThreadsDifferent() async {
+        // several threads using task local random state with different
+        // seeds will produce different values
+        await withTaskGroup { group in
+            for i in 0 ..< 10 {
+                group.addTask {
+                    let state = MLXRandom.RandomState(seed: UInt64(i))
+                    return withRandomState(state) {
+                        var t: Float = 0.0
+                        for _ in 0 ..< 100 {
+                            t += uniform(0 ..< 1, [10, 10]).sum().item(Float.self)
+                        }
+                        return t
+                    }
+                }
+            }
+
+            var result = [Float]()
+            for await v in group {
+                result.append(v)
+            }
+
+            let unique = Set(result)
+            XCTAssertEqual(unique.count, 10, "Same values: \(result)")
+        }
+    }
+
 }

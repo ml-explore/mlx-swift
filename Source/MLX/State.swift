@@ -2,19 +2,34 @@
 
 import Foundation
 
+public protocol RandomStateOrKey {
+    func asRandomKey() -> MLXArray
+}
+
+extension MLXArray: RandomStateOrKey {
+    public func asRandomKey() -> MLXArray {
+        self
+    }
+}
+
 extension MLXRandom {
+
     /// Global random state.
     ///
     /// Note: although this type is thread-safe, the MLXArrays that it returns are not -- do not
     /// evaluate these values or expressions that depend on them across multiple threads
     /// simultaneously.
-    public class RandomState: Updatable, Evaluatable, @unchecked (Sendable) {
+    public class RandomState: RandomStateOrKey, Updatable, Evaluatable, @unchecked (Sendable) {
         private var state: MLXArray
         private let lock = NSLock()
 
-        init() {
+        public init() {
             let now = mach_approximate_time()
             state = MLXRandom.key(now)
+        }
+
+        public init(seed: UInt64) {
+            state = MLXRandom.key(seed)
         }
 
         public func innerState() -> [MLXArray] {
@@ -36,6 +51,10 @@ extension MLXRandom {
                 state = MLXRandom.key(seed)
             }
         }
+
+        public func asRandomKey() -> MLXArray {
+            next()
+        }
     }
 
     /// Global random state.
@@ -47,3 +66,20 @@ extension MLXRandom {
     public static let globalState = RandomState()
 
 }  // MLXRandom
+
+@TaskLocal
+private var taskLocalRandomState: MLXRandom.RandomState?
+
+public func resolve(key: RandomStateOrKey?) -> MLXArray {
+    key?.asRandomKey() ?? taskLocalRandomState?.asRandomKey() ?? MLXRandom.globalState.next()
+}
+
+public func withRandomState<R>(_ state: MLXRandom.RandomState, body: () throws -> R) rethrows -> R {
+    try $taskLocalRandomState.withValue(state, operation: body)
+}
+
+public func withRandomState<R>(_ state: MLXRandom.RandomState, body: () async throws -> R)
+    async rethrows -> R
+{
+    try await $taskLocalRandomState.withValue(state, operation: body)
+}
