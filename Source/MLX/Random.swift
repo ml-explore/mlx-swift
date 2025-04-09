@@ -32,8 +32,25 @@ import Foundation
 ///
 /// which will yield the same pseudo random number at each iteration as the key doesn't change.
 ///
-/// You can also use a ``RandomState`` to generate different random numbers but the same sequence
-/// each time:
+/// To get a new random number for each call you would ``split(key:stream:)`` the key:
+///
+/// ```swift
+/// var key = MLXRandom.key(0)
+/// for _ in 0 ..< 3 {
+///   let (a, b) = MLXRandom.split(key: key)
+///
+///   // use b to generate a different value each time
+///   print(MLXRandom.uniform(key: b))
+///
+///   // new random state is a
+///   key = a
+/// }
+/// ```
+///
+/// This will generate the same sequence of numbers each time (same starting key) but
+/// different values for each call.
+///
+/// As a convenience you can use ``RandomState`` to manage the key splitting and:
 ///
 /// ```swift
 /// let state = RandomState(seed: 0)
