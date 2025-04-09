@@ -6,7 +6,7 @@ import MLX
 /// Container for a kernel created by
 /// ``metalKernel(name:inputNames:outputNames:source:header:ensureRowContiguous:atomicOutputs:template:grid:threadGroup:outputShapes:outputDTypes:initValue:verbose:)``
 ///
-/// The ``callAsFunction(_:stream:)`` can be used to evaluate the kernel with inputs:
+/// The ``MLXFast/MLXFastKernel`` can be used to evaluate the kernel with inputs:
 ///
 /// ```swift
 /// let a = normal([2, 2])
@@ -56,7 +56,7 @@ public func metalKernel(
     initValue: Float? = nil,
     verbose: Bool = false
 ) -> MLXFast.MLXFastKernel {
-    return metalKernel(
+    return MLX.MLXFast.metalKernel(
         name: name, inputNames: inputNames, outputNames: outputNames, source: source,
         header: header,
         ensureRowContiguous: ensureRowContiguous, atomicOutputs: atomicOutputs,

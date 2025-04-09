@@ -259,9 +259,9 @@ public enum MLXFFT {
     ///
     /// - Parameters:
     ///   - array: input array
-    ///   - n: size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to
     ///   match `n / 2 + 1`.  If not specified `array.dim(axis) / 2 + 1` will be used.
-    ///   - axis: axis along which to perform the FFT
+    ///   - s: sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to
+    ///   - axes: axes along which to perform the FFT
     ///   - stream: stream or device to evaluate on
     /// - Returns: inverse of ``rfft2(_:s:axes:stream:)``
     ///
@@ -333,9 +333,9 @@ public enum MLXFFT {
     ///
     /// - Parameters:
     ///   - array: input array
-    ///   - n: size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to
+    ///   - s: sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to
     ///   match `n / 2 + 1`.  If not specified `array.dim(axis) / 2 + 1` will be used.
-    ///   - axis: axis along which to perform the FFT
+    ///   - axes: axes along which to perform the FFT
     ///   - stream: stream or device to evaluate on
     /// - Returns: inverse of ``rfftn(_:s:axes:stream:)``
     ///
@@ -560,9 +560,9 @@ public func rfft2(
 ///
 /// - Parameters:
 ///   - array: input array
-///   - n: size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to
-///   match `n / 2 + 1`.  If not specified `array.dim(axis) / 2 + 1` will be used.
-///   - axis: axis along which to perform the FFT
+///   - s: sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to
+///   match `s`.  If not specified `array.dim(axes)` will be used.
+///   - axes: axes along which to perform the FFT
 ///   - stream: stream or device to evaluate on
 /// - Returns: inverse of ``rfft2(_:s:axes:stream:)``
 ///
@@ -605,9 +605,9 @@ public func rfftn(
 ///
 /// - Parameters:
 ///   - array: input array
-///   - n: size of the transformed axis.  The corresponding axis in the input is truncated or padded with zeros to
-///   match `n / 2 + 1`.  If not specified `array.dim(axis) / 2 + 1` will be used.
-///   - axis: axis along which to perform the FFT
+///   - s: sizes of the transformed axis.  The corresponding axes in the input are truncated or padded with zeros to
+///   match `s`.  If not specified `array.dim(axes)` will be used.
+///   - axes: axes along which to perform the FFT
 ///   - stream: stream or device to evaluate on
 /// - Returns: inverse of ``rfftn(_:s:axes:stream:)``
 ///

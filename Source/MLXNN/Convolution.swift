@@ -8,7 +8,7 @@ import MLX
 /// ### See Also
 /// - ``Conv2d``
 /// - ``Conv3d``
-/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
+/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:dilation:groups:bias:)``
 open class Conv1d: Module, UnaryLayer {
 
     public let weight: MLXArray
@@ -71,7 +71,7 @@ open class Conv1d: Module, UnaryLayer {
 /// ### See Also
 /// - ``Conv1d``
 /// - ``Conv3d``
-/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
+/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:dilation:groups:bias:)``
 open class Conv2d: Module, UnaryLayer {
 
     public let weight: MLXArray
@@ -137,7 +137,7 @@ open class Conv2d: Module, UnaryLayer {
 /// ### See Also
 /// - ``Conv1d``
 /// - ``Conv2d``
-/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:bias:)``
+/// - ``init(inputChannels:outputChannels:kernelSize:stride:padding:dilation:groups:bias:)``
 open class Conv3d: Module, UnaryLayer {
 
     public let weight: MLXArray

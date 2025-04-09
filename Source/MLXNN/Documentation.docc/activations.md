@@ -48,7 +48,7 @@ such as `alpha`.
 - ``SELU``
 - ``SiLU``
 - ``Sigmoid``
-- ``SoftMax``
+- ``Softmax-63x8p``
 - ``Softplus``
 - ``Softsign``
 - ``Step``

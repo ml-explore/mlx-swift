@@ -166,8 +166,8 @@ operations as methods for convenience.
 - ``expandedDimensions(_:axes:stream:)``
 - ``expandedDimensions(_:axis:stream:)``
 - ``movedAxis(_:source:destination:stream:)``
-- ``padded(_:width:value:stream:)``
-- ``padded(_:widths:value:stream:)``
+- ``padded(_:width:mode:value:stream:)``
+- ``padded(_:widths:mode:value:stream:)``
 - ``reshaped(_:_:stream:)-5x3y0``
 - ``reshaped(_:_:stream:)-96lgr``
 - ``split(_:indices:axis:stream:)``

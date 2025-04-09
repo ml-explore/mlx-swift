@@ -14,8 +14,6 @@ public let deprecationWarning: Void = ()
 ///
 /// ### See Also
 /// - ``key(_:)``
-/// - ``RandomState``
-/// - ``globalState``
 @available(*, deprecated, message: "seed is now avaiable in the main MLX module")
 @_disfavoredOverload
 public func seed(_ seed: UInt64) {

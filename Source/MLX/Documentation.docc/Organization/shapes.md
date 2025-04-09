@@ -66,8 +66,8 @@ These methods manipulate the shape and contents of the array:
 - ``concatenated(_:axis:stream:)``
 - ``expandedDimensions(_:axes:stream:)``
 - ``movedAxis(_:source:destination:stream:)``
-- ``padded(_:width:value:stream:)``
-- ``padded(_:widths:value:stream:)``
+- ``padded(_:width:mode:value:stream:)``
+- ``padded(_:widths:mode:value:stream:)``
 - ``split(_:indices:axis:stream:)``
 - ``split(_:parts:axis:stream:)``
 - ``split(_:axis:stream:)``

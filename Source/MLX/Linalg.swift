@@ -8,8 +8,8 @@ public enum MLXLinalg {
     /// Types of norms available.
     ///
     /// ### See Also
-    /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
-    /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+    /// - ``norm(_:ord:axes:keepDims:stream:)``
+    /// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
     /// - ``MLXLinalg``
     public enum NormKind: String, Sendable {
         /// Frobenius norm
@@ -56,7 +56,7 @@ public enum MLXLinalg {
     /// - Returns: output containing the norm(s)
     ///
     /// ### See Also
-    /// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+    /// - ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
         _ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims: Bool = false,
         stream: StreamOrDevice = .default
@@ -141,7 +141,7 @@ public enum MLXLinalg {
 
     /// Matrix or vector norm.
     ///
-    /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+    /// See ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
         _ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false,
         stream: StreamOrDevice = .default
@@ -173,7 +173,7 @@ public enum MLXLinalg {
 
     /// Matrix or vector norm.
     ///
-    /// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+    /// See ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
         _ array: MLXArray, ord: Double, axis: IntOrArray? = nil,
         keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -327,11 +327,11 @@ public enum MLXLinalg {
         return MLXArray(result)
     }
 
-    /// Compute the LU factorization of the given matrix ``A``.
+    /// Compute the LU factorization of the given matrix `A`.
     ///
-    /// Note, unlike the default behavior of ``scipy.linalg.lu``, the pivots
-    /// are indices. To reconstruct the input use ``L[P] @ U`` for 2
-    /// dimensions or ``takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U``
+    /// Note, unlike the default behavior of `scipy.linalg.lu`, the pivots
+    /// are indices. To reconstruct the input use `L[P] @ U` for 2
+    /// dimensions or `takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U`
     /// for more than 2 dimensions.
     ///
     /// To construct the full permuation matrix do:
@@ -365,7 +365,7 @@ public enum MLXLinalg {
         return (MLXArray(res_0), MLXArray(res_1))
     }
 
-    /// Compute the solution to a system of linear equations ``AX = B``.
+    /// Compute the solution to a system of linear equations `AX = B`.
     ///
     /// -Parameters:
     ///   - a: input array.
@@ -379,7 +379,7 @@ public enum MLXLinalg {
         return MLXArray(result)
     }
 
-    ///Computes the solution of a triangular system of linear equations ``AX = B``.
+    ///Computes the solution of a triangular system of linear equations `AX = B`.
     ///
     /// -Parameters:
     ///   - a: input array.
@@ -438,7 +438,7 @@ public enum MLXLinalg {
 /// - Returns: output containing the norm(s)
 ///
 /// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+/// - ``norm(_:ord:axes:keepDims:stream:)``
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axes: [Int], keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -496,7 +496,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+/// See ``norm(_:ord:axes:keepDims:stream:)``
 public func norm(
     _ array: MLXArray, ord: Double, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -516,7 +516,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+/// See ``norm(_:ord:axes:keepDims:stream:)``
 public func norm(
     _ array: MLXArray, ord: Double, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -669,7 +669,7 @@ public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
     return MLXLinalg.lu_factor(a, stream: stream)
 }
 
-/// Compute the solution to a system of linear equations ``AX = B``.
+/// Compute the solution to a system of linear equations `AX = B`.
 ///
 /// -Parameters:
 ///   - a: input array.
@@ -681,7 +681,7 @@ public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defaul
     return MLXLinalg.solve(a, b, stream: stream)
 }
 
-///Computes the solution of a triangular system of linear equations ``AX = B``.
+///Computes the solution of a triangular system of linear equations `AX = B`.
 ///
 /// -Parameters:
 ///   - a: input array.
