@@ -126,8 +126,6 @@ final class CompiledFunction: @unchecked (Sendable) {
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-29n3k``
-/// - ``compile(inputs:outputs:shapeless:_:)-4msdm``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping ([MLXArray]) -> [MLXArray]
@@ -139,12 +137,12 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes a single ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-8wq3u`` that takes a single ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray) -> MLXArray
@@ -158,12 +156,12 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes two ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-8wq3u`` that takes two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray) -> MLXArray
@@ -179,12 +177,12 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-7korq`` that takes three ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-8wq3u`` that takes three ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
@@ -200,7 +198,7 @@ public func compile(
     }
 }
 
-/// Globally enable or disable ``compile(inputs:outputs:shapeless:_:)-7korq``.
+/// Globally enable or disable ``compile(inputs:outputs:shapeless:_:)-8wq3u``.
 ///
 /// Default is enabled.
 public func compile(enable: Bool = true) {

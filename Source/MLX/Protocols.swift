@@ -9,7 +9,7 @@ import Foundation
 /// implemention detail for MLX and should not be depended on by outside callers.
 ///
 /// ### See Also
-/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
 public protocol Updatable {
     func innerState() -> [MLXArray]
 }

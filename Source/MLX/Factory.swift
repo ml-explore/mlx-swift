@@ -40,7 +40,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - shape: desired shape
-    ///     - type: dtype of the values
+    ///     - dtype: dtype of the values
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -65,7 +65,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - like: array to copy shape and dtype from
+    ///     - array: array to copy shape and dtype from
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -113,7 +113,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - shape: desired shape
-    ///     - type: dtype of the values
+    ///     - dtype: dtype of the values
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -138,7 +138,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - like: array to copy shape and dtype from
+    ///     - array: array to copy shape and dtype from
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -472,7 +472,7 @@ public func zeros<T: HasDType>(
 /// ```
 ///
 /// - Parameters:
-///     - like: array to copy shape and dtype from
+///     - array: array to copy shape and dtype from
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -520,7 +520,7 @@ public func ones<T: HasDType>(
 /// ```
 ///
 /// - Parameters:
-///     - like: array to copy shape and dtype from
+///     - array: array to copy shape and dtype from
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also

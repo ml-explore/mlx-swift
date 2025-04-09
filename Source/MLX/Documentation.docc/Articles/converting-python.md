@@ -211,7 +211,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `not_equal` | ``MLX/notEqual(_:_:stream:)``
 `ones` | ``MLXArray/ones(_:type:stream:)``
 `ones_like` | ``MLXArray/ones(like:stream:)``
-`pad` | ``MLX/padded(_:widths:value:stream:)``
+`pad` | ``MLX/padded(_:width:mode:value:stream:)``
 `partition` | ``MLX/partitioned(_:kth:axis:stream:)``
 `power` | ``MLX/pow(_:_:stream:)-8ie9c``
 `prod` | ``MLX/product(_:axes:keepDims:stream:)``

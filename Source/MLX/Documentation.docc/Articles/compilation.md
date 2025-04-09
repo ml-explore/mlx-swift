@@ -1,11 +1,11 @@
 # Compilation
 
-MLX has a ``compile(inputs:outputs:shapeless:_:)-7korq`` function transformation which compiles computation
+MLX has a ``compile(inputs:outputs:shapeless:_:)-8wq3u`` function transformation which compiles computation
 graphs. Function compilation results in smaller graphs by merging common work
 and fusing certain operations. In many cases this can lead to big improvements
 in run-time and memory use.
 
-Getting started with ``compile(inputs:outputs:shapeless:_:)-7korq`` is simple, but there are 
+Getting started with ``compile(inputs:outputs:shapeless:_:)-8wq3u`` is simple, but there are 
 some edge cases that are good to be aware of for more complex graphs and advanced usage.
 
 ## Basics of Compile
@@ -70,7 +70,7 @@ public func gelu(_ x: MLXArray) -> MLXArray {
 If you use this function with small arrays, it will be overhead bound. If you
 use it with large arrays it will be memory bandwidth bound.  However, all of
 the operations in the `gelu` are fusible into a single kernel with
-``compile(inputs:outputs:shapeless:_:)-29n3k``. This can speedup both cases considerably.
+``compile(inputs:outputs:shapeless:_:)-8wq3u``. This can speedup both cases considerably.
 
 Let's compare the runtime of the regular function versus the compiled
 function. We'll use the following timing helper which does a warm up and
@@ -182,7 +182,7 @@ print(state)
 ```
 
 In some cases returning updated state can be pretty inconvenient. Hence,
-``compile(inputs:outputs:shapeless:_:)-7korq`` has a parameter to capture implicit state:
+``compile(inputs:outputs:shapeless:_:)-8wq3u`` has a parameter to capture implicit state:
 
 ```swift
 var state = [MLXArray]()
@@ -242,10 +242,10 @@ XCTAssertFalse(allClose(c2a, c2b).item())
 
 ## Compiling Training Graphs 
 
-This section will step through how to use ``compile(inputs:outputs:shapeless:_:)-7korq`` 
+This section will step through how to use ``compile(inputs:outputs:shapeless:_:)-8wq3u`` 
 with a simple example of a common setup: training a model with `Module` using an
 `Optimizer` with state. We will show how to compile the
-full forward, backward, and update with ``compile(inputs:outputs:shapeless:_:)-7korq``.
+full forward, backward, and update with ``compile(inputs:outputs:shapeless:_:)-8wq3u``.
 
 Here is the basic scenario:
 
@@ -319,7 +319,7 @@ for _ in 0 ..< 30 {
 
 ### Functions
 
-- ``compile(inputs:outputs:shapeless:_:)-7korq``
-- ``compile(inputs:outputs:shapeless:_:)-29n3k``
-- ``compile(inputs:outputs:shapeless:_:)-4msdm``
+- ``compile(inputs:outputs:shapeless:_:)-8wq3u``
+- ``compile(inputs:outputs:shapeless:_:)-15bpz``
+- ``compile(inputs:outputs:shapeless:_:)-47dv3``
 - ``compile(enable:)``
