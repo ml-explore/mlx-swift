@@ -112,6 +112,84 @@ public enum DType: Hashable, Sendable, CaseIterable {
     public var size: Int {
         mlx_dtype_size(cmlxDtype)
     }
+
+    /// For floating point values return the floating point info, similar to `numpy.finfo`.
+    public var finfo: FInfo? {
+        isFloatingPoint ? FInfo(dtype: self) : nil
+    }
+
+    /// Floating point info.
+    public struct FInfo: Sendable {
+        public let dtype: DType
+
+        /// The difference between 1.0 and the next smallest representable float larger than 1.0
+        ///
+        /// In Swift this is e.g. ``Double.ulpOfOne``
+        public var eps: Double {
+            switch dtype {
+            case .float16: Double(Float16.ulpOfOne)
+            case .float32: Double(Float.ulpOfOne)
+            case .bfloat16: 0.0078125
+            case .complex64: Double.ulpOfOne
+            case .float64: Double.ulpOfOne
+            default:
+                fatalError("\(dtype) is not a floating point type")
+            }
+        }
+
+        /// The smallest representable number
+        public var min: Double {
+            switch dtype {
+            case .float16: -Double(Float16.greatestFiniteMagnitude)
+            case .float32: -Double(Float.greatestFiniteMagnitude)
+            case .bfloat16: -3.3895313892515355e+38
+            case .complex64: -Double.greatestFiniteMagnitude
+            case .float64: -Double.greatestFiniteMagnitude
+            default:
+                fatalError("\(dtype) is not a floating point type")
+            }
+        }
+
+        /// The largest representable number
+        public var max: Double {
+            switch dtype {
+            case .float16: Double(Float16.greatestFiniteMagnitude)
+            case .float32: Double(Float.greatestFiniteMagnitude)
+            case .bfloat16: 3.3895313892515355e+38
+            case .complex64: Double.greatestFiniteMagnitude
+            case .float64: Double.greatestFiniteMagnitude
+            default:
+                fatalError("\(dtype) is not a floating point type")
+            }
+        }
+
+        /// Return the value for the smallest normal
+        public var smallestNormal: Double {
+            switch dtype {
+            case .float16: Double(Float16.leastNormalMagnitude)
+            case .float32: Double(Float.leastNormalMagnitude)
+            case .bfloat16: 1.1754943508222875e-38
+            case .complex64: Double.leastNormalMagnitude
+            case .float64: Double.leastNormalMagnitude
+            default:
+                fatalError("\(dtype) is not a floating point type")
+            }
+        }
+
+        /// The smallest positive floating point number with 0 as leading bit in the mantissa following IEEE-754
+        public var smallestSubnormal: Double {
+            switch dtype {
+            case .float16: Double(Float16.leastNonzeroMagnitude)
+            case .float32: Double(Float.leastNonzeroMagnitude)
+            case .bfloat16: 1.1754943508222875e-38
+            case .complex64: Double.leastNonzeroMagnitude
+            case .float64: Double.leastNonzeroMagnitude
+            default:
+                fatalError("\(dtype) is not a floating point type")
+            }
+        }
+    }
+
 }
 
 extension DType: Encodable {
