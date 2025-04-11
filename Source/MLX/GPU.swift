@@ -187,8 +187,9 @@ public enum GPU {
             // set it to a reasonable value in order to read it, then set it back
             // to current
             var current: size_t = 0
+            var discard: size_t = 0
             mlx_metal_set_cache_limit(&current, cacheMemory)
-            mlx_metal_set_cache_limit(&current, current)
+            mlx_metal_set_cache_limit(&discard, current)
             _cacheLimit = current
             return current
         }
@@ -229,6 +230,7 @@ public enum GPU {
             var discard: size_t = 0
             mlx_metal_set_memory_limit(&current, activeMemory, _relaxedMemoryLimit)
             mlx_metal_set_memory_limit(&discard, current, _relaxedMemoryLimit)
+            _memoryLimit = current
             return current
         }
     }
@@ -241,7 +243,7 @@ public enum GPU {
     /// swap) if `relaxed` is true.
     ///
     /// The memory limit defaults to 1.5 times the maximum recommended working set
-    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize))
+    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize))
     public static func set(memoryLimit: Int, relaxed: Bool = true) {
         queue.sync {
             _relaxedMemoryLimit = relaxed
