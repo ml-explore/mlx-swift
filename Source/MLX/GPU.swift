@@ -288,10 +288,10 @@ public enum GPU {
     }
 
     public struct DeviceInfo: Sendable {
-        let architecture: String
-        let maxBufferSize: Int
-        let maxRecommendedWorkingSetSize: UInt64
-        let memorySize: Int
+        public let architecture: String
+        public let maxBufferSize: Int
+        public let maxRecommendedWorkingSetSize: UInt64
+        public let memorySize: Int
     }
 
     /// Get information about the GPU device and system settings
