@@ -1,7 +1,6 @@
 // Copyright © 2024 Apple Inc.
 
 import Cmlx
-import MLX
 
 /// Marker protocol for types that can be used in the `template` of a kernel call.
 ///
@@ -10,7 +9,7 @@ import MLX
 /// - `Bool`
 /// - `DType`
 ///
-/// See also: ``MLXFastKernel``
+/// See also: ``MLXFast/MLXFastKernel``
 public protocol KernelTemplateArg {}
 
 extension Bool: KernelTemplateArg {}

@@ -50,7 +50,7 @@ public let deprecationWarning: Void = ()
 /// - Returns: output containing the norm(s)
 ///
 /// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+/// - ``norm(_:ord:axes:keepDims:stream:)``
 @available(*, deprecated, message: "norm is now avaiable in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -124,7 +124,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+/// See ``norm(_:ord:axes:keepDims:stream:)``
 @available(*, deprecated, message: "norm is now avaiable in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -148,7 +148,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-3t3ay``
+/// See ``norm(_:ord:axes:keepDims:stream:)``
 @available(*, deprecated, message: "norm is now avaiable in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -321,7 +321,7 @@ public func lu_factor(_ a: MLXArray, stream: StreamOrDevice = .default)
     return MLXLinalg.lu_factor(a, stream: stream)
 }
 
-/// Compute the solution to a system of linear equations ``AX = B``.
+/// Compute the solution to a system of linear equations `AX = B`.
 ///
 /// -Parameters:
 ///   - a: input array.
@@ -335,7 +335,7 @@ public func solve(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defaul
     return MLXLinalg.solve(a, b, stream: stream)
 }
 
-///Computes the solution of a triangular system of linear equations ``AX = B``.
+///Computes the solution of a triangular system of linear equations `AX = B`.
 ///
 /// -Parameters:
 ///   - a: input array.

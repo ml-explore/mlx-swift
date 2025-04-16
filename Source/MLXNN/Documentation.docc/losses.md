@@ -6,7 +6,7 @@ Built-in loss functions
 
 ### Loss Functions
 
-- ``binaryCrossEntropy(logits:targets:reduction:)``
+- ``binaryCrossEntropy(logits:targets:weights:withLogits:reduction:)``
 - ``cosineSimilarityLoss(x1:x2:axis:eps:reduction:)``
 - ``crossEntropy(logits:targets:weights:axis:labelSmoothing:reduction:)``
 - ``hingeLoss(inputs:targets:reduction:)``

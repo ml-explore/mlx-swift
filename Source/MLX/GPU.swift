@@ -185,9 +185,11 @@ public enum GPU {
             // set it to a reasonable value in order to read it, then set it back
             // to current
             var current: size_t = 0
+            var discard: size_t = 0
             mlx_set_cache_limit(&current, cacheMemory)
-            mlx_set_cache_limit(&current, current)
-            _cacheLimit = current
+            mlx_set_cache_limit(&discard, current)
+
+          _cacheLimit = current
             return current
         }
     }
@@ -233,7 +235,7 @@ public enum GPU {
     /// swap) if `relaxed` is true.
     ///
     /// The memory limit defaults to 1.5 times the maximum recommended working set
-    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize))
+    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize))
     public static func set(memoryLimit: Int, relaxed: Bool = true) {
         queue.sync {
             _memoryLimit = memoryLimit
@@ -277,10 +279,10 @@ public enum GPU {
     }
 
     public struct DeviceInfo: Sendable {
-        let architecture: String
-        let maxBufferSize: Int
-        let maxRecommendedWorkingSetSize: UInt64
-        let memorySize: Int
+        public let architecture: String
+        public let maxBufferSize: Int
+        public let maxRecommendedWorkingSetSize: UInt64
+        public let memorySize: Int
     }
 
     /// Get information about the GPU device and system settings

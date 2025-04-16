@@ -79,13 +79,13 @@ Note: some of the symbols are not linkable.
 `__iter__` | implements `Sequence`
 `__add__` | ``MLXArray/+(_:_:)-1rv98``
 `__iadd__` | ``MLXArray/+=(_:_:)-3feg7``
-`__sub__` | `-`
-`__isub__` | `-=`
+`__sub__` | ``MLXArray/-(_:_:)-7frdo``
+`__isub__` | ``MLXArray/-=(_:_:)-4d4ei``
 `__mul__` | ``MLXArray/*(_:_:)-1z2ck``
 `__imul__` | ``MLXArray/*=(_:_:)-9ukv3``
-`__truediv__` | `/`
-`__div__` | `/`
-`__idiv__` | `/=`
+`__truediv__` | ``MLXArray//(_:_:)-6ijef``
+`__div__` | ``MLXArray//(_:_:)-6ijef``
+`__idiv__` | ``MLXArray//=(_:_:)-9egbn``
 `__floordiv__` | ``MLXArray/floorDivide(_:stream:)``
 `__mod__` | ``MLXArray/%(_:_:)-3ubwd``
 `__eq__` | ``MLXArray/.==(_:_:)-56m0a``
@@ -211,7 +211,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `not_equal` | ``MLX/notEqual(_:_:stream:)``
 `ones` | ``MLXArray/ones(_:type:stream:)``
 `ones_like` | ``MLXArray/ones(like:stream:)``
-`pad` | ``MLX/padded(_:widths:value:stream:)``
+`pad` | ``MLX/padded(_:width:mode:value:stream:)``
 `partition` | ``MLX/partitioned(_:kth:axis:stream:)``
 `power` | ``MLX/pow(_:_:stream:)-8ie9c``
 `prod` | ``MLX/product(_:axes:keepDims:stream:)``
