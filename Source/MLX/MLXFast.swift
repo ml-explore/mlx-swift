@@ -59,17 +59,128 @@ public enum MLXFast {
     ///
     /// return matmul(scores, values).transposed(0, 2, 1, 3)
     /// ```
+    ///
+    /// In the following the dimensions are given by:
+    ///
+    /// * `B`: The batch size.
+    /// * `N_q`: The number of query heads.
+    /// * `N_kv`: The number of key and value heads.
+    /// * `T_q`: The number of queries per example.
+    /// * `T_kv`: The number of keys and values per example.
+    /// * `D`: The per-head dimension.
+    ///
+    /// - Parameters:
+    ///   - queries: queries with shape `[B, N_q, T_q, D]`
+    ///   - keys: keys with shape `[B, N_kv, T_kv, D]`
+    ///   - values: values with shape `[B, N_kv, T_kv, D]`
+    ///   - scale: scale for queries, typically `1 / sqrt(q.dim(-1))`
+    ///   - mask: mask array
+    ///   - memoryEfficientThreshold: unused
+    ///   - stream: stream to evaluate on
     public static func scaledDotProductAttention(
         queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
         memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
     ) -> MLXArray {
+        let masks =
+            if let mask {
+                new_mlx_vector_array([mask])
+            } else {
+                mlx_vector_array_new()
+            }
+        defer { mlx_vector_array_free(masks) }
+
         var result = mlx_array_new()
-        let memoryEfficientThreshold = mlx_optional_int(
-            value: Int32(memoryEfficientThreshold ?? 0), has_value: memoryEfficientThreshold != nil)
+
         mlx_fast_scaled_dot_product_attention(
             &result,
-            queries.ctx, keys.ctx, values.ctx, scale, (mask ?? .mlxNone).ctx,
-            memoryEfficientThreshold, stream.ctx)
+            queries.ctx, keys.ctx, values.ctx, scale,
+            mask == nil ? "causal" : "", masks,
+            stream.ctx)
+        return MLXArray(result)
+    }
+
+    public enum ScaledDotProductAttentionMaskMode {
+        case none
+        case array(MLXArray)
+        case arrays([MLXArray])
+        case causal
+
+        public var masks: [MLXArray]? {
+            switch self {
+            case .none: nil
+            case .array(let array): [array]
+            case .arrays(let arrays): arrays
+            case .causal: nil
+            }
+        }
+
+        public var mode: String {
+            switch self {
+            case .none: ""
+            case .array, .arrays: ""
+            case .causal: "causal"
+            }
+        }
+    }
+
+    /// A fast implementation of multi-head attention: `O = softmax(Q @ K.T, dim=-1) @ V`
+    ///
+    /// Supports [Multi-Head Attention](https://arxiv.org/abs/1706.03762), [Grouped Query Attention](https://arxiv.org/abs/2305.13245), and [Multi-Query Attention](https://arxiv.org/abs/1911.02150).
+    ///
+    /// This function will dispatch to an optimized Metal kernel when the query sequence length is 1. It handles other cases with regular MLX operations.
+    ///
+    /// > Note: The softmax operation is performed in float32 precision regardless of input precision (float16 or float32).
+    ///
+    /// > Note: For Grouped Query Attention and Multi-Query Attention, the input arrays for `key` and `value` should not be pre-tiled to match the `query` array.
+    ///
+    /// Specifically this implements:
+    ///
+    /// ```swift
+    /// var scores = (queries * self.scale).matmul(keys.transposed(0, 1, 3, 2))
+    /// if let mask {
+    ///     scores = scores + mask
+    /// }
+    ///
+    /// scores = softMax(scores.asType(.float32), axis: -1).asType(scores.dtype)
+    ///
+    /// return matmul(scores, values).transposed(0, 2, 1, 3)
+    /// ```
+    ///
+    /// In the following the dimensions are given by:
+    ///
+    /// * `B`: The batch size.
+    /// * `N_q`: The number of query heads.
+    /// * `N_kv`: The number of key and value heads.
+    /// * `T_q`: The number of queries per example.
+    /// * `T_kv`: The number of keys and values per example.
+    /// * `D`: The per-head dimension.
+    ///
+    /// - Parameters:
+    ///   - queries: queries with shape `[B, N_q, T_q, D]`
+    ///   - keys: keys with shape `[B, N_kv, T_kv, D]`
+    ///   - values: values with shape `[B, N_kv, T_kv, D]`
+    ///   - scale: scale for queries, typically `1 / sqrt(q.dim(-1))`
+    ///   - mask: a ``ScaledDotProductAttentionMaskMode``
+    ///   - stream: stream to evaluate on
+    public static func scaledDotProductAttention(
+        queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float,
+        mask: ScaledDotProductAttentionMaskMode, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+
+        let masks =
+            if let masks = mask.masks {
+                new_mlx_vector_array(masks)
+            } else {
+                mlx_vector_array_new()
+            }
+        defer { mlx_vector_array_free(masks) }
+
+        mlx_fast_scaled_dot_product_attention(
+            &result,
+            queries.ctx, keys.ctx, values.ctx, scale,
+            mask.mode, masks,
+            stream.ctx)
         return MLXArray(result)
     }
 

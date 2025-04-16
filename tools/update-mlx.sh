@@ -35,6 +35,7 @@ make \
     gemm \
     gemv_masked \
     hadamard \
+    logsumexp \
     quantized \
     reduce \
     reduce_utils \
@@ -75,3 +76,6 @@ rm Source/Cmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh
+
+# install the appropriate bf16 header
+cp Source/Cmlx/mlx-generated/metal/metal_3_0/bf16.h Source/Cmlx/mlx-generated/metal
