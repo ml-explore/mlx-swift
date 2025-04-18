@@ -9,6 +9,8 @@ final class CompiledFunction: @unchecked (Sendable) {
     /// unique (for the lifetime of the object) identifier for the compiled function
     private var id: UInt!
 
+    let lock = NSLock()
+
     /// the function to compile
     let f: ([MLXArray]) -> [MLXArray]
 
@@ -35,6 +37,12 @@ final class CompiledFunction: @unchecked (Sendable) {
     }
 
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
+        lock.withLock {
+            innerCall(arguments)
+        }
+    }
+
+    func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
         let stateInputs = inputs.flatMap { $0.innerState() }
         let argumentsCount = arguments.count
 
