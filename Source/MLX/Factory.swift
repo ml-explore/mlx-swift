@@ -297,7 +297,7 @@ extension MLXArray {
         MLX.identity(n, type: type, stream: stream)
     }
 
-    /// Create a square identity matrix given a ``DType``.
+    /// Create a square identity matrix with a given ``DType``.
     ///
     /// Example:
     ///
@@ -818,7 +818,7 @@ public func identity<T: HasDType>(
     return MLXArray(result)
 }
 
-/// Create a square identity matrix and a given ``DType``.
+/// Create a square identity matrix with a given ``DType``.
 ///
 /// Example:
 ///
