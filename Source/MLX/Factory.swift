@@ -165,7 +165,7 @@ extension MLXArray {
         MLX.eye(n, m: m, k: k, type: type, stream: stream)
     }
 
-    /// Create an identity matrix or a general diagonal matrix a given ``DType``.
+    /// Create an identity matrix or a general diagonal matrix given a ``DType``.
     ///
     /// Example:
     ///
@@ -178,7 +178,7 @@ extension MLXArray {
     ///     - n: number of rows in the output
     ///     - m: number of columns in the output -- equal to `n` if not specified
     ///     - k: index of the diagonal
-    ///     - type: data type of the output array
+    ///     - dtype: data type of the output array
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -297,7 +297,7 @@ extension MLXArray {
         MLX.identity(n, type: type, stream: stream)
     }
 
-    /// Create a square identity matrix and a given ``DType``.
+    /// Create a square identity matrix given a ``DType``.
     ///
     /// Example:
     ///
@@ -308,7 +308,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - n: number of rows and columns in the output
-    ///     - type: data type of the output array
+    ///     - dtype: data type of the output array
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -485,7 +485,7 @@ extension MLXArray {
     ///     - n: number of rows in the output
     ///     - m: number of columns in the output -- equal to `n` if not specified
     ///     - k: index of the diagonal
-    ///     - type: data type of the output array
+    ///     - dtype: data type of the output array
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -597,7 +597,7 @@ public func ones<T: HasDType>(
     return MLXArray(result)
 }
 
-/// Construct an array of zeros with a given ``DType``
+/// Construct an array of ones with a given ``DType``
 ///
 /// Example:
 ///
@@ -673,7 +673,7 @@ public func eye<T: HasDType>(
     return MLXArray(result)
 }
 
-/// Create an identity matrix or a general diagonal matrix and a given ``DType``.
+/// Create an identity matrix or a general diagonal matrix given a ``DType``.
 ///
 /// Example:
 ///
@@ -686,7 +686,7 @@ public func eye<T: HasDType>(
 ///     - n: number of rows in the output
 ///     - m: number of columns in the output -- equal to `n` if not specified
 ///     - k: index of the diagonal
-///     - type: data type of the output array
+///     - dtype: data type of the output array
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -829,7 +829,7 @@ public func identity<T: HasDType>(
 ///
 /// - Parameters:
 ///     - n: number of rows and columns in the output
-///     - type: data type of the output array
+///     - dtype: data type of the output array
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1018,7 +1018,7 @@ public func tri<T: HasDType>(
 ///     - n: number of rows in the output
 ///     - m: number of columns in the output -- equal to `n` if not specified
 ///     - k: index of the diagonal
-///     - type: data type of the output array
+///     - dtype: data type of the output array
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
