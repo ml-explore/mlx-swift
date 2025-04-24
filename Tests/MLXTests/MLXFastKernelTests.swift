@@ -9,7 +9,7 @@ class MLXFastKernelTests: XCTestCase {
     func testCustomKernelBasic() {
         // based on def test_custom_kernel_basic
         MLXRandom.seed(7)
-        let a = MLXRandom.normal([2, 2])
+        let a = normal([2, 2])
         let kernel = MLXFast.metalKernel(
             name: "basic",
             inputNames: ["a"],
@@ -17,13 +17,14 @@ class MLXFastKernelTests: XCTestCase {
             source: """
                     uint elem = thread_position_in_grid.x;
                     out1[elem] = a[elem];
-                """,
+                """)
+
+        let out = kernel(
+            [a],
             grid: (4, 1, 1),
             threadGroup: (2, 1, 1),
             outputShapes: [[2, 2]],
             outputDTypes: [.float32])
-
-        let out = kernel([a])
 
         XCTAssertTrue(allClose(out[0], a).all().item())
     }
@@ -31,8 +32,8 @@ class MLXFastKernelTests: XCTestCase {
     func testCustomKernelArgs() {
         // based on def test_custom_kernel_args
         MLXRandom.seed(7)
-        let a = MLXRandom.normal([3, 6])
-        let c = MLXRandom.normal([2, 2]).asType(.bfloat16)
+        let a = normal([3, 6])
+        let c = normal([2, 2]).asType(.bfloat16)
 
         let kernel = MLXFast.metalKernel(
             name: "arg_test",
@@ -47,7 +48,15 @@ class MLXFastKernelTests: XCTestCase {
                         out1[elem] = 1;
                     }
                     out2[elem] = a[1] + b[2] + c[1] - d;
-                """,
+                """)
+
+        let out = kernel(
+            [
+                a,
+                MLXArray([3, 4, 5]),
+                c,
+                7.3,
+            ],
             template: [
                 ("e", true),
                 ("f", 3),
@@ -57,13 +66,6 @@ class MLXFastKernelTests: XCTestCase {
             threadGroup: (2, 1, 1),
             outputShapes: [[2, 2], [3, 2]],
             outputDTypes: [.float32, .int32])
-
-        let out = kernel([
-            a,
-            MLXArray([3, 4, 5]),
-            c,
-            7.3,
-        ])
 
         XCTAssertTrue(allClose(out[0], full([2, 2], values: 14.0484)).all().item())
         XCTAssertTrue(allClose(out[1], full([3, 2], values: -2)).all().item())

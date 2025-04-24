@@ -140,8 +140,5 @@ extension Device: CustomStringConvertible {
 ///     - device: device to be used
 ///     - fn: function to be executed
 public func using<R>(device: Device, fn: () throws -> R) rethrows -> R {
-    let defaultDevice = MLX.Device.defaultDevice()
-    MLX.Device.setDefault(device: device)
-    defer { MLX.Device.setDefault(device: defaultDevice) }
-    return try fn()
+    try Stream.withNewDefaultStream(device: device, fn)
 }

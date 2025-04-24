@@ -201,11 +201,31 @@ template <typename T> Simd<T, 1> expm1(Simd<T, 1> in) { return std::expm1(in.val
 template <typename T> Simd<T, 1> floor(Simd<T, 1> in) { return std::floor(in.value); }
 template <typename T> Simd<T, 1> log(Simd<T, 1> in) { return std::log(in.value); }
 template <typename T> Simd<T, 1> log10(Simd<T, 1> in) { return std::log10(in.value); }
-template <typename T> Simd<T, 1> log1p(Simd<T, 1> in) { return std::log1p(in.value); }
 template <typename T> Simd<T, 1> sinh(Simd<T, 1> in) { return std::sinh(in.value); }
 template <typename T> Simd<T, 1> sqrt(Simd<T, 1> in) { return std::sqrt(in.value); }
 template <typename T> Simd<T, 1> tan(Simd<T, 1> in) { return std::tan(in.value); }
 template <typename T> Simd<T, 1> tanh(Simd<T, 1> in) { return std::tanh(in.value); }
+template <typename T>
+Simd<T, 1> log1p(Simd<T, 1> in) {
+  if constexpr (is_complex<T>) {
+    auto x = in.value.real();
+    auto y = in.value.imag();
+    auto zabs = std::abs(in.value);
+    auto theta = std::atan2(y, x + 1);
+    if (zabs < 0.5) {
+      auto r = x * (2 + x) + y * y;
+      if (r == 0) {
+        return Simd<T, 1>{T{x, theta}};
+      }
+      return Simd<T, 1>{T{((typeof(x))(0.5)) * std::log1p(r), theta}};
+    } else {
+      auto z0 = std::hypot(x + 1, y);
+      return Simd<T, 1>{T{std::log(z0), theta}};
+    }
+  } else {
+    return Simd<T, 1>{std::log1p(in.value)};
+  }
+}
 template <typename T>
 Simd<T, 1> log2(Simd<T, 1> in) {
   if constexpr (is_complex<T>) {

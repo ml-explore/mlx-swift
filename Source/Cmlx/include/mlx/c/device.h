@@ -3,6 +3,8 @@
 #ifndef MLX_DEVICE_H
 #define MLX_DEVICE_H
 
+#include <stdbool.h>
+
 #include "mlx/c/string.h"
 
 #ifdef __cplusplus

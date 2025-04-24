@@ -6,6 +6,7 @@
 #ifndef MLX_OPS_H
 #define MLX_OPS_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -281,6 +282,7 @@ int mlx_conv_transpose1d(
     int stride,
     int padding,
     int dilation,
+    int output_padding,
     int groups,
     const mlx_stream s);
 int mlx_conv_transpose2d(
@@ -293,6 +295,8 @@ int mlx_conv_transpose2d(
     int padding_1,
     int dilation_0,
     int dilation_1,
+    int output_padding_0,
+    int output_padding_1,
     int groups,
     const mlx_stream s);
 int mlx_conv_transpose3d(
@@ -308,6 +312,9 @@ int mlx_conv_transpose3d(
     int dilation_0,
     int dilation_1,
     int dilation_2,
+    int output_padding_0,
+    int output_padding_1,
+    int output_padding_2,
     int groups,
     const mlx_stream s);
 int mlx_copy(mlx_array* res, const mlx_array a, const mlx_stream s);
@@ -438,6 +445,7 @@ int mlx_gather_mm(
     const mlx_array b,
     const mlx_array lhs_indices /* may be null */,
     const mlx_array rhs_indices /* may be null */,
+    bool sorted_indices,
     const mlx_stream s);
 int mlx_gather_qmm(
     mlx_array* res,
@@ -450,6 +458,7 @@ int mlx_gather_qmm(
     bool transpose,
     int group_size,
     int bits,
+    bool sorted_indices,
     const mlx_stream s);
 int mlx_greater(
     mlx_array* res,
@@ -521,6 +530,13 @@ int mlx_logaddexp(
     mlx_array* res,
     const mlx_array a,
     const mlx_array b,
+    const mlx_stream s);
+int mlx_logcumsumexp(
+    mlx_array* res,
+    const mlx_array a,
+    int axis,
+    bool reverse,
+    bool inclusive,
     const mlx_stream s);
 int mlx_logical_and(
     mlx_array* res,

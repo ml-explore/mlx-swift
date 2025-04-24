@@ -47,6 +47,7 @@ make \
     steel_conv \
     steel_conv_general \
     steel_gemm_fused \
+    steel_gemm_gather \
     steel_gemm_masked \
     steel_gemm_splitk \
     ternary \

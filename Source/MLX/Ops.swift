@@ -770,6 +770,7 @@ public func convGeneral(
 ///     - stride: kernel stride
 ///     - padding: input padding
 ///     - dilation: kernel dilation
+///     - outputPadding: output padding
 ///     - groups: input feature groups
 ///     - stream: stream or device to evaluate on
 ///
@@ -780,13 +781,15 @@ public func convGeneral(
 /// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
 public func convTransposed1d(
-    _ array: MLXArray, _ weight: MLXArray, stride: Int = 1, padding: Int = 0, dilation: Int = 1,
-    groups: Int = 1, stream: StreamOrDevice = .default
+    _ array: MLXArray, _ weight: MLXArray, stride: Int = 1, padding: Int = 0,
+    dilation: Int = 1, outputPadding: Int = 0, groups: Int = 1,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_conv_transpose1d(
         &result,
-        array.ctx, weight.ctx, stride.int32, padding.int32, dilation.int32, groups.int32,
+        array.ctx, weight.ctx, stride.int32, padding.int32,
+        dilation.int32, outputPadding.int32, groups.int32,
         stream.ctx)
     return MLXArray(result)
 }
@@ -815,6 +818,7 @@ public func convTransposed1d(
 ///     - stride: kernel stride
 ///     - padding: input padding
 ///     - dilation: kernel dilation
+///     - outputPadding: output padding
 ///     - groups: input feature groups
 ///     - stream: stream or device to evaluate on
 ///
@@ -828,13 +832,15 @@ public func convTransposed1d(
 /// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
 public func convTransposed2d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrPair = 1, padding: IntOrPair = 0,
-    dilation: IntOrPair = 1, groups: Int = 1, stream: StreamOrDevice = .default
+    dilation: IntOrPair = 1, outputPadding: IntOrPair = 0, groups: Int = 1,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_conv_transpose2d(
         &result,
         array.ctx, weight.ctx, stride.first.int32, stride.second.int32, padding.first.int32,
-        padding.second.int32, dilation.first.int32, dilation.second.int32, groups.int32,
+        padding.second.int32, dilation.first.int32, dilation.second.int32,
+        outputPadding.first.int32, outputPadding.second.int32, groups.int32,
         stream.ctx)
     return MLXArray(result)
 }
@@ -863,6 +869,7 @@ public func convTransposed2d(
 ///     - stride: kernel stride
 ///     - padding: input padding
 ///     - dilation: kernel dilation
+///     - outputPadding: output padding
 ///     - groups: input feature groups
 ///     - stream: stream or device to evaluate on
 ///
@@ -876,7 +883,8 @@ public func convTransposed2d(
 /// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
 public func convTransposed3d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrTriple = 1, padding: IntOrTriple = 0,
-    dilation: IntOrTriple = 1, groups: Int = 1, stream: StreamOrDevice = .default
+    dilation: IntOrTriple = 1, outputPadding: IntOrTriple = 0, groups: Int = 1,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_conv_transpose3d(
@@ -885,6 +893,7 @@ public func convTransposed3d(
         stride.first.int32, stride.second.int32, stride.third.int32,
         padding.first.int32, padding.second.int32, padding.third.int32,
         dilation.first.int32, dilation.second.int32, dilation.third.int32,
+        outputPadding.first.int32, outputPadding.second.int32, outputPadding.third.int32,
         groups.int32, stream.ctx)
     return MLXArray(result)
 }
@@ -1228,13 +1237,13 @@ public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// - ``matmul(_:_:stream:)``
 public func gatherMatmul(
     _ a: MLXArray, _ b: MLXArray, lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
-    stream: StreamOrDevice = .default
+    sortedIndices: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
 
     mlx_gather_mm(
         &result, a.ctx, b.ctx, (lhsIndices ?? .mlxNone).ctx, (rhsIndices ?? .mlxNone).ctx,
-        stream.ctx)
+        sortedIndices, stream.ctx)
 
     return MLXArray(result)
 }
@@ -1253,7 +1262,7 @@ public func gatherQuantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray,
     lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
     transpose: Bool = true, groupSize: Int = 64, bits: Int = 4,
-    stream: StreamOrDevice = .default
+    sortedIndices: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
 
@@ -1261,7 +1270,7 @@ public func gatherQuantizedMatmul(
         &result,
         x.ctx, w.ctx, scales.ctx, biases.ctx, (lhsIndices ?? .mlxNone).ctx,
         (rhsIndices ?? .mlxNone).ctx, transpose,
-        groupSize.int32, bits.int32, stream.ctx)
+        groupSize.int32, bits.int32, sortedIndices, stream.ctx)
 
     return MLXArray(result)
 }

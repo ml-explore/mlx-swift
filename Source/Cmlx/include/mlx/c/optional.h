@@ -3,6 +3,8 @@
 #ifndef MLX_OPTIONAL_H
 #define MLX_OPTIONAL_H
 
+#include <stdbool.h>
+
 #include "mlx/c/array.h"
 #include "mlx/c/string.h"
 

@@ -260,8 +260,20 @@ constexpr bool operator==(complex64_t a, complex64_t b) {
 constexpr complex64_t operator+(complex64_t a, complex64_t b) {
   return {a.real + b.real, a.imag + b.imag};
 }
+constexpr complex64_t operator+(float a, complex64_t b) {
+  return {a + b.real, b.imag};
+}
+constexpr complex64_t operator+(complex64_t a, float b) {
+  return {a.real + b, a.imag};
+}
 constexpr complex64_t operator-(complex64_t a, complex64_t b) {
   return {a.real - b.real, a.imag - b.imag};
+}
+constexpr complex64_t operator-(float a, complex64_t b) {
+  return {a - b.real, -b.imag};
+}
+constexpr complex64_t operator-(complex64_t a, float b) {
+  return {a.real - b, a.imag};
 }
 constexpr complex64_t operator*(complex64_t a, complex64_t b) {
   return {a.real * b.real - a.imag * b.imag, a.real * b.imag + a.imag * b.real};
@@ -270,6 +282,12 @@ constexpr complex64_t operator/(complex64_t a, complex64_t b) {
   auto denom = b.real * b.real + b.imag * b.imag;
   auto x = a.real * b.real + a.imag * b.imag;
   auto y = a.imag * b.real - a.real * b.imag;
+  return {x / denom, y / denom};
+}
+constexpr complex64_t operator/(float a, complex64_t b) {
+  auto denom = b.real * b.real + b.imag * b.imag;
+  auto x = a * b.real;
+  auto y = -a * b.imag;
   return {x / denom, y / denom};
 }
 constexpr complex64_t operator%(complex64_t a, complex64_t b) {
@@ -516,6 +534,22 @@ inline bfloat16_t log1p(bfloat16_t x) {
     return x;
   }
   return bfloat16_t(x * (metal::log(xp1) / (xp1 - 1.0f)));
+}
+inline complex64_t log1p(complex64_t in) {
+  float x = in.real;
+  float y = in.imag;
+  float zabs = metal::precise::sqrt(x * x + y * y);
+  float theta = metal::atan2(y, x + 1);
+  if (zabs < 0.5f) {
+    float r = x * (2 + x) + y * y;
+    if (r == 0) {
+      return {x, theta};
+    }
+    return {0.5f * log1p(r), theta};
+  } else {
+    auto z0 = metal::sqrt((x + 1) * (x + 1) + y * y);
+    return {metal::log(z0), theta};
+  }
 }
 inline uint64_t simd_shuffle_down(uint64_t data, uint16_t delta) {
   return as_type<uint64_t>(

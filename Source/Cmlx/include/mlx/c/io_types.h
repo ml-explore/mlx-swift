@@ -3,6 +3,8 @@
 #ifndef MLX_IO_TYPES_H
 #define MLX_IO_TYPES_H
 
+#include <stdbool.h>
+
 #include "mlx/c/string.h"
 
 #ifdef __cplusplus

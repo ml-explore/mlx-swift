@@ -28,27 +28,17 @@ class StreamTests: XCTestCase {
         XCTAssertEqual(s3.deviceType, .cpu)
     }
 
-    func testEquatableStreamOrDevice() {
-        let s1 = StreamOrDevice.gpu
-        let s2 = StreamOrDevice.stream(.init(index: 0, .gpu))
-        let s3 = StreamOrDevice.cpu
-
-        XCTAssertEqual(s1, s2)
-        XCTAssertNotEqual(s1, s3)
-        XCTAssertNotEqual(s2, s3)
-    }
-
     func testUsingDevice() {
         let defaultDevice = Device.defaultDevice()
 
         using(device: .cpu) {
-            XCTAssertEqual(Device.defaultDevice(), .cpu)
+            XCTAssertTrue(StreamOrDevice.default.description.contains("cpu"))
         }
         XCTAssertEqual(defaultDevice, Device.defaultDevice())
 
         using(device: .gpu) {
-            XCTAssertEqual(Device.defaultDevice(), .gpu)
+            XCTAssertTrue(StreamOrDevice.default.description.contains("gpu"))
         }
-        XCTAssertEqual(defaultDevice, Device.defaultDevice())
+        XCTAssertTrue(StreamOrDevice.default.description.contains("gpu"))
     }
 }

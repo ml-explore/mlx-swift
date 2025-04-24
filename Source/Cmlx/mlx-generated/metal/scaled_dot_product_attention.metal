@@ -1,11 +1,11 @@
 #include <metal_stdlib>
 
-#include "sdpa_vector.h"
+// clang-format off
 #include "utils.h"
+#include "sdpa_vector.h"
 
 using namespace metal;
 
-// clang-format off
 // SDPA vector instantiations
 #define instantiate_sdpa_vector_aggregation(type, value_dim) \
   instantiate_kernel(                                        \

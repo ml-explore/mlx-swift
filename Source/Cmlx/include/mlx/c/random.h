@@ -6,6 +6,7 @@
 #ifndef MLX_RANDOM_H
 #define MLX_RANDOM_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 

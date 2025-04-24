@@ -89,8 +89,9 @@ let package = Package(
                 "mlx/mlx/distributed/mpi/mpi.cpp",
                 "mlx/mlx/distributed/ring/ring.cpp",
 
-                "mlx/mlx/backend/cpu/gemms/no_bf16.cpp",
-                "mlx/mlx/backend/cpu/gemms/no_fp16.cpp",
+                // bnns instead of simd (accelerate)
+                "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
+                "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
             ],
 
             cSettings: [

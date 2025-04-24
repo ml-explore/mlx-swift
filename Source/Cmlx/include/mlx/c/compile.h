@@ -6,6 +6,7 @@
 #ifndef MLX_COMPILE_H
 #define MLX_COMPILE_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
