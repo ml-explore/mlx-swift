@@ -25,9 +25,7 @@ extension MLXArray {
     static public func zeros<T: HasDType>(
         _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_zeros(&result, shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.zeros(shape, type: type, stream: stream)
     }
 
     /// Construct an array of zeros with a given ``DType``
@@ -35,7 +33,7 @@ extension MLXArray {
     /// Example:
     ///
     /// ```swift
-    /// let z = MLXArray.zeros([5, 10], type: Int.self)
+    /// let z = MLXArray.zeros([5, 10], dtype: .int32)
     /// ```
     ///
     /// - Parameters:
@@ -50,9 +48,7 @@ extension MLXArray {
     static public func zeros(
         _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_zeros(&result, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.zeros(shape, dtype: dtype, stream: stream)
     }
 
     /// Construct an array of zeros.
@@ -73,9 +69,7 @@ extension MLXArray {
     /// - ``zeros(_:type:stream:)``
     /// - ``ones(_:type:stream:)``
     static public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_zeros_like(&result, array.ctx, stream.ctx)
-        return MLXArray(result)
+        MLX.zeros(like: array, stream: stream)
     }
 
     /// Construct an array of ones.
@@ -98,9 +92,7 @@ extension MLXArray {
     static public func ones<T: HasDType>(
         _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_ones(&result, shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.ones(shape, type: type, stream: stream)
     }
 
     /// Construct an array of ones with a given ``DType``
@@ -108,7 +100,7 @@ extension MLXArray {
     /// Example:
     ///
     /// ```swift
-    /// let r = MLXArray.ones([5, 10], type: Int.self)
+    /// let r = MLXArray.ones([5, 10], dtype: .int32)
     /// ```
     ///
     /// - Parameters:
@@ -123,9 +115,7 @@ extension MLXArray {
     static public func ones(
         _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_ones(&result, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.ones(shape, dtype: dtype, stream: stream)
     }
 
     /// Construct an array of ones.
@@ -146,9 +136,7 @@ extension MLXArray {
     /// - ``ones(_:type:stream:)``
     /// - ``zeros(_:type:stream:)``
     static public func ones(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_ones_like(&result, array.ctx, stream.ctx)
-        return MLXArray(result)
+        MLX.ones(like: array, stream: stream)
     }
 
     /// Create an identity matrix or a general diagonal matrix.
@@ -174,9 +162,33 @@ extension MLXArray {
         _ n: Int, m: Int? = nil, k: Int = 0, type: T.Type = Float.self,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_eye(&result, n.int32, (m ?? n).int32, k.int32, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.eye(n, m: m, k: k, type: type, stream: stream)
+    }
+
+    /// Create an identity matrix or a general diagonal matrix given a ``DType``.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// //  create [10, 10] array with 1's on the diagonal.
+    /// let r = MLXArray.eye(10, dtype: .int32)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - n: number of rows in the output
+    ///     - m: number of columns in the output -- equal to `n` if not specified
+    ///     - k: index of the diagonal
+    ///     - dtype: data type of the output array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``identity(_:type:stream:)``
+    static public func eye(
+        _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.eye(n, m: m, k: k, dtype: dtype, stream: stream)
     }
 
     /// Construct an array with the given value.
@@ -204,9 +216,35 @@ extension MLXArray {
     static public func full<T: HasDType>(
         _ shape: [Int], values: MLXArray, type: T.Type, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_full(&result, shape.asInt32, shape.count, values.ctx, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.full(shape, values: values, type: type, stream: stream)
+    }
+
+    /// Construct an array with the given value and a given ``DType``.
+    ///
+    /// Constructs an array of size `shape` filled with `vals`. If `vals`
+    /// is an :obj:`array` it must be <doc:broadcasting> to the given `shape`.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// //  create [5, 4] array filled with 7
+    /// let r = MLXArray.full([5, 4], values: 7, dtype: .float32)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - shape: shape of the output array
+    ///     - values: values to be bradcast into the array
+    ///     - dtype: data type of the output array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``full(_:values:stream:)``
+    /// - ``repeated(_:count:axis:stream:)``
+    static public func full(
+        _ shape: [Int], values: MLXArray, dtype: DType = .float32, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.full(shape, values: values, dtype: dtype, stream: stream)
     }
 
     /// Construct an array with the given value.
@@ -233,11 +271,7 @@ extension MLXArray {
     static public func full(_ shape: [Int], values: MLXArray, stream: StreamOrDevice = .default)
         -> MLXArray
     {
-        var result = mlx_array_new()
-
-        mlx_full(
-            &result, shape.asInt32, shape.count, values.ctx, values.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.full(shape, values: values, stream: stream)
     }
 
     /// Create a square identity matrix.
@@ -260,9 +294,30 @@ extension MLXArray {
     static public func identity<T: HasDType>(
         _ n: Int, type: T.Type = Float.self, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_identity(&result, n.int32, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.identity(n, type: type, stream: stream)
+    }
+
+    /// Create a square identity matrix with a given ``DType``.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// //  create [10, 10] array with 1's on the diagonal.
+    /// let r = MLXArray.identity(10, dtype: .int32)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - n: number of rows and columns in the output
+    ///     - dtype: data type of the output array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``eye(_:m:k:type:stream:)``
+    static public func identity(
+        _ n: Int, dtype: DType = .float32, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.identity(n, dtype: dtype, stream: stream)
     }
 
     /// Generate `num` evenly spaced numbers over interval `[start, stop]` for `BinaryInteger`.
@@ -286,11 +341,7 @@ extension MLXArray {
     static public func linspace<T: HasDType>(
         _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
     ) -> MLXArray where T: BinaryInteger {
-        var result = mlx_array_new()
-
-        mlx_linspace(
-            &result, Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.linspace(start, stop, count: count, stream: stream)
     }
 
     /// Generate `num` evenly spaced numbers over interval `[start, stop]` for `BinaryFloatingPoint`.
@@ -314,11 +365,7 @@ extension MLXArray {
     static public func linspace<T: HasDType>(
         _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
     ) -> MLXArray where T: BinaryFloatingPoint {
-        var result = mlx_array_new()
-
-        mlx_linspace(
-            &result, Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.linspace(start, stop, count: count, stream: stream)
     }
 
     /// Repeat an array along a specified axis.
@@ -333,9 +380,7 @@ extension MLXArray {
     static public func `repeat`(
         _ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_repeat_axis(&result, array.ctx, count.int32, axis.int32, stream.ctx)
-        return MLXArray(result)
+        MLX.repeated(array, count: count, axis: axis, stream: stream)
     }
 
     /// Repeat a flattened array along axis 0.
@@ -350,9 +395,7 @@ extension MLXArray {
     static public func `repeat`(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default)
         -> MLXArray
     {
-        var result = mlx_array_new()
-        mlx_repeat(&result, array.ctx, count.int32, stream.ctx)
-        return MLXArray(result)
+        MLX.repeated(array, count: count, stream: stream)
     }
 
     /// Repeat an array along a specified axis.
@@ -377,9 +420,7 @@ extension MLXArray {
     static public func repeated(
         _ array: MLXArray, count: Int, axis: Int, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_repeat_axis(&result, array.ctx, count.int32, axis.int32, stream.ctx)
-        return MLXArray(result)
+        MLX.repeated(array, count: count, axis: axis, stream: stream)
     }
 
     /// Repeat a flattened array along axis 0.
@@ -403,9 +444,7 @@ extension MLXArray {
     static public func repeated(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default)
         -> MLXArray
     {
-        var result = mlx_array_new()
-        mlx_repeat(&result, array.ctx, count.int32, stream.ctx)
-        return MLXArray(result)
+        MLX.repeated(array, count: count, stream: stream)
     }
 
     /// An array with ones at and below the given diagonal and zeros elsewhere.
@@ -430,9 +469,32 @@ extension MLXArray {
         _ n: Int, m: Int? = nil, k: Int = 0, type: T.Type = Float.self,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
-        var result = mlx_array_new()
-        mlx_tri(&result, n.int32, (m ?? n).int32, k.int32, T.dtype.cmlxDtype, stream.ctx)
-        return MLXArray(result)
+        MLX.tri(n, m: m, k: k, type: type, stream: stream)
+    }
+
+    /// An array with ones at and below the given diagonal and zeros elsewhere and a given ``DType``.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // [5, 5] array with the lower triangle filled with 1s
+    /// let r = MLXArray.triangle(5, dtype: .int32)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - n: number of rows in the output
+    ///     - m: number of columns in the output -- equal to `n` if not specified
+    ///     - k: index of the diagonal
+    ///     - dtype: data type of the output array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    static public func tri(
+        _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.tri(n, m: m, k: k, dtype: dtype, stream: stream)
     }
 
 }
@@ -459,6 +521,31 @@ public func zeros<T: HasDType>(
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_zeros(&result, shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Construct an array of zeros with a given ``DType``
+///
+/// Example:
+///
+/// ```swift
+/// let z = MLXArray.zeros([5, 10], dtype: .int32)
+/// ```
+///
+/// - Parameters:
+///     - shape: desired shape
+///     - dtype: dtype of the values
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``zeros(like:stream:)``
+/// - ``ones(_:type:stream:)``
+public func zeros(
+    _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_zeros(&result, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -507,6 +594,31 @@ public func ones<T: HasDType>(
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_ones(&result, shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Construct an array of ones with a given ``DType``
+///
+/// Example:
+///
+/// ```swift
+/// let r = MLXArray.ones([5, 10], dtype: .int32)
+/// ```
+///
+/// - Parameters:
+///     - shape: desired shape
+///     - dtype: dtype of the values
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``zeros(like:stream:)``
+/// - ``ones(_:type:stream:)``
+public func ones(
+    _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_ones(&result, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -561,6 +673,34 @@ public func eye<T: HasDType>(
     return MLXArray(result)
 }
 
+/// Create an identity matrix or a general diagonal matrix given a ``DType``.
+///
+/// Example:
+///
+/// ```swift
+/// //  create [10, 10] array with 1's on the diagonal.
+/// let r = MLXArray.eye(10, dtype: .int32)
+/// ```
+///
+/// - Parameters:
+///     - n: number of rows in the output
+///     - m: number of columns in the output -- equal to `n` if not specified
+///     - k: index of the diagonal
+///     - dtype: data type of the output array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``identity(_:type:stream:)``
+public func eye(
+    _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_eye(&result, n.int32, (m ?? n).int32, k.int32, dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Construct an array with the given value.
 ///
 /// Constructs an array of size `shape` filled with `vals`. If `vals`
@@ -589,6 +729,37 @@ public func full<T: HasDType>(
     var result = mlx_array_new()
     let values = values.asMLXArray(dtype: nil)
     mlx_full(&result, shape.asInt32, shape.count, values.ctx, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Construct an array with the given value and a given ``DType``.
+///
+/// Constructs an array of size `shape` filled with `vals`. If `vals`
+/// is an :obj:`array` it must be <doc:broadcasting> to the given `shape`.
+///
+/// Example:
+///
+/// ```swift
+/// //  create [5, 4] array filled with 7
+/// let r = MLXArray.full([5, 4], values: 7, dtype: .float32)
+/// ```
+///
+/// - Parameters:
+///     - shape: shape of the output array
+///     - values: values to be bradcast into the array
+///     - dtype: data type of the output array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``full(_:values:stream:)``
+/// - ``repeated(_:count:axis:stream:)``
+public func full(
+    _ shape: [Int], values: MLXArray, dtype: DType = .float32,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_full(&result, shape.asInt32, shape.count, values.ctx, dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -644,6 +815,31 @@ public func identity<T: HasDType>(
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_identity(&result, n.int32, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Create a square identity matrix with a given ``DType``.
+///
+/// Example:
+///
+/// ```swift
+/// //  create [10, 10] array with 1's on the diagonal.
+/// let r = MLXArray.identity(10, dtype: .int32)
+/// ```
+///
+/// - Parameters:
+///     - n: number of rows and columns in the output
+///     - dtype: data type of the output array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``eye(_:m:k:type:stream:)``
+public func identity(
+    _ n: Int, dtype: DType = .float32, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_identity(&result, n.int32, dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -806,5 +1002,32 @@ public func tri<T: HasDType>(
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_tri(&result, n.int32, (m ?? n).int32, k.int32, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// An array with ones at and below the given diagonal and zeros elsewhere and a given ``DType``.
+///
+/// Example:
+///
+/// ```swift
+/// // [5, 5] array with the lower triangle filled with 1s
+/// let r = MLXArray.triangle(5, dtype: .int32)
+/// ```
+///
+/// - Parameters:
+///     - n: number of rows in the output
+///     - m: number of columns in the output -- equal to `n` if not specified
+///     - k: index of the diagonal
+///     - dtype: data type of the output array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+public func tri(
+    _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_tri(&result, n.int32, (m ?? n).int32, k.int32, dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
