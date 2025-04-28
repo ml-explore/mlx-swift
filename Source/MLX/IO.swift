@@ -253,17 +253,15 @@ private func new_mlx_io_writer() -> mlx_io_writer {
 /// Save dictionary of arrays in `safetensors` format into `Data`.
 ///
 /// - Parameters:
-///     - a: array to save
+///     - arrays: arrays to save
 ///     - metadata: metadata to save
-///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - ``save(arrays:metadata:url:stream:)``
 /// - ``loadArrays(data:stream:)``
 /// - ``loadArraysAndMetadata(data:stream:)``
 public func saveToData(
-    arrays: [String: MLXArray], metadata: [String: String] = [:],
-    stream: StreamOrDevice = .default
+    arrays: [String: MLXArray], metadata: [String: String] = [:]
 ) throws -> Data {
     let mlx_arrays = new_mlx_array_map(arrays)
     defer { mlx_map_string_to_array_free(mlx_arrays) }
