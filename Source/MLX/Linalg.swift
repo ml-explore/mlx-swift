@@ -213,6 +213,7 @@ public enum MLXLinalg {
     ///   - array: input array
     ///   - stream: stream or device to evaluate on
     /// - Returns: The `U`, `S`, and `Vt` matrices, such that `A = matmul(U, matmul(diag(S), Vt))`
+    @_disfavoredOverload
     public static func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
         MLXArray, MLXArray, MLXArray
     ) {
@@ -564,6 +565,7 @@ public func qr(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArra
 ///   - array: input array
 ///   - stream: stream or device to evaluate on
 /// - Returns: The `U`, `S`, and `Vt` matrices, such that `A = matmul(U, matmul(diag(S), Vt))`
+@_disfavoredOverload
 public func svd(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
     MLXArray, MLXArray, MLXArray
 ) {

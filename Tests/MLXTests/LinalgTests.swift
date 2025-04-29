@@ -53,4 +53,13 @@ class LinalgTests: XCTestCase {
         assertEqual(q, MLXArray(converting: [-0.894427, -0.447214, -0.447214, 0.894427], [2, 2]))
         assertEqual(r, MLXArray(converting: [-2.23607, -3.57771, 0, 0.447214], [2, 2]))
     }
+
+    func testSVDOverload() {
+        let a = MLXRandom.uniform(0 ..< 1, [10, 10])
+
+        let (u, s, v) = MLXLinalg.svd(a)
+        let s2 = MLXLinalg.svd(a)
+
+        print(a.shape)
+    }
 }

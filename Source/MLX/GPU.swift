@@ -189,7 +189,7 @@ public enum GPU {
             mlx_set_cache_limit(&current, cacheMemory)
             mlx_set_cache_limit(&discard, current)
 
-          _cacheLimit = current
+            _cacheLimit = current
             return current
         }
     }
