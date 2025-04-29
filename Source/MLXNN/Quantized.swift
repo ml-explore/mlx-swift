@@ -16,6 +16,7 @@ public protocol Quantized: Module {
     var bits: Int { get }
 }
 
+/// Quantize any
 public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Quantized? {
     if layer is Quantized {
         // already quantized
@@ -37,6 +38,8 @@ public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) ->
 ///   - bits: bits per parameter
 ///   - filter: filter receiving path and module -- return `false` to skip a layer
 ///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding``
+/// ### See Also
+/// - ``quantize(model:filter:apply:)``
 public func quantize(
     model: Module, groupSize: Int = 64, bits: Int = 4,
     filter: (String, Module) -> Bool = { _, _ in true },
@@ -48,6 +51,38 @@ public func quantize(
         .flattened()
         .compactMap { (path, m) -> (String, Module)? in
             if filter(path, m) {
+                if let quantized = apply(m, groupSize, bits) {
+                    return (path, quantized)
+                }
+            }
+
+            return nil
+        }
+
+    model.update(modules: ModuleChildren.unflattened(updates))
+}
+
+/// Quantize the sub-modules of a module according to a filter.
+///
+/// By default all ``Linear`` and ``Embedding`` layers will be quantized.
+///
+/// - Parameters:
+///   - model: model to quantize
+///   - filter: filter receiving path and module -- return a tuple of `(groupSize: Int, bits: Int)` or `nil` to skip quantization
+///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding``
+/// ### See Also
+/// - ``quantize(model:groupSize:bits:filter:apply:)``
+public func quantize(
+    model: Module,
+    filter: (String, Module) -> (groupSize: Int, bits: Int)?,
+    apply: (Module, Int, Int) -> Module? = quantizeSingle(layer:groupSize:bits:)
+) {
+    let updates =
+        model
+        .leafModules()
+        .flattened()
+        .compactMap { (path, m) -> (String, Module)? in
+            if let (groupSize, bits) = filter(path, m) {
                 if let quantized = apply(m, groupSize, bits) {
                     return (path, quantized)
                 }
