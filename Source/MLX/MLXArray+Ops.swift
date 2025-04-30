@@ -63,7 +63,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``add(_:_:stream:)``
     public static func += (lhs: inout MLXArray, rhs: MLXArray) {
-        lhs.update(lhs + rhs)
+        lhs._updateInternal(lhs + rhs)
     }
 
     /// Element-wise addition with a ``ScalarOrArray`` (scalar) argument.
@@ -133,7 +133,7 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``subtract(_:_:stream:)``
     public static func -= (lhs: inout MLXArray, rhs: MLXArray) {
-        lhs.update(lhs - rhs)
+        lhs._updateInternal(lhs - rhs)
     }
 
     /// Element-wise subtraction with a ``ScalarOrArray`` (scalar) argument.
@@ -224,7 +224,7 @@ extension MLXArray {
     /// - ``matmul(_:stream:)``
     /// - ``matmul(_:_:stream:)``
     public static func *= (lhs: inout MLXArray, rhs: MLXArray) {
-        lhs.update(lhs * rhs)
+        lhs._updateInternal(lhs * rhs)
     }
 
     /// Element-wise multiplication with a ``ScalarOrArray`` (scalar) argument.
@@ -340,7 +340,7 @@ extension MLXArray {
     /// - ``divide(_:_:stream:)``
     /// - ``floorDivide(_:_:stream:)``
     public static func /= (lhs: inout MLXArray, rhs: MLXArray) {
-        lhs.update(lhs / rhs)
+        lhs._updateInternal(lhs / rhs)
     }
 
     /// Element-wise division with a ``ScalarOrArray`` (scalar) argument.

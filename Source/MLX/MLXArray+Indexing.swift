@@ -61,12 +61,6 @@ extension MLXArray {
         }
     }
 
-    /// Replace the interior ctx (`mlx_array` pointer) with a new value by transferring ownership
-    @inline(__always)
-    func update(_ ctx: mlx_array) {
-        mlx_array_set(&self.ctx, ctx)
-    }
-
     /// allow addressing as a positive index or negative (from end) using given axis
     @inlinable
     func resolve(index: Int, axis: Int) -> MLXArray {
@@ -161,7 +155,7 @@ extension MLXArray {
                 .broadcast(to: broadcastShape.asInt32)
 
             let indices = [resolve(index: index, axis: axis)]
-            self.update(scattered(indices: indices, updates: expanded, axes: [axis.int32]))
+            self._updateInternal(scattered(indices: indices, updates: expanded, axes: [axis.int32]))
         }
     }
 
@@ -350,7 +344,7 @@ extension MLXArray {
             let update = newValue.broadcast(to: broadcastShape).reshaped(updateShape)
 
             let axes = arange(axis + 1)
-            self.update(scattered(indices: arrayIndices, updates: update, axes: axes))
+            self._updateInternal(scattered(indices: arrayIndices, updates: update, axes: axes))
         }
     }
 
@@ -380,7 +374,7 @@ extension MLXArray {
         }
         set {
             if let result = updateSlice(src: self, operations: operations, update: newValue) {
-                self.update(result)
+                self._updateInternal(result)
                 return
             }
 
@@ -393,11 +387,11 @@ extension MLXArray {
                 var result = mlx_array_new()
                 mlx_scatter(
                     &result, self.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
-                self.update(result)
+                mlx_array_set(&self.ctx, result)
                 mlx_array_free(result)
                 return
             } else {
-                self.update(update)
+                self._updateInternal(update)
                 return
             }
         }

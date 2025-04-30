@@ -448,7 +448,7 @@ open class Module {
                     throw UpdateError.mismatchedSize(
                         key: key, expectedShape: p.shape, actualShape: newArray.shape)
                 }
-                p.update(newArray)
+                p._updateInternal(newArray)
 
             case (.value(.parameters(let p)), .none):
                 if Self.parameterIsValid(key) {

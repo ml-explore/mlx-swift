@@ -539,8 +539,11 @@ public final class MLXArray {
         mlx_array_eval(ctx)
     }
 
-    /// Replace the contents with a reference to a new array.
-    public func update(_ array: MLXArray) {
+    /// Replace the contents with a reference to a new array (INTERNAL).
+    ///
+    /// Note: this is an implementation detail and only visible because of the need to call it from
+    /// other `mlx-swift` modules.
+    public func _updateInternal(_ array: MLXArray) {
         mlx_array_set(&self.ctx, array.ctx)
     }
 
