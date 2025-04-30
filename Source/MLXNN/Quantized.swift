@@ -16,7 +16,7 @@ public protocol Quantized: Module {
     var bits: Int { get }
 }
 
-/// Quantize any
+/// Quantize any ``Quantizable`` layer that is not already quantized.
 public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Quantized? {
     if layer is Quantized {
         // already quantized
