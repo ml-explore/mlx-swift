@@ -336,8 +336,8 @@ open class BatchNorm: Module, UnaryLayer {
 
         if self.training, let runningMean, let runningVar {
             let mu = momentum
-            runningMean.update((1 - mu) * runningMean + mu * mean)
-            runningVar.update((1 - mu) * runningVar + mu * variance)
+            runningMean._updateInternal((1 - mu) * runningMean + mu * mean)
+            runningVar._updateInternal((1 - mu) * runningVar + mu * variance)
 
         } else if let runningMean, let runningVar {
             mean = runningMean
