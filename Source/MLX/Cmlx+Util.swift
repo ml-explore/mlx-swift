@@ -125,3 +125,51 @@ func new_mlx_closure(_ f: @escaping ([MLXArray]) -> [MLXArray]) -> mlx_closure {
 
     return mlx_closure_new_func_payload(trampoline, payload, free)
 }
+
+func new_mlx_kwargs_closure(keys: [String], _ f: @escaping ([MLXArray]) -> [MLXArray])
+    -> mlx_closure_kwargs
+{
+    // holds reference to `f()` as capture state for the mlx_closure
+    class ClosureCaptureState {
+        let keys: [String]
+        let f: ([MLXArray]) -> [MLXArray]
+
+        init(_ keys: [String], _ f: @escaping ([MLXArray]) -> [MLXArray]) {
+            self.keys = keys
+            self.f = f
+        }
+    }
+
+    func free(ptr: UnsafeMutableRawPointer?) {
+        Unmanaged<ClosureCaptureState>.fromOpaque(ptr!).release()
+    }
+
+    let payload = Unmanaged.passRetained(ClosureCaptureState(keys, f)).toOpaque()
+
+    // the C function that the mlx_closure will call -- this will convert
+    // arguments & results and call the captured `f()`
+    func trampoline(
+        resultOut: UnsafeMutablePointer<mlx_vector_array>?,
+        vector_array: mlx_vector_array, kwargs: mlx_map_string_to_array,
+        payload: UnsafeMutableRawPointer?
+    )
+        -> Int32
+    {
+        let state = Unmanaged<ClosureCaptureState>.fromOpaque(payload!).takeUnretainedValue()
+
+        let arrays = mlx_vector_array_values(vector_array)
+        let kwargs = mlx_map_array_values(kwargs)
+
+        let result = state.f(arrays + state.keys.compactMap { kwargs[$0] })
+
+        if let resultOut {
+            resultOut.pointee = new_mlx_vector_array(result)
+        } else {
+            fatalError("no resultOut pointer")
+        }
+
+        return 0
+    }
+
+    return mlx_closure_kwargs_new_func_payload(trampoline, payload, free)
+}

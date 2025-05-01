@@ -5,6 +5,10 @@
 using namespace metal;
 
 constant bool has_mask [[function_constant(20)]];
+constant bool query_transposed [[function_constant(21)]];
+constant bool do_causal [[function_constant(22)]];
+constant bool bool_mask [[function_constant(23)]];
+constant bool float_mask [[function_constant(24)]];
 
 template <typename T, int D, int V = D>
 [[kernel]] void sdpa_vector(
@@ -12,23 +16,31 @@ template <typename T, int D, int V = D>
     const device T* keys [[buffer(1)]],
     const device T* values [[buffer(2)]],
     device T* out [[buffer(3)]],
-    const constant int& gqa_factor,
-    const constant int& N,
-    const constant size_t& k_stride,
-    const constant size_t& v_stride,
-    const constant float& scale,
-    const device bool* mask [[function_constant(has_mask)]],
-    const constant int& mask_seq_stride [[function_constant(has_mask)]],
-    const constant int& mask_head_stride [[function_constant(has_mask)]],
+    const constant int& gqa_factor [[buffer(4)]],
+    const constant int& N [[buffer(5)]],
+    const constant size_t& k_head_stride [[buffer(6)]],
+    const constant size_t& k_seq_stride [[buffer(7)]],
+    const constant size_t& v_head_stride [[buffer(8)]],
+    const constant size_t& v_seq_stride [[buffer(9)]],
+    const constant float& scale [[buffer(10)]],
+    const device bool* bmask [[buffer(11), function_constant(bool_mask)]],
+    const device T* fmask [[buffer(12), function_constant(float_mask)]],
+    const constant int& mask_kv_seq_stride
+    [[buffer(13), function_constant(has_mask)]],
+    const constant int& mask_q_seq_stride
+    [[buffer(14), function_constant(has_mask)]],
+    const constant int& mask_head_stride
+    [[buffer(15), function_constant(has_mask)]],
     uint3 tid [[threadgroup_position_in_grid]],
+    uint3 tpg [[threadgroups_per_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
   constexpr int BN = 32;
   constexpr int BD = 32;
   constexpr int qk_per_thread = D / BD;
   constexpr int v_per_thread = V / BD;
-  constexpr int inner_k_stride = BN * D;
-  constexpr int inner_v_stride = BN * V;
+  int inner_k_stride = BN * int(k_seq_stride);
+  int inner_v_stride = BN * int(v_seq_stride);
 
   typedef float U;
 
@@ -41,15 +53,27 @@ template <typename T, int D, int V = D>
   threadgroup U sum_exp_scores[BN];
 
   // Adjust positions
-  const int head_idx = tid.y;
+  const int head_idx = tid.x;
+  const int q_seq_idx = tid.y;
   const int kv_head_idx = head_idx / gqa_factor;
-  queries += head_idx * D + simd_lid * qk_per_thread;
-  keys += kv_head_idx * k_stride + simd_gid * D + simd_lid * qk_per_thread;
-  values += kv_head_idx * v_stride + simd_gid * V + simd_lid * v_per_thread;
-  if (has_mask) {
-    mask += head_idx * mask_head_stride + simd_gid * mask_seq_stride;
+  const int o_offset = tpg.x * q_seq_idx + head_idx;
+  const int q_offset =
+      query_transposed ? o_offset : head_idx * tpg.y + q_seq_idx;
+  queries += q_offset * D + simd_lid * qk_per_thread;
+  keys += kv_head_idx * k_head_stride + simd_gid * k_seq_stride +
+      simd_lid * qk_per_thread;
+  values += kv_head_idx * v_head_stride + simd_gid * v_seq_stride +
+      simd_lid * v_per_thread;
+  if (bool_mask) {
+    bmask += head_idx * mask_head_stride + simd_gid * mask_kv_seq_stride +
+        q_seq_idx * mask_q_seq_stride;
   }
-  out += head_idx * V + simd_gid * v_per_thread;
+  if (float_mask) {
+    fmask += head_idx * mask_head_stride + simd_gid * mask_kv_seq_stride +
+        q_seq_idx * mask_q_seq_stride;
+  }
+
+  out += o_offset * V + simd_gid * v_per_thread;
 
   // Read the query and 0 the output accumulator
   for (int i = 0; i < qk_per_thread; i++) {
@@ -64,7 +88,13 @@ template <typename T, int D, int V = D>
 
   // For each key
   for (int i = simd_gid; i < N; i += BN) {
-    if (!has_mask || mask[0]) {
+    bool use_key = true;
+    if (do_causal) {
+      use_key = i <= (N - int(tpg.y) + int(q_seq_idx));
+    } else if (bool_mask) {
+      use_key = bmask[0];
+    }
+    if (use_key) {
       // Read the key
       for (int j = 0; j < qk_per_thread; j++) {
         k[j] = keys[j];
@@ -76,6 +106,9 @@ template <typename T, int D, int V = D>
         score += q[j] * k[j];
       }
       score = simd_sum(score);
+      if (float_mask) {
+        score += max(Limits<U>::finite_min, static_cast<U>(fmask[0]));
+      }
 
       // Update the accumulators
       U new_max = max(max_score, score);
@@ -94,8 +127,11 @@ template <typename T, int D, int V = D>
     // Move the pointers to the next kv
     keys += inner_k_stride;
     values += inner_v_stride;
-    if (has_mask) {
-      mask += BN * mask_seq_stride;
+    if (bool_mask) {
+      bmask += BN * mask_kv_seq_stride;
+    }
+    if (float_mask) {
+      fmask += BN * mask_kv_seq_stride;
     }
   }
 
@@ -136,23 +172,31 @@ template <typename T, int D, int V = D>
     device float* out [[buffer(3)]],
     device float* sums [[buffer(4)]],
     device float* maxs [[buffer(5)]],
-    const constant int& gqa_factor,
-    const constant int& N,
-    const constant size_t& k_stride,
-    const constant size_t& v_stride,
-    const constant float& scale,
-    const device bool* mask [[function_constant(has_mask)]],
-    const constant int& mask_seq_stride [[function_constant(has_mask)]],
-    const constant int& mask_head_stride [[function_constant(has_mask)]],
+    const constant int& gqa_factor [[buffer(6)]],
+    const constant int& N [[buffer(7)]],
+    const constant size_t& k_head_stride [[buffer(8)]],
+    const constant size_t& k_seq_stride [[buffer(9)]],
+    const constant size_t& v_head_stride [[buffer(10)]],
+    const constant size_t& v_seq_stride [[buffer(11)]],
+    const constant float& scale [[buffer(12)]],
+    const device bool* bmask [[buffer(13), function_constant(bool_mask)]],
+    const device T* fmask [[buffer(14), function_constant(float_mask)]],
+    const constant int& mask_kv_seq_stride
+    [[buffer(15), function_constant(has_mask)]],
+    const constant int& mask_q_seq_stride
+    [[buffer(16), function_constant(has_mask)]],
+    const constant int& mask_head_stride
+    [[buffer(17), function_constant(has_mask)]],
     uint3 tid [[threadgroup_position_in_grid]],
+    uint3 tpg [[threadgroups_per_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
   constexpr int BN = 8;
   constexpr int BD = 32;
   constexpr int qk_per_thread = D / BD;
   constexpr int v_per_thread = V / BD;
-  constexpr int inner_k_stride = BN * D;
-  constexpr int inner_v_stride = BN * V;
+  int inner_k_stride = BN * int(k_seq_stride);
+  int inner_v_stride = BN * int(v_seq_stride);
   constexpr int blocks = 32;
 
   typedef float U;
@@ -167,20 +211,31 @@ template <typename T, int D, int V = D>
 
   // Adjust positions
   const int block_idx = tid.z;
-  const int head_idx = tid.y;
+  const int head_idx = tid.x;
+  const int q_seq_idx = tid.y;
+  const int o_offset = tpg.x * q_seq_idx + head_idx;
+  const int q_offset =
+      query_transposed ? o_offset : head_idx * tpg.y + q_seq_idx;
   const int kv_head_idx = head_idx / gqa_factor;
-  queries += head_idx * D + simd_lid * qk_per_thread;
-  keys += kv_head_idx * k_stride + (block_idx * BN + simd_gid) * D +
-      simd_lid * qk_per_thread;
-  values += kv_head_idx * v_stride + (block_idx * BN + simd_gid) * V +
-      simd_lid * v_per_thread;
-  out += head_idx * blocks * V + block_idx * V + simd_lid * v_per_thread;
-  if (has_mask) {
-    mask += head_idx * mask_head_stride +
-        (block_idx * BN + simd_gid) * mask_seq_stride;
+
+  queries += q_offset * D + simd_lid * qk_per_thread;
+  keys += kv_head_idx * k_head_stride +
+      (block_idx * BN + simd_gid) * k_seq_stride + simd_lid * qk_per_thread;
+  values += kv_head_idx * v_head_stride +
+      (block_idx * BN + simd_gid) * v_seq_stride + simd_lid * v_per_thread;
+  out += o_offset * blocks * V + block_idx * V + simd_lid * v_per_thread;
+  if (bool_mask) {
+    bmask += head_idx * mask_head_stride +
+        (block_idx * BN + simd_gid) * mask_kv_seq_stride +
+        q_seq_idx * mask_q_seq_stride;
   }
-  sums += head_idx * blocks + block_idx;
-  maxs += head_idx * blocks + block_idx;
+  if (float_mask) {
+    fmask += head_idx * mask_head_stride +
+        (block_idx * BN + simd_gid) * mask_kv_seq_stride +
+        q_seq_idx * mask_q_seq_stride;
+  }
+  sums += o_offset * blocks + block_idx;
+  maxs += o_offset * blocks + block_idx;
 
   // Read the query and 0 the output accumulator
   for (int i = 0; i < qk_per_thread; i++) {
@@ -195,7 +250,13 @@ template <typename T, int D, int V = D>
 
   // For each key
   for (int i = block_idx * BN + simd_gid; i < N; i += blocks * BN) {
-    if (!has_mask || mask[0]) {
+    bool use_key = true;
+    if (do_causal) {
+      use_key = i <= (N - int(tpg.y) + int(q_seq_idx));
+    } else if (bool_mask) {
+      use_key = bmask[0];
+    }
+    if (use_key) {
       // Read the key
       for (int i = 0; i < qk_per_thread; i++) {
         k[i] = keys[i];
@@ -207,6 +268,9 @@ template <typename T, int D, int V = D>
         score += q[i] * k[i];
       }
       score = simd_sum(score);
+      if (float_mask) {
+        score += fmask[0];
+      }
 
       // Update the accumulators
       U new_max = max(max_score, score);
@@ -225,8 +289,11 @@ template <typename T, int D, int V = D>
     // Move the pointers to the next kv
     keys += blocks * inner_k_stride;
     values += blocks * inner_v_stride;
-    if (has_mask) {
-      mask += BN * blocks * mask_seq_stride;
+    if (bool_mask) {
+      bmask += BN * blocks * mask_kv_seq_stride;
+    }
+    if (float_mask) {
+      fmask += BN * blocks * mask_kv_seq_stride;
     }
   }
 
@@ -275,6 +342,7 @@ template <typename T, int D>
     const device float* maxs [[buffer(2)]],
     device T* out [[buffer(3)]],
     uint3 tid [[threadgroup_position_in_grid]],
+    uint3 tpg [[threadgroups_per_grid]],
     uint simd_gid [[simdgroup_index_in_threadgroup]],
     uint simd_lid [[thread_index_in_simdgroup]]) {
   constexpr int BN = 32;
@@ -288,11 +356,14 @@ template <typename T, int D>
   threadgroup U outputs[BN * BD];
 
   // Adjust positions
-  const int head_idx = tid.y;
-  partials += head_idx * blocks * D + simd_gid * D + simd_lid * elem_per_thread;
-  sums += head_idx * blocks;
-  maxs += head_idx * blocks;
-  out += head_idx * D + simd_gid * elem_per_thread;
+  const int head_idx = tid.x;
+  const int q_seq_idx = tid.y;
+  const int n_heads = tpg.x;
+  const int q_offset = n_heads * q_seq_idx + head_idx;
+  partials += q_offset * blocks * D + simd_gid * D + simd_lid * elem_per_thread;
+  sums += q_offset * blocks;
+  maxs += q_offset * blocks;
+  out += q_offset * D + simd_gid * elem_per_thread;
 
   // First everybody reads the max and sum_exp
   U max_score = maxs[simd_lid];

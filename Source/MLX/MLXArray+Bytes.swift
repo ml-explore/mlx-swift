@@ -283,8 +283,10 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:conversion>
     /// - ``asArray(_:)``
-    /// - ``asData(noCopy:)``
+    /// - ``asData(access:)``
     public func asMTLBuffer(device: any MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
+        let data = asData(access: noCopy ? .noCopyIfContiguous : .copy)
+
         self.eval()
 
         if noCopy && self.contiguousToDimension() == 0 {
@@ -293,9 +295,10 @@ extension MLXArray {
             let source = UnsafeMutableRawPointer(mutating: mlx_array_data_uint8(self.ctx))!
             return device.makeBuffer(bytesNoCopy: source, length: self.nbytes)
         } else {
-            let source = UnsafeRawBufferPointer(
-                start: mlx_array_data_uint8(self.ctx), count: physicalSize * itemSize)
-            return device.makeBuffer(bytes: source.baseAddress!, length: self.nbytes)
+            let data = asDataCopy()
+            return data.data.withUnsafeBytes { ptr in
+                device.makeBuffer(bytes: ptr.baseAddress!, length: ptr.count)
+            }
         }
     }
 

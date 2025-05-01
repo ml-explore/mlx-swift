@@ -6,12 +6,14 @@
 #ifndef MLX_METAL_H
 #define MLX_METAL_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #include "mlx/c/array.h"
 #include "mlx/c/closure.h"
 #include "mlx/c/distributed_group.h"
+#include "mlx/c/io_types.h"
 #include "mlx/c/map.h"
 #include "mlx/c/stream.h"
 #include "mlx/c/string.h"
@@ -25,7 +27,6 @@ extern "C" {
  * \defgroup metal Metal specific operations
  */
 /**@{*/
-int mlx_metal_clear_cache();
 
 typedef struct mlx_metal_device_info_t_ {
   char architecture[256];
@@ -35,14 +36,7 @@ typedef struct mlx_metal_device_info_t_ {
 } mlx_metal_device_info_t;
 mlx_metal_device_info_t mlx_metal_device_info();
 
-int mlx_metal_get_active_memory(size_t* res);
-int mlx_metal_get_cache_memory(size_t* res);
-int mlx_metal_get_peak_memory(size_t* res);
 int mlx_metal_is_available(bool* res);
-int mlx_metal_reset_peak_memory();
-int mlx_metal_set_cache_limit(size_t* res, size_t limit);
-int mlx_metal_set_memory_limit(size_t* res, size_t limit, bool relaxed);
-int mlx_metal_set_wired_limit(size_t* res, size_t limit);
 int mlx_metal_start_capture(const char* path);
 int mlx_metal_stop_capture();
 /**@}*/

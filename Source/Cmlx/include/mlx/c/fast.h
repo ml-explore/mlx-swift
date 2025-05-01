@@ -6,12 +6,14 @@
 #ifndef MLX_FAST_H
 #define MLX_FAST_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #include "mlx/c/array.h"
 #include "mlx/c/closure.h"
 #include "mlx/c/distributed_group.h"
+#include "mlx/c/io_types.h"
 #include "mlx/c/map.h"
 #include "mlx/c/stream.h"
 #include "mlx/c/string.h"
@@ -49,77 +51,70 @@ int mlx_fast_layer_norm(
     float eps,
     const mlx_stream s);
 
-typedef struct mlx_fast_metal_kernel_ {
+typedef struct mlx_fast_metal_kernel_config_ {
   void* ctx;
-} mlx_fast_metal_kernel;
-mlx_fast_metal_kernel mlx_fast_metal_kernel_new(
-    const char* name,
-    const char* source,
-    const char* header);
-void mlx_fast_metal_kernel_free(mlx_fast_metal_kernel cls);
-int mlx_fast_metal_kernel_add_input_name(
-    mlx_fast_metal_kernel cls,
-    const char* name);
-int mlx_fast_metal_kernel_set_input_names(
-    mlx_fast_metal_kernel cls,
-    int num,
-    ...);
-int mlx_fast_metal_kernel_add_output_name(
-    mlx_fast_metal_kernel cls,
-    const char* name);
-int mlx_fast_metal_kernel_set_output_names(
-    mlx_fast_metal_kernel cls,
-    int num,
-    ...);
-int mlx_fast_metal_kernel_set_contiguous_rows(
-    mlx_fast_metal_kernel cls,
-    bool flag);
-int mlx_fast_metal_kernel_set_atomic_outputs(
-    mlx_fast_metal_kernel cls,
-    bool flag);
+} mlx_fast_metal_kernel_config;
+mlx_fast_metal_kernel_config mlx_fast_metal_kernel_config_new();
+void mlx_fast_metal_kernel_config_free(mlx_fast_metal_kernel_config cls);
 
-int mlx_fast_metal_kernel_add_output_arg(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_add_output_arg(
+    mlx_fast_metal_kernel_config cls,
     const int* shape,
     size_t size,
     mlx_dtype dtype);
-int mlx_fast_metal_kernel_set_grid(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_set_grid(
+    mlx_fast_metal_kernel_config cls,
     int grid1,
     int grid2,
     int grid3);
-int mlx_fast_metal_kernel_set_thread_group(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_set_thread_group(
+    mlx_fast_metal_kernel_config cls,
     int thread1,
     int thread2,
     int thread3);
-int mlx_fast_metal_kernel_set_init_value(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_set_init_value(
+    mlx_fast_metal_kernel_config cls,
     float value);
-int mlx_fast_metal_kernel_set_verbose(mlx_fast_metal_kernel cls, bool verbose);
-int mlx_fast_metal_kernel_add_template_arg_dtype(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_set_verbose(
+    mlx_fast_metal_kernel_config cls,
+    bool verbose);
+int mlx_fast_metal_kernel_config_add_template_arg_dtype(
+    mlx_fast_metal_kernel_config cls,
     const char* name,
     mlx_dtype dtype);
-int mlx_fast_metal_kernel_add_template_arg_int(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_add_template_arg_int(
+    mlx_fast_metal_kernel_config cls,
     const char* name,
     int value);
-int mlx_fast_metal_kernel_add_template_arg_bool(
-    mlx_fast_metal_kernel cls,
+int mlx_fast_metal_kernel_config_add_template_arg_bool(
+    mlx_fast_metal_kernel_config cls,
     const char* name,
     bool value);
 
+typedef struct mlx_fast_metal_kernel_ {
+  void* ctx;
+} mlx_fast_metal_kernel;
+
+mlx_fast_metal_kernel mlx_fast_metal_kernel_new(
+    const char* name,
+    const mlx_vector_string input_names,
+    const mlx_vector_string output_names,
+    const char* source,
+    const char* header,
+    bool ensure_row_contiguous,
+    bool atomic_outputs);
+void mlx_fast_metal_kernel_free(mlx_fast_metal_kernel cls);
 int mlx_fast_metal_kernel_apply(
     mlx_vector_array* outputs,
     mlx_fast_metal_kernel cls,
     const mlx_vector_array inputs,
+    const mlx_fast_metal_kernel_config config,
     const mlx_stream stream);
 
 int mlx_fast_rms_norm(
     mlx_array* res,
     const mlx_array x,
-    const mlx_array weight,
+    const mlx_array weight /* may be null */,
     float eps,
     const mlx_stream s);
 int mlx_fast_rope(
@@ -138,8 +133,8 @@ int mlx_fast_scaled_dot_product_attention(
     const mlx_array keys,
     const mlx_array values,
     float scale,
-    const mlx_array mask /* may be null */,
-    mlx_optional_int memory_efficient_threshold,
+    const char* mask_mode,
+    const mlx_vector_array mask_arrs,
     const mlx_stream s);
 /**@}*/
 

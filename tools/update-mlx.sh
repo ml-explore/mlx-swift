@@ -35,6 +35,7 @@ make \
     gemm \
     gemv_masked \
     hadamard \
+    logsumexp \
     quantized \
     reduce \
     reduce_utils \
@@ -46,6 +47,7 @@ make \
     steel_conv \
     steel_conv_general \
     steel_gemm_fused \
+    steel_gemm_gather \
     steel_gemm_masked \
     steel_gemm_splitk \
     ternary \
@@ -75,3 +77,6 @@ rm Source/Cmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh
+
+# install the appropriate bf16 header
+cp Source/Cmlx/mlx-generated/metal/metal_3_0/bf16.h Source/Cmlx/mlx-generated/metal

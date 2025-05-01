@@ -1,6 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Cmlx
+import Foundation
 
 /// Parameter type for all MLX operations.
 ///
@@ -23,7 +24,7 @@ import Cmlx
 /// - ``Device``
 public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
 
-    private let stream: Stream
+    public let stream: Stream
 
     private init(_ stream: Stream) {
         self.stream = stream
@@ -34,7 +35,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     /// This will be ``Device/gpu`` unless ``Device/setDefault(device:)``
     /// sets it otherwise.
     public static var `default`: StreamOrDevice {
-        StreamOrDevice(Device.defaultStream())
+        StreamOrDevice(Stream.defaultStream)
     }
 
     public static func device(_ device: Device) -> StreamOrDevice {
@@ -85,10 +86,29 @@ public final class Stream: @unchecked Sendable, Equatable {
     public static let gpu = Stream(.gpu)
     public static let cpu = Stream(.cpu)
 
+    @TaskLocal static var defaultStream = Stream()
+
+    /// Set the ``StreamOrDevice/default`` scoped to a Task.
+    public static func withNewDefaultStream<R>(device: Device? = nil, _ body: () throws -> R)
+        rethrows -> R
+    {
+        let device = device ?? Device.defaultDevice()
+        return try $defaultStream.withValue(Stream(device), operation: body)
+    }
+
+    /// Set the ``StreamOrDevice/default`` scoped to a Task.
+    public static func withNewDefaultStream<R>(
+        device: Device? = nil, _ body: () async throws -> R
+    ) async rethrows -> R {
+        let device = device ?? Device.defaultDevice()
+        return try await $defaultStream.withValue(Stream(device), operation: body)
+    }
+
     init(_ ctx: mlx_stream) {
         self.ctx = ctx
     }
 
+    /// Default stream on the default device.
     public init() {
         let device = Device.defaultDevice()
         var ctx = mlx_stream_new()
@@ -98,19 +118,24 @@ public final class Stream: @unchecked Sendable, Equatable {
 
     @available(*, deprecated, message: "use init(Device) -- index not supported")
     public init(index: Int32, _ device: Device) {
-        var ctx = mlx_stream_new()
-        mlx_get_default_stream(&ctx, device.ctx)
-        self.ctx = ctx
+        self.ctx = evalLock.withLock {
+            mlx_stream_new_device(device.ctx)
+        }
     }
 
+    /// New stream on the given device.
+    ///
+    /// See also ``withNewDefaultStream(_:)``
     public init(_ device: Device) {
-        var ctx = mlx_stream_new()
-        mlx_get_default_stream(&ctx, device.ctx)
-        self.ctx = ctx
+        self.ctx = evalLock.withLock {
+            mlx_stream_new_device(device.ctx)
+        }
     }
 
     deinit {
-        mlx_stream_free(ctx)
+        _ = evalLock.withLock {
+            mlx_stream_free(ctx)
+        }
     }
 
     /// Synchronize with the given stream

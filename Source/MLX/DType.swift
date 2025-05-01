@@ -127,7 +127,11 @@ public enum DType: Hashable, Sendable, CaseIterable {
         /// In Swift this is e.g. ``Double.ulpOfOne``
         public var eps: Double {
             switch dtype {
-            case .float16: Double(Float16.ulpOfOne)
+            #if !arch(x86_64)
+                case .float16: Double(Float16.ulpOfOne)
+            #else
+                case .float16: 0.000977
+            #endif
             case .float32: Double(Float.ulpOfOne)
             case .bfloat16: 0.0078125
             case .complex64: Double.ulpOfOne
@@ -140,7 +144,11 @@ public enum DType: Hashable, Sendable, CaseIterable {
         /// The smallest representable number
         public var min: Double {
             switch dtype {
-            case .float16: -Double(Float16.greatestFiniteMagnitude)
+            #if !arch(x86_64)
+                case .float16: -Double(Float16.greatestFiniteMagnitude)
+            #else
+                case .float16: -65500.0
+            #endif
             case .float32: -Double(Float.greatestFiniteMagnitude)
             case .bfloat16: -3.3895313892515355e+38
             case .complex64: -Double.greatestFiniteMagnitude
@@ -153,7 +161,11 @@ public enum DType: Hashable, Sendable, CaseIterable {
         /// The largest representable number
         public var max: Double {
             switch dtype {
-            case .float16: Double(Float16.greatestFiniteMagnitude)
+            #if !arch(x86_64)
+                case .float16: Double(Float16.greatestFiniteMagnitude)
+            #else
+                case .float16: 65500.0
+            #endif
             case .float32: Double(Float.greatestFiniteMagnitude)
             case .bfloat16: 3.3895313892515355e+38
             case .complex64: Double.greatestFiniteMagnitude
@@ -166,7 +178,11 @@ public enum DType: Hashable, Sendable, CaseIterable {
         /// Return the value for the smallest normal
         public var smallestNormal: Double {
             switch dtype {
-            case .float16: Double(Float16.leastNormalMagnitude)
+            #if !arch(x86_64)
+                case .float16: Double(Float16.leastNormalMagnitude)
+            #else
+                case .float16: 6.104e-05
+            #endif
             case .float32: Double(Float.leastNormalMagnitude)
             case .bfloat16: 1.1754943508222875e-38
             case .complex64: Double.leastNormalMagnitude
@@ -179,7 +195,11 @@ public enum DType: Hashable, Sendable, CaseIterable {
         /// The smallest positive floating point number with 0 as leading bit in the mantissa following IEEE-754
         public var smallestSubnormal: Double {
             switch dtype {
-            case .float16: Double(Float16.leastNonzeroMagnitude)
+            #if !arch(x86_64)
+                case .float16: Double(Float16.leastNonzeroMagnitude)
+            #else
+                case .float16: 6e-08
+            #endif
             case .float32: Double(Float.leastNonzeroMagnitude)
             case .bfloat16: 1.1754943508222875e-38
             case .complex64: Double.leastNonzeroMagnitude

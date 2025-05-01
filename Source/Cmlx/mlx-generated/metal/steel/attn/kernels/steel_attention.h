@@ -1,4 +1,4 @@
-// Copyright © 2024 Apple Inc.
+// Copyright © 2024-25 Apple Inc.
 
 using namespace mlx::steel;
 
@@ -8,6 +8,9 @@ using namespace mlx::steel;
 
 constant bool align_Q [[function_constant(200)]];
 constant bool align_K [[function_constant(201)]];
+
+constant bool has_mask [[function_constant(300)]];
+constant bool do_causal [[function_constant(301)]];
 
 template <typename T>
 struct TransformScale {
@@ -50,7 +53,7 @@ struct SubOp {
 struct ExpSubOp {
   template <typename T>
   METAL_FUNC static constexpr T apply(T x, T y) {
-    return fast::exp(x - y);
+    return fast::exp2(x - y);
   }
 };
 
@@ -69,6 +72,7 @@ template <
     int BD,
     int WM,
     int WN,
+    typename MaskType = float,
     typename AccumType = float>
 [[kernel, max_total_threads_per_threadgroup(WM * WN * 32)]] void attention(
     const device T* Q [[buffer(0)]],
@@ -76,6 +80,8 @@ template <
     const device T* V [[buffer(2)]],
     device T* O [[buffer(3)]],
     const constant AttnParams* params [[buffer(4)]],
+    const constant AttnMaskParams* mask_params [[buffer(5), function_constant(has_mask)]],
+    const device MaskType* mask [[buffer(6), function_constant(has_mask)]],
     uint simd_lane_id [[thread_index_in_simdgroup]],
     uint simd_group_id [[simdgroup_index_in_threadgroup]],
     uint3 tid [[threadgroup_position_in_grid]],
@@ -102,18 +108,30 @@ template <
       tidl.y * params->O_strides[1] + // Head
       tidl.x * BQ * params->O_strides[2]; // Seqeunce
 
+  if (has_mask) {
+    mask += tidl.z * mask_params->M_strides[0] + // Batch
+        tidl.y * mask_params->M_strides[1]; // Head
+  }
+
   // Prepare threadgroup memory
-  constexpr short padQ = 0; // 16 / sizeof(T);
-  constexpr short padK = 0; // 16 / sizeof(T);
-  constexpr short padV = 0; // 16 / sizeof(T);
+  constexpr short padQ = 16 / sizeof(T);
+  constexpr short padK = 16 / sizeof(T);
+  constexpr short padV = 16 / sizeof(T);
 
   constexpr short LDQ_tgp = BD + padQ;
   constexpr short LDK_tgp = BK + padK;
   constexpr short LDV_tgp = BD + padV;
 
-  threadgroup T Qs[BQ * (BD + padQ)];
-  threadgroup T Ks[(BK + padK) * BD];
-  threadgroup T Vs[BK * (BD + padV)];
+  constexpr short tgp_mem_0 = (BK + padK) * (BD);
+  constexpr short tgp_mem_1 = BK * (BD + padV);
+  constexpr short tgp_mem_s = tgp_mem_0 > tgp_mem_1 ? tgp_mem_0 : tgp_mem_1;
+
+  threadgroup T Q_smem[BQ * (BD + padQ)];
+  threadgroup T KV_smem[tgp_mem_s];
+
+  threadgroup T* Qs = Q_smem;
+  threadgroup T* Ks = KV_smem;
+  threadgroup T* Vs = KV_smem;
 
   // Prepare block loaders
   using QBlockLoader = BlockLoaderT<
@@ -151,7 +169,7 @@ template <
   VBlockLoader loader_v(
       V, params->V_strides[2], Vs, simd_group_id, simd_lane_id);
 
-  TransformScale<T> ts(static_cast<T>(params->scale));
+  TransformScale<T> ts(static_cast<T>(params->scale * 1.44269504089));
 
   // Prepare MMA tiles
   constexpr short kFragSize = 8; // MMAFrag size
@@ -174,7 +192,7 @@ template <
   MMATile<AccumType, TQ, 1, MMAFrag_acc_t> Qtile;
   MMATile<AccumType, 1, TK, MMAFrag_acc_t> Ktile;
   MMATile<AccumType, TQ, TK, MMAFrag_acc_t> Stile;
-  MMATile<AccumType, TK, TD, MMAFrag_acc_t> Vtile;
+  MMATile<AccumType, 1, 1, MMAFrag_acc_t> Vtile;
   MMATile<AccumType, TQ, TD, MMAFrag_acc_t> Otile;
 
   Otile.clear();
@@ -196,7 +214,7 @@ template <
 
   // Load Q blocks apply scale
   if (!align_Q && int(tid.x) == (params->NQ_aligned)) {
-    loader_q.load_safe(short2(BD, params->qL - params->NQ_aligned * BQ));
+    loader_q.load_safe(short2(BD, params->qL_rem));
   } else {
     loader_q.load_unsafe();
   }
@@ -211,24 +229,33 @@ template <
   // Init to -Inf
   STEEL_PRAGMA_UNROLL
   for (short i = 0; i < kRowsPT; ++i) {
-    max_score[i] = Limits<AccumType>::min;
+    max_score[i] = Limits<AccumType>::finite_min;
+  }
+
+  int kb_lim = params->NK;
+
+  if (do_causal) {
+    int q_max = (tid.x + 1) * BQ + params->qL_off;
+    kb_lim = (q_max + BK - 1) / BK;
+    kb_lim = min(params->NK, kb_lim);
   }
 
   // Loop over KV seq length
-  for (int kb = 0; kb < params->NK; kb++) {
+  for (int kb = 0; kb < kb_lim; kb++) {
     // Load K block and apply scale
     threadgroup_barrier(mem_flags::mem_threadgroup);
     if (!align_K && kb == (params->NK_aligned)) {
-      loader_k.load_safe(short2(BD, params->kL - params->NK_aligned * BK));
+      loader_k.load_safe(short2(BD, params->kL_rem));
     } else {
       loader_k.load_unsafe();
     }
 
-    threadgroup_barrier(mem_flags::mem_threadgroup);
-
     // Do S = Q @ K.T
     Stile.clear();
 
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    STEEL_PRAGMA_UNROLL
     for (short dd = 0; dd < TD; dd++) {
       simdgroup_barrier(mem_flags::mem_none);
 
@@ -242,12 +269,11 @@ template <
       tile_matmad(Stile, Qtile, Ktile, Stile);
     }
 
-    // Mask out of length sequence
+    // Mask out length sequence
     if (!align_K && kb == (params->NK_aligned)) {
       using stile_t = decltype(Stile);
       using selem_t = typename stile_t::elem_type;
-      constexpr auto neg_inf = -metal::numeric_limits<selem_t>::infinity();
-      const short lim = params->kL - params->NK_aligned * BK;
+      constexpr auto neg_inf = Limits<selem_t>::finite_min;
 
       STEEL_PRAGMA_UNROLL
       for (short i = 0; i < stile_t::kTileRows; i++) {
@@ -256,7 +282,7 @@ template <
           short col_pos = sn + (j * stile_t::kFragCols);
           STEEL_PRAGMA_UNROLL
           for (short jj = 0; jj < stile_t::MMAFrag_t::kElemCols; jj++) {
-            if ((col_pos + jj) >= lim) {
+            if ((col_pos + jj) >= params->kL_rem) {
               Stile.frag_at(i, j)[jj] = neg_inf;
             }
           }
@@ -264,11 +290,78 @@ template <
       }
     }
 
-    simdgroup_barrier(mem_flags::mem_none);
+    // Mask out if causal
+    if (do_causal && kb >= (kb_lim - ((BQ + BK - 1) / BK) - int(!align_K))) {
+      using stile_t = decltype(Stile);
+      using selem_t = typename stile_t::elem_type;
+      constexpr auto neg_inf = Limits<selem_t>::finite_min;
+
+      STEEL_PRAGMA_UNROLL
+      for (short i = 0; i < stile_t::kTileRows; i++) {
+        const int row_pos =
+            tid.x * BQ + params->qL_off + tm + sm + (i * stile_t::kFragRows);
+        STEEL_PRAGMA_UNROLL
+        for (short j = 0; j < stile_t::kTileCols; j++) {
+          const int col_pos = kb * BK + sn + (j * stile_t::kFragCols);
+          STEEL_PRAGMA_UNROLL
+          for (short jj = 0; jj < stile_t::MMAFrag_t::kElemCols; jj++) {
+            if (row_pos < (col_pos + jj)) {
+              Stile.frag_at(i, j)[jj] = neg_inf;
+            }
+          }
+        }
+      }
+    }
+
+    // Other masking as needed
+    if (has_mask) {
+      using stile_t = decltype(Stile);
+      using selem_t = typename stile_t::elem_type;
+      constexpr auto neg_inf = Limits<selem_t>::finite_min;
+
+      constexpr bool is_bool = is_same_v<MaskType, bool>;
+      using melem_t = typename metal::conditional_t<is_bool, bool, selem_t>;
+
+      using MMAFrag_mask_t = BaseMMAFrag<melem_t, kFragSize, kFragSize>;
+      using frag_t = typename MMAFrag_mask_t::frag_type;
+
+      STEEL_PRAGMA_UNROLL
+      for (short i = 0; i < stile_t::kTileRows; i++) {
+        const int row_pos = tid.x * BQ + tm + sm + (i * stile_t::kFragRows);
+        STEEL_PRAGMA_UNROLL
+        for (short j = 0; j < stile_t::kTileCols; j++) {
+          const int col_pos = kb * BK + sn + (j * stile_t::kFragCols);
+
+          frag_t mfrag;
+
+          MMAFrag_mask_t::load_safe(
+              mfrag,
+              mask,
+              int(mask_params->M_strides[2]),
+              Int<1>{},
+              params->qL,
+              params->kL,
+              row_pos,
+              col_pos);
+
+          STEEL_PRAGMA_UNROLL
+          for (short jj = 0; jj < stile_t::MMAFrag_t::kElemsPerFrag; jj++) {
+            if constexpr (is_bool) {
+              Stile.frag_at(i, j)[jj] =
+                  mfrag[jj] ? Stile.frag_at(i, j)[jj] : neg_inf;
+            } else {
+              Stile.frag_at(i, j)[jj] += 1.44269504089 * selem_t(mfrag[jj]);
+            }
+          }
+        }
+      }
+    }
+
+    threadgroup_barrier(mem_flags::mem_threadgroup);
 
     // Load V blocks
     if (!align_K && kb == (params->NK_aligned)) {
-      loader_v.load_safe(short2(BD, params->kL - params->NK_aligned * BK));
+      loader_v.load_safe(short2(BD, params->kL_rem));
     } else {
       loader_v.load_unsafe();
     }
@@ -292,7 +385,7 @@ template <
     // Factor exp(rowmax(Si) - rowmax(Si-1))
     STEEL_PRAGMA_UNROLL
     for (short i = 0; i < kRowsPT; ++i) {
-      factor[i] = fast::exp(max_score[i] - new_max[i]);
+      factor[i] = fast::exp2(max_score[i] - new_max[i]);
     }
 
     // Save max for next iteration
@@ -316,12 +409,35 @@ template <
 
     // Load V into registers
     threadgroup_barrier(mem_flags::mem_threadgroup);
-    Vtile.template load<T, 1, 1, LDV_tgp, 1>(&Vs[Vs_offset]);
 
-    simdgroup_barrier(mem_flags::mem_none);
+    STEEL_PRAGMA_UNROLL
+    for (short iq = 0; iq < TQ; iq++) {
+      STEEL_PRAGMA_UNROLL
+      for (short id = 0; id < TD; id++) {
+        STEEL_PRAGMA_UNROLL
+        for (short ik = 0; ik < TK; ik++) {
+          if constexpr (BD == 128) {
+            simdgroup_barrier(mem_flags::mem_none);
+          }
 
-    // Do O = S @ V
-    tile_matmad(Otile, Stile, Vtile, Otile);
+          const short kk = ik * kFragSize;
+          const short dd = id * kFragSize;
+
+          Vtile.template load<T, 1, 1, LDV_tgp, 1>(
+              &Vs[Vs_offset + kk * LDV_tgp + dd]);
+
+          if constexpr (BD == 128) {
+            simdgroup_barrier(mem_flags::mem_none);
+          }
+
+          MMAFrag_acc_t::mma(
+              Otile.frag_at(iq, id),
+              Stile.frag_at(iq, ik),
+              Vtile.frag_at(0, 0),
+              Otile.frag_at(iq, id));
+        }
+      }
+    }
 
     // Prepare for next iteration
     loader_k.next();
@@ -336,8 +452,7 @@ template <
   O += (tm + sm) * params->O_strides[2] + sn;
 
   if (!align_Q && int(tid.x) == (params->NQ_aligned)) {
-    auto dst_tile_dims =
-        short2(BD - sn, params->qL - BQ * params->NQ_aligned - (tm + sm));
+    auto dst_tile_dims = short2(BD - sn, params->qL_rem - (tm + sm));
 
     if (dst_tile_dims.x <= 0 || dst_tile_dims.y <= 0)
       return;

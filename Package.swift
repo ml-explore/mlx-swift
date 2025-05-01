@@ -87,12 +87,11 @@ let package = Package(
 
                 // do not build distributed support (yet)
                 "mlx/mlx/distributed/mpi/mpi.cpp",
-                "mlx/mlx/distributed/ops.cpp",
-                "mlx/mlx/distributed/primitives.cpp",
                 "mlx/mlx/distributed/ring/ring.cpp",
 
-                "mlx/mlx/backend/cpu/gemms/no_bf16.cpp",
-                "mlx/mlx/backend/cpu/gemms/no_fp16.cpp",
+                // bnns instead of simd (accelerate)
+                "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
+                "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
             ],
 
             cSettings: [
@@ -112,6 +111,7 @@ let package = Package(
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
                 .define("METAL_PATH", to: "\"default.metallib\""),
+                .define("MLX_VERSION", to: "\"0.24.2\""),
             ],
             linkerSettings: [
                 .linkedFramework("Foundation"),

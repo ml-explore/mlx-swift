@@ -235,6 +235,7 @@ class MLXRandomTests: XCTestCase {
     }
 
     func testRandomThreadsDifferent() async {
+
         // several threads using task local random state with different
         // seeds will produce different values
         await withTaskGroup(of: Float.self) { group in
@@ -244,7 +245,9 @@ class MLXRandomTests: XCTestCase {
                     return withRandomState(state) {
                         var t: Float = 0.0
                         for _ in 0 ..< 100 {
-                            t += uniform(0 ..< 1, [10, 10]).sum().item(Float.self)
+                            let x = uniform(0 ..< 1, [10, 10]).sum()
+                            asyncEval(x)
+                            t += x.item(Float.self)
                         }
                         return t
                     }

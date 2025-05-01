@@ -171,6 +171,9 @@ public final class MLXArray {
 
     /// specialized conversion between integer types -- see ``item(_:)``
     private func itemInt() -> Int {
+        precondition(self.size == 1)
+        eval()
+
         switch self.dtype {
         case .bool:
             var r = false
@@ -216,6 +219,9 @@ public final class MLXArray {
 
     /// specialized conversion between integer types -- see ``item(_:)``
     private func itemUInt() -> UInt {
+        precondition(self.size == 1)
+        eval()
+
         switch self.dtype {
         case .bool:
             var r = false
@@ -260,6 +266,9 @@ public final class MLXArray {
 
     /// specialized conversion between float types -- see ``item(_:)``
     private func itemFloat() -> Float {
+        precondition(self.size == 1)
+        eval()
+
         switch self.dtype {
         #if !arch(x86_64)
             case .float16:
@@ -282,6 +291,9 @@ public final class MLXArray {
     }
 
     private func itemDouble() -> Double {
+        precondition(self.size == 1)
+        eval()
+
         switch self.dtype {
         #if !arch(x86_64)
             case .float16:
@@ -316,6 +328,7 @@ public final class MLXArray {
     /// ```
     public func item<T: HasDType>(_ type: T.Type) -> T {
         precondition(self.size == 1)
+        eval()
 
         // special cases for reading integers and floats from (roughly)
         // same typed arrays -- this avoids doing a conversion which
@@ -536,7 +549,9 @@ public final class MLXArray {
     /// MLX is lazy and arrays are not fully realized until they are evaluated.  This method is typically
     /// not needed as all reads ensure the contents are evaluated.
     public func eval() {
-        mlx_array_eval(ctx)
+        _ = evalLock.withLock {
+            mlx_array_eval(ctx)
+        }
     }
 
     /// Replace the contents with a reference to a new array (INTERNAL).

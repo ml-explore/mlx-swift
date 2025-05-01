@@ -908,7 +908,7 @@ public func `repeat`(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrD
     -> MLXArray
 {
     var result = mlx_array_new()
-    mlx_repeat(&result, array.ctx, count.int32, axis.int32, stream.ctx)
+    mlx_repeat_axis(&result, array.ctx, count.int32, axis.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -923,7 +923,7 @@ public func `repeat`(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrD
 @available(*, deprecated, renamed: "repeated(_:count:stream:)")
 public func `repeat`(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default) -> MLXArray {
     var result = mlx_array_new()
-    mlx_repeat_all(&result, array.ctx, count.int32, stream.ctx)
+    mlx_repeat(&result, array.ctx, count.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -950,7 +950,7 @@ public func repeated(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrD
     -> MLXArray
 {
     var result = mlx_array_new()
-    mlx_repeat(&result, array.ctx, count.int32, axis.int32, stream.ctx)
+    mlx_repeat_axis(&result, array.ctx, count.int32, axis.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -974,7 +974,7 @@ public func repeated(_ array: MLXArray, count: Int, axis: Int, stream: StreamOrD
 /// - ``full(_:values:stream:)``
 public func repeated(_ array: MLXArray, count: Int, stream: StreamOrDevice = .default) -> MLXArray {
     var result = mlx_array_new()
-    mlx_repeat_all(&result, array.ctx, count.int32, stream.ctx)
+    mlx_repeat(&result, array.ctx, count.int32, stream.ctx)
     return MLXArray(result)
 }
 
