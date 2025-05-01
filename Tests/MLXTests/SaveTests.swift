@@ -71,6 +71,7 @@ final class SaveTests: XCTestCase {
 
         let data = try saveToData(arrays: arrays)
         print("Data: \(data.count)")
+        print(data.base64EncodedString())
         let loadedArrays = try loadArrays(data: data)
         XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
 
