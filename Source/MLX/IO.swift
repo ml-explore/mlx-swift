@@ -35,7 +35,9 @@ public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) t
     let path = url.path(percentEncoded: false)
     switch url.pathExtension {
     case "npy":
-        mlx_save(path.cString(using: .utf8), array.ctx)
+        _ = try withError {
+            mlx_save(path.cString(using: .utf8), array.ctx)
+        }
 
     default:
         throw LoadSaveError.unknownExtension(url.pathExtension)
@@ -69,7 +71,9 @@ public func save(
 
     switch url.pathExtension {
     case "safetensors":
-        mlx_save_safetensors(path.cString(using: .utf8), mlx_arrays, mlx_metadata)
+        _ = try withError {
+            mlx_save_safetensors(path.cString(using: .utf8), mlx_arrays, mlx_metadata)
+        }
 
     default:
         throw LoadSaveError.unknownExtension(url.pathExtension)
@@ -93,7 +97,9 @@ public func loadArray(url: URL, stream: StreamOrDevice = .cpu) throws -> MLXArra
     switch url.pathExtension {
     case "npy":
         var result = mlx_array_new()
-        mlx_load(&result, path.cString(using: .utf8), stream.ctx)
+        _ = try withError {
+            mlx_load(&result, path.cString(using: .utf8), stream.ctx)
+        }
         return MLXArray(result)
 
     default:
@@ -120,10 +126,12 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
     case "safetensors":
         var r0 = mlx_map_string_to_array_new()
         var r1 = mlx_map_string_to_string_new()
-
-        mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx)
         defer { mlx_map_string_to_array_free(r0) }
         defer { mlx_map_string_to_string_free(r1) }
+
+        _ = try withError {
+            mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx)
+        }
 
         return mlx_map_array_values(r0)
     default:
@@ -150,10 +158,12 @@ public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .cpu) throw
     case "safetensors":
         var r0 = mlx_map_string_to_array_new()
         var r1 = mlx_map_string_to_string_new()
-
-        mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx)
         defer { mlx_map_string_to_array_free(r0) }
         defer { mlx_map_string_to_string_free(r1) }
+
+        _ = try withError {
+            mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx)
+        }
 
         return (mlx_map_array_values(r0), mlx_map_string_values(r1))
     default:
@@ -292,10 +302,12 @@ public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [Str
 
     var r0 = mlx_map_string_to_array_new()
     var r1 = mlx_map_string_to_string_new()
-
-    mlx_load_safetensors_reader(&r0, &r1, reader, stream.ctx)
     defer { mlx_map_string_to_array_free(r0) }
     defer { mlx_map_string_to_string_free(r1) }
+
+    _ = try withError {
+        mlx_load_safetensors_reader(&r0, &r1, reader, stream.ctx)
+    }
 
     return mlx_map_array_values(r0)
 }
@@ -317,10 +329,12 @@ public func loadArraysAndMetadata(data: Data, stream: StreamOrDevice = .cpu) thr
 
     var r0 = mlx_map_string_to_array_new()
     var r1 = mlx_map_string_to_string_new()
-
-    mlx_load_safetensors_reader(&r0, &r1, reader, stream.ctx)
     defer { mlx_map_string_to_array_free(r0) }
     defer { mlx_map_string_to_string_free(r1) }
+
+    _ = try withError {
+        mlx_load_safetensors_reader(&r0, &r1, reader, stream.ctx)
+    }
 
     return (mlx_map_array_values(r0), mlx_map_string_values(r1))
 }

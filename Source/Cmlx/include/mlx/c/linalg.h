@@ -6,6 +6,7 @@
 #ifndef MLX_LINALG_H
 #define MLX_LINALG_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 

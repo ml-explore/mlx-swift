@@ -10,6 +10,7 @@
 #include "mlx/c/distributed.h"
 #include "mlx/c/distributed_group.h"
 #include "mlx/c/error.h"
+#include "mlx/c/export.h"
 #include "mlx/c/fast.h"
 #include "mlx/c/fft.h"
 #include "mlx/c/half.h"
@@ -27,5 +28,6 @@
 #include "mlx/c/transforms.h"
 #include "mlx/c/transforms_impl.h"
 #include "mlx/c/vector.h"
+#include "mlx/c/version.h"
 
 #endif

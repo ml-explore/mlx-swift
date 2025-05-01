@@ -3,13 +3,20 @@
 import Cmlx
 import Foundation
 
+/// lock to be held while doing any eval or asyncEval.  This is
+/// a recursive lock to handle any cases where a closure might
+/// call back into eval.
+let evalLock = NSRecursiveLock()
+
 /// Evaluate one or more `MLXArray`
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: MLXArray...) {
     let vector_array = new_mlx_vector_array(arrays)
-    mlx_eval(vector_array)
+    _ = evalLock.withLock {
+        mlx_eval(vector_array)
+    }
     mlx_vector_array_free(vector_array)
 }
 
@@ -19,7 +26,9 @@ public func eval(_ arrays: MLXArray...) {
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: [MLXArray]) {
     let vector_array = new_mlx_vector_array(arrays)
-    mlx_eval(vector_array)
+    _ = evalLock.withLock {
+        mlx_eval(vector_array)
+    }
     mlx_vector_array_free(vector_array)
 }
 
@@ -30,7 +39,9 @@ public func eval(_ arrays: [MLXArray]) {
 /// - ``asyncEval(_:)-6j4zg``
 public func asyncEval(_ arrays: [MLXArray]) {
     let vector_array = new_mlx_vector_array(arrays)
-    mlx_async_eval(vector_array)
+    _ = evalLock.withLock {
+        mlx_async_eval(vector_array)
+    }
     mlx_vector_array_free(vector_array)
 }
 
@@ -76,6 +87,38 @@ public func eval(_ values: [Any]) {
     }
 
     eval(arrays)
+}
+
+/// Variant of ``eval(_:)-3b2g9`` that checks for errors in MLX and throws.
+///
+/// ### See Also
+/// - <doc:lazy-evaluation>
+public func checkedEval(_ values: Any...) throws {
+    var arrays = [MLXArray]()
+
+    for item in values {
+        collect(item, into: &arrays)
+    }
+
+    try withError {
+        eval(arrays)
+    }
+}
+
+/// Variant of ``eval(_:)-190w1`` that checks for errors in MLX and throws.
+///
+/// ### See Also
+/// - <doc:lazy-evaluation>
+public func checkedEval(_ values: [Any]) throws {
+    var arrays = [MLXArray]()
+
+    for item in values {
+        collect(item, into: &arrays)
+    }
+
+    try withError {
+        eval(arrays)
+    }
 }
 
 /// Evaluate one or more `MLXArray` asynchronously.

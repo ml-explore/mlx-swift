@@ -379,6 +379,40 @@ struct BaseMMAFrag<T, 8, 8> {
       }
     }
   }
+  template <
+      typename DstPtrType,
+      typename StrX,
+      typename StrY,
+      typename StartX,
+      typename StopX,
+      typename StartY,
+      typename StopY,
+      typename OffX,
+      typename OffY>
+  METAL_FUNC static constexpr void store_slice(
+      const thread frag_type& src,
+      DstPtrType dst,
+      StrX str_x,
+      StrY str_y,
+      StartX start_x,
+      StopX stop_x,
+      StartY start_y,
+      StopY stop_y,
+      OffX off_x = Int<0>{},
+      OffY off_y = Int<0>{}) {
+    using U = pointer_element_t<DstPtrType>;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < kElemRows; i++) {
+#pragma clang loop unroll(full)
+      for (short j = 0; j < kElemCols; j++) {
+        if ((off_x + i) < stop_x && (off_x + i) >= start_x &&
+            (off_y + j) < stop_y && (off_y + j) >= start_y) {
+          dst[(off_x + i) * str_x + (off_y + j) * str_y] =
+              static_cast<U>(src[i * kElemCols + j]);
+        }
+      }
+    }
+  }
   METAL_FUNC static constexpr void mma(
       thread frag_type& D,
       thread frag_type& A,
@@ -549,6 +583,30 @@ struct MMATile {
       }
     }
   }
+  template <typename U, int w_x, int w_y>
+  METAL_FUNC void store_slice(
+      device U* dst,
+      const int ld,
+      const short2 start,
+      const short2 stop) const {
+#pragma clang loop unroll(full)
+    for (int i = 0; i < kTileRows; ++i) {
+#pragma clang loop unroll(full)
+      for (int j = 0; j < kTileCols; ++j) {
+        MMAFrag_t::store_slice(
+            frag_at(i, j),
+            dst,
+            ld,
+            Int<1>{},
+            start.y,
+            stop.y,
+            start.x,
+            stop.x,
+            (i * kFragRows) * w_x,
+            (j * kFragCols) * w_y);
+      }
+    }
+  }
 };
 template <typename T, typename U, int M, int N, int K>
 METAL_FUNC void tile_matmad(
@@ -641,6 +699,20 @@ struct BlockMMA {
     }
     D += sm * ldd + sn;
     Ctile.template store<U, WM, WN>(D, ldd);
+  }
+  METAL_FUNC void
+  store_result_slice(device U* D, const int ldd, short2 start, short2 stop) {
+#pragma clang loop unroll(full)
+    for (short i = 0; i < decltype(Ctile)::kElemsPerTile; i++) {
+      Ctile.elems()[i] = Epilogue::apply(Ctile.elems()[i]);
+    }
+    D += sm * ldd + sn;
+    start -= short2(sn, sm);
+    stop -= short2(sn, sm);
+    if (stop.y <= 0 || stop.x <= 0) {
+      return;
+    }
+    Ctile.template store_slice<U, WM, WN>(D, ldd, start, stop);
   }
   METAL_FUNC void
   store_result_safe(device U* D, const int ldd, short2 dst_tile_dims) {

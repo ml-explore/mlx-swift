@@ -3,6 +3,8 @@
 #ifndef MLX_DISTRIBUTED_GROUP_H
 #define MLX_DISTRIBUTED_GROUP_H
 
+#include <stdbool.h>
+
 #include "mlx/c/stream.h"
 
 #ifdef __cplusplus

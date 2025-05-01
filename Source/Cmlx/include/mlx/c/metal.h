@@ -6,6 +6,7 @@
 #ifndef MLX_METAL_H
 #define MLX_METAL_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 

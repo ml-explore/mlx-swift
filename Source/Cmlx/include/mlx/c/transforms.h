@@ -6,6 +6,7 @@
 #ifndef MLX_TRANSFORMS_H
 #define MLX_TRANSFORMS_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 

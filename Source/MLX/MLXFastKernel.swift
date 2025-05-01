@@ -48,66 +48,28 @@ extension MLXFast {
             name: String, inputNames: [String], outputNames: [String],
             source: String, header: String = "",
             ensureRowContiguous: Bool = true,
-            atomicOutputs: Bool = false,
-            template: [(String, KernelTemplateArg)]? = nil,
-            grid: (Int, Int, Int),
-            threadGroup: (Int, Int, Int),
-            outputShapes: [[Int]],
-            outputDTypes: [DType],
-            initValue: Float? = nil,
-            verbose: Bool = false
+            atomicOutputs: Bool = false
         ) {
             self.outputNames = outputNames
 
+            let input_names = mlx_vector_string_new()
+            defer { mlx_vector_string_free(input_names) }
+            for name in inputNames {
+                mlx_vector_string_append_value(input_names, name)
+            }
+
+            let output_names = mlx_vector_string_new()
+            defer { mlx_vector_string_free(output_names) }
+            for name in outputNames {
+                mlx_vector_string_append_value(output_names, name)
+            }
+
             self.kernel = mlx_fast_metal_kernel_new(
                 name.cString(using: .utf8),
+                input_names, output_names,
                 source.cString(using: .utf8),
-                header.cString(using: .utf8))
-
-            for name in inputNames {
-                mlx_fast_metal_kernel_add_input_name(kernel, name)
-            }
-            for name in outputNames {
-                mlx_fast_metal_kernel_add_output_name(kernel, name)
-            }
-
-            mlx_fast_metal_kernel_set_contiguous_rows(kernel, ensureRowContiguous)
-            mlx_fast_metal_kernel_set_atomic_outputs(kernel, atomicOutputs)
-
-            if let template {
-                for (name, arg) in template {
-                    switch arg {
-                    case let value as Bool:
-                        mlx_fast_metal_kernel_add_template_arg_bool(kernel, name, value)
-
-                    case let value as Int:
-                        mlx_fast_metal_kernel_add_template_arg_int(kernel, name, Int32(value))
-
-                    case let value as DType:
-                        mlx_fast_metal_kernel_add_template_arg_dtype(kernel, name, value.cmlxDtype)
-
-                    default:
-                        fatalError(
-                            "Unable to handle KernelTemplateArg \(name) with type: \(type(of: arg))."
-                        )
-                    }
-                }
-            }
-
-            mlx_fast_metal_kernel_set_grid(kernel, Int32(grid.0), Int32(grid.1), Int32(grid.2))
-            mlx_fast_metal_kernel_set_thread_group(
-                kernel, Int32(threadGroup.0), Int32(threadGroup.1), Int32(threadGroup.2))
-
-            for (shape, dtype) in zip(outputShapes, outputDTypes) {
-                mlx_fast_metal_kernel_add_output_arg(
-                    kernel, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype)
-            }
-
-            if let initValue {
-                mlx_fast_metal_kernel_set_init_value(kernel, initValue)
-            }
-
-            mlx_fast_metal_kernel_set_verbose(kernel, verbose)
+                header.cString(using: .utf8),
+                ensureRowContiguous, atomicOutputs)
         }
 
         deinit {
@@ -133,13 +95,60 @@ extension MLXFast {
         /// - Returns: array of `MLXArray`
         public func callAsFunction(
             _ inputs: [ScalarOrArray],
+            template: [(String, KernelTemplateArg)]? = nil,
+            grid: (Int, Int, Int),
+            threadGroup: (Int, Int, Int),
+            outputShapes: [[Int]],
+            outputDTypes: [DType],
+            initValue: Float? = nil,
+            verbose: Bool = false,
             stream: StreamOrDevice = .default
         ) -> [MLXArray] {
+            let config = mlx_fast_metal_kernel_config_new()
+            defer { mlx_fast_metal_kernel_config_free(config) }
+
+            if let template {
+                for (name, arg) in template {
+                    switch arg {
+                    case let value as Bool:
+                        mlx_fast_metal_kernel_config_add_template_arg_bool(config, name, value)
+
+                    case let value as Int:
+                        mlx_fast_metal_kernel_config_add_template_arg_int(
+                            config, name, Int32(value))
+
+                    case let value as DType:
+                        mlx_fast_metal_kernel_config_add_template_arg_dtype(
+                            config, name, value.cmlxDtype)
+
+                    default:
+                        fatalError(
+                            "Unable to handle KernelTemplateArg \(name) with type: \(type(of: arg))."
+                        )
+                    }
+                }
+            }
+
+            mlx_fast_metal_kernel_config_set_grid(config, grid.0.int32, grid.1.int32, grid.2.int32)
+            mlx_fast_metal_kernel_config_set_thread_group(
+                config, threadGroup.0.int32, threadGroup.1.int32, threadGroup.2.int32)
+
+            for (shape, dtype) in zip(outputShapes, outputDTypes) {
+                mlx_fast_metal_kernel_config_add_output_arg(
+                    config, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype)
+            }
+
+            if let initValue {
+                mlx_fast_metal_kernel_config_set_init_value(config, initValue)
+            }
+
+            mlx_fast_metal_kernel_config_set_verbose(config, verbose)
+
             let inputs = new_mlx_vector_array(inputs.map { $0.asMLXArray(dtype: nil) })
             defer { mlx_vector_array_free(inputs) }
 
             var result = mlx_vector_array_new()
-            mlx_fast_metal_kernel_apply(&result, kernel, inputs, stream.ctx)
+            mlx_fast_metal_kernel_apply(&result, kernel, inputs, config, stream.ctx)
             defer { mlx_vector_array_free(result) }
 
             return mlx_vector_array_values(result)
@@ -165,22 +174,12 @@ extension MLXFast {
         name: String, inputNames: [String], outputNames: [String],
         source: String, header: String = "",
         ensureRowContiguous: Bool = true,
-        atomicOutputs: Bool = false,
-        template: [(String, KernelTemplateArg)]? = nil,
-        grid: (Int, Int, Int),
-        threadGroup: (Int, Int, Int),
-        outputShapes: [[Int]],
-        outputDTypes: [DType],
-        initValue: Float? = nil,
-        verbose: Bool = false
+        atomicOutputs: Bool = false
     ) -> MLXFastKernel {
         MLXFastKernel(
             name: name, inputNames: inputNames, outputNames: outputNames,
             source: source, header: header,
-            ensureRowContiguous: ensureRowContiguous, atomicOutputs: atomicOutputs,
-            template: template, grid: grid, threadGroup: threadGroup,
-            outputShapes: outputShapes, outputDTypes: outputDTypes,
-            initValue: initValue, verbose: verbose
+            ensureRowContiguous: ensureRowContiguous, atomicOutputs: atomicOutputs
         )
     }
 
