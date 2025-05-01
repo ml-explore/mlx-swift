@@ -57,9 +57,11 @@ class LinalgTests: XCTestCase {
     func testSVDOverload() {
         let a = MLXRandom.uniform(0 ..< 1, [10, 10])
 
-        let (u, s, v) = MLXLinalg.svd(a)
-        let s2 = MLXLinalg.svd(a)
+        Stream.withNewDefaultStream(device: .cpu) {
+            let (_, s, _) = MLXLinalg.svd(a)
+            let s2 = MLXLinalg.svd(a)
 
-        print(a.shape)
+            XCTAssertEqual(s.shape, s2.shape)
+        }
     }
 }
