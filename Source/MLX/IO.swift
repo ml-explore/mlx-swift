@@ -199,10 +199,13 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         true
     } tell: { ptr in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
+        print("tell \(state.offset)")
         return state.offset
 
     } seek: { ptr, offset, whence in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
+
+        print("seek \(whence) \(offset)")
 
         switch whence {
         case SEEK_SET:
@@ -219,24 +222,32 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
         if n + state.offset <= state.data.count {
+            print("read @ \(state.offset) \(n)")
             let _ = state.data.withContiguousStorageIfAvailable { buffer in
                 memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
             }
             state.offset += n
+        } else {
+            print("read past end -- \(n) + \(state.offset) > \(state.data.count)")
         }
 
     } read_at_offset: { ptr, data, n, offset in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
         if n + offset <= state.data.count {
+            print("read_at_offset @ \(offset) \(n)")
             let _ = state.data.withContiguousStorageIfAvailable { buffer in
                 memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
             }
             state.offset = offset
+        } else {
+            print("read_at_offset past end -- \(n) + \(state.offset) > \(state.data.count)")
         }
 
     } write: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
+
+        print("write \(n)")
 
         let buffer = UnsafeBufferPointer(start: data, count: n)
         state.data.append(buffer)
@@ -282,7 +293,9 @@ public func saveToData(
     let writer = new_mlx_io_writer_dataIO()
     defer { mlx_io_writer_free(writer) }
 
+    print("START mlx_save_safetensors_writer")
     mlx_save_safetensors_writer(writer, mlx_arrays, mlx_metadata)
+    print("END mlx_save_safetensors_writer")
 
     return getData(writer)
 }
@@ -306,7 +319,9 @@ public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [Str
     defer { mlx_map_string_to_string_free(r1) }
 
     _ = try withError {
+        print("START mlx_load_safetensors_reader")
         mlx_load_safetensors_reader(&r0, &r1, reader, stream.ctx)
+        print("END mlx_load_safetensors_reader")
     }
 
     return mlx_map_array_values(r0)
