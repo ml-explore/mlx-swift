@@ -63,6 +63,8 @@ final class SaveTests: XCTestCase {
         assertEqual(array, loaded)
     }
 
+    // observed on the xcode 15.3.0 (swift 5.9) that this fails inside the c++
+    // layer -- it doesn't decode the size correctly.
     #if compiler(>=6.0)
         public func testSaveArraysData() throws {
             let arrays: [String: MLXArray] = [
