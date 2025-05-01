@@ -69,7 +69,7 @@ public func quantize(
 /// - Parameters:
 ///   - model: model to quantize
 ///   - filter: filter receiving path and module -- return a tuple of `(groupSize: Int, bits: Int)` or `nil` to skip quantization
-///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding``
+///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding`` layers
 /// ### See Also
 /// - ``quantize(model:groupSize:bits:filter:apply:)``
 public func quantize(
