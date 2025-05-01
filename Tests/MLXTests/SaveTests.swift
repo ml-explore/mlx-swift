@@ -63,4 +63,37 @@ final class SaveTests: XCTestCase {
         assertEqual(array, loaded)
     }
 
+    public func testSaveArraysData() throws {
+        let arrays: [String: MLXArray] = [
+            "foo": MLX.ones([1, 2]),
+            "bar": MLX.zeros([2, 1]),
+        ]
+
+        let data = try saveToData(arrays: arrays)
+        let loadedArrays = try loadArrays(data: data)
+        XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
+
+        assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
+        assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
+    }
+
+    public func testSaveArraysMetadataData() throws {
+        let arrays: [String: MLXArray] = [
+            "foo": MLX.ones([1, 2]),
+            "bar": MLX.zeros([2, 1]),
+        ]
+        let metadata = [
+            "key": "value",
+            "key2": "value2",
+        ]
+
+        let data = try saveToData(arrays: arrays, metadata: metadata)
+        let (loadedArrays, loadedMetadata) = try loadArraysAndMetadata(data: data)
+        XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
+
+        assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
+        assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
+        XCTAssertEqual(loadedMetadata, metadata)
+    }
+
 }
