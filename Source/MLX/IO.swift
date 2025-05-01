@@ -182,7 +182,7 @@ private func getData(_ writer: mlx_io_writer) -> Data {
     return state.data
 }
 
-private func new_mlx_io_vtable() -> mlx_io_vtable {
+private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
     mlx_io_vtable { ptr in
         ptr != nil
     } good: { ptr in
@@ -240,14 +240,14 @@ private func new_mlx_io_vtable() -> mlx_io_vtable {
     }
 }
 
-private func new_mlx_io_reader(_ data: Data) -> mlx_io_reader {
+private func new_mlx_io_reader_dataIO(_ data: Data) -> mlx_io_reader {
     let ptr = Unmanaged.passRetained(IOState(data: data)).toOpaque()
-    return mlx_io_reader_new(ptr, new_mlx_io_vtable())
+    return mlx_io_reader_new(ptr, new_mlx_io_vtable_dataIO())
 }
 
-private func new_mlx_io_writer() -> mlx_io_writer {
+private func new_mlx_io_writer_dataIO() -> mlx_io_writer {
     let ptr = Unmanaged.passRetained(IOState()).toOpaque()
-    return mlx_io_writer_new(ptr, new_mlx_io_vtable())
+    return mlx_io_writer_new(ptr, new_mlx_io_vtable_dataIO())
 }
 
 /// Save dictionary of arrays in `safetensors` format into `Data`.
@@ -269,7 +269,7 @@ public func saveToData(
     let mlx_metadata = new_mlx_string_map(metadata)
     defer { mlx_map_string_to_string_free(mlx_metadata) }
 
-    let writer = new_mlx_io_writer()
+    let writer = new_mlx_io_writer_dataIO()
     defer { mlx_io_writer_free(writer) }
 
     mlx_save_safetensors_writer(writer, mlx_arrays, mlx_metadata)
@@ -287,7 +287,7 @@ public func saveToData(
 /// - ``saveToData(arrays:metadata:stream:)``
 /// - ``loadArraysAndMetadata(data:stream:)``
 public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [String: MLXArray] {
-    let reader = new_mlx_io_reader(data)
+    let reader = new_mlx_io_reader_dataIO(data)
     defer { mlx_io_reader_free(reader) }
 
     var r0 = mlx_map_string_to_array_new()
@@ -312,7 +312,7 @@ public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [Str
 public func loadArraysAndMetadata(data: Data, stream: StreamOrDevice = .cpu) throws -> (
     [String: MLXArray], [String: String]
 ) {
-    let reader = new_mlx_io_reader(data)
+    let reader = new_mlx_io_reader_dataIO(data)
     defer { mlx_io_reader_free(reader) }
 
     var r0 = mlx_map_string_to_array_new()
