@@ -70,6 +70,7 @@ final class SaveTests: XCTestCase {
         ]
 
         let data = try saveToData(arrays: arrays)
+        print("Data: \(data.count)")
         let loadedArrays = try loadArrays(data: data)
         XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
 
