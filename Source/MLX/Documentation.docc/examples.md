@@ -15,20 +15,21 @@ Examples using ``MLX`` and `MLXNN` are available on
 [GitHub](https://github.com/ml-explore/mlx-swift-examples). The examples
 include:
 
-- [MNISTTrainer](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MNISTTrainer/README.md):
-  An example that runs on both iOS and macOS that downloads MNIST training data
-  and trains a [LeNet](https://en.wikipedia.org/wiki/LeNet).
+- [MNISTTrainer](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MNISTTrainer/README.md): An example that runs on
+  both iOS and macOS that downloads MNIST training data and trains a
+  [LeNet](https://en.wikipedia.org/wiki/LeNet).
 
-- [LLMEval](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/LLMEval/README.md):
-  An example that runs on both iOS and macOS that downloads an LLM and
-  tokenizer from Hugging Face and  and generates text from a given prompt.
+- [MLXChatExample](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md): An example chat app that runs on both iOS and macOS that supports LLMs and VLMs.
 
-- [LinearModelTraining](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/LinearModelTraining/README.md):
-  An example that trains a simple linear model.
+- [LLMEval](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/LLMEval/README.md): A simple example that runs on both iOS
+  and macOS that downloads an LLM and tokenizer from Hugging Face and
+  generates text from a given prompt.
 
-- [llm-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md):
-  A command line tool for generating text using a variety of LLMs available on
-  the Hugging Face hub.
+- [StableDiffusionExample](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/StableDiffusionExample/README.md): An
+  example that runs on both iOS and macOS that downloads a stable diffusion model
+  from Hugging Face and  and generates an image from a given prompt.
 
-- [mnist-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/mnist-tool/README.md):
-  A command line tool for training a LeNet on MNIST.
+- [llm-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md): A command line tool for generating text
+  using a variety of LLMs available on the Hugging Face hub.
+
+and several more.  Much of the code is also available as a SwiftPM package -- use this as a starting point to build your own applications.

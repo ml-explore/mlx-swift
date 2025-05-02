@@ -1,6 +1,6 @@
 # MLX Swift
 
-[**Installation**](#installation) | [**Documentation**](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx) | [**Examples**](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples)
+[**Installation**](#installation) | [**Documentation**](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx) | [**Examples**](#examples)
 
 MLX Swift is a Swift API for [MLX](https://ml-explore.github.io/mlx/build/html/index.html).
 
@@ -10,16 +10,31 @@ on Apple silicon.
 
 ## Examples
 
-MLX Swift has a [few
+MLX Swift has [many
 examples](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/examples),
 including:
 
-- Large-scale text generation with Mistral 7B
-- Training a simple LeNet on MNIST
-- Examples that run on macOS or iOS
+- [MNISTTrainer](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MNISTTrainer/README.md): An example that runs on
+  both iOS and macOS that downloads MNIST training data and trains a
+  [LeNet](https://en.wikipedia.org/wiki/LeNet).
+
+- [MLXChatExample](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md): An example chat app that runs on both iOS and macOS that supports LLMs and VLMs.
+
+- [LLMEval](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/LLMEval/README.md): A simple example that runs on both iOS
+  and macOS that downloads an LLM and tokenizer from Hugging Face and
+  generates text from a given prompt.
+
+- [StableDiffusionExample](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/StableDiffusionExample/README.md): An
+  example that runs on both iOS and macOS that downloads a stable diffusion model
+  from Hugging Face and  and generates an image from a given prompt.
+
+- [llm-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md): A command line tool for generating text
+  using a variety of LLMs available on the Hugging Face hub.
 
 The [MLX Swift Examples repo](https://github.com/ml-explore/mlx-swift-examples)
-contains the complete code and documentation for these examples.
+contains the complete code and documentation for these examples, including 
+[guidelines on porting models](https://swiftpackageindex.com/ml-explore/mlx-swift-examples/main/documentation/mlxlmcommon/porting)
+from MLX Python.
 
 ## Installation
 
@@ -46,10 +61,8 @@ and add the libraries as dependencies:
 
 ```swift
 dependencies: [.product(name: "MLX", package: "mlx-swift"),
-               .product(name: "MLXRandom", package: "mlx-swift"),
                .product(name: "MLXNN", package: "mlx-swift"),
-               .product(name: "MLXOptimizers", package: "mlx-swift"),
-               .product(name: "MLXFFT", package: "mlx-swift")]
+               .product(name: "MLXOptimizers", package: "mlx-swift")]
 ```
 
 > [!Note] 
@@ -109,7 +122,6 @@ Ronan Collobert.
 
 ## Versions
 
-The ``MLX`` array functions should match MLX as of tag 
-[v0.3.0](https://github.com/ml-explore/mlx/releases/tag/v0.3.0).  The `MLXNN`
-package should match MLX (`mlx.nn`) as of tag
-[v0.0.10](https://github.com/ml-explore/mlx/releases/tag/v0.0.10).
+See [Releases](https://github.com/ml-explore/mlx-swift/releases).  Generally the `mlx-swift` version number corresponds to the same version number in [MLX](https://github.com/ml-explore/mlx).  Release notes indicate specifics.
+
+All capabilities in MLX (Python) should be available in `mlx-swift`.  If you encounter any that are missing please file an issue or feel free to submit a PR.
