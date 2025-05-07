@@ -27,7 +27,7 @@ include:
 
 - [StableDiffusionExample](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/StableDiffusionExample/README.md): An
   example that runs on both iOS and macOS that downloads a stable diffusion model
-  from Hugging Face and  and generates an image from a given prompt.
+  from Hugging Face and generates an image from a given prompt.
 
 - [llm-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md): A command line tool for generating text
   using a variety of LLMs available on the Hugging Face hub.

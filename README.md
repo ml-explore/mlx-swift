@@ -26,7 +26,7 @@ including:
 
 - [StableDiffusionExample](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/StableDiffusionExample/README.md): An
   example that runs on both iOS and macOS that downloads a stable diffusion model
-  from Hugging Face and  and generates an image from a given prompt.
+  from Hugging Face and generates an image from a given prompt.
 
 - [llm-tool](https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md): A command line tool for generating text
   using a variety of LLMs available on the Hugging Face hub.
@@ -122,6 +122,6 @@ Ronan Collobert.
 
 ## Versions
 
-See [Releases](https://github.com/ml-explore/mlx-swift/releases).  Generally the `mlx-swift` version number corresponds to the same version number in [MLX](https://github.com/ml-explore/mlx).  Release notes indicate specifics.
+See [Releases](https://github.com/ml-explore/mlx-swift/releases).  Generally the MLX Swift version number corresponds to the same version number in [MLX](https://github.com/ml-explore/mlx).  Release notes indicate specifics.
 
-All capabilities in MLX (Python) should be available in `mlx-swift`.  If you encounter any that are missing please file an issue or feel free to submit a PR.
+All capabilities in MLX (Python) should be available in MLX Swift.  If you encounter any that are missing please file an issue or feel free to submit a PR.
