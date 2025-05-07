@@ -94,7 +94,7 @@ public enum MLXFast {
         mlx_fast_scaled_dot_product_attention(
             &result,
             queries.ctx, keys.ctx, values.ctx, scale,
-            mask == nil ? "causal" : "", masks,
+            "", masks,
             stream.ctx)
         return MLXArray(result)
     }
