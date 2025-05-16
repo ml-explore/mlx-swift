@@ -5,7 +5,9 @@ import Foundation
 
 // return a +1 mlx_vector_array containing the given arrays
 func new_mlx_vector_array(_ arrays: [MLXArray]) -> mlx_vector_array {
-    mlx_vector_array_new_data(arrays.map { $0.ctx }, arrays.count)
+    withExtendedLifetime(arrays) {
+        mlx_vector_array_new_data(arrays.map { $0.ctx }, arrays.count)
+    }
 }
 
 func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
@@ -64,24 +66,28 @@ func mlx_map_string_values(_ mlx_map: mlx_map_string_to_string) -> [String: Stri
 }
 
 func new_mlx_array_map(_ dictionary: [String: MLXArray]) -> mlx_map_string_to_array {
-    let mlx_map = mlx_map_string_to_array_new()
+    withExtendedLifetime(dictionary) {
+        let mlx_map = mlx_map_string_to_array_new()
 
-    for (key, array) in dictionary {
-        mlx_map_string_to_array_insert(mlx_map, key.cString(using: .utf8), array.ctx)
+        for (key, array) in dictionary {
+            mlx_map_string_to_array_insert(mlx_map, key.cString(using: .utf8), array.ctx)
+        }
+
+        return mlx_map
     }
-
-    return mlx_map
 }
 
 func new_mlx_string_map(_ dictionary: [String: String]) -> mlx_map_string_to_string {
-    let mlx_map = mlx_map_string_to_string_new()
+    withExtendedLifetime(dictionary) {
+        let mlx_map = mlx_map_string_to_string_new()
 
-    for (key, value) in dictionary {
-        mlx_map_string_to_string_insert(
-            mlx_map, key.cString(using: .utf8), value.cString(using: .utf8))
+        for (key, value) in dictionary {
+            mlx_map_string_to_string_insert(
+                mlx_map, key.cString(using: .utf8), value.cString(using: .utf8))
+        }
+
+        return mlx_map
     }
-
-    return mlx_map
 }
 
 func new_mlx_closure(_ f: @escaping ([MLXArray]) -> [MLXArray]) -> mlx_closure {
