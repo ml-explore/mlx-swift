@@ -328,6 +328,8 @@ private final class ErrorHandler: @unchecked Sendable {
             lock.withLock {
                 if let globalHandler {
                     globalHandler(message, globalData)
+                } else {
+                    fatalError(message)
                 }
             }
         }
