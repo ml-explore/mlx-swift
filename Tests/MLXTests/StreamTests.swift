@@ -32,13 +32,14 @@ class StreamTests: XCTestCase {
         let defaultDevice = Device.defaultDevice()
 
         Device.withDefaultDevice(.cpu) {
+            // these _should_ be the same
+            XCTAssertTrue(Device.defaultDevice().description.contains("cpu"))
             XCTAssertTrue(StreamOrDevice.default.description.contains("cpu"))
         }
         XCTAssertEqual(defaultDevice, Device.defaultDevice())
 
         Device.withDefaultDevice(.gpu) {
-            print(Device.defaultDevice().description)
-            print(StreamOrDevice.default.description)
+            XCTAssertTrue(Device.defaultDevice().description.contains("gpu"))
             XCTAssertTrue(StreamOrDevice.default.description.contains("gpu"))
         }
         XCTAssertTrue(StreamOrDevice.default.description.contains("gpu"))
