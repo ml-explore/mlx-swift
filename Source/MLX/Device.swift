@@ -147,9 +147,15 @@ public final class Device: @unchecked Sendable, Equatable {
     /// - ``withDefaultDevice(_:_:)``
     /// - ``StreamOrDevice/default``
     @available(*, deprecated, message: "please use withDefaultDevice()")
-    static public func setDefault(device: Device) {
+    static public func setDefault(device: Device?) {
         _lock.withLock {
-            mlx_set_default_device(device.ctx)
+            if let device {
+                // sets the mlx core default device -- only used
+                // by the deprecated init().  this isn't thread
+                // safe or really usable across tasks/threads
+                // but is kept for backward compatibility
+                mlx_set_default_device(device.ctx)
+            }
             _defaultDevice = device
         }
     }
