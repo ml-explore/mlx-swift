@@ -35,7 +35,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     /// This will be ``Device/gpu`` unless ``Device/setDefault(device:)``
     /// sets it otherwise.
     public static var `default`: StreamOrDevice {
-        StreamOrDevice(Stream.defaultStream)
+        StreamOrDevice(Stream.defaultStream ?? Device.defaultStream())
     }
 
     public static func device(_ device: Device) -> StreamOrDevice {
@@ -83,10 +83,10 @@ public final class Stream: @unchecked Sendable, Equatable {
 
     let ctx: mlx_stream
 
-    public static let gpu = Stream(.gpu)
-    public static let cpu = Stream(.cpu)
+    public static let gpu = Stream(mlx_default_gpu_stream_new())
+    public static let cpu = Stream(mlx_default_cpu_stream_new())
 
-    @TaskLocal static var defaultStream = Stream()
+    @TaskLocal static var defaultStream: Stream?
 
     /// Set the ``StreamOrDevice/default`` scoped to a Task.
     public static func withNewDefaultStream<R>(device: Device? = nil, _ body: () throws -> R)
@@ -133,6 +133,7 @@ public final class Stream: @unchecked Sendable, Equatable {
     }
 
     deinit {
+        print("Stream deinit")
         _ = evalLock.withLock {
             mlx_stream_free(ctx)
         }

@@ -28,9 +28,19 @@ public enum DeviceType: String, Hashable, Sendable {
 public final class Device: @unchecked Sendable, Equatable {
 
     let ctx: mlx_device
+    let defaultStream: Stream
 
     init(_ ctx: mlx_device) {
         self.ctx = ctx
+
+        var deviceType = MLX_GPU
+        mlx_device_get_type(&deviceType, ctx)
+        self.defaultStream =
+            switch deviceType {
+            case MLX_CPU: .cpu
+            case MLX_GPU: .gpu
+            default: .gpu
+            }
     }
 
     public init(_ deviceType: DeviceType, index: Int32 = 0) {
@@ -42,19 +52,32 @@ public final class Device: @unchecked Sendable, Equatable {
             cDeviceType = MLX_GPU
         }
         self.ctx = mlx_device_new_type(cDeviceType, index)
+        self.defaultStream =
+            switch deviceType {
+            case .cpu: .cpu
+            case .gpu: .gpu
+            }
     }
 
-    public init() {
+    @available(*, deprecated, message: "please use defaultDevice()")
+    public convenience init() {
         var ctx = mlx_device_new()
         mlx_get_default_device(&ctx)
-        self.ctx = ctx
+        self.init(ctx)
     }
 
     deinit {
         mlx_device_free(ctx)
     }
 
+    /// static CPU device
+    ///
+    /// See ``withDefaultDevice(_:_:)``
     static public let cpu: Device = Device(.cpu)
+
+    /// static GPU device
+    ///
+    /// See ``withDefaultDevice(_:_:)``
     static public let gpu: Device = Device(.gpu)
 
     public var deviceType: DeviceType? {
@@ -67,28 +90,50 @@ public final class Device: @unchecked Sendable, Equatable {
         }
     }
 
+    // support for global default device
     static let _lock = NSLock()
     #if swift(>=5.10)
-        nonisolated(unsafe) static var _defaultDevice = gpu
-        nonisolated(unsafe) static var _defaultStream = Stream(gpu)
+        nonisolated(unsafe) static var _defaultDevice: Device?
     #else
-        static var _defaultDevice = gpu
-        static var _defaultStream = Stream(gpu)
+        static var _defaultDevice: Device?
     #endif
 
+    @TaskLocal static var _tlDefaultDevice = _resolveGlobalDefaultDevice()
+
+    private static func _resolveGlobalDefaultDevice() -> Device {
+        _lock.withLock {
+            _defaultDevice ?? .gpu
+        }
+    }
+
+    /// Return the current default device.
+    ///
+    /// This is used by ``StreamOrDevice/default`` -- the default stream parameter
+    /// to most functions.
     static public func defaultDevice() -> Device {
-        _lock.withLock {
-            _defaultDevice
-        }
+        _tlDefaultDevice
     }
 
+    /// Use a device scoped to a task.
+    static public func withDefaultDevice<R>(
+        _ device: Device, _ body: () throws -> R
+    ) rethrows -> R {
+        try $_tlDefaultDevice.withValue(device, operation: body)
+    }
+
+    /// Use a device scoped to a task.
+    static public func withDefaultDevice<R>(
+        _ device: Device, _ body: () async throws -> R
+    ) async rethrows -> R {
+        try await $_tlDefaultDevice.withValue(device, operation: body)
+    }
+
+    /// Return the current default stream.
     static func defaultStream() -> Stream {
-        _lock.withLock {
-            _defaultStream
-        }
+        _tlDefaultDevice.defaultStream
     }
 
-    /// Set the default device.
+    /// Set the default device globally.  Prefer the scoped version, ``withDefaultDevice(_:_:)``.
     ///
     /// For example:
     ///
@@ -99,12 +144,13 @@ public final class Device: @unchecked Sendable, Equatable {
     /// By default this is ``gpu``.
     ///
     /// ### See Also
+    /// - ``withDefaultDevice(_:_:)``
     /// - ``StreamOrDevice/default``
+    @available(*, deprecated, message: "please use withDefaultDevice()")
     static public func setDefault(device: Device) {
         _lock.withLock {
             mlx_set_default_device(device.ctx)
             _defaultDevice = device
-            _defaultStream = Stream(device)
         }
     }
 
@@ -139,6 +185,7 @@ extension Device: CustomStringConvertible {
 /// - Parameters:
 ///     - device: device to be used
 ///     - fn: function to be executed
+@available(*, deprecated, message: "please use Device.withDefaultDevice()")
 public func using<R>(device: Device, fn: () throws -> R) rethrows -> R {
-    try Stream.withNewDefaultStream(device: device, fn)
+    try Device.withDefaultDevice(device, fn)
 }
