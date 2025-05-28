@@ -133,7 +133,6 @@ public final class Stream: @unchecked Sendable, Equatable {
     }
 
     deinit {
-        print("Stream deinit")
         _ = evalLock.withLock {
             mlx_stream_free(ctx)
         }
