@@ -244,6 +244,52 @@ public enum GPU {
         }
     }
 
+    /// Perform the block with a temporarily altered wired memory limit.
+    ///
+    /// Note: this manipulates a global value.  Nested calls will wok as expected but
+    /// concurrent calls cannot.
+    ///
+    /// See also ``DeviceInfo/maxRecommendedWorkingSetSize``.
+    ///
+    /// - Parameters:
+    ///   - limit: new limit in bytes
+    ///   - body: block to perform
+    public static func withWiredLimit<R>(
+        _ limit: Int, _ body: () throws -> R
+    ) rethrows -> R {
+        var current = 0
+        mlx_set_wired_limit(&current, limit)
+        defer {
+            var tmp = 0
+            mlx_set_wired_limit(&tmp, current)
+        }
+
+        return try body()
+    }
+
+    /// Perform the block with a temporarily altered wired memory limit.
+    ///
+    /// Note: this manipulates a global value.  Nested calls will wok as expected but
+    /// concurrent calls cannot.
+    ///
+    /// See also ``DeviceInfo/maxRecommendedWorkingSetSize``.
+    ///
+    /// - Parameters:
+    ///   - limit: new limit in bytes
+    ///   - body: block to perform
+    public static func withWiredLimit<R>(
+        _ limit: Int, _ body: () async throws -> R
+    ) async rethrows -> R {
+        var current = 0
+        mlx_set_wired_limit(&current, limit)
+        defer {
+            var tmp = 0
+            mlx_set_wired_limit(&tmp, current)
+        }
+
+        return try await body()
+    }
+
     /// Cause all cached metal buffers to be deallocated.
     public static func clearCache() {
         mlx_clear_cache()
