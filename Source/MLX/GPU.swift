@@ -246,7 +246,7 @@ public enum GPU {
 
     /// Perform the block with a temporarily altered wired memory limit.
     ///
-    /// Note: this manipulates a global value.  Nested calls will wok as expected but
+    /// Note: this manipulates a global value.  Nested calls will work as expected but
     /// concurrent calls cannot.
     ///
     /// See also ``DeviceInfo/maxRecommendedWorkingSetSize``.
@@ -269,7 +269,7 @@ public enum GPU {
 
     /// Perform the block with a temporarily altered wired memory limit.
     ///
-    /// Note: this manipulates a global value.  Nested calls will wok as expected but
+    /// Note: this manipulates a global value.  Nested calls will work as expected but
     /// concurrent calls cannot.
     ///
     /// See also ``DeviceInfo/maxRecommendedWorkingSetSize``.
