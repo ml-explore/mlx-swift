@@ -31,14 +31,65 @@ class StreamTests: XCTestCase {
     func testUsingDevice() {
         let defaultDevice = Device.defaultDevice()
 
-        using(device: .cpu) {
+        Device.withDefaultDevice(.cpu) {
+            // these _should_ be the same
+            XCTAssertTrue(Device.defaultDevice().description.contains("cpu"))
             XCTAssertTrue(StreamOrDevice.default.description.contains("cpu"))
         }
         XCTAssertEqual(defaultDevice, Device.defaultDevice())
 
-        using(device: .gpu) {
+        Device.withDefaultDevice(.gpu) {
+            XCTAssertTrue(Device.defaultDevice().description.contains("gpu"))
             XCTAssertTrue(StreamOrDevice.default.description.contains("gpu"))
         }
         XCTAssertTrue(StreamOrDevice.default.description.contains("gpu"))
     }
+
+    func testSetUnsetDefaultDevice() {
+        // Issue #237 -- setting an unsetting the default device in a loop
+        // exhausts many resources
+        for _ in 1 ..< 10000 {
+            let defaultDevice = MLX.Device.defaultDevice()
+            MLX.Device.setDefault(device: .cpu)
+            defer {
+                MLX.Device.setDefault(device: defaultDevice)
+            }
+
+            let x = MLXArray(1)
+            let _ = x * x
+        }
+        print("here")
+    }
+
+    func testWithDefaultDevice() {
+        // Issue #237 -- scoped variant
+        for _ in 1 ..< 10000 {
+            Device.withDefaultDevice(.cpu) {
+                Device.withDefaultDevice(.gpu) {
+                    let x = MLXArray(1)
+                    let _ = x * x
+                }
+            }
+        }
+        print("here")
+    }
+
+    func disabledTestCreateStream() {
+        // see https://github.com/ml-explore/mlx/issues/2118
+        for _ in 1 ..< 10000 {
+            let _ = Stream(.cpu)
+        }
+        print("here")
+    }
+
+    func disabledTestCreateStreamScoped() {
+        // see https://github.com/ml-explore/mlx/issues/2118
+        for _ in 1 ..< 10000 {
+            Stream.withNewDefaultStream(device: .cpu) {
+                let x = MLXArray(1)
+                let _ = x * x
+            }
+        }
+    }
+
 }
