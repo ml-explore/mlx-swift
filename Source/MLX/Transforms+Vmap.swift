@@ -31,7 +31,9 @@ public func vmap(
 
         let closure = new_mlx_closure(f)
         inAxes32.withUnsafeBufferPointer { inAxesBuf in
-            mlx_detail_vmap_trace(&traceInputs, &traceOutputs, closure, inputs, inAxesBuf.baseAddress, inAxesBuf.count)
+            mlx_detail_vmap_trace(
+                &traceInputs, &traceOutputs, closure, inputs, inAxesBuf.baseAddress, inAxesBuf.count
+            )
         }
         mlx_closure_free(closure)
 
