@@ -52,6 +52,7 @@ are the CPU and GPU.
 - <doc:broadcasting>
 - <doc:lazy-evaluation>
 - <doc:unified-memory>
+- <doc:vmap>
 - <doc:compilation>
 - <doc:using-streams>
 - <doc:running-on-ios>
