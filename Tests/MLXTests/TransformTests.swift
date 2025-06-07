@@ -266,6 +266,88 @@ class TransformTests: XCTestCase {
         measure(compile(gelu), x)
     }
 
+    func testVmapSimple() {
+        func f(_ x: MLXArray) -> MLXArray { x * 2 }
+
+        let x = MLXArray(0 ..< 6, [3, 2])
+        let vf = vmap(f)
+
+        let expected = stacked((0 ..< 3).map { f(x[$0]) }, axis: 0)
+
+        assertEqual(vf(x), expected)
+    }
+
+    func testVmapTwoInputs() {
+        func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
+
+        let x = MLXArray(0 ..< 6, [3, 2])
+        let y = MLXArray(10 ..< 16, [3, 2])
+        let vf = vmap(f)
+
+        let expected = stacked((0 ..< 3).map { f(x[$0], y[$0]) }, axis: 0)
+
+        assertEqual(vf(x, y), expected)
+    }
+
+    func testVmapAxisPermutations() {
+        func f(_ x: MLXArray) -> MLXArray { x * 2 }
+
+        let x = MLXArray(0 ..< 6, [2, 3])
+
+        let map1 = vmap(f, inAxes: 1, outAxes: 0)
+        let expected1 = stacked((0 ..< 3).map { f(x[.ellipsis, $0]) }, axis: 0)
+        assertEqual(map1(x), expected1)
+
+        let map2 = vmap(f, inAxes: 0, outAxes: 1)
+        let expected2 = stacked((0 ..< 2).map { f(x[$0]) }, axis: 1)
+        assertEqual(map2(x), expected2)
+
+        let map3 = vmap(f, outAxes: 1)
+        let expected3 = stacked((0 ..< 2).map { f(x[$0]) }, axis: 1)
+        assertEqual(map3(x), expected3)
+    }
+
+    func testVmapTwoInputsAxisPermutations() {
+        func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
+
+        let x = MLXArray(0 ..< 6, [2, 3])
+        let y = MLXArray(10 ..< 16, [3, 2])
+
+        let map1 = vmap(f, inAxes: (0, 1), outAxes: 0)
+        let expected1 = stacked((0 ..< 2).map { i in f(x[i], y[.ellipsis, i]) }, axis: 0)
+        assertEqual(map1(x, y), expected1)
+
+        let map2 = vmap(f, inAxes: (0, 1), outAxes: 1)
+        let expected2 = stacked((0 ..< 2).map { i in f(x[i], y[.ellipsis, i]) }, axis: 1)
+        assertEqual(map2(x, y), expected2)
+    }
+
+    func testVmapWithCompile() {
+        func f(_ x: MLXArray) -> MLXArray { x.square() }
+
+        let x = MLXRandom.normal([4, 2])
+
+        let compiled = compile(f)
+        let mapCompile = vmap(compiled)
+        assertEqual(mapCompile(x), vmap(f)(x))
+
+        let compiledMap = compile(vmap(f))
+        assertEqual(compiledMap(x), vmap(f)(x))
+    }
+
+    func testVmapWithGrad() {
+        func f(_ x: MLXArray) -> MLXArray { x.square().sum() }
+
+        let x = MLXArray(0 ..< 6, [3, 2])
+
+        let gradF = grad(f)
+        let vg = vmap(gradF)
+        assertEqual(vg(x), x * 2)
+
+        let gv = grad { vmap(f)($0).sum() }
+        assertEqual(gv(x), x * 2)
+    }
+
     // Note: OptimizerTests contains additional integration tests of compile()
 
 }
