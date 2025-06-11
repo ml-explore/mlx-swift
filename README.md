@@ -44,7 +44,7 @@ More details are in the [documentation](https://swiftpackageindex.com/ml-explore
 
 ### Xcode
 
-In Xcode you can add `https://github.com/ml-explore/mlx-swift` as a package
+In Xcode you can add `https://github.com/ml-explore/mlx-swift.git` as a package
 dependency and link `MLX`, `MLXNN`, `MLXOptimizers` and `MLXRandom` as needed.
 
 ### SwiftPM
