@@ -243,6 +243,9 @@ open class Module {
 
             // handle structure
             switch v {
+            case .none:
+                return .none
+
             case .value(.module(let module)):
                 return module.filterMap(filter: filter, map: map, isLeaf: isLeaf).asItem()
 
@@ -594,10 +597,6 @@ open class Module {
     open func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
 
         func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
-            if case .none = value {
-                return
-            }
-
             // item: single item from `items()`
             // value: single item with matching structure from `children()`
             //
@@ -687,6 +686,12 @@ open class Module {
 
             case (.value(.module), .value(let newModule)):
                 try self.updateModule(key: key, newModule)
+
+            case (.none, .value(let newModule)):
+                try self.updateModule(key: key, newModule)
+
+            case (.value(.module), .none):
+                try self.updateModule(key: key, Optional<Module>.none as Any)
 
             case (.value(.module(let module)), .dictionary(let values)):
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
@@ -1264,6 +1269,8 @@ public enum ModuleValue {
             return .value(.parameters(v))
         case let v as Module:
             return .value(.module(v))
+        case let v as Module? where v == nil:
+            return .none
         case let v as [Any]:
             return .array(v.map { build(value: $0) })
 
