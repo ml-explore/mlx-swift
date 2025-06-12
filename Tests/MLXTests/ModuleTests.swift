@@ -906,4 +906,43 @@ class ModuleTests: XCTestCase {
         // this should not throw because _freqs is not considered
         try rope.update(parameters: .init(), verify: .all)
     }
+
+    func testOptionalModuleUpdates() throws {
+        class M: Module {
+            @ModuleInfo(key: "a") var a: Linear = Linear(1, 1)
+            @ModuleInfo(key: "b") var b: Linear?
+        }
+
+        let m = M()
+        let b = Linear(1, 1)
+
+        do {
+            // Test setting a value for an optional module
+            let u = ModuleChildren(values: ["b": .value(b)])
+            try m.update(modules: u, verify: .noUnusedKeys)
+            XCTAssertEqual(m.children().count, 2)
+        }
+
+        do {
+            // Test resetting the optional module to nil
+            let u = ModuleChildren(values: ["b": .none])
+            try m.update(modules: u, verify: .noUnusedKeys)
+            XCTAssertEqual(m.children().count, 1)
+        }
+
+        do {
+            // Test that setting nil on a non-optional module throws an error
+            let u = ModuleChildren(values: ["a": .none])
+            XCTAssertThrowsError(
+                try m.update(modules: u, verify: .noUnusedKeys)
+            ) { error in
+                switch error {
+                case _ as UpdateError:
+                    XCTAssertEqual(m.children().count, 1)
+                default:
+                    XCTFail("Wrong error type")
+                }
+            }
+        }
+    }
 }
