@@ -33,7 +33,7 @@ public func sigmoid(_ x: MLXArray) -> MLXArray {
 /// - <doc:activations>
 /// - ``ReLU``
 public func relu(_ x: MLXArray) -> MLXArray {
-    maximum(x, 0)
+    compiledRelu(x)
 }
 
 /// Applies the Leaky Rectified Linear Unit.
@@ -101,6 +101,21 @@ public func elu(_ x: MLXArray, alpha: Float = 1.0) -> MLXArray {
 /// - ``ReLU6``
 public func relu6(_ x: MLXArray) -> MLXArray {
     compiledRelu6(x)
+}
+
+/// Applies the squared Rectified Linear Unit.
+///
+/// This is:
+///
+/// ```swift
+/// MLX.relu(x).square()
+/// ```
+///
+/// /// ### See Also
+/// - <doc:activations>
+/// - ``ReLUSquared``
+public func reluSquared(_ x: MLXArray) -> MLXArray {
+    compiledReluSquared(x)
 }
 
 @available(*, deprecated, renamed: "softplus(_:)")
@@ -455,6 +470,23 @@ open class LeakyReLU: Module, UnaryLayer {
 open class ReLU6: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         relu6(x)
+    }
+}
+
+/// Applies the squared Rectified Linear Unit.
+///
+/// This is:
+///
+/// ```swift
+/// MLX.maximum(x, 0).square()
+///
+///
+/// ### See Also
+/// - <doc:activations>
+/// - ``reluSquared(_:)``
+open class ReLUSquared: Module, UnaryLayer {
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        reluSquared(x)
     }
 }
 
@@ -850,5 +882,17 @@ private let compiledHardSwish: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         let maxXPlus3 = maximum(x + 3, 0)
         return x * minimum(maxXPlus3, 6) / 6
+    }
+}()
+
+private let compiledRelu: @Sendable (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        maximum(x, 0)
+    }
+}()
+
+private let compiledReluSquared: @Sendable (MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x in
+        return relu(x).square()
     }
 }()

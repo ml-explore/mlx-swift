@@ -128,6 +128,7 @@ These can be used with ``Sequential``.
 - ``prelu(_:alpha:)``
 - ``relu(_:)``
 - ``relu6(_:)``
+- ``reluSquared(_:)``
 - ``selu(_:)``
 - ``silu(_:)``
 - ``sigmoid(_:)``
@@ -148,6 +149,7 @@ These can be used with ``Sequential``.
 - ``PReLU``
 - ``ReLU``
 - ``ReLU6``
+- ``ReLUSquared``
 - ``SELU``
 - ``SiLU``
 - ``Sigmoid``

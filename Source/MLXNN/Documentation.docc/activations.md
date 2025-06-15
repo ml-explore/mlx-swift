@@ -25,6 +25,7 @@ such as `alpha`.
 - ``prelu(_:alpha:)``
 - ``relu(_:)``
 - ``relu6(_:)``
+- ``reluSquared(_:)``
 - ``selu(_:)``
 - ``silu(_:)``
 - ``sigmoid(_:)``
@@ -45,6 +46,7 @@ such as `alpha`.
 - ``PReLU``
 - ``ReLU``
 - ``ReLU6``
+- ``ReLUSquared``
 - ``SELU``
 - ``SiLU``
 - ``Sigmoid``
