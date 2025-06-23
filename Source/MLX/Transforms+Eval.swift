@@ -8,6 +8,16 @@ import Foundation
 /// call back into eval.
 let evalLock = NSRecursiveLock()
 
+/// Pause evaluation
+public func pauseEval() {
+    evalLock.lock()
+}
+
+/// Resume evaluation
+public func resumeEval() {
+    evalLock.unlock()
+}
+
 /// Evaluate one or more `MLXArray`
 ///
 /// ### See Also
