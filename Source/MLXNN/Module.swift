@@ -471,26 +471,23 @@ open class Module {
 
             case (.array(let array), .array(let values)):
                 for (i, (arrayItem, valueItem)) in zip(array, values).enumerated() {
-                    let newKey = "\(key).\(i)"
-                    try apply(key: newKey, path: path + [newKey], arrayItem, valueItem)
+                    try apply(key: "\(key).\(i)", path: path + ["\(i)"], arrayItem, valueItem)
                 }
                 if verify.contains(.allModelKeysSet) {
                     for i in values.count ..< array.count {
-                        let newKey = "\(key).\(i)"
-                        try apply(key: newKey, path: path + [newKey], array[i], .none)
+                        try apply(key: "\(key).\(i)", path: path + ["\(i)"], array[i], .none)
                     }
                 }
 
             case (.array(let array), .none):
                 for (i, arrayItem) in array.enumerated() {
-                    let newKey = "\(key).\(i)"
-                    try apply(key: newKey, path: path + [newKey], arrayItem, .none)
+                    try apply(key: "\(key).\(i)", path: path + ["\(i)"], arrayItem, .none)
                 }
 
             case (.dictionary(let dictionary), .dictionary(let values)):
                 for (dictionaryKey, dictionaryItem) in dictionary {
                     let newKey = "\(key).\(dictionaryKey)"
-                    let path = path + [newKey]
+                    let path = path + [dictionaryKey]
                     if let valueItem = values[key] {
                         try apply(key: newKey, path: path, dictionaryItem, valueItem)
                     } else if verify.contains(.allModelKeysSet) {
@@ -501,7 +498,7 @@ open class Module {
             case (.dictionary(let dictionary), .none):
                 for (dictionaryKey, dictionaryItem) in dictionary {
                     let newKey = "\(key).\(dictionaryKey)"
-                    let path = path + [newKey]
+                    let path = path + [dictionaryKey]
                     try apply(key: newKey, path: path, dictionaryItem, .none)
                 }
 
