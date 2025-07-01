@@ -519,7 +519,9 @@ open class Module {
                 break
 
             default:
-                fatalError("Unable to set \(key) on \(self): \(item) not compatible with \(value)")
+                fatalError(
+                    "Unable to set \(path.joined(separator: ".")) on \(modulePath.joined(separator: ".")): \(item) not compatible with \(value.mapValues { $0.shape.description })"
+                )
             }
         }
 
@@ -724,7 +726,9 @@ open class Module {
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
 
             default:
-                fatalError("Unable to set \(key) on \(self): \(item) not compatible with \(value)")
+                fatalError(
+                    "Unable to set \(path.joined(separator: ".")) on \(modulePath.joined(separator: ".")): \(item) not compatible with \(value)"
+                )
             }
         }
 
