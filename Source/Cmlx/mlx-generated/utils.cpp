@@ -310,6 +310,11 @@ static constant constexpr int RMS_LOOPED_LIMIT = 4096;
 
 typedef half float16_t;
 template <typename U>
+struct WorkPerThread {
+  static_assert(sizeof(U) <= 8, "Type too large");
+  static constexpr int constant n = 8 / sizeof(U);
+};
+template <typename U>
 struct Limits {
   static const constant U max = metal::numeric_limits<U>::max();
   static const constant U min = metal::numeric_limits<U>::min();
