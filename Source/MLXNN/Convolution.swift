@@ -47,6 +47,8 @@ open class Conv1d: Module, UnaryLayer {
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize))
 
+        precondition(inputChannels % groups == 0, "Input channels must be divisible by groups")
+
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale, [outputChannels, kernelSize, inputChannels / groups])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
@@ -111,9 +113,11 @@ open class Conv2d: Module, UnaryLayer {
     ) {
         let scale = sqrt(1 / Float(inputChannels * kernelSize.first * kernelSize.second))
 
+        precondition(inputChannels % groups == 0, "Input channels must be divisible by groups")
+
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale,
-            [outputChannels, kernelSize.first, kernelSize.second, inputChannels])
+            [outputChannels, kernelSize.first, kernelSize.second, inputChannels / groups])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding.values
         self.dilation = dilation.values
