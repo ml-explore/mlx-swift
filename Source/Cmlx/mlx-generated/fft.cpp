@@ -314,7 +314,7 @@ struct ReadWriter {
     return grid_index >= batch_size;
   }
   METAL_FUNC void load() const {
-    int batch_idx = elem.x * grid.y * n;
+    size_t batch_idx = size_t(elem.x * grid.y) * n;
     short tg_idx = elem.y * grid.z + elem.z;
     short max_index = grid.y * n - 2;
     constexpr int read_width = 2;
@@ -333,7 +333,7 @@ struct ReadWriter {
     }
   }
   METAL_FUNC void write() const {
-    int batch_idx = elem.x * grid.y * n;
+    size_t batch_idx = size_t(elem.x * grid.y) * n;
     short tg_idx = elem.y * grid.z + elem.z;
     short max_index = grid.y * n - 2;
     constexpr int read_width = 2;
@@ -352,7 +352,7 @@ struct ReadWriter {
     }
   }
   METAL_FUNC void load_padded(int length, const device float2* w_k) const {
-    int batch_idx = elem.x * grid.y * length + elem.y * length;
+    size_t batch_idx = size_t(elem.x * grid.y) * length + elem.y * length;
     int fft_idx = elem.z;
     int m = grid.z;
     threadgroup float2* seq_buf = buf + elem.y * n;
@@ -367,7 +367,7 @@ struct ReadWriter {
     }
   }
   METAL_FUNC void write_padded(int length, const device float2* w_k) const {
-    int batch_idx = elem.x * grid.y * length + elem.y * length;
+    size_t batch_idx = size_t(elem.x * grid.y) * length + elem.y * length;
     int fft_idx = elem.z;
     int m = grid.z;
     float2 inv_factor = {1.0f / n, -1.0f / n};
@@ -437,7 +437,7 @@ METAL_FUNC bool ReadWriter<float, float2>::out_of_bounds() const {
 }
 template <>
 METAL_FUNC void ReadWriter<float, float2>::load() const {
-  int batch_idx = elem.x * grid.y * n * 2 + elem.y * n * 2;
+  size_t batch_idx = size_t(elem.x * grid.y) * n * 2 + elem.y * n * 2;
   threadgroup float2* seq_buf = buf + elem.y * n;
   int grid_index = elem.x * grid.y + elem.y;
   short next_in =
@@ -453,7 +453,8 @@ METAL_FUNC void ReadWriter<float, float2>::load() const {
 template <>
 METAL_FUNC void ReadWriter<float, float2>::write() const {
   short n_over_2 = (n / 2) + 1;
-  int batch_idx = elem.x * grid.y * n_over_2 * 2 + elem.y * n_over_2 * 2;
+  size_t batch_idx =
+      size_t(elem.x * grid.y) * n_over_2 * 2 + elem.y * n_over_2 * 2;
   threadgroup float2* seq_buf = buf + elem.y * n;
   int grid_index = elem.x * grid.y + elem.y;
   short next_out =
@@ -480,7 +481,7 @@ template <>
 METAL_FUNC void ReadWriter<float, float2>::load_padded(
     int length,
     const device float2* w_k) const {
-  int batch_idx = elem.x * grid.y * length * 2 + elem.y * length * 2;
+  size_t batch_idx = size_t(elem.x * grid.y) * length * 2 + elem.y * length * 2;
   threadgroup float2* seq_buf = buf + elem.y * n;
   int grid_index = elem.x * grid.y + elem.y;
   short next_in =
@@ -503,8 +504,8 @@ METAL_FUNC void ReadWriter<float, float2>::write_padded(
     int length,
     const device float2* w_k) const {
   int length_over_2 = (length / 2) + 1;
-  int batch_idx =
-      elem.x * grid.y * length_over_2 * 2 + elem.y * length_over_2 * 2;
+  size_t batch_idx =
+      size_t(elem.x * grid.y) * length_over_2 * 2 + elem.y * length_over_2 * 2;
   threadgroup float2* seq_buf = buf + elem.y * n + length - 1;
   int grid_index = elem.x * grid.y + elem.y;
   short next_out = batch_size % 2 == 1 && grid_index * 2 == batch_size - 1
@@ -540,7 +541,8 @@ METAL_FUNC bool ReadWriter<float2, float>::out_of_bounds() const {
 template <>
 METAL_FUNC void ReadWriter<float2, float>::load() const {
   short n_over_2 = (n / 2) + 1;
-  int batch_idx = elem.x * grid.y * n_over_2 * 2 + elem.y * n_over_2 * 2;
+  size_t batch_idx =
+      size_t(elem.x * grid.y) * n_over_2 * 2 + elem.y * n_over_2 * 2;
   threadgroup float2* seq_buf = buf + elem.y * n;
   int grid_index = elem.x * grid.y + elem.y;
   short next_in =
@@ -588,8 +590,8 @@ METAL_FUNC void ReadWriter<float2, float>::load_padded(
     const device float2* w_k) const {
   int n_over_2 = (n / 2) + 1;
   int length_over_2 = (length / 2) + 1;
-  int batch_idx =
-      elem.x * grid.y * length_over_2 * 2 + elem.y * length_over_2 * 2;
+  size_t batch_idx =
+      size_t(elem.x * grid.y) * length_over_2 * 2 + elem.y * length_over_2 * 2;
   threadgroup float2* seq_buf = buf + elem.y * n;
   int grid_index = elem.x * grid.y + elem.y;
   short next_in = batch_size % 2 == 1 && grid_index * 2 == batch_size - 1
@@ -627,7 +629,7 @@ template <>
 METAL_FUNC void ReadWriter<float2, float>::write_padded(
     int length,
     const device float2* w_k) const {
-  int batch_idx = elem.x * grid.y * length * 2 + elem.y * length * 2;
+  size_t batch_idx = size_t(elem.x * grid.y) * length * 2 + elem.y * length * 2;
   threadgroup float2* seq_buf = buf + elem.y * n + length - 1;
   int grid_index = elem.x * grid.y + elem.y;
   short next_out =
