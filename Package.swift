@@ -73,8 +73,10 @@ let package = Package(
                 "mlx/tests",
 
                 // opt-out of these backends (using metal)
-                "mlx/mlx/backend/no_metal",
                 "mlx/mlx/backend/no_cpu",
+                "mlx/mlx/backend/no_gpu",
+                "mlx/mlx/backend/cuda",
+                "mlx/mlx/backend/metal/no_metal.cpp",
 
                 // build variants (we are opting _out_ of these)
                 "mlx/mlx/io/no_safetensors.cpp",
@@ -111,7 +113,7 @@ let package = Package(
                 .define("_METAL_"),
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
                 .define("METAL_PATH", to: "\"default.metallib\""),
-                .define("MLX_VERSION", to: "\"0.24.2\""),
+                .define("MLX_VERSION", to: "\"0.26.2\""),
             ],
             linkerSettings: [
                 .linkedFramework("Foundation"),
