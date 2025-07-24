@@ -2,7 +2,7 @@
 
 A model training loop.
 
-The model traing loop in `MLX` consists of:
+The model training loop in `MLX` consists of:
 
 - defining a model
 - defining a loss function that measures the distance between _predicted_ and _expected_ values

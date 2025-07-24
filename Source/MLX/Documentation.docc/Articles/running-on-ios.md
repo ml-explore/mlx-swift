@@ -9,7 +9,7 @@ which will terminate processes if they use too much memory.
 
 Models may take several gigabytes for their weights, and they need memory on 
 top of that for evaluation.  The size of weights can be controlled by using
-narrower types, e.g. `Float16` instead of `Float32` or qantizing the weights with 
+narrower types, e.g. `Float16` instead of `Float32` or quantizing the weights with 
 the [QuantizeLinear](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlxnn/quantizedlinear) layer.
 
 The LLM models in the <doc:examples> already make use of these techniques.
