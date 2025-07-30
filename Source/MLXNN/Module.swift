@@ -284,9 +284,6 @@ open class Module {
                     }
                 }
                 return isAllNone ? .none : .array(result)
-
-            default:
-                fatalError("Unexpected leaf \(vk) = \(v)")
             }
         }
 
@@ -462,7 +459,7 @@ open class Module {
                 }
                 p._updateInternal(newArray)
 
-            case (.value(.parameters(let p)), .none):
+            case (.value(.parameters), .none):
                 if Self.parameterIsValid(key) {
                     throw UpdateError.keyNotFound(path: path, modules: modulePath)
                 } else {
@@ -1378,11 +1375,7 @@ public enum ModuleValue {
         get {
             // note: this gives a warning but it does in fact do something
             // in the case where this is e.g. ParameterInfo<MLXArray?>
-            if let value = value as? T {
-                return value
-            } else {
-                return value!
-            }
+            return value!
         }
         set {
             if value != nil {
@@ -1491,11 +1484,7 @@ private protocol TypeErasedSetterProvider {
         get {
             // note: this gives a warning but it does in fact do something
             // in the case where this is e.g. ModuleInfo<Linear?>
-            if let module = module as? T {
-                return module
-            } else {
-                return module!
-            }
+            return module!
         }
         set {
             if module != nil {
