@@ -1375,7 +1375,11 @@ public enum ModuleValue {
         get {
             // note: this gives a warning but it does in fact do something
             // in the case where this is e.g. ParameterInfo<MLXArray?>
-            return value!
+            if let value = value as? T {
+                return value
+            } else {
+                return value!
+            }
         }
         set {
             if value != nil {
@@ -1484,7 +1488,11 @@ private protocol TypeErasedSetterProvider {
         get {
             // note: this gives a warning but it does in fact do something
             // in the case where this is e.g. ModuleInfo<Linear?>
-            return module!
+            if let module = module as? T {
+                return module
+            } else {
+                return module!
+            }
         }
         set {
             if module != nil {

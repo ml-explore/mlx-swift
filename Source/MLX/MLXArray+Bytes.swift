@@ -285,8 +285,6 @@ extension MLXArray {
     /// - ``asArray(_:)``
     /// - ``asData(access:)``
     public func asMTLBuffer(device: any MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
-        _ = asData(access: noCopy ? .noCopyIfContiguous : .copy)
-
         self.eval()
 
         if noCopy && self.contiguousToDimension() == 0 {

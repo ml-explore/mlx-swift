@@ -2,8 +2,8 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // Copyright © 2024 Apple Inc.
 
-import PackageDescription
 import Foundation
+import PackageDescription
 
 // Function to get exclude list based on whether CUDA trait is enabled
 func getExcludeList(forCUDA: Bool) -> [String] {
@@ -66,7 +66,7 @@ func getExcludeList(forCUDA: Bool) -> [String] {
         // bnns instead of simd (accelerate)
         "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
         "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
-        
+
         // Always exclude the individual backend compiled files
         // We use backend_compiled.cpp to conditionally include them
         "mlx/mlx/backend/cpu/compiled.cpp",
@@ -74,7 +74,7 @@ func getExcludeList(forCUDA: Bool) -> [String] {
         "mlx/mlx/backend/no_cpu/compiled.cpp",
         "mlx-conditional/compiled_conditional.cpp",
     ]
-    
+
     if forCUDA {
         // When building with CUDA, exclude CPU backend
         // (CUDA backend will be used)
@@ -83,7 +83,7 @@ func getExcludeList(forCUDA: Bool) -> [String] {
         excludes.append("mlx/mlx/backend/cuda")
         excludes.append("mlx/mlx/backend/no_cpu")
     }
-    
+
     return excludes
 }
 
@@ -107,20 +107,20 @@ let package = Package(
         .library(name: "MLXLinalg", targets: ["MLXLinalg"]),
         .library(name: "MLXFast", targets: ["MLXFast"]),
     ],
-    
+
     traits: [
         .trait(name: "CUDA")
     ],
-    
+
     dependencies: [
         // for Complex type
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0")
     ],
-    
+
     targets: [
         .target(
             name: "Cmlx",
-            exclude: getExcludeList(forCUDA: false), // Default to CPU backend
+            exclude: getExcludeList(forCUDA: false),  // Default to CPU backend
 
             cSettings: [
                 .headerSearchPath("mlx"),
@@ -142,7 +142,7 @@ let package = Package(
                 .define("MLX_VERSION", to: "\"0.27.1\""),
                 .define("MLX_BUILD_CUDA", .when(traits: ["CUDA"])),
             ],
-            
+
             linkerSettings: [
                 .linkedFramework("Foundation"),
                 .linkedFramework("Metal"),
@@ -153,7 +153,7 @@ let package = Package(
                 .linkedLibrary("cudnn", .when(traits: ["CUDA"])),
             ]
         ),
-        
+
         .testTarget(
             name: "CmlxTests",
             dependencies: ["Cmlx"]
@@ -167,7 +167,7 @@ let package = Package(
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
-                .define("CUDA_AVAILABLE", .when(traits: ["CUDA"]))
+                .define("CUDA_AVAILABLE", .when(traits: ["CUDA"])),
             ]
         ),
         .target(
