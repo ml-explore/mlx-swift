@@ -2813,3 +2813,18 @@ public func unflatten(
     mlx_unflatten(&result, a.ctx, axis.int32, shape.map { Int32($0) }, shape.count, stream.ctx)
     return MLXArray(result)
 }
+
+/// Force an array to be row contiguous. Copy if necessary.
+///
+/// - Parameters:
+///   - a: input array
+///   - allowColMajor: consider column major as contiguous and don’t copy
+///   - stream: stream or device to evaluate on
+/// - Returns: the row or col contiguous output.
+public func contiguous(
+    _ a: MLXArray, allowColMajor: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_contiguous(&result, a.ctx, allowColMajor, stream.ctx)
+    return MLXArray(result)
+}
