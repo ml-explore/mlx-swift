@@ -99,7 +99,8 @@ mkdir build
 cd build
 cmake .. -G Ninja
 ninja
-./example
+./example1
+./tutorial
 ```
 
 ## Contributing
