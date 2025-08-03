@@ -93,6 +93,9 @@ let package = Package(
                 // bnns instead of simd (accelerate)
                 "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
                 "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
+                
+                // exclude CUDA backend files (not supported in this build)
+                "mlx/mlx/backend/cuda",
             ],
 
             cSettings: [
