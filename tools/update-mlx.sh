@@ -49,6 +49,7 @@ make \
     steel_gemm_fused \
     steel_gemm_gather \
     steel_gemm_masked \
+    steel_gemm_segmented \
     steel_gemm_splitk \
     ternary \
     ternary_ops \

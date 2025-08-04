@@ -247,7 +247,7 @@ int mlx_array_item_float64(double* res, const mlx_array arr);
 /**
  * Access the value of a scalar array.
  */
-int mlx_array_item_complex64(float _Complex* res, const mlx_array arr);
+int mlx_array_item_complex64(void* res, const mlx_array arr);
 
 #ifdef HAS_FLOAT16
 /**
@@ -319,10 +319,10 @@ const float* mlx_array_data_float32(const mlx_array arr);
  */
 const double* mlx_array_data_float64(const mlx_array arr);
 /**
- * Returns a pointer to the array data, cast to `_Complex*`.
+ * Returns a pointer to the array data, cast to `void*`.
  * Array must be evaluated, otherwise returns NULL.
  */
-const float _Complex* mlx_array_data_complex64(const mlx_array arr);
+const void* mlx_array_data_complex64(const mlx_array arr);
 
 #ifdef HAS_FLOAT16
 /**
