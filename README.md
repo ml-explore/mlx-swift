@@ -32,13 +32,13 @@ including:
   using a variety of LLMs available on the Hugging Face hub.
 
 The [MLX Swift Examples repo](https://github.com/ml-explore/mlx-swift-examples)
-contains the complete code and documentation for these examples, including 
+contains the complete code and documentation for these examples, including
 [guidelines on porting models](https://swiftpackageindex.com/ml-explore/mlx-swift-examples/main/documentation/mlxlmcommon/porting)
 from MLX Python.
 
 ## Installation
 
-The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake install is also provided. 
+The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake install is also provided.
 
 More details are in the [documentation](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/install).
 
@@ -65,7 +65,7 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXOptimizers", package: "mlx-swift")]
 ```
 
-> [!Note] 
+> [!Note]
 > SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done
 > via Xcode.
 
@@ -74,7 +74,7 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 Although `SwiftPM` (command line) cannot build the Metal shaders, `xcodebuild` can and
 it can be used to do command line builds:
 
-```
+```shell
 # build and run tests
 xcodebuild test -scheme mlx-swift-Package -destination 'platform=OS X'
 
@@ -99,10 +99,11 @@ mkdir build
 cd build
 cmake .. -G Ninja
 ninja
-./example
+./example1
+./tutorial
 ```
 
-## Contributing 
+## Contributing
 
 Check out the [contribution guidelines](CONTRIBUTING.md) for more information
 on contributing to MLX. See the
