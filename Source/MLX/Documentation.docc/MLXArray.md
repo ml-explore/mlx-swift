@@ -25,7 +25,7 @@ let a2 = sqrt(a1 * 3)
 
 ## Thread Safety
 
-> `MXArray` is not thread safe.
+> `MLXArray` is not thread safe.
 
 Although `MLXArray` looks like a normal multidimensional array, it is actually far more
 sophisticated.  It actually holds a promise for future computations, see <doc:lazy-evaluation>
@@ -44,9 +44,9 @@ to create `c` in one thread and consume/evaluate it in another.
 
 ## Memory Safety
 
-> `MXArray` is not memory safe.
+> `MLXArray` is not memory safe.
 
-Unlike swift `Array`, `MXArray` is not memory safe -- use caution when using
+Unlike swift `Array`, `MLXArray` is not memory safe -- use caution when using
 indexing operators.
 
 For example:
