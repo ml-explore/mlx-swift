@@ -29,7 +29,7 @@ open class OptimizerBase<State: Updatable>: Optimizer {
     /// Stores a `State` value in a structure that matches the model parameters
     var stateStorage = NestedDictionary<String, State>()
 
-    /// Subclasses must implment this to create a new `State` when needed.  This is called
+    /// Subclasses must implement this to create a new `State` when needed.  This is called
     /// for each parameter in the model.
     ///
     /// For example:

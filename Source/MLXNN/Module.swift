@@ -89,7 +89,7 @@ public typealias ModuleItem = NestedItem<String, ModuleValue>
 ///
 /// All mutation of parameters and modules must go through ``update(parameters:)`` and
 /// ``update(modules:)``.  This is important because `Module` uses reflection (`Mirror`) to
-/// find paramters and modules but caches the values.  These two methods make sure the cache
+/// find parameters and modules but caches the values.  These two methods make sure the cache
 /// is kept up-to-date.
 ///
 /// ### See Also
@@ -868,7 +868,7 @@ open class Module {
     ///
     /// - Parameters:
     ///   - recursive: if `true` this will freeze the parameters of child `Module` recursively
-    ///   - keys: optional keys tofreezeunfreeze -- if unspecified, will apply to all
+    ///   - keys: optional keys to freeze -- if unspecified, will apply to all
     ///   - strict: if `true` validate that the passed keys exist
     ///
     /// ### See Also
@@ -925,7 +925,7 @@ open class Module {
         }
     }
 
-    /// Set of property names that are frozen.  Maniupulated via
+    /// Set of property names that are frozen.  Manipulated via
     /// ``freeze(recursive:keys:strict:)`` and
     /// ``unfreeze(recursive:keys:strict:)``.
     open func noGrad() -> Set<String> {

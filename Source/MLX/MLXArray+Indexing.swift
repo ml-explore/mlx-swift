@@ -1436,7 +1436,7 @@ public struct MLXSlice: Equatable, CustomStringConvertible, Sendable {
     private let _end: Int32?
     private let _stride: Int32?
 
-    /// Intialize an MLXSlice with its optional parameters.
+    /// Initialize an MLXSlice with its optional parameters.
     ///
     /// This is typically caled by the range expressions which implement ``MLXArrayIndex``:
     ///

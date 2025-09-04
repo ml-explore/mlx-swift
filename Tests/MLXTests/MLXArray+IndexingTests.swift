@@ -69,7 +69,7 @@ class MLXArrayIndexingTests: XCTestCase {
     }
 
     func testArraySubscriptFromEnd() {
-        // allow negative indicies to indicate distance from end (only for int indicies)
+        // allow negative indices to indicate distance from end (only for int indices)
         let a = MLXArray(0 ..< 12, [3, 4])
         let s = a[-1, -2]
         XCTAssertEqual(s.ndim, 0)
