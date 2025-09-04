@@ -516,7 +516,9 @@ open class Module {
                 break
 
             default:
-                throw UpdateError.incompatibleItems(path: path, modules: modulePath, item: item.description, value: String(describing:(value.mapValues { $0.shape.description })))
+                throw UpdateError.incompatibleItems(
+                    path: path, modules: modulePath, item: item.description,
+                    value: String(describing: (value.mapValues { $0.shape.description })))
             }
         }
 
@@ -717,7 +719,9 @@ open class Module {
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
 
             default:
-                throw UpdateError.incompatibleItems(path: path, modules: modulePath, item: item.description, value: value.description)
+                throw UpdateError.incompatibleItems(
+                    path: path, modules: modulePath, item: item.description,
+                    value: value.description)
             }
         }
 
@@ -1565,8 +1569,8 @@ enum UpdateError: Error {
     case unableToSet(String)
     case unableToCast(String)
     case unhandledKeys(path: [String], modules: [String], keys: [String])
-    case settingArrayWithModule(path: [String], modules:[String])
-    case incompatibleItems(path: [String], modules:[String], item: String, value:String)
+    case settingArrayWithModule(path: [String], modules: [String])
+    case incompatibleItems(path: [String], modules: [String], item: String, value: String)
     case unexpectedStructure(key: String, item: String)
 }
 
@@ -1594,7 +1598,7 @@ extension UpdateError: LocalizedError {
         case .unhandledKeys(let path, let modules, let keys):
             return
                 "Unhandled keys \(keys) in \(path.joined(separator: ".")) in \(modules.joined(separator: "."))"
-        case .settingArrayWithModule(let path, let  modules):
+        case .settingArrayWithModule(let path, let modules):
             return
                 "Unable to set \(path.joined(separator: ".")) on \(modules.joined(separator: ".")): parameters (MLXArray) cannot be updated with a Module"
         case .incompatibleItems(let path, let modules, let item, let value):
