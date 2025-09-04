@@ -160,7 +160,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
 /// - ``quantize(model:groupSize:bits:predicate:)`` -- swaps all the linear layers of the module
 ///     with `QuantizedLinear` ones
 ///
-/// Please see the disucssion in ``Linear`` for considerations when replacing layers.
+/// Please see the discussion in ``Linear`` for considerations when replacing layers.
 ///
 /// ### See Also
 /// - ``init(weight:bias:groupSize:bits:)``
@@ -278,7 +278,7 @@ open class QuantizedLinear: Linear, Quantized {
 
     /// Replace ``Linear`` layers with `QuantizedLinear`.
     ///
-    /// Please see the disucssion in ``Linear`` for considerations when replacing layers.
+    /// Please see the discussion in ``Linear`` for considerations when replacing layers.
     ///
     /// - Parameters:
     ///   - model: the model to update

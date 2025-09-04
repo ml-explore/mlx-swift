@@ -19,7 +19,7 @@ public final class MLXArray {
 
     /// return the equivalent of a `.none` MLXArray (for the C API).
     ///
-    /// Not called `.none` to avoid abiguity with `Optional`.  This can be used
+    /// Not called `.none` to avoid ambiguity with `Optional`.  This can be used
     /// to pass an optional ``MLXArray`` as a non-optional (but possibly empty/null)
     /// `mlx_array`:
     ///
@@ -486,6 +486,7 @@ public final class MLXArray {
     /// Create a new `MLXArray` with the contents converted to the given ``DType``.
     /// - Parameters:
     ///   - type: type to convert to
+    ///   - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:conversion>
@@ -499,6 +500,7 @@ public final class MLXArray {
     /// Create a new `MLXArray` with the contents converted to the given type, e.g. `Float.self`.
     /// - Parameters:
     ///   - type: type to convert to
+    ///   - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:conversion>
@@ -571,7 +573,7 @@ public final class MLXArray {
 
     /// Used to apply update at given indices.
     ///
-    /// An assignment through indices `array[indicies]` will produce
+    /// An assignment through indices `array[indices]` will produce
     /// a result where each index will only be updated once.  For example:
     ///
     /// ```swift
@@ -588,7 +590,7 @@ public final class MLXArray {
     /// assertEqual(a2, MLXArray([2, 2]))
     /// ```
     ///
-    /// This is because the assignment through `array[indicies]` writes
+    /// This is because the assignment through `array[indices]` writes
     /// a sub-array of `array` rather than performing the operation on each
     /// resolved index.
     ///
