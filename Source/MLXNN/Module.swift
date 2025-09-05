@@ -516,9 +516,9 @@ open class Module {
                 break
 
             default:
-                fatalError(
-                    "Unable to set \(path.joined(separator: ".")) on \(modulePath.joined(separator: ".")): \(item) not compatible with \(value.mapValues { $0.shape.description })"
-                )
+                throw UpdateError.incompatibleItems(
+                    path: path, modules: modulePath, item: item.description,
+                    value: String(describing: (value.mapValues { $0.shape.description })))
             }
         }
 
@@ -630,9 +630,7 @@ open class Module {
 
             switch (item, value) {
             case (.value(.parameters), .value):
-                fatalError(
-                    "Unable to set \(path.joined(separator: ".")) on \(modulePath.joined(separator: ".")): parameters (MLXArray) cannot be updated with a Module"
-                )
+                throw UpdateError.settingArrayWithModule(path: path, modules: modulePath)
 
             case (.array(let items), .array(let values)):
                 // Could be:
@@ -689,9 +687,7 @@ open class Module {
                         }
                     }
                 default:
-                    fatalError(
-                        "Unexpected structure for \(key) on \(self): not @ModuleInfo var modules = [...]"
-                    )
+                    throw UpdateError.unexpectedStructure(key: key, item: self.description)
                 }
 
             case (.dictionary, .dictionary(let values)):
@@ -723,9 +719,9 @@ open class Module {
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
 
             default:
-                fatalError(
-                    "Unable to set \(path.joined(separator: ".")) on \(modulePath.joined(separator: ".")): \(item) not compatible with \(value)"
-                )
+                throw UpdateError.incompatibleItems(
+                    path: path, modules: modulePath, item: item.description,
+                    value: value.description)
             }
         }
 
@@ -1573,6 +1569,9 @@ enum UpdateError: Error {
     case unableToSet(String)
     case unableToCast(String)
     case unhandledKeys(path: [String], modules: [String], keys: [String])
+    case settingArrayWithModule(path: [String], modules: [String])
+    case incompatibleItems(path: [String], modules: [String], item: String, value: String)
+    case unexpectedStructure(key: String, item: String)
 }
 
 extension UpdateError: LocalizedError {
@@ -1599,6 +1598,15 @@ extension UpdateError: LocalizedError {
         case .unhandledKeys(let path, let modules, let keys):
             return
                 "Unhandled keys \(keys) in \(path.joined(separator: ".")) in \(modules.joined(separator: "."))"
+        case .settingArrayWithModule(let path, let modules):
+            return
+                "Unable to set \(path.joined(separator: ".")) on \(modules.joined(separator: ".")): parameters (MLXArray) cannot be updated with a Module"
+        case .incompatibleItems(let path, let modules, let item, let value):
+            return
+                "Unable to set \(path.joined(separator: ".")) on \(modules.joined(separator: ".")): \(item) not compatible with \(value)"
+        case .unexpectedStructure(let key, let item):
+            return "Unexpected structure for \(key) on \(item): not @ModuleInfo var modules = [...]"
+
         }
     }
 }
