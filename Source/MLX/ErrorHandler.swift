@@ -216,6 +216,12 @@ public func withError<R>(_ body: () async throws -> R) async throws -> R {
 /// Error type for caught errors during ``withError(_:)-6g4wn``.
 public enum MLXError: Error {
     case caught(String)
+
+    var localizedDescription: String {
+        switch self {
+        case .caught(let message): message
+        }
+    }
 }
 
 /// Boxed error type usable with ``withError(_:)-2wfiu``.
