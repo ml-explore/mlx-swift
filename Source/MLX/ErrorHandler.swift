@@ -219,7 +219,7 @@ public enum MLXError: Error {
 
     var localizedDescription: String {
         switch self {
-        case .caught(let message): message
+        case .caught(let message): "MLX Error: \(message)"
         }
     }
 }
