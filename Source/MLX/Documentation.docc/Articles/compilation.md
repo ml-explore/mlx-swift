@@ -232,7 +232,7 @@ is used without seeing any updates or making any changes to state.
 To make this work as expected:
 
 ```swift
-// now cature the random state and the random numbers should change per call
+// now capture the random state and the random numbers should change per call
 let c2 = compile(inputs: [MLXRandom.globalState], outputs: [MLXRandom.globalState], f)
 
 let c2a = c2(bias)

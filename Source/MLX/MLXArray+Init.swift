@@ -20,7 +20,7 @@ private func shapePrecondition(shape: [Int]?, byteCount: Int, type: DType) {
 
 extension MLXArray {
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
     ///
     /// ```swift
     /// let a = MLXArray(Int32(7))
@@ -32,7 +32,7 @@ extension MLXArray {
         self.init(mlx_array_new_int(value))
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
     /// a `Dtype.int32`.
     ///
     /// ```swift
@@ -53,7 +53,7 @@ extension MLXArray {
         self.init(mlx_array_new_int(Int32(value)))
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `Int` as
     /// a `Dtype.int64`.
     ///
     /// ```swift
@@ -71,7 +71,7 @@ extension MLXArray {
             })
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Bool`.
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from a `Bool`.
     ///
     /// ```swift
     /// let a = MLXArray(true)
@@ -83,7 +83,7 @@ extension MLXArray {
         self.init(mlx_array_new_bool(value))
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Float`.
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from a `Float`.
     ///
     /// ```swift
     /// let a = MLXArray(35.1)
@@ -95,7 +95,7 @@ extension MLXArray {
         self.init(mlx_array_new_float(value))
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `Double` as
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from a `Double` as
     /// a `Dtype.float64`.
     ///
     /// ```swift
@@ -111,7 +111,7 @@ extension MLXArray {
             })
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value.
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value.
     ///
     /// ```swift
     /// let a = MLXArray(UInt64(7))
@@ -134,7 +134,7 @@ extension MLXArray {
         }
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` with a ``DType/bfloat16``
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` with a ``DType/bfloat16``
     /// from a `Float32`.
     ///
     /// ```swift
@@ -152,7 +152,7 @@ extension MLXArray {
         self.init(v_bfloat)
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from a `HasDType` value
     /// with a conversion to a given ``DType``.
     ///
     /// ```swift
@@ -262,7 +262,7 @@ extension MLXArray {
         }
     }
 
-    /// Initalizer allowing creation of `MLXArray` from an array of `HasDType` values with
+    /// Initializer allowing creation of `MLXArray` from an array of `HasDType` values with
     /// an optional shape.
     ///
     /// ```swift
@@ -282,7 +282,7 @@ extension MLXArray {
             })
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
     /// a `Dtype.int32`.
     ///
     /// ```swift
@@ -312,7 +312,7 @@ extension MLXArray {
                 })
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
     /// a `Dtype.int64`.
     ///
     /// ```swift
@@ -335,7 +335,7 @@ extension MLXArray {
                 })
     }
 
-    /// Initalizer allowing creation of `MLXArray` from an array of `Double` values with
+    /// Initializer allowing creation of `MLXArray` from an array of `Double` values with
     /// an optional shape.
     ///
     /// Note: this converts the types to `Float`, which is a type representable in `MLXArray`
@@ -366,7 +366,7 @@ extension MLXArray {
         fatalError("unavailable")
     }
 
-    /// Initalizer allowing creation of `MLXArray` from a sequence of `HasDType` values with
+    /// Initializer allowing creation of `MLXArray` from a sequence of `HasDType` values with
     /// an optional shape.
     ///
     /// ```swift
@@ -391,7 +391,7 @@ extension MLXArray {
         }
     }
 
-    /// Initalizer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
+    /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `[Int]` as
     /// a `Dtype.int64`.
     ///
     /// ```swift
@@ -413,7 +413,7 @@ extension MLXArray {
             })
     }
 
-    /// Initalizer allowing creation of `MLXArray` from a buffer of `HasDType` values with
+    /// Initializer allowing creation of `MLXArray` from a buffer of `HasDType` values with
     /// an optional shape.
     ///
     /// ```swift
@@ -433,7 +433,7 @@ extension MLXArray {
                 ptr.baseAddress!, shape.asInt32, shape.count.int32, T.dtype.cmlxDtype))
     }
 
-    /// Initalizer allowing creation of `MLXArray` from a `UnsafeRawBufferPointer` filled
+    /// Initializer allowing creation of `MLXArray` from a `UnsafeRawBufferPointer` filled
     /// with bytes of `HasDType` values with an optional shape.
     ///
     /// ```swift
@@ -450,7 +450,7 @@ extension MLXArray {
         self.init(buffer, shape)
     }
 
-    /// Initalizer allowing creation of `MLXArray` from a `Data` filled with bytes of `HasDType` values with
+    /// Initializer allowing creation of `MLXArray` from a `Data` filled with bytes of `HasDType` values with
     /// an optional shape.
     ///
     /// ```swift
@@ -471,7 +471,7 @@ extension MLXArray {
             })
     }
 
-    /// Initalizer allowing creation of `MLXArray` from a `Data`  buffer values with
+    /// Initializer allowing creation of `MLXArray` from a `Data`  buffer values with
     /// an optional shape and an explicit DType.
     /// ### See Also
     /// - <doc:initialization>
@@ -517,7 +517,7 @@ extension MLXArray: ExpressibleByArrayLiteral {
     //
     // We expect r to have a dtype of float16.  See ``ScalarOrArray``.
 
-    /// Initalizer allowing creation of 1d `MLXArray` from an array literal.
+    /// Initializer allowing creation of 1d `MLXArray` from an array literal.
     ///
     /// ```swift
     /// let a: MLXArray = [1, 2, 3]

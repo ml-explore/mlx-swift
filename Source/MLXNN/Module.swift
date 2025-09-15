@@ -89,7 +89,7 @@ public typealias ModuleItem = NestedItem<String, ModuleValue>
 ///
 /// All mutation of parameters and modules must go through ``update(parameters:)`` and
 /// ``update(modules:)``.  This is important because `Module` uses reflection (`Mirror`) to
-/// find paramters and modules but caches the values.  These two methods make sure the cache
+/// find parameters and modules but caches the values.  These two methods make sure the cache
 /// is kept up-to-date.
 ///
 /// ### See Also
@@ -387,6 +387,7 @@ open class Module {
         static public let noUnusedKeys = VerifyUpdate(rawValue: 1 << 0)
 
         static public let allModelKeysSet = VerifyUpdate(rawValue: 1 << 1)
+        static public let shapeMismatch = VerifyUpdate(rawValue: 1 << 2)
 
         static public let all = VerifyUpdate(rawValue: -1)
         static public let none = VerifyUpdate([])
@@ -433,9 +434,16 @@ open class Module {
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:)``
     @discardableResult
-    open func update(parameters: ModuleParameters, verify: VerifyUpdate) throws -> Self {
+    open func update(
+        parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
+        modulePath: [String] = []
+    ) throws -> Self {
 
-        func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, MLXArray>) throws {
+        let modulePath = modulePath + [describeType(self)]
+
+        func apply(
+            key: String, path: [String], _ item: ModuleItem, _ value: NestedItem<String, MLXArray>
+        ) throws {
             if case .none = value, !verify.contains(.allModelKeysSet) {
                 return
             }
@@ -447,59 +455,70 @@ open class Module {
 
             switch (item, value) {
             case (.value(.parameters(let p)), .value(let newArray)):
-                if verify.contains(.all), p.shape != newArray.shape {
+                if verify.contains(.shapeMismatch), p.shape != newArray.shape {
                     throw UpdateError.mismatchedSize(
-                        key: key, expectedShape: p.shape, actualShape: newArray.shape)
+                        path: path, modules: modulePath, expectedShape: p.shape,
+                        actualShape: newArray.shape)
                 }
                 p._updateInternal(newArray)
 
             case (.value(.parameters(let p)), .none):
                 if Self.parameterIsValid(key) {
-                    throw UpdateError.keyNotFound(base: describeType(self), key: key)
+                    throw UpdateError.keyNotFound(path: path, modules: modulePath)
                 } else {
                     // ignore it -- this isn't a parameter that requires update
                 }
 
             case (.array(let array), .array(let values)):
                 for (i, (arrayItem, valueItem)) in zip(array, values).enumerated() {
-                    try apply(key: "\(key).\(i)", arrayItem, valueItem)
+                    try apply(key: "\(key).\(i)", path: path + ["\(i)"], arrayItem, valueItem)
                 }
                 if verify.contains(.allModelKeysSet) {
                     for i in values.count ..< array.count {
-                        try apply(key: "\(key).\(i)", array[i], .none)
+                        try apply(key: "\(key).\(i)", path: path + ["\(i)"], array[i], .none)
                     }
                 }
 
             case (.array(let array), .none):
                 for (i, arrayItem) in array.enumerated() {
-                    try apply(key: "\(key).\(i)", arrayItem, .none)
+                    try apply(key: "\(key).\(i)", path: path + ["\(i)"], arrayItem, .none)
                 }
 
             case (.dictionary(let dictionary), .dictionary(let values)):
                 for (dictionaryKey, dictionaryItem) in dictionary {
+                    let newKey = "\(key).\(dictionaryKey)"
+                    let path = path + [dictionaryKey]
                     if let valueItem = values[key] {
-                        try apply(key: "\(key).\(dictionaryKey)", dictionaryItem, valueItem)
+                        try apply(key: newKey, path: path, dictionaryItem, valueItem)
                     } else if verify.contains(.allModelKeysSet) {
-                        try apply(key: "\(key).\(dictionaryKey)", dictionaryItem, .none)
+                        try apply(key: newKey, path: path, dictionaryItem, .none)
                     }
                 }
 
             case (.dictionary(let dictionary), .none):
                 for (dictionaryKey, dictionaryItem) in dictionary {
-                    try apply(key: "\(key).\(dictionaryKey)", dictionaryItem, .none)
+                    let newKey = "\(key).\(dictionaryKey)"
+                    let path = path + [dictionaryKey]
+                    try apply(key: newKey, path: path, dictionaryItem, .none)
                 }
 
             case (.value(.module(let module)), .dictionary(let values)):
-                try module.update(parameters: NestedDictionary(values: values), verify: verify)
+                try module.update(
+                    parameters: NestedDictionary(values: values), verify: verify, path: path,
+                    modulePath: modulePath)
 
             case (.value(.module(let module)), .none):
-                try module.update(parameters: NestedDictionary(), verify: verify)
+                try module.update(
+                    parameters: NestedDictionary(), verify: verify, path: path,
+                    modulePath: modulePath)
 
             case (.none, .none), (.value(.none), .none), (.value(.other(_)), .none):
                 break
 
             default:
-                fatalError("Unable to set \(key) on \(self): \(item) not compatible with \(value)")
+                throw UpdateError.incompatibleItems(
+                    path: path, modules: modulePath, item: item.description,
+                    value: String(describing: (value.mapValues { $0.shape.description })))
             }
         }
 
@@ -507,15 +526,15 @@ open class Module {
         for (key, item) in items() {
             if let value = parameters[key] {
                 processed.remove(key)
-                try apply(key: key, item, value)
+                try apply(key: key, path: path + [key], item, value)
             } else if verify.contains(.allModelKeysSet) {
-                try apply(key: key, item, .none)
+                try apply(key: key, path: path + [key], item, .none)
             }
         }
 
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
             throw UpdateError.unhandledKeys(
-                base: describeType(self), keys: processed.sorted())
+                path: path, modules: modulePath, keys: processed.sorted())
         }
 
         return self
@@ -594,9 +613,16 @@ open class Module {
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
     @discardableResult
-    open func update(modules: ModuleChildren, verify: VerifyUpdate) throws -> Self {
+    open func update(
+        modules: ModuleChildren, verify: VerifyUpdate, path: [String] = [],
+        modulePath: [String] = []
+    ) throws -> Self {
 
-        func apply(key: String, _ item: ModuleItem, _ value: NestedItem<String, Module>) throws {
+        let modulePath = modulePath + [describeType(self)]
+
+        func apply(
+            key: String, path: [String], _ item: ModuleItem, _ value: NestedItem<String, Module>
+        ) throws {
             // item: single item from `items()`
             // value: single item with matching structure from `children()`
             //
@@ -604,9 +630,7 @@ open class Module {
 
             switch (item, value) {
             case (.value(.parameters), .value):
-                fatalError(
-                    "Unable to set \(key) on \(self): parameters (MLXArray) cannot be updated with a Module"
-                )
+                throw UpdateError.settingArrayWithModule(path: path, modules: modulePath)
 
             case (.array(let items), .array(let values)):
                 // Could be:
@@ -634,17 +658,17 @@ open class Module {
                                 default:
                                     // otherwise we don't know how to update it
                                     throw UpdateError.unableToCollectModulesFromContainer(
-                                        base: describeType(self), key: key)
+                                        path: path, modules: modulePath)
                                 }
                             } else {
                                 // past the end of items
                                 throw UpdateError.unableToCollectModulesFromContainer(
-                                    base: describeType(self), key: key)
+                                    path: path, modules: modulePath)
                             }
 
                         default:
                             throw UpdateError.unableToCollectModulesFromContainer(
-                                base: describeType(self), key: key)
+                                path: path, modules: modulePath)
                         }
                     }
 
@@ -663,9 +687,7 @@ open class Module {
                         }
                     }
                 default:
-                    fatalError(
-                        "Unexpected structure for \(key) on \(self): not @ModuleInfo var modules = [...]"
-                    )
+                    throw UpdateError.unexpectedStructure(key: key, item: self.description)
                 }
 
             case (.dictionary, .dictionary(let values)):
@@ -678,7 +700,7 @@ open class Module {
                         newModules[item.key] = module
                     default:
                         throw UpdateError.unableToCollectModulesFromContainer(
-                            base: describeType(self), key: key)
+                            path: path, modules: modulePath)
                     }
                 }
 
@@ -697,7 +719,9 @@ open class Module {
                 try module.update(modules: NestedDictionary(values: values), verify: verify)
 
             default:
-                fatalError("Unable to set \(key) on \(self): \(item) not compatible with \(value)")
+                throw UpdateError.incompatibleItems(
+                    path: path, modules: modulePath, item: item.description,
+                    value: value.description)
             }
         }
 
@@ -705,13 +729,13 @@ open class Module {
         for (key, item) in items() {
             if let value = modules[key] {
                 processed.remove(key)
-                try apply(key: key, item, value)
+                try apply(key: key, path: path + [key], item, value)
             }
         }
 
         if verify.contains(.noUnusedKeys) && !processed.isEmpty {
             throw UpdateError.unhandledKeys(
-                base: describeType(self), keys: processed.sorted())
+                path: path, modules: modulePath, keys: processed.sorted())
         }
 
         // rebuild the caches because the modules may have changed
@@ -806,7 +830,7 @@ open class Module {
                 let localKeys = Set(localKeys)
                 for key in keys {
                     if !localKeys.contains(key) {
-                        throw UpdateError.keyNotFound(base: describeType(self), key: key)
+                        throw UpdateError.keyNotFound(path: [key], modules: [describeType(self)])
                     }
                 }
             }
@@ -840,7 +864,7 @@ open class Module {
     ///
     /// - Parameters:
     ///   - recursive: if `true` this will freeze the parameters of child `Module` recursively
-    ///   - keys: optional keys tofreezeunfreeze -- if unspecified, will apply to all
+    ///   - keys: optional keys to freeze -- if unspecified, will apply to all
     ///   - strict: if `true` validate that the passed keys exist
     ///
     /// ### See Also
@@ -897,7 +921,7 @@ open class Module {
         }
     }
 
-    /// Set of property names that are frozen.  Maniupulated via
+    /// Set of property names that are frozen.  Manipulated via
     /// ``freeze(recursive:keys:strict:)`` and
     /// ``unfreeze(recursive:keys:strict:)``.
     open func noGrad() -> Set<String> {
@@ -1537,36 +1561,52 @@ private protocol TypeErasedSetterProvider {
 }
 
 enum UpdateError: Error {
-    case unableToCollectModulesFromContainer(base: String, key: String)
+    case unableToCollectModulesFromContainer(path: [String], modules: [String])
     case mismatchedContainers(base: String, key: String)
-    case mismatchedSize(key: String, expectedShape: [Int], actualShape: [Int])
-    case keyNotFound(base: String, key: String)
+    case mismatchedSize(path: [String], modules: [String], expectedShape: [Int], actualShape: [Int])
+    case keyNotFound(path: [String], modules: [String])
     case needModuleInfo(String)
     case unableToSet(String)
     case unableToCast(String)
-    case unhandledKeys(base: String, keys: [String])
+    case unhandledKeys(path: [String], modules: [String], keys: [String])
+    case settingArrayWithModule(path: [String], modules: [String])
+    case incompatibleItems(path: [String], modules: [String], item: String, value: String)
+    case unexpectedStructure(key: String, item: String)
 }
 
 extension UpdateError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .unableToCollectModulesFromContainer(let base, let key):
-            return "Unable to collect modules from container: \(base) \(key)"
+        case .unableToCollectModulesFromContainer(let path, let modules):
+            return
+                "Unable to collect modules from container: \(path.joined(separator: ".")) in \(modules.joined(separator: "."))"
         case .mismatchedContainers(let base, let key):
             return "Mismatched containers: \(base) \(key)"
-        case let .mismatchedSize(key: key, expectedShape: expectedShape, actualShape: actualShape):
+        case let .mismatchedSize(
+            path, modules, expectedShape: expectedShape, actualShape: actualShape):
             return
-                "Mismatched parameter \(key) shape. Actual \(actualShape), expected \(expectedShape)"
-        case .keyNotFound(let base, let key):
-            return "Key \(key) not found in \(base)"
+                "Mismatched parameter \(path.joined(separator: ".")) in \(modules.joined(separator: ".")) shape. Actual \(actualShape), expected \(expectedShape)"
+        case .keyNotFound(let path, let modules):
+            return
+                "Key \(path.joined(separator: ".")) not found in \(modules.joined(separator: "."))"
         case .needModuleInfo(let string):
             return string
         case .unableToSet(let string):
             return string
         case .unableToCast:
             return "Unable to cast value"
-        case .unhandledKeys(let base, let keys):
-            return "Unhandled keys \(keys) in \(base)"
+        case .unhandledKeys(let path, let modules, let keys):
+            return
+                "Unhandled keys \(keys) in \(path.joined(separator: ".")) in \(modules.joined(separator: "."))"
+        case .settingArrayWithModule(let path, let modules):
+            return
+                "Unable to set \(path.joined(separator: ".")) on \(modules.joined(separator: ".")): parameters (MLXArray) cannot be updated with a Module"
+        case .incompatibleItems(let path, let modules, let item, let value):
+            return
+                "Unable to set \(path.joined(separator: ".")) on \(modules.joined(separator: ".")): \(item) not compatible with \(value)"
+        case .unexpectedStructure(let key, let item):
+            return "Unexpected structure for \(key) on \(item): not @ModuleInfo var modules = [...]"
+
         }
     }
 }

@@ -555,12 +555,14 @@ class ModuleTests: XCTestCase {
                 verify: .all)
         ) { error in
             guard let error = error as? UpdateError,
-                case let .keyNotFound(base: base, key: key) = error
+                case let .keyNotFound(path, modules) = error
             else {
                 XCTFail("Expected to fail with UpdateError.keyNotFound, but got: \(error)")
                 return
             }
-            XCTAssertEqual(key, "bias")
+            // should be a.bias or b.bias (random order as it is a dict)
+            XCTAssertEqual(path.last, "bias")
+            XCTAssertEqual(modules, ["M", "Linear"])
         }
     }
 
@@ -585,7 +587,7 @@ class ModuleTests: XCTestCase {
         ) { error in
             guard let error = error as? UpdateError,
                 case let .mismatchedSize(
-                    key: key, expectedShape: expectedShape, actualShape: actualShape) =
+                    path, modules, expectedShape: expectedShape, actualShape: actualShape) =
                     error
             else {
                 XCTFail("Expected to fail with UpdateError.mismatchedSize, but got: \(error)")
@@ -593,10 +595,10 @@ class ModuleTests: XCTestCase {
             }
             XCTAssertEqual(expectedShape, [2, 1])
             XCTAssertEqual(actualShape, [1, 2])
-            XCTAssertEqual(key, "weight")
+            XCTAssertEqual(path, ["weight"])
             XCTAssertEqual(
                 error.errorDescription,
-                "Mismatched parameter weight shape. Actual [1, 2], expected [2, 1]")
+                "Mismatched parameter weight in Linear shape. Actual [1, 2], expected [2, 1]")
         }
     }
 
