@@ -77,7 +77,7 @@ let package = Package(
                 "mlx/mlx/backend/no_gpu",
                 "mlx/mlx/backend/no_cpu",
                 "mlx/mlx/backend/metal/no_metal.cpp",
-                
+
                 // special handling for cuda -- we need to keep one file:
                 // mlx/mlx/backend/cuda/no_cuda.cpp
 
