@@ -997,8 +997,36 @@ public func degrees(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
     return MLXArray(result)
 }
 
-public enum QuantizationMode: String {
+/// Quantization mode for matrix quantization operations.
+///
+/// Defines the method used to quantize weight matrices in MLX operations.
+/// Different modes provide different trade-offs between memory usage,
+/// computational efficiency, and numerical precision.
+public enum QuantizationMode: String, Sendable {
+    /// Standard affine quantization mode.
+    ///
+    /// Uses linear quantization with scale and bias parameters per group of elements.
+    /// This is the most common quantization method that maps floating-point values
+    /// to a fixed range of integers using the formula:
+    ///
+    /// ```
+    /// quantized_value = (original_value / scale) + bias
+    /// ```
+    ///
+    /// Each group of elements (typically 64) shares the same scale and bias values,
+    /// providing a good balance between compression and accuracy for most use cases.
     case affine
+
+    /// MXFP4 (Microscaling Floating Point 4-bit) quantization mode.
+    ///
+    /// A specialized 4-bit floating-point format designed for efficient neural network
+    /// inference. MXFP4 uses a shared exponent across groups of values with individual
+    /// 4-bit mantissas, providing better dynamic range than standard integer quantization
+    /// for certain workloads.
+    ///
+    /// This format is particularly effective for transformer models and other architectures
+    /// where preserving the dynamic range of activations and weights is critical for
+    /// maintaining model accuracy.
     case mxfp4
 }
 
