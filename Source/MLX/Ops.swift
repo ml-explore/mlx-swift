@@ -1021,13 +1021,13 @@ public enum QuantizationMode: String {
 /// - ``quantized(_:groupSize:bits:stream:)``
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
 public func dequantized(
-    _ w: MLXArray, scales: MLXArray, biases: MLXArray, groupSize: Int = 64, bits: Int = 4,
+    _ w: MLXArray, scales: MLXArray, biases: MLXArray?, groupSize: Int = 64, bits: Int = 4,
     mode: QuantizationMode = .affine,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_dequantize(
-        &result, w.ctx, scales.ctx, biases.ctx, groupSize.int32, bits.int32,
+        &result, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx, groupSize.int32, bits.int32,
         mode.rawValue,
         stream.ctx)
     return MLXArray(result)
@@ -1285,7 +1285,7 @@ public func gatherMatmul(
 ///   - scales: The scales to use per `groupSize` elements of `w`
 ///   - biases: The biases to use per `groupSize` elements of `w`
 ///   - lhsIndices: Optional indices for gathering from the left-hand side matrix
-///   - rhsIndices: Optional indices for gathering from the right-hand side matrix  
+///   - rhsIndices: Optional indices for gathering from the right-hand side matrix
 ///   - transpose: Whether to transpose the weight matrix `w`. Default is `true`
 ///   - groupSize: The size of the group in `w` that shares a scale and bias. Default is `64`
 ///   - bits: The number of bits occupied by each element in `w`. Default is `4`
@@ -1297,7 +1297,7 @@ public func gatherMatmul(
 /// - <doc:arithmetic>
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
 public func gatherQuantizedMatmul(
-    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray,
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
     transpose: Bool = true, groupSize: Int = 64, bits: Int = 4,
     mode: QuantizationMode = .affine,
@@ -1308,7 +1308,7 @@ public func gatherQuantizedMatmul(
 
     mlx_gather_qmm(
         &result,
-        x.ctx, w.ctx, scales.ctx, biases.ctx, (lhsIndices ?? .mlxNone).ctx,
+        x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx, (lhsIndices ?? .mlxNone).ctx,
         (rhsIndices ?? .mlxNone).ctx, transpose,
         groupSize.int32, bits.int32, mode.rawValue, sortedIndices,
         stream.ctx)
@@ -2095,7 +2095,7 @@ public func quantized(
     mlx_quantize(
         &r, w.ctx, groupSize.int32, bits.int32, mode.rawValue,
         stream.ctx)
-    
+
     let arrays = mlx_vector_array_values(r)
     return (arrays[0], arrays[1], arrays[2])
 }
@@ -2110,7 +2110,7 @@ public func quantized(
 ///   - w: Quantized matrix packed in unsigned integers
 ///   - scales: The scales to use per `groupSize` elements of `w`
 ///   - biases: The biases to use per `groupSize` elements of `w`
-///   - transpose: Defines whether to multiply with the transposed `w` or not, 
+///   - transpose: Defines whether to multiply with the transposed `w` or not,
 ///     namely whether we are performing `x @ w.T` or `x @ w`. Default is `true`
 ///   - groupSize: The size of the group in `w` that shares a scale and bias. Default is `64`
 ///   - bits: The number of bits occupied by each element in `w`. Default is `4`
@@ -2121,7 +2121,7 @@ public func quantized(
 /// - ``dequantized(_:scales:biases:groupSize:bits:stream:)``
 /// - ``quantized(_:groupSize:bits:stream:)``
 public func quantizedMatmul(
-    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray,
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     transpose: Bool = true,
     groupSize: Int = 64, bits: Int = 4,
     mode: QuantizationMode = .affine,
@@ -2130,7 +2130,8 @@ public func quantizedMatmul(
     var result = mlx_array_new()
     mlx_quantized_matmul(
         &result,
-        x.ctx, w.ctx, scales.ctx, biases.ctx, transpose, groupSize.int32, bits.int32,
+        x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
+        transpose, groupSize.int32, bits.int32,
         mode.rawValue,
         stream.ctx
     )
