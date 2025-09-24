@@ -88,6 +88,15 @@ int mlx_random_multivariate_normal(
     mlx_dtype dtype,
     const mlx_array key /* may be null */,
     const mlx_stream s);
+int mlx_random_normal_broadcast(
+    mlx_array* res,
+    const int* shape,
+    size_t shape_num,
+    mlx_dtype dtype,
+    const mlx_array loc /* may be null */,
+    const mlx_array scale /* may be null */,
+    const mlx_array key /* may be null */,
+    const mlx_stream s);
 int mlx_random_normal(
     mlx_array* res,
     const int* shape,
