@@ -75,10 +75,12 @@ public enum MLXFast {
     ///   - values: values with shape `[B, N_kv, T_kv, D]`
     ///   - scale: scale for queries, typically `1 / sqrt(q.dim(-1))`
     ///   - mask: mask array
+    ///   - sinks: optional array of attention sinks
     ///   - memoryEfficientThreshold: unused
     ///   - stream: stream to evaluate on
     public static func scaledDotProductAttention(
         queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
+        sinks: MLXArray? = nil,
         memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let masks =
@@ -95,6 +97,7 @@ public enum MLXFast {
             &result,
             queries.ctx, keys.ctx, values.ctx, scale,
             "", masks,
+            (sinks ?? .mlxNone).ctx,
             stream.ctx)
         return MLXArray(result)
     }
@@ -161,10 +164,13 @@ public enum MLXFast {
     ///   - values: values with shape `[B, N_kv, T_kv, D]`
     ///   - scale: scale for queries, typically `1 / sqrt(q.dim(-1))`
     ///   - mask: a ``ScaledDotProductAttentionMaskMode``
+    ///   - sinks: optional array of attention sinks
     ///   - stream: stream to evaluate on
     public static func scaledDotProductAttention(
         queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float,
-        mask: ScaledDotProductAttentionMaskMode, stream: StreamOrDevice = .default
+        mask: ScaledDotProductAttentionMaskMode,
+        sinks: MLXArray? = nil,
+        stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
 
@@ -180,6 +186,7 @@ public enum MLXFast {
             &result,
             queries.ctx, keys.ctx, values.ctx, scale,
             mask.mode, masks,
+            (sinks ?? .mlxNone).ctx,
             stream.ctx)
         return MLXArray(result)
     }

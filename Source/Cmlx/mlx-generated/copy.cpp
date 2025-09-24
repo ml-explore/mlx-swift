@@ -2,37 +2,75 @@ namespace mlx::core::metal {
 
 const char* copy() {
   return R"preamble(
-template <typename T, typename U>
+template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_s(
     device const T* src [[buffer(0)]],
     device U* dst [[buffer(1)]],
+    constant uint& size,
     uint index [[thread_position_in_grid]]) {
-  dst[index] = static_cast<U>(src[0]);
+  index *= N;
+  if (N > 1 && index + N > size) {
+    for (int i = 0; index + i < size; ++i) {
+      dst[index + i] = static_cast<U>(src[0]);
+    }
+  } else {
+    for (int i = 0; i < N; ++i) {
+      dst[index + i] = static_cast<U>(src[0]);
+    }
+  }
 }
-template <typename T, typename U>
+template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_v(
     device const T* src [[buffer(0)]],
     device U* dst [[buffer(1)]],
+    constant uint& size,
     uint index [[thread_position_in_grid]]) {
-  dst[index] = static_cast<U>(src[index]);
+  index *= N;
+  if (N > 1 && index + N > size) {
+    for (int i = 0; index + i < size; ++i) {
+      dst[index + i] = static_cast<U>(src[index + i]);
+    }
+  } else {
+    for (int i = 0; i < N; ++i) {
+      dst[index + i] = static_cast<U>(src[index + i]);
+    }
+  }
 }
-template <typename T, typename U>
+template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_s2(
     device const T* src [[buffer(0)]],
     device U* dst [[buffer(1)]],
+    constant int64_t& size,
     uint2 index [[thread_position_in_grid]],
     uint2 grid_dim [[threads_per_grid]]) {
-  auto offset = index.x + grid_dim.x * int64_t(index.y);
-  dst[offset] = static_cast<U>(src[0]);
+  int64_t offset = N * (index.x + grid_dim.x * int64_t(index.y));
+  if (N > 1 && offset + N > size) {
+    for (int i = 0; offset + i < size; ++i) {
+      dst[offset + i] = static_cast<U>(src[0]);
+    }
+  } else {
+    for (int i = 0; i < N; ++i) {
+      dst[offset + i] = static_cast<U>(src[0]);
+    }
+  }
 }
-template <typename T, typename U>
+template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_v2(
     device const T* src [[buffer(0)]],
     device U* dst [[buffer(1)]],
+    constant int64_t& size,
     uint2 index [[thread_position_in_grid]],
     uint2 grid_dim [[threads_per_grid]]) {
-  auto offset = index.x + grid_dim.x * int64_t(index.y);
-  dst[offset] = static_cast<U>(src[offset]);
+  int64_t offset = N * (index.x + grid_dim.x * int64_t(index.y));
+  if (N > 1 && offset + N > size) {
+    for (int i = 0; offset + i < size; ++i) {
+      dst[offset + i] = static_cast<U>(src[offset + i]);
+    }
+  } else {
+    for (int i = 0; i < N; ++i) {
+      dst[offset + i] = static_cast<U>(src[offset + i]);
+    }
+  }
 }
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_g_nd1(
