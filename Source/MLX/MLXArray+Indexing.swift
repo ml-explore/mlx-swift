@@ -853,7 +853,7 @@ func updateSlice(
     var strides = [Int32](repeating: 1, count: ndim)
 
     // If it's just a simple slice, just do a slice update and return
-    if operations.count == 1, case let .slice(slice) = operations[0] {
+    if operations.count == 1, case .slice(let slice) = operations[0] {
         let size = src.dim(0).int32
         starts[0] = slice.start(size)
         ends[0] = slice.end(size)
