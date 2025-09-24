@@ -5,9 +5,7 @@ repos:
     - id: swift-format
       name: swift-format
       language: system
-      entry: swift-format --in-place
-      files: '\.swift$'
-      args: ["--configuration", ".swift-format"]
+      entry: bash -c 'swift-format format --in-place --configuration .swift-format --recursive . || (echo "Style checks failed, please install pre-commit and run pre-commit run --all and push the change"; echo ""; git diff; exit 1)'
 
 - repo: https://github.com/cheshirekow/cmake-format-precommit
   rev: v0.6.10
