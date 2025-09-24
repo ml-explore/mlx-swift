@@ -1,9 +1,14 @@
 repos:
-- repo: https://github.com/slessans/pre-commit-swift-format
-  rev: ""
+
+- repo: local
   hooks:
     - id: swift-format
+      name: swift-format
+      language: system
+      entry: swift-format --in-place
+      files: '\.swift$'
       args: ["--configuration", ".swift-format"]
+
 - repo: https://github.com/cheshirekow/cmake-format-precommit
   rev: v0.6.10
   hooks:
