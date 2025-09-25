@@ -997,8 +997,45 @@ public func degrees(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
     return MLXArray(result)
 }
 
-public enum QuantizationMode: String {
+/// Quantization modes for weight compression in neural networks.
+///
+/// Quantization reduces the precision of model weights to decrease memory usage and
+/// potentially improve inference speed. Different modes use different strategies for
+/// mapping full-precision values to lower-precision representations.
+public enum QuantizationMode: String, Codable, Sendable {
+    /// Affine (linear) quantization with scale and bias parameters.
+    ///
+    /// This is the standard quantization approach where values are quantized using:
+    /// ```
+    /// quantized_value = round((value - bias) / scale)
+    /// dequantized_value = quantized_value * scale + bias
+    /// ```
+    ///
+    /// The `scale` and `bias` parameters are computed per group of elements (typically 64 or 128 elements)
+    /// to minimize quantization error. This mode provides good compression with reasonable accuracy preservation
+    /// for most neural network weights.
+    ///
+    /// ### See Also
+    /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+    /// - ``quantized(_:groupSize:bits:mode:stream:)``
+    /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
     case affine
+
+    /// MX (Microscaling) FP4 quantization format.
+    ///
+    /// MXFP4 is a specialized 4-bit floating-point format designed for neural network inference.
+    /// It uses a shared exponent across a block of values with individual 3-bit mantissas plus sign bits.
+    /// This format can provide better accuracy than standard 4-bit integer quantization for certain
+    /// weight distributions commonly found in transformer models.
+    ///
+    /// The format consists of:
+    /// - Shared 8-bit exponent per block
+    /// - Individual 3-bit mantissas + 1 sign bit per element
+    ///
+    /// ### See Also
+    /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+    /// - ``quantized(_:groupSize:bits:mode:stream:)``
+    /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
     case mxfp4
 }
 
