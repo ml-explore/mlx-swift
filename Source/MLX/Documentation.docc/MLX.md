@@ -35,7 +35,6 @@ are the CPU and GPU.
 
 ## Other MLX Packages
 
-- [MLX](mlx)
 - [MLXNN](mlxnn)
 - [MLXOptimizers](mlxoptimizers)
 
