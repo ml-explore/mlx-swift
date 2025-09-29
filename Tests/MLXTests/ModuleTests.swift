@@ -555,7 +555,7 @@ class ModuleTests: XCTestCase {
                 verify: .all)
         ) { error in
             guard let error = error as? UpdateError,
-                case let .keyNotFound(path, modules) = error
+                case .keyNotFound(let path, let modules) = error
             else {
                 XCTFail("Expected to fail with UpdateError.keyNotFound, but got: \(error)")
                 return
@@ -586,8 +586,10 @@ class ModuleTests: XCTestCase {
                 verify: .all)
         ) { error in
             guard let error = error as? UpdateError,
-                case let .mismatchedSize(
-                    path, modules, expectedShape: expectedShape, actualShape: actualShape) =
+                case .mismatchedSize(
+                    let
+                        path, let modules, expectedShape: let expectedShape,
+                    actualShape: let actualShape) =
                     error
             else {
                 XCTFail("Expected to fail with UpdateError.mismatchedSize, but got: \(error)")
