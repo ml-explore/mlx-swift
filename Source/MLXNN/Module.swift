@@ -1584,7 +1584,7 @@ extension UpdateError: LocalizedError {
             return "Mismatched containers: \(base) \(key)"
         case .mismatchedSize(
             let
-                path, let modules, expectedShape: let expectedShape, actualShape: let actualShape):
+                path, let modules, let expectedShape, let actualShape):
             return
                 "Mismatched parameter \(path.joined(separator: ".")) in \(modules.joined(separator: ".")) shape. Actual \(actualShape), expected \(expectedShape)"
         case .keyNotFound(let path, let modules):
