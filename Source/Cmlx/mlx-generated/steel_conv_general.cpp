@@ -96,6 +96,42 @@ struct Conv2DInputBlockLoaderGeneral {
       }
     }
   }
+  METAL_FUNC void load_safe(const short remaining_k) const {
+#pragma clang loop unroll(full)
+    for (short i = 0, is = 0; i < n_rows; ++i, is += TROWS) {
+      int n = read_n[i];
+      int h_flip = params->flip ? params->wS[0] - weight_h - 1 : weight_h;
+      int w_flip = params->flip ? params->wS[1] - weight_w - 1 : weight_w;
+      int ih_dil = read_ih[i] + h_flip * params->kdil[0];
+      int iw_dil = read_iw[i] + w_flip * params->kdil[1];
+      int ih = ih_dil / params->idil[0];
+      int iw = iw_dil / params->idil[1];
+      size_t offset = ih * params->in_strides[1] + iw * params->in_strides[2];
+      if ((n < params->N) && (ih_dil >= 0 && ih < params->iS[0]) &&
+          (iw_dil >= 0 && iw < params->iS[1])) {
+        if (bj + vec_size <= remaining_k) {
+#pragma clang loop unroll(full)
+          for (short j = 0; j < vec_size; ++j) {
+            dst[is * dst_ld + j] = (src[i])[offset + j];
+          }
+        } else {
+          for (short j = 0; j < vec_size; ++j) {
+            if (bj + j < remaining_k) {
+              dst[is * dst_ld + j] = (src[i])[offset + j];
+            } else {
+              dst[is * dst_ld + j] = T(0);
+            }
+          }
+        }
+      }
+      else {
+#pragma clang loop unroll(full)
+        for (short j = 0; j < vec_size; ++j) {
+          dst[is * dst_ld + j] = T(0);
+        }
+      }
+    }
+  }
   METAL_FUNC void next() {
     weight_w += jump_params->f_wgt_jump_w;
     if (weight_w < params->wS[1]) {
@@ -192,6 +228,53 @@ struct Conv2DWeightBlockLoaderGeneral {
       }
     }
   }
+  METAL_FUNC void load_safe(const short remaining_k) const {
+    const device T* curr_src = src + weight_h * params->wt_strides[1] +
+        weight_w * params->wt_strides[2];
+    if ((start_row + BN <= params->O)) {
+#pragma clang loop unroll(full)
+      for (short i = 0; i < BN; i += TROWS) {
+        if (bj + vec_size <= remaining_k) {
+#pragma clang loop unroll(full)
+          for (short j = 0; j < vec_size; j++) {
+            dst[i * dst_ld + j] = curr_src[i * src_ld + j];
+          }
+        } else {
+          for (short j = 0; j < vec_size; j++) {
+            if (bj + j < remaining_k) {
+              dst[i * dst_ld + j] = curr_src[i * src_ld + j];
+            } else {
+              dst[i * dst_ld + j] = T(0);
+            }
+          }
+        }
+      }
+    } else {
+      for (short i = 0; i < BN; i += TROWS) {
+        if ((start_row + i) < params->O) {
+          if (bj + vec_size <= remaining_k) {
+#pragma clang loop unroll(full)
+            for (short j = 0; j < vec_size; j++) {
+              dst[i * dst_ld + j] = curr_src[i * src_ld + j];
+            }
+          } else {
+            for (short j = 0; j < vec_size; j++) {
+              if (bj + j < remaining_k) {
+                dst[i * dst_ld + j] = curr_src[i * src_ld + j];
+              } else {
+                dst[i * dst_ld + j] = T(0);
+              }
+            }
+          }
+        } else {
+#pragma clang loop unroll(full)
+          for (short j = 0; j < vec_size; j++) {
+            dst[i * dst_ld + j] = T(0);
+          }
+        }
+      }
+    }
+  }
   METAL_FUNC void next() {
     weight_w += jump_params->f_wgt_jump_w;
     if (weight_w < params->wS[1]) {
@@ -209,6 +292,7 @@ struct Conv2DWeightBlockLoaderGeneral {
 }
 }
 
+constant bool align_C [[function_constant(200)]];
 template <
     typename T,
     int BM,
@@ -302,16 +386,41 @@ implicit_gemm_conv_2d_general(
       simd_gid,
       simd_lid);
   mma_t mma_op(simd_gid, simd_lid);
-  int gemm_k_iterations =
-      base_wh_size * base_ww_size * gemm_params->gemm_k_iterations;
-  for (int k = 0; k < gemm_k_iterations; k++) {
-    threadgroup_barrier(mem_flags::mem_threadgroup);
-    loader_a.load_unsafe();
-    loader_b.load_unsafe();
-    threadgroup_barrier(mem_flags::mem_threadgroup);
-    mma_op.mma(As, Bs);
-    loader_a.next();
-    loader_b.next();
+  if (align_C) {
+    int gemm_k_iterations =
+        base_wh_size * base_ww_size * gemm_params->gemm_k_iterations;
+    for (int k = 0; k < gemm_k_iterations; k++) {
+      threadgroup_barrier(mem_flags::mem_threadgroup);
+      loader_a.load_unsafe();
+      loader_b.load_unsafe();
+      threadgroup_barrier(mem_flags::mem_threadgroup);
+      mma_op.mma(As, Bs);
+      loader_a.next();
+      loader_b.next();
+    }
+  }
+  else {
+    for (int k = 1; k < gemm_params->gemm_k_iterations; k++) {
+      for (int j = 0; j < base_wh_size * base_ww_size; j++) {
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+        loader_a.load_unsafe();
+        loader_b.load_unsafe();
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+        mma_op.mma(As, Bs);
+        loader_a.next();
+        loader_b.next();
+      }
+    }
+    const short remaining_k = params->C % BK;
+    for (int j = 0; j < base_wh_size * base_ww_size; j++) {
+      threadgroup_barrier(mem_flags::mem_threadgroup);
+      loader_a.load_safe(remaining_k);
+      loader_b.load_safe(remaining_k);
+      threadgroup_barrier(mem_flags::mem_threadgroup);
+      mma_op.mma(As, Bs);
+      loader_a.next();
+      loader_b.next();
+    }
   }
   threadgroup_barrier(mem_flags::mem_none);
   {

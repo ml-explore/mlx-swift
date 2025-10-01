@@ -2,6 +2,82 @@ namespace mlx::core::metal {
 
 const char* unary_ops() {
   return R"preamble(
+using ieee_float_shape_type = union {
+  float value;
+  uint32_t word;
+};
+inline void get_float_word(thread uint32_t& i, float d) {
+  ieee_float_shape_type gf_u;
+  gf_u.value = (d);
+  (i) = gf_u.word;
+}
+inline void get_float_word(thread int32_t& i, float d) {
+  ieee_float_shape_type gf_u;
+  gf_u.value = (d);
+  (i) = gf_u.word;
+}
+inline void set_float_word(thread float& d, uint32_t i) {
+  ieee_float_shape_type sf_u;
+  sf_u.word = (i);
+  (d) = sf_u.value;
+}
+inline float frexp_expf(float x, thread int* expt) {
+  const uint32_t k = 235;
+  const float kln2 = 162.88958740F;
+  float exp_x;
+  uint32_t hx;
+  exp_x = metal::exp(x - kln2);
+  get_float_word(hx, exp_x);
+  *expt = (hx >> 23) - (0x7f + 127) + k;
+  set_float_word(exp_x, (hx & 0x7fffff) | ((0x7f + 127) << 23));
+  return exp_x;
+}
+inline complex64_t ldexp_cexpf(complex64_t z, int expt) {
+  float x, y, exp_x, scale1, scale2;
+  int ex_expt, half_expt;
+  x = z.real;
+  y = z.imag;
+  exp_x = frexp_expf(x, &ex_expt);
+  expt += ex_expt;
+  half_expt = expt / 2;
+  set_float_word(scale1, (0x7f + half_expt) << 23);
+  half_expt = expt - half_expt;
+  set_float_word(scale2, (0x7f + half_expt) << 23);
+  return complex64_t{
+      metal::cos(y) * exp_x * scale1 * scale2,
+      metal::sin(y) * exp_x * scale1 * scale2};
+}
+inline complex64_t cexpf(const thread complex64_t& z) {
+  float x, y, exp_x;
+  uint32_t hx, hy;
+  const uint32_t exp_ovfl = 0x42b17218, cexp_ovfl = 0x43400074;
+  x = z.real;
+  y = z.imag;
+  get_float_word(hy, y);
+  hy &= 0x7fffffff;
+  if (hy == 0) {
+    return complex64_t{metal::exp(x), y};
+  }
+  get_float_word(hx, x);
+  if ((hx & 0x7fffffff) == 0) {
+    return complex64_t{metal::cos(y), metal::sin(y)};
+  }
+  if (hy >= 0x7f800000) {
+    if ((hx & 0x7fffffff) != 0x7f800000) {
+      return complex64_t{y - y, y - y};
+    } else if (hx & 0x80000000) {
+      return complex64_t{0.0, 0.0};
+    } else {
+      return complex64_t{x, y - y};
+    }
+  }
+  if (hx >= exp_ovfl && hx <= cexp_ovfl) {
+    return ldexp_cexpf(z, 0);
+  } else {
+    exp_x = metal::exp(x);
+    return complex64_t{exp_x * metal::cos(y), exp_x * metal::sin(y)};
+  }
+}
 float erf(float a) {
   float r, s, t, u;
   t = metal::abs(a);
@@ -247,8 +323,7 @@ struct Exp {
     return metal::precise::exp(x);
   };
   complex64_t operator()(complex64_t x) {
-    auto m = metal::precise::exp(x.real);
-    return {m * metal::precise::cos(x.imag), m * metal::precise::sin(x.imag)};
+    return cexpf(x);
   }
 };
 struct Expm1 {

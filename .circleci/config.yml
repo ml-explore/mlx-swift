@@ -14,8 +14,11 @@ parameters:
 jobs:
 
   mac_build_and_test:
+    parameters:
+      xcode-version:
+        type: string
     macos:
-      xcode: 15.3.0
+      xcode: << parameters.xcode-version >>
     resource_class: macos.m1.medium.gen1
     steps:
       - checkout
@@ -59,7 +62,10 @@ workflows:
         - not: << pipeline.parameters.nightly_build >>
         - not: << pipeline.parameters.weekly_build >>
     jobs:
-      - mac_build_and_test
+      - mac_build_and_test:
+          matrix:
+            parameters:
+              xcode-version: ["15.3.0", "16.3.0"]
 
   prb:
     when:
@@ -72,4 +78,7 @@ workflows:
       - apple/authenticate:
           context: pr-approval
       - mac_build_and_test:
+          matrix:
+            parameters:
+              xcode-version: ["15.3.0", "16.3.0"]
           requires: [ hold ]

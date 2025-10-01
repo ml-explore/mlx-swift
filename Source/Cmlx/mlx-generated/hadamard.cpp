@@ -22,7 +22,7 @@ METAL_FUNC void radix_func(thread float* x) {
     h <<= 1;
   }
 }
-template <typename T, int N, int max_radix, int read_width>
+template <typename T, int N, int max_radix, int read_width, int stride = 1>
 [[kernel]] void hadamard_n(
     const device T* in [[buffer(0)]],
     device T* out [[buffer(1)]],
@@ -35,15 +35,22 @@ template <typename T, int N, int max_radix, int read_width>
   constexpr short num_steps = logN / logR;
   constexpr short logFinal = logN % logR;
   constexpr short final_radix = 1 << (logFinal);
-  int batch_idx = elem.x * N;
-  short i = elem.y;
+  int batch_idx = elem.y * N * stride + elem.z;
+  short i = elem.x;
   threadgroup T buf[N];
+  if (stride == 1) {
 #pragma clang loop unroll(full)
-  for (short j = 0; j < max_radix / read_width; j++) {
-    short index = j * read_width * num_threads + i * read_width;
+    for (short j = 0; j < max_radix / read_width; j++) {
+      short index = j * read_width * num_threads + i * read_width;
 #pragma clang loop unroll(full)
-    for (short r = 0; r < read_width; r++) {
-      buf[index + r] = in[batch_idx + index + r];
+      for (short r = 0; r < read_width; r++) {
+        buf[index + r] = in[batch_idx + index + r];
+      }
+    }
+  } else {
+#pragma clang loop unroll(full)
+    for (short j = 0; j < max_radix; j++) {
+      buf[j * num_threads + i] = in[batch_idx + (j * num_threads + i) * stride];
     }
   }
   threadgroup_barrier(mem_flags::mem_threadgroup);
@@ -83,12 +90,20 @@ template <typename T, int N, int max_radix, int read_width>
     }
     threadgroup_barrier(mem_flags::mem_threadgroup);
   }
+  if (stride == 1) {
 #pragma clang loop unroll(full)
-  for (short j = 0; j < max_radix / read_width; j++) {
-    short index = j * read_width * num_threads + i * read_width;
+    for (short j = 0; j < max_radix / read_width; j++) {
+      short index = j * read_width * num_threads + i * read_width;
 #pragma clang loop unroll(full)
-    for (short r = 0; r < read_width; r++) {
-      out[batch_idx + index + r] = T(buf[index + r] * scale);
+      for (short r = 0; r < read_width; r++) {
+        out[batch_idx + index + r] = T(buf[index + r] * scale);
+      }
+    }
+  } else {
+#pragma clang loop unroll(full)
+    for (short j = 0; j < max_radix; j++) {
+      out[batch_idx + (j * num_threads + i) * stride] =
+          buf[j * num_threads + i];
     }
   }
 }
