@@ -14,6 +14,9 @@ public final class MLXArray {
     ///
     /// This initializer is for `Cmlx` interoperation.
     public init(_ ctx: consuming mlx_array) {
+        // We don't have lifecycle control over the MLX system but all interesting
+        // paths will come through here -- make sure the error handler is installed.
+        initError()
         self.ctx = ctx
     }
 
