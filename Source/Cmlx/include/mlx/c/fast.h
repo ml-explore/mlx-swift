@@ -31,7 +31,7 @@ extern "C" {
 typedef struct mlx_fast_cuda_kernel_config_ {
   void* ctx;
 } mlx_fast_cuda_kernel_config;
-mlx_fast_cuda_kernel_config mlx_fast_cuda_kernel_config_new();
+mlx_fast_cuda_kernel_config mlx_fast_cuda_kernel_config_new(void);
 void mlx_fast_cuda_kernel_config_free(mlx_fast_cuda_kernel_config cls);
 
 int mlx_fast_cuda_kernel_config_add_output_arg(
@@ -79,9 +79,10 @@ mlx_fast_cuda_kernel mlx_fast_cuda_kernel_new(
     const char* source,
     const char* header,
     bool ensure_row_contiguous,
-    bool atomic_outputs);
+    int shared_memory);
 
 void mlx_fast_cuda_kernel_free(mlx_fast_cuda_kernel cls);
+
 int mlx_fast_cuda_kernel_apply(
     mlx_vector_array* outputs,
     mlx_fast_cuda_kernel cls,
@@ -100,7 +101,7 @@ int mlx_fast_layer_norm(
 typedef struct mlx_fast_metal_kernel_config_ {
   void* ctx;
 } mlx_fast_metal_kernel_config;
-mlx_fast_metal_kernel_config mlx_fast_metal_kernel_config_new();
+mlx_fast_metal_kernel_config mlx_fast_metal_kernel_config_new(void);
 void mlx_fast_metal_kernel_config_free(mlx_fast_metal_kernel_config cls);
 
 int mlx_fast_metal_kernel_config_add_output_arg(
@@ -151,6 +152,7 @@ mlx_fast_metal_kernel mlx_fast_metal_kernel_new(
     bool atomic_outputs);
 
 void mlx_fast_metal_kernel_free(mlx_fast_metal_kernel cls);
+
 int mlx_fast_metal_kernel_apply(
     mlx_vector_array* outputs,
     mlx_fast_metal_kernel cls,

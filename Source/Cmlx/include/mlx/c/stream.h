@@ -27,7 +27,7 @@ typedef struct mlx_stream_ {
 /**
  * Returns a new empty stream.
  */
-mlx_stream mlx_stream_new();
+mlx_stream mlx_stream_new(void);
 
 /**
  * Returns a new stream on a device.
@@ -72,12 +72,12 @@ int mlx_set_default_stream(mlx_stream stream);
 /**
  * Returns the current default CPU stream.
  */
-mlx_stream mlx_default_cpu_stream_new();
+mlx_stream mlx_default_cpu_stream_new(void);
 
 /**
  * Returns the current default GPU stream.
  */
-mlx_stream mlx_default_gpu_stream_new();
+mlx_stream mlx_default_gpu_stream_new(void);
 
 /**@}*/
 
