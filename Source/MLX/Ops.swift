@@ -1011,7 +1011,7 @@ public enum QuantizationMode: String, Codable, Sendable {
     /// dequantized_value = quantized_value * scale + bias
     /// ```
     ///
-    /// The `scale` and `bias` parameters are computed per group of elements (typically 64 or 128 elements)
+    /// The `scale` and `bias` parameters are computed per group of elements (typically 32 or 64 elements)
     /// to minimize quantization error. This mode provides good compression with reasonable accuracy preservation
     /// for most neural network weights.
     ///
