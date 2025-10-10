@@ -10,10 +10,51 @@ import Metal
 /// ``activeMemory`` is in currently active ``MLXArray`` and ``cacheMemory``
 /// is recently used memory that can be recycled.
 ///
+/// ## Memory Management and Buffer Recycling
+///
+/// MLX uses a buffer recycling system to optimize performance. When MLXArrays
+/// are no longer needed (such as intermediate computation results), their buffers
+/// are not immediately deallocated. Instead, they are placed in a buffer pool where they
+/// can be reused by later computations of similar size.
+///
+/// This recycling strategy is particularly important during model inference:
+///
+/// - Initial model weights might use ~500MB
+/// - Inference (e.g. token generation in an LLM) creates intermediate buffers (e.g., ~1MB for the first token)
+/// - These buffer might be intermediates used during computation of the graph -- if they
+/// are fixed size then they will be reused on the next token -- exactly what we want!
+/// - If the buffer sizes grow during inference, e.g. if not using a KVCache in LLMs
+/// or other scenarios where there might be a "context" then these buffers might
+/// not be reused
+/// - By the end of a long inference run, you may see several GB of cached memory
+///   from accumulated buffers of various sizes if cache memory is unconstrained.
+///
+/// This memory is observable in various system tools as _footprint_ or _RSIZE_, but
+/// these tools can't discern the use of the memory.  See ``snapshot()`` and
+/// the next section for more information.
+///
+/// The buffer pool policy is based on Metal's `recommendedMaxWorkingSetSize`, which
+/// scales with available physical memory. Systems with more RAM will cache more buffers.
+///
+/// ## Cache Size Optimization
+///
+/// The optimal cache size varies significantly by workload. While unconstrained cache
+/// can grow to several GB, developers often find that relatively small cache sizes
+/// (e.g., 2MB) perform just as well for their specific use cases. The best approach
+/// is to experiment with different cache limits and measure performance for your
+/// particular workload.
+///
+/// Adjusting the cache limit is especially advantageous on devices with memory
+/// limits (e.g. iOS devices where jetsam limits apply).
+///
 /// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
 /// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
 ///
 /// Examine memory use over time with ``snapshot()`` and ``Snapshot``.
+///
+/// **Note**: The cache limit will go into effect on the next deallocation. Because of that you
+/// may observe the cache size temporarily exceeding the requested limit. To immediately
+/// clear the cache, use ``GPU/clearCache()``.
 ///
 /// ### See Also
 /// - <doc:running-on-ios>
@@ -38,6 +79,8 @@ public enum GPU {
     /// ``activeMemory`` + ``cacheMemory`` is the total memory allocated by MLX.
     /// ``activeMemory`` is in currently active ``MLXArray`` and ``cacheMemory``
     /// is recently used memory that can be recycled.
+    ///
+    /// See ``GPU`` for a description of how the cache sizes grow and can be tuned.
     ///
     /// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
     /// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
@@ -139,7 +182,15 @@ public enum GPU {
     /// Get the cache size in bytes.
     ///
     /// The cache includes memory not currently used that has not been returned
-    /// to the system allocator.
+    /// to the system allocator. This represents buffers from previous
+    /// computations that are kept in a buffer pool for potential reuse.
+    ///
+    /// During model inference, this can grow significantly as buffers of various
+    /// sizes accumulate from intermediate computations.  See ``GPU`` for
+    /// more information on cache size and tuning.
+    ///
+    /// The cache size is controlled by the cache limit (see ``set(cacheLimit:)``).
+    /// When the limit is exceeded, older cached buffers are freed on the next allocation.
     public static var cacheMemory: Int {
         var result: size_t = 0
         mlx_get_cache_memory(&result)
@@ -200,7 +251,20 @@ public enum GPU {
     /// from the cache on the next allocation. To disable the cache,
     /// set the limit to 0.
     ///
-    /// The cache limit defaults to the memory limit.
+    /// The cache limit defaults to the memory limit, which may allow very
+    /// large cache sizes on systems with abundant RAM. For memory-constrained
+    /// applications or to prevent excessive memory growth during long inference
+    /// runs, consider setting a much lower cache limit.
+    ///
+    /// ## Performance Optimization
+    ///
+    /// The optimal cache size varies by workload. Many developers find that
+    /// relatively small cache sizes (e.g., 2MB) perform just as well as
+    /// unconstrained cache sizes for their specific use cases. Experiment
+    /// with different values and measure performance to find the best setting
+    /// for your workload.
+    ///
+    /// See ``GPU`` for more information on cache sizing and tuning.
     ///
     /// Returns the previous cache limit.
     public static func set(cacheLimit: Int) {
@@ -235,7 +299,12 @@ public enum GPU {
     /// swap) if `relaxed` is true.
     ///
     /// The memory limit defaults to 1.5 times the maximum recommended working set
-    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize))
+    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize)).
+    ///
+    /// **Important**: This limit controls total MLX memory allocation. The cache limit
+    /// (see ``set(cacheLimit:)``) defaults to this value, so systems with large memory
+    /// limits may cache many GB of buffers. Consider setting a lower cache limit for
+    /// memory-constrained applications.
     public static func set(memoryLimit: Int, relaxed: Bool = true) {
         queue.sync {
             _memoryLimit = memoryLimit
