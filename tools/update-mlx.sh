@@ -30,13 +30,16 @@ make \
     conv \
     copy \
     fft \
+    fp4_quantized \
     gather \
     gather_axis \
+    gather_front \
     gemm \
     gemv_masked \
     hadamard \
     logsumexp \
     quantized \
+    quantized_utils \
     reduce \
     reduce_utils \
     scan \
@@ -49,6 +52,7 @@ make \
     steel_gemm_fused \
     steel_gemm_gather \
     steel_gemm_masked \
+    steel_gemm_segmented \
     steel_gemm_splitk \
     ternary \
     ternary_ops \

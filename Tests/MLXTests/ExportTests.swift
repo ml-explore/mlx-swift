@@ -52,7 +52,7 @@ class ExportTests: XCTestCase {
             [arrays.dropFirst().reduce(arrays[0], +)]
         }
 
-        let x = MLXArray(1)
+        let x = MLXArray([1])
 
         try exportFunctions(to: url, shapeless: true, f) { export in
             try export(x)

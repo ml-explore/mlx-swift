@@ -574,7 +574,7 @@ template <
   int blocks = IdxT(row_size) / N_READS;
   int extra = IdxT(row_size) % N_READS;
   if ((non_row_reductions < 32 && row_size <= 8) || non_row_reductions <= 8) {
-    IdxT out_idx = tid.x + tsize.y * IdxT(tid.y);
+    IdxT out_idx = tid.x + tsize.x * IdxT(tid.y);
     in += elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
     for (uint r = 0; r < non_row_reductions; r++) {
       row = in + loop.location();

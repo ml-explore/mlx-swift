@@ -64,7 +64,7 @@ int mlx_array_tostring(mlx_string* str, const mlx_array arr);
 /**
  * New empty array.
  */
-mlx_array mlx_array_new();
+mlx_array mlx_array_new(void);
 
 /**
  * Free an array.

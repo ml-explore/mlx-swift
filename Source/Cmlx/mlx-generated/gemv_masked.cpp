@@ -216,28 +216,29 @@ struct GEMVKernel {
       mat_mask_offset += mat_mask_step;
       vec_mask_offset += vec_mask_step;
     }
-    if (leftover > 0 &&
-        (!has_operand_mask ||
-         (bool(mat_mask[mat_mask_offset]) &&
-          bool(vec_mask[vec_mask_offset])))) {
-      T block_scale{1};
-      if (has_mul_operand_mask) {
-        block_scale =
-            T(mat_mask[mat_mask_offset]) * T(vec_mask[vec_mask_offset]);
-      }
-      load_safe<AccT>(in_vec, v_coeff, bn, in_size);
-      if (has_mul_operand_mask) {
-#pragma clang loop unroll(full)
-        for (int tn = 0; tn < TN; tn++) {
-          v_coeff[tn] *= block_scale;
+    if (leftover > 0) {
+      if (!has_operand_mask ||
+          (bool(mat_mask[mat_mask_offset]) &&
+           bool(vec_mask[vec_mask_offset]))) {
+        T block_scale{1};
+        if (has_mul_operand_mask) {
+          block_scale =
+              T(mat_mask[mat_mask_offset]) * T(vec_mask[vec_mask_offset]);
         }
-      }
+        load_safe<AccT>(in_vec, v_coeff, bn, in_size);
+        if (has_mul_operand_mask) {
 #pragma clang loop unroll(full)
-      for (int tm = 0; tm < TM; tm++) {
-        load_safe(&mat[tm * matrix_ld], inter, bn, in_size);
+          for (int tn = 0; tn < TN; tn++) {
+            v_coeff[tn] *= block_scale;
+          }
+        }
 #pragma clang loop unroll(full)
-        for (int tn = 0; tn < TN; tn++) {
-          result[tm] += inter[tn] * v_coeff[tn];
+        for (int tm = 0; tm < TM; tm++) {
+          load_safe(&mat[tm * matrix_ld], inter, bn, in_size);
+#pragma clang loop unroll(full)
+          for (int tn = 0; tn < TN; tn++) {
+            result[tm] += inter[tn] * v_coeff[tn];
+          }
         }
       }
     }
@@ -413,27 +414,28 @@ struct GEMVTKernel {
         mat_mask_offset += mat_mask_step;
         vec_mask_offset += vec_mask_step;
       }
-      if (leftover > 0 &&
-          (!has_operand_mask ||
-           (bool(mat_mask[mat_mask_offset]) &&
-            bool(vec_mask[vec_mask_offset])))) {
-        T block_scale{1};
-        if (has_mul_operand_mask) {
-          block_scale =
-              T(mat_mask[mat_mask_offset]) * T(vec_mask[vec_mask_offset]);
-        }
-        for (int tm = 0; tm < TM && bm + tm < in_vec_size; tm++) {
-          v_coeff[tm] = static_cast<AccT>(in_vec[bm + tm]);
+      if (leftover > 0) {
+        if (!has_operand_mask ||
+            (bool(mat_mask[mat_mask_offset]) &&
+             bool(vec_mask[vec_mask_offset]))) {
+          T block_scale{1};
           if (has_mul_operand_mask) {
-            v_coeff[tm] *= block_scale;
+            block_scale =
+                T(mat_mask[mat_mask_offset]) * T(vec_mask[vec_mask_offset]);
           }
+          for (int tm = 0; tm < TM && bm + tm < in_vec_size; tm++) {
+            v_coeff[tm] = static_cast<AccT>(in_vec[bm + tm]);
+            if (has_mul_operand_mask) {
+              v_coeff[tm] *= block_scale;
+            }
 #pragma clang loop unroll(full)
-          for (int tn = 0; tn < TN; tn++) {
-            inter[tn] = mat[(bm + tm) * marix_ld + out_col + tn];
-          }
+            for (int tn = 0; tn < TN; tn++) {
+              inter[tn] = mat[(bm + tm) * marix_ld + out_col + tn];
+            }
 #pragma clang loop unroll(full)
-          for (int tn = 0; tn < TN; tn++) {
-            result[tn] += v_coeff[tm] * inter[tn];
+            for (int tn = 0; tn < TN; tn++) {
+              result[tn] += v_coeff[tm] * inter[tn];
+            }
           }
         }
       }

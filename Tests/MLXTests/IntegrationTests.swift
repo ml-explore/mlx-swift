@@ -3909,14 +3909,18 @@ class MLXIntegrationTests: XCTestCase {
             scales.sum().item(Float.self), -0.48621952533721924,
             accuracy: -0.009724390506744385)
 
-        XCTAssertEqual(biases.shape, [32, 4])
-        XCTAssertEqual(biases.dtype, .float32)
-        XCTAssertEqual(
-            biases.mean().item(Float.self), 0.9862217307090759,
-            accuracy: 0.01972443461418152)
-        XCTAssertEqual(
-            biases.sum().item(Float.self), 126.23638153076172,
-            accuracy: 2.5247276306152346)
+        if let biases {
+            XCTAssertEqual(biases.shape, [32, 4])
+            XCTAssertEqual(biases.dtype, .float32)
+            XCTAssertEqual(
+                biases.mean().item(Float.self), 0.9862217307090759,
+                accuracy: 0.01972443461418152)
+            XCTAssertEqual(
+                biases.sum().item(Float.self), 126.23638153076172,
+                accuracy: 2.5247276306152346)
+        } else {
+            XCTFail("biases should not be nil")
+        }
 
     }
 
