@@ -1024,13 +1024,10 @@ public enum QuantizationMode: String, Codable, Sendable {
     /// MX (Microscaling) FP4 quantization format.
     ///
     /// MXFP4 is a specialized 4-bit floating-point format designed for neural network inference.
-    /// It uses a shared exponent across a block of values with individual 3-bit mantissas plus sign bits.
-    /// This format can provide better accuracy than standard 4-bit integer quantization for certain
-    /// weight distributions commonly found in transformer models.
     ///
     /// The format consists of:
     /// - Shared 8-bit exponent per block
-    /// - Individual 3-bit mantissas + 1 sign bit per element
+    /// - Individual _e2m1_ (1 sign bit, 2 exponent, 1 mantissa) per element
     ///
     /// ### See Also
     /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
@@ -2114,7 +2111,8 @@ public func putAlong(
 ///   - bits: The number of bits occupied by each element of `w` in the returned quantized matrix. Default is `4`
 ///   - mode: The quantization mode. Default is `.affine`
 ///   - stream: Stream or device to evaluate on
-/// - Returns: A tuple containing the quantized weights (`wq`), scaling factors (`scales`), and bias values (`biases`)
+/// - Returns: A tuple containing the quantized weights (`wq`), scaling factors (`scales`), and bias values (`biases`).
+///     Note that `biases` may be nil in for some `mode`.
 ///
 /// For details, please see
 /// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html)
@@ -2126,7 +2124,7 @@ public func quantized(
     _ w: MLXArray, groupSize: Int = 64, bits: Int = 4,
     mode: QuantizationMode = .affine,
     stream: StreamOrDevice = .default
-) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray) {
+) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray?) {
     var r = mlx_vector_array_new()
     defer { mlx_vector_array_free(r) }
     mlx_quantize(
@@ -2134,7 +2132,7 @@ public func quantized(
         stream.ctx)
 
     let arrays = mlx_vector_array_values(r)
-    return (arrays[0], arrays[1], arrays[2])
+    return (arrays[0], arrays[1], arrays.count > 2 ? arrays[2] : nil)
 }
 
 /// Perform the matrix multiplication with the quantized matrix `w`. The
