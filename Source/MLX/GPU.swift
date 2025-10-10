@@ -18,12 +18,20 @@ import Metal
 /// can be reused by later computations of similar size.
 ///
 /// This recycling strategy is particularly important during model inference:
+///
 /// - Initial model weights might use ~500MB
-/// - Each token generation creates intermediate buffers (e.g., ~1MB for the first token)
-/// - As sequence length grows, buffer sizes increase but previous smaller buffers
-///   remain in the pool waiting for reuse
+/// - Inference (e.g. token generation in an LLM) creates intermediate buffers (e.g., ~1MB for the first token)
+/// - These buffer might be intermediates used during computation of the graph -- if they
+/// are fixed size then they will be reused on the next token -- exactly what we want!
+/// - If the buffer sizes grow during inference, e.g. if not using a KVCache in LLMs
+/// or other scenarios where there might be a "context" then these buffers might
+/// not be reused
 /// - By the end of a long inference run, you may see several GB of cached memory
-///   from accumulated buffers of various sizes
+///   from accumulated buffers of various sizes if cache memory is unconstrained.
+///
+/// This memory is observable in various system tools as _footprint_ or _RSIZE_, but
+/// these tools can't discern the use of the memory.  See ``snapshot()`` and
+/// the next section for more information.
 ///
 /// The buffer pool policy is based on Metal's `recommendedMaxWorkingSetSize`, which
 /// scales with available physical memory. Systems with more RAM will cache more buffers.
@@ -36,10 +44,17 @@ import Metal
 /// is to experiment with different cache limits and measure performance for your
 /// particular workload.
 ///
+/// Adjusting the cache limit is especially advantageous on devices with memory
+/// limits (e.g. iOS devices where jetsam limits apply).
+///
 /// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
 /// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
 ///
 /// Examine memory use over time with ``snapshot()`` and ``Snapshot``.
+///
+/// **Note**: The cache limit will go into effect on the next deallocation. Because of that you
+/// may observe the cache size temporarily exceeding the requested limit. To immediately
+/// clear the cache, use ``GPU/clearCache()``.
 ///
 /// ### See Also
 /// - <doc:running-on-ios>
@@ -65,22 +80,7 @@ public enum GPU {
     /// ``activeMemory`` is in currently active ``MLXArray`` and ``cacheMemory``
     /// is recently used memory that can be recycled.
     ///
-    /// ## Understanding Memory Growth During Inference
-    ///
-    /// During model inference with **unconstrained cache size**, you'll typically see memory usage patterns like:
-    /// - **Initial**: ~500MB (model weights) + minimal cache
-    /// - **After first token**: +~1MB intermediates → cache grows as buffers are recycled
-    /// - **After 100 tokens**: Cache may be ~500MB (accumulated smaller buffers)
-    /// - **After 500 tokens**: Cache may be ~9.9GB (buffers of various sizes waiting for reuse)
-    ///
-    /// The cache grows because each token generation needs slightly larger buffers
-    /// (longer sequences), but smaller buffers from previous tokens remain cached
-    /// for potential reuse. Running inference again will reuse these cached buffers
-    /// without additional memory growth.
-    ///
-    /// **Important**: These large cache sizes can be controlled by setting appropriate
-    /// cache limits via ``GPU/set(cacheLimit:)``. The cache limit defaults to the
-    /// memory limit but can be set much lower to constrain memory usage.
+    /// See ``GPU`` for a description of how the cache sizes grow and can be tuned.
     ///
     /// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
     /// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
@@ -186,9 +186,8 @@ public enum GPU {
     /// computations that are kept in a buffer pool for potential reuse.
     ///
     /// During model inference, this can grow significantly as buffers of various
-    /// sizes accumulate from intermediate computations. Each token generation
-    /// may need slightly larger buffers, causing smaller cached buffers to
-    /// remain unused while new, larger buffers are allocated.
+    /// sizes accumulate from intermediate computations.  See ``GPU`` for
+    /// more information on cache size and tuning.
     ///
     /// The cache size is controlled by the cache limit (see ``set(cacheLimit:)``).
     /// When the limit is exceeded, older cached buffers are freed on the next allocation.
@@ -265,9 +264,7 @@ public enum GPU {
     /// with different values and measure performance to find the best setting
     /// for your workload.
     ///
-    /// **Important**: The policy is applied on allocation, not when buffers
-    /// are returned to the cache. This means you may observe cache sizes
-    /// temporarily exceeding the limit until the next allocation triggers cleanup.
+    /// See ``GPU`` for more information on cache sizing and tuning.
     ///
     /// Returns the previous cache limit.
     public static func set(cacheLimit: Int) {
