@@ -211,8 +211,8 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``gatherMatmul(_:_:lhsIndices:rhsIndices:stream:)``
 - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
 - ``addMM(_:_:_:alpha:beta:stream:)``
-- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
-- ``gatherQuantizedMatmul(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:stream:)``
+- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+- ``gatherQuantizedMatmul(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``

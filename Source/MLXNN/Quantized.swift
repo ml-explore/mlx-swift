@@ -205,7 +205,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
     open override func asLinear(_ x: MLXArray) -> MLXArray {
         quantizedMatmul(
             x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize,
-            bits: bits)
+            bits: bits, mode: mode)
     }
 }
 
@@ -331,7 +331,8 @@ open class QuantizedLinear: Linear, Quantized {
             biases: biases,
             transpose: true,
             groupSize: groupSize,
-            bits: bits
+            bits: bits,
+            mode: mode
         )
         if let bias {
             x = x + bias
