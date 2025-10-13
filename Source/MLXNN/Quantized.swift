@@ -7,22 +7,35 @@ import MLX
 public protocol Quantizable {
 
     /// Return the module as a quantized representation
+    @available(*, deprecated, message: "prefer the toQuantized that takes a mode")
     func toQuantized(groupSize: Int, bits: Int) -> Module
+
+    /// Return the module as a quantized representation
+    func toQuantized(groupSize: Int, bits: Int, mode: QuantizationMode) -> Module
+}
+
+extension Quantizable {
+    public func toQuantized(groupSize: Int, bits: Int) -> Module {
+        toQuantized(groupSize: groupSize, bits: bits, mode: .affine)
+    }
 }
 
 /// Protocol for layers that are quantized.
 public protocol Quantized: Module {
     var groupSize: Int { get }
     var bits: Int { get }
+    var mode: QuantizationMode { get }
 }
 
 /// Quantize any ``Quantizable`` layer that is not already quantized.
-public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) -> Quantized? {
+public func quantizeSingle(
+    layer: Module, groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine
+) -> Quantized? {
     if layer is Quantized {
         // already quantized
         nil
     } else if let quantizable = layer as? Quantizable {
-        quantizable.toQuantized(groupSize: groupSize, bits: bits) as? Quantized
+        quantizable.toQuantized(groupSize: groupSize, bits: bits, mode: mode) as? Quantized
     } else {
         nil
     }
@@ -41,9 +54,11 @@ public func quantizeSingle(layer: Module, groupSize: Int = 64, bits: Int = 4) ->
 /// ### See Also
 /// - ``quantize(model:filter:apply:)``
 public func quantize(
-    model: Module, groupSize: Int = 64, bits: Int = 4,
+    model: Module,
+    groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
     filter: (String, Module) -> Bool = { _, _ in true },
-    apply: (Module, Int, Int) -> Module? = quantizeSingle(layer:groupSize:bits:)
+    apply: (Module, Int, Int, QuantizationMode) -> Module? = quantizeSingle(
+        layer:groupSize:bits:mode:)
 ) {
     let updates =
         model
@@ -51,7 +66,7 @@ public func quantize(
         .flattened()
         .compactMap { (path, m) -> (String, Module)? in
             if filter(path, m) {
-                if let quantized = apply(m, groupSize, bits) {
+                if let quantized = apply(m, groupSize, bits, mode) {
                     return (path, quantized)
                 }
             }
@@ -62,28 +77,43 @@ public func quantize(
     model.update(modules: ModuleChildren.unflattened(updates))
 }
 
+@available(*, deprecated, message: "use quantize that takes a 4 argument apply")
+public func quantize(
+    model: Module, groupSize: Int = 64, bits: Int = 4,
+    filter: (String, Module) -> Bool = { _, _ in true },
+    apply: (Module, Int, Int) -> Module? = {
+        quantizeSingle(layer: $0, groupSize: $1, bits: $2, mode: .affine)
+    }
+) {
+    quantize(
+        model: model, groupSize: groupSize, bits: bits, mode: .affine, filter: filter,
+        apply: { l, g, b, n in apply(l, g, b) }
+    )
+}
+
 /// Quantize the sub-modules of a module according to a filter.
 ///
 /// By default all ``Linear`` and ``Embedding`` layers will be quantized.
 ///
 /// - Parameters:
 ///   - model: model to quantize
-///   - filter: filter receiving path and module -- return a tuple of `(groupSize: Int, bits: Int)` or `nil` to skip quantization
+///   - filter: filter receiving path and module -- return a tuple of `(groupSize: Int, bits: Int, mode: QuantizationMode)` or `nil` to skip quantization
 ///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding`` layers
 /// ### See Also
 /// - ``quantize(model:groupSize:bits:filter:apply:)``
 public func quantize(
     model: Module,
-    filter: (String, Module) -> (groupSize: Int, bits: Int)?,
-    apply: (Module, Int, Int) -> Module? = quantizeSingle(layer:groupSize:bits:)
+    filter: (String, Module) -> (groupSize: Int, bits: Int, mode: QuantizationMode)?,
+    apply: (Module, Int, Int, QuantizationMode) -> Module? = quantizeSingle(
+        layer:groupSize:bits:mode:)
 ) {
     let updates =
         model
         .leafModules()
         .flattened()
         .compactMap { (path, m) -> (String, Module)? in
-            if let (groupSize, bits) = filter(path, m) {
-                if let quantized = apply(m, groupSize, bits) {
+            if let (groupSize, bits, mode) = filter(path, m) {
+                if let quantized = apply(m, groupSize, bits, mode) {
                     return (path, quantized)
                 }
             }
@@ -92,6 +122,29 @@ public func quantize(
         }
 
     model.update(modules: ModuleChildren.unflattened(updates))
+}
+
+@available(*, deprecated, message: "use quantize that takes a 4 argument apply")
+public func quantize(
+    model: Module,
+    filter: (String, Module) -> (groupSize: Int, bits: Int)?,
+    apply: (Module, Int, Int) -> Module? = {
+        quantizeSingle(layer: $0, groupSize: $1, bits: $2, mode: .affine)
+    }
+) {
+    quantize(
+        model: model,
+        filter: {
+            if let (g, b) = filter($0, $1) {
+                return (g, b, .affine)
+            } else {
+                return nil
+            }
+        },
+        apply: { m, g, b, mode in
+            apply(m, g, b)
+        }
+    )
 }
 
 /// The same as ``Embedding`` but with a quantized weight matrix.

@@ -43,7 +43,7 @@ open class Embedding: Module, UnaryLayer, Quantizable {
         matmul(x, weight.T)
     }
 
-    public func toQuantized(groupSize: Int, bits: Int) -> Module {
-        QuantizedEmbedding(self, groupSize: groupSize, bits: bits)
+    public func toQuantized(groupSize: Int, bits: Int, mode: QuantizationMode) -> Module {
+        QuantizedEmbedding(self, groupSize: groupSize, bits: bits, mode: mode)
     }
 }

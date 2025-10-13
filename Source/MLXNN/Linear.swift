@@ -129,8 +129,8 @@ open class Linear: Module, UnaryLayer, Quantizable {
         return result
     }
 
-    public func toQuantized(groupSize: Int, bits: Int) -> Module {
-        QuantizedLinear(self, groupSize: groupSize, bits: bits)
+    public func toQuantized(groupSize: Int, bits: Int, mode: QuantizationMode) -> Module {
+        QuantizedLinear(self, groupSize: groupSize, bits: bits, mode: mode)
     }
 }
 
