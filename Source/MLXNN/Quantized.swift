@@ -78,6 +78,7 @@ public func quantize(
 }
 
 @available(*, deprecated, message: "use quantize that takes a 4 argument apply")
+@_disfavoredOverload
 public func quantize(
     model: Module, groupSize: Int = 64, bits: Int = 4,
     filter: (String, Module) -> Bool = { _, _ in true },
@@ -125,6 +126,7 @@ public func quantize(
 }
 
 @available(*, deprecated, message: "use quantize that takes a 4 argument apply")
+@_disfavoredOverload
 public func quantize(
     model: Module,
     filter: (String, Module) -> (groupSize: Int, bits: Int)?,
