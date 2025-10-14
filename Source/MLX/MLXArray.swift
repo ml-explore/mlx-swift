@@ -453,7 +453,8 @@ public final class MLXArray {
             // mlx_array_item_complex64() isn't visible in swift so read the array
             // contents.  call self.eval() as this doesn't end up in item()
             self.eval()
-            let ptr = UnsafePointer<Complex<Float32>>(mlx_array_data_complex64(ctx))!
+            let ptr = mlx_array_data_complex64(ctx)!
+                .bindMemory(to: Complex<Float32>.self, capacity: 1)
             return ptr.pointee as! T
         default:
             fatalError("Unable to get item() as \(type)")
