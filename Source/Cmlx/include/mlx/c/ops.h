@@ -357,9 +357,10 @@ int mlx_dequantize(
     mlx_array* res,
     const mlx_array w,
     const mlx_array scales,
-    const mlx_array biases,
+    const mlx_array biases /* may be null */,
     int group_size,
     int bits,
+    const char* mode,
     const mlx_stream s);
 int mlx_diag(mlx_array* res, const mlx_array a, int k, const mlx_stream s);
 int mlx_diagonal(
@@ -452,12 +453,13 @@ int mlx_gather_qmm(
     const mlx_array x,
     const mlx_array w,
     const mlx_array scales,
-    const mlx_array biases,
+    const mlx_array biases /* may be null */,
     const mlx_array lhs_indices /* may be null */,
     const mlx_array rhs_indices /* may be null */,
     bool transpose,
     int group_size,
     int bits,
+    const char* mode,
     bool sorted_indices,
     const mlx_stream s);
 int mlx_greater(
@@ -747,22 +749,22 @@ int mlx_put_along_axis(
     int axis,
     const mlx_stream s);
 int mlx_quantize(
-    mlx_array* res_0,
-    mlx_array* res_1,
-    mlx_array* res_2,
+    mlx_vector_array* res,
     const mlx_array w,
     int group_size,
     int bits,
+    const char* mode,
     const mlx_stream s);
 int mlx_quantized_matmul(
     mlx_array* res,
     const mlx_array x,
     const mlx_array w,
     const mlx_array scales,
-    const mlx_array biases,
+    const mlx_array biases /* may be null */,
     bool transpose,
     int group_size,
     int bits,
+    const char* mode,
     const mlx_stream s);
 int mlx_radians(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_real(mlx_array* res, const mlx_array a, const mlx_stream s);
@@ -867,6 +869,12 @@ int mlx_scatter_prod(
     const mlx_array updates,
     const int* axes,
     size_t axes_num,
+    const mlx_stream s);
+int mlx_segmented_mm(
+    mlx_array* res,
+    const mlx_array a,
+    const mlx_array b,
+    const mlx_array segments,
     const mlx_stream s);
 int mlx_sigmoid(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_sign(mlx_array* res, const mlx_array a, const mlx_stream s);

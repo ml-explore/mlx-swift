@@ -93,4 +93,24 @@ class OpsTests: XCTestCase {
         assertEqual(a, c)
     }
 
+    func testQuantized() {
+        let a = MLXRandom.uniform(low: 0, high: 1, [8, 64])
+
+        let (wq1, s1, b1) = quantized(a, mode: .affine)
+        XCTAssertEqual(wq1.dtype, .uint32)
+        XCTAssertEqual(wq1.shape, [8, 8])
+        XCTAssertEqual(s1.shape, [8, 1])
+        if let b1 {
+            XCTAssertEqual(b1.shape, [8, 1])
+        } else {
+            XCTFail("b1 should not be nil")
+        }
+
+        let (wq2, s2, b2) = quantized(a, groupSize: 32, mode: .mxfp4)
+        XCTAssertEqual(wq2.dtype, .uint32)
+        XCTAssertEqual(wq2.shape, [8, 8])
+        XCTAssertEqual(s2.shape, [8, 2])
+        XCTAssertNil(b2)
+    }
+
 }

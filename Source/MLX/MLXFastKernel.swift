@@ -19,9 +19,9 @@ extension DType: KernelTemplateArg {}
 extension MLXFast {
 
     /// Container for a kernel created by
-    /// ``metalKernel(name:inputNames:outputNames:source:header:ensureRowContiguous:atomicOutputs:template:grid:threadGroup:outputShapes:outputDTypes:initValue:verbose:)``
+    /// ``callAsFunction(_:template:grid:threadGroup:outputShapes:outputDTypes:initValue:verbose:stream:)``
     ///
-    /// The ``callAsFunction(_:stream:)`` can be used to evaluate the kernel with inputs:
+    /// The ``callAsFunction(_:template:grid:threadGroup:outputShapes:outputDTypes:initValue:verbose:stream:)`` can be used to evaluate the kernel with inputs:
     ///
     /// ```swift
     /// let a = normal([2, 2])

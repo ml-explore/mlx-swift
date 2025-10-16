@@ -42,7 +42,7 @@ mlx_distributed_group_split(mlx_distributed_group group, int color, int key);
 /**
  * Check if distributed is available.
  */
-bool mlx_distributed_is_available();
+bool mlx_distributed_is_available(void);
 
 /**
  * Initialize distributed.

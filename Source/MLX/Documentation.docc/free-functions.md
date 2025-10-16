@@ -195,9 +195,9 @@ operations as methods for convenience.
 
 ### Quantization
 
-- ``quantized(_:groupSize:bits:stream:)``
-- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
-- ``dequantized(_:scales:biases:groupSize:bits:stream:)``
+- ``quantized(_:groupSize:bits:mode:stream:)``
+- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+- ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
 
 ### Evaluation and Transformation
 

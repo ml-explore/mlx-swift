@@ -22,7 +22,7 @@ extension LoadSaveError: LocalizedError {
 /// Save array to a binary file in `.npy` format.
 ///
 /// - Parameters:
-///     - a: array to save
+///     - array: array to save
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///
@@ -47,7 +47,7 @@ public func save(array: MLXArray, url: URL, stream: StreamOrDevice = .default) t
 /// Save dictionary of arrays in `safetensors` format.
 ///
 /// - Parameters:
-///     - a: array to save
+///     - arrays: array to save
 ///     - metadata: metadata to save
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
@@ -294,7 +294,7 @@ public func saveToData(
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``saveToData(arrays:metadata:stream:)``
+/// - ``saveToData(arrays:metadata:)``
 /// - ``loadArraysAndMetadata(data:stream:)``
 public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [String: MLXArray] {
     let reader = new_mlx_io_reader_dataIO(data)
@@ -319,7 +319,7 @@ public func loadArrays(data: Data, stream: StreamOrDevice = .cpu) throws -> [Str
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``saveToData(arrays:metadata:stream:)``
+/// - ``saveToData(arrays:metadata:)``
 /// - ``loadArrays(data:stream:)``
 public func loadArraysAndMetadata(data: Data, stream: StreamOrDevice = .cpu) throws -> (
     [String: MLXArray], [String: String]
