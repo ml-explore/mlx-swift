@@ -72,12 +72,12 @@ public final class Device: @unchecked Sendable, Equatable {
 
     /// static CPU device
     ///
-    /// See ``withDefaultDevice(_:_:)``
+    /// See ``withDefaultDevice(_:_:)-17vjl``
     static public let cpu: Device = Device(.cpu)
 
     /// static GPU device
     ///
-    /// See ``withDefaultDevice(_:_:)``
+    /// See ``withDefaultDevice(_:_:)-17vjl``
     static public let gpu: Device = Device(.gpu)
 
     public var deviceType: DeviceType? {
@@ -133,7 +133,7 @@ public final class Device: @unchecked Sendable, Equatable {
         _tlDefaultDevice.defaultStream
     }
 
-    /// Set the default device globally.  Prefer the scoped version, ``withDefaultDevice(_:_:)``.
+    /// Set the default device globally.  Prefer the scoped version, ``withDefaultDevice(_:_:)-17vjl``.
     ///
     /// For example:
     ///
@@ -144,7 +144,7 @@ public final class Device: @unchecked Sendable, Equatable {
     /// By default this is ``gpu``.
     ///
     /// ### See Also
-    /// - ``withDefaultDevice(_:_:)``
+    /// - ``withDefaultDevice(_:_:)-17vjl``
     /// - ``StreamOrDevice/default``
     @available(*, deprecated, message: "please use withDefaultDevice()")
     static public func setDefault(device: Device?) {

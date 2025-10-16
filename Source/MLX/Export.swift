@@ -35,7 +35,7 @@ import Foundation
 /// - Returns: a helper (``FunctionExporterSingle``) that records the call
 ///
 /// ### See Also
-/// - ``exportFunctions(to:shapeless:_:export:)``
+/// - ``exportFunctions(to:shapeless:_:build:)``
 /// - ``importFunction(from:)``
 public func exportFunction(
     to url: URL, shapeless: Bool = false, _ f: @escaping ([MLXArray]) -> [MLXArray]
@@ -150,7 +150,7 @@ public final class FunctionExporterSingle {
     }
 }
 
-/// A helper for ``exportFunctions(to:shapeless:_:export:)``.
+/// A helper for ``exportFunctions(to:shapeless:_:build:)``.
 ///
 /// This records the call to the function and saves it to the file.
 ///
@@ -170,7 +170,7 @@ public final class FunctionExporterSingle {
 /// ```
 ///
 /// ### See Also
-/// - ``exportFunctions(to:shapeless:_:export:)``
+/// - ``exportFunctions(to:shapeless:_:build:)``
 @dynamicCallable
 public final class FunctionExporterMultiple {
     let exporter: mlx_function_exporter
@@ -227,7 +227,7 @@ public final class FunctionExporterMultiple {
 /// - Returns: a callable that represents the loaded function
 /// ### See Also
 /// - ``exportFunction(to:shapeless:_:)``
-/// - ``exportFunctions(to:shapeless:_:export:)``
+/// - ``exportFunctions(to:shapeless:_:build:)``
 public func importFunction(from url: URL) throws -> ImportedFunction {
     try ImportedFunction(url: url)
 }

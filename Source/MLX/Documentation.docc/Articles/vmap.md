@@ -28,8 +28,8 @@ let manual = stacked((0 ..< 3).map { f(x[$0]) }, axis: 0)
 
 Both approaches produce the same array.
 
-The ``inAxes`` parameter controls which axis of each input to map over. Passing
-``nil`` for an input disables mapping for that value. The ``outAxes`` parameter
+The `inAxes` parameter controls which axis of each input to map over. Passing
+`nil` for an input disables mapping for that value. The `outAxes` parameter
 specifies the axis of each output where the batched results are stacked.
 
 ```swift
@@ -42,7 +42,7 @@ Here `x` is mapped over its first axis while `y` is used as a broadcast value.
 ## Nested Mapping
 
 You can nest calls to ``vmap(_:inAxes:outAxes:)`` to map over multiple axes.
-Each nested ``vmap`` introduces another batch dimension in the result.
+Each nested `vmap` introduces another batch dimension in the result.
 
 ## Topics
 

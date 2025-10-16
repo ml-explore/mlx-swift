@@ -1734,7 +1734,6 @@ extension MLXArray {
     /// Add a size one dimension at the given axis.
     ///
     /// - Parameters:
-    ///     - array: input array
     ///     - axes: indexes of the inserted dimensions
     ///     - stream: stream or device to evaluate on
     ///
@@ -1752,7 +1751,6 @@ extension MLXArray {
     /// Add a size one dimension at the given axis.
     ///
     /// - Parameters:
-    ///     - array: input array
     ///     - axis: index of the inserted dimension
     ///     - stream: stream or device to evaluate on
     ///

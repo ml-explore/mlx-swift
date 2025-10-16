@@ -118,7 +118,8 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    /// - ``asData(noCopy:)``
+    /// - ``asData(access:)``
+    /// - ``asData(noCopy:disambiguate:)``
     /// - ``asMTLBuffer(device:noCopy:)``
     public func asArray<T: HasDType>(_ type: T.Type) -> [T] {
         if type.dtype != self.dtype {
@@ -154,7 +155,7 @@ extension MLXArray {
         case noCopy
     }
 
-    /// Container for ``Data`` backing of ``MLXArray``.
+    /// Container for `Data` backing of ``MLXArray``.
     ///
     /// ### See Also
     /// - ``MLXArray/asData(access:)``
@@ -191,7 +192,7 @@ extension MLXArray {
             dType: self.dtype)
     }
 
-    /// Return the contents as ``Data`` bytes in the native ``dtype``.
+    /// Return the contents as `Data` bytes in the native ``dtype``.
     ///
     /// > If you use ``AccessMethod/noCopy`` or ``AccessMethod/noCopyIfContiguous`` you
     /// must guarantee that the lifetime of the ``MLXArray`` exceeds the lifetime of the result.
