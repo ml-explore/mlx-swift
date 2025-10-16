@@ -783,8 +783,8 @@ public func convGeneral(
 /// ### See Also
 /// - <doc:convolution>
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convTransposed2d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed2d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
+/// - ``convTransposed3d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
 public func convTransposed1d(
     _ array: MLXArray, _ weight: MLXArray, stride: Int = 1, padding: Int = 0,
@@ -832,8 +832,8 @@ public func convTransposed1d(
 /// - <doc:convolution>
 /// - ``IntOrPair``
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convTransposed1d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed1d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
+/// - ``convTransposed3d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
 /// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
 public func convTransposed2d(
@@ -883,8 +883,8 @@ public func convTransposed2d(
 /// - <doc:convolution>
 /// - ``IntOrTriple``
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convTransposed1d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convTransposed3d(_:_:stride:padding:dilation:groups:stream:)``
+/// - ``convTransposed1d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
+/// - ``convTransposed3d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
 /// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
 public func convTransposed3d(
@@ -1052,8 +1052,8 @@ public enum QuantizationMode: String, Codable, Sendable {
 ///   - stream: Stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``quantized(_:groupSize:bits:stream:)``
-/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
+/// - ``quantized(_:groupSize:bits:mode:stream:)``
+/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func dequantized(
     _ w: MLXArray, scales: MLXArray, biases: MLXArray?, groupSize: Int = 64, bits: Int = 4,
     mode: QuantizationMode = .affine,
@@ -1308,10 +1308,10 @@ public func gatherMatmul(
 
 /// Perform quantized matrix multiplication with matrix-level gather.
 ///
-/// This operation is the quantized equivalent to ``gatherMatmul(_:_:lhsIndices:rhsIndices:stream:)``
+/// This operation is the quantized equivalent to ``gatherMatmul(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)``
 ///
-/// Note that ``scales`` and ``biases`` must have the same batch dimensions
-/// as ``w`` since they represent the same quantized matrix.
+/// Note that `scales` and `biases` must have the same batch dimensions
+/// as `w` since they represent the same quantized matrix.
 ///
 /// - Parameters:
 ///   - x: The input matrix
@@ -1329,7 +1329,7 @@ public func gatherMatmul(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
+/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func gatherQuantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
@@ -1933,7 +1933,7 @@ public func outer(
     return MLXArray(result)
 }
 
-/// Mode for ``padded(_:width:value:stream:)``
+/// Mode for ``padded(_:width:mode:value:stream:)``
 public enum PadMode: String {
     /// pads with constant value
     case constant
@@ -1953,7 +1953,7 @@ public enum PadMode: String {
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``padded(_:widths:value:stream:)``
+/// - ``padded(_:widths:mode:value:stream:)``
 public func padded(
     _ array: MLXArray, width: IntOrPair, mode: PadMode = .constant, value: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -1983,7 +1983,7 @@ public func padded(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``padded(_:width:value:stream:)``
+/// - ``padded(_:width:mode:value:stream:)``
 public func padded(
     _ array: MLXArray, widths: [IntOrPair], mode: PadMode = .constant, value: MLXArray? = nil,
     stream: StreamOrDevice = .default
@@ -2118,8 +2118,8 @@ public func putAlong(
 /// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html)
 ///
 /// ### See Also
-/// - ``dequantized(_:scales:biases:groupSize:bits:stream:)``
-/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:stream:)``
+/// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func quantized(
     _ w: MLXArray, groupSize: Int = 64, bits: Int = 4,
     mode: QuantizationMode = .affine,
@@ -2153,8 +2153,8 @@ public func quantized(
 ///   - stream: Stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``dequantized(_:scales:biases:groupSize:bits:stream:)``
-/// - ``quantized(_:groupSize:bits:stream:)``
+/// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+/// - ``quantized(_:groupSize:bits:mode:stream:)``
 public func quantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     transpose: Bool = true,
@@ -2871,7 +2871,7 @@ public func which<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(result)
 }
 
-/// Compute the Kronecker product of two arrays ``a`` and ``b``.
+/// Compute the Kronecker product of two arrays `a` and `b`.
 ///
 /// - Parameters:
 ///     - a: input array
@@ -2887,10 +2887,10 @@ public func kron(
 
 /// Flatten an array.
 ///
-/// The axes flattened will be between ``start_axis`` and ``end_axis``,
+/// The axes flattened will be between `start_axis` and `end_axis`,
 /// inclusive. Negative axes are supported. After converting negative axis to
 /// positive, axes outside the valid range will be clamped to a valid value,
-/// ``start_axis`` to ``0`` and ``end_axis`` to ``ndim - 1``.
+/// `start_axis` to `0` and `end_axis` to `ndim - 1`.
 ///
 /// - Parameters:
 ///     - a: input array
