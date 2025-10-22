@@ -98,6 +98,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``MLXArray/.>=(_:_:)-6zxj9``
 - ``MLXArray/.&&(_:_:)``
 - ``MLXArray/.||(_:_:)``
+- ``MLXArray/~(_:)``
 - ``MLXArray/&(_:_:)-9in7a``
 - ``MLXArray/&(_:_:)-8js41``
 - ``MLXArray/&(_:_:)-7iu4h``
@@ -146,6 +147,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``atan2(_:_:stream:)``
 - ``atanh(_:stream:)``
 - ``bitwiseAnd(_:_:stream:)``
+- ``bitwiseInvert(_:stream:)``
 - ``bitwiseOr(_:_:stream:)``
 - ``bitwiseXOr(_:_:stream:)``
 - ``ceil(_:stream:)``
