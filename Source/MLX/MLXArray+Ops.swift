@@ -681,6 +681,20 @@ extension MLXArray {
         return MLXArray(result)
     }
 
+    /// Unary element-wise bitwise invert.
+    ///
+    /// Apply bitwise inversion to the values in the array.
+    ///
+    /// ### See Also
+    /// - <doc:arithmetic>
+    /// - ``bitwiseInvert(_:stream:)``
+    public static prefix func ~ (lhs: MLXArray) -> MLXArray {
+        let s = StreamOrDevice.default
+        var result = mlx_array_new()
+        mlx_bitwise_invert(&result, lhs.ctx, s.ctx)
+        return MLXArray(result)
+    }
+
     /// Element-wise bitwise and.
     ///
     /// Take the bitwise and of two arrays with numpy-style broadcasting
