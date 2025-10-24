@@ -34,7 +34,7 @@ public struct ArrayAt {
     /// ### See Also
     ///     - ``MLXArray/at``
     ///     - ``ArrayAtIndices``
-    public subscript(indices: MLXArrayIndex..., stream stream: StreamOrDevice = .default)
+    public subscript(indices: any MLXArrayIndex..., stream stream: StreamOrDevice = .default)
         -> ArrayAtIndices
     {
         get {
@@ -58,7 +58,9 @@ public struct ArrayAt {
     /// ### See Also
     ///     - ``MLXArray/at``
     ///     - ``ArrayAtIndices``
-    public subscript(indices: [MLXArrayIndex], stream stream: StreamOrDevice = .default)
+    public subscript(indices: some Sequence<any MLXArrayIndex>,
+        stream stream: StreamOrDevice = .default
+    )
         -> ArrayAtIndices
     {
         get {
@@ -99,7 +101,7 @@ public struct ArrayAtIndices {
     ///
     /// ### See Also
     ///     - ``MLXArray/at``
-    public func add(_ values: ScalarOrArray) -> MLXArray {
+    public func add(_ values: some ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
             src: array, operations: indexOperations, update: values, stream: stream)
@@ -128,7 +130,7 @@ public struct ArrayAtIndices {
     ///
     /// ### See Also
     ///     - ``MLXArray/at``
-    public func subtract(_ values: ScalarOrArray) -> MLXArray {
+    public func subtract(_ values: some ScalarOrArray) -> MLXArray {
         add(-values.asMLXArray(dtype: array.dtype))
     }
 
@@ -142,7 +144,7 @@ public struct ArrayAtIndices {
     ///
     /// ### See Also
     ///     - ``MLXArray/at``
-    public func multiply(_ values: ScalarOrArray) -> MLXArray {
+    public func multiply(_ values: some ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
             src: array, operations: indexOperations, update: values, stream: stream)
@@ -171,7 +173,7 @@ public struct ArrayAtIndices {
     ///
     /// ### See Also
     ///     - ``MLXArray/at``
-    public func divide(_ values: ScalarOrArray) -> MLXArray {
+    public func divide(_ values: some ScalarOrArray) -> MLXArray {
         multiply(values.asMLXArray(dtype: array.dtype).reciprocal())
     }
 
@@ -185,7 +187,7 @@ public struct ArrayAtIndices {
     ///
     /// ### See Also
     ///     - ``MLXArray/at``
-    public func minimum(_ values: ScalarOrArray) -> MLXArray {
+    public func minimum(_ values: some ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
             src: array, operations: indexOperations, update: values, stream: stream)
@@ -214,7 +216,7 @@ public struct ArrayAtIndices {
     ///
     /// ### See Also
     ///     - ``MLXArray/at``
-    public func maximum(_ values: ScalarOrArray) -> MLXArray {
+    public func maximum(_ values: some ScalarOrArray) -> MLXArray {
         let values = values.asMLXArray(dtype: array.dtype)
         let (indices, update, axes) = scatterArguments(
             src: array, operations: indexOperations, update: values, stream: stream)

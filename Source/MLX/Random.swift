@@ -148,8 +148,8 @@ public enum MLXRandom {
     /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
     /// ```
     public static func uniform<R: HasDType, T>(
-        _ range: Range<R>, _ shape: [Int] = [], type: T.Type = Float.self,
-        key: RandomStateOrKey? = nil,
+        _ range: Range<R>, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let lb = MLXArray(range.lowerBound)
@@ -173,8 +173,9 @@ public enum MLXRandom {
     /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
     /// ```
     public static func uniform<T>(
-        _ range: Range<Float> = 0 ..< 1, _ shape: [Int] = [], type: T.Type = Float.self,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        _ range: Range<Float> = 0 ..< 1, _ shape: some Collection<Int> = [],
+        type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let lb = MLXArray(range.lowerBound)
         let ub = MLXArray(range.upperBound)
@@ -203,11 +204,12 @@ public enum MLXRandom {
     /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
     /// ```
     public static func uniform<T>(
-        low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        low: some ScalarOrArray, high: some ScalarOrArray,
+        _ shape: (some Collection<Int>)? = [Int]?.none, type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let (low, high) = toArrays(low, high)
-        let shape = shape ?? low.shape
+        let shape = shape.map { Array($0) } ?? low.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
 
@@ -233,11 +235,12 @@ public enum MLXRandom {
     /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
     /// ```
     public static func uniform(
-        low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        low: some ScalarOrArray, high: some ScalarOrArray,
+        _ shape: (some Collection<Int>)? = [Int]?.none, dtype: DType,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let (low, high) = toArrays(low, high)
-        let shape = shape ?? low.shape
+        let shape = shape.map { Array($0) } ?? low.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
 
@@ -271,8 +274,9 @@ public enum MLXRandom {
     ///   - scale: standard deviation of the distribution
     ///   - key: PRNG key
     public static func normal<T>(
-        _ shape: [Int] = [], type: T.Type = Float.self, loc: Float = 0, scale: Float = 1,
-        key: RandomStateOrKey? = nil,
+        _ shape: some Collection<Int> = [], type: T.Type = Float.self, loc: Float = 0,
+        scale: Float = 1,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let key = resolve(key: key)
@@ -306,8 +310,8 @@ public enum MLXRandom {
     ///   - scale: standard deviation of the distribution
     ///   - key: PRNG key
     public static func normal(
-        _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
-        key: RandomStateOrKey? = nil,
+        _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         let key = resolve(key: key)
@@ -336,8 +340,8 @@ public enum MLXRandom {
     ///   - dtype: DType of the result
     ///   - key: PRNG key
     public static func multivariateNormal(
-        mean: MLXArray, covariance: MLXArray, shape: [Int] = [], dtype: DType = .float32,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        mean: MLXArray, covariance: MLXArray, shape: some Collection<Int> = [], dtype: DType,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let key = resolve(key: key)
         var result = mlx_array_new()
@@ -365,7 +369,8 @@ public enum MLXRandom {
     /// let array = MLXRandom.randInt(Int32(0) ..< 100, [50], key: key)
     /// ```
     public static func randInt<T>(
-        _ range: Range<T>, _ shape: [Int] = [], key: RandomStateOrKey? = nil,
+        _ range: Range<T>, _ shape: some Collection<Int> = [],
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryInteger {
         let lb = MLXArray(range.lowerBound)
@@ -394,12 +399,13 @@ public enum MLXRandom {
     /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], key: key)
     /// ```
     public static func randInt(
-        low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil,
-        key: RandomStateOrKey? = nil,
+        low: some ScalarOrArray, high: some ScalarOrArray,
+        _ shape: (some Collection<Int>)? = [Int]?.none,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         let (low, high) = toArrays(low, high)
-        let shape = shape ?? low.shape
+        let shape = shape.map { Array($0) } ?? low.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
 
@@ -425,11 +431,13 @@ public enum MLXRandom {
     /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], type: Int8.self, key: key)
     /// ```
     public static func randInt<T>(
-        low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        low: some ScalarOrArray, high: some ScalarOrArray,
+        _ shape: (some Collection<Int>)? = [Int]?.none,
+        type: T.Type,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryInteger {
         let (low, high) = toArrays(low, high)
-        let shape = shape ?? low.shape
+        let shape = shape.map { Array($0) } ?? low.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
 
@@ -455,7 +463,8 @@ public enum MLXRandom {
     /// let array = MLXRandom.bernoulli([50, 2], key: key)
     /// ```
     public static func bernoulli(
-        _ shape: [Int] = [], key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int> = [], key: (some RandomStateOrKey)? = MLXArray?.none,
+        stream: StreamOrDevice = .default
     )
         -> MLXArray
     {
@@ -486,11 +495,12 @@ public enum MLXRandom {
     /// let array = MLXRandom.bernoulli(MLXArray(convert: [0.1, 0.5, 0.8]), key: key)
     /// ```
     public static func bernoulli(
-        _ p: ScalarOrArray, _ shape: [Int]? = nil, key: RandomStateOrKey? = nil,
+        _ p: some ScalarOrArray, _ shape: (some Collection<Int>)? = [Int]?.none,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         let p = p.asMLXArray(dtype: .float32)
-        let shape = shape ?? p.shape
+        let shape = shape.map { Array($0) } ?? p.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
         mlx_random_bernoulli(&result, p.ctx, shape.asInt32, shape.count, key.ctx, stream.ctx)
@@ -517,8 +527,8 @@ public enum MLXRandom {
     /// ### See also
     /// - [JAX Documentation](https://jax.readthedocs.io/en/latest/_modules/jax/_src/random.html#truncated_normal)
     public static func truncatedNormal<R: HasDType, T>(
-        _ range: Range<R>, _ shape: [Int] = [], type: T.Type = Float.self,
-        key: RandomStateOrKey? = nil,
+        _ range: Range<R>, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let lb = MLXArray(range.lowerBound)
@@ -542,8 +552,8 @@ public enum MLXRandom {
     /// let array = MLXRandom.truncatedNormal(0.5 ..< 1, [50], key: key)
     /// ```
     public static func truncatedNormal<T>(
-        _ range: Range<Float>, _ shape: [Int] = [], type: T.Type = Float.self,
-        key: RandomStateOrKey? = nil,
+        _ range: Range<Float>, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let lb = MLXArray(range.lowerBound)
@@ -572,11 +582,13 @@ public enum MLXRandom {
     /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
     /// ```
     public static func truncatedNormal<T>(
-        low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        low: some ScalarOrArray, high: some ScalarOrArray,
+        _ shape: (some Collection<Int>)? = [Int]?.none,
+        type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let (low, high) = toArrays(low, high)
-        let shape = shape ?? low.shape
+        let shape = shape.map { Array($0) } ?? low.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
 
@@ -601,11 +613,13 @@ public enum MLXRandom {
     /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
     /// ```
     public static func truncatedNormal(
-        low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        low: some ScalarOrArray, high: some ScalarOrArray,
+        _ shape: (some Collection<Int>)? = [Int]?.none,
+        dtype: DType,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let (low, high) = toArrays(low, high)
-        let shape = shape ?? low.shape
+        let shape = shape.map { Array($0) } ?? low.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
 
@@ -632,7 +646,8 @@ public enum MLXRandom {
     /// let array = MLXRandom.gumbel([10, 5], key: key)
     /// ```
     public static func gumbel<T>(
-        _ shape: [Int] = [], type: T.Type = Float.self, key: RandomStateOrKey? = nil,
+        _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
         let key = resolve(key: key)
@@ -659,7 +674,8 @@ public enum MLXRandom {
     /// let array = MLXRandom.gumbel([10, 5], key: key)
     /// ```
     public static func gumbel(
-        _ shape: [Int] = [], dtype: DType = .float32, key: RandomStateOrKey? = nil,
+        _ shape: some Collection<Int> = [], dtype: DType,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         let key = resolve(key: key)
@@ -689,7 +705,8 @@ public enum MLXRandom {
     /// - Parameters:
     ///     - logits: The *unnormalized* categorical distribution(s).
     public static func categorical(
-        _ logits: MLXArray, axis: Int = -1, shape: [Int]? = nil, key: RandomStateOrKey? = nil,
+        _ logits: MLXArray, axis: Int = -1, shape: (some Collection<Int>)? = [Int]?.none,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         let key = resolve(key: key)
@@ -725,7 +742,8 @@ public enum MLXRandom {
     /// - Parameters:
     ///     - logits: The *unnormalized* categorical distribution(s).
     public static func categorical(
-        _ logits: MLXArray, axis: Int = -1, count: Int, key: RandomStateOrKey? = nil,
+        _ logits: MLXArray, axis: Int = -1, count: Int,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         let key = resolve(key: key)
@@ -745,8 +763,8 @@ public enum MLXRandom {
     ///   - loc: mean of the distribution
     ///   - scale: scale "b" of the distribution
     public static func laplace(
-        _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
-        key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
+        key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         let key = resolve(key: key)
         var result = mlx_array_new()
@@ -809,7 +827,8 @@ public func split(key: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray
 /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
 /// ```
 public func uniform<R: HasDType, T>(
-    _ range: Range<R>, _ shape: [Int] = [], type: T.Type = Float.self, key: RandomStateOrKey? = nil,
+    _ range: Range<R>, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.uniform(range, shape, type: type, key: key, stream: stream)
@@ -824,8 +843,8 @@ public func uniform<R: HasDType, T>(
 /// let array = MLXRandom.uniform(0.5 ..< 1, [50], key: key)
 /// ```
 public func uniform<T>(
-    _ range: Range<Float> = 0 ..< 1, _ shape: [Int] = [], type: T.Type = Float.self,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    _ range: Range<Float> = 0 ..< 1, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.uniform(range, shape, type: type, key: key, stream: stream)
 }
@@ -845,8 +864,10 @@ public func uniform<T>(
 /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
 /// ```
 public func uniform<T>(
-    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    low: some ScalarOrArray, high: some ScalarOrArray,
+    _ shape: (some Collection<Int>)? = [Int]?.none,
+    type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.uniform(low: low, high: high, shape, type: type, key: key, stream: stream)
 }
@@ -866,8 +887,9 @@ public func uniform<T>(
 /// let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
 /// ```
 public func uniform(
-    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    low: some ScalarOrArray, high: some ScalarOrArray,
+    _ shape: (some Collection<Int>)? = [Int]?.none, dtype: DType,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.uniform(low: low, high: high, shape, dtype: dtype, key: key, stream: stream)
 }
@@ -894,8 +916,8 @@ public func uniform(
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
 public func normal<T>(
-    _ shape: [Int] = [], type: T.Type = Float.self, loc: Float = 0, scale: Float = 1,
-    key: RandomStateOrKey? = nil,
+    _ shape: some Collection<Int> = [], type: T.Type = Float.self, loc: Float = 0, scale: Float = 1,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.normal(shape, type: type, loc: loc, scale: scale, key: key, stream: stream)
@@ -923,8 +945,8 @@ public func normal<T>(
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
 public func normal(
-    _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
-    key: RandomStateOrKey? = nil,
+    _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.normal(shape, dtype: dtype, loc: loc, scale: scale, key: key, stream: stream)
@@ -947,8 +969,8 @@ public func normal(
 ///   - dtype: DType of the result
 ///   - key: PRNG key
 public func multivariateNormal(
-    mean: MLXArray, covariance: MLXArray, shape: [Int] = [], dtype: DType = .float32,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    mean: MLXArray, covariance: MLXArray, shape: some Collection<Int> = [], dtype: DType,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.multivariateNormal(
         mean: mean, covariance: covariance, shape: shape, dtype: dtype, key: key, stream: stream)
@@ -970,7 +992,8 @@ public func multivariateNormal(
 /// let array = MLXRandom.randInt(Int32(0) ..< 100, [50], key: key)
 /// ```
 public func randInt<T>(
-    _ range: Range<T>, _ shape: [Int] = [], key: RandomStateOrKey? = nil,
+    _ range: Range<T>, _ shape: some Collection<Int> = [],
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryInteger {
     return MLXRandom.randInt(range, shape, key: key, stream: stream)
@@ -990,7 +1013,9 @@ public func randInt<T>(
 /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], key: key)
 /// ```
 public func randInt(
-    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, key: RandomStateOrKey? = nil,
+    low: some ScalarOrArray, high: some ScalarOrArray,
+    _ shape: (some Collection<Int>)? = [Int]?.none,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.randInt(low: low, high: high, shape, key: key, stream: stream)
@@ -1011,8 +1036,10 @@ public func randInt(
 /// let array = MLXRandom.randInt(low: [0, 10], high: [10, 100], type: Int8.self, key: key)
 /// ```
 public func randInt<T>(
-    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    low: some ScalarOrArray, high: some ScalarOrArray,
+    _ shape: (some Collection<Int>)? = [Int]?.none,
+    type: T.Type,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryInteger {
     return MLXRandom.randInt(low: low, high: high, shape, type: type, key: key, stream: stream)
 }
@@ -1032,7 +1059,8 @@ public func randInt<T>(
 /// let array = MLXRandom.bernoulli([50, 2], key: key)
 /// ```
 public func bernoulli(
-    _ shape: [Int] = [], key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int> = [], key: (some RandomStateOrKey)? = MLXArray?.none,
+    stream: StreamOrDevice = .default
 )
     -> MLXArray
 {
@@ -1058,7 +1086,8 @@ public func bernoulli(
 /// let array = MLXRandom.bernoulli(MLXArray(convert: [0.1, 0.5, 0.8]), key: key)
 /// ```
 public func bernoulli(
-    _ p: ScalarOrArray, _ shape: [Int]? = nil, key: RandomStateOrKey? = nil,
+    _ p: some ScalarOrArray, _ shape: (some Collection<Int>)? = [Int]?.none,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.bernoulli(p, shape, key: key, stream: stream)
@@ -1083,7 +1112,8 @@ public func bernoulli(
 /// ### See also
 /// - [JAX Documentation](https://jax.readthedocs.io/en/latest/_modules/jax/_src/random.html#truncated_normal)
 public func truncatedNormal<R: HasDType, T>(
-    _ range: Range<R>, _ shape: [Int] = [], type: T.Type = Float.self, key: RandomStateOrKey? = nil,
+    _ range: Range<R>, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.truncatedNormal(range, shape, type: type, key: key, stream: stream)
@@ -1098,8 +1128,8 @@ public func truncatedNormal<R: HasDType, T>(
 /// let array = MLXRandom.truncatedNormal(0.5 ..< 1, [50], key: key)
 /// ```
 public func truncatedNormal<T>(
-    _ range: Range<Float>, _ shape: [Int] = [], type: T.Type = Float.self,
-    key: RandomStateOrKey? = nil,
+    _ range: Range<Float>, _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.truncatedNormal(range, shape, type: type, key: key, stream: stream)
@@ -1119,8 +1149,10 @@ public func truncatedNormal<T>(
 /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
 /// ```
 public func truncatedNormal<T>(
-    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, type: T.Type = Float.self,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    low: some ScalarOrArray, high: some ScalarOrArray,
+    _ shape: (some Collection<Int>)? = [Int]?.none,
+    type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.truncatedNormal(
         low: low, high: high, shape, type: type, key: key, stream: stream)
@@ -1140,8 +1172,10 @@ public func truncatedNormal<T>(
 /// let value = MLXRandom.truncatedNormal([0, 10], [10, 100], key: key)
 /// ```
 public func truncatedNormal(
-    low: ScalarOrArray, high: ScalarOrArray, _ shape: [Int]? = nil, dtype: DType = .float32,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    low: some ScalarOrArray, high: some ScalarOrArray,
+    _ shape: (some Collection<Int>)? = [Int]?.none,
+    dtype: DType,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.truncatedNormal(
         low: low, high: high, shape, dtype: dtype, key: key, stream: stream)
@@ -1162,7 +1196,8 @@ public func truncatedNormal(
 /// let array = MLXRandom.gumbel([10, 5], key: key)
 /// ```
 public func gumbel<T>(
-    _ shape: [Int] = [], type: T.Type = Float.self, key: RandomStateOrKey? = nil,
+    _ shape: some Collection<Int> = [], type: T.Type = Float.self,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: HasDType, T: BinaryFloatingPoint {
     return MLXRandom.gumbel(shape, type: type, key: key, stream: stream)
@@ -1183,7 +1218,8 @@ public func gumbel<T>(
 /// let array = MLXRandom.gumbel([10, 5], key: key)
 /// ```
 public func gumbel(
-    _ shape: [Int] = [], dtype: DType = .float32, key: RandomStateOrKey? = nil,
+    _ shape: some Collection<Int> = [], dtype: DType,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.gumbel(shape, dtype: dtype, key: key, stream: stream)
@@ -1208,7 +1244,8 @@ public func gumbel(
 /// - Parameters:
 ///     - logits: The *unnormalized* categorical distribution(s).
 public func categorical(
-    _ logits: MLXArray, axis: Int = -1, shape: [Int]? = nil, key: RandomStateOrKey? = nil,
+    _ logits: MLXArray, axis: Int = -1, shape: (some Collection<Int>)? = [Int]?.none,
+    key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.categorical(logits, axis: axis, shape: shape, key: key, stream: stream)
@@ -1231,7 +1268,7 @@ public func categorical(
 /// - Parameters:
 ///     - logits: The *unnormalized* categorical distribution(s).
 public func categorical(
-    _ logits: MLXArray, axis: Int = -1, count: Int, key: RandomStateOrKey? = nil,
+    _ logits: MLXArray, axis: Int = -1, count: Int, key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.categorical(logits, axis: axis, count: count, key: key, stream: stream)
@@ -1245,8 +1282,8 @@ public func categorical(
 ///   - loc: mean of the distribution
 ///   - scale: scale "b" of the distribution
 public func laplace(
-    _ shape: [Int] = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
-    key: RandomStateOrKey? = nil, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int> = [], dtype: DType = .float32, loc: Float = 0, scale: Float = 1,
+    key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXRandom.laplace(shape, dtype: dtype, loc: loc, scale: scale, key: key, stream: stream)
 }

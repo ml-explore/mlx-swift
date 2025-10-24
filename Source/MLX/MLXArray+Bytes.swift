@@ -285,7 +285,7 @@ extension MLXArray {
     /// - <doc:conversion>
     /// - ``asArray(_:)``
     /// - ``asData(access:)``
-    public func asMTLBuffer(device: any MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
+    public func asMTLBuffer(device: some MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
         self.eval()
 
         if noCopy && self.contiguousToDimension() == 0 {
@@ -304,7 +304,7 @@ extension MLXArray {
 }
 
 /// Return the strides for contiguous memory
-func contiguousStrides(shape: [Int]) -> [Int] {
+func contiguousStrides(shape: some Collection<Int>) -> [Int] {
     var result = [Int]()
     var current = 1
     for d in shape.reversed() {
