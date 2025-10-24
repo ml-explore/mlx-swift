@@ -664,7 +664,9 @@ open class Adafactor: OptimizerBase<Adafactor.State> {
 /// - Parameters:
 ///     - gradients: an array of MLXArray
 ///     - maxNorm: the maximum allowed global norm of th gradients
-public func clipGradNorm(gradients: [MLXArray], maxNorm: Float) -> ([MLXArray], MLXArray) {
+public func clipGradNorm(gradients: some Collection<MLXArray>, maxNorm: Float) -> (
+    [MLXArray], MLXArray
+) {
     let normSquared = gradients.reduce(MLXArray(0)) { $0 + $1.square().sum() }
     let totalNorm = sqrt(normSquared)
     let normalizer = maxNorm / (totalNorm + 1e-6)

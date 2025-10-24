@@ -27,9 +27,9 @@ public struct IntOrPair: ExpressibleByIntegerLiteral, ExpressibleByArrayLiteral,
         self.values = (elements[0], elements[1])
     }
 
-    public init(_ values: [Int]) {
+    public init(_ values: some Collection<Int>) {
         precondition(values.count == 2)
-        self.values = (values[0], values[1])
+        self.values = (values.first!, values[values.index(after: values.startIndex)])
     }
 
     public init(_ values: (Int, Int)) {
@@ -67,9 +67,12 @@ public struct IntOrTriple: ExpressibleByIntegerLiteral, ExpressibleByArrayLitera
         self.values = (elements[0], elements[1], elements[2])
     }
 
-    public init(_ values: [Int]) {
+    public init(_ values: some Collection<Int>) {
         precondition(values.count == 3)
-        self.values = (values[0], values[1], values[2])
+        self.values = (
+            values.first!, values[values.index(after: values.startIndex)],
+            values[values.index(values.startIndex, offsetBy: 2)]
+        )
     }
 
     public init(_ values: (Int, Int, Int)) {

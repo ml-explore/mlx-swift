@@ -6,7 +6,7 @@ import Foundation
 // MARK: - Internal Ops
 
 /// Broadcast a vector of arrays against one another.
-func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArray] {
+func broadcast(arrays: some Collection<MLXArray>, stream: StreamOrDevice = .default) -> [MLXArray] {
     let vector_array = new_mlx_vector_array(arrays)
     defer { mlx_vector_array_free(vector_array) }
 
@@ -39,8 +39,8 @@ func broadcast(arrays: [MLXArray], stream: StreamOrDevice = .default) -> [MLXArr
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``MLXArray/+(_:_:)-1rv98``
-public func add<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func add(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -80,8 +80,9 @@ public func addmm<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
 /// ### See Also
 /// - ``matmul(_:_:stream:)``
 /// - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
-public func addMM<A: ScalarOrArray, B: ScalarOrArray, C: ScalarOrArray>(
-    _ c: C, _ a: A, _ b: B, alpha: Float = 1.0, beta: Float = 1.0, stream: StreamOrDevice = .default
+public func addMM(
+    _ c: some ScalarOrArray, _ a: some ScalarOrArray, _ b: some ScalarOrArray, alpha: Float = 1.0,
+    beta: Float = 1.0, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     let (_, c) = toArrays(a, c)
@@ -359,10 +360,11 @@ public func argSort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 /// ### See Also
 /// - <doc:shapes>
 public func asStrided(
-    _ array: MLXArray, _ shape: [Int]? = nil, strides: [Int]? = nil, offset: Int = 0,
+    _ array: MLXArray, _ shape: (some Collection<Int>)? = [Int]?.none,
+    strides: (some Collection<Int>)? = [Int]?.none, offset: Int = 0,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let shape = shape ?? array.shape
+    let shape = shape.map { Array($0) } ?? array.shape
 
     let resolvedStrides: [Int64]
     if let strides {
@@ -439,7 +441,9 @@ public func blockMaskedMM(
 ///
 /// ### See Also
 /// - <doc:broadcasting>
-public func broadcast(_ array: MLXArray, to shape: [Int], stream: StreamOrDevice = .default)
+public func broadcast(
+    _ array: MLXArray, to shape: some Collection<Int>, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     var result = mlx_array_new()
@@ -473,8 +477,8 @@ public func ceil(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - <doc:arithmetic>
 /// - ``clip(_:max:stream:)``
 /// - ``clip(_:min:max:stream:)``
-public func clip<A: ScalarOrArray>(
-    _ array: MLXArray, min: A, stream: StreamOrDevice = .default
+public func clip(
+    _ array: MLXArray, min: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (array, min) = toArrays(array, min)
     var result = mlx_array_new()
@@ -495,8 +499,9 @@ public func clip<A: ScalarOrArray>(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``clip(_:max:stream:)``
-public func clip<A: ScalarOrArray, B: ScalarOrArray>(
-    _ array: MLXArray, min: A, max: B, stream: StreamOrDevice = .default
+public func clip(
+    _ array: MLXArray, min: some ScalarOrArray, max: some ScalarOrArray,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (array, min) = toArrays(array, min)
     let (_, max) = toArrays(array, max)
@@ -516,7 +521,7 @@ public func clip<A: ScalarOrArray, B: ScalarOrArray>(
 /// - <doc:arithmetic>
 /// - ``clip(_:min:stream:)``
 /// - ``clip(_:min:max:stream:)``
-public func clip<A: ScalarOrArray>(_ array: MLXArray, max: A, stream: StreamOrDevice = .default)
+public func clip(_ array: MLXArray, max: some ScalarOrArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
     let (array, max) = toArrays(array, max)
@@ -536,7 +541,9 @@ public func clip<A: ScalarOrArray>(_ array: MLXArray, max: A, stream: StreamOrDe
 ///
 /// ### See Also
 /// - <doc:shapes>
-public func concatenated(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default)
+public func concatenated(
+    _ arrays: some Collection<MLXArray>, axis: Int = 0, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     let vector_array = new_mlx_vector_array(arrays)
@@ -682,13 +689,13 @@ public func conv3d(
 /// - Parameters:
 ///   - array: Input array of shape `(N, ..., C_in)`
 ///   - weight: Weight array of shape `(C_out, ..., C_in)`
-///   - strides: `Int` or `[Int]` with kernel strides.  All dimensions get the
+///   - strides: `Int` or `some Collection<Int>` with kernel strides.  All dimensions get the
 ///   same stride if only one number is specified.
-///   - padding: `Int` or `[Int]` with input padding.  All dimensions get the
+///   - padding: `Int` or `some Collection<Int>` with input padding.  All dimensions get the
 ///   same padding if only one number is specified.
-///   - kernelDilation: `Int` or `[Int]` with kernel dilation.  All dimensions get the
+///   - kernelDilation: `Int` or `some Collection<Int>` with kernel dilation.  All dimensions get the
 ///   same dilation if only one number is specified.
-///   - inputDilation: `Int` or `[Int]` with input dilation.  All dimensions get the
+///   - inputDilation: `Int` or `some Collection<Int>` with input dilation.  All dimensions get the
 ///   same dilation if only one number is specified.
 ///   - groups: input feature groups
 ///   - flip: Flip the order in which the spatial dimensions of the weights are processed.
@@ -729,12 +736,12 @@ public func convGeneral(
 /// - Parameters:
 ///   - array: Input array of shape `(N, ..., C_in)`
 ///   - weight: Weight array of shape `(C_out, ..., C_in)`
-///   - strides: `Int` or `[Int]` with kernel strides.  All dimensions get the
+///   - strides: `Int` or `some Collection<Int>` with kernel strides.  All dimensions get the
 ///   same stride if only one number is specified.
 ///   - padding: pair of padding values to apply to all dimensions
-///   - kernelDilation: `Int` or `[Int]` with kernel dilation.  All dimensions get the
+///   - kernelDilation: `Int` or `some Collection<Int>` with kernel dilation.  All dimensions get the
 ///   same dilation if only one number is specified.
-///   - inputDilation: `Int` or `[Int]` with input dilation.  All dimensions get the
+///   - inputDilation: `Int` or `some Collection<Int>` with input dilation.  All dimensions get the
 ///   same dilation if only one number is specified.
 ///   - groups: input feature groups
 ///   - flip: Flip the order in which the spatial dimensions of the weights are processed.
@@ -923,8 +930,9 @@ public enum ConvolveMode: Sendable {
 /// - <doc:convolution>
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
-public func convolve<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, mode: ConvolveMode = .full, stream: StreamOrDevice = .default
+public func convolve(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, mode: ConvolveMode = .full,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
 
@@ -1093,8 +1101,8 @@ public func dequantized(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``divmod(_:_:stream:)``
-public func divide<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func divide(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1118,8 +1126,8 @@ public func divide<A: ScalarOrArray, B: ScalarOrArray>(
 /// - <doc:arithmetic>
 /// - ``divide(_:_:stream:)``
 /// - ``remainder(_:_:stream:)``
-public func divmod<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func divmod(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> (MLXArray, MLXArray) {
     let (a, b) = toArrays(a, b)
     var vec = mlx_vector_array_new()
@@ -1147,7 +1155,9 @@ public func einsum(_ subscripts: String, _ operands: MLXArray..., stream: Stream
 ///   - subscripts: Einstein summation convention equation
 ///   - operands: input arrays
 ///   - stream: stream or device to evaluate on
-public func einsum(_ subscripts: String, operands: [MLXArray], stream: StreamOrDevice = .default)
+public func einsum(
+    _ subscripts: String, operands: some Collection<MLXArray>, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     let operands = new_mlx_vector_array(operands)
@@ -1180,8 +1190,8 @@ public func einsum(_ subscripts: String, operands: [MLXArray], stream: StreamOrD
 ///
 /// ### See Also
 /// - <doc:logical>
-public func equal<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func equal(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1235,7 +1245,9 @@ public func erfInverse(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 /// ### See Also
 /// - <doc:shapes>
 /// - ``expandedDimensions(_:axis:stream:)``
-public func expandedDimensions(_ array: MLXArray, axes: [Int], stream: StreamOrDevice = .default)
+public func expandedDimensions(
+    _ array: MLXArray, axes: some Collection<Int>, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     var result = mlx_array_new()
@@ -1380,8 +1392,8 @@ public func gatherQuantizedMatmul(
 ///
 /// ### See Also
 /// - <doc:logical>
-public func greater<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func greater(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1411,8 +1423,8 @@ public func greater<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:logical>
-public func greaterEqual<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func greaterEqual(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1586,8 +1598,8 @@ public func isPosInf(_ array: MLXArray, stream: StreamOrDevice = .default) -> ML
 ///
 /// ### See Also
 /// - <doc:logical>
-public func less<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func less(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1617,8 +1629,8 @@ public func less<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:logical>
-public func lessEqual<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func lessEqual(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1640,8 +1652,8 @@ public func lessEqual<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func logAddExp<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func logAddExp(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1673,8 +1685,8 @@ public func logAddExp<A: ScalarOrArray, B: ScalarOrArray>(
 /// - <doc:arithmetic>
 /// - <doc:logical>
 /// - ``MLXArray/.&&(_:_:)``
-public func logicalAnd<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func logicalAnd(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1729,8 +1741,8 @@ public func logicalNot(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 /// - <doc:arithmetic>
 /// - <doc:logical>
 /// - ``MLXArray/.||(_:_:)``
-public func logicalOr<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func logicalOr(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1756,7 +1768,7 @@ public enum MeshGridIndexing: String, Sendable {
 ///   - indexing: indexing mode
 ///   - stream: stream or device to evaluate on
 public func meshGrid(
-    _ arrays: [MLXArray], sparse: Bool = false, indexing: MeshGridIndexing = .xy,
+    _ arrays: some Collection<MLXArray>, sparse: Bool = false, indexing: MeshGridIndexing = .xy,
     stream: StreamOrDevice = .default
 ) -> [MLXArray] {
     let mlxArrays = new_mlx_vector_array(arrays)
@@ -1783,8 +1795,8 @@ public func meshGrid(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``minimum(_:_:stream:)``
-public func maximum<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func maximum(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1861,8 +1873,8 @@ public func median(
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``maximum(_:_:stream:)``
-public func minimum<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func minimum(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1890,8 +1902,8 @@ public func minimum<A: ScalarOrArray, B: ScalarOrArray>(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func multiply<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func multiply(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -1970,8 +1982,8 @@ public func negative(_ array: MLXArray, stream: StreamOrDevice = .default) -> ML
 ///
 /// ### See Also
 /// - <doc:logical>
-public func notEqual<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func notEqual(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -2049,7 +2061,8 @@ public func padded(
 /// - <doc:shapes>
 /// - ``padded(_:width:mode:value:stream:)``
 public func padded(
-    _ array: MLXArray, widths: [IntOrPair], mode: PadMode = .constant, value: MLXArray? = nil,
+    _ array: MLXArray, widths: some Collection<IntOrPair>, mode: PadMode = .constant,
+    value: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     let ndim = array.ndim
@@ -2279,8 +2292,8 @@ public func radians(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func remainder<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func remainder(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -2324,7 +2337,10 @@ public func roll(_ a: MLXArray, shift: Int, axis: Int, stream: StreamOrDevice = 
 ///
 /// ### See Also
 /// - <doc:shapes>
-public func roll(_ a: MLXArray, shift: Int, axes: [Int]? = nil, stream: StreamOrDevice = .default)
+public func roll(
+    _ a: MLXArray, shift: Int, axes: (some Collection<Int>)? = [Int]?.none,
+    stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     var result = mlx_array_new()
@@ -2385,7 +2401,8 @@ public func sinh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 @available(*, deprecated, renamed: "softmax(_:axes:precise:stream:)")
 @_documentation(visibility: internal)
 public func softMax(
-    _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
+    _ array: MLXArray, axes: some Collection<Int>, precise: Bool = false,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     softmax(array, axes: axes, precise: precise, stream: stream)
 }
@@ -2407,7 +2424,8 @@ public func softMax(
 /// - ``softmax(_:axis:precise:stream:)``
 /// - ``softmax(_:precise:stream:)``
 public func softmax(
-    _ array: MLXArray, axes: [Int], precise: Bool = false, stream: StreamOrDevice = .default
+    _ array: MLXArray, axes: some Collection<Int>, precise: Bool = false,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_softmax_axes(&result, array.ctx, axes.asInt32, axes.count, precise, stream.ctx)
@@ -2524,7 +2542,7 @@ public func sorted(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 /// - ``std(_:axis:keepDims:ddof:stream:)``
 /// - ``std(_:keepDims:ddof:stream:)``
 public func std(
-    _ array: MLXArray, axes: [Int], keepDims: Bool = false, ddof: Int = 0,
+    _ array: MLXArray, axes: some Collection<Int>, keepDims: Bool = false, ddof: Int = 0,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
@@ -2578,7 +2596,9 @@ public func std(
 ///
 /// ### See Also
 /// - <doc:shapes>
-public func stacked(_ arrays: [MLXArray], axis: Int = 0, stream: StreamOrDevice = .default)
+public func stacked(
+    _ arrays: some Collection<MLXArray>, axis: Int = 0, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     let vector_array = new_mlx_vector_array(arrays)
@@ -2622,8 +2642,8 @@ public func stopGradient(_ array: MLXArray, stream: StreamOrDevice = .default) -
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-public func subtract<A: ScalarOrArray, B: ScalarOrArray>(
-    _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func subtract(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -2753,7 +2773,8 @@ public func tensordot(
 /// - <doc:arithmetic>
 /// - ``tensordot(_:_:axes:stream:)``
 public func tensordot(
-    _ a: MLXArray, _ b: MLXArray, axes: ([Int], [Int]), stream: StreamOrDevice = .default
+    _ a: MLXArray, _ b: MLXArray, axes: (some Collection<Int>, some Collection<Int>),
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_tensordot(
@@ -2774,7 +2795,9 @@ public func tensordot(
 /// ### See Also
 /// - <doc:shapes>
 /// - ``tiled(_:repetitions:stream:)-eouf``
-public func tiled(_ array: MLXArray, repetitions: [Int], stream: StreamOrDevice = .default)
+public func tiled(
+    _ array: MLXArray, repetitions: some Collection<Int>, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     var result = mlx_array_new()
@@ -2911,8 +2934,9 @@ public func triu(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .defaul
 /// ### See Also
 /// - <doc:logical>
 /// - ``which(_:_:_:stream:)``
-public func `where`<A: ScalarOrArray, B: ScalarOrArray>(
-    _ condition: MLXArray, _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func `where`(
+    _ condition: MLXArray, _ a: some ScalarOrArray, _ b: some ScalarOrArray,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -2934,8 +2958,9 @@ public func `where`<A: ScalarOrArray, B: ScalarOrArray>(
 /// ### See Also
 /// - <doc:logical>
 /// - ``where(_:_:_:stream:)``
-public func which<A: ScalarOrArray, B: ScalarOrArray>(
-    _ condition: MLXArray, _ a: A, _ b: B, stream: StreamOrDevice = .default
+public func which(
+    _ condition: MLXArray, _ a: some ScalarOrArray, _ b: some ScalarOrArray,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
     var result = mlx_array_new()
@@ -2985,7 +3010,7 @@ public func flatten(
 ///     - shape: shape to unflatten into
 ///     - stream: stream or device to evaluate on
 public func unflatten(
-    _ a: MLXArray, axis: Int, shape: [Int], stream: StreamOrDevice = .default
+    _ a: MLXArray, axis: Int, shape: some Collection<Int>, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_unflatten(&result, a.ctx, axis.int32, shape.map { Int32($0) }, shape.count, stream.ctx)

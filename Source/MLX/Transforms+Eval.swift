@@ -24,7 +24,7 @@ public func eval(_ arrays: MLXArray...) {
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
-public func eval(_ arrays: [MLXArray]) {
+public func eval(_ arrays: some Collection<MLXArray>) {
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_eval(vector_array)
@@ -37,7 +37,7 @@ public func eval(_ arrays: [MLXArray]) {
 /// ### See Also
 /// - <doc:lazy-evaluation>
 /// - ``asyncEval(_:)-6j4zg``
-public func asyncEval(_ arrays: [MLXArray]) {
+public func asyncEval(_ arrays: some Collection<MLXArray>) {
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_async_eval(vector_array)
@@ -79,7 +79,7 @@ public func eval(_ values: Any...) {
 /// Evaluate one or more `MLXArray`.
 ///
 /// See ``eval(_:)``
-public func eval(_ values: [Any]) {
+public func eval(_ values: some Sequence<Any>) {
     var arrays = [MLXArray]()
 
     for item in values {
@@ -109,7 +109,7 @@ public func checkedEval(_ values: Any...) throws {
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
-public func checkedEval(_ values: [Any]) throws {
+public func checkedEval(_ values: some Sequence<Any>) throws {
     var arrays = [MLXArray]()
 
     for item in values {
@@ -154,7 +154,7 @@ public func asyncEval(_ values: Any...) {
 /// Evaluate one or more `MLXArray` asynchronously.
 ///
 /// See ``asyncEval(_:)-6j4zg``
-public func asyncEval(_ values: [Any]) {
+public func asyncEval(_ values: some Sequence<Any>) {
     var arrays = [MLXArray]()
 
     for item in values {
