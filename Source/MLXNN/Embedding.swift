@@ -9,6 +9,10 @@ import MLX
 open class Embedding: Module, UnaryLayer, Quantizable {
     public let weight: MLXArray
 
+    open var shape: (Int, Int) {
+        self.weight.shape2
+    }
+
     /// Implements a simple lookup table that maps each input integer to a high-dimensional vector.
     ///
     /// Typically used to embed discrete tokens for processing by neural networks.
@@ -27,8 +31,9 @@ open class Embedding: Module, UnaryLayer, Quantizable {
     }
 
     /// Describe the shape of the `weight`.
-    public override func describeExtra(_ indent: Int) -> String {
-        weight.shape.description
+    open override func describeExtra(_ indent: Int) -> String {
+        let (embeddingCount, dimensions) = self.shape
+        return "(embeddingCount=\(embeddingCount), dimensions=\(dimensions))"
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {

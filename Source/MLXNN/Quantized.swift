@@ -159,6 +159,11 @@ open class QuantizedEmbedding: Embedding, Quantized {
     public let scales: MLXArray
     public let biases: MLXArray?
 
+    open override var shape: (Int, Int) {
+        let (embeddingCount, dimensions) = super.shape
+        return (embeddingCount, dimensions * 32 / self.bits)
+    }
+
     convenience public init(
         embeddingCount: Int, dimensions: Int, groupSize: Int = 64, bits: Int = 4,
         mode: QuantizationMode = .affine
