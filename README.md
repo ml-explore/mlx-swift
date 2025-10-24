@@ -46,10 +46,24 @@ The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake in
 
 More details are in the [documentation](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/install).
 
-### Xcode
+### Xcode (1)
 
 In Xcode you can add `https://github.com/ml-explore/mlx-swift.git` as a package
 dependency and link `MLX`, `MLXNN`, `MLXOptimizers` and `MLXRandom` as needed.
+
+### XCode (2)
+
+Note that the SwiftPM and XCode (1) methods build `MLX` as a Library, not as a framework.
+It is possible to construct a situation where YourApp -> MLX, YourApp -> YourFramework
+and YourFramework -> MLX.  This would give two copies of MLX in the resulting process
+and it may not work as expected.
+
+If this cannot be avoided, either by making YourFramework a Library or having YourApp
+_not_ link MLX, you can use the `xcode/MLX.xcodeproj` to build MLX as a _Framework_.
+This will require `mlx-swift` to be checked out adjacent or inside your project,
+possibly using git submodules, and dragging the mlx-swift/xcode/MLX.xcodeproj into
+your project.  Once that is done your application can build and link MLX and related
+as Frameworks.
 
 ### SwiftPM
 

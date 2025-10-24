@@ -87,7 +87,7 @@ jobs:
         run: |
           brew install cmake ninja
 
-      - name: Build (Xcode, macOS)
+      - name: Build SwiftPM (Xcode, macOS)
         shell: sh
         run: |
           xcodebuild -version
@@ -96,11 +96,22 @@ jobs:
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS'
 
-      - name: Run Tests (Xcode, macOS)
+      - name: Run Tests SwiftPM (Xcode, macOS)
         shell: sh
         run: |
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
+
+      - name: Build xcodeproj (Xcode, macOS)
+        shell: sh
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+          cd xcode
+          xcodebuild build-for-testing -scheme MLX -destination 'platform=macOS'
+
+      - name: Run Tests xcodeproj (Xcode, macOS)
+        working-directory: xcode
+        run: ../.github/scripts/run-xcode-tests.sh
 
       - name: Upload test results
         if: failure()

@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "320E2F9E-2C7E-4AE7-AADA-E2521E1EB635",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:MLX.xcodeproj",
+        "identifier" : "C3AE8ECC2EAAA15F000BD280",
+        "name" : "MLXTests"
+      }
+    }
+  ],
+  "version" : 1
+}
