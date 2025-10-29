@@ -1,6 +1,25 @@
 cmake_minimum_required(VERSION 3.16)
 project(MLXSwift LANGUAGES C CXX Swift)
 
+# ----------------------------- Setup -----------------------------
+# note: 1:1 mirror of MLX configs
+
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_INSTALL_MESSAGE NEVER)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# ----------------------------- Configuration -----------------------------
+# note: mirrors a subset of MLX options exactly (1:1 mapping)
+
+option(MLX_BUILD_EXAMPLES "Build examples for mlx" ON)
+option(MLX_BUILD_METAL "Build metal backend" ON)
+# option(MLX_BUILD_CUDA "Build cuda backend" OFF)
+
+# ----------------------------- Lib -----------------------------
+
 include(FetchContent)
 # Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
 if(POLICY CMP0135)
@@ -26,6 +45,13 @@ FetchContent_MakeAvailable(swift-numerics)
 
 # MLX package
 file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
+
+# todo: add conditional logic for MLX_BUILD_CUDA (once implemented)
+if(NOT MLX_BUILD_METAL)
+  list(REMOVE_ITEM MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/GPU.swift
+       ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/MLXArray+Metal.swift)
+endif()
+
 add_library(MLX STATIC ${MLX-src})
 target_include_directories(MLX
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
@@ -65,12 +91,14 @@ add_library(MLXLinalg STATIC ${MLXLinalg-src})
 target_link_libraries(MLXLinalg PRIVATE MLX)
 
 # Examples
-add_executable(example1
-               ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)
-target_link_libraries(example1 PRIVATE MLX)
-target_compile_options(example1 PRIVATE -parse-as-library)
+if(MLX_BUILD_EXAMPLES)
+  add_executable(example1
+                 ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)
+  target_link_libraries(example1 PRIVATE MLX)
+  target_compile_options(example1 PRIVATE -parse-as-library)
 
-add_executable(tutorial
-               ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Tutorial.swift)
-target_link_libraries(tutorial PRIVATE MLX)
-target_compile_options(tutorial PRIVATE -parse-as-library)
+  add_executable(tutorial
+                 ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Tutorial.swift)
+  target_link_libraries(tutorial PRIVATE MLX)
+  target_compile_options(tutorial PRIVATE -parse-as-library)
+endif()
