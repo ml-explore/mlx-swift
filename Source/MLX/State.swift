@@ -32,7 +32,7 @@ extension MLXRandom {
 
         /// Initialize the RandomState with a seed based on the current time.
         public init() {
-            let now = mach_approximate_time()
+            let now = DispatchTime.now().uptimeNanoseconds
             state = MLXRandom.key(now)
         }
 
