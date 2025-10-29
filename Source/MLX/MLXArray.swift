@@ -2,7 +2,6 @@
 
 import Cmlx
 import Foundation
-import Metal
 import Numerics
 
 public final class MLXArray {
