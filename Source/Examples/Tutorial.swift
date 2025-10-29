@@ -96,7 +96,6 @@ struct Tutorial {
 
         assert(df2dx2.item() == Float(2))
     }
-
     static func main() {
         func getDeviceFromArgs() -> Device? {
             guard let index = CommandLine.arguments.firstIndex(of: "--device") else {
