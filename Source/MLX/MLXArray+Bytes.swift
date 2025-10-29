@@ -176,7 +176,7 @@ extension MLXArray {
     }
 
     /// return a copy of the backing in contiguous layout
-    private func asDataCopy() -> MLXArrayData {
+    internal func asDataCopy() -> MLXArrayData {
         // point into the possibly non-contiguous backing
         let source = UnsafeRawBufferPointer(
             start: mlx_array_data_uint8(self.ctx), count: physicalSize * itemSize)
