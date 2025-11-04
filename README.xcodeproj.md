@@ -1,4 +1,4 @@
-See `xcode/MLX.xcodeproj`.
+See `xcode/MLX.xcodeproj` and [MAINTENANCE.md].
 
 # Cmlx
 
@@ -12,6 +12,15 @@ This is set up to build roughly how Package.swift builds.
 Public headers are in `include-framework` and this is managed by tools/update-mlx
 
 Settings, including header search paths are in xcode/xcconfig.
+
+## Updating
+
+After updating the mlx/mlx-c version the xcodeproj needs to be brought up to date.  
+
+- the headers in Cmlx/include-framework must all be public
+- no other headers in the project should be included as resources (public/private/project)
+    - the easiest way to adjust is look at Project -> Cmlx -> Build Phases and then look at the Headers task
+- similarly there should be _no_ Copy Bundle Resources from the same section
 
 # MLX, etc.
 
