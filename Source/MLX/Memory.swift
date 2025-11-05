@@ -46,8 +46,8 @@ import Foundation
 /// Adjusting the cache limit is especially advantageous on devices with memory
 /// limits (e.g. iOS devices where jetsam limits apply).
 ///
-/// Control the size of ``cacheMemory`` via ``Memory/set(cacheLimit:)``
-/// and the overall memory limit with ``Memory/set(memoryLimit:relaxed:)``.
+/// Control the size of cache memory via ``Memory/cacheLimit``
+/// and the overall memory limit with ``Memory/memoryLimit``.
 ///
 /// Examine memory use over time with ``snapshot()`` and ``Snapshot``.
 ///
@@ -57,8 +57,8 @@ import Foundation
 ///
 /// ### See Also
 /// - <doc:running-on-ios>
-/// - ``set(cacheLimit:)``
-/// - ``set(memoryLimit:relaxed:)``
+/// - ``cacheLimit``
+/// - ``memoryLimit``
 /// - ``snapshot()``
 public enum Memory {
 
@@ -81,8 +81,8 @@ public enum Memory {
     ///
     /// See ``GPU`` for a description of how the cache sizes grow and can be tuned.
     ///
-    /// Control the size of ``cacheMemory`` via ``Memory/set(cacheLimit:)``
-    /// and the overall memory limit with ``Memory/set(memoryLimit:relaxed:)``.
+    /// Control the size of cache memory via ``Memory/cacheLimit``
+    /// and the overall memory limit with ``Memory/memoryLimit``.
     ///
     /// This might be used to eamine memory use over a run or sample it during a run:
     ///
@@ -188,7 +188,7 @@ public enum Memory {
     /// sizes accumulate from intermediate computations.  See ``GPU`` for
     /// more information on cache size and tuning.
     ///
-    /// The cache size is controlled by the cache limit (see ``set(cacheLimit:)``).
+    /// The cache size is controlled by the cache limit (see ``cacheLimit``).
     /// When the limit is exceeded, older cached buffers are freed on the next allocation.
     public static var cacheMemory: Int {
         var result: size_t = 0
@@ -247,7 +247,7 @@ public enum Memory {
     /// See ``Memory`` for more information on cache sizing and tuning.
     ///
     /// ### See Also
-    /// - ``set(cacheLimit:)``
+    /// - ``memoryLimit``
     public static var cacheLimit: Int {
         get {
             queue.sync {
