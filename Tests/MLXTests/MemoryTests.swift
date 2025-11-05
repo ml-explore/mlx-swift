@@ -4,10 +4,10 @@ import Foundation
 import MLX
 import XCTest
 
-class GPUTests: XCTestCase {
+class MemoryTests: XCTestCase {
 
     func testWiredMemory() {
-        GPU.withWiredLimit(1024 * 1024 * 256) {
+        Memory.withWiredLimit(1024 * 1024 * 256) {
             let x = MLXArray(10)
             print(x * x)
         }
