@@ -35,8 +35,8 @@ public enum GPU {
     /// sizes accumulate from intermediate computations.  See ``GPU`` for
     /// more information on cache size and tuning.
     ///
-    /// The cache size is controlled by the cache limit (see ``set(cacheLimit:)``).
-    /// When the limit is exceeded, older cached buffers are freed on the next allocation.
+    /// The cache size is controlled by the cache limit (see ``Memory/cacheLimit``).
+    /// When the limit is exceeded, older cached buffers are freed on the next allocatioån.
     @available(*, deprecated, renamed: "Memory.cacheMemory")
     public static var cacheMemory: Int {
         Memory.cacheMemory
@@ -71,7 +71,7 @@ public enum GPU {
     /// The cache limit defaults to the memory limit.
     ///
     /// ### See Also
-    /// - ``set(cacheLimit:)``
+    /// - ``Memory/cacheLimit``
     @available(*, deprecated, renamed: "Memory.cacheLimit")
     public static var cacheLimit: Int {
         Memory.cacheLimit
@@ -109,7 +109,7 @@ public enum GPU {
     /// size reported by the device.
     ///
     /// ### See Also
-    /// - ``set(memoryLimit:relaxed:)``
+    /// - ``Memory/memoryLimit``
     @available(*, deprecated, renamed: "Memory.memoryLimit")
     public static var memoryLimit: Int {
         Memory.memoryLimit
@@ -123,7 +123,7 @@ public enum GPU {
     /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize)).
     ///
     /// **Important**: This limit controls total MLX memory allocation. The cache limit
-    /// (see ``set(cacheLimit:)``) defaults to this value, so systems with large memory
+    /// (see ``Memory/cacheLimit``) defaults to this value, so systems with large memory
     /// limits may cache many GB of buffers. Consider setting a lower cache limit for
     /// memory-constrained applications.
     @available(*, deprecated, message: "use Memory.memoryLimit property")
