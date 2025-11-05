@@ -2,9 +2,8 @@
 
 import Cmlx
 import Foundation
-import Metal
 
-/// Properties to control the the GPU memory allocation and buffer reuse.
+/// Properties to control the the memory allocation and buffer reuse.
 ///
 /// ``activeMemory`` + ``cacheMemory`` is the total memory allocated by MLX.
 /// ``activeMemory`` is in currently active ``MLXArray`` and ``cacheMemory``
@@ -47,21 +46,21 @@ import Metal
 /// Adjusting the cache limit is especially advantageous on devices with memory
 /// limits (e.g. iOS devices where jetsam limits apply).
 ///
-/// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
-/// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
+/// Control the size of ``cacheMemory`` via ``Memory/set(cacheLimit:)``
+/// and the overall memory limit with ``Memory/set(memoryLimit:relaxed:)``.
 ///
 /// Examine memory use over time with ``snapshot()`` and ``Snapshot``.
 ///
 /// **Note**: The cache limit will go into effect on the next deallocation. Because of that you
 /// may observe the cache size temporarily exceeding the requested limit. To immediately
-/// clear the cache, use ``GPU/clearCache()``.
+/// clear the cache, use ``Memory/clearCache()``.
 ///
 /// ### See Also
 /// - <doc:running-on-ios>
 /// - ``set(cacheLimit:)``
 /// - ``set(memoryLimit:relaxed:)``
 /// - ``snapshot()``
-public enum GPU {
+public enum Memory {
 
     static let queue = DispatchQueue(label: "GPUEnum")
 
@@ -82,8 +81,8 @@ public enum GPU {
     ///
     /// See ``GPU`` for a description of how the cache sizes grow and can be tuned.
     ///
-    /// Control the size of ``cacheMemory`` via ``GPU/set(cacheLimit:)``
-    /// and the overall memory limit with ``GPU/set(memoryLimit:relaxed:)``.
+    /// Control the size of ``cacheMemory`` via ``Memory/set(cacheLimit:)``
+    /// and the overall memory limit with ``Memory/set(memoryLimit:relaxed:)``.
     ///
     /// This might be used to eamine memory use over a run or sample it during a run:
     ///
@@ -91,18 +90,18 @@ public enum GPU {
     /// // load model & weights
     /// ...
     ///
-    /// let startMemory = GPU.snapshot()
+    /// let startMemory = Memory.snapshot()
     ///
     /// // work
     /// ...
     ///
-    /// let endMemory = GPU.snapshot()
+    /// let endMemory = Memory.snapshot()
     ///
     /// // what stats are interesting to you?
     ///
     /// print("=======")
-    /// print("Memory size: \(GPU.memoryLimit / 1024)K")
-    /// print("Cache size:  \(GPU.cacheLimit / 1024)K")
+    /// print("Memory size: \(Memory.memoryLimit / 1024)K")
+    /// print("Cache size:  \(Memory.cacheLimit / 1024)K")
     ///
     /// print("")
     /// print("=======")
@@ -125,21 +124,21 @@ public enum GPU {
     /// - <doc:running-on-ios>
     public struct Snapshot: CustomStringConvertible, Codable, Sendable {
 
-        /// See ``GPU/activeMemory``.
+        /// See ``Memory/activeMemory``.
         public var activeMemory: Int
 
-        /// See ``GPU/cacheMemory``.
+        /// See ``Memory/cacheMemory``.
         public var cacheMemory: Int
 
-        /// See ``GPU/peakMemory``.
+        /// See ``Memory/peakMemory``.
         public var peakMemory: Int
 
         /// Compute the difference between two snapshots:
         ///
         /// ```swift
-        /// let startMemory = GPU.snapshot()
+        /// let startMemory = Memory.snapshot()
         /// ...
-        /// let endMemory = GPU.snapshot()
+        /// let endMemory = Memory.snapshot()
         /// print(startMemory.delta(endMemory))
         /// ```
         public func delta(_ other: Snapshot) -> Snapshot {
@@ -202,9 +201,15 @@ public enum GPU {
     /// The maximum memory used is recorded from the beginning of the program
     /// execution.
     public static var peakMemory: Int {
-        var result: size_t = 0
-        mlx_get_peak_memory(&result)
-        return result
+        get {
+            var result: size_t = 0
+            mlx_get_peak_memory(&result)
+            return result
+        }
+        set {
+            // note: ignores newValue
+            mlx_reset_peak_memory()
+        }
     }
 
     /// Return a snapshot of memory stats -- see ``Snapshot`` for more details.
@@ -212,49 +217,24 @@ public enum GPU {
     /// Get the current memory use.  This can be used to measure before/after and current memory use:
     ///
     /// ```swift
-    /// let currentMemory = GPU.snapshot()
+    /// let currentMemory = Memory.snapshot()
     /// print(currentMemory)
     /// ```
     public static func snapshot() -> Snapshot {
         Snapshot(activeMemory: activeMemory, cacheMemory: cacheMemory, peakMemory: peakMemory)
     }
 
-    /// Get the free cache limit.
+    /// Get or set the free cache limit.
     ///
     /// If using more than the given limit, free memory will be reclaimed
     /// from the cache on the next allocation.
-    /// The cache limit defaults to the memory limit.
-    ///
-    /// ### See Also
-    /// - ``set(cacheLimit:)``
-    public static var cacheLimit: Int {
-        queue.sync {
-            if let cacheLimit = _cacheLimit {
-                return cacheLimit
-            }
-
-            // set it to a reasonable value in order to read it, then set it back
-            // to current
-            var current: size_t = 0
-            var discard: size_t = 0
-            mlx_set_cache_limit(&current, cacheMemory)
-            mlx_set_cache_limit(&discard, current)
-
-            _cacheLimit = current
-            return current
-        }
-    }
-
-    /// Set the free cache limit.
-    ///
-    /// If using more than the given limit, free memory will be reclaimed
-    /// from the cache on the next allocation. To disable the cache,
-    /// set the limit to 0.
     ///
     /// The cache limit defaults to the memory limit, which may allow very
     /// large cache sizes on systems with abundant RAM. For memory-constrained
     /// applications or to prevent excessive memory growth during long inference
     /// runs, consider setting a much lower cache limit.
+    ///
+    /// To disable the cache, set the limit to 0.
     ///
     /// ## Performance Optimization
     ///
@@ -264,52 +244,63 @@ public enum GPU {
     /// with different values and measure performance to find the best setting
     /// for your workload.
     ///
-    /// See ``GPU`` for more information on cache sizing and tuning.
+    /// See ``Memory`` for more information on cache sizing and tuning.
     ///
-    /// Returns the previous cache limit.
-    public static func set(cacheLimit: Int) {
-        queue.sync {
-            _cacheLimit = cacheLimit
-            var current: size_t = 0
-            mlx_set_cache_limit(&current, cacheLimit)
+    /// ### See Also
+    /// - ``set(cacheLimit:)``
+    public static var cacheLimit: Int {
+        get {
+            queue.sync {
+                if let cacheLimit = _cacheLimit {
+                    return cacheLimit
+                }
+
+                // set it to a reasonable value in order to read it, then set it back
+                // to current
+                var current: size_t = 0
+                var discard: size_t = 0
+                mlx_set_cache_limit(&current, cacheMemory)
+                mlx_set_cache_limit(&discard, current)
+
+                _cacheLimit = current
+                return current
+            }
+        }
+        set {
+            queue.sync {
+                _cacheLimit = newValue
+                var current: size_t = 0
+                mlx_set_cache_limit(&current, newValue)
+            }
         }
     }
 
-    /// Get the memory limit.
+    /// Get or set the memory limit.
     ///
     /// Calls to malloc will wait on scheduled tasks if the limit is exceeded. The
     /// memory limit defaults to 1.5 times the maximum recommended working set
     /// size reported by the device.
     ///
+    /// Calls to malloc will wait on scheduled tasks if the limit is exceeded.
+    ///
+    /// Note: `cacheLimit` may be more convenient to manipulate.
+    ///
     /// ### See Also
-    /// - ``set(memoryLimit:relaxed:)``
+    /// - ``cacheLimit``
     public static var memoryLimit: Int {
-        queue.sync {
-            var current: size_t = 0
-            mlx_get_memory_limit(&current)
-            return Int(current)
+        get {
+            queue.sync {
+                var current: size_t = 0
+                mlx_get_memory_limit(&current)
+                return Int(current)
+            }
         }
-    }
-
-    /// Set the memory limit.
-    ///
-    /// Calls to malloc will wait on scheduled tasks if the limit is exceeded.  If
-    /// there are no more scheduled tasks an error will be raised if `relaxed`
-    /// is false or memory will be allocated (including the potential for
-    /// swap) if `relaxed` is true.
-    ///
-    /// The memory limit defaults to 1.5 times the maximum recommended working set
-    /// size reported by the device ([recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize)).
-    ///
-    /// **Important**: This limit controls total MLX memory allocation. The cache limit
-    /// (see ``set(cacheLimit:)``) defaults to this value, so systems with large memory
-    /// limits may cache many GB of buffers. Consider setting a lower cache limit for
-    /// memory-constrained applications.
-    public static func set(memoryLimit: Int, relaxed: Bool = true) {
-        queue.sync {
-            _memoryLimit = memoryLimit
-            var current: size_t = 0
-            mlx_set_memory_limit(&current, memoryLimit)
+        set {
+            queue.sync {
+                _memoryLimit = newValue
+                var current: size_t = 0
+                mlx_set_memory_limit(&current, newValue)
+            }
         }
     }
 
@@ -318,7 +309,7 @@ public enum GPU {
     /// Note: this manipulates a global value.  Nested calls will work as expected but
     /// concurrent calls cannot.
     ///
-    /// See also ``DeviceInfo/maxRecommendedWorkingSetSize``.
+    /// See also ``GPU/DeviceInfo/maxRecommendedWorkingSetSize``.
     ///
     /// - Parameters:
     ///   - limit: new limit in bytes
@@ -341,7 +332,7 @@ public enum GPU {
     /// Note: this manipulates a global value.  Nested calls will work as expected but
     /// concurrent calls cannot.
     ///
-    /// See also ``DeviceInfo/maxRecommendedWorkingSetSize``.
+    /// See also ``GPU/DeviceInfo/maxRecommendedWorkingSetSize``.
     ///
     /// - Parameters:
     ///   - limit: new limit in bytes
@@ -359,70 +350,8 @@ public enum GPU {
         return try await body()
     }
 
-    /// Cause all cached metal buffers to be deallocated.
+    /// Cause all cached buffers to be deallocated.
     public static func clearCache() {
         mlx_clear_cache()
-    }
-
-    /// Start capturing a metal trace into the given file.
-    ///
-    /// > There are several requirements for this to be used.
-    ///
-    /// - `mlx` must be built with `MLX_METAL_DEBUG`
-    ///   - in Package.swift add `.define("MLX_METAL_DEBUG"),` to `Cmlx` `cxxSettings`
-    /// - when running set the `MTL_CAPTURE_ENABLED=1` environment variable
-    /// - make sure the file at the given path does not already exist
-    ///
-    /// See [the documentation](https://ml-explore.github.io/mlx/build/html/dev/metal_debugger.html)
-    /// for more information.
-    public static func startCapture(url: URL) {
-        mlx_metal_start_capture(url.path().cString(using: .utf8))
-    }
-
-    /// Stop the metal capture.
-    ///
-    /// See ``startCapture(url:)``.
-    public static func stopCapture(url: URL) {
-        mlx_metal_stop_capture()
-    }
-
-    /// Reset the peak memory to zero.
-    ///
-    /// See ``Snapshot/peakMemory``.
-    public static func resetPeakMemory() {
-        mlx_reset_peak_memory()
-    }
-
-    public struct DeviceInfo: Sendable {
-        public let architecture: String
-        public let maxBufferSize: Int
-        public let maxRecommendedWorkingSetSize: UInt64
-        public let memorySize: Int
-    }
-
-    /// Get information about the GPU device and system settings
-    public static func deviceInfo() -> DeviceInfo {
-        var mib = [CTL_HW, HW_MEMSIZE]
-        var memSize: size_t = 0
-        var length: size_t = MemoryLayout.size(ofValue: memSize)
-        sysctl(&mib, 2, &memSize, &length, nil, 0)
-
-        if let device = MTLCreateSystemDefaultDevice() {
-            let architecture: String
-            if #available(macOS 14.0, iOS 17.0, tvOS 17.0, *) {
-                architecture = device.architecture.name
-            } else {
-                architecture = device.name
-            }
-
-            return DeviceInfo(
-                architecture: architecture, maxBufferSize: device.maxBufferLength,
-                maxRecommendedWorkingSetSize: device.recommendedMaxWorkingSetSize,
-                memorySize: memSize)
-        } else {
-            return DeviceInfo(
-                architecture: "Unknown", maxBufferSize: 0, maxRecommendedWorkingSetSize: 0,
-                memorySize: memSize)
-        }
     }
 }
