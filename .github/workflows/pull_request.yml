@@ -49,6 +49,7 @@ jobs:
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS'
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
+          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
       - name: Upload test results
         if: failure()
