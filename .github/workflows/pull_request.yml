@@ -42,6 +42,7 @@ jobs:
       
       - name: Run Tests (Xcode, macOS)
         shell: sh
+        id: test
         continue-on-error: true
         run: |
           xcodebuild -version
@@ -59,7 +60,11 @@ jobs:
             ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
             /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
           retention-days: 7
-    
+
+      - name: Fail if tests failed
+        if: steps.test.outcome == 'failure'
+        run: exit 1
+
       - name: Build (cmake)
         shell: sh
         run: |
