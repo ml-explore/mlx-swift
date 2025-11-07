@@ -47,7 +47,7 @@ jobs:
           xcrun --show-sdk-build-version
           swift --version
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
-          xcodebuild -scheme mlx-swift-Package -destination 'platform=macOS'
+          xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS'
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
 
       - name: Upload test results
