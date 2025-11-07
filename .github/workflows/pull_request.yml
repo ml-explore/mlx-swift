@@ -47,7 +47,8 @@ jobs:
           xcrun --show-sdk-build-version
           swift --version
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
-          sudo pkill -f testmanagerd || true && sleep 3 && sudo xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'
+          launchctl start com.apple.testmanagerd
+          xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'
 
       - name: Upload test results
         if: failure()
