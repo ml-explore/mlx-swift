@@ -40,7 +40,7 @@ jobs:
         run: |
           pre-commit run --all || (echo "Style checks failed, please install pre-commit and run pre-commit run --all and push the change"; echo ""; git --no-pager diff; exit 1)
       
-      - name: Run Tests (Xcode, macOS)
+      - name: Build (Xcode, macOS)
         shell: sh
         run: |
           xcodebuild -version
@@ -48,6 +48,11 @@ jobs:
           swift --version
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS'
+
+      - name: Run Tests (Xcode, macOS)
+        shell: sh
+        run: |
+          xcodebuild -version
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
