@@ -57,6 +57,7 @@ jobs:
           path: |
             ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
             /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+            ~/Library/Logs/DiagnosticReports/*
           retention-days: 7
 
       - name: Build (cmake)
