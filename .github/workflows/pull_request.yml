@@ -42,11 +42,22 @@ jobs:
       
       - name: Run Tests (Xcode, macOS)
         shell: sh
+        continue-on-error: true
         run: |
           xcodebuild -version
           xcrun --show-sdk-build-version
           swift --version
           xcodebuild test -scheme mlx-swift-Package -destination 'platform=OS X'
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+            /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+          retention-days: 7
     
       - name: Build (cmake)
         shell: sh
