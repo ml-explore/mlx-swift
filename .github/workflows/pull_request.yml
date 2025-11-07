@@ -52,7 +52,6 @@ jobs:
       - name: Run Tests (Xcode, macOS)
         shell: sh
         run: |
-          xcodebuild -version
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
