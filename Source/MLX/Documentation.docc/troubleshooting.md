@@ -73,4 +73,13 @@ There are a few approaches that have been observed to work around the issue:
 ## Porting Python Code
 
 See <doc:converting-python> for examples and information about
-symbols changes from python to swift.
+symbol changes from python to swift.  [Porting and implementing models](https://swiftpackageindex.com/ml-explore/mlx-swift-lm/main/documentation/mlxlmcommon/porting)
+contains information about porting models from MLX (Python) to Swift.
+
+## Running on iOS Simulator
+
+It isn't possible to use the iOS simulator for developing MLX applications, since MLX requires
+a modern [Metal MTLGPUFamily](https://developer.apple.com/documentation/metal/mtlgpufamily)
+and the simulator does not provide that.
+
+See <doc:running-on-ios>.
