@@ -32,6 +32,10 @@ let package = Package(
         .target(
             name: "Cmlx",
             exclude: [
+                // xcodeproj pieces
+                "framework",
+                "include-framework",
+
                 // vendor docs
                 "metal-cpp.patch",
                 "vendor-README.md",
