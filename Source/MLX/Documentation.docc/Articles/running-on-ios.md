@@ -20,30 +20,30 @@ buffers after they are disposed. The limit on this cache is determined by
 Metal's [recommendedMaxWorkingSetSize()](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize),
 but you may wish to limit this further.
 
-For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache via ``GPU/set(cacheLimit:)``.
+For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache via ``Memory/CacheLimit``.
 
 ```swift
-MLX.GPU.set(cacheLimit: 20 * 1024 * 1024)
+MLX.Memory.cacheLimit = 20 * 1024 * 1024
 ```
 
-``GPU/snapshot()`` can be used to monitor memory use over time:
+``Memory/snapshot()`` can be used to monitor memory use over time:
 
 ```swift
 // load model & weights
 ...
 
-let startMemory = GPU.snapshot()
+let startMemory = Memory.snapshot()
 
 // work
 ...
 
-let endMemory = GPU.snapshot()
+let endMemory = Memory.snapshot()
 
 // what stats are interesting to you?
 
 print("=======")
-print("Memory size: \(GPU.memoryLimit / 1024)K")
-print("Cache size:  \(GPU.cacheLimit / 1024)K")
+print("Memory size: \(Memory.memoryLimit / 1024)K")
+print("Cache size:  \(Memory.cacheLimit / 1024)K")
 
 print("")
 print("=======")
