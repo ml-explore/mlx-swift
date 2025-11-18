@@ -16,8 +16,8 @@ import Foundation
 /// - <doc:vmap>
 public func vmap(
     _ f: @escaping ([MLXArray]) -> [MLXArray],
-    inAxes: [Int?] = [0],
-    outAxes: [Int?] = [0]
+    inAxes: some Sequence<Int?> = [0],
+    outAxes: some Sequence<Int?> = [0]
 ) -> ([MLXArray]) -> [MLXArray] {
     { arrays in
         let inAxes32 = inAxes.map { Int32($0 ?? -1) }

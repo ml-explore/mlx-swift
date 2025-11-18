@@ -23,7 +23,7 @@ extension MLXArray {
     /// - ``zeros(like:stream:)``
     /// - ``ones(_:type:stream:)``
     static public func zeros<T: HasDType>(
-        _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int>, type: T.Type = Float.self, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.zeros(shape, type: type, stream: stream)
     }
@@ -46,7 +46,7 @@ extension MLXArray {
     /// - ``zeros(like:stream:)``
     /// - ``ones(_:type:stream:)``
     static public func zeros(
-        _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.zeros(shape, dtype: dtype, stream: stream)
     }
@@ -90,7 +90,7 @@ extension MLXArray {
     /// - ``ones(like:stream:)``
     /// - ``zeros(_:type:stream:)``
     static public func ones<T: HasDType>(
-        _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int>, type: T.Type = Float.self, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.ones(shape, type: type, stream: stream)
     }
@@ -113,7 +113,7 @@ extension MLXArray {
     /// - ``ones(like:stream:)``
     /// - ``zeros(_:type:stream:)``
     static public func ones(
-        _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.ones(shape, dtype: dtype, stream: stream)
     }
@@ -185,7 +185,7 @@ extension MLXArray {
     /// - <doc:initialization>
     /// - ``identity(_:type:stream:)``
     static public func eye(
-        _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+        _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.eye(n, m: m, k: k, dtype: dtype, stream: stream)
@@ -214,7 +214,8 @@ extension MLXArray {
     /// - ``full(_:values:stream:)``
     /// - ``repeated(_:count:axis:stream:)``
     static public func full<T: HasDType>(
-        _ shape: [Int], values: MLXArray, type: T.Type, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int>, values: MLXArray, type: T.Type,
+        stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.full(shape, values: values, type: type, stream: stream)
     }
@@ -242,7 +243,8 @@ extension MLXArray {
     /// - ``full(_:values:stream:)``
     /// - ``repeated(_:count:axis:stream:)``
     static public func full(
-        _ shape: [Int], values: MLXArray, dtype: DType = .float32, stream: StreamOrDevice = .default
+        _ shape: some Collection<Int>, values: MLXArray, dtype: DType,
+        stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.full(shape, values: values, dtype: dtype, stream: stream)
     }
@@ -268,7 +270,9 @@ extension MLXArray {
     /// - <doc:initialization>
     /// - ``full(_:values:type:stream:)``
     /// - ``repeated(_:count:axis:stream:)``
-    static public func full(_ shape: [Int], values: MLXArray, stream: StreamOrDevice = .default)
+    static public func full(
+        _ shape: some Collection<Int>, values: MLXArray, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         MLX.full(shape, values: values, stream: stream)
@@ -315,7 +319,7 @@ extension MLXArray {
     /// - <doc:initialization>
     /// - ``eye(_:m:k:type:stream:)``
     static public func identity(
-        _ n: Int, dtype: DType = .float32, stream: StreamOrDevice = .default
+        _ n: Int, dtype: DType, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.identity(n, dtype: dtype, stream: stream)
     }
@@ -491,7 +495,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     static public func tri(
-        _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+        _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.tri(n, m: m, k: k, dtype: dtype, stream: stream)
@@ -517,7 +521,7 @@ extension MLXArray {
 /// - ``zeros(like:stream:)``
 /// - ``ones(_:type:stream:)``
 public func zeros<T: HasDType>(
-    _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int>, type: T.Type = Float.self, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_zeros(&result, shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx)
@@ -542,7 +546,7 @@ public func zeros<T: HasDType>(
 /// - ``zeros(like:stream:)``
 /// - ``ones(_:type:stream:)``
 public func zeros(
-    _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_zeros(&result, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx)
@@ -590,7 +594,7 @@ public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> ML
 /// - ``ones(like:stream:)``
 /// - ``zeros(_:type:stream:)``
 public func ones<T: HasDType>(
-    _ shape: [Int], type: T.Type = Float.self, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int>, type: T.Type = Float.self, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_ones(&result, shape.map { Int32($0) }, shape.count, T.dtype.cmlxDtype, stream.ctx)
@@ -615,7 +619,7 @@ public func ones<T: HasDType>(
 /// - ``zeros(like:stream:)``
 /// - ``ones(_:type:stream:)``
 public func ones(
-    _ shape: [Int], dtype: DType = .float32, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_ones(&result, shape.map { Int32($0) }, shape.count, dtype.cmlxDtype, stream.ctx)
@@ -693,7 +697,7 @@ public func eye<T: HasDType>(
 /// - <doc:initialization>
 /// - ``identity(_:type:stream:)``
 public func eye(
-    _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+    _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
@@ -724,7 +728,8 @@ public func eye(
 /// - ``full(_:values:stream:)``
 /// - ``repeated(_:count:axis:stream:)``
 public func full<T: HasDType>(
-    _ shape: [Int], values: ScalarOrArray, type: T.Type, stream: StreamOrDevice = .default
+    _ shape: some Collection<Int>, values: some ScalarOrArray, type: T.Type,
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     let values = values.asMLXArray(dtype: nil)
@@ -755,7 +760,7 @@ public func full<T: HasDType>(
 /// - ``full(_:values:stream:)``
 /// - ``repeated(_:count:axis:stream:)``
 public func full(
-    _ shape: [Int], values: MLXArray, dtype: DType = .float32,
+    _ shape: some Collection<Int>, values: MLXArray, dtype: DType,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
@@ -784,7 +789,9 @@ public func full(
 /// - <doc:initialization>
 /// - ``full(_:values:type:stream:)``
 /// - ``repeated(_:count:axis:stream:)``
-public func full(_ shape: [Int], values: ScalarOrArray, stream: StreamOrDevice = .default)
+public func full(
+    _ shape: some Collection<Int>, values: some ScalarOrArray, stream: StreamOrDevice = .default
+)
     -> MLXArray
 {
     var result = mlx_array_new()
@@ -836,7 +843,7 @@ public func identity<T: HasDType>(
 /// - <doc:initialization>
 /// - ``eye(_:m:k:type:stream:)``
 public func identity(
-    _ n: Int, dtype: DType = .float32, stream: StreamOrDevice = .default
+    _ n: Int, dtype: DType, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_identity(&result, n.int32, dtype.cmlxDtype, stream.ctx)
@@ -1024,7 +1031,7 @@ public func tri<T: HasDType>(
 /// ### See Also
 /// - <doc:initialization>
 public func tri(
-    _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType = .float32,
+    _ n: Int, m: Int? = nil, k: Int = 0, dtype: DType,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()

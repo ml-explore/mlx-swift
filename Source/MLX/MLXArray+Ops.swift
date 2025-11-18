@@ -1209,7 +1209,9 @@ extension MLXArray {
     /// - ``all(axis:keepDims:stream:)``
     /// - ``all(keepDims:stream:)``
     /// - ``all(_:axes:keepDims:stream:)``
-    public func all(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func all(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -1321,7 +1323,9 @@ extension MLXArray {
     /// - ``any(axis:keepDims:stream:)``
     /// - ``any(keepDims:stream:)``
     /// - ``any(_:axes:keepDims:stream:)``
-    public func any(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func any(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -1754,7 +1758,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:shapes>
     /// - ``expandedDimensions(axis:stream:)``
-    public func expandedDimensions(axes: [Int], stream: StreamOrDevice = .default)
+    public func expandedDimensions(axes: some Collection<Int>, stream: StreamOrDevice = .default)
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -1925,7 +1929,9 @@ extension MLXArray {
     /// - ``logSumExp(axis:keepDims:stream:)``
     /// - ``logSumExp(keepDims:stream:)``
     /// - ``logSumExp(_:axes:keepDims:stream:)``
-    public func logSumExp(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func logSumExp(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -2035,7 +2041,9 @@ extension MLXArray {
     /// - ``max(axis:keepDims:stream:)``
     /// - ``max(keepDims:stream:)``
     /// - ``max(_:axes:keepDims:stream:)``
-    public func max(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func max(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -2113,7 +2121,9 @@ extension MLXArray {
     /// - ``mean(axis:keepDims:stream:)``
     /// - ``mean(keepDims:stream:)``
     /// - ``mean(_:axes:keepDims:stream:)``
-    public func mean(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func mean(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -2191,7 +2201,9 @@ extension MLXArray {
     /// - ``min(axis:keepDims:stream:)``
     /// - ``min(keepDims:stream:)``
     /// - ``min(_:axes:keepDims:stream:)``
-    public func min(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func min(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -2333,7 +2345,9 @@ extension MLXArray {
     /// - ``product(axis:keepDims:stream:)``
     /// - ``product(keepDims:stream:)``
     /// - ``product(_:axes:keepDims:stream:)``
-    public func product(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func product(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -2415,7 +2429,9 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``reshaped(_:stream:)``
     /// - ``reshaped(_:_:stream:)-96lgr``
-    public func reshaped(_ newShape: [Int], stream: StreamOrDevice = .default) -> MLXArray {
+    public func reshaped(_ newShape: some Collection<Int>, stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
         var result = mlx_array_new()
         mlx_reshape(&result, ctx, newShape.asInt32, newShape.count, stream.ctx)
         return MLXArray(result)
@@ -2550,7 +2566,9 @@ extension MLXArray {
     /// - <doc:shapes>
     /// - ``split(parts:axis:stream:)``
     /// - ``split(_:indices:axis:stream:)``
-    public func split(indices: [Int], axis: Int = 0, stream: StreamOrDevice = .default)
+    public func split(
+        indices: some Collection<Int>, axis: Int = 0, stream: StreamOrDevice = .default
+    )
         -> [MLXArray]
     {
         var vec = mlx_vector_array_new()
@@ -2591,7 +2609,8 @@ extension MLXArray {
     /// - ``squeezed(axis:stream:)``
     /// - ``squeezed(stream:)``
     /// - ``squeezed(_:axes:stream:)``
-    public func squeezed(axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
+    public func squeezed(axes: some Collection<Int>, stream: StreamOrDevice = .default) -> MLXArray
+    {
         var result = mlx_array_new()
         mlx_squeeze_axes(&result, ctx, axes.asInt32, axes.count, stream.ctx)
         return MLXArray(result)
@@ -2638,7 +2657,9 @@ extension MLXArray {
     /// - ``sum(axis:keepDims:stream:)``
     /// - ``sum(keepDims:stream:)``
     /// - ``sum(_:axes:keepDims:stream:)``
-    public func sum(axes: [Int], keepDims: Bool = false, stream: StreamOrDevice = .default)
+    public func sum(
+        axes: some Collection<Int>, keepDims: Bool = false, stream: StreamOrDevice = .default
+    )
         -> MLXArray
     {
         var result = mlx_array_new()
@@ -2763,7 +2784,9 @@ extension MLXArray {
     /// - ``transposed(axis:stream:)``
     /// - ``transposed(stream:)``
     /// - ``transposed(_:axes:stream:)``
-    public func transposed(axes: [Int], stream: StreamOrDevice = .default) -> MLXArray {
+    public func transposed(axes: some Collection<Int>, stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
         var result = mlx_array_new()
         mlx_transpose_axes(&result, ctx, axes.asInt32, axes.count, stream.ctx)
         return MLXArray(result)
@@ -2825,7 +2848,8 @@ extension MLXArray {
     /// - ``variance(keepDims:ddof:stream:)``
     /// - ``variance(_:axes:keepDims:ddof:stream:)``
     public func variance(
-        axes: [Int], keepDims: Bool = false, ddof: Int = 0, stream: StreamOrDevice = .default
+        axes: some Collection<Int>, keepDims: Bool = false, ddof: Int = 0,
+        stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_var_axes(&result, ctx, axes.asInt32, axes.count, keepDims, ddof.int32, stream.ctx)

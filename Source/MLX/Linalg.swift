@@ -58,7 +58,7 @@ public enum MLXLinalg {
     /// ### See Also
     /// - ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
-        _ array: MLXArray, ord: NormKind? = nil, axes: [Int], keepDims: Bool = false,
+        _ array: MLXArray, ord: NormKind? = nil, axes: some Collection<Int>, keepDims: Bool = false,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
@@ -113,7 +113,7 @@ public enum MLXLinalg {
     /// ### See Also
     /// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
     public static func norm(
-        _ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false,
+        _ array: MLXArray, ord: Double, axes: some Collection<Int>, keepDims: Bool = false,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
@@ -460,7 +460,8 @@ public enum MLXLinalg {
 /// ### See Also
 /// - ``norm(_:ord:axes:keepDims:stream:)``
 public func norm(
-    _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axes: [Int], keepDims: Bool = false,
+    _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axes: some Collection<Int>,
+    keepDims: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     return MLXLinalg.norm(array, ord: ord, axes: axes, keepDims: keepDims, stream: stream)
