@@ -48,7 +48,7 @@ file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
 
 # todo: add conditional logic for MLX_BUILD_CUDA (once implemented)
 if(NOT MLX_BUILD_METAL)
-  list(REMOVE_ITEM MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/GPU.swift
+  list(REMOVE_ITEM MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/GPU+Metal.swift
        ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/MLXArray+Metal.swift)
 endif()
 
