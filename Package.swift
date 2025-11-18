@@ -148,6 +148,7 @@ let package = Package(
                 .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
                 .define("METAL_PATH", to: "\"default.metallib\""),
                 .define("MLX_VERSION", to: "\"0.24.2\""),
+                .define("MLX_ENABLE_NAX", to: "1"),
             ],
             linkerSettings: [
                 .linkedFramework("Foundation"),
