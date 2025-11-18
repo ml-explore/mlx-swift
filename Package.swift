@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 5.12
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // Copyright © 2024 Apple Inc.
 
@@ -8,9 +8,9 @@ let package = Package(
     name: "mlx-swift",
 
     platforms: [
-        .macOS("13.3"),
-        .iOS(.v16),
-        .tvOS(.v16),
+        .macOS("14.0"),
+        .iOS(.v17),
+        .tvOS(.v17),
         .visionOS(.v1),
     ],
 
@@ -92,20 +92,23 @@ let package = Package(
                 "mlx/mlx/backend/cuda/fence.cpp",
                 "mlx/mlx/backend/cuda/indexing.cpp",
                 "mlx/mlx/backend/cuda/jit_module.cpp",
+                "mlx/mlx/backend/cuda/load.cpp",
                 "mlx/mlx/backend/cuda/matmul.cpp",
                 "mlx/mlx/backend/cuda/primitives.cpp",
+                "mlx/mlx/backend/cuda/scaled_dot_product_attention.cpp",
                 "mlx/mlx/backend/cuda/slicing.cpp",
                 "mlx/mlx/backend/cuda/utils.cpp",
                 "mlx/mlx/backend/cuda/worker.cpp",
-                "mlx/mlx/backend/cuda/unary",
-                "mlx/mlx/backend/cuda/gemms",
-                "mlx/mlx/backend/cuda/steel",
-                "mlx/mlx/backend/cuda/reduce",
-                "mlx/mlx/backend/cuda/quantized",
+
+                "mlx/mlx/backend/cuda/binary",
                 "mlx/mlx/backend/cuda/conv",
                 "mlx/mlx/backend/cuda/copy",
                 "mlx/mlx/backend/cuda/device",
-                "mlx/mlx/backend/cuda/binary",
+                "mlx/mlx/backend/cuda/gemms",
+                "mlx/mlx/backend/cuda/quantized",
+                "mlx/mlx/backend/cuda/reduce",
+                "mlx/mlx/backend/cuda/steel",
+                "mlx/mlx/backend/cuda/unary",
 
                 // build variants (we are opting _out_ of these)
                 "mlx/mlx/io/no_safetensors.cpp",

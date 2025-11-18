@@ -1060,9 +1060,15 @@ public func dequantized(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
+    // TODO dkoski
+    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
+    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+    let dtype = mlx_optional_dtype(value: MLX_FLOAT32, has_value: false)
     mlx_dequantize(
-        &result, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx, groupSize.int32, bits.int32,
+        &result, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
+        gs, bits,
         mode.rawValue,
+        dtype,
         stream.ctx)
     return MLXArray(result)
 }
@@ -1340,11 +1346,15 @@ public func gatherQuantizedMatmul(
 ) -> MLXArray {
     var result = mlx_array_new()
 
+    // TODO dkoski
+    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
+    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+
     mlx_gather_qmm(
         &result,
         x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx, (lhsIndices ?? .mlxNone).ctx,
         (rhsIndices ?? .mlxNone).ctx, transpose,
-        groupSize.int32, bits.int32, mode.rawValue, sortedIndices,
+        gs, bits, mode.rawValue, sortedIndices,
         stream.ctx)
 
     return MLXArray(result)
@@ -2127,8 +2137,13 @@ public func quantized(
 ) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray?) {
     var r = mlx_vector_array_new()
     defer { mlx_vector_array_free(r) }
+
+    // TODO dkoski
+    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
+    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+
     mlx_quantize(
-        &r, w.ctx, groupSize.int32, bits.int32, mode.rawValue,
+        &r, w.ctx, gs, bits, mode.rawValue,
         stream.ctx)
 
     let arrays = mlx_vector_array_values(r)
@@ -2163,10 +2178,14 @@ public func quantizedMatmul(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
+    // TODO dkoski
+    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
+    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+
     mlx_quantized_matmul(
         &result,
         x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
-        transpose, groupSize.int32, bits.int32,
+        transpose, gs, bits,
         mode.rawValue,
         stream.ctx
     )

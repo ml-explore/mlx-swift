@@ -30,7 +30,7 @@ make \
     conv \
     copy \
     fft \
-    fp4_quantized \
+    fp_quantized \
     gather \
     gather_axis \
     gather_front \
@@ -81,6 +81,3 @@ rm Source/Cmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh
-
-# install the appropriate bf16 header
-cp Source/Cmlx/mlx-generated/metal/metal_3_0/bf16.h Source/Cmlx/mlx-generated/metal
