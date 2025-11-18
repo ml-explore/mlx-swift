@@ -462,7 +462,7 @@ open class Module {
                 }
                 p._updateInternal(newArray)
 
-            case (.value(.parameters(let p)), .none):
+            case (.value(.parameters), .none):
                 if Self.parameterIsValid(key) {
                     throw UpdateError.keyNotFound(path: path, modules: modulePath)
                 } else {
