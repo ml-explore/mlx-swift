@@ -84,7 +84,7 @@ public enum Memory {
     /// Control the size of cache memory via ``Memory/cacheLimit``
     /// and the overall memory limit with ``Memory/memoryLimit``.
     ///
-    /// This might be used to eamine memory use over a run or sample it during a run:
+    /// This might be used to examine memory use over a run or sample it during a run:
     ///
     /// ```swift
     /// // load model & weights
