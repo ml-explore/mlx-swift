@@ -80,7 +80,7 @@ func buildValueAndGradient<T>(
         // we capture the extra arrays used as arguments (matching
         // the python implementation).
         //
-        // Potentially this could pass all the the values and use the
+        // Potentially this could pass all the values and use the
         // arg indexes to indicate which ones to grad (it should work
         // as is)
         func inner(flattenedArrays: [MLXArray]) -> [MLXArray] {
