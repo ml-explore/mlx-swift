@@ -53,7 +53,7 @@ public:
     Bundle*           init(const class URL* pURL);
 
     static Array*      allBundles();
-    class Array*      allFrameworks() const;
+    static Array*      allFrameworks();
 
     bool              load();
     bool              unload();
@@ -177,9 +177,9 @@ _NS_INLINE NS::Array* NS::Bundle::allBundles()
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-_NS_INLINE NS::Array* NS::Bundle::allFrameworks() const
+_NS_INLINE NS::Array* NS::Bundle::allFrameworks()
 {
-    return Object::sendMessage<Array*>(this, _NS_PRIVATE_SEL(allFrameworks));
+    return Object::sendMessage<Array*>(_NS_PRIVATE_CLS(NSBundle), _NS_PRIVATE_SEL(allFrameworks));
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------

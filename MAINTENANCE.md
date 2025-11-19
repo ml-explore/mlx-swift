@@ -140,11 +140,15 @@ pre-generating the source when updating the `mlx` version.
 2. Add any vendored dependencies as needed in `/vendor`
 
 3. Regenerate any build-time source: `./tools/update-mlx.sh`
+    - this updates headers in Source/Cmlx/include
+    - this updates headers in Source/Cmlx/include-framework
+    - this generates various files in Source/Cmlx/mlx-generated
 
-4. Fix any build issues
+4. Fix any build issues with SwiftPM build (opening Package.swift)
+5. Fix any build issues with xcodeproj build (opening xcode/MLX.codeproj), see also [README.xcodeproj.md]
 
-5. Wrap any new API with swift, update documentation, etc.
+6. Wrap any new API with swift, update documentation, etc.
 
-6. Run `pre-commit run --all-files`
+7. Run `pre-commit run --all-files`
 
-7. Make a PR
+8. Make a PR
