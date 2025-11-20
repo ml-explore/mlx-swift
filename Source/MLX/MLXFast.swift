@@ -83,20 +83,12 @@ public enum MLXFast {
         sinks: MLXArray? = nil,
         memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
     ) -> MLXArray {
-        let masks =
-            if let mask {
-                new_mlx_vector_array([mask])
-            } else {
-                mlx_vector_array_new()
-            }
-        defer { mlx_vector_array_free(masks) }
-
         var result = mlx_array_new()
 
         mlx_fast_scaled_dot_product_attention(
             &result,
             queries.ctx, keys.ctx, values.ctx, scale,
-            "", masks,
+            "", mask?.ctx ?? MLXArray.mlxNone.ctx,
             (sinks ?? .mlxNone).ctx,
             stream.ctx)
         return MLXArray(result)
@@ -105,14 +97,12 @@ public enum MLXFast {
     public enum ScaledDotProductAttentionMaskMode {
         case none
         case array(MLXArray)
-        case arrays([MLXArray])
         case causal
 
-        public var masks: [MLXArray]? {
+        public var mask: MLXArray? {
             switch self {
             case .none: nil
-            case .array(let array): [array]
-            case .arrays(let arrays): arrays
+            case .array(let array): array
             case .causal: nil
             }
         }
@@ -120,7 +110,7 @@ public enum MLXFast {
         public var mode: String {
             switch self {
             case .none: ""
-            case .array, .arrays: ""
+            case .array: ""
             case .causal: "causal"
             }
         }
@@ -174,18 +164,10 @@ public enum MLXFast {
     ) -> MLXArray {
         var result = mlx_array_new()
 
-        let masks =
-            if let masks = mask.masks {
-                new_mlx_vector_array(masks)
-            } else {
-                mlx_vector_array_new()
-            }
-        defer { mlx_vector_array_free(masks) }
-
         mlx_fast_scaled_dot_product_attention(
             &result,
             queries.ctx, keys.ctx, values.ctx, scale,
-            mask.mode, masks,
+            mask.mode, mask.mask?.ctx ?? MLXArray.mlxNone.ctx,
             (sinks ?? .mlxNone).ctx,
             stream.ctx)
         return MLXArray(result)

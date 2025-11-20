@@ -38,6 +38,7 @@ make \
     gemv_masked \
     hadamard \
     logsumexp \
+    masked_scatter \
     quantized \
     quantized_utils \
     reduce \

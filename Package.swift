@@ -33,7 +33,6 @@ let package = Package(
             name: "Cmlx",
             exclude: [
                 // vendor docs
-                "metal-cpp.patch",
                 "vendor-README.md",
 
                 // example code + mlx-c distributed
