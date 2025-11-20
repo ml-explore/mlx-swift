@@ -581,6 +581,12 @@ int mlx_logsumexp(
     const mlx_array a,
     bool keepdims,
     const mlx_stream s);
+int mlx_masked_scatter(
+    mlx_array* res,
+    const mlx_array a,
+    const mlx_array mask,
+    const mlx_array src,
+    const mlx_stream s);
 int mlx_matmul(
     mlx_array* res,
     const mlx_array a,

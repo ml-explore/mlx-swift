@@ -18,7 +18,7 @@ cp Source/Cmlx/mlx-c/mlx/c/*.h Source/Cmlx/include/mlx/c
 
 mkdir build
 cd build
-cmake ../Source/Cmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0
+cmake ../Source/Cmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0 -DMLX_ENABLE_NAX=1
 
 # run the cmake build to generate the source files
 cd mlx/backend/metal
