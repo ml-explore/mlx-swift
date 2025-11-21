@@ -24,7 +24,10 @@
 
 #include "../Metal/MTLPixelFormat.hpp"
 #include "../Metal/MTLTexture.hpp"
+#include "../Metal/MTLResidencySet.hpp"
+#include "../Foundation/NSTypes.hpp"
 #include <CoreGraphics/CGGeometry.h>
+#include <CoreGraphics/CGColorSpace.h>
 
 #include "CADefines.hpp"
 #include "CAMetalDrawable.hpp"
@@ -53,6 +56,20 @@ public:
     void                     setDrawableSize(CGSize drawableSize);
 
     class MetalDrawable*     nextDrawable();
+
+    NS::UInteger             maximumDrawableCount() const;
+    void                     setMaximumDrawableCount(NS::UInteger maximumDrawableCount);
+
+    bool                     displaySyncEnabled() const;
+    void                     setDisplaySyncEnabled(bool displaySyncEnabled);
+
+    CGColorSpaceRef          colorspace() const;
+    void                     setColorspace(CGColorSpaceRef colorspace);
+
+    bool                     allowsNextDrawableTimeout() const;
+    void                     setAllowsNextDrawableTimeout(bool allowsNextDrawableTimeout);
+
+    MTL::ResidencySet*       residencySet() const;
 };
 } // namespace CA
 
@@ -128,4 +145,72 @@ _CA_INLINE CA::MetalDrawable* CA::MetalLayer::nextDrawable()
 {
     return Object::sendMessage<MetalDrawable*>(this,
         _CA_PRIVATE_SEL(nextDrawable));
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE NS::UInteger CA::MetalLayer::maximumDrawableCount() const
+{
+    return Object::sendMessage<NS::UInteger>(this,
+        _CA_PRIVATE_SEL(maximumDrawableCount));
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE void CA::MetalLayer::setMaximumDrawableCount(NS::UInteger maximumDrawableCount)
+{
+    return Object::sendMessage<void>(this, _CA_PRIVATE_SEL(setMaximumDrawableCount_),
+        maximumDrawableCount);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE bool CA::MetalLayer::displaySyncEnabled() const
+{
+    return Object::sendMessage<bool>(this, _CA_PRIVATE_SEL(displaySyncEnabled));
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE void CA::MetalLayer::setDisplaySyncEnabled(bool displaySyncEnabled)
+{
+    return Object::sendMessage<void>(this, _CA_PRIVATE_SEL(setDisplaySyncEnabled_),
+        displaySyncEnabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE CGColorSpaceRef CA::MetalLayer::colorspace() const
+{
+    return Object::sendMessage<CGColorSpaceRef>(this, _CA_PRIVATE_SEL(colorspace));
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE void CA::MetalLayer::setColorspace(CGColorSpaceRef colorspace)
+{
+    return Object::sendMessage<void>(this, _CA_PRIVATE_SEL(setColorspace_),
+        colorspace);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE bool CA::MetalLayer::allowsNextDrawableTimeout() const
+{
+    return Object::sendMessage<bool>(this, _CA_PRIVATE_SEL(allowsNextDrawableTimeout));
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE void CA::MetalLayer::setAllowsNextDrawableTimeout(bool allowsNextDrawableTimeout)
+{
+    return Object::sendMessage<void>(this, _CA_PRIVATE_SEL(setAllowsNextDrawableTimeout_),
+    allowsNextDrawableTimeout);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_CA_INLINE MTL::ResidencySet* CA::MetalLayer::residencySet() const
+{
+    return Object::sendMessage<MTL::ResidencySet*>(this, _CA_PRIVATE_SEL(residencySet) );
 }

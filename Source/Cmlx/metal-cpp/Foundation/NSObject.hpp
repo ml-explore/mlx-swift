@@ -164,7 +164,7 @@ _NS_INLINE constexpr bool NS::Object::doesRequireMsgSendStret()
 #elif defined(__arm__)
     constexpr size_t kStructLimit = sizeof(std::uintptr_t);
 
-    return std::is_class(_Type) && (sizeof(_Type) > kStructLimit);
+    return std::is_class_v<_Type> && (sizeof(_Type) > kStructLimit);
 #else
 #error "Unsupported architecture!"
 #endif

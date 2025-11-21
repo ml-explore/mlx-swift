@@ -28,8 +28,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#define _MTL_PRIVATE_CLS(symbol) (Private::Class::s_k##symbol)
-#define _MTL_PRIVATE_SEL(accessor) (Private::Selector::s_k##accessor)
+#define _MTL_PRIVATE_CLS(symbol) (MTL::Private::Class::s_k##symbol)
+#define _MTL_PRIVATE_SEL(accessor) (MTL::Private::Selector::s_k##accessor)
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ namespace MTL::Private
     }
 } // MTL::Private
 
-#if defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
+#if defined(__MAC_26_0) || defined(__IPHONE_26_0) || defined(__TVOS_26_0)
 
 #define _MTL_PRIVATE_DEF_STR(type, symbol)                  \
     _MTL_EXTERN type const MTL##symbol _MTL_PRIVATE_IMPORT; \
@@ -83,21 +83,21 @@ namespace MTL::Private
 
 #define _MTL_PRIVATE_DEF_WEAK_CONST(type, symbol) \
     _MTL_EXTERN type const MTL##symbol;    \
-    type const             MTL::symbol = Private::LoadSymbol<type>("MTL" #symbol)
+    type const             MTL::symbol = MTL::Private::LoadSymbol<type>("MTL" #symbol)
 
 #else
 
 #define _MTL_PRIVATE_DEF_STR(type, symbol) \
     _MTL_EXTERN type const MTL##symbol;    \
-    type const             MTL::symbol = Private::LoadSymbol<type>("MTL" #symbol)
+    type const             MTL::symbol = MTL::Private::LoadSymbol<type>("MTL" #symbol)
 
 #define _MTL_PRIVATE_DEF_CONST(type, symbol) \
     _MTL_EXTERN type const MTL##symbol;    \
-    type const             MTL::symbol = Private::LoadSymbol<type>("MTL" #symbol)
+    type const             MTL::symbol = MTL::Private::LoadSymbol<type>("MTL" #symbol)
 
 #define _MTL_PRIVATE_DEF_WEAK_CONST(type, symbol) _MTL_PRIVATE_DEF_CONST(type, symbol)
 
-#endif // defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
+#endif
 
 #else
 

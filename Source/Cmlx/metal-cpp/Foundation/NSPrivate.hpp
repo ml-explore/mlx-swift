@@ -66,7 +66,7 @@ namespace NS::Private
 #define _NS_PRIVATE_DEF_PRO(symbol) void* s_k##symbol _NS_PRIVATE_VISIBILITY = _NS_PRIVATE_OBJC_GET_PROTOCOL(symbol)
 #define _NS_PRIVATE_DEF_SEL(accessor, symbol) SEL s_k##accessor _NS_PRIVATE_VISIBILITY = sel_registerName(symbol)
 
-#if defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
+#if defined(__MAC_26_0) || defined(__IPHONE_26_0) || defined(__TVOS_26_0)
 #define _NS_PRIVATE_DEF_CONST(type, symbol)              \
     _NS_EXTERN type const NS##symbol _NS_PRIVATE_IMPORT; \
     type const                       NS::symbol = (nullptr != &NS##symbol) ? NS##symbol : type()

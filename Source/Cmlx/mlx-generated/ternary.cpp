@@ -2,7 +2,12 @@ namespace mlx::core::metal {
 
 const char* ternary() {
   return R"preamble(
-template <typename T, typename Op, int N = WorkPerThread<T>::n>
+template <
+    typename T,
+    typename Op,
+    bool BSCALAR,
+    bool CSCALAR,
+    int N = WorkPerThread<T>::n>
 [[kernel]] void ternary_v(
     device const bool* a,
     device const T* b,
@@ -13,15 +18,24 @@ template <typename T, typename Op, int N = WorkPerThread<T>::n>
   index *= N;
   if (N > 1 && index + N > size) {
     for (int i = 0; index + i < size; ++i) {
-      d[index + i] = Op()(a[index + i], b[index + i], c[index + i]);
+      auto bidx = BSCALAR ? 0 : index + i;
+      auto cidx = CSCALAR ? 0 : index + i;
+      d[index + i] = Op()(a[index + i], b[bidx], c[cidx]);
     }
   } else {
     for (int i = 0; i < N; ++i) {
-      d[index + i] = Op()(a[index + i], b[index + i], c[index + i]);
+      auto bidx = BSCALAR ? 0 : index + i;
+      auto cidx = CSCALAR ? 0 : index + i;
+      d[index + i] = Op()(a[index + i], b[bidx], c[cidx]);
     }
   }
 }
-template <typename T, typename Op, int N = WorkPerThread<T>::n>
+template <
+    typename T,
+    typename Op,
+    bool BSCALAR,
+    bool CSCALAR,
+    int N = WorkPerThread<T>::n>
 [[kernel]] void ternary_v2(
     device const bool* a,
     device const T* b,
@@ -33,11 +47,15 @@ template <typename T, typename Op, int N = WorkPerThread<T>::n>
   int64_t offset = N * (index.x + grid_dim.x * int64_t(index.y));
   if (N > 1 && offset + N > size) {
     for (int i = 0; offset + i < size; ++i) {
-      d[offset + i] = Op()(a[offset + i], b[offset + i], c[offset + i]);
+      auto bidx = BSCALAR ? 0 : offset + i;
+      auto cidx = CSCALAR ? 0 : offset + i;
+      d[offset + i] = Op()(a[offset + i], b[bidx], c[cidx]);
     }
   } else {
     for (int i = 0; i < N; ++i) {
-      d[offset + i] = Op()(a[offset + i], b[offset + i], c[offset + i]);
+      auto bidx = BSCALAR ? 0 : offset + i;
+      auto cidx = CSCALAR ? 0 : offset + i;
+      d[offset + i] = Op()(a[offset + i], b[bidx], c[cidx]);
     }
   }
 }

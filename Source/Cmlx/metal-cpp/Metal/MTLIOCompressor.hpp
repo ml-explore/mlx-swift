@@ -25,11 +25,11 @@
 #include "MTLPrivate.hpp"
 #include "MTLDevice.hpp"
 
-#include <Foundation/Foundation.hpp>
+#include "../Foundation/Foundation.hpp"
 
 namespace MTL
 {
-using IOCompresionContext=void*;
+using IOCompressionContext=void*;
 
 _MTL_ENUM(NS::Integer, IOCompressionStatus) {
     IOCompressionStatusComplete = 0,
@@ -38,11 +38,11 @@ _MTL_ENUM(NS::Integer, IOCompressionStatus) {
 
 size_t IOCompressionContextDefaultChunkSize();
 
-IOCompresionContext IOCreateCompressionContext(const char* path, IOCompressionMethod type, size_t chunkSize);
+IOCompressionContext IOCreateCompressionContext(const char* path, IOCompressionMethod type, size_t chunkSize);
 
-void IOCompressionContextAppendData(IOCompresionContext context, const void* data, size_t size);
+void IOCompressionContextAppendData(IOCompressionContext context, const void* data, size_t size);
 
-IOCompressionStatus IOFlushAndDestroyCompressionContext(IOCompresionContext context);
+IOCompressionStatus IOFlushAndDestroyCompressionContext(IOCompressionContext context);
 
 }
 

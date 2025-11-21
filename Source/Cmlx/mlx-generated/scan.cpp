@@ -505,6 +505,7 @@ template <
       values[i] = op(values[i], values[i - 1]);
     }
     U prev_thread = op.simd_exclusive_scan(values[N_READS - 1]);
+    threadgroup_barrier(mem_flags::mem_threadgroup);
     if (simd_lane_id == simd_size - 1) {
       simdgroup_sums[simd_group_id] = op(prev_thread, values[N_READS - 1]);
     }
@@ -622,6 +623,7 @@ template <
     if (reverse) {
       index_y = axis_size - 1 - index_y;
     }
+    threadgroup_barrier(mem_flags::mem_threadgroup);
     if (check_index_y < axis_size && (read_offset_x + N_READS) < stride_limit) {
       for (int i = 0; i < N_READS; i++) {
         read_into[i] = in[index_y * stride + i];

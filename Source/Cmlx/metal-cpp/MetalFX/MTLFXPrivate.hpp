@@ -28,8 +28,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#define _MTLFX_PRIVATE_CLS( symbol )                    ( Private::Class::s_k##symbol )
-#define _MTLFX_PRIVATE_SEL( accessor )                  ( Private::Selector::s_k##accessor )
+#define _MTLFX_PRIVATE_CLS( symbol )                    ( MTLFX::Private::Class::s_k##symbol )
+#define _MTLFX_PRIVATE_SEL( accessor )                  ( MTLFX::Private::Selector::s_k##accessor )
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ namespace MTLFX::Private
     }
 } // MTLFX::Private
 
-#if defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
+#if defined(__MAC_26_0) || defined(__IPHONE_26_0) || defined(__TVOS_26_0)
 
 #define _MTLFX_PRIVATE_DEF_STR( type, symbol )                                                                                  \
     _MTLFX_EXTERN type const                            MTLFX##symbol _MTLFX_PRIVATE_IMPORT;                                    \
@@ -97,7 +97,7 @@ namespace MTLFX::Private
 
 #define _MTLFX_PRIVATE_DEF_WEAK_CONST( type, symbol )   _MTLFX_PRIVATE_DEF_CONST( type, symbol )
 
-#endif // defined(__MAC_15_0) || defined(__IPHONE_18_0) || defined(__TVOS_18_0)
+#endif
 
 #else
 
@@ -120,6 +120,13 @@ namespace MTLFX
         {
             _MTLFX_PRIVATE_DEF_CLS( MTLFXSpatialScalerDescriptor );
             _MTLFX_PRIVATE_DEF_CLS( MTLFXTemporalScalerDescriptor );
+            _MTLFX_PRIVATE_DEF_CLS( MTLFXFrameInterpolatorDescriptor );
+            _MTLFX_PRIVATE_DEF_CLS( MTLFXTemporalDenoisedScalerDescriptor );
+
+            _MTLFX_PRIVATE_DEF_CLS( MTL4FXSpatialScalerDescriptor );
+            _MTLFX_PRIVATE_DEF_CLS( MTL4FXTemporalScalerDescriptor );
+            _MTLFX_PRIVATE_DEF_CLS( MTL4FXFrameInterpolatorDescriptor );
+            _MTLFX_PRIVATE_DEF_CLS( MTL4FXTemporalDenoisedScalerDescriptor );
         } // Class
     } // Private
 } // MTLFX
@@ -146,6 +153,8 @@ namespace MTLFX
     {
         namespace Selector
         {
+            _MTLFX_PRIVATE_DEF_SEL( aspectRatio,
+                                    "aspectRatio" );
             _MTLFX_PRIVATE_DEF_SEL( colorProcessingMode,
                                     "colorProcessingMode" );
             _MTLFX_PRIVATE_DEF_SEL( colorTexture,
@@ -154,18 +163,38 @@ namespace MTLFX
                                     "colorTextureFormat" );
             _MTLFX_PRIVATE_DEF_SEL( colorTextureUsage,
                                     "colorTextureUsage" );
+            _MTLFX_PRIVATE_DEF_SEL( deltaTime,
+                                    "deltaTime" );
+            _MTLFX_PRIVATE_DEF_SEL( denoiseStrengthMaskTexture,
+                                    "denoiseStrengthMaskTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( denoiseStrengthMaskTextureFormat,
+                                    "denoiseStrengthMaskTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( denoiseStrengthMaskTextureUsage,
+                                    "denoiseStrengthMaskTextureUsage" );
             _MTLFX_PRIVATE_DEF_SEL( depthTexture,
                                     "depthTexture" );
             _MTLFX_PRIVATE_DEF_SEL( depthTextureFormat,
                                     "depthTextureFormat" );
             _MTLFX_PRIVATE_DEF_SEL( depthTextureUsage,
-                                    "depthTextureUsage" );                                    
+                                    "depthTextureUsage" );
+            _MTLFX_PRIVATE_DEF_SEL( diffuseAlbedoTexture,
+                                    "diffuseAlbedoTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( diffuseAlbedoTextureFormat,
+                                    "diffuseAlbedoTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( diffuseAlbedoTextureUsage,
+                                    "diffuseAlbedoTextureUsage" );
             _MTLFX_PRIVATE_DEF_SEL( encodeToCommandBuffer_,
                                     "encodeToCommandBuffer:" );
             _MTLFX_PRIVATE_DEF_SEL( exposureTexture,
-                                    "exposureTexture" );                                    
+                                    "exposureTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( farPlane,
+                                    "farPlane" );
             _MTLFX_PRIVATE_DEF_SEL( fence,
                                     "fence" );
+            _MTLFX_PRIVATE_DEF_SEL( fieldOfView,
+                                    "fieldOfView" );
+            _MTLFX_PRIVATE_DEF_SEL( height,
+                                    "height" );
             _MTLFX_PRIVATE_DEF_SEL( inputContentHeight,
                                     "inputContentHeight" );
             _MTLFX_PRIVATE_DEF_SEL( inputContentMaxScale,
@@ -180,16 +209,30 @@ namespace MTLFX
                                     "inputWidth" );
             _MTLFX_PRIVATE_DEF_SEL( isAutoExposureEnabled,
                                     "isAutoExposureEnabled" );
+            _MTLFX_PRIVATE_DEF_SEL( isDenoiseStrengthMaskTextureEnabled,
+                                    "isDenoiseStrengthMaskTextureEnabled" );
             _MTLFX_PRIVATE_DEF_SEL( isDepthReversed,
                                     "isDepthReversed" );
             _MTLFX_PRIVATE_DEF_SEL( isInputContentPropertiesEnabled,
                                     "isInputContentPropertiesEnabled" );
+            _MTLFX_PRIVATE_DEF_SEL( isTransparencyOverlayTextureEnabled,
+                                    "isTransparencyOverlayTextureEnabled" );
             _MTLFX_PRIVATE_DEF_SEL( isReactiveMaskTextureEnabled,
                                     "isReactiveMaskTextureEnabled" );
+            _MTLFX_PRIVATE_DEF_SEL( isSpecularHitDistanceTextureEnabled,
+                                    "isSpecularHitDistanceTextureEnabled" );
+            _MTLFX_PRIVATE_DEF_SEL( isUITextureComposited,
+                                    "isUITextureComposited" );
             _MTLFX_PRIVATE_DEF_SEL( jitterOffsetX,
                                     "jitterOffsetX" );
             _MTLFX_PRIVATE_DEF_SEL( jitterOffsetY,
                                     "jitterOffsetY" );
+            _MTLFX_PRIVATE_DEF_SEL( maskTexture,
+                                    "maskTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( maskTextureFormat,
+                                    "maskTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( maskTextureUsage,
+                                    "maskTextureUsage" );
             _MTLFX_PRIVATE_DEF_SEL( motionTexture,
                                     "motionTexture" );
             _MTLFX_PRIVATE_DEF_SEL( motionTextureFormat,
@@ -200,10 +243,30 @@ namespace MTLFX
                                     "motionVectorScaleX" );
             _MTLFX_PRIVATE_DEF_SEL( motionVectorScaleY,
                                     "motionVectorScaleY" );
+            _MTLFX_PRIVATE_DEF_SEL( nearPlane,
+                                    "nearPlane" );
+            _MTLFX_PRIVATE_DEF_SEL( newFrameInterpolatorWithDevice_,
+                                    "newFrameInterpolatorWithDevice:" );
+            _MTLFX_PRIVATE_DEF_SEL( newFrameInterpolatorWithDevice_compiler_,
+                                    "newFrameInterpolatorWithDevice:compiler:" );
+            _MTLFX_PRIVATE_DEF_SEL( newTemporalDenoisedScalerWithDevice_,
+                                    "newTemporalDenoisedScalerWithDevice:" );
+            _MTLFX_PRIVATE_DEF_SEL( newTemporalDenoisedScalerWithDevice_compiler_,
+                                    "newTemporalDenoisedScalerWithDevice:compiler:" );
             _MTLFX_PRIVATE_DEF_SEL( newSpatialScalerWithDevice_,
                                     "newSpatialScalerWithDevice:" );
+            _MTLFX_PRIVATE_DEF_SEL( newSpatialScalerWithDevice_compiler_,
+                                    "newSpatialScalerWithDevice:compiler:" );
             _MTLFX_PRIVATE_DEF_SEL( newTemporalScalerWithDevice_,
                                     "newTemporalScalerWithDevice:" );
+            _MTLFX_PRIVATE_DEF_SEL( newTemporalScalerWithDevice_compiler_,
+                                    "newTemporalScalerWithDevice:compiler:" );
+            _MTLFX_PRIVATE_DEF_SEL( normalTexture,
+                                    "normalTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( normalTextureFormat,
+                                    "normalTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( normalTextureUsage,
+                                    "normalTextureUsage" );
             _MTLFX_PRIVATE_DEF_SEL( outputHeight,
                                     "outputHeight" );
             _MTLFX_PRIVATE_DEF_SEL( outputTexture,
@@ -216,6 +279,12 @@ namespace MTLFX
                                     "outputWidth" );
             _MTLFX_PRIVATE_DEF_SEL( preExposure,
                                     "preExposure" );
+            _MTLFX_PRIVATE_DEF_SEL( transparencyOverlayTextureFormat,
+                                    "transparencyOverlayTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( transparencyOverlayTextureUsage,
+                                    "transparencyOverlayTextureUsage" );
+            _MTLFX_PRIVATE_DEF_SEL( prevColorTexture,
+                                    "prevColorTexture" );
             _MTLFX_PRIVATE_DEF_SEL( reactiveMaskTextureFormat,
                                     "reactiveMaskTextureFormat" );
             _MTLFX_PRIVATE_DEF_SEL( reactiveTextureUsage,
@@ -226,6 +295,16 @@ namespace MTLFX
                                     "reset" );
             _MTLFX_PRIVATE_DEF_SEL( requiresSynchronousInitialization,
                                     "requiresSynchronousInitialization" );
+            _MTLFX_PRIVATE_DEF_SEL( roughnessTextureFormat,
+                                    "roughnessTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( roughnessTextureUsage,
+                                    "roughnessTextureUsage" );
+            _MTLFX_PRIVATE_DEF_SEL( scaler,
+                                    "scaler" );
+            _MTLFX_PRIVATE_DEF_SEL( scaler4,
+                                    "scaler4" );
+            _MTLFX_PRIVATE_DEF_SEL( setAspectRatio_,
+                                    "setAspectRatio:" );
             _MTLFX_PRIVATE_DEF_SEL( setAutoExposureEnabled_,
                                     "setAutoExposureEnabled:" );
             _MTLFX_PRIVATE_DEF_SEL( setColorProcessingMode_,
@@ -234,16 +313,36 @@ namespace MTLFX
                                     "setColorTexture:" );
             _MTLFX_PRIVATE_DEF_SEL( setColorTextureFormat_,
                                     "setColorTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDeltaTime_,
+                                    "setDeltaTime:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDenoiseStrengthMaskTexture_,
+                                    "setDenoiseStrengthMaskTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDenoiseStrengthMaskTextureEnabled_,
+                                    "setDenoiseStrengthMaskTextureEnabled:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDenoiseStrengthMaskTextureFormat_,
+                                    "setDenoiseStrengthMaskTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDepthInverted_,
+                                    "setDepthInverted:" );
             _MTLFX_PRIVATE_DEF_SEL( setDepthReversed_,
                                     "setDepthReversed:" );
             _MTLFX_PRIVATE_DEF_SEL( setDepthTexture_,
                                     "setDepthTexture:" );
             _MTLFX_PRIVATE_DEF_SEL( setDepthTextureFormat_,
                                     "setDepthTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDiffuseAlbedoTexture_,
+                                    "setDiffuseAlbedoTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setDiffuseAlbedoTextureFormat_,
+                                    "setDiffuseAlbedoTextureFormat:" );
             _MTLFX_PRIVATE_DEF_SEL( setExposureTexture_,
-                                    "setExposureTexture:" );                                    
+                                    "setExposureTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setFarPlane_,
+                                    "setFarPlane:" );
             _MTLFX_PRIVATE_DEF_SEL( setFence_,
                                     "setFence:" );
+            _MTLFX_PRIVATE_DEF_SEL( setFieldOfView_,
+                                    "setFieldOfView:" );
+            _MTLFX_PRIVATE_DEF_SEL( setHeight_,
+                                    "setHeight:" );
             _MTLFX_PRIVATE_DEF_SEL( setInputContentHeight_,
                                     "setInputContentHeight:" );
             _MTLFX_PRIVATE_DEF_SEL( setInputContentMaxScale_,
@@ -258,10 +357,18 @@ namespace MTLFX
                                     "setInputHeight:" );
             _MTLFX_PRIVATE_DEF_SEL( setInputWidth_,
                                     "setInputWidth:" );
+            _MTLFX_PRIVATE_DEF_SEL( setIsUITextureComposited_,
+                                    "setIsUITextureComposited:" );
             _MTLFX_PRIVATE_DEF_SEL( setJitterOffsetX_,
                                     "setJitterOffsetX:" );
             _MTLFX_PRIVATE_DEF_SEL( setJitterOffsetY_,
                                     "setJitterOffsetY:" );
+            _MTLFX_PRIVATE_DEF_SEL( setNearPlane_,
+                                    "setNearPlane:" );
+            _MTLFX_PRIVATE_DEF_SEL( setMaskTexture_,
+                                    "setMaskTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setMaskTextureFormat_,
+                                    "setMaskTextureFormat:" );
             _MTLFX_PRIVATE_DEF_SEL( setMotionTexture_,
                                     "setMotionTexture:" );
             _MTLFX_PRIVATE_DEF_SEL( setMotionTextureFormat_,
@@ -270,6 +377,10 @@ namespace MTLFX
                                     "setMotionVectorScaleX:" );
             _MTLFX_PRIVATE_DEF_SEL( setMotionVectorScaleY_,
                                     "setMotionVectorScaleY:" );
+            _MTLFX_PRIVATE_DEF_SEL( setNormalTexture_,
+                                    "setNormalTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setNormalTextureFormat_,
+                                    "setNormalTextureFormat:" );
             _MTLFX_PRIVATE_DEF_SEL( setOutputHeight_,
                                     "setOutputHeight:" );
             _MTLFX_PRIVATE_DEF_SEL( setOutputTexture_,
@@ -278,8 +389,18 @@ namespace MTLFX
                                     "setOutputTextureFormat:" );
             _MTLFX_PRIVATE_DEF_SEL( setOutputWidth_,
                                     "setOutputWidth:" );
+            _MTLFX_PRIVATE_DEF_SEL( transparencyOverlayTexture,
+                                    "transparencyOverlayTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( setTransparencyOverlayTexture_,
+                                    "setTransparencyOverlayTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setTransparencyOverlayTextureEnabled_,
+                                    "setTransparencyOverlayTextureEnabled:" );
             _MTLFX_PRIVATE_DEF_SEL( setPreExposure_,
                                     "setPreExposure:" );
+            _MTLFX_PRIVATE_DEF_SEL( setTransparencyOverlayTextureFormat_,
+                                    "setTransparencyOverlayTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setPrevColorTexture_,
+                                    "setPrevColorTexture:" );
             _MTLFX_PRIVATE_DEF_SEL( setReactiveMaskTexture_,
                                     "setReactiveMaskTexture:" );
             _MTLFX_PRIVATE_DEF_SEL( setReactiveMaskTextureEnabled_,
@@ -290,12 +411,70 @@ namespace MTLFX
                                     "setRequiresSynchronousInitialization:" );
             _MTLFX_PRIVATE_DEF_SEL( setReset_,
                                     "setReset:" );
+            _MTLFX_PRIVATE_DEF_SEL( roughnessTexture,
+                                    "roughnessTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( setRoughnessTexture_,
+                                    "setRoughnessTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setRoughnessTextureFormat_,
+                                    "setRoughnessTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setScaler_,
+                                    "setScaler:" );
+            _MTLFX_PRIVATE_DEF_SEL( setShouldResetHistory_,
+                                    "setShouldResetHistory:" );
+            _MTLFX_PRIVATE_DEF_SEL( specularHitDistanceTexture,
+                                    "specularHitDistanceTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( setSpecularHitDistanceTexture_,
+                                    "setSpecularHitDistanceTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setSpecularHitDistanceTextureEnabled_,
+                                    "setSpecularHitDistanceTextureEnabled:" );
+            _MTLFX_PRIVATE_DEF_SEL( setSpecularAlbedoTexture_,
+                                    "setSpecularAlbedoTexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setSpecularAlbedoTextureFormat_,
+                                    "setSpecularAlbedoTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setSpecularHitDistanceTextureFormat_,
+                                    "setSpecularHitDistanceTextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setUITexture_,
+                                    "setUITexture:" );
+            _MTLFX_PRIVATE_DEF_SEL( setUITextureFormat_,
+                                    "setUITextureFormat:" );
+            _MTLFX_PRIVATE_DEF_SEL( setViewToClipMatrix_,
+                                    "setViewToClipMatrix:" );
+            _MTLFX_PRIVATE_DEF_SEL( setWidth_,
+                                    "setWidth:" );
+            _MTLFX_PRIVATE_DEF_SEL( setWorldToViewMatrix_,
+                                    "setWorldToViewMatrix:" );
+            _MTLFX_PRIVATE_DEF_SEL( shouldResetHistory,
+                                    "shouldResetHistory" );
+            _MTLFX_PRIVATE_DEF_SEL( specularAlbedoTexture,
+                                    "specularAlbedoTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( specularAlbedoTextureFormat,
+                                    "specularAlbedoTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( specularAlbedoTextureUsage,
+                                    "specularAlbedoTextureUsage" );
+            _MTLFX_PRIVATE_DEF_SEL( specularHitDistanceTextureFormat,
+                                    "specularHitDistanceTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( specularHitDistanceTextureUsage,
+                                    "specularHitDistanceTextureUsage" );
             _MTLFX_PRIVATE_DEF_SEL( supportedInputContentMaxScaleForDevice_,
                                     "supportedInputContentMaxScaleForDevice:" );
             _MTLFX_PRIVATE_DEF_SEL( supportedInputContentMinScaleForDevice_,
                                     "supportedInputContentMinScaleForDevice:" );
             _MTLFX_PRIVATE_DEF_SEL( supportsDevice_,
                                     "supportsDevice:" );
+            _MTLFX_PRIVATE_DEF_SEL( supportsMetal4FX_,
+                                    "supportsMetal4FX:" );
+            _MTLFX_PRIVATE_DEF_SEL( uiTexture,
+                                    "uiTexture" );
+            _MTLFX_PRIVATE_DEF_SEL( uiTextureFormat,
+                                    "uiTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( uiTextureUsage,
+                                    "uiTextureFormat" );
+            _MTLFX_PRIVATE_DEF_SEL( viewToClipMatrix,
+                                    "viewToClipMatrix" );
+            _MTLFX_PRIVATE_DEF_SEL( width,
+                                    "width" );
+            _MTLFX_PRIVATE_DEF_SEL( worldToViewMatrix,
+                                    "worldToViewMatrix" );
         } // Selector
     } // Private
 } // MTLFX

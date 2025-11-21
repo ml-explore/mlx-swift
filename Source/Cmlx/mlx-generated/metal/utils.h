@@ -4,11 +4,7 @@
 
 #include <metal_math>
 
-// The correct bf16.h is included based on the metal version
-// by giving the correct path to -I during compilation
-// e.g. mlx/backend/metal/kernels/metal_3_0/ for Metal 3.0
 #include "bf16.h"
-
 #include "bf16_math.h"
 #include "complex.h"
 #include "defines.h"
