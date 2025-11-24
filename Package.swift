@@ -232,7 +232,18 @@ let package = Package(
             path: "Source/Examples",
             sources: ["Tutorial.swift"]
         ),
-
+        .executableTarget(
+            name: "CustomFunctionExample",
+            dependencies: ["MLX"],
+            path: "Source/Examples",
+            sources: ["CustomFunctionExample.swift"]
+        ),
+        .executableTarget(
+            name: "CustomFunctionExampleSimple",
+            dependencies: ["MLX"],
+            path: "Source/Examples",
+            sources: ["CustomFunctionExampleSimple.swift"]
+        ),
     ],
     cxxLanguageStandard: .gnucxx17
 )
