@@ -47,7 +47,6 @@ final class _CustomFunctionState: @unchecked Sendable {
 
     private func buildClosures() {
 
-        // --- FORWARD ---
         forwardClosure = mlx_closure_new_func_payload(
             { out, inputs, payload in
                 let swiftFn =
@@ -66,7 +65,6 @@ final class _CustomFunctionState: @unchecked Sendable {
             Unmanaged<AnyObject>.fromOpaque(ptr!).release()
         }
 
-        // --- VJP ---
         if let vjpFn = vjpFn {
             vjpClosure = mlx_closure_custom_new_func_payload(
                 { out, primals, cotangents, _, payload in
@@ -89,11 +87,9 @@ final class _CustomFunctionState: @unchecked Sendable {
             vjpClosure = mlx_closure_custom_new()
         }
 
-        // --- JVP + VMAP ---
         jvpClosure = mlx_closure_custom_jvp_new()
         vmapClosure = mlx_closure_custom_vmap_new()
 
-        // --- COMBINED ---
         combined = mlx_closure_new()
         _ = mlx_custom_function(
             &combined,
@@ -144,7 +140,6 @@ public enum MLXCustomFunctionBuilder {
 
             let state = _CustomFunctionState(forward: f, vjp: vjpFn)
 
-            // EXACT match to compile(): return a Swift function that calls state.call
             return { arrays in state.call(arrays) }
         }
     }

@@ -63,7 +63,7 @@ struct SimpleAddExample {
         )
 
         // -----------------------------
-        // Your new API: CustomFunction {}
+        // Custom MLX function
         // -----------------------------
         let addConstant = CustomFunction {
             Forward { inputs in
