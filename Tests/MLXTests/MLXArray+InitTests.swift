@@ -106,6 +106,97 @@ class MLXArrayInitTests: XCTestCase {
         XCTAssertEqual(a.ndim, 2)
     }
 
+    // MARK: - Arange
+
+    func testArangeIntStop() {
+        // arange(10) -> [0, 1, 2, ..., 9]
+        let a = arange(10)
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(a.shape, [10])
+        assertEqual(a, MLXArray(0 ..< 10))
+    }
+
+    func testArangeIntStartStop() {
+        // arange(2, 10) -> [2, 3, 4, ..., 9]
+        let a = arange(2, 10)
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(a.shape, [8])
+        assertEqual(a, MLXArray(2 ..< 10))
+    }
+
+    func testArangeIntStep() {
+        // arange(2, 10, step: 2) -> [2, 4, 6, 8]
+        let a = arange(2, 10, step: 2)
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(a.shape, [4])
+        assertEqual(a, MLXArray([2, 4, 6, 8].asInt32))
+    }
+
+    func testArangeIntDtype() {
+        // arange(10, dtype: .float32) -> [0.0, 1.0, ..., 9.0]
+        let a = arange(10, dtype: .float32)
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a.shape, [10])
+        assertEqual(a, MLXArray((0 ..< 10).map { Float($0) }))
+    }
+
+    func testArangeIntStepDtype() {
+        // arange(2, 10, step: 2, dtype: .float32) -> [2.0, 4.0, 6.0, 8.0]
+        let a = arange(2, 10, step: 2, dtype: .float32)
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a.shape, [4])
+        assertEqual(a, MLXArray([2.0, 4.0, 6.0, 8.0] as [Float]))
+    }
+
+    func testArangeDoubleStop() {
+        // arange(5.0) -> [0.0, 1.0, 2.0, 3.0, 4.0]
+        let a = arange(5.0)
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a.shape, [5])
+        assertEqual(a, MLXArray([0.0, 1.0, 2.0, 3.0, 4.0] as [Float]))
+    }
+
+    func testArangeDoubleStartStop() {
+        // arange(1.0, 5.0) -> [1.0, 2.0, 3.0, 4.0]
+        let a = arange(1.0, 5.0)
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a.shape, [4])
+        assertEqual(a, MLXArray([1.0, 2.0, 3.0, 4.0] as [Float]))
+    }
+
+    func testArangeDoubleStep() {
+        // arange(0.0, 2.0, step: 0.5) -> [0.0, 0.5, 1.0, 1.5]
+        let a = arange(0.0, 2.0, step: 0.5)
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a.shape, [4])
+        assertEqual(a, MLXArray([0.0, 0.5, 1.0, 1.5] as [Float]))
+    }
+
+    func testArangeStaticMethod() {
+        // Test static method versions
+        let a = MLXArray.arange(10)
+        XCTAssertEqual(a.dtype, .int32)
+        assertEqual(a, MLXArray(0 ..< 10))
+
+        let b = MLXArray.arange(0.0, 3.0, step: 0.5)
+        XCTAssertEqual(b.dtype, .float32)
+        assertEqual(b, MLXArray([0.0, 0.5, 1.0, 1.5, 2.0, 2.5] as [Float]))
+    }
+
+    func testArangeEmpty() {
+        // arange(0) -> empty array
+        let a = arange(0)
+        XCTAssertEqual(a.shape, [0])
+
+        // arange(5, 5) -> empty array
+        let b = arange(5, 5)
+        XCTAssertEqual(b.shape, [0])
+
+        // arange(10, 5) -> empty array (start > stop with positive step)
+        let c = arange(10, 5)
+        XCTAssertEqual(c.shape, [0])
+    }
+
     func testData() {
         let data = Data([1, 2, 3, 4])
         let a = MLXArray(data, [2, 2], type: UInt8.self)
