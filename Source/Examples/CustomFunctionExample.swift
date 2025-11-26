@@ -179,55 +179,51 @@ struct GridSampleExample {
         // -----------------------------
         // Custom MLX function
         // -----------------------------
-        let gridSample: MLXClosure = {
-            @MLXCustomFunctionBuilder
-            var f: MLXClosure {
-                Forward { inputs in
-                    let x = inputs[0]
-                    let grid = inputs[1]
-                    let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
+        let gridSample = CustomFunction {
+			Forward { inputs in
+				let x = inputs[0]
+				let grid = inputs[1]
+				let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
 
-                    // Timing the forward pass
-                    let startTime = Date()
-                    let result = forwardKernel(
-                        [x, grid],
-                        grid: (totalElems, 1, 1),
-                        threadGroup: (32, 1, 1),
-                        outputShapes: [x.shape],
-                        outputDTypes: [x.dtype]
-                    )
+				// Timing the forward pass
+				let startTime = Date()
+				let result = forwardKernel(
+					[x, grid],
+					grid: (totalElems, 1, 1),
+					threadGroup: (32, 1, 1),
+					outputShapes: [x.shape],
+					outputDTypes: [x.dtype]
+				)
 
-                    let elapsedTime = Date().timeIntervalSince(startTime)
-                    print("Forward pass time: \(elapsedTime) seconds")
+				let elapsedTime = Date().timeIntervalSince(startTime)
+				print("Forward pass time: \(elapsedTime) seconds")
 
-                    return result
-                }
+				return result
+			}
 
-                VJP { primals, cotangents in
-                    let x = primals[0]
-                    let grid = primals[1]
-                    let cot = cotangents[0]
-                    let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
+			VJP { primals, cotangents in
+				let x = primals[0]
+				let grid = primals[1]
+				let cot = cotangents[0]
+				let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
 
-                    // Timing the backward pass
-                    let startTime = Date()
-                    let result = vjpKernel(
-                        [x, grid, cot],
-                        grid: (totalElems, 1, 1),
-                        threadGroup: (32, 1, 1),
-                        outputShapes: [x.shape, grid.shape],
-                        outputDTypes: [x.dtype, grid.dtype],
-                        initValue: 0
-                    )
+				// Timing the backward pass
+				let startTime = Date()
+				let result = vjpKernel(
+					[x, grid, cot],
+					grid: (totalElems, 1, 1),
+					threadGroup: (32, 1, 1),
+					outputShapes: [x.shape, grid.shape],
+					outputDTypes: [x.dtype, grid.dtype],
+					initValue: 0
+				)
 
-                    let elapsedTime = Date().timeIntervalSince(startTime)
-                    print("Backward pass time: \(elapsedTime) seconds")
+				let elapsedTime = Date().timeIntervalSince(startTime)
+				print("Backward pass time: \(elapsedTime) seconds")
 
-                    return result
-                }
-            }
-            return f
-        }()
+				return result
+			}
+		}
 
         // -----------------------------
         // Example input
@@ -241,7 +237,7 @@ struct GridSampleExample {
         // https://github.com/ml-explore/mlx/discussions/842#discussioncomment-8835095
         // The output of the model needs to be a scalar
         func fn(_ x: MLXArray) -> MLXArray {
-            let y = try! MLXClosure.apply(gridSample, [x, grid])[0]
+            let y = gridSample([x, grid])[0]
             let result = MLX.sum(y)
 
             print("y:", y)
@@ -270,36 +266,31 @@ struct GridSampleExample {
 }
 
 /*
-## gives following output:
-
+ ## gives following output:
+ 
  x: array([[[[1],[2],[3],[4]],
 		 [[5],[6],[7],[8]],
 		 [[9],[10],[11],[12]],
 		 [[13],[14],[15],[16]]]], dtype=float32)
- grid: array([[[[-1]],
-		 [[-0.5]],
-		 [[0]],
-		 [[0.5]],
-		 [[1]]]], dtype=float32)
- Forward pass time: 9.298324584960938e-05 seconds
- y:
- array([[[[4],[11.5],[10],[8.5]],
+ grid: array([[[[-1]],[[-0.5]],[[0]],[[0.5]],[[1]]]], dtype=float32)
+ Forward pass time: 7.796287536621094e-05 seconds
+ y: array([[[[4],[11.5],[10],[8.5]],
 		 [[8.5],[0],[0],[0]],
 		 [[0],[0],[0],[0]],
 		 [[0],[0],[0],[0]]]], dtype=float32)
  result: array(42.5, dtype=float32)
- Backward pass time: 2.9087066650390625e-05 seconds
+ Backward pass time: 4.303455352783203e-05 seconds
  df/dx: array([[[[0.25],[0],[0],[0]],
 		 [[0.75],[0.5],[0.5],[0.5]],
 		 [[0],[0.875],[0.875],[0.5]],
 		 [[0],[0.125],[0.125],[0]]]], dtype=float32)
- Forward pass time: 1.800060272216797e-05 seconds
+ Forward pass time: 1.4066696166992188e-05 seconds
  y: array([[[[4],[11.5],[10],[8.50025]],
 		 [[8.50025],[0],[0],[0]],
 		 [[0],[0],[0],[0]],
 		 [[0],[0],[0],[0]]]], dtype=float32)
  result: array(42.5005, dtype=float32)
- Forward pass time: 1.5974044799804688e-05 seconds
+ Forward pass time: 1.0967254638671875e-05 seconds
  y: array([[[[4],[11.5],[10],[8.49975]],
 		 [[8.49975],[0],[0],[0]],
 		 [[0],[0],[0],[0]],
@@ -308,4 +299,5 @@ struct GridSampleExample {
  numeric grad @ (1,1): 0.50354004
  autodiff grad @ (1,1): array(0.5, dtype=float32)
  Program ended with exit code: 0
+ 
 */
