@@ -180,50 +180,50 @@ struct GridSampleExample {
         // Custom MLX function
         // -----------------------------
         let gridSample = CustomFunction {
-			Forward { inputs in
-				let x = inputs[0]
-				let grid = inputs[1]
-				let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
+            Forward { inputs in
+                let x = inputs[0]
+                let grid = inputs[1]
+                let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
 
-				// Timing the forward pass
-				let startTime = Date()
-				let result = forwardKernel(
-					[x, grid],
-					grid: (totalElems, 1, 1),
-					threadGroup: (32, 1, 1),
-					outputShapes: [x.shape],
-					outputDTypes: [x.dtype]
-				)
+                // Timing the forward pass
+                let startTime = Date()
+                let result = forwardKernel(
+                    [x, grid],
+                    grid: (totalElems, 1, 1),
+                    threadGroup: (32, 1, 1),
+                    outputShapes: [x.shape],
+                    outputDTypes: [x.dtype]
+                )
 
-				let elapsedTime = Date().timeIntervalSince(startTime)
-				print("Forward pass time: \(elapsedTime) seconds")
+                let elapsedTime = Date().timeIntervalSince(startTime)
+                print("Forward pass time: \(elapsedTime) seconds")
 
-				return result
-			}
+                return result
+            }
 
-			VJP { primals, cotangents in
-				let x = primals[0]
-				let grid = primals[1]
-				let cot = cotangents[0]
-				let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
+            VJP { primals, cotangents in
+                let x = primals[0]
+                let grid = primals[1]
+                let cot = cotangents[0]
+                let totalElems = x.shape[0] * grid.shape[1] * grid.shape[2] * x.shape[3]
 
-				// Timing the backward pass
-				let startTime = Date()
-				let result = vjpKernel(
-					[x, grid, cot],
-					grid: (totalElems, 1, 1),
-					threadGroup: (32, 1, 1),
-					outputShapes: [x.shape, grid.shape],
-					outputDTypes: [x.dtype, grid.dtype],
-					initValue: 0
-				)
+                // Timing the backward pass
+                let startTime = Date()
+                let result = vjpKernel(
+                    [x, grid, cot],
+                    grid: (totalElems, 1, 1),
+                    threadGroup: (32, 1, 1),
+                    outputShapes: [x.shape, grid.shape],
+                    outputDTypes: [x.dtype, grid.dtype],
+                    initValue: 0
+                )
 
-				let elapsedTime = Date().timeIntervalSince(startTime)
-				print("Backward pass time: \(elapsedTime) seconds")
+                let elapsedTime = Date().timeIntervalSince(startTime)
+                print("Backward pass time: \(elapsedTime) seconds")
 
-				return result
-			}
-		}
+                return result
+            }
+        }
 
         // -----------------------------
         // Example input
@@ -267,7 +267,7 @@ struct GridSampleExample {
 
 /*
  ## gives following output:
- 
+
  x: array([[[[1],[2],[3],[4]],
 		 [[5],[6],[7],[8]],
 		 [[9],[10],[11],[12]],
@@ -299,5 +299,5 @@ struct GridSampleExample {
  numeric grad @ (1,1): 0.50354004
  autodiff grad @ (1,1): array(0.5, dtype=float32)
  Program ended with exit code: 0
- 
+
 */
