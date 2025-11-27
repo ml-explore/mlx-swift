@@ -4,11 +4,11 @@ import Foundation
 /// Returns a vectorized version of `f()`.
 ///
 /// The returned function applies `f()` independently over the axis
-/// specified by ``inAxes`` and stacks the results along ``outAxes``.
+/// specified by `inAxes` and stacks the results along `outAxes`.
 ///
 /// - Parameters:
 ///   - f: Function to vectorize
-///   - inAxes: Axis of each input to map over. ``nil`` disables mapping for that input.
+///   - inAxes: Axis of each input to map over. `nil` disables mapping for that input.
 ///   - outAxes: Axis of each output to stack the results along
 /// - Returns: A vectorized function
 ///
@@ -30,7 +30,7 @@ public func vmap(
         var traceOutputs = mlx_vector_array_new()
 
         let closure = new_mlx_closure(f)
-        inAxes32.withUnsafeBufferPointer { inAxesBuf in
+        _ = inAxes32.withUnsafeBufferPointer { inAxesBuf in
             mlx_detail_vmap_trace(
                 &traceInputs, &traceOutputs, closure, inputs, inAxesBuf.baseAddress, inAxesBuf.count
             )
@@ -43,7 +43,7 @@ public func vmap(
         }
 
         var result = mlx_vector_array_new()
-        inAxes32.withUnsafeBufferPointer { inAxesBuf in
+        _ = inAxes32.withUnsafeBufferPointer { inAxesBuf in
             outAxes32.withUnsafeBufferPointer { outAxesBuf in
                 mlx_detail_vmap_replace(
                     &result,

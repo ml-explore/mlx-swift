@@ -23,7 +23,7 @@ typedef struct mlx_string_ {
 /**
  * Returns a new empty string.
  */
-mlx_string mlx_string_new();
+mlx_string mlx_string_new(void);
 
 /**
  * Returns a new string, copying contents from `str`, which must end with `\0`.

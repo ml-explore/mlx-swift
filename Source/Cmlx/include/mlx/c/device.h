@@ -32,7 +32,7 @@ typedef enum mlx_device_type_ { MLX_CPU, MLX_GPU } mlx_device_type;
 /**
  * Returns a new empty device.
  */
-mlx_device mlx_device_new();
+mlx_device mlx_device_new(void);
 
 /**
  * Returns a new device of specified `type`, with specified `index`.

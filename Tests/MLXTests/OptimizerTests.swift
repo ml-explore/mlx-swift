@@ -90,8 +90,8 @@ class OptimizerTests: XCTestCase {
         // run a number of epochs
         var lastLoss: MLXArray!
         for _ in 0 ..< 30 {
-            print("target: b = \(b), m = \(m)")
-            print("parameters: \(model.parameters())")
+            // print("target: b = \(b), m = \(m)")
+            // print("parameters: \(model.parameters())")
 
             // generate random training data along with the ground truth.
             // notice that the shape is [B, 1] where B is the batch

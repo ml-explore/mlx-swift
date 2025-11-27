@@ -11,9 +11,10 @@ Swift example code for MLX and MLXNN.
 
 ## Overview
 
-Examples using ``MLX`` and `MLXNN` are available on
-[GitHub](https://github.com/ml-explore/mlx-swift-examples). The examples
-include:
+Examples using ``MLX`` and `MLXNN` are available in
+[mlx-swift-examples](https://github.com/ml-explore/mlx-swift-examples) (example applications and tools)
+and [mlx-swift-lm](https://github.com/ml-explore/mlx-swift-lm) (implementations of various LLM and VLM model architectures).
+The examples include:
 
 - [MNISTTrainer](https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MNISTTrainer/README.md): An example that runs on
   both iOS and macOS that downloads MNIST training data and trains a

@@ -358,6 +358,18 @@ public func arrayEqual<T: ScalarOrArray>(
     return MLXArray(result)
 }
 
+/// Unary element-wise bitwise invert.
+///
+/// Apply bitwise inversion to the values in the array.
+///
+/// ### See Also
+/// - <doc:arithmetic>
+public func bitwiseInvert(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_bitwise_invert(&result, array.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Element-wise bitwise and.
 ///
 /// Take the bitwise and of two arrays with numpy-style broadcasting

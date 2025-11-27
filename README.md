@@ -8,6 +8,10 @@ MLX is an array framework for machine learning on Apple silicon. MLX Swift
 expands MLX to the Swift language, making research and experimentation easier
 on Apple silicon.
 
+## Language Models
+
+LLM and VLM implementations are available in [mlx-swift-lm](https://github.com/ml-explore/mlx-swift-lm).
+
 ## Examples
 
 MLX Swift has [many

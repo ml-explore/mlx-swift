@@ -1582,8 +1582,9 @@ extension UpdateError: LocalizedError {
                 "Unable to collect modules from container: \(path.joined(separator: ".")) in \(modules.joined(separator: "."))"
         case .mismatchedContainers(let base, let key):
             return "Mismatched containers: \(base) \(key)"
-        case let .mismatchedSize(
-            path, modules, expectedShape: expectedShape, actualShape: actualShape):
+        case .mismatchedSize(
+            let
+                path, let modules, let expectedShape, let actualShape):
             return
                 "Mismatched parameter \(path.joined(separator: ".")) in \(modules.joined(separator: ".")) shape. Actual \(actualShape), expected \(expectedShape)"
         case .keyNotFound(let path, let modules):

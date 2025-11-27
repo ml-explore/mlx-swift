@@ -763,8 +763,8 @@ public enum MLXRandom {
 ///
 /// ### See Also
 /// - ``key(_:)``
-/// - ``RandomState``
-/// - ``globalState``
+/// - ``MLXRandom/RandomState``
+/// - ``MLXRandom/globalState``
 public func seed(_ seed: UInt64) {
     return MLXRandom.seed(seed)
 }

@@ -282,6 +282,11 @@ private let errorHandler: ErrorHandler = {
     return ErrorHandler()
 }()
 
+/// Ensure that the error handler is installed.
+func initError() {
+    _ = errorHandler
+}
+
 /// Forward the error to the `ErrorHandler` singleton.  See `errorHandler` (above) for how this is
 /// installed.
 private func errorHandlerTrampoline(message: UnsafePointer<CChar>?, data: UnsafeMutableRawPointer?)

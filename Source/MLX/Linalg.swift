@@ -111,7 +111,7 @@ public enum MLXLinalg {
     /// - Returns: output containing the norm(s)
     ///
     /// ### See Also
-    /// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+    /// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
     public static func norm(
         _ array: MLXArray, ord: Double, axes: [Int], keepDims: Bool = false,
         stream: StreamOrDevice = .default
@@ -123,7 +123,7 @@ public enum MLXLinalg {
 
     /// Matrix or vector norm.
     ///
-    /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+    /// See ``norm(_:ord:axes:keepDims:stream:)-8zljj``
     public static func norm(
         _ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: Bool = false,
         stream: StreamOrDevice = .default
@@ -153,7 +153,7 @@ public enum MLXLinalg {
 
     /// Matrix or vector norm.
     ///
-    /// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+    /// See ``norm(_:ord:axes:keepDims:stream:)-8zljj``
     public static func norm(
         _ array: MLXArray, ord: NormKind? = nil, axis: IntOrArray? = nil,
         keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -500,13 +500,13 @@ public func norm(
 /// - Parameters:
 ///   - array: input array
 ///   - ord: order of the norm, see table
-///   - axes: axes that hold 2d matrices
+///   - axis: axes that hold 2d matrices
 ///   - keepDims: if `true` the axes which are normed over are left in the result as dimensions with size one
 ///   - stream: stream to evaluate on
 /// - Returns: output containing the norm(s)
 ///
 /// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+/// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -526,7 +526,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+/// See ``norm(_:ord:axes:keepDims:stream:)-8zljj``
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -659,11 +659,11 @@ public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOr
     return MLXLinalg.cross(a, b, axis: axis, stream: stream)
 }
 
-/// Compute the LU factorization of the given matrix ``A``.
+/// Compute the LU factorization of the given matrix `A`.
 ///
-/// Note, unlike the default behavior of ``scipy.linalg.lu``, the pivots
-/// are indices. To reconstruct the input use ``L[P] @ U`` for 2
-/// dimensions or ``takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U``
+/// Note, unlike the default behavior of `scipy.linalg.lu`, the pivots
+/// are indices. To reconstruct the input use `L[P] @ U` for 2
+/// dimensions or `takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U`
 /// for more than 2 dimensions.
 ///
 /// To construct the full permuation matrix do:

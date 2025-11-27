@@ -1,0 +1,77 @@
+name: Build and Test
+
+on: pull_request  
+
+permissions:
+  contents: read
+
+jobs:
+  mac_build_and_test:
+    if: github.repository == 'ml-explore/mlx-swift'
+    runs-on: [self-hosted, macos]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+     
+      - name: Verify MetalToolchain installed
+        shell: bash
+        run: xcodebuild -showComponent MetalToolchain
+      
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+            python-version: ${{ inputs.python-version }}
+            activate-environment: true
+     
+      - name: Setup swift-format
+        shell: sh
+        run: |
+          uv pip install pre-commit
+          brew install swift-format
+     
+      - name: Setup cmake
+        shell: sh
+        run: |
+          brew install cmake ninja
+     
+      - name: Run style checks
+        shell: sh
+        run: |
+          pre-commit run --all || (echo "Style checks failed, please install pre-commit and run pre-commit run --all and push the change"; echo ""; git --no-pager diff; exit 1)
+      
+      - name: Build (Xcode, macOS)
+        shell: sh
+        run: |
+          xcodebuild -version
+          xcrun --show-sdk-build-version
+          swift --version
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+          xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS'
+
+      - name: Run Tests (Xcode, macOS)
+        shell: sh
+        run: |
+          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
+          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+            /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+            ~/Library/Logs/DiagnosticReports/*
+          retention-days: 7
+
+      - name: Build (cmake)
+        shell: sh
+        run: |
+          rm -rf build
+          mkdir build
+          cd build
+          cmake .. -G Ninja
+          ninja
+

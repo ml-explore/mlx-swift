@@ -116,7 +116,9 @@ open class Linear: Module, UnaryLayer, Quantizable {
 
     /// Describe the `inputDimensions` and `outputDimensions`.
     open override func describeExtra(_ indent: Int) -> String {
-        "(inputDimensions=\(weight.dim(1)), outputDimensions=\(weight.dim(0)), bias=\(bias == nil ? "false" : "true"))"
+        let (outputDimensions, inputDimensions) = self.shape
+        return
+            "(inputDimensions=\(inputDimensions), outputDimensions=\(outputDimensions), bias=\(self.bias != nil))"
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
@@ -129,8 +131,8 @@ open class Linear: Module, UnaryLayer, Quantizable {
         return result
     }
 
-    public func toQuantized(groupSize: Int, bits: Int) -> Module {
-        QuantizedLinear(self, groupSize: groupSize, bits: bits)
+    public func toQuantized(groupSize: Int, bits: Int, mode: QuantizationMode) -> Module {
+        QuantizedLinear(self, groupSize: groupSize, bits: bits, mode: mode)
     }
 }
 
