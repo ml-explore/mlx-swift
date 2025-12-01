@@ -1081,7 +1081,8 @@ public func arange(
     _ start: Int, _ stop: Int, step: Int = 1, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_arange(&result, Double(start), Double(stop), Double(step), DType.int32.cmlxDtype, stream.ctx)
+    mlx_arange(
+        &result, Double(start), Double(stop), Double(step), DType.int32.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
