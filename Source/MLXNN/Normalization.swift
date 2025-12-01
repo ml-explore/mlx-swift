@@ -104,7 +104,7 @@ open class LayerNorm: Module, UnaryLayer {
         #if canImport(MLXFast)
         MLXFast.layerNorm(x, weight: weight, bias: bias, eps: eps)
         #else
-        MLX.layerNorm(x, weight: weight, bias: bias, eps: eps)
+        layerNorm(x, weight: weight, bias: bias, eps: eps)
         #endif
     }
 }
@@ -145,7 +145,7 @@ open class RMSNorm: Module, UnaryLayer {
         #if canImport(MLXFast)
         MLXFast.rmsNorm(x, weight: weight, eps: eps)
         #else
-        MLX.rmsNorm(x, weight: weight, eps: eps)
+        rmsNorm(x, weight: weight, eps: eps)
         #endif
     }
 }
@@ -216,7 +216,7 @@ open class GroupNorm: Module, UnaryLayer {
         #if canImport(MLXFast)
         x = MLXFast.layerNorm(x, weight: nil, bias: nil, eps: eps)
         #else
-        x = MLX.layerNorm(x, weight: nil, bias: nil, eps: eps)
+        x = layerNorm(x, eps: eps)
         #endif
 
         x = x.reshaped(batch, groupCount, -1, groupSize)
