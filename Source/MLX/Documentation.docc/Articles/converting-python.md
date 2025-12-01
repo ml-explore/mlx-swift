@@ -147,7 +147,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `all` | ``MLX/all(_:axes:keepDims:stream:)``
 `allclose` | ``MLX/allClose(_:_:rtol:atol:equalNaN:stream:)``
 `any` | ``MLX/any(_:axes:keepDims:stream:)``
-`arange` | ``MLXArray/init(_:_:)-4n0or``
+`arange` | ``MLX/arange(_:_:step:stream:)``
 `arccos` | ``MLX/acos(_:stream:)``
 `arccosh` | ``MLX/acosh(_:stream:)``
 `arcsin` | ``MLX/asin(_:stream:)``

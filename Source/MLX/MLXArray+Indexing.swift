@@ -3,11 +3,11 @@
 import Cmlx
 import Foundation
 
-private func arange(_ count: Int) -> [Int32] {
+private func int32Range(_ count: Int) -> [Int32] {
     Array(0 ..< Int32(count))
 }
 
-private func arange(_ start: Int, _ end: Int) -> [Int32] {
+private func int32Range(_ start: Int, _ end: Int) -> [Int32] {
     Array(Int32(start) ..< Int32(end))
 }
 
@@ -297,7 +297,7 @@ extension MLXArray {
             let axis = MLX.resolve(axis: axis, ndim: ndim)
 
             for i in 0 ..< axis {
-                let indices = arange(0, dim(i))
+                let indices = int32Range(0, dim(i))
                 var indexShape = MLX.ones(axis + 1).map { Int($0) }
                 indexShape[i] = indices.count
                 arrayIndices.append(MLXArray(indices, indexShape))
@@ -335,7 +335,7 @@ extension MLXArray {
 
             // the shape of the broadcast value
             let broadcastShape =
-                arrayIndices[0].shape.asInt32 + arange(axis + 1, self.ndim).map { dim($0) }
+                arrayIndices[0].shape.asInt32 + int32Range(axis + 1, self.ndim).map { dim($0) }
 
             // compute the scatter shape
             var updateShape = broadcastShape
@@ -343,7 +343,7 @@ extension MLXArray {
 
             let update = newValue.broadcast(to: broadcastShape).reshaped(updateShape)
 
-            let axes = arange(axis + 1)
+            let axes = int32Range(axis + 1)
             self._updateInternal(scattered(indices: arrayIndices, updates: update, axes: axes))
         }
     }

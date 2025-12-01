@@ -368,6 +368,148 @@ extension MLXArray {
         MLX.linspace(start, stop, count: count, stream: stream)
     }
 
+    /// Generate values in the half-open interval `[0, stop)`.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // Create [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    /// let r = MLXArray.arange(10)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - stop: stop value
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:_:step:stream:)``
+    static public func arange(_ stop: Int, stream: StreamOrDevice = .default) -> MLXArray {
+        MLX.arange(0, stop, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[start, stop)` spaced by `step`.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // Create [2, 4, 6, 8]
+    /// let r = MLXArray.arange(2, 10, step: 2)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - start: start value
+    ///     - stop: stop value
+    ///     - step: step size (default: 1)
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:_:step:dtype:stream:)-(Int,_,_,_,_)``
+    static public func arange(
+        _ start: Int, _ stop: Int, step: Int = 1, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(start, stop, step: step, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[0, stop)` with a given ``DType``.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // Create [0.0, 1.0, 2.0, ...] as float32
+    /// let r = MLXArray.arange(10, dtype: .float32)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - stop: stop value
+    ///     - dtype: data type of the output array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:_:step:dtype:stream:)-(Int,_,_,_,_)``
+    static public func arange(_ stop: Int, dtype: DType, stream: StreamOrDevice = .default)
+        -> MLXArray
+    {
+        MLX.arange(0, stop, dtype: dtype, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[start, stop)` spaced by `step` with a given ``DType``.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // Create [2.0, 4.0, 6.0, 8.0] as float32
+    /// let r = MLXArray.arange(2, 10, step: 2, dtype: .float32)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - start: start value
+    ///     - stop: stop value
+    ///     - step: step size (default: 1)
+    ///     - dtype: data type of the output array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:_:step:stream:)``
+    static public func arange(
+        _ start: Int, _ stop: Int, step: Int = 1, dtype: DType,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(start, stop, step: step, dtype: dtype, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[0, stop)` (floating point version).
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // Create [0.0, 1.0, 2.0, 3.0, 4.0]
+    /// let r = MLXArray.arange(5.0)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - stop: stop value
+    ///     - dtype: data type of the output array (default: .float32)
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:_:step:dtype:stream:)-(Double,_,_,_,_)``
+    static public func arange(
+        _ stop: Double, dtype: DType = .float32, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(stop, dtype: dtype, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[start, stop)` spaced by `step` (floating point version).
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // Create [0.0, 0.5, 1.0, 1.5, 2.0, ...]
+    /// let r = MLXArray.arange(0.0, 5.0, step: 0.5)
+    /// ```
+    ///
+    /// - Parameters:
+    ///     - start: start value
+    ///     - stop: stop value
+    ///     - step: step size (default: 1.0)
+    ///     - dtype: data type of the output array (default: .float32)
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:dtype:stream:)-(Double,_,_)``
+    static public func arange(
+        _ start: Double, _ stop: Double, step: Double = 1.0, dtype: DType = .float32,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(start, stop, step: step, dtype: dtype, stream: stream)
+    }
+
     /// Repeat an array along a specified axis.
     ///
     /// > Deprected in favor of the more consistently named ``repeated(_:count:axis:stream:)``
@@ -892,6 +1034,158 @@ public func linspace<T: HasDType>(
 ) -> MLXArray where T: BinaryFloatingPoint {
     var result = mlx_array_new()
     mlx_linspace(&result, Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[0, stop)`.
+///
+/// Example:
+///
+/// ```swift
+/// // Create [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+/// let r = arange(10)
+/// ```
+///
+/// - Parameters:
+///     - stop: stop value
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:_:step:stream:)``
+public func arange(_ stop: Int, stream: StreamOrDevice = .default) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, 0, Double(stop), 1, DType.int32.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[start, stop)` spaced by `step`.
+///
+/// Example:
+///
+/// ```swift
+/// // Create [2, 4, 6, 8]
+/// let r = arange(2, 10, step: 2)
+/// ```
+///
+/// - Parameters:
+///     - start: start value
+///     - stop: stop value
+///     - step: step size (default: 1)
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:_:step:dtype:stream:)-(Int,_,_,_,_)``
+public func arange(
+    _ start: Int, _ stop: Int, step: Int = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(
+        &result, Double(start), Double(stop), Double(step), DType.int32.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[0, stop)` with a given ``DType``.
+///
+/// Example:
+///
+/// ```swift
+/// // Create [0.0, 1.0, 2.0, ...] as float32
+/// let r = arange(10, dtype: .float32)
+/// ```
+///
+/// - Parameters:
+///     - stop: stop value
+///     - dtype: data type of the output array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:_:step:dtype:stream:)-(Int,_,_,_,_)``
+public func arange(_ stop: Int, dtype: DType, stream: StreamOrDevice = .default) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, 0, Double(stop), 1, dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[start, stop)` spaced by `step` with a given ``DType``.
+///
+/// Example:
+///
+/// ```swift
+/// // Create [2.0, 4.0, 6.0, 8.0] as float32
+/// let r = arange(2, 10, step: 2, dtype: .float32)
+/// ```
+///
+/// - Parameters:
+///     - start: start value
+///     - stop: stop value
+///     - step: step size (default: 1)
+///     - dtype: data type of the output array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:_:step:stream:)``
+public func arange(
+    _ start: Int, _ stop: Int, step: Int = 1, dtype: DType, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, Double(start), Double(stop), Double(step), dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[0, stop)` (floating point version).
+///
+/// Example:
+///
+/// ```swift
+/// // Create [0.0, 1.0, 2.0, 3.0, 4.0]
+/// let r = arange(5.0)
+/// ```
+///
+/// - Parameters:
+///     - stop: stop value
+///     - dtype: data type of the output array (default: .float32)
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:_:step:dtype:stream:)-(Double,_,_,_,_)``
+public func arange(
+    _ stop: Double, dtype: DType = .float32, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, 0, stop, 1, dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[start, stop)` spaced by `step` (floating point version).
+///
+/// Example:
+///
+/// ```swift
+/// // Create [0.0, 0.5, 1.0, 1.5, 2.0, ...]
+/// let r = arange(0.0, 5.0, step: 0.5)
+/// ```
+///
+/// - Parameters:
+///     - start: start value
+///     - stop: stop value
+///     - step: step size (default: 1.0)
+///     - dtype: data type of the output array (default: .float32)
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:dtype:stream:)-(Double,_,_)``
+public func arange(
+    _ start: Double, _ stop: Double, step: Double = 1.0, dtype: DType = .float32,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, start, stop, step, dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
