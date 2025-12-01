@@ -6,8 +6,11 @@ import MLX
 @main
 struct Example1 {
     static func main() {
-        let osName = ProcessInfo.processInfo.operatingSystemVersionString.lowercased()
-        let device: Device = osName.contains("linux") ? .cpu : .gpu
+        #if os(Linux)
+        let device: Device = .cpu
+        #else
+        let device: Device = .gpu
+        #endif
         Stream.withNewDefaultStream(device: device) {
             let arr = MLXArray(stride(from: Int32(2), through: 8, by: 2), [2, 2])
 
