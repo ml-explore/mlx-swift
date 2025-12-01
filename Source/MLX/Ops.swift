@@ -1797,7 +1797,7 @@ public func maximum<A: ScalarOrArray, B: ScalarOrArray>(
 /// - Parameters:
 ///     - a: the first array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1816,7 +1816,7 @@ public func median(
 /// - Parameters:
 ///     - a: the first array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1834,7 +1834,7 @@ public func median(
 ///
 /// - Parameters:
 ///     - a: the first array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -2515,7 +2515,7 @@ public func sorted(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 /// - Parameters:
 ///   - array: input array
 ///   - axes: axes to reduce over
-///   - keepDims: if `true`keep reduced axis as singleton dimension
+///   - keepDims: if `true` keep reduced axis as singleton dimension
 ///   - ddof: the divisor to compute the varian is `N - ddof`
 ///   - stream: stream or device to evaluate on
 ///
@@ -2537,7 +2537,7 @@ public func std(
 /// - Parameters:
 ///   - array: input array
 ///   - axis: axis to reduce over
-///   - keepDims: if `true`keep reduced axis as singleton dimension
+///   - keepDims: if `true` keep reduced axis as singleton dimension
 ///   - ddof: the divisor to compute the varian is `N - ddof`
 ///   - stream: stream or device to evaluate on
 ///
@@ -2558,7 +2558,7 @@ public func std(
 ///
 /// - Parameters:
 ///   - array: input array
-///   - keepDims: if `true`keep reduced axis as singleton dimension
+///   - keepDims: if `true` keep reduced axis as singleton dimension
 ///   - ddof: the divisor to compute the varian is `N - ddof`
 ///   - stream: stream or device to evaluate on
 ///

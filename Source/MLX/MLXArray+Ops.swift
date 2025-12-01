@@ -1201,7 +1201,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1221,7 +1221,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1240,7 +1240,7 @@ extension MLXArray {
     /// An `and` reduction over the given axes.
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1313,7 +1313,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1333,7 +1333,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1352,7 +1352,7 @@ extension MLXArray {
     /// An `or` reduction over the given axes.
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1377,7 +1377,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1403,7 +1403,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1428,7 +1428,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1454,7 +1454,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1917,7 +1917,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1943,7 +1943,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -1968,7 +1968,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2027,7 +2027,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2054,7 +2054,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2080,7 +2080,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2105,7 +2105,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2132,7 +2132,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2158,7 +2158,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2183,7 +2183,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2210,7 +2210,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2236,7 +2236,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2325,7 +2325,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2352,7 +2352,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2378,7 +2378,7 @@ extension MLXArray {
     /// ```
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2650,7 +2650,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to reduce over
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
@@ -2669,7 +2669,7 @@ extension MLXArray {
     /// Sum reduce the array over all axes.
     ///
     /// - Parameters:
-    ///     - keepDims: if `true`keep reduced axis as singleton dimension
+    ///     - keepDims: if `true` keep reduced axis as singleton dimension
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also

@@ -40,7 +40,7 @@ public func abs(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -61,7 +61,7 @@ public func all(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -81,7 +81,7 @@ public func all(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -162,7 +162,7 @@ public func allClose<T: ScalarOrArray>(
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -183,7 +183,7 @@ public func any(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -203,7 +203,7 @@ public func any(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -231,7 +231,7 @@ public func any(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -258,7 +258,7 @@ public func argMax(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -286,7 +286,7 @@ public func argMax(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -313,7 +313,7 @@ public func argMin(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -836,7 +836,7 @@ public func log1p(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -863,7 +863,7 @@ public func logSumExp(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -889,7 +889,7 @@ public func logSumExp(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -959,7 +959,7 @@ public func matmul(_ a: MLXArray, _ b: MLXArray, stream: StreamOrDevice = .defau
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -987,7 +987,7 @@ public func max(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1014,7 +1014,7 @@ public func max(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1042,7 +1042,7 @@ public func max(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevic
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1070,7 +1070,7 @@ public func mean(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1097,7 +1097,7 @@ public func mean(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1125,7 +1125,7 @@ public func mean(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevi
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1153,7 +1153,7 @@ public func min(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1180,7 +1180,7 @@ public func min(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1285,7 +1285,7 @@ public func pow<T: ScalarOrArray>(_ array: T, _ other: MLXArray, stream: StreamO
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1313,7 +1313,7 @@ public func product(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1340,7 +1340,7 @@ public func product(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1650,7 +1650,7 @@ public func sum(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to reduce over
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -1670,7 +1670,7 @@ public func sum(
 ///
 /// - Parameters:
 ///     - array: input array
-///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - keepDims: if `true` keep reduced axis as singleton dimension
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
