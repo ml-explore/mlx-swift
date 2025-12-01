@@ -1055,15 +1055,14 @@ public enum QuantizationMode: String, Codable, Sendable {
 /// - ``quantized(_:groupSize:bits:mode:stream:)``
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func dequantized(
-    _ w: MLXArray, scales: MLXArray, biases: MLXArray?, groupSize: Int = 64, bits: Int = 4,
-    mode: QuantizationMode = .affine,
+    _ w: MLXArray, scales: MLXArray, biases: MLXArray?, groupSize: Int? = nil, bits: Int? = nil,
+    mode: QuantizationMode = .affine, dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    // TODO dkoski
-    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
-    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
-    let dtype = mlx_optional_dtype(value: MLX_FLOAT32, has_value: false)
+    let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
+    let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
+    let dtype = mlx_optional_dtype(value: dtype?.cmlxDtype ?? MLX_FLOAT16, has_value: dtype != nil)
     mlx_dequantize(
         &result, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
         gs, bits,
@@ -1339,16 +1338,15 @@ public func gatherMatmul(
 public func gatherQuantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
-    transpose: Bool = true, groupSize: Int = 64, bits: Int = 4,
+    transpose: Bool = true, groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine,
     sortedIndices: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
 
-    // TODO dkoski
-    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
-    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+    let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
+    let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
 
     mlx_gather_qmm(
         &result,
@@ -1794,6 +1792,62 @@ public func maximum<A: ScalarOrArray, B: ScalarOrArray>(
     return MLXArray(result)
 }
 
+/// Compute the median(s) over the given axis.
+///
+/// - Parameters:
+///     - a: the first array
+///     - axis: axis to reduce over
+///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+public func median(
+    _ a: MLXArray, axis: Int, keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_median(&result, a.ctx, [axis.int32], 1, keepDims, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Compute the median(s) over the given axes.
+///
+/// - Parameters:
+///     - a: the first array
+///     - axes: axes to reduce over
+///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+public func median(
+    _ a: MLXArray, axes: [Int], keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_median(&result, a.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Compute the median(s) over the full array.
+///
+/// - Parameters:
+///     - a: the first array
+///     - keepDims: if `true`keep reduced axis as singleton dimension
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+public func median(
+    _ a: MLXArray, keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_median(&result, a.ctx, nil, 0, keepDims, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Element-wise minimum.
 ///
 /// Take the element-wise min of two arrays with <doc:broadcasting>
@@ -2131,16 +2185,15 @@ public func putAlong(
 /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
 /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func quantized(
-    _ w: MLXArray, groupSize: Int = 64, bits: Int = 4,
+    _ w: MLXArray, groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine,
     stream: StreamOrDevice = .default
 ) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray?) {
     var r = mlx_vector_array_new()
     defer { mlx_vector_array_free(r) }
 
-    // TODO dkoski
-    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
-    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+    let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
+    let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
 
     mlx_quantize(
         &r, w.ctx, gs, bits, mode.rawValue,
@@ -2173,14 +2226,14 @@ public func quantized(
 public func quantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     transpose: Bool = true,
-    groupSize: Int = 64, bits: Int = 4,
+    groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    // TODO dkoski
-    let gs = mlx_optional_int(value: Int32(groupSize), has_value: true)
-    let bits = mlx_optional_int(value: Int32(bits), has_value: true)
+
+    let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
+    let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
 
     mlx_quantized_matmul(
         &result,

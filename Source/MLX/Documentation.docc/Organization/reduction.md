@@ -78,6 +78,9 @@ See also <doc:logical> and <doc:cumulative>
 - ``mean(_:keepDims:stream:)``
 - ``mean(_:axis:keepDims:stream:)``
 - ``mean(_:axes:keepDims:stream:)``
+- ``median(_:keepDims:stream:)``
+- ``median(_:axis:keepDims:stream:)``
+- ``median(_:axes:keepDims:stream:)``
 - ``min(_:keepDims:stream:)``
 - ``min(_:axis:keepDims:stream:)``
 - ``min(_:axes:keepDims:stream:)``
