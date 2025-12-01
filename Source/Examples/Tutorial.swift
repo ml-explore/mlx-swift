@@ -96,10 +96,14 @@ struct Tutorial {
 
         assert(df2dx2.item() == Float(2))
     }
-
     static func main() {
-        scalarBasics()
-        arrayBasics()
-        automaticDifferentiation()
+        let osName = ProcessInfo.processInfo.operatingSystemVersionString.lowercased()
+        let device: Device = osName.contains("linux") ? .cpu : .gpu
+
+        Stream.withNewDefaultStream(device: device) {
+            scalarBasics()
+            arrayBasics()
+            automaticDifferentiation()
+        }
     }
 }
