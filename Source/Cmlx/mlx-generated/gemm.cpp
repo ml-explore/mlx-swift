@@ -164,7 +164,8 @@ struct TransformAxpby {
     return static_cast<OutT>(x);
   }
   METAL_FUNC OutT apply(InT x, OutT c) const {
-    return static_cast<OutT>(x * alpha + (beta * c));
+    return static_cast<OutT>(
+        x * static_cast<InT>(alpha) + (static_cast<OutT>(beta) * c));
   }
 };
 template <typename T>
@@ -254,6 +255,38 @@ template <typename T, T tv, typename U, U uv> METAL_FUNC constexpr auto operator
 template <typename T, T tv, typename U, U uv> METAL_FUNC constexpr auto operator>=( integral_constant<T, tv>, integral_constant<U, uv>) { constexpr auto res = tv >= uv; return integral_constant<decltype(res), res>{}; };
 template <typename T, T tv, typename U, U uv> METAL_FUNC constexpr auto operator&&( integral_constant<T, tv>, integral_constant<U, uv>) { constexpr auto res = tv && uv; return integral_constant<decltype(res), res>{}; };
 template <typename T, T tv, typename U, U uv> METAL_FUNC constexpr auto operator||( integral_constant<T, tv>, integral_constant<U, uv>) { constexpr auto res = tv || uv; return integral_constant<decltype(res), res>{}; };
+template <typename T, typename = metal::enable_if_t<!is_integral_v<T>>>
+METAL_FUNC constexpr auto operator||(true_type, T) {
+  return true_type{};
+}
+template <typename T, typename = metal::enable_if_t<!is_integral_v<T>>>
+METAL_FUNC constexpr auto operator||(T, true_type) {
+  return true_type{};
+}
+template <typename T, typename = metal::enable_if_t<!is_integral_v<T>>>
+METAL_FUNC constexpr auto operator&&(false_type, T) {
+  return false_type{};
+}
+template <typename T, typename = metal::enable_if_t<!is_integral_v<T>>>
+METAL_FUNC constexpr auto operator&&(T, false_type) {
+  return false_type{};
+}
+template <typename F>
+void dispatch_bool(bool v, F f) {
+  if (v) {
+    f(true_type{});
+  } else {
+    f(false_type{});
+  }
+}
+template <int start, int stop, int step, typename F>
+constexpr void const_for_loop(F f) {
+  if constexpr (start < stop) {
+    constexpr auto idx = Int<start>{};
+    f(idx);
+    const_for_loop<start + step, stop, step, F>(f);
+  }
+}
 template <typename T>
 METAL_FUNC constexpr T sum(T x) {
   return x;
@@ -630,6 +663,15 @@ METAL_FUNC void tile_matmad(
     }
   }
 }
+template <typename InT>
+struct TransformNone<complex64_t, InT> {
+  static METAL_FUNC complex64_t apply(complex64_t x) {
+    return x;
+  }
+  static METAL_FUNC complex64_t apply(complex64_t x, complex64_t) {
+    return x;
+  }
+};
 template <
     typename T,
     typename U,
@@ -836,6 +878,316 @@ struct BlockMMA {
             if ((j * TN_stride + k) < dst_tile_dims.x) {
               D[offset_d + k] =
                   epilogue_op.apply(accum[k], C[offset_c + k * fdc]);
+            }
+          }
+        }
+      }
+    }
+  }
+};
+template <
+    typename U,
+    int BM,
+    int BN,
+    int BK,
+    int WM,
+    int WN,
+    bool transpose_a,
+    bool transpose_b,
+    short lda_tgp,
+    short ldb_tgp,
+    typename AccumType,
+    typename Epilogue>
+struct BlockMMA<
+    complex64_t,
+    U,
+    BM,
+    BN,
+    BK,
+    WM,
+    WN,
+    transpose_a,
+    transpose_b,
+    lda_tgp,
+    ldb_tgp,
+    AccumType,
+    Epilogue> {
+  static_assert(
+      metal::is_same_v<AccumType, float>,
+      "BlockMMA<complex64_t,...> expects float accumulators");
+  static_assert(
+      metal::is_same_v<U, complex64_t>,
+      "For complex BlockMMA, U must be complex64_t; use a different epilogue for projections");
+  static constant constexpr const short kFragSize = 8;
+  using MMAFrag_acc_t = BaseMMAFrag<AccumType, kFragSize, kFragSize>;
+  static constant constexpr const short TM_stride = kFragSize * WM;
+  static constant constexpr const short TN_stride = kFragSize * WN;
+  static constant constexpr const short TM = BM / (kFragSize * WM);
+  static constant constexpr const short TN = BN / (kFragSize * WN);
+  static constant constexpr const short A_str_m = transpose_a ? 1 : lda_tgp;
+  static constant constexpr const short A_str_k = transpose_a ? lda_tgp : 1;
+  static constant constexpr const short B_str_k = transpose_b ? 1 : ldb_tgp;
+  static constant constexpr const short B_str_n = transpose_b ? ldb_tgp : 1;
+  static constant constexpr const short tile_stride_a = kFragSize * A_str_k;
+  static constant constexpr const short tile_stride_b = kFragSize * B_str_k;
+  static constant constexpr const short A_str_m_f = A_str_m * 2;
+  static constant constexpr const short A_str_k_f = A_str_k * 2;
+  static constant constexpr const short B_str_k_f = B_str_k * 2;
+  static constant constexpr const short B_str_n_f = B_str_n * 2;
+  static constant constexpr const short tile_stride_a_f = tile_stride_a * 2;
+  static constant constexpr const short tile_stride_b_f = tile_stride_b * 2;
+  MMATile<AccumType, TM, TN, MMAFrag_acc_t> Ctile_r;
+  MMATile<AccumType, TM, TN, MMAFrag_acc_t> Ctile_i;
+  short sm, sn;
+  short As_offset, Bs_offset;
+  METAL_FUNC BlockMMA(
+      ushort simd_group_id [[simdgroup_index_in_threadgroup]],
+      ushort simd_lane_id [[thread_index_in_simdgroup]]) {
+    short tm = kFragSize * (simd_group_id / WN);
+    short tn = kFragSize * (simd_group_id % WN);
+    short2 simd_coord = MMAFrag_acc_t::get_coord(simd_lane_id);
+    sm = simd_coord.y;
+    sn = simd_coord.x;
+    As_offset = (tm + sm) * A_str_m + (sn)*A_str_k;
+    Bs_offset = (sm)*B_str_k + (tn + sn) * B_str_n;
+    sm += tm;
+    sn += tn;
+  }
+  METAL_FUNC void mma(
+      const threadgroup complex64_t* As,
+      const threadgroup complex64_t* Bs) {
+    As += As_offset;
+    Bs += Bs_offset;
+    threadgroup const float* As_f =
+        reinterpret_cast<threadgroup const float*>(As);
+    threadgroup const float* Bs_f =
+        reinterpret_cast<threadgroup const float*>(Bs);
+#pragma clang loop unroll(full)
+    for (short kk = 0; kk < BK; kk += kFragSize) {
+      simdgroup_barrier(mem_flags::mem_none);
+      MMATile<AccumType, TM, 1, MMAFrag_acc_t> Ar, Ai;
+      Ar.template load<float, WM, 1, A_str_m_f, A_str_k_f>(As_f + 0);
+      Ai.template load<float, WM, 1, A_str_m_f, A_str_k_f>(As_f + 1);
+      simdgroup_barrier(mem_flags::mem_none);
+      MMATile<AccumType, 1, TN, MMAFrag_acc_t> Br, Bi;
+      Br.template load<float, 1, WN, B_str_k_f, B_str_n_f>(Bs_f + 0);
+      Bi.template load<float, 1, WN, B_str_k_f, B_str_n_f>(Bs_f + 1);
+      simdgroup_barrier(mem_flags::mem_none);
+      MMATile<AccumType, TM, TN, MMAFrag_acc_t> P, Q, R;
+      tile_matmad(P, Ar, Br, P);
+      tile_matmad(Q, Ai, Bi, Q);
+#pragma clang loop unroll(full)
+      for (short i = 0; i < decltype(Ar)::kElemsPerTile; ++i)
+        Ar.elems()[i] += Ai.elems()[i];
+#pragma clang loop unroll(full)
+      for (short i = 0; i < decltype(Br)::kElemsPerTile; ++i)
+        Br.elems()[i] += Bi.elems()[i];
+      tile_matmad(R, Ar, Br, R);
+#pragma clang loop unroll(full)
+      for (short i = 0; i < decltype(Ctile_r)::kElemsPerTile; ++i) {
+        const auto p = P.elems()[i];
+        const auto q = Q.elems()[i];
+        const auto r = R.elems()[i];
+        Ctile_r.elems()[i] += (p - q);
+        Ctile_i.elems()[i] += (r - p - q);
+      }
+      As_f += tile_stride_a_f;
+      Bs_f += tile_stride_b_f;
+    }
+  }
+  METAL_FUNC void store_result(device U* D, const int ldd) {
+    D += sm * ldd + sn;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < TM; i++) {
+#pragma clang loop unroll(full)
+      for (short j = 0; j < TN; j++) {
+        thread const auto& r = Ctile_r.frag_at(i, j);
+        thread const auto& im = Ctile_i.frag_at(i, j);
+        int off = (i * TM_stride) * ldd + (j * TN_stride);
+#pragma clang loop unroll(full)
+        for (short k = 0; k < decltype(Ctile_r)::kElemsPerFrag; k++) {
+          D[off + k] = Epilogue::apply(complex64_t(r[k], im[k]));
+        }
+      }
+    }
+  }
+  METAL_FUNC void
+  store_result_slice(device U* D, const int ldd, short2 start, short2 stop) {
+    D += sm * ldd + sn;
+    start -= short2(sn, sm);
+    stop -= short2(sn, sm);
+    if (stop.y <= 0 || stop.x <= 0)
+      return;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < TM; ++i) {
+      const int row = i * TM_stride;
+      if (row >= start.y && row < stop.y) {
+#pragma clang loop unroll(full)
+        for (short j = 0; j < TN; ++j) {
+          const int off = row * ldd + (j * TN_stride);
+          thread const auto& r = Ctile_r.frag_at(i, j);
+          thread const auto& im = Ctile_i.frag_at(i, j);
+#pragma clang loop unroll(full)
+          for (short k = 0; k < decltype(Ctile_r)::kElemsPerFrag; ++k) {
+            const int col = j * TN_stride + k;
+            if (col >= start.x && col < stop.x) {
+              D[off + k] = Epilogue::apply(complex64_t(r[k], im[k]));
+            }
+          }
+        }
+      }
+    }
+  }
+  METAL_FUNC void
+  store_result_safe(device U* D, const int ldd, short2 dst_tile_dims) {
+    D += sm * ldd + sn;
+    dst_tile_dims -= short2(sn, sm);
+    if (dst_tile_dims.x <= 0 || dst_tile_dims.y <= 0)
+      return;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < TM; i++) {
+      if (i * TM_stride < dst_tile_dims.y) {
+#pragma clang loop unroll(full)
+        for (short j = 0; j < TN; j++) {
+          int off = (i * TM_stride) * ldd + (j * TN_stride);
+          thread const auto& r = Ctile_r.frag_at(i, j);
+          thread const auto& im = Ctile_i.frag_at(i, j);
+#pragma clang loop unroll(full)
+          for (short k = 0; k < decltype(Ctile_r)::kElemsPerFrag; k++) {
+            if ((j * TN_stride + k) < dst_tile_dims.x) {
+              D[off + k] = Epilogue::apply(complex64_t(r[k], im[k]));
+            }
+          }
+        }
+      }
+    }
+  }
+  template <typename UnaryEpilogue>
+  METAL_FUNC void apply_epilogue(thread const UnaryEpilogue& epilogue_op) {
+#pragma clang loop unroll(full)
+    for (short i = 0; i < decltype(Ctile_r)::kElemsPerTile; i++) {
+      complex64_t out = epilogue_op.apply(
+          complex64_t(Ctile_r.elems()[i], Ctile_i.elems()[i]));
+      Ctile_r.elems()[i] = out.real;
+      Ctile_i.elems()[i] = out.imag;
+    }
+  }
+  template <typename BinaryEpilogue>
+  METAL_FUNC void apply_epilogue(
+      const device U* C,
+      const int ldc,
+      const int fdc,
+      thread const BinaryEpilogue& epilogue_op) {
+    C += (sm)*ldc + (sn)*fdc;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < TM; i++) {
+#pragma clang loop unroll(full)
+      for (short j = 0; j < TN; j++) {
+        thread auto& r = Ctile_r.frag_at(i, j);
+        thread auto& im = Ctile_i.frag_at(i, j);
+        int offset_c = (i * TM_stride) * ldc + (j * TN_stride) * fdc;
+#pragma clang loop unroll(full)
+        for (short k = 0; k < decltype(Ctile_r)::kElemsPerFrag; k++) {
+          complex64_t out = epilogue_op.apply(
+              complex64_t(r[k], im[k]), C[offset_c + k * fdc]);
+          r[k] = out.real;
+          im[k] = out.imag;
+        }
+      }
+    }
+  }
+  template <typename BinaryEpilogue>
+  METAL_FUNC void apply_epilogue_safe(
+      const device U* C,
+      const int ldc,
+      const int fdc,
+      short2 dst_tile_dims,
+      thread const BinaryEpilogue& epilogue_op) {
+    C += (sm)*ldc + (sn)*fdc;
+    dst_tile_dims -= short2(sn, sm);
+    if (dst_tile_dims.x <= 0 || dst_tile_dims.y <= 0)
+      return;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < TM; i++) {
+#pragma clang loop unroll(full)
+      for (short j = 0; j < TN; j++) {
+        thread auto& r = Ctile_r.frag_at(i, j);
+        thread auto& im = Ctile_i.frag_at(i, j);
+        int offset_c = (i * TM_stride) * ldc + (j * TN_stride) * fdc;
+        constexpr short kelems = decltype(Ctile_r)::kElemsPerFrag;
+        complex64_t tmp[kelems];
+#pragma clang loop unroll(full)
+        for (short k = 0; k < kelems; k++) {
+          if ((j * TN_stride + k) < dst_tile_dims.x &&
+              (i * TM_stride) < dst_tile_dims.y) {
+            tmp[k] = C[offset_c + k * fdc];
+          } else {
+            tmp[k] = complex64_t(0.0f, 0.0f);
+          }
+        }
+#pragma clang loop unroll(full)
+        for (short k = 0; k < kelems; k++) {
+          complex64_t out = epilogue_op.apply(complex64_t(r[k], im[k]), tmp[k]);
+          r[k] = out.real;
+          im[k] = out.imag;
+        }
+      }
+    }
+  }
+  METAL_FUNC void store_result(
+      device U* D,
+      const int ldd,
+      const device U* C,
+      const int ldc,
+      const int fdc,
+      thread const Epilogue& epilogue_op) const {
+    C += (sm)*ldc + (sn)*fdc;
+    D += (sm)*ldd + sn;
+    constexpr short kelems = decltype(Ctile_r)::kElemsPerFrag;
+#pragma clang loop unroll(full)
+    for (short i = 0; i < TM; i++) {
+#pragma clang loop unroll(full)
+      for (short j = 0; j < TN; j++) {
+        thread const auto& r = Ctile_r.frag_at(i, j);
+        thread const auto& im = Ctile_i.frag_at(i, j);
+        int off_c = (i * TM_stride) * ldc + (j * TN_stride) * fdc;
+        int off_d = (i * TM_stride) * ldd + (j * TN_stride);
+#pragma clang loop unroll(full)
+        for (short k = 0; k < kelems; k++) {
+          D[off_d + k] =
+              epilogue_op.apply(complex64_t(r[k], im[k]), C[off_c + k * fdc]);
+        }
+      }
+    }
+  }
+  METAL_FUNC void store_result_safe(
+      device U* D,
+      const int ldd,
+      const device U* C,
+      const int ldc,
+      const int fdc,
+      short2 dst_tile_dims,
+      thread const Epilogue& epilogue_op) const {
+    C += (sm)*ldc + (sn)*fdc;
+    D += (sm)*ldd + sn;
+    dst_tile_dims -= short2(sn, sm);
+    if (dst_tile_dims.x <= 0 || dst_tile_dims.y <= 0)
+      return;
+    constexpr short kelems = decltype(Ctile_r)::kElemsPerFrag;
+#pragma clang loop unroll(full)
+    for (int i = 0; i < TM; i++) {
+      if (i * TM_stride < dst_tile_dims.y) {
+#pragma clang loop unroll(full)
+        for (int j = 0; j < TN; j++) {
+          thread const auto& r = Ctile_r.frag_at(i, j);
+          thread const auto& im = Ctile_i.frag_at(i, j);
+          int off_c = (i * TM_stride) * ldc + (j * TN_stride) * fdc;
+          int off_d = (i * TM_stride) * ldd + (j * TN_stride);
+#pragma clang loop unroll(full)
+          for (short k = 0; k < kelems; k++) {
+            if ((j * TN_stride + k) < dst_tile_dims.x) {
+              D[off_d + k] = epilogue_op.apply(
+                  complex64_t(r[k], im[k]), C[off_c + k * fdc]);
             }
           }
         }
