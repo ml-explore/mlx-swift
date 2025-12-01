@@ -49,8 +49,9 @@ let platformExcludes: [String] = [
     "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
     "mlx-conditional",
     "mlx-c/mlx/c/metal.cpp",
-
-    "mlx-c/mlx/c/fast.cpp",  // Exclude on Linux - calls metal_kernel unconditionally
+    // Note: mlx-c/mlx/c/fast.cpp is included on Linux - it calls C++ fast functions
+    // which have fallback implementations that don't require fast primitives.
+    // The metal_kernel stub from no_metal.cpp handles any metal_kernel calls.
 ]
 
 let cxxSettings: [CXXSetting] = []
@@ -65,8 +66,6 @@ let linkerSettings: [LinkerSetting] = [
 let mlxSwiftExcludes: [String] = [
     "GPU+Metal.swift",
     "MLXArray+Metal.swift",
-    "MLXFast.swift",
-    "MLXFastKernel.swift",
 ]
 #else
 let platformExcludes: [String] = [
