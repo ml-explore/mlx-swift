@@ -28,8 +28,8 @@ jobs:
 
       - name: Install CMake
         run: |
-          sudo apt update
-          sudo apt install -y cmake
+          apt update
+          apt install -y cmake
 
       - name: Clone swift-format
         shell: sh
