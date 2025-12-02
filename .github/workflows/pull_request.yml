@@ -75,3 +75,33 @@ jobs:
           cmake .. -G Ninja
           ninja
 
+  linux_build_cmake_container:
+    name: Linux Container CMake Swift Build (${{ matrix.container }} ${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # See https://github.com/swiftlang/swift-docker/tree/main/
+          - host: ubuntu-22.04
+            arch: x86_64
+            container: swift:bookworm
+          - host: ubuntu-22.04
+            arch: x86_64
+            container: swift:fedora39
+          - host: ubuntu-22.04-arm
+            arch: aarch64
+            container: swift:bookworm
+          - host: ubuntu-22.04-arm
+            arch: aarch64
+            container: swift:fedora39
+
+    runs-on: ${{ matrix.host }}
+    container:
+      image: ${{ matrix.container }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Linux Container CMake Swift Build - No Release
+        run: |
+          bash .github/scripts/setup+build-linux-container-cmake.sh
