@@ -26,11 +26,6 @@ jobs:
         run: |
           uv pip install pre-commit
 
-      - name: Install CMake
-        run: |
-          apt update
-          apt install -y cmake
-
       - name: Clone swift-format
         shell: sh
         run: |
