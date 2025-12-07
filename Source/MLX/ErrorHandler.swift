@@ -214,7 +214,7 @@ public func withError<R>(_ body: () async throws -> R) async throws -> R {
 }
 
 /// Error type for caught errors during ``withError(_:)-6g4wn``.
-public enum MLXError: LocalizedError {
+public enum MLXError: LocalizedError, Sendable, Equatable {
     case caught(String)
 
     public var errorDescription: String? {
