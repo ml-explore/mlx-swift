@@ -1,0 +1,13 @@
+{
+    "xcrun": true,
+    "find-inputs": true,
+    "include-dependencies": false,
+    "dependency-path-suffix": "include",
+    "include-paths": ["mlx/mlx/backend/metal/kernels/metal_3_1", "mlx/mlx/backend/metal/kernels", "mlx"],
+    "output": "default.metallib",
+    "flags": ["-gline-tables-only", "-frecord-sources"],
+    "plugin-logging": false,
+    "verbose-logging": false,
+    "metal-enable-logging": false,
+    "logging-prefix": "[Metal]"
+}

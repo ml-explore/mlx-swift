@@ -69,6 +69,8 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 > SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done
 > via Xcode.
 
+Update: Using [Metal Compiler Plugin](https://github.com/schwa/MetalCompilerPlugin), the library will be compiled and stored as default.metallib.
+
 ### xcodebuild
 
 Although `SwiftPM` (command line) cannot build the Metal shaders, `xcodebuild` can and
