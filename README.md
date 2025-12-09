@@ -68,8 +68,8 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 > [!Note]
 > SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done
 > via Xcode.
-
-Update: Using [Metal Compiler Plugin](https://github.com/schwa/MetalCompilerPlugin), the library will be compiled and stored as default.metallib inside the Clmx-bundle. It is not in the Resources of the application.
+>
+>Update: Using [Metal Compiler Plugin](https://github.com/schwa/MetalCompilerPlugin), the library will be compiled and stored as default.metallib inside the Clmx-bundle. It is not in the Resources of the main bundle! With [patch](https://github.com/ml-explore/mlx/pull/2885) mlx is able to load default.metallib from any bundle root. What is left to the application/bundle to ensure, the bundle is loaded. Check the `setUp()` function in ArrayAtTests.swift as an example for manual loading.
 
 ### xcodebuild
 

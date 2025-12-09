@@ -3,8 +3,33 @@
 import Foundation
 import MLX
 import XCTest
+import Cmlx
 
 class ArrayAtTests: XCTestCase {
+    override class func setUp() {
+        super.setUp()
+
+        // Cmlx is not an automatically loaded bundle. 
+        // Let's load Cmlx manually, so that the mlx-lib can find the default.metallib.
+        // This requires patch #2885 in ml-explore/mlx be applied.
+
+        // Find the test bundle (.xctest)
+        let testBundle = Bundle(for: self)
+
+        // Go to its parent directory: …/debug
+        let buildDir = testBundle.bundleURL.deletingLastPathComponent()
+
+        // Append the actual SwiftPM bundle name for Cmlx
+        let cmlxURL = buildDir.appendingPathComponent("mlx-swift_Cmlx.bundle")
+
+        if let cmlxBundle = Bundle(url: cmlxURL) {
+            print("Loaded Cmlx bundle at:", cmlxURL.path)
+            _ = cmlxBundle.load()  // registers it globally
+        } else {
+            print("Failed to load Cmlx bundle at:", cmlxURL.path)
+        }
+
+    }
 
     func testArrayAt() {
         // from example at https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.array.at.html#mlx.core.array.at
