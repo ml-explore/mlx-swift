@@ -1,0 +1,23 @@
+{
+    "xcrun": true,
+    "find-inputs": false,
+    "include-dependencies": false,
+    "dependency-path-suffix": "include",
+    "include-paths": ["mlx-generated"],
+    "inputs": [
+	"Source/Cmlx/mlx-generated/metal/steel/attn/kernels/steel_attention.metal",
+        "Source/Cmlx/mlx-generated/metal/arg_reduce.metal",
+        "Source/Cmlx/mlx-generated/metal/conv.metal",
+        "Source/Cmlx/mlx-generated/metal/rms_norm.metal",
+        "Source/Cmlx/mlx-generated/metal/random.metal",
+        "Source/Cmlx/mlx-generated/metal/scaled_dot_product_attention.metal",
+        "Source/Cmlx/mlx-generated/metal/gemv.metal",
+        "Source/Cmlx/mlx-generated/metal/layer_norm.metal",
+        "Source/Cmlx/mlx-generated/metal/rope.metal"],
+    "output": "default.metallib",
+    "flags": ["-gline-tables-only", "-frecord-sources", "-Wno-c++20-extensions", "-std=metal4.0"],
+    "plugin-logging": true,
+    "verbose-logging": false,
+    "metal-enable-logging": false,
+    "logging-prefix": "[Metal]"
+}
