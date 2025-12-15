@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXNN
 import XCTest
 
 class MLXFastKernelTests: XCTestCase {
@@ -95,5 +96,28 @@ class MLXFastKernelTests: XCTestCase {
                 eval(result)
             }
         }
+    }
+
+    func testFastSDPAOutput() {
+        MLXRandom.seed(0)
+        let queries = MLXRandom.uniform(0.0 ..< 1.0, [1, 32, 1, 80])
+        let keys = MLXRandom.uniform(0.0 ..< 1.0, [1, 32, 9, 80])
+        let values = MLXRandom.uniform(0.0 ..< 1.0, [1, 32, 9, 80])
+        let result = MLXFast.scaledDotProductAttention(
+            queries: queries, keys: keys, values: values, scale: 0.1118, mask: .none)
+        print(result.shape)
+        print(result.sum().item(Float.self))
+        XCTAssertEqual(result.shape, [1, 32, 1, 80])
+        XCTAssertEqual(result.sum().item(Float.self), 1281.9253, accuracy: 0.01)
+    }
+
+    func testRoPEOutput() {
+        // https://github.com/ml-explore/mlx-swift/issues/315
+        MLXRandom.seed(0)
+        let rope = RoPE(dimensions: 32, traditional: false, base: 10_000, scale: 1)
+        let queries = MLXRandom.uniform(0.0 ..< 1.0, [1, 32, 1, 80])
+        print(queries.shape)
+        let result = rope(queries, offset: 8)
+        XCTAssertEqual(result.sum().item(Float.self), 1079.7894, accuracy: 0.01)
     }
 }
