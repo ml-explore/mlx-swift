@@ -128,13 +128,19 @@ public enum MLXFast {
     public enum ScaledDotProductAttentionMaskMode {
         case none
         case array(MLXArray)
+
+        @available(*, deprecated, message: "Use .array instead")
+        case arrays([MLXArray])
         case causal
 
         public var mask: MLXArray? {
             switch self {
-            case .none: nil
-            case .array(let array): array
-            case .causal: nil
+            case .none: return nil
+            case .array(let array): return array
+            case .arrays(let arrays):
+                precondition(arrays.count <= 1, "Only a single array is allowed")
+                return arrays.first
+            case .causal: return nil
             }
         }
 
@@ -142,6 +148,7 @@ public enum MLXFast {
             switch self {
             case .none: ""
             case .array: ""
+            case .arrays: ""
             case .causal: "causal"
             }
         }

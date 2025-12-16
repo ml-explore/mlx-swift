@@ -37,12 +37,9 @@ final public class RoPE: Module, UnaryLayer {
     }
 
     public func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray {
-        let shape = x.shape
-        var x = x.reshaped(-1, x.dim(-2), x.dim(-1))
-        x = MLXFast.RoPE(
+        MLXFast.RoPE(
             x, dimensions: dimensions, traditional: traditional, base: base, scale: scale,
             offset: offset)
-        return x.reshaped(shape)
     }
 
     /// Evaluate with array offset for batched inference with different positions per sequence.
