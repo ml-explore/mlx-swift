@@ -2,6 +2,16 @@ namespace mlx::core::metal {
 
 const char* scatter_axis() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/scatter_axis.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/scatter_axis.h"
+// Copyright © 2025 Apple Inc.
+
+
 template <
     typename T,
     typename IdxT,
@@ -24,27 +34,34 @@ template <
     uint3 index [[thread_position_in_grid]],
     uint3 grid_dim [[threads_per_grid]]) {
   Op op;
+
   LocT elem_idx = index.z * static_cast<LocT>(grid_dim.x);
+
   LocT idx_loc = index.y * static_cast<LocT>(idx_ax_stride);
   if (IdxC) {
     idx_loc += elem_idx * grid_dim.y + index.x;
   } else {
     idx_loc += elem_to_loc<LocT>(elem_idx + index.x, shape, idx_strides, ndim);
   }
+
   auto idx_val = indices[idx_loc];
   if (is_signed_v<IdxT>) {
     idx_val = (idx_val < 0) ? idx_val + out_axis_size : idx_val;
   }
+
   LocT upd_idx = index.y * static_cast<LocT>(upd_ax_stride);
   if (UpdC) {
     upd_idx += elem_idx * grid_dim.y + index.x;
   } else {
     upd_idx += elem_to_loc<LocT>(elem_idx + index.x, shape, upd_strides, ndim);
   }
+
   LocT out_idx = elem_idx * static_cast<LocT>(out_axis_size) +
       idx_val * grid_dim.x + index.x;
   op.atomic_update(out, upd[upd_idx], out_idx);
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

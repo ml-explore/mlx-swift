@@ -2,6 +2,18 @@ namespace mlx::core::metal {
 
 const char* gather() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/indexing.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/indexing.h"
+// Copyright © 2023-2024 Apple Inc.
+
+
+#include <metal_stdlib>
+
 template <typename IdxT, int NIDX>
 struct Indices {
   const array<const device IdxT*, NIDX> buffers;
@@ -10,6 +22,7 @@ struct Indices {
   const constant bool* row_contiguous;
   const int ndim;
 };
+
 template <typename IdxT>
 METAL_FUNC size_t offset_neg_idx(IdxT idx, int size) {
   if (is_unsigned_v<IdxT>) {
@@ -18,6 +31,15 @@ METAL_FUNC size_t offset_neg_idx(IdxT idx, int size) {
     return (idx < 0) ? idx + size : idx;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/gather.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/gather.h"
+// Copyright © 2024 Apple Inc.
+
+
 
 template <typename T, typename IdxT, int NIDX, int IDX_NDIM, typename LocT>
 METAL_FUNC void gather_impl(
@@ -52,8 +74,10 @@ METAL_FUNC void gather_impl(
     auto idx_val = offset_neg_idx(indices.buffers[i][idx_loc], src_shape[ax]);
     src_idx += static_cast<LocT>(idx_val) * static_cast<LocT>(src_strides[ax]);
   }
+
   auto src_offset =
       elem_to_loc<LocT>(index.z, slice_sizes, src_strides, src_ndim);
+
   LocT out_idx = index.z;
   if (IDX_NDIM == 1) {
     out_idx += static_cast<LocT>(grid_dim.z) * index.x;
@@ -62,6 +86,8 @@ METAL_FUNC void gather_impl(
   }
   out[out_idx] = src[src_offset + src_idx];
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

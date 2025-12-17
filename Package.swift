@@ -83,6 +83,7 @@ let package = Package(
                 "mlx/mlx/backend/cuda/allocator.cpp",
                 "mlx/mlx/backend/cuda/compiled.cpp",
                 "mlx/mlx/backend/cuda/conv.cpp",
+                "mlx/mlx/backend/cuda/cublas_utils.cpp",
                 "mlx/mlx/backend/cuda/cuda.cpp",
                 "mlx/mlx/backend/cuda/cudnn_utils.cpp",
                 "mlx/mlx/backend/cuda/custom_kernel.cpp",

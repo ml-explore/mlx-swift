@@ -2,6 +2,15 @@ namespace mlx::core::metal {
 
 const char* logsumexp() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/logsumexp.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/logsumexp.h"
+// Copyright © 2025 Apple Inc.
+
 template <typename T, typename AccT = float, int N_READS = 4>
 [[kernel]] void logsumexp(
     const device T* in,
@@ -12,10 +21,14 @@ template <typename T, typename AccT = float, int N_READS = 4>
     uint simd_lane_id [[thread_index_in_simdgroup]],
     uint simd_group_id [[simdgroup_index_in_threadgroup]]) {
   int lid = _lid;
+
   constexpr int SIMD_SIZE = 32;
+
   threadgroup AccT local_max[SIMD_SIZE];
   threadgroup AccT local_normalizer[SIMD_SIZE];
+
   AccT ld[N_READS];
+
   in += gid * size_t(axis_size) + lid * N_READS;
   if (lid * N_READS + N_READS <= axis_size) {
     for (int i = 0; i < N_READS; i++) {
@@ -32,6 +45,8 @@ template <typename T, typename AccT = float, int N_READS = 4>
     local_normalizer[simd_lane_id] = 0;
   }
   threadgroup_barrier(mem_flags::mem_threadgroup);
+
+  // Get the max
   AccT maxval = Limits<AccT>::finite_min;
   for (int i = 0; i < N_READS; i++) {
     maxval = (maxval < ld[i]) ? ld[i] : maxval;
@@ -49,6 +64,8 @@ template <typename T, typename AccT = float, int N_READS = 4>
   }
   threadgroup_barrier(mem_flags::mem_threadgroup);
   maxval = local_max[0];
+
+  // Compute exp(x_i - maxval) and store the partial sums in local_normalizer
   AccT normalizer = 0;
   for (int i = 0; i < N_READS; i++) {
     normalizer += fast::exp(ld[i] - maxval);
@@ -65,6 +82,7 @@ template <typename T, typename AccT = float, int N_READS = 4>
     }
   }
 }
+
 template <typename T, typename AccT = float, int N_READS = 4>
 [[kernel]] void logsumexp_looped(
     const device T* in,
@@ -76,9 +94,13 @@ template <typename T, typename AccT = float, int N_READS = 4>
     uint simd_lane_id [[thread_index_in_simdgroup]],
     uint simd_group_id [[simdgroup_index_in_threadgroup]]) {
   in += gid * size_t(axis_size);
+
   constexpr int SIMD_SIZE = 32;
+
   threadgroup AccT local_max[SIMD_SIZE];
   threadgroup AccT local_normalizer[SIMD_SIZE];
+
+  // Get the max and the normalizer in one go
   AccT prevmax;
   AccT maxval = Limits<AccT>::finite_min;
   AccT normalizer = 0;
@@ -109,6 +131,7 @@ template <typename T, typename AccT = float, int N_READS = 4>
   maxval = simd_max(maxval);
   normalizer *= fast::exp(prevmax - maxval);
   normalizer = simd_sum(normalizer);
+
   prevmax = maxval;
   if (simd_lane_id == 0) {
     local_max[simd_group_id] = maxval;
@@ -121,10 +144,13 @@ template <typename T, typename AccT = float, int N_READS = 4>
   }
   threadgroup_barrier(mem_flags::mem_threadgroup);
   normalizer = simd_sum(local_normalizer[simd_lane_id]);
+
   if (lid == 0) {
     out[gid] = isinf(maxval) ? T(maxval) : T(log(normalizer) + maxval);
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

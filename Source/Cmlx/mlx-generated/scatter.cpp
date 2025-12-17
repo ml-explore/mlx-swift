@@ -2,6 +2,18 @@ namespace mlx::core::metal {
 
 const char* scatter() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/indexing.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/indexing.h"
+// Copyright © 2023-2024 Apple Inc.
+
+
+#include <metal_stdlib>
+
 template <typename IdxT, int NIDX>
 struct Indices {
   const array<const device IdxT*, NIDX> buffers;
@@ -10,6 +22,7 @@ struct Indices {
   const constant bool* row_contiguous;
   const int ndim;
 };
+
 template <typename IdxT>
 METAL_FUNC size_t offset_neg_idx(IdxT idx, int size) {
   if (is_unsigned_v<IdxT>) {
@@ -18,6 +31,15 @@ METAL_FUNC size_t offset_neg_idx(IdxT idx, int size) {
     return (idx < 0) ? idx + size : idx;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/scatter.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/scatter.h"
+// Copyright © 2024 Apple Inc.
+
+
 
 template <
     typename T,
@@ -42,12 +64,14 @@ METAL_FUNC void scatter_impl(
     const thread Indices<IdxT, NIDX>& indices,
     uint2 gid [[thread_position_in_grid]]) {
   Op op;
+
   auto ind_idx = gid.y * NWORK;
   LocT out_offset = 0;
   if (upd_size > 1) {
     out_offset = elem_to_loc<LocT>(
         gid.x, upd_shape + indices.ndim, out_strides, out_ndim);
   }
+
   for (int j = 0; j < NWORK && ind_idx < idx_size; ++j, ind_idx++) {
     LocT out_idx = out_offset;
     for (int i = 0; i < NIDX; ++i) {
@@ -70,6 +94,8 @@ METAL_FUNC void scatter_impl(
     op.atomic_update(out, updates[upd_idx], out_idx);
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

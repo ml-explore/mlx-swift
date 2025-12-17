@@ -2,6 +2,18 @@ namespace mlx::core::metal {
 
 const char* quantized_utils() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/quantized_utils.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/quantized_utils.h"
+// Copyright © 2023-2024 Apple Inc.
+
+#include <metal_simdgroup>
+#include <metal_stdlib>
+
 template <typename T, typename mma_t, typename loader_a_t, typename loader_b_t>
 METAL_FUNC void gemm_loop_aligned(
     threadgroup T* As,
@@ -12,14 +24,22 @@ METAL_FUNC void gemm_loop_aligned(
     const int k_iterations) {
   for (int k = 0; k < k_iterations; k++) {
     threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    // Load elements into threadgroup memory
     loader_a.load_unsafe();
     loader_b.load_unsafe();
+
     threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    // Multiply and accumulate threadgroup elements
     mma_op.mma(As, Bs);
+
+    // Prepare for next iteration
     loader_a.next();
     loader_b.next();
   }
 }
+
 template <
     bool rows_aligned,
     bool cols_aligned,
@@ -40,6 +60,8 @@ METAL_FUNC void gemm_loop_unaligned(
     const short tgp_bk) {
   for (int k = 0; k < k_iterations; k++) {
     threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    // Load elements into threadgroup memory
     if (rows_aligned) {
       loader_a.load_unsafe();
     } else {
@@ -51,12 +73,18 @@ METAL_FUNC void gemm_loop_unaligned(
       loader_b.load_safe(
           transpose ? short2(tgp_bk, tgp_bn) : short2(tgp_bn, tgp_bk));
     }
+
     threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    // Multiply and accumulate threadgroup elements
     mma_op.mma(As, Bs);
+
+    // Prepare for next iteration
     loader_a.next();
     loader_b.next();
   }
 }
+
 template <typename T, typename mma_t, typename loader_a_t, typename loader_b_t>
 METAL_FUNC void gemm_loop_finalize(
     threadgroup T* As,
@@ -71,6 +99,8 @@ METAL_FUNC void gemm_loop_finalize(
   threadgroup_barrier(mem_flags::mem_threadgroup);
   mma_op.mma(As, Bs);
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

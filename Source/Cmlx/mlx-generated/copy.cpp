@@ -2,6 +2,15 @@ namespace mlx::core::metal {
 
 const char* copy() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/copy.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/copy.h"
+// Copyright © 2024 Apple Inc.
+
 template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_s(
     device const T* src [[buffer(0)]],
@@ -19,6 +28,7 @@ template <typename T, typename U, int N = WorkPerThread<U>::n>
     }
   }
 }
+
 template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_v(
     device const T* src [[buffer(0)]],
@@ -36,6 +46,7 @@ template <typename T, typename U, int N = WorkPerThread<U>::n>
     }
   }
 }
+
 template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_s2(
     device const T* src [[buffer(0)]],
@@ -54,6 +65,7 @@ template <typename T, typename U, int N = WorkPerThread<U>::n>
     }
   }
 }
+
 template <typename T, typename U, int N = WorkPerThread<U>::n>
 [[kernel]] void copy_v2(
     device const T* src [[buffer(0)]],
@@ -72,6 +84,7 @@ template <typename T, typename U, int N = WorkPerThread<U>::n>
     }
   }
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_g_nd1(
     device const T* src [[buffer(0)]],
@@ -81,6 +94,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto src_idx = elem_to_loc_1<IdxT>(index, src_stride);
   dst[index] = static_cast<U>(src[src_idx]);
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_g_nd2(
     device const T* src [[buffer(0)]],
@@ -92,6 +106,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   IdxT dst_idx = index.x + IdxT(grid_dim.x) * index.y;
   dst[dst_idx] = static_cast<U>(src[src_idx]);
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_g_nd3(
     device const T* src [[buffer(0)]],
@@ -104,6 +119,7 @@ template <typename T, typename U, typename IdxT = int64_t>
       index.x + IdxT(grid_dim.x) * (index.y + IdxT(grid_dim.y) * index.z);
   dst[dst_idx] = static_cast<U>(src[src_idx]);
 }
+
 template <typename T, typename U, int N = 1, typename IdxT = int64_t>
 [[kernel]] void copy_g(
     device const T* src [[buffer(0)]],
@@ -129,6 +145,7 @@ template <typename T, typename U, int N = 1, typename IdxT = int64_t>
     src_idx += src_xstride;
   }
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_gg_nd1(
     device const T* src [[buffer(0)]],
@@ -140,6 +157,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto dst_idx = elem_to_loc_1<IdxT>(index, dst_stride);
   dst[dst_idx] = static_cast<U>(src[src_idx]);
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_gg_nd2(
     device const T* src [[buffer(0)]],
@@ -151,6 +169,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto dst_idx = elem_to_loc_2<IdxT>(index, dst_strides);
   dst[dst_idx] = static_cast<U>(src[src_idx]);
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_gg_nd3(
     device const T* src [[buffer(0)]],
@@ -162,6 +181,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto dst_idx = elem_to_loc_3<IdxT>(index, dst_strides);
   dst[dst_idx] = static_cast<U>(src[src_idx]);
 }
+
 template <typename T, typename U, int N = 1, typename IdxT = int64_t>
 [[kernel]] void copy_gg(
     device const T* src [[buffer(0)]],
@@ -190,6 +210,7 @@ template <typename T, typename U, int N = 1, typename IdxT = int64_t>
     idx.y += dst_xstride;
   }
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_gg_dynamic_nd1(
     device const T* src [[buffer(0)]],
@@ -203,6 +224,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto dst_idx = elem_to_loc_1<IdxT>(index, dst_stride);
   dst[dst_idx + dst_offset] = src[src_idx + src_offset];
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_gg_dynamic_nd2(
     device const T* src [[buffer(0)]],
@@ -216,6 +238,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto dst_idx = elem_to_loc_2<IdxT>(index, dst_strides);
   dst[dst_idx + dst_offset] = src[src_idx + src_offset];
 }
+
 template <typename T, typename U, typename IdxT = int64_t>
 [[kernel]] void copy_gg_dynamic_nd3(
     device const T* src [[buffer(0)]],
@@ -229,6 +252,7 @@ template <typename T, typename U, typename IdxT = int64_t>
   auto dst_idx = elem_to_loc_3<IdxT>(index, dst_strides);
   dst[dst_idx + dst_offset] = src[src_idx + src_offset];
 }
+
 template <typename T, typename U, int N = 1, typename IdxT = int64_t>
 [[kernel]] void copy_gg_dynamic(
     device const T* src [[buffer(0)]],
@@ -261,6 +285,8 @@ template <typename T, typename U, int N = 1, typename IdxT = int64_t>
     idx.y += dst_xstride;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 
