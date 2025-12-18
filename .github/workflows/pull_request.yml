@@ -152,3 +152,25 @@ jobs:
       - name: Linux Container CMake Swift Build - No Release
         run: |
           bash .github/scripts/setup+build-linux-container-cmake.sh
+
+  linux_build_cmake_cuda:
+    name: Linux CUDA CMake Swift Build (cuda-12.9, swift-6.2.3-RELEASE, ubuntu-24.04, x86_64)
+    needs: lint
+    runs-on: 'gpu-t4-4-core'
+    env:
+      # Note 12/17/2025: the CI machine does not meet CUDA 13's driver requirement.
+      # Compatibility matrix:
+      # https://docs.nvidia.com/deeplearning/cudnn/backend/latest/reference/support-matrix.html
+      TOOLKIT_VERSION: "cuda-12.9"
+      SWIFT_VERSION: "swift-6.2.3-RELEASE"
+      # pub   rsa4096 2024-09-16 [SC] [expires: 2026-09-16]
+      #      52BB7E3DE28A71BE22EC05FFEF80A866B47A981F
+      # uid           [ unknown] Swift 6.x Release Signing Key <swift-infrastructure@forums.swift.org>
+      SWIFT_SIGNING_KEY: "52BB7E3DE28A71BE22EC05FFEF80A866B47A981F"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Linux CUDA CMake Swift Build - No Release
+      run: |
+        bash .github/scripts/setup+build-linux-cuda-cmake.sh
