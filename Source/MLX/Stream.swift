@@ -140,7 +140,9 @@ public final class Stream: @unchecked Sendable, Equatable {
 
     /// Synchronize with the given stream
     public func synchronize() {
-        mlx_synchronize(ctx)
+        _ = evalLock.withLock {
+            mlx_synchronize(ctx)
+        }
     }
 
     static public func defaultStream(_ device: Device) -> Stream {
