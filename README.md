@@ -88,6 +88,10 @@ xcodebuild build -scheme Tutorial -destination 'platform=OS X'
 
 ### CMake
 
+#### (1) macOS
+
+**Install Dependencies**
+
 Building with CMake requires both CMake and Ninja to be installed. You can do
 this with [Homebrew](https://brew.sh/):
 
@@ -96,7 +100,9 @@ brew install cmake
 brew install ninja
 ```
 
-With CMake:
+**Build + Run Examples**
+
+The examples use the Metal GPU backend by default on macOS. Note that the CUDA GPU backend is exclusive to Linux.
 
 ```shell
 mkdir -p build
@@ -107,48 +113,54 @@ ninja
 ./tutorial
 ```
 
-<details>
-  <summary>Expand Native Linux Build Instructions</summary>
+#### (2) Linux
 
-  #### (1) Install Dependencies
+**Install Dependencies**
 
-  RHEL/Fedora:
-  ```shell
-  sudo dnf install -y blas-devel lapack-devel openblas-devel clang llvm cmake make ninja
-  # Then install Swift by following the instructions at https://swift.org
-  ```
+RHEL/Fedora:
+```shell
+sudo dnf install -y blas-devel lapack-devel openblas-devel clang llvm cmake make ninja
+# Then install Swift by following the instructions at https://swift.org
+```
 
-  Ubuntu/Debian:
-  ```shell
-  sudo apt update;
-  sudo apt install -y libblas-dev liblapack-dev libopenblas-dev clang llvm cmake make ninja;
-  # Then install Swift by following the instructions at https://swift.org
-  ```
+Ubuntu/Debian:
+```shell
+sudo apt-get update
+sudo apt-get install -y libblas-dev liblapack-dev liblapacke-dev libopenblas-dev clang llvm cmake make ninja-build
+# Then install Swift by following the instructions at https://swift.org
+```
 
-  Refer to [swift.org](https://www.swift.org/install/linux/) for installation options and instructions specific to your Linux distribution.
+Refer to [swift.org](https://www.swift.org/install/linux/) for installation options and instructions specific to your Linux distribution.
 
+**Build + Run Examples (CPU backend)**
 
-  #### (2) Build + Run Examples
+On Linux, the examples use the CPU backend by default.
 
-  On Linux, the examples use the CPU backend by default.
+Note: SwiftPM builds are not currently supported for native Linux targets.
 
-  Note: GPU+CUDA support is a work in progress for `mlx-swift` on Linux, but is available in the Python-based MLX.
+```shell
+mkdir -p build
+pushd build
+cmake -DMLX_BUILD_METAL=OFF .. -G Ninja
+ninja
+./example1
+./tutorial
+popd
+```
 
-  Note: SwiftPM builds are not currently supported for native Linux targets.
+**Build + Run Examples (GPU CUDA backend)**
 
-  ```shell
-  mkdir -p build
-  cd build
-  cmake -DMLX_BUILD_METAL=OFF .. -G Ninja
-  ninja
-  ./example1
-  ./tutorial
-  ```
+To find a complete reference implementation, consult the [CI setup](.github/scripts/setup+build-linux-cuda-cmake.sh) which provides a working example for Ubuntu 24.04 x86_64.
 
-
-</details>
-
-</br>
+```shell
+mkdir -p build
+pushd build
+cmake -DMLX_BUILD_METAL=OFF -DMLX_BUILD_CUDA=ON -DMLX_C_BUILD_EXAMPLES=OFF .. -G Ninja
+ninja
+./example1 --device gpu
+./tutorial --device gpu
+popd
+```
 
 ## Contributing
 
