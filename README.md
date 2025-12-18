@@ -88,6 +88,10 @@ xcodebuild build -scheme Tutorial -destination 'platform=OS X'
 
 ### CMake
 
+#### (1) macOS
+
+**Install Dependencies**
+
 Building with CMake requires both CMake and Ninja to be installed. You can do
 this with [Homebrew](https://brew.sh/):
 
@@ -96,7 +100,10 @@ brew install cmake
 brew install ninja
 ```
 
-With CMake:
+**Build + Run Examples**
+
+- The examples use the Metal GPU backend by default on macOS.
+- Note that the CUDA GPU backend is exclusive to Linux.
 
 ```shell
 mkdir -p build
@@ -107,48 +114,39 @@ ninja
 ./tutorial
 ```
 
-<details>
-  <summary>Expand Native Linux Build Instructions</summary>
+#### (2) Linux
 
-  #### (1) Install Dependencies
+**Install Dependencies**
 
-  RHEL/Fedora:
-  ```shell
-  sudo dnf install -y blas-devel lapack-devel openblas-devel clang llvm cmake make ninja
-  # Then install Swift by following the instructions at https://swift.org
-  ```
+- To build the example binaries, install all dependencies listed in the CI [scripts](.github/scripts/).
+- Note: The CUDA GPU backend requires the CUDA toolkit and additional dependencies.
+- For Swift installation on Linux, visit [swift.org](https://www.swift.org/install/linux/).
 
-  Ubuntu/Debian:
-  ```shell
-  sudo apt update;
-  sudo apt install -y libblas-dev liblapack-dev libopenblas-dev clang llvm cmake make ninja;
-  # Then install Swift by following the instructions at https://swift.org
-  ```
+**Build + Run Examples (CPU backend)**
 
-  Refer to [swift.org](https://www.swift.org/install/linux/) for installation options and instructions specific to your Linux distribution.
+On Linux, the examples use the CPU backend by default.
 
+```shell
+mkdir -p build
+pushd build
+cmake -DMLX_BUILD_METAL=OFF .. -G Ninja
+ninja
+./example1
+./tutorial
+popd
+```
 
-  #### (2) Build + Run Examples
+**Build + Run Examples (GPU CUDA backend)**
 
-  On Linux, the examples use the CPU backend by default.
-
-  Note: GPU+CUDA support is a work in progress for `mlx-swift` on Linux, but is available in the Python-based MLX.
-
-  Note: SwiftPM builds are not currently supported for native Linux targets.
-
-  ```shell
-  mkdir -p build
-  cd build
-  cmake -DMLX_BUILD_METAL=OFF .. -G Ninja
-  ninja
-  ./example1
-  ./tutorial
-  ```
-
-
-</details>
-
-</br>
+```shell
+mkdir -p build
+pushd build
+cmake -DMLX_BUILD_METAL=OFF -DMLX_BUILD_CUDA=ON -DMLX_C_BUILD_EXAMPLES=OFF .. -G Ninja
+ninja
+./example1 --device gpu
+./tutorial --device gpu
+popd
+```
 
 ## Contributing
 
