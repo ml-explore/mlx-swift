@@ -68,7 +68,7 @@ sudo apt-get install -y \
     openmpi-common \
     libopenmpi-dev
 
-## Install CUDA toolkit + nccl etc.
+## Install CUDA toolkit + NCCL.
 CUDA_MAJOR_VERSION=${TOOLKIT_VERSION%.*}
 CUDA_TOOLKIT_PKG="cuda-toolkit-${TOOLKIT_VERSION#cuda-}"
 CUDNN_PKG="libcudnn9-dev-${CUDA_MAJOR_VERSION}"
@@ -85,7 +85,7 @@ CUDA_BIN_PATH="/usr/local/${TOOLKIT_VERSION}/bin"
 export PATH="$CUDA_BIN_PATH:$PATH"
 rm cuda-keyring_1.1-1_all.deb
 
-## Sanity checks wrt system requirements.
+## Sanity checks - system requirements.
 echo "NVIDIA Driver Packages Available:"
 sudo ubuntu-drivers list --gpgpu
 echo "NVIDIA Driver Version:"
@@ -97,7 +97,7 @@ dkms status || echo "dkms not found"
 echo "NVIDIA-SMI Status:"
 nvidia-smi || echo "nvidia-smi not found"
 
-## Install Swift toolchain manually (status 12/16/2025: no official swiftlang ubuntu package available yet).
+## Install Swift toolchain manually (status 12/18/2025: no official swiftlang ubuntu package available yet).
 # See for example https://github.com/swiftlang/swift-docker/blob/main/6.2/ubuntu/24.04/Dockerfile
 SWIFT_WEBROOT="https://download.swift.org"
 case "$ARCH" in
@@ -125,18 +125,3 @@ sudo tar -xzf swift.tar.gz --directory / --strip-components=1
 sudo chmod -R o+r /usr/lib/swift
 rm -rf "$GNUPGHOME" swift.tar.gz.sig swift.tar.gz
 swift --version
-
-# [CMake] CI Build Sanity Check: Verifies code compilation, not for release.
-export CMAKE_ARGS="-DCMAKE_COMPILE_WARNING_AS_ERROR=ON"
-export DEBUG=1
-export CMAKE_C_COMPILER=/usr/bin/clang
-export CMAKE_CXX_COMPILER=/usr/bin/clang++
-
-rm -rf build
-mkdir -p build
-pushd build
-cmake -DMLX_BUILD_METAL=OFF -DMLX_BUILD_CUDA=ON -DMLX_C_BUILD_EXAMPLES=OFF .. -G Ninja
-ninja
-./example1 --device gpu
-./tutorial --device gpu
-popd

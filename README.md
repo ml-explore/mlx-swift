@@ -102,7 +102,8 @@ brew install ninja
 
 **Build + Run Examples**
 
-The examples use the Metal GPU backend by default on macOS. Note that the CUDA GPU backend is exclusive to Linux.
+- The examples use the Metal GPU backend by default on macOS.
+- Note that the CUDA GPU backend is exclusive to Linux.
 
 ```shell
 mkdir -p build
@@ -117,26 +118,13 @@ ninja
 
 **Install Dependencies**
 
-RHEL/Fedora:
-```shell
-sudo dnf install -y blas-devel lapack-devel openblas-devel clang llvm cmake make ninja
-# Then install Swift by following the instructions at https://swift.org
-```
-
-Ubuntu/Debian:
-```shell
-sudo apt-get update
-sudo apt-get install -y libblas-dev liblapack-dev liblapacke-dev libopenblas-dev clang llvm cmake make ninja-build
-# Then install Swift by following the instructions at https://swift.org
-```
-
-Refer to [swift.org](https://www.swift.org/install/linux/) for installation options and instructions specific to your Linux distribution.
+- To build the example binaries, install all dependencies listed in the CI [scripts](.github/scripts/).
+- Note: The CUDA GPU backend requires the CUDA toolkit and additional dependencies.
+- For Swift installation on Linux, visit [swift.org](https://www.swift.org/install/linux/).
 
 **Build + Run Examples (CPU backend)**
 
 On Linux, the examples use the CPU backend by default.
-
-Note: SwiftPM builds are not currently supported for native Linux targets.
 
 ```shell
 mkdir -p build
@@ -149,8 +137,6 @@ popd
 ```
 
 **Build + Run Examples (GPU CUDA backend)**
-
-To find a complete reference implementation, consult the [CI setup](.github/scripts/setup+build-linux-cuda-cmake.sh) which provides a working example for Ubuntu 24.04 x86_64.
 
 ```shell
 mkdir -p build
