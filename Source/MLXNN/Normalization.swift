@@ -101,7 +101,11 @@ open class LayerNorm: Module, UnaryLayer {
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        #if canImport(MLXFast)
         MLXFast.layerNorm(x, weight: weight, bias: bias, eps: eps)
+        #else
+        MLX.layerNorm(x, weight: weight, bias: bias, eps: eps)
+        #endif
     }
 }
 
@@ -138,7 +142,11 @@ open class RMSNorm: Module, UnaryLayer {
     }
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        #if canImport(MLXFast)
         MLXFast.rmsNorm(x, weight: weight, eps: eps)
+        #else
+        MLX.rmsNorm(x, weight: weight, eps: eps)
+        #endif
     }
 }
 
@@ -205,7 +213,11 @@ open class GroupNorm: Module, UnaryLayer {
         x = x.transposed(0, 2, 1, 3).reshaped(batch, groupCount, -1)
 
         // normalize
+        #if canImport(MLXFast)
         x = MLXFast.layerNorm(x, weight: nil, bias: nil, eps: eps)
+        #else
+        x = MLX.layerNorm(x, weight: nil, bias: nil, eps: eps)
+        #endif
 
         x = x.reshaped(batch, groupCount, -1, groupSize)
         x = x.transposed(0, 2, 1, 3).reshaped([batch] + rest + [dims])
