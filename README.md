@@ -8,10 +8,6 @@ MLX is an array framework for machine learning on Apple silicon. MLX Swift
 expands MLX to the Swift language, making research and experimentation easier
 on Apple silicon.
 
-## Language Models
-
-LLM and VLM implementations are available in [mlx-swift-lm](https://github.com/ml-explore/mlx-swift-lm).
-
 ## Examples
 
 MLX Swift has [many
@@ -42,7 +38,7 @@ from MLX Python.
 
 ## Installation
 
-The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake installation is also provided, featuring a native Linux build option.
+The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake install is also provided.
 
 More details are in the [documentation](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/install).
 
@@ -72,6 +68,8 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 > [!Note]
 > SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done
 > via Xcode.
+>
+>Update: Using [Metal Compiler Plugin](https://github.com/schwa/MetalCompilerPlugin), the library will be compiled and stored as default.metallib inside the Clmx-bundle. It is not in the Resources of the main bundle! With [patch](https://github.com/ml-explore/mlx/pull/2885) mlx is able to load default.metallib from any bundle root. What is left to the application/bundle to ensure, the bundle is loaded. Check the `setUp()` function in ArrayAtTests.swift as an example for manual loading.
 
 ### xcodebuild
 
@@ -99,56 +97,13 @@ brew install ninja
 With CMake:
 
 ```shell
-mkdir -p build
+mkdir build
 cd build
 cmake .. -G Ninja
 ninja
 ./example1
 ./tutorial
 ```
-
-<details>
-  <summary>Expand Native Linux Build Instructions</summary>
-
-  #### (1) Install Dependencies
-
-  RHEL/Fedora:
-  ```shell
-  sudo dnf install -y blas-devel lapack-devel openblas-devel clang llvm cmake make ninja
-  # Then install Swift by following the instructions at https://swift.org
-  ```
-
-  Ubuntu/Debian:
-  ```shell
-  sudo apt update;
-  sudo apt install -y libblas-dev liblapack-dev libopenblas-dev clang llvm cmake make ninja;
-  # Then install Swift by following the instructions at https://swift.org
-  ```
-
-  Refer to [swift.org](https://www.swift.org/install/linux/) for installation options and instructions specific to your Linux distribution.
-
-
-  #### (2) Build + Run Examples
-
-  On Linux, the examples use the CPU backend by default.
-
-  Note: GPU+CUDA support is a work in progress for `mlx-swift` on Linux, but is available in the Python-based MLX.
-
-  Note: SwiftPM builds are not currently supported for native Linux targets.
-
-  ```shell
-  mkdir -p build
-  cd build
-  cmake -DMLX_BUILD_METAL=OFF .. -G Ninja
-  ninja
-  ./example1
-  ./tutorial
-  ```
-
-
-</details>
-
-</br>
 
 ## Contributing
 

@@ -1,8 +1,11 @@
-// swift-tools-version: 5.12
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // Copyright © 2024 Apple Inc.
 
+import Foundation
 import PackageDescription
+
+let inXcode = ProcessInfo.processInfo.environment["XCODE_VERSION_ACTUAL"] != nil
 
 let package = Package(
     name: "mlx-swift",
@@ -26,7 +29,8 @@ let package = Package(
     ],
     dependencies: [
         // for Complex type
-        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main"),
     ],
     targets: [
         .target(
@@ -155,7 +159,14 @@ let package = Package(
                 .linkedFramework("Foundation"),
                 .linkedFramework("Metal"),
                 .linkedFramework("Accelerate"),
-            ]
+            ],
+
+            plugins: 
+                // Optional: Use plugin for custom Metal compilation
+                // needed for swift build. Xcode does it automatically
+                inXcode ? [] : [
+                    .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                ],
         ),
         .testTarget(
             name: "CmlxTests",
