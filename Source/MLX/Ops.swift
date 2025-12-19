@@ -997,6 +997,51 @@ public func degrees(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
     return MLXArray(result)
 }
 
+/// Insert dependencies between arrays in the graph. The outputs are
+/// identical to `input` but with dependencies on `dependencies`.
+///
+/// - Parameters:
+///   - input: input array
+///   - dependencies: arrays to depend on
+/// - Returns: output which depends on the `dependencies`
+///
+/// ### See Also
+/// - ``depends(inputs:dependencies:)``
+public func depends(input: MLXArray, dependencies: [MLXArray]) -> MLXArray {
+    var result = mlx_vector_array_new()
+    defer { mlx_vector_array_free(result) }
+    let inputs = new_mlx_vector_array([input])
+    defer { mlx_vector_array_free(inputs) }
+    let dependencies = new_mlx_vector_array(dependencies)
+    defer { mlx_vector_array_free(dependencies) }
+    mlx_depends(&result, inputs, dependencies)
+
+    let arrays = mlx_vector_array_values(result)
+    return arrays[0]
+}
+
+/// Insert dependencies between arrays in the graph. The outputs are
+/// identical to `inputs` but with dependencies on `dependencies`.
+///
+/// - Parameters:
+///   - inputs: input arrays
+///   - dependencies: arrays to depend on
+/// - Returns: outputs which depends on the `dependencies`
+///
+/// ### See Also
+/// - ``depends(input:dependencies:)``
+public func depends(inputs: [MLXArray], dependencies: [MLXArray]) -> [MLXArray] {
+    var result = mlx_vector_array_new()
+    defer { mlx_vector_array_free(result) }
+    let inputs = new_mlx_vector_array(inputs)
+    defer { mlx_vector_array_free(inputs) }
+    let dependencies = new_mlx_vector_array(dependencies)
+    defer { mlx_vector_array_free(dependencies) }
+    mlx_depends(&result, inputs, dependencies)
+
+    return mlx_vector_array_values(result)
+}
+
 /// Quantization modes for weight compression in neural networks.
 ///
 /// Quantization reduces the precision of model weights to decrease memory usage and
@@ -2239,6 +2284,53 @@ public func quantizedMatmul(
         &result,
         x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
         transpose, gs, bits,
+        mode.rawValue,
+        stream.ctx
+    )
+    return MLXArray(result)
+}
+
+/// Perform a matrix multiplication using a possibly quantized weight matrix
+/// `w` and a non-quantized input `x`. The input `x` is quantized on the
+/// fly. The weight matrix `w` is used as-is if it is already quantized;
+/// otherwise, it is quantized on the fly.
+///
+/// If `w` is quantized, `scales` must be provided, and `groupSize`,
+/// `bits`, and `mode` must match the parameters that were used to quantize
+/// `w`.
+///
+/// Notes:
+/// - If `w` is expected to receive gradients, it must be provided in
+///   non-quantized form.
+///
+/// - If `x` and `w` are not quantized, their data types must be ``DType/float32``,
+///   ``DType/float16``, or ``DType/bfloat16``.
+///
+/// - If `w` is quantized, it must be packed in unsigned integers.
+///
+/// - Parameters:
+///   - x: input array
+///   - w: weight matrix.  If quantized, it is packed in unsigned integers.
+///   - scales: The scales to use per `groupSize` elements of `w` if `w` is quantized
+///   - groupSize: Number of elements in `x` and `w` that share a scale
+///   - bits: Number of bits used to represent each element of `x` and `w`
+///   - mode: The quantization mode. Default is `.affine`
+///   - stream: Stream or device to evaluate on
+public func qqMatmul(
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray?,
+    groupSize: Int? = nil, bits: Int? = nil,
+    mode: QuantizationMode = .affine,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+
+    let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
+    let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
+
+    mlx_qqmm(
+        &result,
+        x.ctx, w.ctx, (scales ?? .mlxNone).ctx,
+        gs, bits,
         mode.rawValue,
         stream.ctx
     )

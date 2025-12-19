@@ -4,6 +4,8 @@ const char* steel_conv_general() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/steel/defines.h"
 ///////////////////////////////////////////////////////////////////////////////

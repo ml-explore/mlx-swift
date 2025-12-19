@@ -4,6 +4,8 @@ const char* steel_gemm_splitk() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_splitk.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_splitk.h"
 ///////////////////////////////////////////////////////////////////////////////

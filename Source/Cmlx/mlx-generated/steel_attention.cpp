@@ -4,6 +4,8 @@ const char* steel_attention() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/steel/attn/kernels/steel_attention.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/steel/defines.h"
 ///////////////////////////////////////////////////////////////////////////////

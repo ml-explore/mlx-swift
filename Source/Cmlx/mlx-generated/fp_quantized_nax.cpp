@@ -4,6 +4,8 @@ const char* fp_quantized_nax() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/fp_quantized_nax.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/fp4.h"
 ///////////////////////////////////////////////////////////////////////////////
@@ -535,11 +537,11 @@ METAL_FUNC void fp_qmm_n_impl(
   static_assert(BK % SIMD_SIZE == 0, "BK should be divisible by SIMD_SIZE");
 
   (void)lid;
+  (void)M;
 
   constexpr int pack_factor = get_pack_factor<8>();
   constexpr int bytes_per_pack = get_bytes_per_pack();
 
-  constexpr int BK_padded = (BK + 16 / sizeof(T));
   constexpr int BN_padded = (BN + 16 / sizeof(T));
 
   using loader_w_t = QuantizedBlockLoader<

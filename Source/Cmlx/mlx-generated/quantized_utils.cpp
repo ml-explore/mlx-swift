@@ -4,6 +4,8 @@ const char* quantized_utils() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/quantized_utils.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/quantized_utils.h"
 ///////////////////////////////////////////////////////////////////////////////

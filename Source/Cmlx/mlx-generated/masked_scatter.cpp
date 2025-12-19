@@ -4,6 +4,8 @@ const char* masked_scatter() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/indexing/masked_scatter.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/indexing/masked_scatter.h"
 ///////////////////////////////////////////////////////////////////////////////

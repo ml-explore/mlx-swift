@@ -215,6 +215,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `partition` | ``MLX/partitioned(_:kth:axis:stream:)``
 `power` | ``MLX/pow(_:_:stream:)-8ie9c``
 `prod` | ``MLX/product(_:axes:keepDims:stream:)``
+`qqmm` | ``MLX/qqMatmul(_:_:scales:groupSize:bits:mode:stream:)``
 `quantize` | ``MLX/quantized(_:groupSize:bits:mode:stream:)``
 `quantized_matmul` | ``MLX/quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 `reciprocal` | ``MLX/reciprocal(_:stream:)``

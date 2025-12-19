@@ -4,6 +4,8 @@ const char* scatter_axis() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/indexing/scatter_axis.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/indexing/scatter_axis.h"
 ///////////////////////////////////////////////////////////////////////////////

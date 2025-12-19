@@ -4,6 +4,8 @@ const char* gather_front() {
   return R"preamble(
 // Copyright © 2025 Apple Inc.
 
+// Auto generated source for mlx/backend/metal/kernels/indexing/gather_front.h
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/indexing/indexing.h"
 ///////////////////////////////////////////////////////////////////////////////
