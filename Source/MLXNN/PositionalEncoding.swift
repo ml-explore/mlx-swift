@@ -14,7 +14,7 @@ import MLX
 ///
 /// ### See Also
 /// - <doc:positional-encoding>
-final public class RoPE: Module, UnaryLayer {
+final public class RoPE: Module, UnaryLayer, OffsetLayer {
 
     let dimensions: Int
     let traditional: Bool

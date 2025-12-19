@@ -4,6 +4,8 @@
 
 #include "../../steel/gemm/nax.h"
 #include "../../steel/gemm/params.h"
+#include "../../steel/gemm/transforms.h"
+#include "../../steel/utils.h"
 
 using namespace metal;
 

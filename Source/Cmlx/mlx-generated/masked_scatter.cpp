@@ -2,6 +2,18 @@ namespace mlx::core::metal {
 
 const char* masked_scatter() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+// Auto generated source for mlx/backend/metal/kernels/indexing/masked_scatter.h
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/masked_scatter.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/masked_scatter.h"
+// Copyright © 2025 Apple Inc.
+
+
 template <typename T, bool src_contiguous>
 [[kernel]] void masked_assign_impl(
     const device bool* mask [[buffer(0)]],
@@ -18,11 +30,14 @@ template <typename T, bool src_contiguous>
   if (!mask_value) {
     return;
   }
+
   const uint src_index = scatter_offsets[idx];
   if (src_index >= src_batch_size) {
     return;
   }
+
   const uint batch_idx = idx / mask_batch_size;
+
   if (src_contiguous) {
     out[idx] = src[batch_idx * src_batch_size + src_index];
   } else {
@@ -33,6 +48,8 @@ template <typename T, bool src_contiguous>
         src_ndim)];
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

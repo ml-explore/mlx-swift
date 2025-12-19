@@ -2,76 +2,491 @@ namespace mlx::core::metal {
 
 const char* utils() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+// Auto generated source for mlx/backend/metal/kernels/utils.h
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/bf16.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/bf16.h"
+// Copyright © 2023 Apple Inc.
+
+
+#include <metal_stdlib>
+
 using namespace metal;
+
 typedef bfloat bfloat16_t;
 inline uint16_t bfloat16_to_uint16(const bfloat16_t x) {
   return as_type<uint16_t>(x);
 }
+
 inline bfloat16_t uint16_to_bfloat16(const uint16_t x) {
   return as_type<bfloat16_t>(x);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/bf16_math.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/bf16_math.h"
+// Copyright © 2023 Apple Inc.
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Metal math for bfloat16
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+
+Following the Metal Shading Language Specification (Metal 3.1)
+
+"bfloat is an extended itypeing point type that only allows implicit conversion
+ to a type of greater itypeing point rank. While bfloat can be implicitly
+ converted to itype, it cannot be implicitly converted to half, and neither
+ itype nor half can be implicitly converted to bfloat."
+
+Further, as far as I can tell, the stdlib math/simd functions are not defined
+for bfloat and calling with an argument of type bfloat will result in that
+argument getting implicitly converted to itype which then returns an output
+that is (likely) a itype which cannot be implicitly converted into a bfloat
+
+This leads to situations where
+bfloat a = 5.0bf;
+bfloat b = metal::abs(a); // this will throw an error since abs return itype
+bfloat c = static_cast<bfloat>(metal::abs(a)); // this is fine
+
+For the moment, I will be adding overloaded instantiations of the math
+functions to accordingly automatically handle the casting
+
+*/
+
+#define instantiate_metal_math_funcs(itype, otype, ctype, mfast)               \
+                                                                               \
+  METAL_FUNC otype abs(itype x) {                                              \
+    return static_cast<otype>(__metal_fabs(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype acos(itype x) {                                             \
+    return static_cast<otype>(__metal_acos(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype acosh(itype x) {                                            \
+    return static_cast<otype>(__metal_acosh(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype asin(itype x) {                                             \
+    return static_cast<otype>(__metal_asin(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype asinh(itype x) {                                            \
+    return static_cast<otype>(__metal_asinh(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype atan(itype y_over_x) {                                      \
+    return static_cast<otype>(                                                 \
+        __metal_atan(static_cast<ctype>(y_over_x), mfast));                    \
+  }                                                                            \
+  METAL_FUNC otype atan2(itype y, itype x) {                                   \
+    return static_cast<otype>(                                                 \
+        __metal_atan2(static_cast<ctype>(y), static_cast<ctype>(x), mfast));   \
+  }                                                                            \
+  METAL_FUNC otype atanh(itype x) {                                            \
+    return static_cast<otype>(__metal_atanh(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype ceil(itype x) {                                             \
+    return static_cast<otype>(__metal_ceil(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype cos(itype x) {                                              \
+    return static_cast<otype>(__metal_cos(static_cast<ctype>(x), mfast));      \
+  }                                                                            \
+  METAL_FUNC otype cosh(itype x) {                                             \
+    return static_cast<otype>(__metal_cosh(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype cospi(itype x) {                                            \
+    return static_cast<otype>(__metal_cospi(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype divide(itype x, itype y) {                                  \
+    return static_cast<otype>(                                                 \
+        __metal_divide(static_cast<ctype>(x), static_cast<ctype>(y), mfast));  \
+  }                                                                            \
+  METAL_FUNC otype exp(itype x) {                                              \
+    return static_cast<otype>(__metal_exp(static_cast<ctype>(x), mfast));      \
+  }                                                                            \
+  METAL_FUNC otype exp10(itype x) {                                            \
+    return static_cast<otype>(__metal_exp10(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype exp2(itype x) {                                             \
+    return static_cast<otype>(__metal_exp2(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype fabs(itype x) {                                             \
+    return static_cast<otype>(__metal_fabs(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype fdim(itype x, itype y) {                                    \
+    ctype t = static_cast<ctype>(x - y);                                       \
+    return static_cast<otype>(select(t, ctype(0), t < ctype(0) || x == y));    \
+  }                                                                            \
+  METAL_FUNC otype floor(itype x) {                                            \
+    return static_cast<otype>(__metal_floor(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype fma(itype x, itype y, itype z) {                            \
+    return static_cast<otype>(__metal_fma(                                     \
+        static_cast<ctype>(x), static_cast<ctype>(y), static_cast<ctype>(z))); \
+  }                                                                            \
+  METAL_FUNC otype fmax(itype x, itype y) {                                    \
+    return static_cast<otype>(                                                 \
+        __metal_fmax(static_cast<ctype>(x), static_cast<ctype>(y), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype fmax3(itype x, itype y, itype z) {                          \
+    return static_cast<otype>(__metal_fmax3(                                   \
+        static_cast<ctype>(x),                                                 \
+        static_cast<ctype>(y),                                                 \
+        static_cast<ctype>(z),                                                 \
+        mfast));                                                               \
+  }                                                                            \
+  METAL_FUNC otype fmedian3(itype x, itype y, itype z) {                       \
+    return static_cast<otype>(__metal_fmedian3(                                \
+        static_cast<ctype>(x),                                                 \
+        static_cast<ctype>(y),                                                 \
+        static_cast<ctype>(z),                                                 \
+        mfast));                                                               \
+  }                                                                            \
+  METAL_FUNC otype fmin(itype x, itype y) {                                    \
+    return static_cast<otype>(                                                 \
+        __metal_fmin(static_cast<ctype>(x), static_cast<ctype>(y), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype fmin3(itype x, itype y, itype z) {                          \
+    return static_cast<otype>(__metal_fmin3(                                   \
+        static_cast<ctype>(x),                                                 \
+        static_cast<ctype>(y),                                                 \
+        static_cast<ctype>(z),                                                 \
+        mfast));                                                               \
+  }                                                                            \
+  METAL_FUNC otype fmod(itype x, itype y) {                                    \
+    return static_cast<otype>(                                                 \
+        __metal_fmod(static_cast<ctype>(x), static_cast<ctype>(y), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype fract(itype x) {                                            \
+    return static_cast<otype>(__metal_fract(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype frexp(itype x, thread int& exp) {                           \
+    return static_cast<otype>(__metal_frexp(static_cast<ctype>(x), &exp));     \
+  }                                                                            \
+  METAL_FUNC otype ldexp(itype x, int k) {                                     \
+    return static_cast<otype>(__metal_ldexp(static_cast<ctype>(x), k, mfast)); \
+  }                                                                            \
+  METAL_FUNC otype log(itype x) {                                              \
+    return static_cast<otype>(__metal_log(static_cast<ctype>(x), mfast));      \
+  }                                                                            \
+  METAL_FUNC otype log10(itype x) {                                            \
+    return static_cast<otype>(__metal_log10(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype log2(itype x) {                                             \
+    return static_cast<otype>(__metal_log2(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype max(itype x, itype y) {                                     \
+    return static_cast<otype>(                                                 \
+        __metal_fmax(static_cast<ctype>(x), static_cast<ctype>(y), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype max3(itype x, itype y, itype z) {                           \
+    return static_cast<otype>(__metal_fmax3(                                   \
+        static_cast<ctype>(x),                                                 \
+        static_cast<ctype>(y),                                                 \
+        static_cast<ctype>(z),                                                 \
+        mfast));                                                               \
+  }                                                                            \
+  METAL_FUNC otype median3(itype x, itype y, itype z) {                        \
+    return static_cast<otype>(__metal_fmedian3(                                \
+        static_cast<ctype>(x),                                                 \
+        static_cast<ctype>(y),                                                 \
+        static_cast<ctype>(z),                                                 \
+        mfast));                                                               \
+  }                                                                            \
+  METAL_FUNC otype min(itype x, itype y) {                                     \
+    return static_cast<otype>(                                                 \
+        __metal_fmin(static_cast<ctype>(x), static_cast<ctype>(y), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype min3(itype x, itype y, itype z) {                           \
+    return static_cast<otype>(__metal_fmin3(                                   \
+        static_cast<ctype>(x),                                                 \
+        static_cast<ctype>(y),                                                 \
+        static_cast<ctype>(z),                                                 \
+        mfast));                                                               \
+  }                                                                            \
+  METAL_FUNC otype nextafter(itype x, itype y) {                               \
+    return static_cast<otype>(                                                 \
+        __metal_nextafter(static_cast<ctype>(x), static_cast<ctype>(y)));      \
+  }                                                                            \
+  METAL_FUNC otype pow(itype x, itype y) {                                     \
+    return static_cast<otype>(                                                 \
+        __metal_pow(static_cast<ctype>(x), static_cast<ctype>(y), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype powr(itype x, itype y) {                                    \
+    return static_cast<otype>(                                                 \
+        __metal_powr(static_cast<ctype>(x), static_cast<ctype>(y), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype rint(itype x) {                                             \
+    return static_cast<otype>(__metal_rint(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype round(itype x) {                                            \
+    return static_cast<otype>(__metal_round(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype rsqrt(itype x) {                                            \
+    return static_cast<otype>(__metal_rsqrt(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype sin(itype x) {                                              \
+    return static_cast<otype>(__metal_sin(static_cast<ctype>(x), mfast));      \
+  }                                                                            \
+  METAL_FUNC otype sinh(itype x) {                                             \
+    return static_cast<otype>(__metal_sinh(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype sinpi(itype x) {                                            \
+    return static_cast<otype>(__metal_sinpi(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype sqrt(itype x) {                                             \
+    return static_cast<otype>(__metal_sqrt(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype tan(itype x) {                                              \
+    return static_cast<otype>(__metal_tan(static_cast<ctype>(x), mfast));      \
+  }                                                                            \
+  METAL_FUNC otype tanh(itype x) {                                             \
+    return static_cast<otype>(__metal_tanh(static_cast<ctype>(x), mfast));     \
+  }                                                                            \
+  METAL_FUNC otype tanpi(itype x) {                                            \
+    return static_cast<otype>(__metal_tanpi(static_cast<ctype>(x), mfast));    \
+  }                                                                            \
+  METAL_FUNC otype trunc(itype x) {                                            \
+    return static_cast<otype>(__metal_trunc(static_cast<ctype>(x), mfast));    \
+  }
+
 namespace metal {
-METAL_FUNC bfloat16_t abs(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fabs(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t acos(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_acos(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t acosh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_acosh(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t asin(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_asin(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t asinh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_asinh(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t atan(bfloat16_t y_over_x) { return static_cast<bfloat16_t>( __metal_atan(static_cast<float>(y_over_x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t atan2(bfloat16_t y, bfloat16_t x) { return static_cast<bfloat16_t>( __metal_atan2(static_cast<float>(y), static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t atanh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_atanh(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t ceil(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_ceil(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t cos(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cos(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t cosh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cosh(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t cospi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cospi(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t divide(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_divide(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t exp(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t exp10(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp10(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t exp2(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp2(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fabs(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fabs(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fdim(bfloat16_t x, bfloat16_t y) { float t = static_cast<float>(x - y); return static_cast<bfloat16_t>(select(t, float(0), t < float(0) || x == y)); } METAL_FUNC bfloat16_t floor(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_floor(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fma(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fma( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z))); } METAL_FUNC bfloat16_t fmax(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmax(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fmax3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmax3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fmedian3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmedian3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fmin(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmin(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fmin3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmin3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fmod(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmod(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t fract(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fract(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t frexp(bfloat16_t x, thread int& exp) { return static_cast<bfloat16_t>(__metal_frexp(static_cast<float>(x), &exp)); } METAL_FUNC bfloat16_t ldexp(bfloat16_t x, int k) { return static_cast<bfloat16_t>(__metal_ldexp(static_cast<float>(x), k, __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t log(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t log10(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log10(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t log2(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log2(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t max(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmax(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t max3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmax3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t median3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmedian3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t min(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmin(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t min3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmin3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t nextafter(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_nextafter(static_cast<float>(x), static_cast<float>(y))); } METAL_FUNC bfloat16_t pow(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_pow(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t powr(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_powr(static_cast<float>(x), static_cast<float>(y), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t rint(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_rint(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t round(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_round(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t rsqrt(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_rsqrt(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t sin(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sin(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t sinh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sinh(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t sinpi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sinpi(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t sqrt(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sqrt(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t tan(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tan(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t tanh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tanh(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t tanpi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tanpi(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); } METAL_FUNC bfloat16_t trunc(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_trunc(static_cast<float>(x), __METAL_MAYBE_FAST_MATH__)); };
+
+instantiate_metal_math_funcs(
+    bfloat16_t,
+    bfloat16_t,
+    float,
+    __METAL_MAYBE_FAST_MATH__);
+
 namespace fast {
-METAL_FUNC bfloat16_t abs(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fabs(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t acos(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_acos(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t acosh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_acosh(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t asin(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_asin(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t asinh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_asinh(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t atan(bfloat16_t y_over_x) { return static_cast<bfloat16_t>( __metal_atan(static_cast<float>(y_over_x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t atan2(bfloat16_t y, bfloat16_t x) { return static_cast<bfloat16_t>( __metal_atan2(static_cast<float>(y), static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t atanh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_atanh(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t ceil(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_ceil(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t cos(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cos(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t cosh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cosh(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t cospi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cospi(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t divide(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_divide(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t exp(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t exp10(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp10(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t exp2(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp2(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fabs(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fabs(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fdim(bfloat16_t x, bfloat16_t y) { float t = static_cast<float>(x - y); return static_cast<bfloat16_t>(select(t, float(0), t < float(0) || x == y)); } METAL_FUNC bfloat16_t floor(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_floor(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fma(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fma( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z))); } METAL_FUNC bfloat16_t fmax(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmax(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fmax3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmax3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fmedian3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmedian3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fmin(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmin(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fmin3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmin3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fmod(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmod(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t fract(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fract(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t frexp(bfloat16_t x, thread int& exp) { return static_cast<bfloat16_t>(__metal_frexp(static_cast<float>(x), &exp)); } METAL_FUNC bfloat16_t ldexp(bfloat16_t x, int k) { return static_cast<bfloat16_t>(__metal_ldexp(static_cast<float>(x), k, __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t log(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t log10(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log10(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t log2(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log2(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t max(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmax(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t max3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmax3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t median3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmedian3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t min(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmin(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t min3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmin3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t nextafter(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_nextafter(static_cast<float>(x), static_cast<float>(y))); } METAL_FUNC bfloat16_t pow(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_pow(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t powr(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_powr(static_cast<float>(x), static_cast<float>(y), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t rint(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_rint(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t round(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_round(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t rsqrt(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_rsqrt(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t sin(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sin(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t sinh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sinh(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t sinpi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sinpi(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t sqrt(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sqrt(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t tan(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tan(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t tanh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tanh(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t tanpi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tanpi(static_cast<float>(x), __METAL_FAST_MATH__)); } METAL_FUNC bfloat16_t trunc(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_trunc(static_cast<float>(x), __METAL_FAST_MATH__)); };
-}
+
+instantiate_metal_math_funcs(
+    bfloat16_t,
+    bfloat16_t,
+    float,
+    __METAL_FAST_MATH__);
+
+} // namespace fast
+
 namespace precise {
-METAL_FUNC bfloat16_t abs(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fabs(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t acos(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_acos(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t acosh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_acosh(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t asin(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_asin(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t asinh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_asinh(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t atan(bfloat16_t y_over_x) { return static_cast<bfloat16_t>( __metal_atan(static_cast<float>(y_over_x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t atan2(bfloat16_t y, bfloat16_t x) { return static_cast<bfloat16_t>( __metal_atan2(static_cast<float>(y), static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t atanh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_atanh(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t ceil(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_ceil(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t cos(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cos(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t cosh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cosh(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t cospi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_cospi(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t divide(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_divide(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t exp(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t exp10(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp10(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t exp2(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_exp2(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fabs(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fabs(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fdim(bfloat16_t x, bfloat16_t y) { float t = static_cast<float>(x - y); return static_cast<bfloat16_t>(select(t, float(0), t < float(0) || x == y)); } METAL_FUNC bfloat16_t floor(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_floor(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fma(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fma( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z))); } METAL_FUNC bfloat16_t fmax(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmax(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fmax3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmax3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fmedian3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmedian3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fmin(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmin(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fmin3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmin3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fmod(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmod(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t fract(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_fract(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t frexp(bfloat16_t x, thread int& exp) { return static_cast<bfloat16_t>(__metal_frexp(static_cast<float>(x), &exp)); } METAL_FUNC bfloat16_t ldexp(bfloat16_t x, int k) { return static_cast<bfloat16_t>(__metal_ldexp(static_cast<float>(x), k, __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t log(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t log10(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log10(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t log2(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_log2(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t max(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmax(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t max3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmax3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t median3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmedian3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t min(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_fmin(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t min3(bfloat16_t x, bfloat16_t y, bfloat16_t z) { return static_cast<bfloat16_t>(__metal_fmin3( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t nextafter(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_nextafter(static_cast<float>(x), static_cast<float>(y))); } METAL_FUNC bfloat16_t pow(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_pow(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t powr(bfloat16_t x, bfloat16_t y) { return static_cast<bfloat16_t>( __metal_powr(static_cast<float>(x), static_cast<float>(y), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t rint(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_rint(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t round(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_round(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t rsqrt(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_rsqrt(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t sin(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sin(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t sinh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sinh(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t sinpi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sinpi(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t sqrt(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_sqrt(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t tan(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tan(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t tanh(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tanh(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t tanpi(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_tanpi(static_cast<float>(x), __METAL_PRECISE_MATH__)); } METAL_FUNC bfloat16_t trunc(bfloat16_t x) { return static_cast<bfloat16_t>(__metal_trunc(static_cast<float>(x), __METAL_PRECISE_MATH__)); };
-}
-}
+
+instantiate_metal_math_funcs(
+    bfloat16_t,
+    bfloat16_t,
+    float,
+    __METAL_PRECISE_MATH__);
+
+} // namespace precise
+
+} // namespace metal
+
+///////////////////////////////////////////////////////////////////////////////
+// Metal simd for bfloat16
+///////////////////////////////////////////////////////////////////////////////
+
+#define instantiate_metal_simd_comm_funcs(                                   \
+    itype, otype, ctype, itype_to_ctype, ctype_to_otype)                     \
+                                                                             \
+  METAL_FUNC otype simd_broadcast(itype data, ushort broadcast_lane_id) {    \
+    return ctype_to_otype(                                                   \
+        __metal_simd_broadcast(itype_to_ctype(data), broadcast_lane_id));    \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle(itype data, ushort simd_lane_id) {           \
+    return ctype_to_otype(                                                   \
+        __metal_simd_shuffle(itype_to_ctype(data), simd_lane_id));           \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_and_fill_down(                               \
+      itype data, itype filling_data, ushort delta, ushort modulo) {         \
+    return ctype_to_otype(__metal_simd_shuffle_and_fill_down(                \
+        itype_to_ctype(data), itype_to_ctype(filling_data), delta, modulo)); \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_and_fill_down(                               \
+      itype data, itype filling_data, ushort delta) {                        \
+    return ctype_to_otype(__metal_simd_shuffle_and_fill_down(                \
+        itype_to_ctype(data),                                                \
+        itype_to_ctype(filling_data),                                        \
+        delta,                                                               \
+        __metal_get_simdgroup_size(ushort())));                              \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_and_fill_up(                                 \
+      itype data, itype filling_data, ushort delta, ushort modulo) {         \
+    return ctype_to_otype(__metal_simd_shuffle_and_fill_up(                  \
+        itype_to_ctype(data), itype_to_ctype(filling_data), delta, modulo)); \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_and_fill_up(                                 \
+      itype data, itype filling_data, ushort delta) {                        \
+    return ctype_to_otype(__metal_simd_shuffle_and_fill_up(                  \
+        itype_to_ctype(data),                                                \
+        itype_to_ctype(filling_data),                                        \
+        delta,                                                               \
+        __metal_get_simdgroup_size(ushort())));                              \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_down(itype data, ushort delta) {             \
+    return ctype_to_otype(                                                   \
+        __metal_simd_shuffle_down(itype_to_ctype(data), delta));             \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_rotate_down(itype data, ushort delta) {      \
+    return ctype_to_otype(                                                   \
+        __metal_simd_shuffle_rotate_down(itype_to_ctype(data), delta));      \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_rotate_up(itype data, ushort delta) {        \
+    return ctype_to_otype(                                                   \
+        __metal_simd_shuffle_rotate_up(itype_to_ctype(data), delta));        \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_up(itype data, ushort delta) {               \
+    return ctype_to_otype(                                                   \
+        __metal_simd_shuffle_up(itype_to_ctype(data), delta));               \
+  }                                                                          \
+                                                                             \
+  METAL_FUNC otype simd_shuffle_xor(itype data, ushort mask) {               \
+    return ctype_to_otype(                                                   \
+        __metal_simd_shuffle_xor(itype_to_ctype(data), mask));               \
+  }
+
+#define instantiate_metal_simd_reduction_funcs(itype, otype, ctype)            \
+                                                                               \
+  METAL_FUNC otype simd_max(itype data) {                                      \
+    return static_cast<otype>(__metal_simd_max(static_cast<ctype>(data)));     \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_min(itype data) {                                      \
+    return static_cast<otype>(__metal_simd_min(static_cast<ctype>(data)));     \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_prefix_exclusive_product(itype data) {                 \
+    return static_cast<otype>(                                                 \
+        __metal_simd_prefix_exclusive_product(static_cast<ctype>(data)));      \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_prefix_exclusive_sum(itype data) {                     \
+    return static_cast<otype>(                                                 \
+        __metal_simd_prefix_exclusive_sum(static_cast<ctype>(data)));          \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_prefix_inclusive_product(itype data) {                 \
+    return static_cast<otype>(                                                 \
+        __metal_simd_prefix_inclusive_product(static_cast<ctype>(data)));      \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_prefix_inclusive_sum(itype data) {                     \
+    return static_cast<otype>(                                                 \
+        __metal_simd_prefix_inclusive_sum(static_cast<ctype>(data)));          \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_product(itype data) {                                  \
+    return static_cast<otype>(__metal_simd_product(static_cast<ctype>(data))); \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_sum(itype data) {                                      \
+    return static_cast<otype>(__metal_simd_sum(static_cast<ctype>(data)));     \
+  }                                                                            \
+                                                                               \
+  METAL_FUNC otype simd_xor(itype data) {                                      \
+    return static_cast<otype>(__metal_simd_xor(static_cast<ctype>(data)));     \
+  }
+
 namespace metal {
-METAL_FUNC bfloat16_t simd_broadcast(bfloat16_t data, ushort broadcast_lane_id) { return uint16_to_bfloat16( __metal_simd_broadcast(bfloat16_to_uint16(data), broadcast_lane_id)); } METAL_FUNC bfloat16_t simd_shuffle(bfloat16_t data, ushort simd_lane_id) { return uint16_to_bfloat16( __metal_simd_shuffle(bfloat16_to_uint16(data), simd_lane_id)); } METAL_FUNC bfloat16_t simd_shuffle_and_fill_down( bfloat16_t data, bfloat16_t filling_data, ushort delta, ushort modulo) { return uint16_to_bfloat16(__metal_simd_shuffle_and_fill_down( bfloat16_to_uint16(data), bfloat16_to_uint16(filling_data), delta, modulo)); } METAL_FUNC bfloat16_t simd_shuffle_and_fill_down( bfloat16_t data, bfloat16_t filling_data, ushort delta) { return uint16_to_bfloat16(__metal_simd_shuffle_and_fill_down( bfloat16_to_uint16(data), bfloat16_to_uint16(filling_data), delta, __metal_get_simdgroup_size(ushort()))); } METAL_FUNC bfloat16_t simd_shuffle_and_fill_up( bfloat16_t data, bfloat16_t filling_data, ushort delta, ushort modulo) { return uint16_to_bfloat16(__metal_simd_shuffle_and_fill_up( bfloat16_to_uint16(data), bfloat16_to_uint16(filling_data), delta, modulo)); } METAL_FUNC bfloat16_t simd_shuffle_and_fill_up( bfloat16_t data, bfloat16_t filling_data, ushort delta) { return uint16_to_bfloat16(__metal_simd_shuffle_and_fill_up( bfloat16_to_uint16(data), bfloat16_to_uint16(filling_data), delta, __metal_get_simdgroup_size(ushort()))); } METAL_FUNC bfloat16_t simd_shuffle_down(bfloat16_t data, ushort delta) { return uint16_to_bfloat16( __metal_simd_shuffle_down(bfloat16_to_uint16(data), delta)); } METAL_FUNC bfloat16_t simd_shuffle_rotate_down(bfloat16_t data, ushort delta) { return uint16_to_bfloat16( __metal_simd_shuffle_rotate_down(bfloat16_to_uint16(data), delta)); } METAL_FUNC bfloat16_t simd_shuffle_rotate_up(bfloat16_t data, ushort delta) { return uint16_to_bfloat16( __metal_simd_shuffle_rotate_up(bfloat16_to_uint16(data), delta)); } METAL_FUNC bfloat16_t simd_shuffle_up(bfloat16_t data, ushort delta) { return uint16_to_bfloat16( __metal_simd_shuffle_up(bfloat16_to_uint16(data), delta)); } METAL_FUNC bfloat16_t simd_shuffle_xor(bfloat16_t data, ushort mask) { return uint16_to_bfloat16( __metal_simd_shuffle_xor(bfloat16_to_uint16(data), mask)); };
-METAL_FUNC bfloat16_t simd_max(bfloat16_t data) { return static_cast<bfloat16_t>(__metal_simd_max(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_min(bfloat16_t data) { return static_cast<bfloat16_t>(__metal_simd_min(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_prefix_exclusive_product(bfloat16_t data) { return static_cast<bfloat16_t>( __metal_simd_prefix_exclusive_product(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_prefix_exclusive_sum(bfloat16_t data) { return static_cast<bfloat16_t>( __metal_simd_prefix_exclusive_sum(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_prefix_inclusive_product(bfloat16_t data) { return static_cast<bfloat16_t>( __metal_simd_prefix_inclusive_product(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_prefix_inclusive_sum(bfloat16_t data) { return static_cast<bfloat16_t>( __metal_simd_prefix_inclusive_sum(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_product(bfloat16_t data) { return static_cast<bfloat16_t>(__metal_simd_product(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_sum(bfloat16_t data) { return static_cast<bfloat16_t>(__metal_simd_sum(static_cast<float>(data))); } METAL_FUNC bfloat16_t simd_xor(bfloat16_t data) { return static_cast<bfloat16_t>(__metal_simd_xor(static_cast<float>(data))); };
-}
+
+instantiate_metal_simd_comm_funcs(
+    bfloat16_t,
+    bfloat16_t,
+    uint16_t,
+    bfloat16_to_uint16,
+    uint16_to_bfloat16);
+instantiate_metal_simd_reduction_funcs(bfloat16_t, bfloat16_t, float);
+
+} // namespace metal
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/complex.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/complex.h"
+// Copyright © 2023 Apple Inc.
+
+
+#include <metal_stdlib>
+
 using namespace metal;
+
 struct complex64_t;
+
 template <typename T>
 static constexpr constant bool can_convert_to_complex64 =
     !is_same_v<T, complex64_t> && is_convertible_v<T, float>;
+
 template <typename T>
 static constexpr constant bool can_convert_from_complex64 =
     !is_same_v<T, complex64_t> &&
     (is_convertible_v<float, T> || is_convertible_v<bfloat16_t, T>);
+
 struct complex64_t {
   float real;
   float imag;
+
+  // Constructors
   constexpr complex64_t(float real, float imag) : real(real), imag(imag) {};
   constexpr complex64_t() : real(0), imag(0) {};
   constexpr complex64_t() threadgroup : real(0), imag(0) {};
+
+  // Conversions to complex64_t
   template <
       typename T,
       typename = typename enable_if<can_convert_to_complex64<T>>::type>
   constexpr complex64_t(T x) thread : real(x), imag(0) {}
+
   template <
       typename T,
       typename = typename enable_if<can_convert_to_complex64<T>>::type>
   constexpr complex64_t(T x) threadgroup : real(x), imag(0) {}
+
   template <
       typename T,
       typename = typename enable_if<can_convert_to_complex64<T>>::type>
   constexpr complex64_t(T x) device : real(x), imag(0) {}
+
   template <
       typename T,
       typename = typename enable_if<can_convert_to_complex64<T>>::type>
   constexpr complex64_t(T x) constant : real(x), imag(0) {}
+
+  // Conversions from complex64_t
   template <
       typename T,
       typename = typename enable_if<can_convert_from_complex64<T>>::type>
   constexpr operator T() const thread {
     return static_cast<T>(real);
   }
+
   template <
       typename T,
       typename = typename enable_if<can_convert_from_complex64<T>>::type>
   constexpr operator T() const threadgroup {
     return static_cast<T>(real);
   }
+
   template <
       typename T,
       typename = typename enable_if<can_convert_from_complex64<T>>::type>
   constexpr operator T() const device {
     return static_cast<T>(real);
   }
+
   template <
       typename T,
       typename = typename enable_if<can_convert_from_complex64<T>>::type>
@@ -79,32 +494,41 @@ struct complex64_t {
     return static_cast<T>(real);
   }
 };
+
 constexpr complex64_t operator-(complex64_t x) {
   return {-x.real, -x.imag};
 }
+
 constexpr bool operator>=(complex64_t a, complex64_t b) {
   return (a.real > b.real) || (a.real == b.real && a.imag >= b.imag);
 }
+
 constexpr bool operator>(complex64_t a, complex64_t b) {
   return (a.real > b.real) || (a.real == b.real && a.imag > b.imag);
 }
+
 constexpr bool operator<=(complex64_t a, complex64_t b) {
   return operator>=(b, a);
 }
+
 constexpr bool operator<(complex64_t a, complex64_t b) {
   return operator>(b, a);
 }
+
 constexpr bool operator==(complex64_t a, complex64_t b) {
   return a.real == b.real && a.imag == b.imag;
 }
+
 constexpr complex64_t operator+(complex64_t a, complex64_t b) {
   return {a.real + b.real, a.imag + b.imag};
 }
+
 constexpr thread complex64_t& operator+=(thread complex64_t& a, complex64_t b) {
   a.real += b.real;
   a.imag += b.imag;
   return a;
 }
+
 constexpr threadgroup complex64_t& operator+=(
     threadgroup complex64_t& a,
     complex64_t b) {
@@ -112,17 +536,20 @@ constexpr threadgroup complex64_t& operator+=(
   a.imag += b.imag;
   return a;
 }
+
 constexpr device complex64_t& operator+=(device complex64_t& a, complex64_t b) {
   a.real += b.real;
   a.imag += b.imag;
   return a;
 }
+
 constexpr complex64_t operator+(float a, complex64_t b) {
   return {a + b.real, b.imag};
 }
 constexpr complex64_t operator+(complex64_t a, float b) {
   return {a.real + b, a.imag};
 }
+
 constexpr complex64_t operator-(complex64_t a, complex64_t b) {
   return {a.real - b.real, a.imag - b.imag};
 }
@@ -132,21 +559,25 @@ constexpr complex64_t operator-(float a, complex64_t b) {
 constexpr complex64_t operator-(complex64_t a, float b) {
   return {a.real - b, a.imag};
 }
+
 constexpr complex64_t operator*(complex64_t a, complex64_t b) {
   return {a.real * b.real - a.imag * b.imag, a.real * b.imag + a.imag * b.real};
 }
+
 constexpr complex64_t operator/(complex64_t a, complex64_t b) {
   auto denom = b.real * b.real + b.imag * b.imag;
   auto x = a.real * b.real + a.imag * b.imag;
   auto y = a.imag * b.real - a.real * b.imag;
   return {x / denom, y / denom};
 }
+
 constexpr complex64_t operator/(float a, complex64_t b) {
   auto denom = b.real * b.real + b.imag * b.imag;
   auto x = a * b.real;
   auto y = -a * b.imag;
   return {x / denom, y / denom};
 }
+
 constexpr complex64_t operator%(complex64_t a, complex64_t b) {
   auto real = a.real - (b.real * static_cast<int64_t>(a.real / b.real));
   auto imag = a.imag - (b.imag * static_cast<int64_t>(a.imag / b.imag));
@@ -158,19 +589,61 @@ constexpr complex64_t operator%(complex64_t a, complex64_t b) {
   }
   return {real, imag};
 }
-static constant constexpr int MAX_REDUCE_SPECIALIZED_DIMS = 4;
-static constant constexpr int REDUCE_N_READS = 4;
-static constant constexpr int REDUCE_N_WRITES = 4;
-static constant constexpr int SOFTMAX_N_READS = 4;
-static constant constexpr int RMS_N_READS = 4;
-static constant constexpr int RMS_LOOPED_LIMIT = 4096;
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/defines.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/defines.h"
+// Copyright © 2023 Apple Inc.
+
+
+#if defined __METAL__ || defined MLX_METAL_JIT
+#define MTL_CONST constant
+#else
+#define MTL_CONST
+#endif
+
+static MTL_CONST constexpr int MAX_REDUCE_SPECIALIZED_DIMS = 4;
+static MTL_CONST constexpr int REDUCE_N_READS = 4;
+static MTL_CONST constexpr int REDUCE_N_WRITES = 4;
+static MTL_CONST constexpr int SOFTMAX_N_READS = 4;
+static MTL_CONST constexpr int RMS_N_READS = 4;
+static MTL_CONST constexpr int RMS_LOOPED_LIMIT = 4096;
+
+// Instantiate a templated kernel.
+// Extra args are used as template parameters:
+// e.g. instantiate_kernel(binary_int, binary, a, b) ->
+// [[host_name(binary_int)]] [kernel] binary<a, b>
+#define instantiate_kernel(name, func, ...) \
+  template [[host_name(                     \
+      name)]] [[kernel]] decltype(func<__VA_ARGS__>) func<__VA_ARGS__>;
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/utils.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/utils.h"
+// Copyright © 2023-2024 Apple Inc.
+
+
+#include <metal_math>
+
 
 typedef half float16_t;
+
+// Work per thread values for different types. The values here are expected to
+// match get_work_per_thread in mlx/backend/metal/utils.h
 template <typename U>
 struct WorkPerThread {
   static_assert(sizeof(U) <= 8, "Type too large");
   static constexpr int constant n = 8 / sizeof(U);
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Type limits utils
+///////////////////////////////////////////////////////////////////////////////
+
 template <typename U>
 struct Limits {
   static const constant U max = metal::numeric_limits<U>::max();
@@ -178,22 +651,50 @@ struct Limits {
   static const constant U finite_max = metal::numeric_limits<U>::max();
   static const constant U finite_min = metal::numeric_limits<U>::min();
 };
-template <> struct Limits<uint8_t> { static constexpr constant uint8_t max = metal::numeric_limits<uint8_t>::max(); static constexpr constant uint8_t min = metal::numeric_limits<uint8_t>::min(); static constexpr constant uint8_t finite_max = metal::numeric_limits<uint8_t>::max(); static constexpr constant uint8_t finite_min = metal::numeric_limits<uint8_t>::min(); };;
-template <> struct Limits<uint16_t> { static constexpr constant uint16_t max = metal::numeric_limits<uint16_t>::max(); static constexpr constant uint16_t min = metal::numeric_limits<uint16_t>::min(); static constexpr constant uint16_t finite_max = metal::numeric_limits<uint16_t>::max(); static constexpr constant uint16_t finite_min = metal::numeric_limits<uint16_t>::min(); };;
-template <> struct Limits<uint32_t> { static constexpr constant uint32_t max = metal::numeric_limits<uint32_t>::max(); static constexpr constant uint32_t min = metal::numeric_limits<uint32_t>::min(); static constexpr constant uint32_t finite_max = metal::numeric_limits<uint32_t>::max(); static constexpr constant uint32_t finite_min = metal::numeric_limits<uint32_t>::min(); };;
-template <> struct Limits<uint64_t> { static constexpr constant uint64_t max = metal::numeric_limits<uint64_t>::max(); static constexpr constant uint64_t min = metal::numeric_limits<uint64_t>::min(); static constexpr constant uint64_t finite_max = metal::numeric_limits<uint64_t>::max(); static constexpr constant uint64_t finite_min = metal::numeric_limits<uint64_t>::min(); };;
-template <> struct Limits<int8_t> { static constexpr constant int8_t max = metal::numeric_limits<int8_t>::max(); static constexpr constant int8_t min = metal::numeric_limits<int8_t>::min(); static constexpr constant int8_t finite_max = metal::numeric_limits<int8_t>::max(); static constexpr constant int8_t finite_min = metal::numeric_limits<int8_t>::min(); };;
-template <> struct Limits<int16_t> { static constexpr constant int16_t max = metal::numeric_limits<int16_t>::max(); static constexpr constant int16_t min = metal::numeric_limits<int16_t>::min(); static constexpr constant int16_t finite_max = metal::numeric_limits<int16_t>::max(); static constexpr constant int16_t finite_min = metal::numeric_limits<int16_t>::min(); };;
-template <> struct Limits<int32_t> { static constexpr constant int32_t max = metal::numeric_limits<int32_t>::max(); static constexpr constant int32_t min = metal::numeric_limits<int32_t>::min(); static constexpr constant int32_t finite_max = metal::numeric_limits<int32_t>::max(); static constexpr constant int32_t finite_min = metal::numeric_limits<int32_t>::min(); };;
-template <> struct Limits<int64_t> { static constexpr constant int64_t max = metal::numeric_limits<int64_t>::max(); static constexpr constant int64_t min = metal::numeric_limits<int64_t>::min(); static constexpr constant int64_t finite_max = metal::numeric_limits<int64_t>::max(); static constexpr constant int64_t finite_min = metal::numeric_limits<int64_t>::min(); };;
-template <> struct Limits<half> { static constexpr constant half max = metal::numeric_limits<half>::infinity(); static constexpr constant half min = -metal::numeric_limits<half>::infinity(); static constexpr constant half finite_max = metal::numeric_limits<half>::max(); static constexpr constant half finite_min = -metal::numeric_limits<half>::max(); };;
-template <> struct Limits<float> { static constexpr constant float max = metal::numeric_limits<float>::infinity(); static constexpr constant float min = -metal::numeric_limits<float>::infinity(); static constexpr constant float finite_max = metal::numeric_limits<float>::max(); static constexpr constant float finite_min = -metal::numeric_limits<float>::max(); };;
-template <> struct Limits<bfloat16_t> { static constexpr constant bfloat16_t max = metal::numeric_limits<bfloat16_t>::infinity(); static constexpr constant bfloat16_t min = -metal::numeric_limits<bfloat16_t>::infinity(); static constexpr constant bfloat16_t finite_max = metal::numeric_limits<bfloat16_t>::max(); static constexpr constant bfloat16_t finite_min = -metal::numeric_limits<bfloat16_t>::max(); };;
+
+#define instantiate_default_limit(type)                                      \
+  template <>                                                                \
+  struct Limits<type> {                                                      \
+    static constexpr constant type max = metal::numeric_limits<type>::max(); \
+    static constexpr constant type min = metal::numeric_limits<type>::min(); \
+    static constexpr constant type finite_max =                              \
+        metal::numeric_limits<type>::max();                                  \
+    static constexpr constant type finite_min =                              \
+        metal::numeric_limits<type>::min();                                  \
+  };
+
+instantiate_default_limit(uint8_t);
+instantiate_default_limit(uint16_t);
+instantiate_default_limit(uint32_t);
+instantiate_default_limit(uint64_t);
+instantiate_default_limit(int8_t);
+instantiate_default_limit(int16_t);
+instantiate_default_limit(int32_t);
+instantiate_default_limit(int64_t);
+
+#define instantiate_float_limit(type)             \
+  template <>                                     \
+  struct Limits<type> {                           \
+    static constexpr constant type max =          \
+        metal::numeric_limits<type>::infinity();  \
+    static constexpr constant type min =          \
+        -metal::numeric_limits<type>::infinity(); \
+    static constexpr constant type finite_max =   \
+        metal::numeric_limits<type>::max();       \
+    static constexpr constant type finite_min =   \
+        -metal::numeric_limits<type>::max();      \
+  };
+
+instantiate_float_limit(half);
+instantiate_float_limit(float);
+instantiate_float_limit(bfloat16_t);
+
 template <>
 struct Limits<bool> {
   static constexpr constant bool max = true;
   static constexpr constant bool min = false;
 };
+
 template <>
 struct Limits<complex64_t> {
   static constexpr constant complex64_t max = complex64_t(
@@ -203,6 +704,16 @@ struct Limits<complex64_t> {
       -metal::numeric_limits<float>::infinity(),
       -metal::numeric_limits<float>::infinity());
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Indexing utils
+///////////////////////////////////////////////////////////////////////////////
+
+#define MLX_MTL_PRAGMA_UNROLL _Pragma("clang loop unroll(full)")
+
+///////////////////////////////////////////////////////////////////////////////
+// Single Array with generic dims
+
 template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc(
     IdxT elem,
@@ -216,6 +727,8 @@ METAL_FUNC IdxT elem_to_loc(
   }
   return loc;
 }
+
+// Non templated version to handle arbitrary dims
 template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc(
     uint3 elem,
@@ -230,19 +743,29 @@ METAL_FUNC IdxT elem_to_loc(
   }
   return loc;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Single Array with fixed N dims
+
 template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc_1(uint elem, constant const int64_t& stride) {
   return elem * IdxT(stride);
 }
+
 template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc_2(uint2 elem, constant const int64_t strides[2]) {
   return elem.x * IdxT(strides[1]) + elem.y * IdxT(strides[0]);
 }
+
 template <typename IdxT = int64_t>
 METAL_FUNC IdxT elem_to_loc_3(uint3 elem, constant const int64_t strides[3]) {
   return elem.x * IdxT(strides[2]) + elem.y * IdxT(strides[1]) +
       elem.z * IdxT(strides[0]);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Multiple Arrays with generic dims
+
 template <typename IdxT = int64_t>
 METAL_FUNC vec<IdxT, 2> elem_to_loc_2_nd(
     uint3 elem,
@@ -265,6 +788,7 @@ METAL_FUNC vec<IdxT, 2> elem_to_loc_2_nd(
   }
   return loc;
 }
+
 template <typename IdxT = int64_t>
 METAL_FUNC vec<IdxT, 3> elem_to_loc_3_nd(
     uint3 elem,
@@ -289,13 +813,20 @@ METAL_FUNC vec<IdxT, 3> elem_to_loc_3_nd(
   }
   return loc;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Elem to loc in a loop utils
+///////////////////////////////////////////////////////////////////////////////
+
 template <int DIM, typename OffsetT = size_t, bool General = true>
 struct LoopedElemToLoc {
   int dim;
   LoopedElemToLoc<DIM - 1, OffsetT, General> inner_looper;
   OffsetT offset{0};
   int index{0};
+
   LoopedElemToLoc(int dim) : dim(dim), inner_looper(dim - 1) {}
+
   void next(const constant int* shape, const constant int64_t* strides) {
     if (dim == 0) {
       return;
@@ -308,12 +839,14 @@ struct LoopedElemToLoc {
       offset = inner_looper.offset;
     }
   }
+
   void next(int n, const constant int* shape, const constant int64_t* strides) {
     if (dim == 0) {
       return;
     }
     index += n;
     offset += n * OffsetT(strides[dim - 1]);
+
     if (index >= shape[dim - 1]) {
       int extra = index - shape[dim - 1];
       if (extra >= shape[dim - 1]) {
@@ -329,16 +862,20 @@ struct LoopedElemToLoc {
       }
     }
   }
+
   OffsetT location() {
     return offset;
   }
 };
+
 template <typename OffsetT>
 struct LoopedElemToLoc<1, OffsetT, true> {
   int dim;
   OffsetT offset{0};
   uint index{0};
+
   LoopedElemToLoc(int dim) : dim(dim) {}
+
   void next(const constant int* shape, const constant int64_t* strides) {
     index++;
     if (dim > 1) {
@@ -347,6 +884,7 @@ struct LoopedElemToLoc<1, OffsetT, true> {
       offset += OffsetT(strides[0]);
     }
   }
+
   void next(int n, const constant int* shape, const constant int64_t* strides) {
     index += n;
     if (dim > 1) {
@@ -355,28 +893,42 @@ struct LoopedElemToLoc<1, OffsetT, true> {
       offset = index * OffsetT(strides[0]);
     }
   }
+
   OffsetT location() {
     return offset;
   }
 };
+
 template <typename OffsetT>
 struct LoopedElemToLoc<1, OffsetT, false> {
   OffsetT offset{0};
+
   LoopedElemToLoc(int) {}
+
   void next(const constant int*, const constant int64_t* strides) {
     offset += OffsetT(strides[0]);
   }
+
   void next(int n, const constant int*, const constant int64_t* strides) {
     offset += n * OffsetT(strides[0]);
   }
+
   OffsetT location() {
     return offset;
   }
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Calculation utils
+///////////////////////////////////////////////////////////////////////////////
+
+/** Compute ceil((float)N/(float)M) */
 template <typename T, typename U>
 inline T ceildiv(T N, U M) {
   return (N + M - 1) / M;
 }
+
+// https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html#1202
 inline float log1p(float x) {
   float xp1 = 1.0f + x;
   if (xp1 == Limits<float>::max) {
@@ -385,8 +937,10 @@ inline float log1p(float x) {
   if (xp1 == 1.0f) {
     return x;
   }
+
   return x * (metal::log(xp1) / (xp1 - 1.0f));
 }
+
 inline bfloat16_t log1p(bfloat16_t x) {
   float xp1 = 1.0f + static_cast<float>(x);
   if (xp1 == Limits<float>::max) {
@@ -395,8 +949,10 @@ inline bfloat16_t log1p(bfloat16_t x) {
   if (xp1 == 1.0f) {
     return x;
   }
+
   return bfloat16_t(x * (metal::log(xp1) / (xp1 - 1.0f)));
 }
+
 inline complex64_t log1p(complex64_t in) {
   float x = in.real;
   float y = in.imag;
@@ -404,7 +960,7 @@ inline complex64_t log1p(complex64_t in) {
   float theta = metal::atan2(y, x + 1);
   if (zabs < 0.5f) {
     float r = x * (2 + x) + y * y;
-    if (r == 0) {
+    if (r == 0) { // handle underflow
       return {x, theta};
     }
     return {0.5f * log1p(r), theta};
@@ -413,48 +969,64 @@ inline complex64_t log1p(complex64_t in) {
     return {metal::log(z0), theta};
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// SIMD shuffle ops
+///////////////////////////////////////////////////////////////////////////////
+
 inline uint64_t simd_shuffle_down(uint64_t data, uint16_t delta) {
   return as_type<uint64_t>(
       metal::simd_shuffle_down(as_type<uint2>(data), delta));
 }
+
 inline int64_t simd_shuffle_down(int64_t data, uint16_t delta) {
   return as_type<int64_t>(
       metal::simd_shuffle_down(as_type<uint2>(data), delta));
 }
+
 inline bool simd_shuffle_down(bool data, uint16_t delta) {
   return simd_shuffle_down(static_cast<uint32_t>(data), delta);
 }
+
 inline complex64_t simd_shuffle_down(complex64_t data, uint16_t delta) {
   return complex64_t(
       simd_shuffle_down(data.real, delta), simd_shuffle_down(data.imag, delta));
 }
+
 inline uint64_t simd_shuffle_up(uint64_t data, uint16_t delta) {
   return as_type<uint64_t>(metal::simd_shuffle_up(as_type<uint2>(data), delta));
 }
+
 inline int64_t simd_shuffle_up(int64_t data, uint16_t delta) {
   return as_type<int64_t>(metal::simd_shuffle_up(as_type<uint2>(data), delta));
 }
+
 inline bool simd_shuffle_up(bool data, uint16_t delta) {
   return simd_shuffle_up(static_cast<uint32_t>(data), delta);
 }
+
 inline complex64_t simd_shuffle_up(complex64_t data, uint16_t delta) {
   return complex64_t(
       simd_shuffle_up(data.real, delta), simd_shuffle_up(data.imag, delta));
 }
+
 inline uint64_t
 simd_shuffle_and_fill_up(uint64_t data, uint64_t filling, uint16_t delta) {
   return as_type<uint64_t>(metal::simd_shuffle_and_fill_up(
       as_type<uint2>(data), as_type<uint2>(filling), delta));
 }
+
 inline int64_t
 simd_shuffle_and_fill_up(int64_t data, int64_t filling, uint16_t delta) {
   return as_type<int64_t>(metal::simd_shuffle_and_fill_up(
       as_type<uint2>(data), as_type<uint2>(filling), delta));
 }
+
 inline bool simd_shuffle_and_fill_up(bool data, bool filling, uint16_t delta) {
   return simd_shuffle_and_fill_up(
       static_cast<uint32_t>(data), static_cast<uint32_t>(filling), delta);
 }
+
 inline complex64_t simd_shuffle_and_fill_up(
     complex64_t data,
     complex64_t filling,
@@ -463,27 +1035,36 @@ inline complex64_t simd_shuffle_and_fill_up(
       simd_shuffle_and_fill_up(data.real, filling.real, delta),
       simd_shuffle_and_fill_up(data.imag, filling.imag, delta));
 }
+
 inline uint64_t simd_shuffle(uint64_t data, uint16_t lane) {
   return as_type<uint64_t>(metal::simd_shuffle(as_type<uint2>(data), lane));
 }
+
 inline int64_t simd_shuffle(int64_t data, uint16_t lane) {
   return as_type<int64_t>(metal::simd_shuffle(as_type<uint2>(data), lane));
 }
+
 inline bool simd_shuffle(bool data, uint16_t lane) {
   return simd_shuffle(static_cast<uint32_t>(data), lane);
 }
+
 inline complex64_t simd_shuffle(complex64_t data, uint16_t lane) {
   return complex64_t(
       simd_shuffle(data.real, lane), simd_shuffle(data.imag, lane));
 }
+
+// std::conditional is not included with Metal
 template <bool condition, typename T, typename U>
 struct ConditionalType {
   using type = U;
 };
+
 template <typename T, typename U>
 struct ConditionalType<true, T, U> {
   using type = T;
 };
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

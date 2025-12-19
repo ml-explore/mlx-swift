@@ -215,6 +215,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``addMM(_:_:_:alpha:beta:stream:)``
 - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 - ``gatherQuantizedMatmul(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)``
+- ``qqMatmul(_:_:scales:groupSize:bits:mode:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``

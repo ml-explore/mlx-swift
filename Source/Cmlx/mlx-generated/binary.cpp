@@ -2,6 +2,17 @@ namespace mlx::core::metal {
 
 const char* binary() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+// Auto generated source for mlx/backend/metal/kernels/binary.h
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/binary.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/binary.h"
+// Copyright © 2024 Apple Inc.
+
 template <typename T, typename U, typename Op>
 [[kernel]] void binary_ss(
     device const T* a,
@@ -10,6 +21,7 @@ template <typename T, typename U, typename Op>
     uint index [[thread_position_in_grid]]) {
   c[index] = Op()(a[0], b[0]);
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void binary_sv(
     device const T* a,
@@ -28,6 +40,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void binary_vs(
     device const T* a,
@@ -46,6 +59,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void binary_vv(
     device const T* a,
@@ -64,6 +78,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void binary_sv2(
     device const T* a,
@@ -83,6 +98,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void binary_vs2(
     device const T* a,
@@ -102,6 +118,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void binary_vv2(
     device const T* a,
@@ -121,6 +138,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, typename IdxT = int64_t>
 [[kernel]] void binary_g_nd1(
     device const T* a,
@@ -133,6 +151,7 @@ template <typename T, typename U, typename Op, typename IdxT = int64_t>
   auto b_idx = elem_to_loc_1<IdxT>(index, b_stride);
   c[index] = Op()(a[a_idx], b[b_idx]);
 }
+
 template <typename T, typename U, typename Op, typename IdxT = int64_t>
 [[kernel]] void binary_g_nd2(
     device const T* a,
@@ -147,6 +166,7 @@ template <typename T, typename U, typename Op, typename IdxT = int64_t>
   IdxT out_idx = index.x + IdxT(grid_dim.x) * index.y;
   c[out_idx] = Op()(a[a_idx], b[b_idx]);
 }
+
 template <typename T, typename U, typename Op, typename IdxT = int64_t>
 [[kernel]] void binary_g_nd3(
     device const T* a,
@@ -161,6 +181,7 @@ template <typename T, typename U, typename Op, typename IdxT = int64_t>
   IdxT out_idx = index.x + grid_dim.x * (index.y + IdxT(grid_dim.y) * index.z);
   c[out_idx] = Op()(a[a_idx], b[b_idx]);
 }
+
 template <
     typename T,
     typename U,
@@ -189,6 +210,8 @@ template <
     idx.y += b_xstride;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

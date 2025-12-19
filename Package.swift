@@ -83,6 +83,7 @@ let package = Package(
                 "mlx/mlx/backend/cuda/allocator.cpp",
                 "mlx/mlx/backend/cuda/compiled.cpp",
                 "mlx/mlx/backend/cuda/conv.cpp",
+                "mlx/mlx/backend/cuda/cublas_utils.cpp",
                 "mlx/mlx/backend/cuda/cuda.cpp",
                 "mlx/mlx/backend/cuda/cudnn_utils.cpp",
                 "mlx/mlx/backend/cuda/custom_kernel.cpp",
@@ -119,6 +120,7 @@ let package = Package(
                 "mlx/mlx/backend/metal/nojit_kernels.cpp",
 
                 // do not build distributed support (yet)
+                "mlx/mlx/distributed/jaccl/jaccl.cpp",
                 "mlx/mlx/distributed/mpi/mpi.cpp",
                 "mlx/mlx/distributed/ring/ring.cpp",
                 "mlx/mlx/distributed/nccl/nccl.cpp",
@@ -188,7 +190,7 @@ let package = Package(
         ),
         .target(
             name: "MLXNN",
-            dependencies: ["MLX", "MLXRandom", "MLXFast"],
+            dependencies: ["MLX"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
@@ -218,7 +220,7 @@ let package = Package(
         .testTarget(
             name: "MLXTests",
             dependencies: [
-                "MLX", "MLXRandom", "MLXNN", "MLXOptimizers", "MLXFFT", "MLXLinalg", "MLXFast",
+                "MLX", "MLXNN", "MLXOptimizers",
             ]
         ),
 

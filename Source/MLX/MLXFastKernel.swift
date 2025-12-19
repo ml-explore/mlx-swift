@@ -40,7 +40,7 @@ extension MLXFast {
     ///
     /// let out = kernel([a])
     /// ```
-    open class MLXFastKernel {
+    final public class MLXFastKernel: @unchecked Sendable {
         let kernel: mlx_fast_metal_kernel
         public let outputNames: [String]
 
