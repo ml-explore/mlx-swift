@@ -8,10 +8,12 @@ import MLX
 /// See ``RNN/init(inputSize:hiddenSize:bias:nonLinearity:)``
 open class RNN: Module {
 
+    public let hiddenSize: Int
+
     public let nonLinearity: (MLXArray, StreamOrDevice) -> MLXArray
     @ParameterInfo(key: "Wxh") public var wxh: MLXArray
     @ParameterInfo(key: "Whh") public var whh: MLXArray
-    public var bias: MLXArray?
+    public let bias: MLXArray?
 
     /// An Elman recurrent layer.
     ///
@@ -34,6 +36,7 @@ open class RNN: Module {
         inputSize: Int, hiddenSize: Int, bias: Bool = true,
         nonLinearity: @escaping (MLXArray, StreamOrDevice) -> MLXArray = tanh
     ) {
+        self.hiddenSize = hiddenSize
         self.nonLinearity = nonLinearity
 
         let scale = 1 / sqrt(Float(hiddenSize))
@@ -180,6 +183,8 @@ open class GRU: Module {
 /// See ``LSTM/init(inputSize:hiddenSize:bias:)``
 open class LSTM: Module {
 
+    public let hiddenSize: Int
+
     @ParameterInfo(key: "Wx") public var wx: MLXArray
     @ParameterInfo(key: "Wh") public var wh: MLXArray
     public let bias: MLXArray?
@@ -201,6 +206,7 @@ open class LSTM: Module {
     ///   - hiddenSize: dimension of the hidden state, `H`
     ///   - bias: if `true` use a bias
     public init(inputSize: Int, hiddenSize: Int, bias: Bool = true) {
+        self.hiddenSize = hiddenSize
         let scale = 1 / sqrt(Float(hiddenSize))
         self._wx.wrappedValue = MLXRandom.uniform(
             low: -scale, high: scale, [4 * hiddenSize, inputSize])

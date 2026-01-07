@@ -16,7 +16,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(MLX_BUILD_EXAMPLES "Build examples for mlx" ON)
 option(MLX_BUILD_METAL "Build metal backend" ON)
-# option(MLX_BUILD_CUDA "Build cuda backend" OFF)
+option(MLX_BUILD_CUDA "Build cuda backend" OFF)
 
 # ----------------------------- Lib -----------------------------
 
@@ -44,9 +44,21 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(swift-numerics)
 
 # MLX package
+if(MLX_BUILD_CUDA)
+  find_package(CUDAToolkit REQUIRED)
+  include(${cudnn_frontend_SOURCE_DIR}/cmake/cuDNN.cmake)
+  message(STATUS "Patching 'mlxc' target to add public CUDA dependencies.")
+  target_link_libraries(
+    mlxc
+    PUBLIC CUDA::cudart
+           CUDA::cublasLt # Promoted from PRIVATE, required by mlx
+           CUDA::nvrtc # Promoted from PRIVATE, required by mlx
+           CUDA::cuda_driver # Promoted from PRIVATE, required by mlx
+           CUDNN::cudnn_all # Promoted from PRIVATE, required by mlx
+  )
+endif()
 file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
 
-# todo: add conditional logic for MLX_BUILD_CUDA (once implemented)
 if(NOT MLX_BUILD_METAL)
   list(REMOVE_ITEM MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/GPU+Metal.swift
        ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/MLXArray+Metal.swift)

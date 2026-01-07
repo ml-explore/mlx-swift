@@ -949,4 +949,16 @@ class ModuleTests: XCTestCase {
             }
         }
     }
+
+    func testSequentialQuantization() {
+        let s = Sequential {
+            Linear(64, 64)
+            Linear(64, 64)
+            Linear(64, 64)
+        }
+
+        // https://github.com/ml-explore/mlx-swift/issues/317
+        // Unable to get @ModuleInfo for Sequential.layers -- must be wrapped to receive updates
+        quantize(model: s)
+    }
 }

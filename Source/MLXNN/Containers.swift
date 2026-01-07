@@ -39,7 +39,7 @@ import MLX
 /// ```
 open class Sequential: Module, UnaryLayer {
 
-    public let layers: [UnaryLayer]
+    @ModuleInfo public var layers: [UnaryLayer]
 
     public init(layers: [UnaryLayer]) {
         self.layers = layers
