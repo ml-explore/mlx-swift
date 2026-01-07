@@ -55,13 +55,19 @@ public enum MLXFast {
     ///   - stream: stream or device to evaluate on
     /// - Returns: The input with rotary positional encoding applied.
     public static func RoPE(
-        _ array: MLXArray, dimensions: Int, traditional: Bool, base: Float?, scale: Float,
-        offset: MLXArray,
-        freqs: MLXArray? = nil, stream: StreamOrDevice = .default
+        _ array: MLXArray,
+        dimensions: Int,
+        traditional: Bool,
+        base: Float?,
+        scale: Float,
+        offset: MLXArray? = nil,
+        freqs: MLXArray? = nil,
+        stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         let base = mlx_optional_float(value: base ?? 0, has_value: base != nil)
-        mlx_fast_rope_offset_array(
+        let offset = offset ?? MLXArray([Int32(0)])
+        mlx_fast_rope_dynamic(
             &result,
             array.ctx, Int32(dimensions), traditional, base, scale, offset.ctx,
             (freqs ?? .mlxNone).ctx, stream.ctx)
