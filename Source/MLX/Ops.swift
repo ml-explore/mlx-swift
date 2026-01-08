@@ -997,6 +997,51 @@ public func degrees(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
     return MLXArray(result)
 }
 
+/// Insert dependencies between arrays in the graph. The outputs are
+/// identical to `input` but with dependencies on `dependencies`.
+///
+/// - Parameters:
+///   - input: input array
+///   - dependencies: arrays to depend on
+/// - Returns: output which depends on the `dependencies`
+///
+/// ### See Also
+/// - ``depends(inputs:dependencies:)``
+public func depends(input: MLXArray, dependencies: [MLXArray]) -> MLXArray {
+    var result = mlx_vector_array_new()
+    defer { mlx_vector_array_free(result) }
+    let inputs = new_mlx_vector_array([input])
+    defer { mlx_vector_array_free(inputs) }
+    let dependencies = new_mlx_vector_array(dependencies)
+    defer { mlx_vector_array_free(dependencies) }
+    mlx_depends(&result, inputs, dependencies)
+
+    let arrays = mlx_vector_array_values(result)
+    return arrays[0]
+}
+
+/// Insert dependencies between arrays in the graph. The outputs are
+/// identical to `inputs` but with dependencies on `dependencies`.
+///
+/// - Parameters:
+///   - inputs: input arrays
+///   - dependencies: arrays to depend on
+/// - Returns: outputs which depends on the `dependencies`
+///
+/// ### See Also
+/// - ``depends(input:dependencies:)``
+public func depends(inputs: [MLXArray], dependencies: [MLXArray]) -> [MLXArray] {
+    var result = mlx_vector_array_new()
+    defer { mlx_vector_array_free(result) }
+    let inputs = new_mlx_vector_array(inputs)
+    defer { mlx_vector_array_free(inputs) }
+    let dependencies = new_mlx_vector_array(dependencies)
+    defer { mlx_vector_array_free(dependencies) }
+    mlx_depends(&result, inputs, dependencies)
+
+    return mlx_vector_array_values(result)
+}
+
 /// Quantization modes for weight compression in neural networks.
 ///
 /// Quantization reduces the precision of model weights to decrease memory usage and
@@ -1014,26 +1059,21 @@ public enum QuantizationMode: String, Codable, Sendable {
     /// The `scale` and `bias` parameters are computed per group of elements (typically 32 or 64 elements)
     /// to minimize quantization error. This mode provides good compression with reasonable accuracy preservation
     /// for most neural network weights.
-    ///
-    /// ### See Also
-    /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
-    /// - ``quantized(_:groupSize:bits:mode:stream:)``
-    /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
     case affine
 
     /// MX (Microscaling) FP4 quantization format.
     ///
-    /// MXFP4 is a specialized 4-bit floating-point format designed for neural network inference.
-    ///
-    /// The format consists of:
-    /// - Shared 8-bit exponent per block
-    /// - Individual _e2m1_ (1 sign bit, 2 exponent, 1 mantissa) per element
+    /// ### See Also
+    /// - https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf
+    case mxfp4
+
+    /// MX (Microscaling) FP8 quantization format.
     ///
     /// ### See Also
-    /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
-    /// - ``quantized(_:groupSize:bits:mode:stream:)``
-    /// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
-    case mxfp4
+    /// - https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf
+    case mxfp8
+
+    case nvfp4
 }
 
 /// Dequantize the matrix `w` using the provided `scales` and
@@ -1053,7 +1093,7 @@ public enum QuantizationMode: String, Codable, Sendable {
 ///
 /// ### See Also
 /// - ``quantized(_:groupSize:bits:mode:stream:)``
-/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+/// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func dequantized(
     _ w: MLXArray, scales: MLXArray, biases: MLXArray?, groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine, dtype: DType? = nil,
@@ -1278,6 +1318,18 @@ public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
     return MLXArray(result)
 }
 
+@available(*, deprecated, renamed: "gatherMM(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)")
+public func gatherMatmul(
+    _ a: MLXArray, _ b: MLXArray, lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
+    sortedIndices: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    gatherMM(
+        a, b,
+        lhsIndices: lhsIndices, rhsIndices: rhsIndices,
+        sortedIndices: sortedIndices,
+        stream: stream)
+}
+
 /// Matrix multiplication with matrix-level gather.
 ///
 /// Performs a gather of the operands with the given indices followed by a
@@ -1298,7 +1350,7 @@ public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 /// ### See Also
 /// - <doc:arithmetic>
 /// - ``matmul(_:_:stream:)``
-public func gatherMatmul(
+public func gatherMM(
     _ a: MLXArray, _ b: MLXArray, lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
     sortedIndices: Bool = false, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1311,9 +1363,31 @@ public func gatherMatmul(
     return MLXArray(result)
 }
 
+@available(
+    *, deprecated,
+    renamed:
+        "gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)"
+)
+public func gatherQuantizedMatmul(
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
+    lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
+    transpose: Bool = true, groupSize: Int? = nil, bits: Int? = nil,
+    mode: QuantizationMode = .affine,
+    sortedIndices: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    gatherQuantizedMM(
+        x, w, scales: scales, biases: biases,
+        lhsIndices: lhsIndices, rhsIndices: rhsIndices,
+        transpose: transpose,
+        groupSize: groupSize, bits: bits, mode: mode,
+        sortedIndices: sortedIndices,
+        stream: stream)
+}
+
 /// Perform quantized matrix multiplication with matrix-level gather.
 ///
-/// This operation is the quantized equivalent to ``gatherMatmul(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)``
+/// This operation is the quantized equivalent to ``gatherMM(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)``
 ///
 /// Note that `scales` and `biases` must have the same batch dimensions
 /// as `w` since they represent the same quantized matrix.
@@ -1334,8 +1408,8 @@ public func gatherMatmul(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
-public func gatherQuantizedMatmul(
+/// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+public func gatherQuantizedMM(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
     transpose: Bool = true, groupSize: Int? = nil, bits: Int? = nil,
@@ -2183,7 +2257,7 @@ public func putAlong(
 ///
 /// ### See Also
 /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
-/// - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+/// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func quantized(
     _ w: MLXArray, groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine,
@@ -2201,6 +2275,23 @@ public func quantized(
 
     let arrays = mlx_vector_array_values(r)
     return (arrays[0], arrays[1], arrays.count > 2 ? arrays[2] : nil)
+}
+
+@available(
+    *, deprecated, renamed: "quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)"
+)
+public func quantizedMatmul(
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
+    transpose: Bool = true,
+    groupSize: Int? = nil, bits: Int? = nil,
+    mode: QuantizationMode = .affine,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    quantizedMM(
+        x, w, scales: scales, biases: biases,
+        transpose: transpose,
+        groupSize: groupSize, bits: bits, mode: mode,
+        stream: stream)
 }
 
 /// Perform the matrix multiplication with the quantized matrix `w`. The
@@ -2223,7 +2314,7 @@ public func quantized(
 /// ### See Also
 /// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
 /// - ``quantized(_:groupSize:bits:mode:stream:)``
-public func quantizedMatmul(
+public func quantizedMM(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
     transpose: Bool = true,
     groupSize: Int? = nil, bits: Int? = nil,
@@ -2239,6 +2330,53 @@ public func quantizedMatmul(
         &result,
         x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
         transpose, gs, bits,
+        mode.rawValue,
+        stream.ctx
+    )
+    return MLXArray(result)
+}
+
+/// Perform a matrix multiplication using a possibly quantized weight matrix
+/// `w` and a non-quantized input `x`. The input `x` is quantized on the
+/// fly. The weight matrix `w` is used as-is if it is already quantized;
+/// otherwise, it is quantized on the fly.
+///
+/// If `w` is quantized, `scales` must be provided, and `groupSize`,
+/// `bits`, and `mode` must match the parameters that were used to quantize
+/// `w`.
+///
+/// Notes:
+/// - If `w` is expected to receive gradients, it must be provided in
+///   non-quantized form.
+///
+/// - If `x` and `w` are not quantized, their data types must be ``DType/float32``,
+///   ``DType/float16``, or ``DType/bfloat16``.
+///
+/// - If `w` is quantized, it must be packed in unsigned integers.
+///
+/// - Parameters:
+///   - x: input array
+///   - w: weight matrix.  If quantized, it is packed in unsigned integers.
+///   - scales: The scales to use per `groupSize` elements of `w` if `w` is quantized
+///   - groupSize: Number of elements in `x` and `w` that share a scale
+///   - bits: Number of bits used to represent each element of `x` and `w`
+///   - mode: The quantization mode. Default is `.affine`
+///   - stream: Stream or device to evaluate on
+public func quantizedQuantizedMM(
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray?,
+    groupSize: Int? = nil, bits: Int? = nil,
+    mode: QuantizationMode = .nvfp4,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+
+    let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
+    let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
+
+    mlx_qqmm(
+        &result,
+        x.ctx, w.ctx, (scales ?? .mlxNone).ctx,
+        gs, bits,
         mode.rawValue,
         stream.ctx
     )

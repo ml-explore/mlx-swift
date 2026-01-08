@@ -2,6 +2,18 @@ namespace mlx::core::metal {
 
 const char* gather_axis() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+// Auto generated source for mlx/backend/metal/kernels/indexing/gather_axis.h
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/indexing/gather_axis.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/indexing/gather_axis.h"
+// Copyright © 2025 Apple Inc.
+
+
 template <typename T, typename IdxT, typename LocT, bool SrcC, bool IdxC>
 [[kernel]] void gather_axis(
     const device T* src [[buffer(0)]],
@@ -19,25 +31,31 @@ template <typename T, typename IdxT, typename LocT, bool SrcC, bool IdxC>
     uint3 grid_dim [[threads_per_grid]]) {
   LocT elem_idx = index.z * static_cast<LocT>(grid_dim.x);
   LocT out_idx = elem_idx * grid_dim.y + index.x;
+
   LocT idx_loc = index.y * static_cast<LocT>(idx_ax_stride);
   if (IdxC) {
     idx_loc += out_idx;
   } else {
     idx_loc += elem_to_loc<LocT>(elem_idx + index.x, shape, idx_strides, ndim);
   }
+
   auto idx_val = indices[idx_loc];
   if (is_signed_v<IdxT>) {
     idx_val = (idx_val < 0) ? idx_val + axis_size : idx_val;
   }
+
   LocT src_idx = idx_val * static_cast<LocT>(src_ax_stride);
   if (SrcC) {
     src_idx += elem_idx * axis_size + index.x;
   } else {
     src_idx += elem_to_loc<LocT>(elem_idx + index.x, shape, src_strides, ndim);
   }
+
   out_idx += index.y * static_cast<LocT>(grid_dim.x);
   out[out_idx] = src[src_idx];
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

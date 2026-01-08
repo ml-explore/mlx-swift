@@ -2,6 +2,17 @@ namespace mlx::core::metal {
 
 const char* unary() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+// Auto generated source for mlx/backend/metal/kernels/unary.h
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/unary.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/unary.h"
+// Copyright © 2024 Apple Inc.
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void unary_v(
     device const T* in,
@@ -19,6 +30,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
 [[kernel]] void unary_v2(
     device const T* in,
@@ -37,6 +49,7 @@ template <typename T, typename U, typename Op, int N = WorkPerThread<T>::n>
     }
   }
 }
+
 template <
     typename T,
     typename U,
@@ -61,6 +74,8 @@ template <
     idx += xstride;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

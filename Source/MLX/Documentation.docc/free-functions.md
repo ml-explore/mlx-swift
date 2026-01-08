@@ -195,6 +195,7 @@ operations as methods for convenience.
 
 ### Quantization
 
+- ``qqMatmul(_:_:scales:groupSize:bits:mode:stream:)``
 - ``quantized(_:groupSize:bits:mode:stream:)``
 - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
@@ -224,6 +225,8 @@ operations as methods for convenience.
 
 ### Other
 
+- ``depends(input:dependencies:)``
+- ``depends(inputs:dependencies:)``
 - ``diag(_:k:stream:)``
 - ``diagonal(_:offset:axis1:axis2:stream:)``
 - ``einsum(_:operands:stream:)``

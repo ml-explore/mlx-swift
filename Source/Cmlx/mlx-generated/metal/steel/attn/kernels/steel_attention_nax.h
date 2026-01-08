@@ -1,5 +1,10 @@
 // Copyright © 2024-25 Apple Inc.
 
+#include "../../../steel/attn/nax.h"
+#include "../../../steel/attn/params.h"
+#include "../../../steel/attn/transforms.h"
+#include "../../../steel/utils.h"
+
 using namespace mlx::steel;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -346,7 +351,7 @@ template <
           MSubTile mfrag;
           mfrag.load_safe(
               mask,
-              int(mask_params->M_strides[2]),
+              int64_t(mask_params->M_strides[2]),
               Int<1>{},
               params->qL,
               params->kL,
