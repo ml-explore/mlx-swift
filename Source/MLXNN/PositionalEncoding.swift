@@ -3,6 +3,11 @@
 import Foundation
 import MLX
 
+/// A `Layer`  (``Module`` subclass) that can be evaluated with an array and offset.
+public protocol OffsetLayer: Module {
+    func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray
+}
+
 /// Implements the rotary positional encoding.
 ///
 /// The traditional implementation rotates consecutive pairs of elements in the
