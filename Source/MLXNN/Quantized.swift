@@ -210,7 +210,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
     }
 
     open override func asLinear(_ x: MLXArray) -> MLXArray {
-        quantizedMatmul(
+        quantizedMM(
             x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize,
             bits: bits, mode: mode)
     }
@@ -331,7 +331,7 @@ open class QuantizedLinear: Linear, Quantized {
     }
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var x = quantizedMatmul(
+        var x = quantizedMM(
             x,
             weight,
             scales: scales,

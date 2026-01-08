@@ -210,12 +210,12 @@ Note: the `-` and `/` operators are not able to be linked here.
 
 - ``MLXArray/matmul(_:stream:)``
 - ``matmul(_:_:stream:)``
-- ``gatherMatmul(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)``
+- ``gatherMM(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)``
 - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
 - ``addMM(_:_:_:alpha:beta:stream:)``
-- ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
-- ``gatherQuantizedMatmul(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)``
-- ``qqMatmul(_:_:scales:groupSize:bits:mode:stream:)``
+- ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+- ``gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)``
+- ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-3qkgq``
