@@ -1,6 +1,6 @@
 name: Build and Test
 
-on: pull_request  
+on: pull_request
 
 permissions:
   contents: read
@@ -15,12 +15,12 @@ jobs:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-           
+
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
         with:
-            activate-environment: true
-     
+          activate-environment: true
+
       - name: Setup pre-commit
         shell: sh
         run: |
@@ -58,12 +58,12 @@ jobs:
         run: |
           cd /tmp/swift-format
           ln -s "$(swift build --show-bin-path -c release)/swift-format" /usr/local/bin/swift-format
-     
+
       - name: Configure safe directory for git
         shell: sh
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-     
+
       - name: Run style checks
         shell: sh
         run: |
@@ -77,16 +77,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-     
+
       - name: Verify MetalToolchain installed
         shell: bash
         run: xcodebuild -showComponent MetalToolchain
-      
+
       - name: Setup cmake
         shell: sh
         run: |
           brew install cmake ninja
-     
+
       - name: Build (Xcode, macOS)
         shell: sh
         run: |
@@ -124,6 +124,7 @@ jobs:
 
   linux_build_cmake_container:
     name: Linux Container CMake Swift Build (${{ matrix.container }} ${{ matrix.arch }})
+    needs: lint
     strategy:
       fail-fast: false
       matrix:
@@ -156,7 +157,7 @@ jobs:
   linux_build_cmake_cuda:
     name: Linux CUDA CMake Swift Build (cuda-12.9, swift-6.2.3-RELEASE, ubuntu-24.04, x86_64)
     needs: lint
-    runs-on: 'gpu-t4-4-core'
+    runs-on: "gpu-t4-4-core"
     env:
       # Note 12/18/2025: the CI machine does not meet CUDA 13's driver requirement.
       # Compatibility matrix:
@@ -168,13 +169,13 @@ jobs:
       # uid           [ unknown] Swift 6.x Release Signing Key <swift-infrastructure@forums.swift.org>
       SWIFT_SIGNING_KEY: "52BB7E3DE28A71BE22EC05FFEF80A866B47A981F"
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-    - name: Linux CUDA Setup
-      run: |
-        bash .github/scripts/setup-linux-cuda.sh
+      - name: Linux CUDA Setup
+        run: |
+          bash .github/scripts/setup-linux-cuda.sh
 
-    - name: Linux CUDA CMake Swift Build - No Release
-      run: |
-        bash .github/scripts/build-linux-cuda-cmake.sh
+      - name: Linux CUDA CMake Swift Build - No Release
+        run: |
+          bash .github/scripts/build-linux-cuda-cmake.sh
