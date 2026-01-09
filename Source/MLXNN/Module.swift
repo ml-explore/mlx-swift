@@ -1006,11 +1006,6 @@ public protocol UnaryLayer: Module {
     func callAsFunction(_ x: MLXArray) -> MLXArray
 }
 
-/// A `Layer`  (``Module`` subclass) that can be evaluated with an array and offset.
-public protocol OffsetLayer: Module {
-    func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray
-}
-
 // MARK: - Filters and Maps
 
 extension Module {
