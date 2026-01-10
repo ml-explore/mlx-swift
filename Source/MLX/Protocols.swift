@@ -29,7 +29,7 @@ public protocol Evaluatable {
     func innerState() -> [MLXArray]
 }
 
-extension Array: Updatable, Evaluatable where Element == MLXArray {
+extension [MLXArray]: Updatable, Evaluatable {
     public func innerState() -> [MLXArray] {
         self
     }

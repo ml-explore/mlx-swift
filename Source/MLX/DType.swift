@@ -360,7 +360,7 @@ extension Float64: HasDType {
     }
 }
 
-extension Complex: HasDType where RealType == Float {
+extension Complex<Float>: HasDType {
     static public var dtype: DType { .complex64 }
 }
 
@@ -383,7 +383,7 @@ public protocol ScalarOrArray {
     func asMLXArray(dtype: DType?) -> MLXArray
 }
 
-extension Complex: ScalarOrArray where RealType == Float {
+extension Complex<Float>: ScalarOrArray {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         MLXArray(self)
     }
@@ -420,8 +420,7 @@ extension Array: ScalarOrArray where Element: HasDType {
 ///
 /// See also ``ScalarOrArray``.
 @_documentation(visibility: internal)
-public func toArrays<T1: ScalarOrArray, T2: ScalarOrArray>(_ a: T1, _ b: T2) -> (MLXArray, MLXArray)
-{
+public func toArrays(_ a: some ScalarOrArray, _ b: some ScalarOrArray) -> (MLXArray, MLXArray) {
     if let a = a as? MLXArray {
         if let b = b as? MLXArray {
             return (a, b)

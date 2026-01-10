@@ -18,7 +18,7 @@ extension MLXArray {
     /// - <doc:conversion>
     /// - ``asArray(_:)``
     /// - ``asData(access:)``
-    public func asMTLBuffer(device: any MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
+    public func asMTLBuffer(device: some MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
         self.eval()
 
         if noCopy && self.contiguousToDimension() == 0 {

@@ -62,8 +62,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func fft2(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1],
-        stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
     ) -> MLXArray {
         fftn(array, s: s, axes: axes, stream: stream)
     }
@@ -81,8 +81,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func ifft2(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1],
-        stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
     ) -> MLXArray {
         ifftn(array, s: s, axes: axes, stream: stream)
     }
@@ -100,7 +100,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func fftn(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         if let s, let axes {
@@ -146,7 +147,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func ifftn(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         if let s, let axes {
@@ -244,8 +246,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func rfft2(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1],
-        stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
     ) -> MLXArray {
         rfftn(array, s: s, axes: axes, stream: stream)
     }
@@ -268,8 +270,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func irfft2(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1],
-        stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
     ) -> MLXArray {
         irfftn(array, s: s, axes: axes, stream: stream)
     }
@@ -291,7 +293,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func rfftn(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         if let s, let axes {
@@ -342,7 +345,8 @@ public enum MLXFFT {
     /// ### See Also
     /// - <doc:MLXFFT>
     public static func irfftn(
-        _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+        _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+        axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         if let s, let axes {
@@ -428,7 +432,8 @@ public func ifft(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func fft2(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.fft2(array, s: s, axes: axes, stream: stream)
 }
@@ -446,7 +451,8 @@ public func fft2(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func ifft2(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.ifft2(array, s: s, axes: axes, stream: stream)
 }
@@ -464,7 +470,8 @@ public func ifft2(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func fftn(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.fftn(array, s: s, axes: axes, stream: stream)
 }
@@ -482,7 +489,8 @@ public func fftn(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func ifftn(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.ifftn(array, s: s, axes: axes, stream: stream)
 }
@@ -546,7 +554,8 @@ public func irfft(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func rfft2(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [-2, -1], stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.rfft2(array, s: s, axes: axes, stream: stream)
 }
@@ -569,7 +578,9 @@ public func rfft2(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func irfft2(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = [-2, -1], stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [-2, -1],
+    stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.irfft2(array, s: s, axes: axes, stream: stream)
 }
@@ -591,7 +602,8 @@ public func irfft2(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func rfftn(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.rfftn(array, s: s, axes: axes, stream: stream)
 }
@@ -614,7 +626,8 @@ public func rfftn(
 /// ### See Also
 /// - <doc:MLXFFT>
 public func irfftn(
-    _ array: MLXArray, s: [Int]? = nil, axes: [Int]? = nil, stream: StreamOrDevice = .default
+    _ array: MLXArray, s: (some Collection<Int>)? = [Int]?.none,
+    axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.irfftn(array, s: s, axes: axes, stream: stream)
 }

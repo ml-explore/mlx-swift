@@ -465,7 +465,9 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - ``NestedDictionary/flattened(prefix:)``
     /// - ``NestedDictionary/unflattened(_:)-4p8bn``
     /// - ``NestedDictionary/unflattened(_:)-7xuiv``
-    public static func unflattened(_ tree: [(Key, Element)]) -> NestedItem<Key, Element>
+    public static func unflattened(_ tree: some Collection<(Key, Element)>) -> NestedItem<
+        Key, Element
+    >
     where Key == String {
         if tree.isEmpty {
             return .dictionary([:])
@@ -489,11 +491,13 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
         }
     }
 
-    private static func unflattenedRecurse(_ tree: [(String, Element)]) -> NestedItem<
-        String, Element
-    > {
-        if tree.count == 1 && tree[0].0 == "" {
-            return .value(tree[0].1)
+    private static func unflattenedRecurse(_ tree: some Collection<(String, Element)>)
+        -> NestedItem<
+            String, Element
+        >
+    {
+        if tree.count == 1, case ("", let value)? = tree.first {
+            return .value(value)
         }
 
         var children = [String: [(String, Element)]]()
@@ -510,7 +514,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
             children[String(current), default: []].append((String(next), value))
         }
 
-        switch UnflattenKind.detect(key: tree[0].0) {
+        switch UnflattenKind.detect(key: tree.first!.0) {
         case .list:
             if children.isEmpty {
                 return .array([])
@@ -565,12 +569,14 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
         }
     }
 
-    func replacingValues(with values: [Element], index: Int) -> (Int, NestedItem<Key, Element>) {
+    func replacingValues<Values: Collection<Element>>(with values: Values, index: Values.Index) -> (
+        Values.Index, NestedItem<Key, Element>
+    ) {
         switch self {
         case .none:
             return (index, .none)
         case .value:
-            return (index + 1, .value(values[index]))
+            return (values.index(after: index), .value(values[index]))
         case .array(let array):
             var result = [NestedItem<Key, Element>]()
             var index = index
@@ -951,7 +957,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     /// ### See Also
     /// - ``flattened(prefix:)``
     /// - ``unflattened(_:)-7xuiv``
-    static public func unflattened(_ flat: [(Key, Element)]) -> NestedDictionary<String, Element>
+    static public func unflattened(_ flat: some Collection<(String, Element)>) -> Self
     where Key == String {
         switch NestedItem.unflattened(flat) {
         case .dictionary(let values):
@@ -966,8 +972,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     /// ### See Also
     /// - ``flattened(prefix:)``
     /// - ``unflattened(_:)-4p8bn``
-    static public func unflattened(_ flat: [Key: Element]) -> NestedDictionary<String, Element>
-    where Key == String {
+    static public func unflattened(_ flat: [String: Element]) -> Self where Key == String {
         unflattened(flat.map { $0 })
     }
 
@@ -987,8 +992,8 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     ///
     /// ### See Also
     /// - ``flattenedValues()``
-    public func replacingValues(with values: [Element]) -> NestedDictionary<Key, Element> {
-        switch asItem().replacingValues(with: values, index: 0) {
+    public func replacingValues(with values: some Collection<Element>) -> Self {
+        switch asItem().replacingValues(with: values, index: values.startIndex) {
         case (_, .dictionary(let values)):
             return NestedDictionary(values: values)
         default:

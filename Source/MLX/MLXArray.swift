@@ -506,8 +506,9 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    public func asType<T: HasDType>(_ type: T.Type, stream: StreamOrDevice = .default) -> MLXArray {
-        asType(T.dtype, stream: stream)
+    public func asType(_ type: (some HasDType).Type, stream: StreamOrDevice = .default) -> MLXArray
+    {
+        asType(type.dtype, stream: stream)
     }
 
     /// Convert the real array into a ``DType/complex64`` imaginary part.
