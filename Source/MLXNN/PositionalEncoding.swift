@@ -47,6 +47,18 @@ final public class RoPE: Module, UnaryLayer, OffsetLayer {
             offset: offset)
     }
 
+    /// Evaluate with array offset for batched inference with different positions per sequence.
+    ///
+    /// - Parameters:
+    ///   - x: input array
+    ///   - offset: position offset array (scalar or vector)
+    /// - Returns: the input with rotary positional encoding applied
+    public func callAsFunction(_ x: MLXArray, offset: MLXArray? = nil) -> MLXArray {
+        MLXFast.RoPE(
+            x, dimensions: dimensions, traditional: traditional, base: base,
+            scale: scale, offset: offset)
+    }
+
     /// Evaluate with `offset` of `0`.
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
         callAsFunction(x, offset: 0)
