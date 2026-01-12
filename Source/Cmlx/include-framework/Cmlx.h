@@ -31,6 +31,7 @@
 #include <Cmlx/mlx-types-complex.h>
 #include <Cmlx/mlx-types-half_types.h>
 #include <Cmlx/mlx-types-bf16.h>
+#include <Cmlx/mlx-types-fp16.h>
 #include <Cmlx/mlx-io-load.h>
 #include <Cmlx/mlx-export_impl.h>
 #include <Cmlx/mlx-threadpool.h>

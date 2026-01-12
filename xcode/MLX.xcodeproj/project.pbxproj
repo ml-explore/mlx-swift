@@ -1138,6 +1138,7 @@
 				"mlx-transforms.h",
 				"mlx-types-bf16.h",
 				"mlx-types-complex.h",
+				"mlx-types-fp16.h",
 				"mlx-types-half_types.h",
 				"mlx-utils.h",
 				"mlx-version.h",

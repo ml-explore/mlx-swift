@@ -64,6 +64,7 @@ for x in \
     types/complex.h \
     types/half_types.h \
     types/bf16.h \
+    types/fp16.h \
     io/load.h \
     export_impl.h \
     threadpool.h \
