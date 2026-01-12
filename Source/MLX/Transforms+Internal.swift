@@ -5,7 +5,9 @@ import Foundation
 
 // see Transforms+Variants for generated grad() functions
 
-private func valueAndGradient(apply valueAndGrad: mlx_closure_value_and_grad, arrays: [MLXArray])
+private func valueAndGradient(
+    apply valueAndGrad: mlx_closure_value_and_grad, arrays: some Collection<MLXArray>
+)
     -> ([MLXArray], [MLXArray])
 {
     let input_vector = new_mlx_vector_array(arrays)
@@ -21,9 +23,11 @@ private func valueAndGradient(apply valueAndGrad: mlx_closure_value_and_grad, ar
     return (mlx_vector_array_values(r0), mlx_vector_array_values(r1))
 }
 
-func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (
-    [MLXArray]
-) -> [MLXArray] {
+func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: some Collection<Int>)
+    -> (
+        [MLXArray]
+    ) -> [MLXArray]
+{
     { (arrays: [MLXArray]) in
         var vag = mlx_closure_value_and_grad_new()
 
@@ -37,7 +41,9 @@ func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: [
     }
 }
 
-func buildValueAndGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: [Int]) -> (
+func buildValueAndGradient(
+    _ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: some Collection<Int>
+) -> (
     [MLXArray]
 ) -> ([MLXArray], [MLXArray]) {
     { (arrays: [MLXArray]) in
