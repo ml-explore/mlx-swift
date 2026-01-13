@@ -8,8 +8,8 @@ Conversion functions.
 
 MLX has several functions to support converting between ``DType``:
 
-- ``MLXArray/asType(_:stream:)-4eqoc``
-- ``MLXArray/asType(_:stream:)-6d44y``
+- ``MLXArray/asType(_:stream:)-(HasDType.Type,StreamOrDevice)``
+- ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
 - ``MLXArray/asArray(_:)``
 - ``MLXArray/asData(noCopy:)``
 - ``MLXArray/asMTLBuffer(device:noCopy:)``

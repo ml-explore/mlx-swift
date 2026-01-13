@@ -195,7 +195,7 @@ public enum GPU {
 
     /// Reset the peak memory to zero.
     ///
-    /// See ``Snapshot/peakMemory``.
+    /// See ``Memory/Snapshot/peakMemory``.
     public static func resetPeakMemory() {
         mlx_reset_peak_memory()
     }

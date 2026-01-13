@@ -227,10 +227,10 @@ array[.ellipsis, .newAxis]
 
 ### Subscript Functions
 
-- ``MLXArray/subscript(_:stream:)-375a0``
-- ``MLXArray/subscript(_:stream:)-7crp3``
-- ``MLXArray/subscript(_:axis:stream:)-1jy5n``
-- ``MLXArray/subscript(_:axis:stream:)-79psf``
+- ``MLXArray/subscript(_:stream:)-(MLXArrayIndex...,StreamOrDevice)``
+- ``MLXArray/subscript(_:stream:)-([MLXArrayIndex],StreamOrDevice)``
+- ``MLXArray/subscript(_:axis:stream:)-(Int,Int,StreamOrDevice)``
+- ``MLXArray/subscript(_:axis:stream:)-(RangeExpression<Int>,Int,StreamOrDevice)``
 - ``MLXArray/subscript(from:to:stride:axis:stream:)``
 
 ### Related Functions

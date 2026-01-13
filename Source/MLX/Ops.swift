@@ -38,7 +38,7 @@ func broadcast(arrays: some Collection<MLXArray>, stream: StreamOrDevice = .defa
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``MLXArray/+(_:_:)-1rv98``
+/// - ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
 public func add(
     _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -328,7 +328,7 @@ public func argSort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 /// The resulting array will always be as if the provided array was row
 /// contiguous regardless of the provided arrays storage order and current strides.
 ///
-/// > Caution! This function should be used with caution as it changes
+/// > Note: This function should be used with caution as it changes
 /// the shape and strides of the array directly. This can lead to the
 /// resulting array pointing to invalid memory locations which can
 /// result into crashes.
@@ -354,8 +354,13 @@ public func argSort(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 ///
 /// - Parameters:
 ///     - array: input array
-///     - shape: shape of the resulting array.  If not specified it will keep the same shape
+///     - shape: The shape of the resulting array. If not specified it defaults to `array.shape`
+///     - strides: The strides of the resulting array. If not specified it defaults to the reverse
+///                exclusive cumulative product of `array.shape`
+///     - offset: Skip that many elements from the beginning of the input array
 ///     - stream: stream or device to evaluate on
+///
+/// - Returns: The output array which is the strided view of the input
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -617,7 +622,7 @@ public func conv1d(
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``conv3d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
-/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-(MLXArray,MLXArray,IntOrArray,IntOrArray,IntOrArray,IntOrArray,Int,Bool,StreamOrDevice)``
 public func conv2d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrPair = 1, padding: IntOrPair = 0,
     dilation: IntOrPair = 1, groups: Int = 1, stream: StreamOrDevice = .default
@@ -664,7 +669,7 @@ public func conv2d(
 /// - ``conv1d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
-/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-(MLXArray,MLXArray,IntOrArray,IntOrArray,IntOrArray,IntOrArray,Int,Bool,StreamOrDevice)``
 public func conv3d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrTriple = 1, padding: IntOrTriple = 0,
     dilation: IntOrTriple = 1, groups: Int = 1, stream: StreamOrDevice = .default
@@ -707,7 +712,7 @@ public func conv3d(
 /// - <doc:convolution>
 /// - ``IntOrArray``
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-6j1nr``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-(MLXArray,MLXArray,IntOrArray,(Int,Int),IntOrArray,IntOrArray,Int,Bool,StreamOrDevice)``
 public func convGeneral(
     _ array: MLXArray, _ weight: MLXArray, strides: IntOrArray = 1, padding: IntOrArray = 0,
     kernelDilation: IntOrArray = 1, inputDilation: IntOrArray = 1, groups: Int = 1,
@@ -753,7 +758,7 @@ public func convGeneral(
 /// - <doc:convolution>
 /// - ``IntOrArray``
 /// - ``conv2d(_:_:stride:padding:dilation:groups:stream:)``
-/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-6j1nr``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-(MLXArray,MLXArray,IntOrArray,(Int,Int),IntOrArray,IntOrArray,Int,Bool,StreamOrDevice)``
 public func convGeneral(
     _ array: MLXArray, _ weight: MLXArray, strides: IntOrArray = 1, padding: (Int, Int),
     kernelDilation: IntOrArray = 1, inputDilation: IntOrArray = 1, groups: Int = 1,
@@ -842,7 +847,7 @@ public func convTransposed1d(
 /// - ``convTransposed1d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convTransposed3d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
-/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-(MLXArray,MLXArray,IntOrArray,IntOrArray,IntOrArray,IntOrArray,Int,Bool,StreamOrDevice)``
 public func convTransposed2d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrPair = 1, padding: IntOrPair = 0,
     dilation: IntOrPair = 1, outputPadding: IntOrPair = 0, groups: Int = 1,
@@ -893,7 +898,7 @@ public func convTransposed2d(
 /// - ``convTransposed1d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convTransposed3d(_:_:stride:padding:dilation:outputPadding:groups:stream:)``
 /// - ``convolve(_:_:mode:stream:)``
-/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-9t1sj``
+/// - ``convGeneral(_:_:strides:padding:kernelDilation:inputDilation:groups:flip:stream:)-(MLXArray,MLXArray,IntOrArray,IntOrArray,IntOrArray,IntOrArray,Int,Bool,StreamOrDevice)``
 public func convTransposed3d(
     _ array: MLXArray, _ weight: MLXArray, stride: IntOrTriple = 1, padding: IntOrTriple = 0,
     dilation: IntOrTriple = 1, outputPadding: IntOrTriple = 0, groups: Int = 1,
@@ -1097,6 +1102,7 @@ public enum QuantizationMode: String, Codable, Sendable {
 ///   - groupSize: The size of each quantization group. Elements are quantized in groups of this size. Default is 64
 ///   - bits: The number of bits used per quantized element. Default is 4
 ///   - mode: The quantization mode used. Either `.affine` for standard affine quantization or `.mxfp4` for MXFP4 format. Default is `.affine`
+///   - dtype: data type of the output.  If not specified it will be inferred from the scales and biases.
 ///   - stream: Stream or device to evaluate on
 ///
 /// ### See Also
@@ -1319,7 +1325,7 @@ public func expandedDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDev
 ///
 /// - Parameters:
 ///   - array: input array
-///     - stream: stream or device to evaluate on
+///   - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:arithmetic>
@@ -2269,7 +2275,7 @@ public func putAlong(
 /// [this documentation](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html)
 ///
 /// ### See Also
-/// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+/// - ``dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
 /// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func quantized(
     _ w: MLXArray, groupSize: Int? = nil, bits: Int? = nil,
@@ -2325,7 +2331,7 @@ public func quantizedMatmul(
 ///   - stream: Stream or device to evaluate on
 ///
 /// ### See Also
-/// - ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+/// - ``dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
 /// - ``quantized(_:groupSize:bits:mode:stream:)``
 public func quantizedMM(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
@@ -2555,6 +2561,7 @@ public func softMax(
 ///
 /// - Parameters:
 ///     - array: input array
+///     - axes: axes to compute the softmax over
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -2588,6 +2595,7 @@ public func softMax(
 ///
 /// - Parameters:
 ///     - array: input array
+///     - axis: axis to compute the softmax over
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -2866,7 +2874,7 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``tensordot(_:_:axes:stream:)-8yqyi``
+/// - ``tensordot(_:_:axes:stream:)-(MLXArray,MLXArray,Int,StreamOrDevice)``
 public func tensordot(
     _ a: MLXArray, _ b: MLXArray, axes: Int = 1, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -2886,7 +2894,7 @@ public func tensordot(
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - ``tensordot(_:_:axes:stream:)-3qkgq``
+/// - ``tensordot(_:_:axes:stream:)-(MLXArray,MLXArray,((Int,Int),(Int,Int)),StreamOrDevice)``
 public func tensordot(
     _ a: MLXArray, _ b: MLXArray, axes: ((Int, Int), (Int, Int)), stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -2953,7 +2961,7 @@ public func tiled(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``tiled(_:repetitions:stream:)-72ntc``
+/// - ``tiled(_:repetitions:stream:)-(MLXArray,Int,StreamOrDevice)``
 public func tiled(_ array: MLXArray, repetitions: Int, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -3129,8 +3137,8 @@ public func kron(
 ///
 /// - Parameters:
 ///     - a: input array
-///     - start_axis: first dim to flatten
-///     - end_axis: last dim to flatten
+///     - startAxis: first dim to flatten
+///     - endAxis: last dim to flatten
 ///     - stream: stream or device to evaluate on
 public func flatten(
     _ a: MLXArray, startAxis: Int, endAxis: Int = -1, stream: StreamOrDevice = .default

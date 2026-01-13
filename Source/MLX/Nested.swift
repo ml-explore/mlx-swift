@@ -36,10 +36,10 @@ public func indentedDescription(_ value: Any, _ indent: Int) -> String {
 ///
 /// ### See Also
 /// - ``NestedDictionary``
-/// - ``NestedDictionary/mapValues(transform:)-1ehvq``
-/// - ``NestedDictionary/mapValues(transform:)-4q1m3``
+/// - ``NestedDictionary/mapValues(transform:)-((Element)->Result)``
+/// - ``NestedDictionary/mapValues(transform:)-((Element)->Result)``
 /// - ``NestedDictionary/flattened(prefix:)``
-/// - ``NestedDictionary/unflattened(_:)-4p8bn``
+/// - ``NestedDictionary/unflattened(_:)-([String:Element])``
 public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     case none
     case value(Element)
@@ -63,10 +63,10 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
 
     /// Transform the values in the nested structure using the `transform()` function.
     ///
-    /// This is typically called via ``NestedDictionary/mapValues(transform:)-1ehvq``.
+    /// This is typically called via ``NestedDictionary/mapValues(transform:)-((Element)->Result)``.
     ///
     /// ### See Also
-    /// - ``NestedDictionary/mapValues(transform:)-1ehvq``
+    /// - ``NestedDictionary/mapValues(transform:)-((Element)->Result)``
     public func mapValues<Result>(_ transform: (Element) throws -> Result) rethrows -> NestedItem<
         Key, Result
     > {
@@ -94,12 +94,6 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - `.none` will match any value, e.g. you can iterate an empty second item
     /// - arrays do not need to be the same length -- the receiver's length is matched
     /// - dictionaries do not need to have the same keys -- the receivers keys are matched
-    ///
-    /// This is typically called via ``NestedDictionary/mapValues(_:transform:)-54sj2``.
-    ///
-    /// ### See Also
-    /// - ``NestedDictionary/mapValues(_:transform:)-54sj2``
-    /// - ``mapValues(_:_:_:)``
     public func mapValues<E2, R1, R2>(
         _ item: NestedItem<Key, E2>, _ transform: (Element, E2?) throws -> (R1, R2?)
     ) rethrows -> (NestedItem<Key, R1>, NestedItem<Key, R2>) {
@@ -249,12 +243,6 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - `.none` will match any value, e.g. you can iterate an empty second item
     /// - arrays do not need to be the same length -- the receiver's length is matched
     /// - dictionaries do not need to have the same keys -- the receivers keys are matched
-    ///
-    /// This is typically called via ``NestedDictionary/mapValues(_:_:transform:)-8yhzk``.
-    ///
-    /// ### See Also
-    /// - ``NestedDictionary/mapValues(_:_:transform:)-8yhzk``
-    /// - ``mapValues(_:_:_:)``
     public func mapValues<E2, E3, R1, R2, R3>(
         _ item1: NestedItem<Key, E2>, _ item2: NestedItem<Key, E3>,
         _ transform: (Element, E2?, E3?) throws -> (R1, R2?, R3?)
@@ -427,7 +415,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - ``unflattened(_:)``
     /// - ``NestedDictionary/flattened(prefix:)``
     /// - ``NestedDictionary/unflattened(_:)-4p8bn``
-    /// - ``NestedDictionary/unflattened(_:)-7xuiv``
+    /// - ``NestedDictionary/unflattened(_:)-([String:Element])``
     public func flattened(prefix: String? = nil) -> [(String, Element)] {
         func newPrefix(_ i: CustomStringConvertible) -> String {
             if let prefix {
@@ -464,7 +452,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
     /// - ``flattened(prefix:)``
     /// - ``NestedDictionary/flattened(prefix:)``
     /// - ``NestedDictionary/unflattened(_:)-4p8bn``
-    /// - ``NestedDictionary/unflattened(_:)-7xuiv``
+    /// - ``NestedDictionary/unflattened(_:)-([String:Element])``
     public static func unflattened(_ tree: some Collection<(Key, Element)>) -> NestedItem<
         Key, Element
     >
@@ -699,7 +687,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     /// Initialize an empty `NestedDictionary`.
     ///
     /// ### See Also
-    /// - ``NestedDictionary/subscript(_:)-7bphj``
+    /// - ``NestedDictionary/subscript(_:)-(Key)``
     public init() {
     }
 
@@ -947,7 +935,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     ///
     /// ### See Also
     /// - ``unflattened(_:)-4p8bn``
-    /// - ``unflattened(_:)-7xuiv``
+    /// - ``unflattened(_:)-([String:Element])``
     public func flattened(prefix: String? = nil) -> [(String, Element)] {
         asItem().flattened(prefix: prefix)
     }
@@ -956,7 +944,7 @@ public struct NestedDictionary<Key: Hashable, Element>: CustomStringConvertible 
     ///
     /// ### See Also
     /// - ``flattened(prefix:)``
-    /// - ``unflattened(_:)-7xuiv``
+    /// - ``unflattened(_:)-([String:Element])``
     static public func unflattened(_ flat: some Collection<(String, Element)>) -> Self
     where Key == String {
         switch NestedItem.unflattened(flat) {

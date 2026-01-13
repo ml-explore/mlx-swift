@@ -30,8 +30,8 @@ use the methods on `MLXArray` or the free functions.
 
 Note that the element-wise logical operations such as:
 
-- ``MLXArray/.==(_:_:)-56m0a``
-- ``MLXArray/.==(_:_:)-79hbc``
+- ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.==(_:_:)-(MLXArray,ScalarOrArray)``
 
 are named using the Swift convention for SIMD operations, e.g. `.==`, `.<`, etc.  These
 operators produce a new ``MLXArray`` with `true`/`false` values for the elementwise comparison.
@@ -41,11 +41,11 @@ operators produce a new ``MLXArray`` with `true`/`false` values for the elementw
 Many functions and operators that work on ``MLXArray`` take a ``ScalarOrArray`` argument or have
 an overload that does.  A sampling:
 
-- ``MLXArray/+(_:_:)-2vili``
-- ``MLXArray/+(_:_:)-1jn5i``
+- ``MLXArray/+(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/+(_:_:)-(ScalarOrArray,MLXArray)``
 - ``MLX/minimum(_:_:stream:)``
-- ``MLX/pow(_:_:stream:)-7pe7j``
-- ``MLX/pow(_:_:stream:)-49xi0``
+- ``MLX/pow(_:_:stream:)-(MLXArray,ScalarOrArray,_)``
+- ``MLX/pow(_:_:stream:)-(ScalarOrArray,MLXArray,_)``
 
 ``ScalarOrArray`` is a protocol that various numeric types (`Int`, `Float`, etc.) implement and it
 provides a method to convert the scalar to an ``MLXArray`` using a suggested ``DType``.  This allows:
@@ -70,50 +70,50 @@ Scalars will not promote results to `float32` using these functions.
 
 Note: the `-` and `/` operators are not able to be linked here.
 
-- ``MLXArray/+(_:_:)-1rv98``
-- ``MLXArray/+(_:_:)-2vili``
-- ``MLXArray/+(_:_:)-1jn5i``
+- ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/+(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/+(_:_:)-(ScalarOrArray,MLXArray)``
 - ``MLXArray/-(_:)``
-- ``MLXArray/*(_:_:)-1z2ck``
-- ``MLXArray/*(_:_:)-sw3w``
-- ``MLXArray/*(_:_:)-7441r``
-- ``MLXArray/**(_:_:)-8xxt3``
-- ``MLXArray/**(_:_:)-6ve5u``
-- ``MLXArray/**(_:_:)-4lp4b``
-- ``MLXArray/%(_:_:)-3ubwd``
-- ``MLXArray/%(_:_:)-516wd``
-- ``MLXArray/%(_:_:)-8az7l``
+- ``MLXArray/*(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/*(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/*(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/**(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/**(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/**(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/%(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/%(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/%(_:_:)-(MLXArray,ScalarOrArray)``
 - ``MLXArray/.!(_:)``
-- ``MLXArray/.==(_:_:)-56m0a``
-- ``MLXArray/.==(_:_:)-79hbc``
-- ``MLXArray/.!=(_:_:)-mbw0``
-- ``MLXArray/.!=(_:_:)-gkdj``
-- ``MLXArray/.<(_:_:)-9rzup``
-- ``MLXArray/.<(_:_:)-54ivt``
-- ``MLXArray/.<=(_:_:)-2a0s9``
-- ``MLXArray/.<=(_:_:)-6vb92``
-- ``MLXArray/.>(_:_:)-fwi1``
-- ``MLXArray/.>(_:_:)-2v86b``
-- ``MLXArray/.>=(_:_:)-2gqml``
-- ``MLXArray/.>=(_:_:)-6zxj9``
+- ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.==(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.!=(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.!=(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.<(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.<(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.<=(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.<=(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.>(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.>(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.>=(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.>=(_:_:)-(MLXArray,ScalarOrArray)``
 - ``MLXArray/.&&(_:_:)``
 - ``MLXArray/.||(_:_:)``
 - ``MLXArray/~(_:)``
-- ``MLXArray/&(_:_:)-9in7a``
-- ``MLXArray/&(_:_:)-8js41``
-- ``MLXArray/&(_:_:)-7iu4h``
-- ``MLXArray/|(_:_:)-2upd6``
-- ``MLXArray/|(_:_:)-35lfz``
-- ``MLXArray/|(_:_:)-7c6lr``
-- ``MLXArray/^(_:_:)-8hj69``
-- ``MLXArray/^(_:_:)-2oktd``
-- ``MLXArray/^(_:_:)-dik7``
-- ``MLXArray/<<(_:_:)-1dfss``
-- ``MLXArray/<<(_:_:)-1dfss``
-- ``MLXArray/<<(_:_:)-7hmgt``
-- ``MLXArray/>>(_:_:)-zpp3``
-- ``MLXArray/>>(_:_:)-4z891``
-- ``MLXArray/>>(_:_:)-89b4j``
+- ``MLXArray/&(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/&(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/&(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/|(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/|(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/|(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/^(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/^(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/^(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/<<(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/<<(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/<<(_:_:)-(ScalarOrArray,MLXArray)``
+- ``MLXArray/>>(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/>>(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/>>(_:_:)-(ScalarOrArray,MLXArray)``
 
 ### MLXArray Element-wise Arithmetic Functions
 
@@ -184,9 +184,9 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``nanToNum(_:nan:posInf:negInf:stream:)``
 - ``negative(_:stream:)``
 - ``notEqual(_:_:stream:)``
-- ``pow(_:_:stream:)-7pe7j``
-- ``pow(_:_:stream:)-49xi0``
-- ``pow(_:_:stream:)-8ie9c``
+- ``pow(_:_:stream:)-(MLXArray,ScalarOrArray,_)``
+- ``pow(_:_:stream:)-(ScalarOrArray,MLXArray,_)``
+- ``pow(_:_:stream:)-(MLXArray,MLXArray,_)``
 - ``radians(_:stream:)``
 - ``reciprocal(_:stream:)``
 - ``remainder(_:_:stream:)``
@@ -218,5 +218,5 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
-- ``tensordot(_:_:axes:stream:)-3qkgq``
-- ``tensordot(_:_:axes:stream:)-8yqyi``
+- ``tensordot(_:_:axes:stream:)-(MLXArray,MLXArray,Int,StreamOrDevice)``
+- ``tensordot(_:_:axes:stream:)-(MLXArray,MLXArray,((Int,Int),(Int,Int)),StreamOrDevice)``

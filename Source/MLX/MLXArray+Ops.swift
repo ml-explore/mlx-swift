@@ -70,7 +70,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/+(_:_:)-1rv98``
+    /// - ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
     public static func + (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs + rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -79,7 +79,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/+(_:_:)-1rv98``
+    /// - ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
     public static func += (lhs: inout MLXArray, rhs: some ScalarOrArray) {
         lhs += rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -88,7 +88,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/+(_:_:)-1rv98``
+    /// - ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
     public static func + (lhs: some ScalarOrArray, rhs: MLXArray) -> MLXArray {
         lhs.asMLXArray(dtype: rhs.dtype) + rhs
     }
@@ -231,7 +231,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/*(_:_:)-1z2ck``
+    /// - ``MLXArray/*(_:_:)-(MLXArray,MLXArray)``
     public static func * (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs * rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -240,7 +240,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/*(_:_:)-1z2ck``
+    /// - ``MLXArray/*(_:_:)-(MLXArray,MLXArray)``
     public static func *= (lhs: inout MLXArray, rhs: some ScalarOrArray) {
         lhs *= rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -249,7 +249,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/*(_:_:)-1z2ck``
+    /// - ``MLXArray/*(_:_:)-(MLXArray,MLXArray)``
     public static func * (lhs: some ScalarOrArray, rhs: MLXArray) -> MLXArray {
         lhs.asMLXArray(dtype: rhs.dtype) * rhs
     }
@@ -271,8 +271,8 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``pow(_:stream:)``
-    /// - ``pow(_:_:stream:)-7pe7j``
-    /// - ``pow(_:_:stream:)-49xi0``
+    /// - ``pow(_:_:stream:)-(MLXArray,ScalarOrArray,_)``
+    /// - ``pow(_:_:stream:)-(ScalarOrArray,MLXArray,_)``
     public static func ** (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
         let s = StreamOrDevice.default
         var result = mlx_array_new()
@@ -284,7 +284,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/**(_:_:)-8xxt3``
+    /// - ``MLXArray/**(_:_:)-(MLXArray,MLXArray)``
     public static func ** (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs ** rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -293,7 +293,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/**(_:_:)-8xxt3``
+    /// - ``MLXArray/**(_:_:)-(MLXArray,MLXArray)``
     public static func ** (lhs: some ScalarOrArray, rhs: MLXArray) -> MLXArray {
         lhs.asMLXArray(dtype: rhs.dtype) ** rhs
     }
@@ -393,7 +393,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/%(_:_:)-3ubwd``
+    /// - ``MLXArray/%(_:_:)-(MLXArray,MLXArray)``
     public static func % (lhs: some ScalarOrArray, rhs: MLXArray) -> MLXArray {
         lhs.asMLXArray(dtype: rhs.dtype) % rhs
     }
@@ -402,7 +402,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/%(_:_:)-3ubwd``
+    /// - ``MLXArray/%(_:_:)-(MLXArray,MLXArray)``
     public static func % (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs % rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -460,7 +460,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/.==(_:_:)-56m0a``
+    /// - ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
     public static func .== (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs .== rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -494,7 +494,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/.<=(_:_:)-2a0s9``
+    /// - ``MLXArray/.<=(_:_:)-(MLXArray,MLXArray)``
     public static func .<= (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs .<= rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -528,7 +528,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/.>=(_:_:)-2gqml``
+    /// - ``MLXArray/.>=(_:_:)-(MLXArray,MLXArray)``
     public static func .>= (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs .>= rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -596,7 +596,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:arithmetic>
-    /// - ``MLXArray/.<(_:_:)-9rzup``
+    /// - ``MLXArray/.<(_:_:)-(MLXArray,MLXArray)``
     public static func .< (lhs: MLXArray, rhs: some ScalarOrArray) -> MLXArray {
         lhs .< rhs.asMLXArray(dtype: lhs.dtype)
     }
@@ -1502,6 +1502,9 @@ extension MLXArray {
 
     /// Element-wise complex conjugate of the input.
     ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``conjugate(_:stream:)``
@@ -1512,6 +1515,9 @@ extension MLXArray {
     }
 
     /// Element-wise cosine.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -1530,6 +1536,12 @@ extension MLXArray {
     /// // result is [[5, 8], [5, 9]] -- cumulative max along the columns
     /// let result = array.cummax(axis: 0)
     /// ```
+    ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:cumulative>
@@ -1551,6 +1563,11 @@ extension MLXArray {
     /// // result is [5, 8, 8, 9]
     /// let result = array.cummax()
     /// ```
+    ///
+    /// - Parameters:
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:cumulative>
@@ -1574,6 +1591,12 @@ extension MLXArray {
     /// let result = array.cummin(axis: 0)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:cumulative>
     /// - ``cummin(reverse:inclusive:stream:)``
@@ -1594,6 +1617,11 @@ extension MLXArray {
     /// // result is [5, 5, 4, 4]
     /// let result = array.cummin()
     /// ```
+    ///
+    /// - Parameters:
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:cumulative>
@@ -1617,6 +1645,12 @@ extension MLXArray {
     /// let result = array.cumprod(axis: 0)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:cumulative>
     /// - ``cumprod(reverse:inclusive:stream:)``
@@ -1637,6 +1671,11 @@ extension MLXArray {
     /// // result is [5, 40, 160, 1440]
     /// let result = array.cumprod()
     /// ```
+    ///
+    /// - Parameters:
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:cumulative>
@@ -1660,6 +1699,12 @@ extension MLXArray {
     /// let result = array.cumsum(axis: 0)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis: axis to reduce over
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:cumulative>
     /// - ``cumsum(reverse:inclusive:stream:)``
@@ -1680,6 +1725,11 @@ extension MLXArray {
     /// // result is [5, 13, 17, 26]
     /// let result = array.cumsum()
     /// ```
+    ///
+    /// - Parameters:
+    ///     - reverse: reverse the reduction
+    ///     - inclusive: include the initial value
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:cumulative>
@@ -1739,6 +1789,9 @@ extension MLXArray {
     }
 
     /// Element-wise exponential.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -1805,6 +1858,7 @@ extension MLXArray {
     /// - Parameters:
     ///     - start: first dimension to flatten
     ///     - end: last dimension to flatten
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -1818,6 +1872,9 @@ extension MLXArray {
     }
 
     /// Element-wise floor.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -1845,6 +1902,10 @@ extension MLXArray {
     /// let r = a.floorDivide(b)
     /// ```
     ///
+    /// - Parameters:
+    ///     - other: the divisor
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``floor(stream:)``
@@ -1860,6 +1921,9 @@ extension MLXArray {
 
     /// Element-wise natural logarithm.
     ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``log(_:stream:)``
@@ -1870,6 +1934,9 @@ extension MLXArray {
     }
 
     /// Element-wise base-2 logarithm.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -1885,6 +1952,9 @@ extension MLXArray {
 
     /// Element-wise base-10 logarithm.
     ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``log(stream:)``
@@ -1898,6 +1968,9 @@ extension MLXArray {
     }
 
     /// Element-wise natural log of one plus the array.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -2012,6 +2085,10 @@ extension MLXArray {
     /// // produces a [2, 3] result
     /// let r = a.matmul(b)
     /// ```
+    ///
+    /// - Parameters:
+    ///     - other: the right hand side array
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -2288,6 +2365,11 @@ extension MLXArray {
     /// //          [7, 15]]]], dtype=int64)
     /// ```
     ///
+    /// - Parameters:
+    ///     - source: axis to move
+    ///     - destination: new position for the axis
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:shapes>
     /// - ``swappedAxes(_:_:stream:)``
@@ -2314,11 +2396,15 @@ extension MLXArray {
     /// let r = a.pow(b)
     /// ```
     ///
+    /// - Parameters:
+    ///     - other: the exponent
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - <doc:arithmetic>
-    /// - ``**(_:_:)-8xxt3``
-    /// - ``pow(_:_:stream:)-8ie9c``
+    /// - ``**(_:_:)-(MLXArray,MLXArray)``
+    /// - ``pow(_:_:stream:)-(MLXArray,ScalarOrArray,_)``
     public func pow(_ other: some ScalarOrArray, stream: StreamOrDevice = .default) -> MLXArray {
         let other = other.asMLXArray(dtype: self.dtype)
         var result = mlx_array_new()
@@ -2408,6 +2494,9 @@ extension MLXArray {
 
     /// Element-wise reciprocal.
     ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``reciprocal(_:stream:)``
@@ -2425,10 +2514,14 @@ extension MLXArray {
     /// let r = array.reshaped([4, 3])
     /// ```
     ///
+    /// - Parameters:
+    ///     - newShape: the new shape
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:shapes>
     /// - ``reshaped(_:stream:)``
-    /// - ``reshaped(_:_:stream:)-96lgr``
+    /// - ``reshaped(_:_:stream:)-(MLXArray,Collection<Int>,StreamOrDevice)``
     public func reshaped(_ newShape: some Collection<Int>, stream: StreamOrDevice = .default)
         -> MLXArray
     {
@@ -2445,9 +2538,13 @@ extension MLXArray {
     /// let r = array.reshaped(4, 3)
     /// ```
     ///
+    /// - Parameters:
+    ///     - newShape: the new shape
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:shapes>
-    /// - ``reshaped(_:_:stream:)-5x3y0``
+    /// - ``reshaped(_:_:stream:)-(MLXArray,Int...,StreamOrDevice)``
     /// - ``reshaped(_:stream:)``
     public func reshaped(_ newShape: Int..., stream: StreamOrDevice = .default) -> MLXArray {
         var result = mlx_array_new()
@@ -2466,6 +2563,10 @@ extension MLXArray {
     /// let result = round(array * s) / s
     /// ```
     ///
+    /// - Parameters:
+    ///     - decimals: number of decimal places to round to
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``floor(stream:)``
@@ -2478,6 +2579,9 @@ extension MLXArray {
 
     /// Element-wise reciprocal and square root.
     ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``sqrt(_:stream:)``
@@ -2488,6 +2592,9 @@ extension MLXArray {
     }
 
     /// Element-wise sine.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -2517,6 +2624,7 @@ extension MLXArray {
     /// - Parameters:
     ///     - parts: array is split into that many sections of equal size. It is a fatal error if this is not possible
     ///     - axis: axis to split along
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2542,6 +2650,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to split along
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2561,6 +2670,7 @@ extension MLXArray {
     /// - Parameters:
     ///     - indices: the indices of the start of each subarray along the given axis
     ///     - axis: axis to split along
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2579,6 +2689,9 @@ extension MLXArray {
 
     /// Element-wise square root
     ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:arithmetic>
     /// - ``sqrt(_:stream:)``
@@ -2589,6 +2702,9 @@ extension MLXArray {
     }
 
     /// Element-wise square.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:arithmetic>
@@ -2603,6 +2719,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: axes to remove
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2620,6 +2737,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axis: axis to remove
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2633,6 +2751,9 @@ extension MLXArray {
     }
 
     /// Remove all length one axes from an array.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2730,6 +2851,11 @@ extension MLXArray {
     /// //          [7, 15]]]], dtype=int64)
     /// ```
     ///
+    /// - Parameters:
+    ///     - axis1: first axis
+    ///     - axis2: second axis
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - <doc:shapes>
     /// - ``swappedAxes(_:_:_:stream:)``
@@ -2752,6 +2878,11 @@ extension MLXArray {
     /// let col = array.take([0, 2], axis: 1)
     /// ```
     ///
+    /// - Parameters:
+    ///     - indices: array of indices
+    ///     - axis: axis to take from
+    ///     - stream: stream or device to evaluate on
+    ///
     /// ### See Also
     /// - ``take(_:stream:)``
     /// - ``take(_:_:axis:stream:)``
@@ -2763,6 +2894,10 @@ extension MLXArray {
     }
 
     /// Take elements from flattened 1-D array.
+    ///
+    /// - Parameters:
+    ///     - indices: array of indices
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - ``take(_:axis:stream:)``
@@ -2778,6 +2913,7 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - axes: Specifies the source axis for each axis in the new array
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2792,6 +2928,18 @@ extension MLXArray {
         return MLXArray(result)
     }
 
+    /// Transpose the dimensions of the array.
+    ///
+    /// - Parameters:
+    ///     - axes: Specifies the source axis for each axis in the new array
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:shapes>
+    /// - ``transposed(axes:stream:)``
+    /// - ``transposed(axis:stream:)``
+    /// - ``transposed(stream:)``
+    /// - ``transposed(_:axes:stream:)``
     public func transposed(_ axes: Int..., stream: StreamOrDevice = .default) -> MLXArray {
         var result = mlx_array_new()
         mlx_transpose_axes(&result, ctx, axes.asInt32, axes.count, stream.ctx)
@@ -2801,6 +2949,10 @@ extension MLXArray {
     /// Transpose the dimensions of the array.
     ///
     /// This swaps the position of the first dimension with the given axis.
+    ///
+    /// - Parameters:
+    ///     - axis: axis to swap with the first dimension
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2816,6 +2968,9 @@ extension MLXArray {
     /// Transpose the dimensions of the array.
     ///
     /// With no axes specified this will reverse the axes in the array.
+    ///
+    /// - Parameters:
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:shapes>
@@ -2841,6 +2996,7 @@ extension MLXArray {
     ///     - axes: axes to reduce over
     ///     - keepDims: if `true` keep the reduces axes as singleton dimensions
     ///     - ddof: the divisor to compute the variance is `N - ddof`
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:reduction>
@@ -2862,6 +3018,7 @@ extension MLXArray {
     ///     - axis: axes to reduce over
     ///     - keepDims: if `true` keep the reduces axis as singleton dimensions
     ///     - ddof: the divisor to compute the variance is `N - ddof`
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:reduction>
@@ -2881,7 +3038,7 @@ extension MLXArray {
     /// - Parameters:
     ///     - keepDims: if `true` keep the reduces axes as singleton dimensions
     ///     - ddof: the divisor to compute the variance is `N - ddof`
-    ///
+    ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:reduction>
