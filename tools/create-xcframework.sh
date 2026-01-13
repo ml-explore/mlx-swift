@@ -66,8 +66,7 @@ archive_for_platform() {
         -destination "${destination}" \
         -archivePath "${archive_path}" \
         SKIP_INSTALL=NO \
-        BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
-        -quiet
+        BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
     if [ $? -eq 0 ]; then
         log_info "✓ Archive created: ${archive_path}"
@@ -85,10 +84,21 @@ get_framework_path() {
     echo "${archive_path}.xcarchive/Products/Library/Frameworks/${framework_name}.framework"
 }
 
-# Extract debug symbols path from archive
-get_debug_symbols_path() {
+# List contents of archive (for debugging)
+list_archive_contents() {
     local archive_path=$1
-    echo "${archive_path}.xcarchive/Products/Library/Frameworks"
+    local platform=$2
+
+    log_warn "Archive contents for ${platform}:"
+    find "${archive_path}.xcarchive/Products" -type d -name "*.framework" 2>/dev/null | while read dir; do
+        echo "  Found framework: $(basename $dir)"
+    done
+
+    # Also check for libraries
+    if [ -d "${archive_path}.xcarchive/Products/usr/local/lib" ]; then
+        echo "  Libraries in usr/local/lib:"
+        ls -la "${archive_path}.xcarchive/Products/usr/local/lib" 2>/dev/null | tail -n +4 | awk '{print "    " $9}'
+    fi
 }
 
 # Create XCFramework for a specific framework
@@ -98,26 +108,40 @@ create_xcframework_for_framework() {
 
     log_info "Creating XCFramework for ${framework_name}..."
 
-    # Build the xcodebuild command with all platform frameworks
-    local cmd="xcodebuild -create-xcframework"
+    # Use array to build command with proper quoting
+    local -a cmd_args=("xcodebuild" "-create-xcframework")
+    local found_any=0
 
-    for platform in "${!DESTINATIONS[@]}"; do
+    for i in "${!PLATFORM_NAMES[@]}"; do
+        local platform="${PLATFORM_NAMES[$i]}"
         local archive_path="${ARCHIVES_DIR}/${SCHEME}-${platform}"
         local framework_path=$(get_framework_path "${archive_path}" "${framework_name}")
-        local debug_symbols_path="${archive_path}.xcarchive/Products/Library/Frameworks"
+        local debug_symbols_path="${archive_path}.xcarchive/dSYMs/${framework_name}.framework.dSYM"
 
         if [ -d "${framework_path}" ]; then
-            cmd+=" -framework ${framework_path}"
-            cmd+=" -debug-symbols ${debug_symbols_path}"
+            cmd_args+=("-framework" "$(cd "${framework_path%/*}" && pwd)/$(basename "${framework_path}")")
+
+            # Add debug symbols if they exist - use absolute path
+            if [ -d "${debug_symbols_path}" ]; then
+                cmd_args+=("-debug-symbols" "$(cd "${debug_symbols_path%/*}" && pwd)/$(basename "${debug_symbols_path}")")
+            fi
+            found_any=1
         else
-            log_warn "Framework not found: ${framework_path}"
+            log_warn "Framework not found for ${platform}: ${framework_path}"
+            # Debug: show what's actually in the archive
+            list_archive_contents "${archive_path}" "${platform}"
         fi
     done
 
-    cmd+=" -output ${output_path}"
+    if [ $found_any -eq 0 ]; then
+        log_error "No frameworks found for ${framework_name} in any archive"
+        return 1
+    fi
 
-    # Execute the command
-    eval "${cmd}"
+    cmd_args+=("-output" "${output_path}")
+
+    # Execute the command with proper argument handling
+    "${cmd_args[@]}"
 
     if [ $? -eq 0 ]; then
         log_info "✓ XCFramework created: ${output_path}"
