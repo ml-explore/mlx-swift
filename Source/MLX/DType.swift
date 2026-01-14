@@ -21,8 +21,8 @@ import Numerics
 ///
 /// ### See Also
 /// - ``HasDType``
-/// - ``MLXArray/asType(_:stream:)-6d44y``
-/// - ``MLXArray/asType(_:stream:)-4eqoc``
+/// - ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
+/// - ``MLXArray/asType(_:stream:)-(HasDType.Type,StreamOrDevice)``
 /// - ``MLXArray/init(_:dtype:)``
 public enum DType: Hashable, Sendable, CaseIterable {
     case bool
@@ -124,7 +124,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
 
         /// The difference between 1.0 and the next smallest representable float larger than 1.0
         ///
-        /// In Swift this is e.g. ``Double.ulpOfOne``
+        /// In Swift this is e.g. `Double.ulpOfOne`
         public var eps: Double {
             switch dtype {
             #if !arch(x86_64)

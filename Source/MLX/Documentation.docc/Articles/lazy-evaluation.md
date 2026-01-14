@@ -10,7 +10,7 @@ See also [mlx python docs](https://ml-explore.github.io/mlx/build/html/usage/laz
 
 When you perform operations in MLX, no computation actually happens. Instead a
 compute graph is recorded. The actual computation only happens if an
-``eval(_:)-3b2g9`` is performed or an implicit eval is triggered.
+``eval(_:)-(Collection<MLXArray>)`` is performed or an implicit eval is triggered.
 
 MLX uses lazy evaluation because it has some nice features, some of which we
 describe below. 
@@ -49,7 +49,7 @@ code simple. Say you have a very large model `Model` derived from
 `Module`. You can instantiate this model with `model = Model()`.
 Typically, this will initialize all of the weights as `float32`, but the
 initialization does not actually compute anything until you perform an
-``eval(_:)-3b2g9``. If you update the model with `float16` weights, your maximum
+``eval(_:)-(Collection<MLXArray>)``. If you update the model with `float16` weights, your maximum
 consumed memory will be half that required if eager computation was used
 instead.
 
@@ -66,7 +66,7 @@ model.update(parameters: weights)
 
 ## When to Evaluate
 
-A common question is when to use ``eval(_:)-3b2g9``. The trade-off is between
+A common question is when to use ``eval(_:)-(Collection<MLXArray>)``. The trade-off is between
 letting graphs get too large and not batching enough useful work.
 
 For example:
@@ -94,7 +94,7 @@ evaluation should be okay.
 
 Most numerical computations have an iterative outer loop (e.g. the iteration in
 stochastic gradient descent). A natural and usually efficient place to use
-``eval(_:)-3b2g9`` is at each iteration of this outer loop.
+``eval(_:)-(Collection<MLXArray>)`` is at each iteration of this outer loop.
 
 Here is a concrete example:
 
@@ -124,7 +124,7 @@ a list (`losses.append(loss.item(Float.self))`) would cause a graph evaluation. 
 these lines are before `eval(loss, model.parameters())` then this
 will be a partial evaluation, computing only the forward pass.
 
-Also, calling ``eval(_:)-3b2g9`` on an array or set of arrays multiple times is
+Also, calling ``eval(_:)-(Collection<MLXArray>)`` on an array or set of arrays multiple times is
 perfectly fine. This is effectively a no-op.
 
 > Using scalar arrays for control-flow will cause an evaluation.

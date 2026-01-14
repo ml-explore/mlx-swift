@@ -42,7 +42,7 @@ array([[1, 2, 3],
        [10, 11, 12]], dtype=int32)
 ```
 
-This uses ``MLXArray/+(_:_:)-2vili`` which uses ``ScalarOrArray`` to automatically convert scalar values
+This uses ``MLXArray/+(_:_:)-(MLXArray,ScalarOrArray)`` which uses ``ScalarOrArray`` to automatically convert scalar values
 into ``MLXArray``.
 
 A scalar can be broadcast to any shape array:  the scalar is repeated for each element in the array.

@@ -22,18 +22,18 @@ if (a < b).all().item() {
 ### MLXArray Operators
 
 - ``MLXArray/.!(_:)``
-- ``MLXArray/.==(_:_:)-56m0a``
-- ``MLXArray/.==(_:_:)-79hbc``
-- ``MLXArray/.!=(_:_:)-mbw0``
-- ``MLXArray/.!=(_:_:)-gkdj``
-- ``MLXArray/.<(_:_:)-9rzup``
-- ``MLXArray/.<(_:_:)-54ivt``
-- ``MLXArray/.<=(_:_:)-2a0s9``
-- ``MLXArray/.<=(_:_:)-6vb92``
-- ``MLXArray/.>(_:_:)-fwi1``
-- ``MLXArray/.>(_:_:)-2v86b``
-- ``MLXArray/.>=(_:_:)-2gqml``
-- ``MLXArray/.>=(_:_:)-6zxj9``
+- ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.==(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.!=(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.!=(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.<(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.<(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.<=(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.<=(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.>(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.>(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/.>=(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.>=(_:_:)-(MLXArray,ScalarOrArray)``
 - ``MLXArray/.&&(_:_:)``
 - ``MLXArray/.||(_:_:)``
 

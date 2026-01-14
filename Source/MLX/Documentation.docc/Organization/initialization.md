@@ -29,11 +29,11 @@ Sometimes scalars can be used in place of arrays (no need to explicitly create t
 Some functions and operators that work on ``MLXArray`` take a ``ScalarOrArray`` argument or have
 an overload that does.  A sampling:
 
-- ``MLXArray/+(_:_:)-2vili``
-- ``MLXArray/+(_:_:)-1jn5i``
+- ``MLXArray/+(_:_:)-(MLXArray,ScalarOrArray)``
+- ``MLXArray/+(_:_:)-(ScalarOrArray,MLXArray)``
 - ``MLX/minimum(_:_:stream:)``
-- ``MLX/pow(_:_:stream:)-7pe7j``
-- ``MLX/pow(_:_:stream:)-49xi0``
+- ``MLX/pow(_:_:stream:)-(MLXArray,ScalarOrArray,_)``
+- ``MLX/pow(_:_:stream:)-(ScalarOrArray,MLXArray,_)``
 
 ``ScalarOrArray`` is a protocol that various numeric types (`Int`, `Float`, etc.) implement and it
 provides a method to convert the scalar to an ``MLXArray`` using a suggested ``DType``.  This allows:
@@ -196,11 +196,11 @@ let c = r + i.asImaginary()
 
 ### MLXArray Scalar Initializers
 
-- ``MLXArray/init(_:)-9iiz7``
-- ``MLXArray/init(_:)-6zp01``
-- ``MLXArray/init(_:)-86r8u``
-- ``MLXArray/init(_:)-10m``
-- ``MLXArray/init(_:)-96nyv``
+- ``MLXArray/init(_:)-(Int32)``
+- ``MLXArray/init(_:)-(Bool)``
+- ``MLXArray/init(_:)-(Float)``
+- ``MLXArray/init(_:)-(Int)``
+- ``MLXArray/init(_:)-(T)``
 - ``MLXArray/init(_:dtype:)``
 - ``MLXArray/init(bfloat16:)``
 
@@ -210,25 +210,25 @@ Creating an ``MLXArray`` from `Int` will produce ``DType/int32`` rather
 than ``DType/int64`` (`Int` is really `Int64`).  If you need ``DType/int64``
 there are specific initializers to request it:
 
-- ``MLXArray/init(_:)-6nnka``
-- ``MLXArray/init(_:_:)-93flk``
+- ``MLXArray/init(_:)-(Int)``
+- ``MLXArray/init(_:_:)-([Int],_)``
 - ``MLXArray/init(int64:)``
-- ``MLXArray/init(int64:_:)-7bgj2``
-- ``MLXArray/init(int64:_:)-74tu0``
+- ``MLXArray/init(int64:_:)-([Int],_)``
+- ``MLXArray/init(int64:_:)-(Sequence<Int>,_)``
 
 ### MLXArray Array Initializers
 
-- ``MLXArray/init(_:_:)-4n0or``
-- ``MLXArray/init(_:_:)-dq8h``
-- ``MLXArray/init(_:_:)-89jw1``
+- ``MLXArray/init(_:_:)-([T],_)``
+- ``MLXArray/init(_:_:)-(Sequence,_)``
+- ``MLXArray/init(_:_:)-([Int],_)``
 - ``MLXArray/init(converting:_:)``
-- ``MLXArray/init(_:_:type:)-5esf9``
-- ``MLXArray/init(_:_:type:)-f9u5``
+- ``MLXArray/init(_:_:type:)-(UnsafeRawBufferPointer,_,_)``
+- ``MLXArray/init(_:_:type:)-(Data,_,_)``
 
 ### MLXArray Complex Initializers
 
 - ``MLXArray/init(real:imaginary:)``
-- ``MLXArray/init(_:)-6iii5``
+- ``MLXArray/init(_:)-(Complex<Float>)``
 
 ### MLXArray Factory Methods
 
@@ -242,8 +242,8 @@ there are specific initializers to request it:
 - ``MLXArray/full(_:values:type:stream:)``
 - ``MLXArray/full(_:values:stream:)``
 - ``MLXArray/identity(_:type:stream:)``
-- ``MLXArray/linspace(_:_:count:stream:)-92x6l``
-- ``MLXArray/linspace(_:_:count:stream:)-7m7eg``
+- ``MLXArray/linspace(_:_:count:stream:)-(Int,Int,Int,StreamOrDevice)``
+- ``MLXArray/linspace(_:_:count:stream:)-(Double,Double,Int,StreamOrDevice)``
 - ``MLXArray/repeated(_:count:axis:stream:)``
 - ``MLXArray/repeated(_:count:stream:)``
 - ``MLXArray/repeat(_:count:axis:stream:)``

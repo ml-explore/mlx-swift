@@ -111,7 +111,7 @@ public enum MLXLinalg {
     /// - Returns: output containing the norm(s)
     ///
     /// ### See Also
-    /// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
+    /// - ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
         _ array: MLXArray, ord: Double, axes: some Collection<Int>, keepDims: Bool = false,
         stream: StreamOrDevice = .default
@@ -123,7 +123,7 @@ public enum MLXLinalg {
 
     /// Matrix or vector norm.
     ///
-    /// See ``norm(_:ord:axes:keepDims:stream:)-8zljj``
+    /// - ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
         _ array: MLXArray, ord: NormKind? = nil, axis: Int, keepDims: Bool = false,
         stream: StreamOrDevice = .default
@@ -153,7 +153,7 @@ public enum MLXLinalg {
 
     /// Matrix or vector norm.
     ///
-    /// See ``norm(_:ord:axes:keepDims:stream:)-8zljj``
+    /// - ``norm(_:ord:axes:keepDims:stream:)``
     public static func norm(
         _ array: MLXArray, ord: NormKind? = nil, axis: IntOrArray? = nil,
         keepDims: Bool = false, stream: StreamOrDevice = .default
@@ -507,7 +507,7 @@ public func norm(
 /// - Returns: output containing the norm(s)
 ///
 /// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
+/// - ``norm(_:ord:axes:keepDims:stream:)``
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: Int, keepDims: Bool = false,
     stream: StreamOrDevice = .default
@@ -527,7 +527,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-8zljj``
+/// - ``norm(_:ord:axes:keepDims:stream:)``
 public func norm(
     _ array: MLXArray, ord: MLXLinalg.NormKind? = nil, axis: IntOrArray? = nil,
     keepDims: Bool = false, stream: StreamOrDevice = .default

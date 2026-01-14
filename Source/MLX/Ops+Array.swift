@@ -349,7 +349,7 @@ public func argMin(_ array: MLXArray, keepDims: Bool = false, stream: StreamOrDe
 /// - <doc:logical>
 /// - ``allClose(_:_:rtol:atol:equalNaN:stream:)``
 /// - ``isClose(_:_:rtol:atol:equalNaN:stream:)``
-/// - ``MLXArray/.==(_:_:)-56m0a``
+/// - ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
 /// - ``MLXArray/arrayEqual(_:equalNAN:stream:)``
 public func arrayEqual(
     _ array: MLXArray, _ other: some ScalarOrArray, equalNAN: Bool = false,
@@ -1252,13 +1252,14 @@ public func movedAxis(
 /// let b = MLXArray([4, 5, 6])
 ///
 /// // same as a ** b
-/// let r = a.pow(b)
+/// let r = pow(a, b)
 /// ```
 ///
 /// ### See Also
 /// - <doc:arithmetic>
-/// - <doc:arithmetic>
 /// - ``MLXArray/pow(_:stream:)``
+/// - ``pow(_:_:stream:)-(_,ScalarOrArray,_)``
+/// - ``pow(_:_:stream:)-(ScalarOrArray,_,_)``
 public func pow(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 {
     var result = mlx_array_new()
@@ -1266,6 +1267,24 @@ public func pow(_ array: MLXArray, _ other: MLXArray, stream: StreamOrDevice = .
     return MLXArray(result)
 }
 
+/// Element-wise power operation.
+///
+/// Raise the elements of `self` to the powers in elements of `other` with <doc:broadcasting>.
+///
+/// For example:
+///
+/// ```swift
+/// let a = MLXArray(0 ..< 12, [4, 3])
+///
+/// // same as a ** 3
+/// let r = pow(a, 3)
+/// ```
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``MLXArray/pow(_:stream:)``
+/// - ``pow(_:_:stream:)-(MLXArray,MLXArray,_)``
+/// - ``pow(_:_:stream:)-(ScalarOrArray,_,_)``
 public func pow(_ array: MLXArray, _ other: some ScalarOrArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -1273,6 +1292,24 @@ public func pow(_ array: MLXArray, _ other: some ScalarOrArray, stream: StreamOr
     return pow(array, other, stream: stream)
 }
 
+/// Element-wise power operation.
+///
+/// Raise the elements of `self` to the powers in elements of `other` with <doc:broadcasting>.
+///
+/// For example:
+///
+/// ```swift
+/// let b = MLXArray([4, 5, 6])
+///
+/// // same as 3 ** b
+/// let r = pow(3, b)
+/// ```
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - ``MLXArray/pow(_:stream:)``
+/// - ``pow(_:_:stream:)-(MLXArray,MLXArray,_)``
+/// - ``pow(_:_:stream:)-(_,ScalarOrArray,_)``
 public func pow(_ array: some ScalarOrArray, _ other: MLXArray, stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -1385,8 +1422,8 @@ public func reciprocal(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshaped(_:stream:)-19x5z``
-/// - ``reshaped(_:_:stream:)-96lgr``
+/// - ``MLXArray/reshaped(_:stream:)-(Collection<Int>,StreamOrDevice)``
+/// - ``reshaped(_:_:stream:)-(MLXArray,Collection<Int>,StreamOrDevice)``
 public func reshaped(
     _ array: MLXArray, _ newShape: some Collection<Int>, stream: StreamOrDevice = .default
 )
@@ -1407,8 +1444,8 @@ public func reshaped(
 ///
 /// ### See Also
 /// - <doc:shapes>
-/// - ``MLXArray/reshaped(_:stream:)-67a89``
-/// - ``reshaped(_:_:stream:)-5x3y0``
+/// - ``MLXArray/reshaped(_:stream:)-(Int...,StreamOrDevice)``
+/// - ``reshaped(_:_:stream:)-(MLXArray,Int...,StreamOrDevice)``
 public func reshaped(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -1499,6 +1536,7 @@ public func sin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArra
 ///     - array: input array
 ///     - parts: array is split into that many sections of equal size. It is a fatal error if this is not possible
 ///     - axis: axis to split along
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -1526,8 +1564,8 @@ public func split(_ array: MLXArray, parts: Int, axis: Int = 0, stream: StreamOr
 ///
 /// - Parameters:
 ///     - array: input array
-///     - parts: array is split into that many sections of equal size. It is a fatal error if this is not possible
 ///     - axis: axis to split along
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -1550,6 +1588,7 @@ public func split(_ array: MLXArray, axis: Int = 0, stream: StreamOrDevice = .de
 ///     - array: input array
 ///     - indices: the indices of the start of each subarray along the given axis
 ///     - axis: axis to split along
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -1592,6 +1631,7 @@ public func square(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 /// - Parameters:
 ///     - array: input array
 ///     - axes: axes to remove
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -1611,6 +1651,7 @@ public func squeezed(
 /// - Parameters:
 ///     - array: input array
 ///     - axis: axis to remove
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -1777,6 +1818,7 @@ public func take(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice 
 /// - Parameters:
 ///     - array: input array
 ///     - axes: Specifies the source axis for each axis in the new array
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:shapes>
@@ -1846,6 +1888,7 @@ public func T(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray 
 ///     - axes: axes to reduce over
 ///     - keepDims: if `true` keep the reduces axes as singleton dimensions
 ///     - ddof: the divisor to compute the variance is `N - ddof`
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:reduction>
@@ -1868,6 +1911,7 @@ public func variance(
 ///     - axis: axes to reduce over
 ///     - keepDims: if `true` keep the reduces axis as singleton dimensions
 ///     - ddof: the divisor to compute the variance is `N - ddof`
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:reduction>
@@ -1889,6 +1933,7 @@ public func variance(
 ///     - array: input array
 ///     - keepDims: if `true` keep the reduces axes as singleton dimensions
 ///     - ddof: the divisor to compute the variance is `N - ddof`
+///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:reduction>
@@ -1913,6 +1958,7 @@ public func variance(
 /// representation of each element (or group of elements) is the same.
 ///
 /// - Parameters:
+///     - array: input array
 ///   - dtype: type to change to
 ///   - stream: stream or device to evaluate on
 ///

@@ -60,7 +60,7 @@ extension MLXArray {
     /// let a = MLXArray(int64: Int(Int32.max) + 10)
     /// ```
     ///
-    /// Note ``init(_:)-6nnka`` (producing an `int32` scalar is preferred).
+    /// Note ``init(_:)-(Int)`` (producing an `int32` scalar is preferred).
     ///
     /// ### See Also
     /// - <doc:initialization>
@@ -292,11 +292,11 @@ extension MLXArray {
     /// ```
     ///
     /// Note: if the value is out of bounds for an `Int32` the precondition will fail.  If you
-    /// need an `Int` (`Int64`) scalar, please use ``init(int64:_:)-7bgj2``.
+    /// need an `Int` (`Int64`) scalar, please use ``init(int64:_:)-(Sequence<Int>,_)``.
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``init(int64:_:)-7bgj2``
+    /// - ``init(int64:_:)-(Sequence<Int>,_)``
     public convenience init(_ value: [Int], _ shape: (some Collection<Int>)? = [Int]?.none) {
         shapePrecondition(shape: shape, count: value.count)
         precondition(
@@ -379,7 +379,7 @@ extension MLXArray {
     /// ```
     ///
     /// Note: if the element type is `Int` this will produce an ``DType/int32`` result.
-    /// See ``init(int64:_:)-74tu0`` if an `.int64` is required.
+    /// See ``init(int64:_:)-(Sequence<Int>,_)`` if an `.int64` is required.
     ///
     /// ### See Also
     /// - <doc:initialization>

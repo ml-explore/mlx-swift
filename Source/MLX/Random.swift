@@ -60,7 +60,7 @@ import Foundation
 /// ```
 ///
 /// Finally, if you need to control random state in deeply nested calls to `MLXRandom` or you need
-/// thread-safe random state for multi-threaded evaluation you can use ``withRandomState(_:body:)-6i2p1``:
+/// thread-safe random state for multi-threaded evaluation you can use ``withRandomState(_:body:)-18ob4``.
 ///
 /// ```swift
 /// await withTaskGroup { group in
@@ -274,6 +274,7 @@ public enum MLXRandom {
     ///   - loc: mean of the distribution
     ///   - scale: standard deviation of the distribution
     ///   - key: PRNG key
+    ///   - stream: stream or device to evaluate on
     public static func normal(
         _ shape: some Collection<Int> = [],
         type: (some HasDType & BinaryFloatingPoint).Type = Float.self, loc: Float = 0,
@@ -311,6 +312,7 @@ public enum MLXRandom {
     ///   - loc: mean of the distribution
     ///   - scale: standard deviation of the distribution
     ///   - key: PRNG key
+    ///   - stream: stream or device to evaluate on
     public static func normal(
         _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
         key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -340,6 +342,7 @@ public enum MLXRandom {
     /// shapes of `mean` and `covariance`.
     ///   - dtype: DType of the result
     ///   - key: PRNG key
+    ///   - stream: stream or device to evaluate on
     public static func multivariateNormal(
         mean: MLXArray, covariance: MLXArray, shape: some Collection<Int> = [], dtype: DType,
         key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -698,7 +701,11 @@ public enum MLXRandom {
     /// ```
     ///
     /// - Parameters:
-    ///     - logits: The *unnormalized* categorical distribution(s).
+    ///   - logits: The *unnormalized* categorical distribution(s).
+    ///   - axis: axis that specifies the distribution
+    ///   - shape: optional shape of the output -- this must be broadcast compatible with the shape of logits
+    ///   - key: optional PRNG key
+    ///   - stream: stream or device to evaluate on
     public static func categorical(
         _ logits: MLXArray, axis: Int = -1, shape: (some Collection<Int>)? = [Int]?.none,
         key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -734,7 +741,11 @@ public enum MLXRandom {
     /// ```
     ///
     /// - Parameters:
-    ///     - logits: The *unnormalized* categorical distribution(s).
+    ///   - logits: The *unnormalized* categorical distribution(s).
+    ///   - axis: axis that specifies the distribution
+    ///   - count: number of samples to draw from logits
+    ///   - key: optional PRNG key
+    ///   - stream: stream or device to evaluate on
     public static func categorical(
         _ logits: MLXArray, axis: Int = -1, count: Int,
         key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -909,6 +920,7 @@ public func uniform(
 ///   - loc: mean of the distribution
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 public func normal(
     _ shape: some Collection<Int> = [],
     type: (some HasDType & BinaryFloatingPoint).Type = Float.self, loc: Float = 0, scale: Float = 1,
@@ -938,6 +950,7 @@ public func normal(
 ///   - loc: mean of the distribution
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 public func normal(
     _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
     key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -961,6 +974,7 @@ public func normal(
 /// shapes of `mean` and `covariance`.
 ///   - dtype: DType of the result
 ///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 public func multivariateNormal(
     mean: MLXArray, covariance: MLXArray, shape: some Collection<Int> = [], dtype: DType,
     key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -1227,7 +1241,11 @@ public func gumbel(
 /// ```
 ///
 /// - Parameters:
-///     - logits: The *unnormalized* categorical distribution(s).
+///   - logits: The *unnormalized* categorical distribution(s).
+///   - axis: axis that specifies the distribution
+///   - shape: optional shape of the output -- this must be broadcast compatible with the shape of logits
+///   - key: optional PRNG key
+///   - stream: stream or device to evaluate on
 public func categorical(
     _ logits: MLXArray, axis: Int = -1, shape: (some Collection<Int>)? = [Int]?.none,
     key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
@@ -1250,7 +1268,11 @@ public func categorical(
 /// ```
 ///
 /// - Parameters:
-///     - logits: The *unnormalized* categorical distribution(s).
+///   - logits: The *unnormalized* categorical distribution(s).
+///   - axis: axis that specifies the distribution
+///   - count: number of samples to draw from logits
+///   - key: optional PRNG key
+///   - stream: stream or device to evaluate on
 public func categorical(
     _ logits: MLXArray, axis: Int = -1, count: Int, key: (some RandomStateOrKey)? = MLXArray?.none,
     stream: StreamOrDevice = .default
@@ -1265,6 +1287,8 @@ public func categorical(
 ///   - dtype: type of the output
 ///   - loc: mean of the distribution
 ///   - scale: scale "b" of the distribution
+///   - key: optional PRNG key
+///   - stream: stream or device to evaluate on
 public func laplace(
     _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
     key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default
