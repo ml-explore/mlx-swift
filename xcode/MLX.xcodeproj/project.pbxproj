@@ -1,0 +1,2159 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C3434FA12EABEF350010D6B8 /* Cmlx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */; };
+		C3AE8ECE2EAAA15F000BD280 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
+		C3AEA0322EAAE79A000BD280 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0312EAAE79A000BD280 /* Accelerate.framework */; };
+		C3AEA0342EAAE7A0000BD280 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0332EAAE7A0000BD280 /* Metal.framework */; };
+		C3AEA0362EAAE7A9000BD280 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0352EAAE7A9000BD280 /* Foundation.framework */; };
+		C3CBE67C2EABFBA60029A645 /* Numerics in Frameworks */ = {isa = PBXBuildFile; productRef = C3CBE67B2EABFBA60029A645 /* Numerics */; };
+		C3CBE7022EAC15780029A645 /* MLXNN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; };
+		C3CBE7062EAC15780029A645 /* MLXOptimizers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */; };
+		C3CBE70B2EAC15850029A645 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
+		C3CBE7102EAC15960029A645 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
+		C3CBE7142EAC15960029A645 /* MLXNN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C3AE8ECF2EAAA15F000BD280 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3AE8EC32EAAA15F000BD280;
+			remoteInfo = MLX;
+		};
+		C3CBE7042EAC15780029A645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3CBE6B42EAC14DE0029A645;
+			remoteInfo = MLXNN;
+		};
+		C3CBE7082EAC15780029A645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3CBE6CE2EAC15310029A645;
+			remoteInfo = MLXOptimizers;
+		};
+		C3CBE70D2EAC15850029A645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3AE8EC32EAAA15F000BD280;
+			remoteInfo = MLX;
+		};
+		C3CBE7122EAC15960029A645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3AE8EC32EAAA15F000BD280;
+			remoteInfo = MLX;
+		};
+		C3CBE7162EAC15960029A645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3CBE6B42EAC14DE0029A645;
+			remoteInfo = MLXNN;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C319FC0A2F1564BE00620953 /* MLX.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MLX.xctestplan; sourceTree = "<group>"; };
+		C3AE8EC42EAAA15F000BD280 /* MLX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MLX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3AE8ECD2EAAA15F000BD280 /* MLXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MLXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cmlx.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3AEA0312EAAE79A000BD280 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
+		C3AEA0332EAAE7A0000BD280 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		C3AEA0352EAAE7A9000BD280 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MLXNN.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MLXOptimizers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3CBF17F2EAC22110029A645 /* ACKNOWLEDGMENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = ACKNOWLEDGMENTS.md; path = ../ACKNOWLEDGMENTS.md; sourceTree = SOURCE_ROOT; };
+		C3CBF1802EAC22110029A645 /* CODE_OF_CONDUCT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = CODE_OF_CONDUCT.md; path = ../CODE_OF_CONDUCT.md; sourceTree = SOURCE_ROOT; };
+		C3CBF1812EAC22110029A645 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = CONTRIBUTING.md; path = ../CONTRIBUTING.md; sourceTree = SOURCE_ROOT; };
+		C3CBF1822EAC22110029A645 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = SOURCE_ROOT; };
+		C3CBF1832EAC22110029A645 /* MAINTENANCE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = MAINTENANCE.md; path = ../MAINTENANCE.md; sourceTree = SOURCE_ROOT; };
+		C3CBF1842EAC22110029A645 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
+		C3CBF1852EAC22110029A645 /* README.xcodeproj.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.xcodeproj.md; path = ../README.xcodeproj.md; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C3AE939F2EAAAA5A000BD280 /* Exceptions for "metal-cpp" folder in "Cmlx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Foundation/Foundation.hpp,
+				Foundation/NSArray.hpp,
+				Foundation/NSAutoreleasePool.hpp,
+				Foundation/NSBundle.hpp,
+				Foundation/NSData.hpp,
+				Foundation/NSDate.hpp,
+				Foundation/NSDefines.hpp,
+				Foundation/NSDictionary.hpp,
+				Foundation/NSEnumerator.hpp,
+				Foundation/NSError.hpp,
+				Foundation/NSLock.hpp,
+				Foundation/NSNotification.hpp,
+				Foundation/NSNumber.hpp,
+				Foundation/NSObjCRuntime.hpp,
+				Foundation/NSObject.hpp,
+				Foundation/NSPrivate.hpp,
+				Foundation/NSProcessInfo.hpp,
+				Foundation/NSRange.hpp,
+				Foundation/NSSet.hpp,
+				Foundation/NSSharedPtr.hpp,
+				Foundation/NSString.hpp,
+				Foundation/NSTypes.hpp,
+				Foundation/NSURL.hpp,
+				LICENSE.txt,
+				Metal/Metal.hpp,
+				Metal/MTL4AccelerationStructure.hpp,
+				Metal/MTL4Archive.hpp,
+				Metal/MTL4ArgumentTable.hpp,
+				Metal/MTL4BinaryFunction.hpp,
+				Metal/MTL4BinaryFunctionDescriptor.hpp,
+				Metal/MTL4CommandAllocator.hpp,
+				Metal/MTL4CommandBuffer.hpp,
+				Metal/MTL4CommandEncoder.hpp,
+				Metal/MTL4CommandQueue.hpp,
+				Metal/MTL4CommitFeedback.hpp,
+				Metal/MTL4Compiler.hpp,
+				Metal/MTL4CompilerTask.hpp,
+				Metal/MTL4ComputeCommandEncoder.hpp,
+				Metal/MTL4ComputePipeline.hpp,
+				Metal/MTL4Counters.hpp,
+				Metal/MTL4FunctionDescriptor.hpp,
+				Metal/MTL4LibraryDescriptor.hpp,
+				Metal/MTL4LibraryFunctionDescriptor.hpp,
+				Metal/MTL4LinkingDescriptor.hpp,
+				Metal/MTL4MachineLearningCommandEncoder.hpp,
+				Metal/MTL4MachineLearningPipeline.hpp,
+				Metal/MTL4MeshRenderPipeline.hpp,
+				Metal/MTL4PipelineDataSetSerializer.hpp,
+				Metal/MTL4PipelineState.hpp,
+				Metal/MTL4RenderCommandEncoder.hpp,
+				Metal/MTL4RenderPass.hpp,
+				Metal/MTL4RenderPipeline.hpp,
+				Metal/MTL4SpecializedFunctionDescriptor.hpp,
+				Metal/MTL4StitchedFunctionDescriptor.hpp,
+				Metal/MTL4TileRenderPipeline.hpp,
+				Metal/MTLAccelerationStructure.hpp,
+				Metal/MTLAccelerationStructureCommandEncoder.hpp,
+				Metal/MTLAccelerationStructureTypes.hpp,
+				Metal/MTLAllocation.hpp,
+				Metal/MTLArgument.hpp,
+				Metal/MTLArgumentEncoder.hpp,
+				Metal/MTLBinaryArchive.hpp,
+				Metal/MTLBlitCommandEncoder.hpp,
+				Metal/MTLBlitPass.hpp,
+				Metal/MTLBuffer.hpp,
+				Metal/MTLCaptureManager.hpp,
+				Metal/MTLCaptureScope.hpp,
+				Metal/MTLCommandBuffer.hpp,
+				Metal/MTLCommandEncoder.hpp,
+				Metal/MTLCommandQueue.hpp,
+				Metal/MTLComputeCommandEncoder.hpp,
+				Metal/MTLComputePass.hpp,
+				Metal/MTLComputePipeline.hpp,
+				Metal/MTLCounters.hpp,
+				Metal/MTLDataType.hpp,
+				Metal/MTLDefines.hpp,
+				Metal/MTLDepthStencil.hpp,
+				Metal/MTLDevice.hpp,
+				Metal/MTLDrawable.hpp,
+				Metal/MTLDynamicLibrary.hpp,
+				Metal/MTLEvent.hpp,
+				Metal/MTLFence.hpp,
+				Metal/MTLFunctionConstantValues.hpp,
+				Metal/MTLFunctionDescriptor.hpp,
+				Metal/MTLFunctionHandle.hpp,
+				Metal/MTLFunctionLog.hpp,
+				Metal/MTLFunctionStitching.hpp,
+				Metal/MTLGPUAddress.hpp,
+				Metal/MTLHeaderBridge.hpp,
+				Metal/MTLHeap.hpp,
+				Metal/MTLIndirectCommandBuffer.hpp,
+				Metal/MTLIndirectCommandEncoder.hpp,
+				Metal/MTLIntersectionFunctionTable.hpp,
+				Metal/MTLIOCommandBuffer.hpp,
+				Metal/MTLIOCommandQueue.hpp,
+				Metal/MTLIOCompressor.hpp,
+				Metal/MTLLibrary.hpp,
+				Metal/MTLLinkedFunctions.hpp,
+				Metal/MTLLogState.hpp,
+				Metal/MTLParallelRenderCommandEncoder.hpp,
+				Metal/MTLPipeline.hpp,
+				Metal/MTLPixelFormat.hpp,
+				Metal/MTLPrivate.hpp,
+				Metal/MTLRasterizationRate.hpp,
+				Metal/MTLRenderCommandEncoder.hpp,
+				Metal/MTLRenderPass.hpp,
+				Metal/MTLRenderPipeline.hpp,
+				Metal/MTLResidencySet.hpp,
+				Metal/MTLResource.hpp,
+				Metal/MTLResourceStateCommandEncoder.hpp,
+				Metal/MTLResourceStatePass.hpp,
+				Metal/MTLResourceViewPool.hpp,
+				Metal/MTLSampler.hpp,
+				Metal/MTLStageInputOutputDescriptor.hpp,
+				Metal/MTLTensor.hpp,
+				Metal/MTLTexture.hpp,
+				Metal/MTLTextureViewPool.hpp,
+				Metal/MTLTypes.hpp,
+				Metal/MTLVersion.hpp,
+				Metal/MTLVertexDescriptor.hpp,
+				Metal/MTLVisibleFunctionTable.hpp,
+				MetalFX/MetalFX.hpp,
+				MetalFX/MTL4FXFrameInterpolator.hpp,
+				MetalFX/MTL4FXSpatialScaler.hpp,
+				MetalFX/MTL4FXTemporalDenoisedScaler.hpp,
+				MetalFX/MTL4FXTemporalScaler.hpp,
+				MetalFX/MTLFXDefines.hpp,
+				MetalFX/MTLFXFrameInterpolator.hpp,
+				MetalFX/MTLFXPrivate.hpp,
+				MetalFX/MTLFXSpatialScaler.hpp,
+				MetalFX/MTLFXTemporalDenoisedScaler.hpp,
+				MetalFX/MTLFXTemporalScaler.hpp,
+				QuartzCore/CADefines.hpp,
+				QuartzCore/CAMetalDrawable.hpp,
+				QuartzCore/CAMetalLayer.hpp,
+				QuartzCore/CAPrivate.hpp,
+				QuartzCore/QuartzCore.hpp,
+				README.md,
+				SingleHeader/MakeSingleHeader.py,
+			);
+			target = C3AE8EE52EAAA3C5000BD280 /* Cmlx */;
+		};
+		C3AE9E162EAAAB37000BD280 /* Exceptions for "mlx-c" folder in "Cmlx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				".clang-format",
+				.gitignore,
+				ACKNOWLEDGMENTS.md,
+				CMakeLists.txt,
+				CODE_OF_CONDUCT.md,
+				CONTRIBUTING.md,
+				docs/.gitignore,
+				docs/.nojekyll,
+				docs/Doxyfile,
+				docs/index.html,
+				docs/Makefile,
+				docs/README.md,
+				docs/requirements.txt,
+				docs/src/_static/mlx_logo_dark.png,
+				docs/src/_static/mlx_logo.png,
+				docs/src/array.rst,
+				docs/src/closure.rst,
+				docs/src/compile.rst,
+				docs/src/conf.py,
+				docs/src/device.rst,
+				docs/src/distributed_group.rst,
+				docs/src/distributed_ops.rst,
+				docs/src/error.rst,
+				docs/src/export.rst,
+				docs/src/fast.rst,
+				docs/src/fft.rst,
+				docs/src/index.rst,
+				docs/src/install.rst,
+				docs/src/io.rst,
+				docs/src/linalg.rst,
+				docs/src/map.rst,
+				docs/src/metal.rst,
+				docs/src/ops.rst,
+				docs/src/optional.rst,
+				docs/src/overview.rst,
+				docs/src/random.rst,
+				docs/src/stream.rst,
+				docs/src/string.rst,
+				docs/src/transforms.rst,
+				docs/src/vector.rst,
+				examples/arrays.safetensors,
+				examples/CMakeLists.txt,
+				"examples/example-closure.c",
+				"examples/example-export.c",
+				"examples/example-float64.c",
+				"examples/example-grad.c",
+				"examples/example-metal-kernel.c",
+				"examples/example-safe-tensors.c",
+				examples/example.c,
+				LICENSE,
+				"mlx-c.pc.in",
+				mlx/c/array.h,
+				mlx/c/closure.h,
+				mlx/c/compile.h,
+				mlx/c/device.h,
+				mlx/c/distributed_group.h,
+				mlx/c/distributed.h,
+				mlx/c/error.h,
+				mlx/c/export.h,
+				mlx/c/fast.h,
+				mlx/c/fft.h,
+				mlx/c/half.h,
+				mlx/c/io_types.h,
+				mlx/c/io.h,
+				mlx/c/linalg.h,
+				mlx/c/map.h,
+				mlx/c/memory.h,
+				mlx/c/metal.h,
+				mlx/c/mlx.h,
+				mlx/c/ops.h,
+				mlx/c/optional.h,
+				mlx/c/private/array.h,
+				mlx/c/private/closure.h,
+				mlx/c/private/device.h,
+				mlx/c/private/distributed_group.h,
+				mlx/c/private/enums.h,
+				mlx/c/private/export.h,
+				mlx/c/private/io.h,
+				mlx/c/private/map.h,
+				mlx/c/private/mlx.h,
+				mlx/c/private/stream.h,
+				mlx/c/private/string.h,
+				mlx/c/private/vector.h,
+				mlx/c/random.h,
+				mlx/c/stream.h,
+				mlx/c/string.h,
+				mlx/c/transforms_impl.h,
+				mlx/c/transforms.h,
+				mlx/c/vector.h,
+				mlx/c/version.h,
+				python/c.py,
+				python/closure_generator.py,
+				python/generator.py,
+				python/map_generator.py,
+				python/mlxhooks.py,
+				python/mlxtypes.py,
+				python/mlxvariants.py,
+				python/type_private_generator.py,
+				python/vector_generator.py,
+				README.md,
+			);
+			target = C3AE8EE52EAAA3C5000BD280 /* Cmlx */;
+		};
+		C3AE9EA62EAAABFC000BD280 /* Exceptions for "mlx" folder in "Cmlx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				".clang-format",
+				".github/actions/build-cuda-release/action.yml",
+				".github/actions/build-docs/action.yml",
+				".github/actions/build-linux-release/action.yml",
+				".github/actions/build-linux/action.yml",
+				".github/actions/build-macos-release/action.yml",
+				".github/actions/build-macos/action.yml",
+				".github/actions/setup-linux/action.yml",
+				".github/actions/setup-macos/action.yml",
+				".github/actions/test-linux/action.yml",
+				.github/dependabot.yml,
+				.github/ISSUE_TEMPLATE/bug_report.md,
+				.github/pull_request_template.md,
+				".github/scripts/setup+build-cpp-linux-fedora-container.sh",
+				.github/workflows/build_and_test.yml,
+				.github/workflows/documentation.yml,
+				.github/workflows/nightly.yml,
+				.github/workflows/release.yml,
+				.gitignore,
+				".pre-commit-config.yaml",
+				ACKNOWLEDGMENTS.md,
+				benchmarks/cpp/autograd.cpp,
+				benchmarks/cpp/CMakeLists.txt,
+				benchmarks/cpp/compare_devices.cpp,
+				benchmarks/cpp/irregular_strides.cpp,
+				benchmarks/cpp/single_ops.cpp,
+				benchmarks/cpp/time_utils.h,
+				benchmarks/numpy/single_ops.py,
+				benchmarks/numpy/time_utils.py,
+				benchmarks/python/batch_matmul_bench.py,
+				benchmarks/python/blas/bench_gemm.py,
+				benchmarks/python/blas/bench_gemv.py,
+				benchmarks/python/comparative/bench_mlx.py,
+				benchmarks/python/comparative/bench_torch.py,
+				benchmarks/python/comparative/compare.py,
+				benchmarks/python/comparative/README.md,
+				benchmarks/python/compile_bench.py,
+				benchmarks/python/conv_bench.py,
+				benchmarks/python/conv_transpose_bench.py,
+				benchmarks/python/conv_unaligned_bench.py,
+				benchmarks/python/conv1d_bench.py,
+				benchmarks/python/conv2d_bench_cpu.py,
+				benchmarks/python/conv2d_train_bench_cpu.py,
+				benchmarks/python/conv2d_transpose_bench_cpu.py,
+				benchmarks/python/conv3d_bench_cpu.py,
+				benchmarks/python/conv3d_train_bench_cpu.py,
+				benchmarks/python/conv3d_transpose_bench_cpu.py,
+				benchmarks/python/distributed_bench.py,
+				benchmarks/python/einsum_bench.py,
+				benchmarks/python/fft_bench.py,
+				benchmarks/python/gather_bench.py,
+				benchmarks/python/gather_mm_bench.py,
+				benchmarks/python/gather_qmm_bench.py,
+				benchmarks/python/hadamard_bench.py,
+				benchmarks/python/layer_norm_bench.py,
+				benchmarks/python/masked_scatter.py,
+				benchmarks/python/rms_norm_bench.py,
+				benchmarks/python/rope_bench.py,
+				benchmarks/python/scatter_bench.py,
+				benchmarks/python/sdpa_bench.py,
+				benchmarks/python/sdpa_vector_bench.py,
+				benchmarks/python/single_ops.py,
+				benchmarks/python/synchronize_bench.py,
+				benchmarks/python/time_utils.py,
+				CITATION.cff,
+				cmake/extension.cmake,
+				cmake/FindNCCL.cmake,
+				cmake/Findnvpl.cmake,
+				CMakeLists.txt,
+				CODE_OF_CONDUCT.md,
+				CONTRIBUTING.md,
+				"docs/.clang-format",
+				docs/.gitignore,
+				docs/.nojekyll,
+				docs/Doxyfile,
+				docs/index.html,
+				docs/Makefile,
+				docs/README.md,
+				docs/requirements.txt,
+				"docs/src/_static/distributed/m3-ultra-mesh-broken.png",
+				"docs/src/_static/distributed/m3-ultra-mesh.png",
+				docs/src/_static/metal_debugger/capture.png,
+				docs/src/_static/metal_debugger/schema.png,
+				docs/src/_static/mlx_logo_dark.png,
+				docs/src/_static/mlx_logo.png,
+				"docs/src/_templates/module-base-class.rst",
+				"docs/src/_templates/nn-module-template.rst",
+				"docs/src/_templates/optimizers-template.rst",
+				docs/src/conf.py,
+				docs/src/cpp/ops.rst,
+				docs/src/dev/custom_metal_kernels.rst,
+				docs/src/dev/extensions.rst,
+				docs/src/dev/metal_debugger.rst,
+				docs/src/dev/mlx_in_cpp.rst,
+				docs/src/examples/linear_regression.rst,
+				"docs/src/examples/llama-inference.rst",
+				docs/src/examples/mlp.rst,
+				docs/src/index.rst,
+				docs/src/install.rst,
+				docs/src/python/array.rst,
+				docs/src/python/cuda.rst,
+				docs/src/python/data_types.rst,
+				docs/src/python/devices_and_streams.rst,
+				docs/src/python/distributed.rst,
+				docs/src/python/export.rst,
+				docs/src/python/fast.rst,
+				docs/src/python/fft.rst,
+				docs/src/python/linalg.rst,
+				docs/src/python/memory_management.rst,
+				docs/src/python/metal.rst,
+				docs/src/python/nn.rst,
+				docs/src/python/nn/functions.rst,
+				docs/src/python/nn/init.rst,
+				docs/src/python/nn/layers.rst,
+				docs/src/python/nn/losses.rst,
+				docs/src/python/nn/module.rst,
+				docs/src/python/ops.rst,
+				docs/src/python/optimizers.rst,
+				docs/src/python/optimizers/common_optimizers.rst,
+				docs/src/python/optimizers/optimizer.rst,
+				docs/src/python/optimizers/schedulers.rst,
+				docs/src/python/random.rst,
+				docs/src/python/transforms.rst,
+				docs/src/python/tree_utils.rst,
+				docs/src/usage/compile.rst,
+				docs/src/usage/distributed.rst,
+				docs/src/usage/export.rst,
+				docs/src/usage/function_transforms.rst,
+				docs/src/usage/indexing.rst,
+				docs/src/usage/launching_distributed.rst,
+				docs/src/usage/lazy_evaluation.rst,
+				docs/src/usage/numpy.rst,
+				docs/src/usage/quick_start.rst,
+				docs/src/usage/saving_and_loading.rst,
+				docs/src/usage/unified_memory.rst,
+				docs/src/usage/using_streams.rst,
+				examples/cmake_project/CMakeLists.txt,
+				examples/cmake_project/example.cpp,
+				examples/cmake_project/README.md,
+				examples/cpp/CMakeLists.txt,
+				examples/cpp/distributed.cpp,
+				examples/cpp/linear_regression.cpp,
+				examples/cpp/logistic_regression.cpp,
+				examples/cpp/metal_capture.cpp,
+				examples/cpp/timer.h,
+				examples/cpp/tutorial.cpp,
+				examples/export/CMakeLists.txt,
+				examples/export/eval_mlp.cpp,
+				examples/export/eval_mlp.py,
+				examples/export/README.md,
+				examples/export/train_mlp.cpp,
+				examples/export/train_mlp.py,
+				examples/extensions/axpby/axpby.cpp,
+				examples/extensions/axpby/axpby.h,
+				examples/extensions/axpby/axpby.metal,
+				examples/extensions/bindings.cpp,
+				examples/extensions/CMakeLists.txt,
+				examples/extensions/mlx_sample_extensions/__init__.py,
+				examples/extensions/pyproject.toml,
+				examples/extensions/README.md,
+				examples/extensions/requirements.txt,
+				examples/extensions/setup.py,
+				examples/extensions/test.py,
+				examples/python/linear_regression.py,
+				examples/python/logistic_regression.py,
+				examples/python/qqmm.py,
+				LICENSE,
+				MANIFEST.in,
+				mlx.pc.in,
+				"mlx/3rdparty/.clang-format",
+				mlx/3rdparty/pocketfft.h,
+				mlx/allocator.h,
+				mlx/array.h,
+				mlx/backend/common/binary.h,
+				mlx/backend/common/broadcasting.h,
+				mlx/backend/common/buffer_cache.h,
+				mlx/backend/common/CMakeLists.txt,
+				mlx/backend/common/compiled.h,
+				mlx/backend/common/copy.h,
+				mlx/backend/common/hadamard.h,
+				mlx/backend/common/matmul.h,
+				mlx/backend/common/reduce.h,
+				mlx/backend/common/slicing.h,
+				mlx/backend/common/ternary.h,
+				mlx/backend/common/unary.h,
+				mlx/backend/common/utils.h,
+				mlx/backend/cpu/arange.h,
+				mlx/backend/cpu/available.h,
+				mlx/backend/cpu/binary_ops.h,
+				mlx/backend/cpu/binary_two.h,
+				mlx/backend/cpu/binary.h,
+				mlx/backend/cpu/CMakeLists.txt,
+				mlx/backend/cpu/compiled_preamble.h,
+				mlx/backend/cpu/compiled.cpp,
+				mlx/backend/cpu/copy.h,
+				mlx/backend/cpu/encoder.h,
+				mlx/backend/cpu/eval.h,
+				mlx/backend/cpu/gemm.h,
+				mlx/backend/cpu/gemms/simd_bf16.cpp,
+				mlx/backend/cpu/gemms/simd_fp16.cpp,
+				mlx/backend/cpu/gemms/simd_gemm.h,
+				mlx/backend/cpu/jit_compiler.h,
+				mlx/backend/cpu/lapack.h,
+				mlx/backend/cpu/make_compiled_preamble.ps1,
+				mlx/backend/cpu/make_compiled_preamble.sh,
+				mlx/backend/cpu/simd/accelerate_fp16_simd.h,
+				mlx/backend/cpu/simd/accelerate_simd.h,
+				mlx/backend/cpu/simd/base_simd.h,
+				mlx/backend/cpu/simd/math.h,
+				mlx/backend/cpu/simd/neon_fp16_simd.h,
+				mlx/backend/cpu/simd/simd.h,
+				mlx/backend/cpu/simd/type.h,
+				mlx/backend/cpu/slicing.h,
+				mlx/backend/cpu/ternary.h,
+				mlx/backend/cpu/threefry.h,
+				mlx/backend/cpu/unary_ops.h,
+				mlx/backend/cpu/unary.h,
+				mlx/backend/cuda/allocator.cpp,
+				mlx/backend/cuda/allocator.h,
+				mlx/backend/cuda/arange.cu,
+				mlx/backend/cuda/arg_reduce.cu,
+				mlx/backend/cuda/bin2h.cmake,
+				mlx/backend/cuda/binary_two.cu,
+				mlx/backend/cuda/binary/add.cu,
+				mlx/backend/cuda/binary/arctan2.cu,
+				mlx/backend/cuda/binary/binary.cuh,
+				mlx/backend/cuda/binary/bitwise_binary.cu,
+				mlx/backend/cuda/binary/CMakeLists.txt,
+				mlx/backend/cuda/binary/divide.cu,
+				mlx/backend/cuda/binary/equal.cu,
+				mlx/backend/cuda/binary/greater_equal.cu,
+				mlx/backend/cuda/binary/greater.cu,
+				mlx/backend/cuda/binary/less_equal.cu,
+				mlx/backend/cuda/binary/less.cu,
+				mlx/backend/cuda/binary/log_add_exp.cu,
+				mlx/backend/cuda/binary/logical_and.cu,
+				mlx/backend/cuda/binary/logical_or.cu,
+				mlx/backend/cuda/binary/maximum.cu,
+				mlx/backend/cuda/binary/minimum.cu,
+				mlx/backend/cuda/binary/multiply.cu,
+				mlx/backend/cuda/binary/not_equal.cu,
+				mlx/backend/cuda/binary/power.cu,
+				mlx/backend/cuda/binary/remainder.cu,
+				mlx/backend/cuda/binary/subtract.cu,
+				mlx/backend/cuda/CMakeLists.txt,
+				mlx/backend/cuda/compiled.cpp,
+				mlx/backend/cuda/conv.cpp,
+				mlx/backend/cuda/conv/conv.h,
+				mlx/backend/cuda/conv/gemm_conv.cu,
+				mlx/backend/cuda/conv/gemm_grouped_conv.cu,
+				mlx/backend/cuda/copy.cu,
+				mlx/backend/cuda/copy/copy_contiguous.cu,
+				mlx/backend/cuda/copy/copy_general_dynamic.cu,
+				mlx/backend/cuda/copy/copy_general_input.cu,
+				mlx/backend/cuda/copy/copy_general.cu,
+				mlx/backend/cuda/copy/copy.cuh,
+				mlx/backend/cuda/cublas_utils.cpp,
+				mlx/backend/cuda/cublas_utils.h,
+				mlx/backend/cuda/cuda_utils.h,
+				mlx/backend/cuda/cuda.cpp,
+				mlx/backend/cuda/cuda.h,
+				mlx/backend/cuda/cudnn_utils.cpp,
+				mlx/backend/cuda/cudnn_utils.h,
+				mlx/backend/cuda/custom_kernel.cpp,
+				mlx/backend/cuda/device.cpp,
+				mlx/backend/cuda/device.h,
+				mlx/backend/cuda/device/atomic_ops.cuh,
+				mlx/backend/cuda/device/binary_ops.cuh,
+				mlx/backend/cuda/device/cast_op.cuh,
+				mlx/backend/cuda/device/complex.cuh,
+				mlx/backend/cuda/device/config.h,
+				mlx/backend/cuda/device/fp16_math.cuh,
+				mlx/backend/cuda/device/gather_axis.cuh,
+				mlx/backend/cuda/device/gather.cuh,
+				mlx/backend/cuda/device/indexing.cuh,
+				mlx/backend/cuda/device/scatter_axis.cuh,
+				mlx/backend/cuda/device/scatter_ops.cuh,
+				mlx/backend/cuda/device/scatter.cuh,
+				mlx/backend/cuda/device/ternary_ops.cuh,
+				mlx/backend/cuda/device/unary_ops.cuh,
+				mlx/backend/cuda/device/utils.cuh,
+				mlx/backend/cuda/distributed.cu,
+				mlx/backend/cuda/eval.cpp,
+				mlx/backend/cuda/event.cu,
+				mlx/backend/cuda/event.h,
+				mlx/backend/cuda/fence.cpp,
+				mlx/backend/cuda/gemms/cublas_gemm_batched_12_0.cpp,
+				mlx/backend/cuda/gemms/cublas_gemm_batched_12_9.cu,
+				mlx/backend/cuda/gemms/cublas_gemm.cpp,
+				mlx/backend/cuda/gemms/cublas_gemm.h,
+				mlx/backend/cuda/gemms/gemv.cu,
+				mlx/backend/cuda/gemms/gemv.h,
+				mlx/backend/cuda/indexing.cpp,
+				mlx/backend/cuda/jit_module.cpp,
+				mlx/backend/cuda/jit_module.h,
+				mlx/backend/cuda/kernel_utils.cu,
+				mlx/backend/cuda/kernel_utils.cuh,
+				mlx/backend/cuda/layer_norm.cu,
+				mlx/backend/cuda/load.cpp,
+				mlx/backend/cuda/logsumexp.cu,
+				mlx/backend/cuda/lru_cache.h,
+				mlx/backend/cuda/matmul.cpp,
+				mlx/backend/cuda/primitives.cpp,
+				mlx/backend/cuda/quantized/affine_quantize.cu,
+				mlx/backend/cuda/quantized/convert_fp8.cu,
+				mlx/backend/cuda/quantized/cublas_qqmm.cpp,
+				mlx/backend/cuda/quantized/cublas_qqmm.h,
+				mlx/backend/cuda/quantized/cuda_fp4.h,
+				mlx/backend/cuda/quantized/fp_quantize.cu,
+				mlx/backend/cuda/quantized/mxfp8_quantize.cuh,
+				mlx/backend/cuda/quantized/nvfp4_quantize.cuh,
+				mlx/backend/cuda/quantized/qqmm_utils.cu,
+				mlx/backend/cuda/quantized/qqmm_utils.h,
+				mlx/backend/cuda/quantized/qqmm.cpp,
+				mlx/backend/cuda/quantized/quantized_utils.cuh,
+				mlx/backend/cuda/quantized/quantized.cpp,
+				mlx/backend/cuda/quantized/quantized.h,
+				mlx/backend/cuda/random.cu,
+				mlx/backend/cuda/reduce.cu,
+				mlx/backend/cuda/reduce/all_reduce.cu,
+				mlx/backend/cuda/reduce/col_reduce.cu,
+				mlx/backend/cuda/reduce/init_reduce.cu,
+				mlx/backend/cuda/reduce/reduce_ops.cuh,
+				mlx/backend/cuda/reduce/reduce_utils.cuh,
+				mlx/backend/cuda/reduce/reduce.cuh,
+				mlx/backend/cuda/reduce/row_reduce.cu,
+				mlx/backend/cuda/rms_norm.cu,
+				mlx/backend/cuda/rope.cu,
+				mlx/backend/cuda/scaled_dot_product_attention.cpp,
+				mlx/backend/cuda/scaled_dot_product_attention.cu,
+				mlx/backend/cuda/scan.cu,
+				mlx/backend/cuda/slicing.cpp,
+				mlx/backend/cuda/softmax.cu,
+				mlx/backend/cuda/sort.cu,
+				mlx/backend/cuda/steel/defines.cuh,
+				mlx/backend/cuda/steel/gemm.cuh,
+				mlx/backend/cuda/steel/mma.cuh,
+				mlx/backend/cuda/steel/tiles.cuh,
+				mlx/backend/cuda/steel/utils.cuh,
+				mlx/backend/cuda/ternary.cu,
+				mlx/backend/cuda/unary/abs.cu,
+				mlx/backend/cuda/unary/arccos.cu,
+				mlx/backend/cuda/unary/arccosh.cu,
+				mlx/backend/cuda/unary/arcsin.cu,
+				mlx/backend/cuda/unary/arcsinh.cu,
+				mlx/backend/cuda/unary/arctan.cu,
+				mlx/backend/cuda/unary/arctanh.cu,
+				mlx/backend/cuda/unary/bitwise_invert.cu,
+				mlx/backend/cuda/unary/ceil.cu,
+				mlx/backend/cuda/unary/CMakeLists.txt,
+				mlx/backend/cuda/unary/conjugate.cu,
+				mlx/backend/cuda/unary/cos.cu,
+				mlx/backend/cuda/unary/cosh.cu,
+				mlx/backend/cuda/unary/erf_inv.cu,
+				mlx/backend/cuda/unary/erf.cu,
+				mlx/backend/cuda/unary/exp.cu,
+				mlx/backend/cuda/unary/expm1.cu,
+				mlx/backend/cuda/unary/floor.cu,
+				mlx/backend/cuda/unary/imag.cu,
+				mlx/backend/cuda/unary/log.cu,
+				mlx/backend/cuda/unary/log1p.cu,
+				mlx/backend/cuda/unary/logical_not.cu,
+				mlx/backend/cuda/unary/negative.cu,
+				mlx/backend/cuda/unary/real.cu,
+				mlx/backend/cuda/unary/round.cu,
+				mlx/backend/cuda/unary/sigmoid.cu,
+				mlx/backend/cuda/unary/sign.cu,
+				mlx/backend/cuda/unary/sin.cu,
+				mlx/backend/cuda/unary/sinh.cu,
+				mlx/backend/cuda/unary/sqrt.cu,
+				mlx/backend/cuda/unary/square.cu,
+				mlx/backend/cuda/unary/tan.cu,
+				mlx/backend/cuda/unary/tanh.cu,
+				mlx/backend/cuda/unary/unary.cuh,
+				mlx/backend/cuda/utils.cpp,
+				mlx/backend/cuda/utils.h,
+				mlx/backend/cuda/vector_types.cuh,
+				mlx/backend/cuda/worker.cpp,
+				mlx/backend/cuda/worker.h,
+				mlx/backend/gpu/available.h,
+				mlx/backend/gpu/CMakeLists.txt,
+				mlx/backend/gpu/copy.h,
+				mlx/backend/gpu/eval.h,
+				mlx/backend/gpu/slicing.h,
+				mlx/backend/metal/allocator.h,
+				mlx/backend/metal/binary.h,
+				mlx/backend/metal/CMakeLists.txt,
+				mlx/backend/metal/device.h,
+				mlx/backend/metal/jit/includes.h,
+				mlx/backend/metal/jit/indexing.h,
+				mlx/backend/metal/kernels.h,
+				mlx/backend/metal/kernels/arange.h,
+				mlx/backend/metal/kernels/arange.metal,
+				mlx/backend/metal/kernels/arg_reduce.metal,
+				mlx/backend/metal/kernels/atomic.h,
+				mlx/backend/metal/kernels/bf16_math.h,
+				mlx/backend/metal/kernels/bf16.h,
+				mlx/backend/metal/kernels/binary_ops.h,
+				mlx/backend/metal/kernels/binary_two.h,
+				mlx/backend/metal/kernels/binary_two.metal,
+				mlx/backend/metal/kernels/binary.h,
+				mlx/backend/metal/kernels/binary.metal,
+				mlx/backend/metal/kernels/cexpf.h,
+				mlx/backend/metal/kernels/CMakeLists.txt,
+				mlx/backend/metal/kernels/complex.h,
+				mlx/backend/metal/kernels/conv.metal,
+				mlx/backend/metal/kernels/copy.h,
+				mlx/backend/metal/kernels/copy.metal,
+				mlx/backend/metal/kernels/defines.h,
+				mlx/backend/metal/kernels/erf.h,
+				mlx/backend/metal/kernels/expm1f.h,
+				mlx/backend/metal/kernels/fence.metal,
+				mlx/backend/metal/kernels/fft.h,
+				mlx/backend/metal/kernels/fft.metal,
+				mlx/backend/metal/kernels/fft/radix.h,
+				mlx/backend/metal/kernels/fft/readwrite.h,
+				mlx/backend/metal/kernels/fp_quantized_nax.h,
+				mlx/backend/metal/kernels/fp_quantized_nax.metal,
+				mlx/backend/metal/kernels/fp_quantized.h,
+				mlx/backend/metal/kernels/fp_quantized.metal,
+				mlx/backend/metal/kernels/fp4.h,
+				mlx/backend/metal/kernels/fp8.h,
+				mlx/backend/metal/kernels/gemv_masked.h,
+				mlx/backend/metal/kernels/gemv_masked.metal,
+				mlx/backend/metal/kernels/gemv.metal,
+				mlx/backend/metal/kernels/hadamard.h,
+				mlx/backend/metal/kernels/indexing/gather_axis.h,
+				mlx/backend/metal/kernels/indexing/gather_front.h,
+				mlx/backend/metal/kernels/indexing/gather.h,
+				mlx/backend/metal/kernels/indexing/indexing.h,
+				mlx/backend/metal/kernels/indexing/masked_scatter.h,
+				mlx/backend/metal/kernels/indexing/scatter_axis.h,
+				mlx/backend/metal/kernels/indexing/scatter.h,
+				mlx/backend/metal/kernels/layer_norm.metal,
+				mlx/backend/metal/kernels/logsumexp.h,
+				mlx/backend/metal/kernels/logsumexp.metal,
+				mlx/backend/metal/kernels/quantized_nax.h,
+				mlx/backend/metal/kernels/quantized_nax.metal,
+				mlx/backend/metal/kernels/quantized_utils.h,
+				mlx/backend/metal/kernels/quantized.h,
+				mlx/backend/metal/kernels/quantized.metal,
+				mlx/backend/metal/kernels/random.metal,
+				mlx/backend/metal/kernels/reduce_utils.h,
+				mlx/backend/metal/kernels/reduce.h,
+				mlx/backend/metal/kernels/reduce.metal,
+				mlx/backend/metal/kernels/reduction/ops.h,
+				mlx/backend/metal/kernels/reduction/reduce_all.h,
+				mlx/backend/metal/kernels/reduction/reduce_col.h,
+				mlx/backend/metal/kernels/reduction/reduce_init.h,
+				mlx/backend/metal/kernels/reduction/reduce_row.h,
+				mlx/backend/metal/kernels/rms_norm.metal,
+				mlx/backend/metal/kernels/rope.metal,
+				mlx/backend/metal/kernels/scaled_dot_product_attention.metal,
+				mlx/backend/metal/kernels/scan.h,
+				mlx/backend/metal/kernels/scan.metal,
+				mlx/backend/metal/kernels/sdpa_vector.h,
+				mlx/backend/metal/kernels/softmax.h,
+				mlx/backend/metal/kernels/softmax.metal,
+				mlx/backend/metal/kernels/sort.h,
+				mlx/backend/metal/kernels/sort.metal,
+				mlx/backend/metal/kernels/steel/attn/attn.h,
+				mlx/backend/metal/kernels/steel/attn/kernels/steel_attention_nax.h,
+				mlx/backend/metal/kernels/steel/attn/kernels/steel_attention_nax.metal,
+				mlx/backend/metal/kernels/steel/attn/kernels/steel_attention.h,
+				mlx/backend/metal/kernels/steel/attn/kernels/steel_attention.metal,
+				mlx/backend/metal/kernels/steel/attn/loader.h,
+				mlx/backend/metal/kernels/steel/attn/mma.h,
+				mlx/backend/metal/kernels/steel/attn/nax.h,
+				mlx/backend/metal/kernels/steel/attn/params.h,
+				mlx/backend/metal/kernels/steel/attn/transforms.h,
+				mlx/backend/metal/kernels/steel/conv/conv.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.metal,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv.metal,
+				mlx/backend/metal/kernels/steel/conv/loader.h,
+				mlx/backend/metal/kernels/steel/conv/loaders/loader_channel_l.h,
+				mlx/backend/metal/kernels/steel/conv/loaders/loader_channel_n.h,
+				mlx/backend/metal/kernels/steel/conv/loaders/loader_general.h,
+				mlx/backend/metal/kernels/steel/conv/params.h,
+				mlx/backend/metal/kernels/steel/defines.h,
+				mlx/backend/metal/kernels/steel/gemm/gemm_nax.h,
+				mlx/backend/metal/kernels/steel/gemm/gemm.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_fused_nax.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_fused_nax.metal,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_fused.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_fused.metal,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_gather_nax.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_gather_nax.metal,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_gather.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_gather.metal,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_masked.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_masked.metal,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_segmented.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_segmented.metal,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_splitk.h,
+				mlx/backend/metal/kernels/steel/gemm/kernels/steel_gemm_splitk.metal,
+				mlx/backend/metal/kernels/steel/gemm/loader.h,
+				mlx/backend/metal/kernels/steel/gemm/mma.h,
+				mlx/backend/metal/kernels/steel/gemm/nax.h,
+				mlx/backend/metal/kernels/steel/gemm/params.h,
+				mlx/backend/metal/kernels/steel/gemm/transforms.h,
+				mlx/backend/metal/kernels/steel/utils.h,
+				mlx/backend/metal/kernels/steel/utils/integral_constant.h,
+				mlx/backend/metal/kernels/steel/utils/type_traits.h,
+				mlx/backend/metal/kernels/ternary_ops.h,
+				mlx/backend/metal/kernels/ternary.h,
+				mlx/backend/metal/kernels/ternary.metal,
+				mlx/backend/metal/kernels/unary_ops.h,
+				mlx/backend/metal/kernels/unary.h,
+				mlx/backend/metal/kernels/unary.metal,
+				mlx/backend/metal/kernels/utils.h,
+				mlx/backend/metal/make_compiled_preamble.sh,
+				mlx/backend/metal/matmul.h,
+				mlx/backend/metal/metal.h,
+				mlx/backend/metal/no_metal.cpp,
+				mlx/backend/metal/nojit_kernels.cpp,
+				mlx/backend/metal/reduce.h,
+				mlx/backend/metal/resident.h,
+				mlx/backend/metal/scan.h,
+				mlx/backend/metal/ternary.h,
+				mlx/backend/metal/unary.h,
+				mlx/backend/metal/utils.h,
+				mlx/backend/no_cpu/available.cpp,
+				mlx/backend/no_cpu/CMakeLists.txt,
+				mlx/backend/no_cpu/compiled.cpp,
+				mlx/backend/no_cpu/primitives.cpp,
+				mlx/backend/no_gpu/allocator.cpp,
+				mlx/backend/no_gpu/apple_memory.h,
+				mlx/backend/no_gpu/CMakeLists.txt,
+				mlx/backend/no_gpu/eval.cpp,
+				mlx/backend/no_gpu/event.cpp,
+				mlx/backend/no_gpu/fence.cpp,
+				mlx/backend/no_gpu/linux_memory.h,
+				mlx/backend/no_gpu/primitives.cpp,
+				mlx/CMakeLists.txt,
+				mlx/compile_impl.h,
+				mlx/compile.h,
+				mlx/device.h,
+				mlx/distributed/CMakeLists.txt,
+				mlx/distributed/distributed_impl.h,
+				mlx/distributed/distributed.h,
+				mlx/distributed/jaccl/CMakeLists.txt,
+				mlx/distributed/jaccl/jaccl.cpp,
+				mlx/distributed/jaccl/jaccl.h,
+				mlx/distributed/mpi/CMakeLists.txt,
+				mlx/distributed/mpi/mpi_declarations.h,
+				mlx/distributed/mpi/mpi.cpp,
+				mlx/distributed/mpi/mpi.h,
+				mlx/distributed/nccl/CMakeLists.txt,
+				mlx/distributed/nccl/nccl_stub/CMakeLists.txt,
+				mlx/distributed/nccl/nccl_stub/nccl_stubs.cpp,
+				mlx/distributed/nccl/nccl.cpp,
+				mlx/distributed/nccl/nccl.h,
+				mlx/distributed/ops.h,
+				mlx/distributed/primitives.h,
+				mlx/distributed/reduction_ops.h,
+				mlx/distributed/ring/CMakeLists.txt,
+				mlx/distributed/ring/ring.cpp,
+				mlx/distributed/ring/ring.h,
+				mlx/distributed/utils.h,
+				mlx/dtype_utils.h,
+				mlx/dtype.h,
+				mlx/einsum.h,
+				mlx/event.h,
+				mlx/export_impl.h,
+				mlx/export.h,
+				mlx/fast_primitives.h,
+				mlx/fast.h,
+				mlx/fence.h,
+				mlx/fft.h,
+				mlx/graph_utils.h,
+				mlx/io.h,
+				mlx/io/CMakeLists.txt,
+				mlx/io/gguf_quants.cpp,
+				mlx/io/gguf.cpp,
+				mlx/io/gguf.h,
+				mlx/io/load.h,
+				mlx/io/no_safetensors.cpp,
+				mlx/linalg.h,
+				mlx/memory.h,
+				mlx/mlx.h,
+				mlx/ops.h,
+				mlx/primitives.h,
+				mlx/random.h,
+				mlx/scheduler.h,
+				mlx/small_vector.h,
+				mlx/stream.h,
+				mlx/threadpool.h,
+				mlx/transforms_impl.h,
+				mlx/transforms.h,
+				mlx/types/bf16.h,
+				mlx/types/complex.h,
+				mlx/types/fp16.h,
+				mlx/types/half_types.h,
+				mlx/types/limits.h,
+				mlx/utils.h,
+				mlx/version.h,
+				pyproject.toml,
+				python/mlx/__main__.py,
+				python/mlx/_distributed_utils/common.py,
+				python/mlx/_distributed_utils/config.py,
+				python/mlx/_distributed_utils/launch.py,
+				python/mlx/_reprlib_fix.py,
+				python/mlx/_stub_patterns.txt,
+				python/mlx/extension.py,
+				python/mlx/nn/__init__.py,
+				python/mlx/nn/init.py,
+				python/mlx/nn/layers/__init__.py,
+				python/mlx/nn/layers/activations.py,
+				python/mlx/nn/layers/base.py,
+				python/mlx/nn/layers/containers.py,
+				python/mlx/nn/layers/convolution_transpose.py,
+				python/mlx/nn/layers/convolution.py,
+				python/mlx/nn/layers/distributed.py,
+				python/mlx/nn/layers/dropout.py,
+				python/mlx/nn/layers/embedding.py,
+				python/mlx/nn/layers/linear.py,
+				python/mlx/nn/layers/normalization.py,
+				python/mlx/nn/layers/pooling.py,
+				python/mlx/nn/layers/positional_encoding.py,
+				python/mlx/nn/layers/quantized.py,
+				python/mlx/nn/layers/recurrent.py,
+				python/mlx/nn/layers/transformer.py,
+				python/mlx/nn/layers/upsample.py,
+				python/mlx/nn/losses.py,
+				python/mlx/nn/utils.py,
+				python/mlx/optimizers/__init__.py,
+				python/mlx/optimizers/optimizers.py,
+				python/mlx/optimizers/schedulers.py,
+				python/mlx/py.typed,
+				python/mlx/utils.py,
+				python/scripts/repair_cuda.sh,
+				python/scripts/repair_linux.sh,
+				python/scripts/repair_record.py,
+				python/src/array.cpp,
+				python/src/buffer.h,
+				python/src/CMakeLists.txt,
+				python/src/constants.cpp,
+				python/src/convert.cpp,
+				python/src/convert.h,
+				python/src/cuda.cpp,
+				python/src/device.cpp,
+				python/src/distributed.cpp,
+				python/src/export.cpp,
+				python/src/fast.cpp,
+				python/src/fft.cpp,
+				python/src/indexing.cpp,
+				python/src/indexing.h,
+				python/src/linalg.cpp,
+				python/src/load.cpp,
+				python/src/load.h,
+				python/src/memory.cpp,
+				python/src/metal.cpp,
+				python/src/mlx_func.cpp,
+				python/src/mlx_func.h,
+				python/src/mlx.cpp,
+				python/src/ops.cpp,
+				python/src/random.cpp,
+				python/src/small_vector.h,
+				python/src/stream.cpp,
+				python/src/transforms.cpp,
+				python/src/trees.cpp,
+				python/src/trees.h,
+				python/src/utils.cpp,
+				python/src/utils.h,
+				python/tests/__main__.py,
+				python/tests/cuda_skip.py,
+				python/tests/mlx_distributed_tests.py,
+				python/tests/mlx_tests.py,
+				python/tests/mpi_test_distributed.py,
+				python/tests/nccl_test_distributed.py,
+				python/tests/ring_test_distributed.py,
+				python/tests/test_array.py,
+				python/tests/test_autograd.py,
+				python/tests/test_bf16.py,
+				python/tests/test_blas.py,
+				python/tests/test_compile.py,
+				python/tests/test_constants.py,
+				python/tests/test_conv_transpose.py,
+				python/tests/test_conv.py,
+				python/tests/test_device.py,
+				python/tests/test_double.py,
+				python/tests/test_einsum.py,
+				python/tests/test_eval.py,
+				python/tests/test_export_import.py,
+				python/tests/test_fast_sdpa.py,
+				python/tests/test_fast.py,
+				python/tests/test_fft.py,
+				python/tests/test_graph.py,
+				python/tests/test_init.py,
+				python/tests/test_linalg.py,
+				python/tests/test_load.py,
+				python/tests/test_losses.py,
+				python/tests/test_memory.py,
+				python/tests/test_nn.py,
+				python/tests/test_ops.py,
+				python/tests/test_optimizers.py,
+				python/tests/test_quantized.py,
+				python/tests/test_random.py,
+				python/tests/test_reduce.py,
+				python/tests/test_tree.py,
+				python/tests/test_upsample.py,
+				python/tests/test_vmap.py,
+				README.md,
+				setup.py,
+				tests/allocator_tests.cpp,
+				tests/arg_reduce_tests.cpp,
+				tests/array_tests.cpp,
+				tests/autograd_tests.cpp,
+				tests/blas_tests.cpp,
+				tests/CMakeLists.txt,
+				tests/compile_tests.cpp,
+				tests/creations_tests.cpp,
+				tests/custom_vjp_tests.cpp,
+				tests/device_tests.cpp,
+				tests/einsum_tests.cpp,
+				tests/eval_tests.cpp,
+				tests/export_import_tests.cpp,
+				tests/fft_tests.cpp,
+				tests/gpu_tests.cpp,
+				tests/linalg_tests.cpp,
+				tests/load_tests.cpp,
+				tests/ops_tests.cpp,
+				tests/random_tests.cpp,
+				tests/scheduler_tests.cpp,
+				tests/tests.cpp,
+				tests/utils_tests.cpp,
+				tests/vmap_tests.cpp,
+			);
+			target = C3AE8EE52EAAA3C5000BD280 /* Cmlx */;
+		};
+		C3CB32A82EB1677C0029A645 /* Exceptions for "include-framework" folder in "Cmlx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			publicHeaders = (
+				Cmlx.h,
+				Metal.hpp,
+				"mlx-allocator.h",
+				"mlx-array.h",
+				"mlx-backend-common-utils.h",
+				"mlx-backend-cpu-encoder.h",
+				"mlx-backend-cuda-cuda.h",
+				"mlx-backend-gpu-available.h",
+				"mlx-backend-gpu-eval.h",
+				"mlx-backend-metal-device.h",
+				"mlx-backend-metal-metal.h",
+				"mlx-backend-metal-utils.h",
+				"mlx-c-array.h",
+				"mlx-c-closure.h",
+				"mlx-c-compile.h",
+				"mlx-c-device.h",
+				"mlx-c-distributed_group.h",
+				"mlx-c-distributed.h",
+				"mlx-c-error.h",
+				"mlx-c-export.h",
+				"mlx-c-fast.h",
+				"mlx-c-fft.h",
+				"mlx-c-half.h",
+				"mlx-c-io_types.h",
+				"mlx-c-io.h",
+				"mlx-c-linalg.h",
+				"mlx-c-map.h",
+				"mlx-c-memory.h",
+				"mlx-c-metal.h",
+				"mlx-c-mlx.h",
+				"mlx-c-ops.h",
+				"mlx-c-optional.h",
+				"mlx-c-random.h",
+				"mlx-c-stream.h",
+				"mlx-c-string.h",
+				"mlx-c-transforms_impl.h",
+				"mlx-c-transforms.h",
+				"mlx-c-vector.h",
+				"mlx-c-version.h",
+				"mlx-compile.h",
+				"mlx-device.h",
+				"mlx-distributed-distributed.h",
+				"mlx-distributed-ops.h",
+				"mlx-dtype.h",
+				"mlx-einsum.h",
+				"mlx-event.h",
+				"mlx-export_impl.h",
+				"mlx-export.h",
+				"mlx-fast.h",
+				"mlx-fft.h",
+				"mlx-io-load.h",
+				"mlx-io.h",
+				"mlx-linalg.h",
+				"mlx-memory.h",
+				"mlx-ops.h",
+				"mlx-primitives.h",
+				"mlx-random.h",
+				"mlx-scheduler.h",
+				"mlx-small_vector.h",
+				"mlx-stream.h",
+				"mlx-threadpool.h",
+				"mlx-transforms.h",
+				"mlx-types-bf16.h",
+				"mlx-types-complex.h",
+				"mlx-types-fp16.h",
+				"mlx-types-half_types.h",
+				"mlx-utils.h",
+				"mlx-version.h",
+			);
+			target = C3AE8EE52EAAA3C5000BD280 /* Cmlx */;
+		};
+		C3CB32A92EB168CD0029A645 /* Exceptions for "mlx-generated" folder in "Cmlx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				metal/arange.h,
+				metal/atomic.h,
+				metal/bf16_math.h,
+				metal/bf16.h,
+				metal/binary_ops.h,
+				metal/binary_two.h,
+				metal/binary.h,
+				metal/cexpf.h,
+				metal/complex.h,
+				metal/copy.h,
+				metal/defines.h,
+				metal/erf.h,
+				metal/expm1f.h,
+				metal/fft.h,
+				metal/fft/radix.h,
+				metal/fft/readwrite.h,
+				metal/fp_quantized_nax.h,
+				metal/fp_quantized.h,
+				metal/fp4.h,
+				metal/fp8.h,
+				metal/gemv_masked.h,
+				metal/hadamard.h,
+				metal/indexing/gather_axis.h,
+				metal/indexing/gather_front.h,
+				metal/indexing/gather.h,
+				metal/indexing/indexing.h,
+				metal/indexing/masked_scatter.h,
+				metal/indexing/scatter_axis.h,
+				metal/indexing/scatter.h,
+				metal/logsumexp.h,
+				metal/quantized_nax.h,
+				metal/quantized_utils.h,
+				metal/quantized.h,
+				metal/reduce_utils.h,
+				metal/reduce.h,
+				metal/reduction/ops.h,
+				metal/reduction/reduce_all.h,
+				metal/reduction/reduce_col.h,
+				metal/reduction/reduce_init.h,
+				metal/reduction/reduce_row.h,
+				metal/scan.h,
+				metal/sdpa_vector.h,
+				metal/softmax.h,
+				metal/sort.h,
+				metal/steel/attn/attn.h,
+				metal/steel/attn/kernels/steel_attention_nax.h,
+				metal/steel/attn/kernels/steel_attention.h,
+				metal/steel/attn/loader.h,
+				metal/steel/attn/mma.h,
+				metal/steel/attn/nax.h,
+				metal/steel/attn/params.h,
+				metal/steel/attn/transforms.h,
+				metal/steel/conv/conv.h,
+				metal/steel/conv/kernels/steel_conv_general.h,
+				metal/steel/conv/kernels/steel_conv.h,
+				metal/steel/conv/loader.h,
+				metal/steel/conv/loaders/loader_channel_l.h,
+				metal/steel/conv/loaders/loader_channel_n.h,
+				metal/steel/conv/loaders/loader_general.h,
+				metal/steel/conv/params.h,
+				metal/steel/defines.h,
+				metal/steel/gemm/gemm_nax.h,
+				metal/steel/gemm/gemm.h,
+				metal/steel/gemm/kernels/steel_gemm_fused_nax.h,
+				metal/steel/gemm/kernels/steel_gemm_fused.h,
+				metal/steel/gemm/kernels/steel_gemm_gather_nax.h,
+				metal/steel/gemm/kernels/steel_gemm_gather.h,
+				metal/steel/gemm/kernels/steel_gemm_masked.h,
+				metal/steel/gemm/kernels/steel_gemm_segmented.h,
+				metal/steel/gemm/kernels/steel_gemm_splitk.h,
+				metal/steel/gemm/loader.h,
+				metal/steel/gemm/mma.h,
+				metal/steel/gemm/nax.h,
+				metal/steel/gemm/params.h,
+				metal/steel/gemm/transforms.h,
+				metal/steel/utils.h,
+				metal/steel/utils/integral_constant.h,
+				metal/steel/utils/type_traits.h,
+				metal/ternary_ops.h,
+				metal/ternary.h,
+				metal/unary_ops.h,
+				metal/unary.h,
+				metal/utils.h,
+			);
+			target = C3AE8EE52EAAA3C5000BD280 /* Cmlx */;
+		};
+		C3CBF3322EAC23D80029A645 /* Exceptions for "fmt" folder in "Cmlx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				".clang-format",
+				.gitignore,
+				ChangeLog.md,
+				CMakeLists.txt,
+				CONTRIBUTING.md,
+				doc/_static/bootstrap.min.js,
+				doc/_static/breathe.css,
+				"doc/_static/fonts/glyphicons-halflings-regular.eot",
+				"doc/_static/fonts/glyphicons-halflings-regular.svg",
+				"doc/_static/fonts/glyphicons-halflings-regular.ttf",
+				"doc/_static/fonts/glyphicons-halflings-regular.woff",
+				doc/_templates/layout.html,
+				doc/_templates/search.html,
+				doc/api.rst,
+				"doc/basic-bootstrap/layout.html",
+				"doc/basic-bootstrap/README",
+				"doc/basic-bootstrap/theme.conf",
+				doc/bootstrap/alerts.less,
+				doc/bootstrap/badges.less,
+				doc/bootstrap/bootstrap.less,
+				doc/bootstrap/breadcrumbs.less,
+				"doc/bootstrap/button-groups.less",
+				doc/bootstrap/buttons.less,
+				doc/bootstrap/carousel.less,
+				doc/bootstrap/close.less,
+				doc/bootstrap/code.less,
+				"doc/bootstrap/component-animations.less",
+				doc/bootstrap/dropdowns.less,
+				doc/bootstrap/forms.less,
+				doc/bootstrap/glyphicons.less,
+				doc/bootstrap/grid.less,
+				"doc/bootstrap/input-groups.less",
+				doc/bootstrap/jumbotron.less,
+				doc/bootstrap/labels.less,
+				"doc/bootstrap/list-group.less",
+				doc/bootstrap/media.less,
+				doc/bootstrap/mixins.less,
+				doc/bootstrap/mixins/alerts.less,
+				"doc/bootstrap/mixins/background-variant.less",
+				"doc/bootstrap/mixins/border-radius.less",
+				doc/bootstrap/mixins/buttons.less,
+				"doc/bootstrap/mixins/center-block.less",
+				doc/bootstrap/mixins/clearfix.less,
+				doc/bootstrap/mixins/forms.less,
+				doc/bootstrap/mixins/gradients.less,
+				"doc/bootstrap/mixins/grid-framework.less",
+				doc/bootstrap/mixins/grid.less,
+				"doc/bootstrap/mixins/hide-text.less",
+				doc/bootstrap/mixins/image.less,
+				doc/bootstrap/mixins/labels.less,
+				"doc/bootstrap/mixins/list-group.less",
+				"doc/bootstrap/mixins/nav-divider.less",
+				"doc/bootstrap/mixins/nav-vertical-align.less",
+				doc/bootstrap/mixins/opacity.less,
+				doc/bootstrap/mixins/pagination.less,
+				doc/bootstrap/mixins/panels.less,
+				"doc/bootstrap/mixins/progress-bar.less",
+				"doc/bootstrap/mixins/reset-filter.less",
+				doc/bootstrap/mixins/resize.less,
+				"doc/bootstrap/mixins/responsive-visibility.less",
+				doc/bootstrap/mixins/size.less,
+				"doc/bootstrap/mixins/tab-focus.less",
+				"doc/bootstrap/mixins/table-row.less",
+				"doc/bootstrap/mixins/text-emphasis.less",
+				"doc/bootstrap/mixins/text-overflow.less",
+				"doc/bootstrap/mixins/vendor-prefixes.less",
+				doc/bootstrap/modals.less,
+				doc/bootstrap/navbar.less,
+				doc/bootstrap/navs.less,
+				doc/bootstrap/normalize.less,
+				doc/bootstrap/pager.less,
+				doc/bootstrap/pagination.less,
+				doc/bootstrap/panels.less,
+				doc/bootstrap/popovers.less,
+				doc/bootstrap/print.less,
+				"doc/bootstrap/progress-bars.less",
+				"doc/bootstrap/responsive-embed.less",
+				"doc/bootstrap/responsive-utilities.less",
+				doc/bootstrap/scaffolding.less,
+				doc/bootstrap/tables.less,
+				doc/bootstrap/theme.less,
+				doc/bootstrap/thumbnails.less,
+				doc/bootstrap/tooltip.less,
+				doc/bootstrap/type.less,
+				doc/bootstrap/utilities.less,
+				doc/bootstrap/variables.less,
+				doc/bootstrap/wells.less,
+				doc/build.py,
+				doc/CMakeLists.txt,
+				doc/conf.py,
+				doc/contents.rst,
+				doc/fmt.less,
+				doc/index.rst,
+				"doc/python-license.txt",
+				doc/syntax.rst,
+				doc/usage.rst,
+				include/fmt/args.h,
+				include/fmt/chrono.h,
+				include/fmt/color.h,
+				include/fmt/compile.h,
+				include/fmt/core.h,
+				"include/fmt/format-inl.h",
+				include/fmt/format.h,
+				include/fmt/os.h,
+				include/fmt/ostream.h,
+				include/fmt/printf.h,
+				include/fmt/ranges.h,
+				include/fmt/std.h,
+				include/fmt/xchar.h,
+				LICENSE,
+				README.md,
+				src/fmt.cc,
+				src/os.cc,
+				support/Android.mk,
+				support/AndroidManifest.xml,
+				support/bazel/.bazelversion,
+				support/bazel/BUILD.bazel,
+				support/bazel/README.md,
+				support/bazel/WORKSPACE.bazel,
+				"support/build-docs.py",
+				support/build.gradle,
+				"support/C++.sublime-syntax",
+				support/cmake/FindSetEnv.cmake,
+				"support/cmake/fmt-config.cmake.in",
+				support/cmake/fmt.pc.in,
+				support/cmake/JoinPaths.cmake,
+				"support/compute-powers.py",
+				support/docopt.py,
+				support/manage.py,
+				support/printable.py,
+				support/README,
+				support/rtd/conf.py,
+				support/rtd/index.rst,
+				support/rtd/theme/layout.html,
+				support/rtd/theme/theme.conf,
+				support/Vagrantfile,
+				"test/add-subdirectory-test/CMakeLists.txt",
+				"test/add-subdirectory-test/main.cc",
+				"test/args-test.cc",
+				"test/assert-test.cc",
+				"test/chrono-test.cc",
+				test/CMakeLists.txt,
+				"test/color-test.cc",
+				"test/compile-error-test/CMakeLists.txt",
+				"test/compile-fp-test.cc",
+				"test/compile-test.cc",
+				"test/core-test.cc",
+				"test/cuda-test/CMakeLists.txt",
+				"test/cuda-test/cpp14.cc",
+				"test/cuda-test/cuda-cpp14.cu",
+				"test/detect-stdfs.cc",
+				"test/enforce-checks-test.cc",
+				"test/find-package-test/CMakeLists.txt",
+				"test/find-package-test/main.cc",
+				"test/format-impl-test.cc",
+				"test/format-test.cc",
+				test/fuzzing/.gitignore,
+				test/fuzzing/build.sh,
+				"test/fuzzing/chrono-duration.cc",
+				"test/fuzzing/chrono-timepoint.cc",
+				test/fuzzing/CMakeLists.txt,
+				test/fuzzing/float.cc,
+				"test/fuzzing/fuzzer-common.h",
+				test/fuzzing/main.cc,
+				"test/fuzzing/named-arg.cc",
+				"test/fuzzing/one-arg.cc",
+				test/fuzzing/README.md,
+				"test/fuzzing/two-args.cc",
+				"test/gtest-extra-test.cc",
+				"test/gtest-extra.cc",
+				"test/gtest-extra.h",
+				"test/gtest/.clang-format",
+				test/gtest/CMakeLists.txt,
+				"test/gtest/gmock-gtest-all.cc",
+				test/gtest/gmock/gmock.h,
+				"test/gtest/gtest/gtest-spi.h",
+				test/gtest/gtest/gtest.h,
+				"test/header-only-test.cc",
+				"test/mock-allocator.h",
+				"test/module-test.cc",
+				"test/noexception-test.cc",
+				"test/os-test.cc",
+				"test/ostream-test.cc",
+				"test/posix-mock-test.cc",
+				"test/posix-mock.h",
+				"test/printf-test.cc",
+				"test/ranges-odr-test.cc",
+				"test/ranges-test.cc",
+				"test/scan-test.cc",
+				test/scan.h,
+				"test/static-export-test/CMakeLists.txt",
+				"test/static-export-test/library.cc",
+				"test/static-export-test/main.cc",
+				"test/std-test.cc",
+				"test/test-assert.h",
+				"test/test-main.cc",
+				"test/unicode-test.cc",
+				test/util.cc,
+				test/util.h,
+				"test/xchar-test.cc",
+			);
+			target = C3AE8EE52EAAA3C5000BD280 /* Cmlx */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C3434F7C2EABEF1E0010D6B8 /* MLX */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = MLX;
+			path = ../Source/MLX;
+			sourceTree = SOURCE_ROOT;
+		};
+		C3AE8EDE2EAAA21C000BD280 /* xcconfig */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = xcconfig;
+			sourceTree = "<group>";
+		};
+		C3AE90232EAAA47E000BD280 /* json */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = json;
+			sourceTree = "<group>";
+		};
+		C3AE908B2EAAA47E000BD280 /* metal-cpp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C3AE939F2EAAAA5A000BD280 /* Exceptions for "metal-cpp" folder in "Cmlx" target */,
+			);
+			path = "metal-cpp";
+			sourceTree = "<group>";
+		};
+		C3AE97002EAAAAAD000BD280 /* mlx */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C3AE9EA62EAAABFC000BD280 /* Exceptions for "mlx" folder in "Cmlx" target */,
+			);
+			path = mlx;
+			sourceTree = "<group>";
+		};
+		C3AE97872EAAAAAD000BD280 /* mlx-conditional */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "mlx-conditional";
+			sourceTree = "<group>";
+		};
+		C3AE98112EAAAAAD000BD280 /* mlx-generated */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C3CB32A92EB168CD0029A645 /* Exceptions for "mlx-generated" folder in "Cmlx" target */,
+			);
+			path = "mlx-generated";
+			sourceTree = "<group>";
+		};
+		C3AE9D992EAAAB29000BD280 /* mlx-c */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C3AE9E162EAAAB37000BD280 /* Exceptions for "mlx-c" folder in "Cmlx" target */,
+			);
+			path = "mlx-c";
+			sourceTree = "<group>";
+		};
+		C3CB25472EB11EFE0029A645 /* framework */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = framework;
+			sourceTree = "<group>";
+		};
+		C3CBE24A2EABF7870029A645 /* include-framework */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C3CB32A82EB1677C0029A645 /* Exceptions for "include-framework" folder in "Cmlx" target */,
+			);
+			path = "include-framework";
+			sourceTree = "<group>";
+		};
+		C3CBE6962EAC14BC0029A645 /* MLXTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = MLXTests;
+			path = ../Tests/MLXTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		C3CBE6E92EAC15530029A645 /* MLXNN */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = MLXNN;
+			path = ../Source/MLXNN;
+			sourceTree = SOURCE_ROOT;
+		};
+		C3CBE6FF2EAC15650029A645 /* MLXOptimizers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = MLXOptimizers;
+			path = ../Source/MLXOptimizers;
+			sourceTree = SOURCE_ROOT;
+		};
+		C3CBF2682EAC23BA0029A645 /* fmt */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C3CBF3322EAC23D80029A645 /* Exceptions for "fmt" folder in "Cmlx" target */,
+			);
+			path = fmt;
+			sourceTree = "<group>";
+		};
+		C3CBF3382EAC243B0029A645 /* tools */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = tools;
+			path = ../tools;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C3AE8EC12EAAA15F000BD280 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3CBE67C2EABFBA60029A645 /* Numerics in Frameworks */,
+				C3434FA12EABEF350010D6B8 /* Cmlx.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8ECA2EAAA15F000BD280 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3CBE7022EAC15780029A645 /* MLXNN.framework in Frameworks */,
+				C3AE8ECE2EAAA15F000BD280 /* MLX.framework in Frameworks */,
+				C3CBE7062EAC15780029A645 /* MLXOptimizers.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8EE32EAAA3C5000BD280 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3AEA0342EAAE7A0000BD280 /* Metal.framework in Frameworks */,
+				C3AEA0362EAAE7A9000BD280 /* Foundation.framework in Frameworks */,
+				C3AEA0322EAAE79A000BD280 /* Accelerate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6B22EAC14DE0029A645 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3CBE70B2EAC15850029A645 /* MLX.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6CC2EAC15310029A645 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3CBE7142EAC15960029A645 /* MLXNN.framework in Frameworks */,
+				C3CBE7102EAC15960029A645 /* MLX.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C3AE8EBA2EAAA15F000BD280 = {
+			isa = PBXGroup;
+			children = (
+				C319FC0A2F1564BE00620953 /* MLX.xctestplan */,
+				C3CBF17F2EAC22110029A645 /* ACKNOWLEDGMENTS.md */,
+				C3AE8EFC2EAAA40E000BD280 /* Cmlx */,
+				C3CBF1802EAC22110029A645 /* CODE_OF_CONDUCT.md */,
+				C3CBF1812EAC22110029A645 /* CONTRIBUTING.md */,
+				C3AEA0302EAAE79A000BD280 /* Frameworks */,
+				C3CBF1822EAC22110029A645 /* LICENSE */,
+				C3CBF1832EAC22110029A645 /* MAINTENANCE.md */,
+				C3434F7C2EABEF1E0010D6B8 /* MLX */,
+				C3CBE6E92EAC15530029A645 /* MLXNN */,
+				C3CBE6FF2EAC15650029A645 /* MLXOptimizers */,
+				C3CBE6962EAC14BC0029A645 /* MLXTests */,
+				C3AE8EC52EAAA15F000BD280 /* Products */,
+				C3CBF1842EAC22110029A645 /* README.md */,
+				C3CBF1852EAC22110029A645 /* README.xcodeproj.md */,
+				C3CBF3382EAC243B0029A645 /* tools */,
+				C3AE8EDE2EAAA21C000BD280 /* xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		C3AE8EC52EAAA15F000BD280 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C3AE8EC42EAAA15F000BD280 /* MLX.framework */,
+				C3AE8ECD2EAAA15F000BD280 /* MLXTests.xctest */,
+				C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */,
+				C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */,
+				C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C3AE8EFC2EAAA40E000BD280 /* Cmlx */ = {
+			isa = PBXGroup;
+			children = (
+				C3CB25472EB11EFE0029A645 /* framework */,
+				C3CBF2682EAC23BA0029A645 /* fmt */,
+				C3CBE24A2EABF7870029A645 /* include-framework */,
+				C3AE90232EAAA47E000BD280 /* json */,
+				C3AE908B2EAAA47E000BD280 /* metal-cpp */,
+				C3AE97002EAAAAAD000BD280 /* mlx */,
+				C3AE9D992EAAAB29000BD280 /* mlx-c */,
+				C3AE97872EAAAAAD000BD280 /* mlx-conditional */,
+				C3AE98112EAAAAAD000BD280 /* mlx-generated */,
+			);
+			name = Cmlx;
+			path = ../Source/Cmlx;
+			sourceTree = "<group>";
+		};
+		C3AEA0302EAAE79A000BD280 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C3AEA0352EAAE7A9000BD280 /* Foundation.framework */,
+				C3AEA0332EAAE7A0000BD280 /* Metal.framework */,
+				C3AEA0312EAAE79A000BD280 /* Accelerate.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		C3AE8EBF2EAAA15F000BD280 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8EE12EAAA3C5000BD280 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6B02EAC14DE0029A645 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6CA2EAC15310029A645 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		C3AE8EC32EAAA15F000BD280 /* MLX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3AE8ED62EAAA15F000BD280 /* Build configuration list for PBXNativeTarget "MLX" */;
+			buildPhases = (
+				C3AE8EBF2EAAA15F000BD280 /* Headers */,
+				C3AE8EC02EAAA15F000BD280 /* Sources */,
+				C3AE8EC12EAAA15F000BD280 /* Frameworks */,
+				C3AE8EC22EAAA15F000BD280 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C3434F7C2EABEF1E0010D6B8 /* MLX */,
+			);
+			name = MLX;
+			packageProductDependencies = (
+				C3CBE67B2EABFBA60029A645 /* Numerics */,
+			);
+			productName = MLX;
+			productReference = C3AE8EC42EAAA15F000BD280 /* MLX.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C3AE8ECC2EAAA15F000BD280 /* MLXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3AE8ED92EAAA15F000BD280 /* Build configuration list for PBXNativeTarget "MLXTests" */;
+			buildPhases = (
+				C3AE8EC92EAAA15F000BD280 /* Sources */,
+				C3AE8ECA2EAAA15F000BD280 /* Frameworks */,
+				C3AE8ECB2EAAA15F000BD280 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C3AE8ED02EAAA15F000BD280 /* PBXTargetDependency */,
+				C3CBE7052EAC15780029A645 /* PBXTargetDependency */,
+				C3CBE7092EAC15780029A645 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C3CBE6962EAC14BC0029A645 /* MLXTests */,
+			);
+			name = MLXTests;
+			packageProductDependencies = (
+			);
+			productName = MLXTests;
+			productReference = C3AE8ECD2EAAA15F000BD280 /* MLXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C3AE8EE52EAAA3C5000BD280 /* Cmlx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3AE8EF52EAAA3C5000BD280 /* Build configuration list for PBXNativeTarget "Cmlx" */;
+			buildPhases = (
+				C3AE8EE12EAAA3C5000BD280 /* Headers */,
+				C3AE8EE22EAAA3C5000BD280 /* Sources */,
+				C3AE8EE32EAAA3C5000BD280 /* Frameworks */,
+				C3AE8EE42EAAA3C5000BD280 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C3AE908B2EAAA47E000BD280 /* metal-cpp */,
+				C3AE97002EAAAAAD000BD280 /* mlx */,
+				C3AE97872EAAAAAD000BD280 /* mlx-conditional */,
+				C3AE98112EAAAAAD000BD280 /* mlx-generated */,
+				C3AE9D992EAAAB29000BD280 /* mlx-c */,
+				C3CB25472EB11EFE0029A645 /* framework */,
+				C3CBE24A2EABF7870029A645 /* include-framework */,
+				C3CBF2682EAC23BA0029A645 /* fmt */,
+			);
+			name = Cmlx;
+			packageProductDependencies = (
+			);
+			productName = Cmlx;
+			productReference = C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C3CBE6B42EAC14DE0029A645 /* MLXNN */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3CBE6C42EAC14DE0029A645 /* Build configuration list for PBXNativeTarget "MLXNN" */;
+			buildPhases = (
+				C3CBE6B02EAC14DE0029A645 /* Headers */,
+				C3CBE6B12EAC14DE0029A645 /* Sources */,
+				C3CBE6B22EAC14DE0029A645 /* Frameworks */,
+				C3CBE6B32EAC14DE0029A645 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C3CBE70E2EAC15850029A645 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C3CBE6E92EAC15530029A645 /* MLXNN */,
+			);
+			name = MLXNN;
+			packageProductDependencies = (
+			);
+			productName = MLXNN;
+			productReference = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C3CBE6CE2EAC15310029A645 /* MLXOptimizers */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3CBE6D32EAC15320029A645 /* Build configuration list for PBXNativeTarget "MLXOptimizers" */;
+			buildPhases = (
+				C3CBE6CA2EAC15310029A645 /* Headers */,
+				C3CBE6CB2EAC15310029A645 /* Sources */,
+				C3CBE6CC2EAC15310029A645 /* Frameworks */,
+				C3CBE6CD2EAC15310029A645 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C3CBE7132EAC15960029A645 /* PBXTargetDependency */,
+				C3CBE7172EAC15960029A645 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C3CBE6FF2EAC15650029A645 /* MLXOptimizers */,
+			);
+			name = MLXOptimizers;
+			packageProductDependencies = (
+			);
+			productName = MLXOptimizers;
+			productReference = C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C3AE8EBB2EAAA15F000BD280 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				ORGANIZATIONNAME = "Apple Inc.";
+				TargetAttributes = {
+					C3AE8EC32EAAA15F000BD280 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					C3AE8ECC2EAAA15F000BD280 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					C3AE8EE52EAAA3C5000BD280 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					C3CBE6B42EAC14DE0029A645 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					C3CBE6CE2EAC15310029A645 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = C3AE8EBE2EAAA15F000BD280 /* Build configuration list for PBXProject "MLX" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C3AE8EBA2EAAA15F000BD280;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C3CBE67A2EABFBA60029A645 /* XCRemoteSwiftPackageReference "swift-numerics" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C3AE8EC52EAAA15F000BD280 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C3AE8EC32EAAA15F000BD280 /* MLX */,
+				C3AE8ECC2EAAA15F000BD280 /* MLXTests */,
+				C3AE8EE52EAAA3C5000BD280 /* Cmlx */,
+				C3CBE6B42EAC14DE0029A645 /* MLXNN */,
+				C3CBE6CE2EAC15310029A645 /* MLXOptimizers */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C3AE8EC22EAAA15F000BD280 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8ECB2EAAA15F000BD280 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8EE42EAAA3C5000BD280 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6B32EAC14DE0029A645 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6CD2EAC15310029A645 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C3AE8EC02EAAA15F000BD280 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8EC92EAAA15F000BD280 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3AE8EE22EAAA3C5000BD280 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6B12EAC14DE0029A645 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3CBE6CB2EAC15310029A645 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C3AE8ED02EAAA15F000BD280 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+			targetProxy = C3AE8ECF2EAAA15F000BD280 /* PBXContainerItemProxy */;
+		};
+		C3CBE7052EAC15780029A645 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
+			targetProxy = C3CBE7042EAC15780029A645 /* PBXContainerItemProxy */;
+		};
+		C3CBE7092EAC15780029A645 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3CBE6CE2EAC15310029A645 /* MLXOptimizers */;
+			targetProxy = C3CBE7082EAC15780029A645 /* PBXContainerItemProxy */;
+		};
+		C3CBE70E2EAC15850029A645 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+			targetProxy = C3CBE70D2EAC15850029A645 /* PBXContainerItemProxy */;
+		};
+		C3CBE7132EAC15960029A645 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+			targetProxy = C3CBE7122EAC15960029A645 /* PBXContainerItemProxy */;
+		};
+		C3CBE7172EAC15960029A645 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
+			targetProxy = C3CBE7162EAC15960029A645 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C3AE8ED42EAAA15F000BD280 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = project.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C3AE8ED52EAAA15F000BD280 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = project.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C3AE8ED72EAAA15F000BD280 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLX.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C3AE8ED82EAAA15F000BD280 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLX.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C3AE8EDA2EAAA15F000BD280 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLXTests.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C3AE8EDB2EAAA15F000BD280 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLXTests.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C3AE8EF62EAAA3C5000BD280 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = Cmlx.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C3AE8EF72EAAA3C5000BD280 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = Cmlx.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C3CBE6C52EAC14DE0029A645 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLXNN.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C3CBE6C62EAC14DE0029A645 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLXNN.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C3CBE6D42EAC15320029A645 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLXOptimizers.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C3CBE6D52EAC15320029A645 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = MLXOptimizers.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C3AE8EBE2EAAA15F000BD280 /* Build configuration list for PBXProject "MLX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3AE8ED42EAAA15F000BD280 /* Debug */,
+				C3AE8ED52EAAA15F000BD280 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3AE8ED62EAAA15F000BD280 /* Build configuration list for PBXNativeTarget "MLX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3AE8ED72EAAA15F000BD280 /* Debug */,
+				C3AE8ED82EAAA15F000BD280 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3AE8ED92EAAA15F000BD280 /* Build configuration list for PBXNativeTarget "MLXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3AE8EDA2EAAA15F000BD280 /* Debug */,
+				C3AE8EDB2EAAA15F000BD280 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3AE8EF52EAAA3C5000BD280 /* Build configuration list for PBXNativeTarget "Cmlx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3AE8EF62EAAA3C5000BD280 /* Debug */,
+				C3AE8EF72EAAA3C5000BD280 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3CBE6C42EAC14DE0029A645 /* Build configuration list for PBXNativeTarget "MLXNN" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3CBE6C52EAC14DE0029A645 /* Debug */,
+				C3CBE6C62EAC14DE0029A645 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3CBE6D32EAC15320029A645 /* Build configuration list for PBXNativeTarget "MLXOptimizers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3CBE6D42EAC15320029A645 /* Debug */,
+				C3CBE6D52EAC15320029A645 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C3CBE67A2EABFBA60029A645 /* XCRemoteSwiftPackageReference "swift-numerics" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-numerics.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C3CBE67B2EABFBA60029A645 /* Numerics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3CBE67A2EABFBA60029A645 /* XCRemoteSwiftPackageReference "swift-numerics" */;
+			productName = Numerics;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+}

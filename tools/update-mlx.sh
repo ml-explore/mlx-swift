@@ -89,3 +89,6 @@ rm Source/Cmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh
+
+# prepare xcodeproj files
+./tools/update-mlx-xcodeproj.sh

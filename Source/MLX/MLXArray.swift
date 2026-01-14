@@ -7,7 +7,7 @@ import Numerics
 public final class MLXArray {
 
     /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
-    public package(set) var ctx: mlx_array
+    public internal(set) var ctx: mlx_array
 
     /// Initialize with the given +1 context (transfer ownership).
     ///
