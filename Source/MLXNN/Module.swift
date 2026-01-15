@@ -421,6 +421,10 @@ open class Module {
     /// The ``apply(filter:map:)`` can be used for similar purposes to apply changes
     /// in-place.
     ///
+    /// If a parameter is missing from the update and validation indicates `.allModelKeysSet` this
+    /// will call ``updateMissing(parameter:verify:path:modulePath:)`` which will
+    /// throw an error.  Subclasses can override this if needed.
+    ///
     /// - Parameters:
     ///   - parameters: replacement parameters in the same format that ``parameters()``
     ///     or ``mapParameters(map:isLeaf:)`` provides
@@ -464,7 +468,8 @@ open class Module {
 
             case (.value(.parameters), .none):
                 if Self.parameterIsValid(key) {
-                    throw UpdateError.keyNotFound(path: path, modules: modulePath)
+                    try updateMissing(
+                        parameter: key, verify: verify, path: path, modulePath: modulePath)
                 } else {
                     // ignore it -- this isn't a parameter that requires update
                 }
@@ -538,6 +543,22 @@ open class Module {
         }
 
         return self
+    }
+
+    /// Called from ``update(parameters:verify:path:modulePath:)`` if a required parameter
+    /// is missing.
+    ///
+    /// The default implementation will throw ``UpdateError/keyNotFound(path:modules:)``.
+    ///
+    /// - Parameters:
+    ///   - parameter: the key for the missing parameter
+    ///   - verify: verify settings
+    ///   - path: path to the key (includes parameter)
+    ///   - modulePath: path to the module
+    open func updateMissing(
+        parameter: String, verify: VerifyUpdate, path: [String], modulePath: [String]
+    ) throws {
+        throw UpdateError.keyNotFound(path: path, modules: modulePath)
     }
 
     /// Apply a closure to the parameters in a `Module` recursively.
@@ -1560,7 +1581,7 @@ private protocol TypeErasedSetterProvider {
     }
 }
 
-enum UpdateError: Error {
+public enum UpdateError: Error {
     case unableToCollectModulesFromContainer(path: [String], modules: [String])
     case mismatchedContainers(base: String, key: String)
     case mismatchedSize(path: [String], modules: [String], expectedShape: [Int], actualShape: [Int])
@@ -1575,7 +1596,7 @@ enum UpdateError: Error {
 }
 
 extension UpdateError: LocalizedError {
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .unableToCollectModulesFromContainer(let path, let modules):
             return
