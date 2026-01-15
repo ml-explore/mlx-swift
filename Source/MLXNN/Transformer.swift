@@ -78,23 +78,27 @@ open class MultiHeadAttention: Module {
         var keys = keyProjection(keys)
         var values = valueProjection(values)
 
-        let (B, L) = (queries.dim(0), queries.dim(1))
-        let S = keys.dim(1)
-
-        queries = queries.reshaped(B, L, numHeads, -1).transposed(0, 2, 1, 3)
-        keys = keys.reshaped(B, S, numHeads, -1).transposed(0, 2, 3, 1)
-        values = values.reshaped(B, S, numHeads, -1).transposed(0, 2, 1, 3)
-
-        // Dimensions are [batch x num heads x sequence x hidden dim]
+        queries = unflatten(queries, axis: -1, shape: [numHeads, -1])
+            .transposed(0, 2, 1, 3)
+        keys = unflatten(keys, axis: -1, shape: [numHeads, -1])
+            .transposed(0, 2, 1, 3)
+        values = unflatten(values, axis: -1, shape: [numHeads, -1])
+            .transposed(0, 2, 1, 3)
         let scale = sqrt(1 / Float(queries.dim(-1)))
-        var scores = (queries * scale).matmul(keys)
-        if let mask {
-            scores = scores + mask.asType(scores.dtype)
-        }
-        scores = softmax(scores, axis: -1)
-        let valuesHat = matmul(scores, values).transposed(0, 2, 1, 3).reshaped(B, L, -1)
 
-        return outProjection(valuesHat)
+        let maskMode: MLXFast.ScaledDotProductAttentionMaskMode =
+            if let mask {
+                .array(mask)
+            } else {
+                .none
+            }
+
+        var output = MLXFast.scaledDotProductAttention(
+            queries: queries, keys: keys, values: values, scale: scale, mask: maskMode)
+
+        output = output.transposed(0, 2, 1, 3).flattened(start: -2, end: -1)
+
+        return outProjection(output)
     }
 
     /// Creates an attention mask for use with ``callAsFunction(_:keys:values:mask:)``
