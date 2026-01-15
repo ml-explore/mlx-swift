@@ -6996,6 +6996,62 @@ class MLXIntegrationTests: XCTestCase {
             accuracy: 2.3360192871093752)
     }
 
+    func testRoPEArrayOffset() {
+        MLXRandom.seed(42)
+        let batch = MLXRandom.uniform(0.0 ..< 1.0, [3, 8, 16])
+        XCTAssertEqual(batch.shape, [3, 8, 16])
+
+        let offsets = MLXArray([50, 20, 0])
+
+        // Test MLXFast.RoPE with array offset
+        let result = MLXFast.RoPE(
+            batch, dimensions: 8, traditional: false,
+            base: 10000, scale: 1.0, offset: offsets)
+        XCTAssertEqual(result.shape, [3, 8, 16])
+
+        // Verify against individual scalar offset calls
+        for i in 0 ..< 3 {
+            let single = batch[i].expandedDimensions(axis: 0)
+            let offsetValue = [50, 20, 0][i]
+            let expected = MLXFast.RoPE(
+                single, dimensions: 8, traditional: false,
+                base: 10000, scale: 1.0, offset: offsetValue)
+            XCTAssert(allClose(result[i], expected[0]).all().item())
+        }
+    }
+
+    func testRoPEArrayOffsetModule() {
+        MLXRandom.seed(123)
+        let batch = MLXRandom.uniform(0.0 ..< 1.0, [3, 8, 16])
+        let offsets = MLXArray([10, 5, 0])
+
+        let rope = RoPE(dimensions: 8)
+
+        // Test MLXNN RoPE module with array offset
+        let result = rope(batch, offset: offsets)
+        XCTAssertEqual(result.shape, [3, 8, 16])
+
+        // Verify shape and dtype preserved
+        XCTAssertEqual(result.dtype, batch.dtype)
+    }
+
+    func testRoPEScalarArrayOffset() {
+        MLXRandom.seed(99)
+        let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])
+
+        // Scalar array offset should work the same as int offset
+        let scalarOffset = MLXArray(5)
+        let resultArray = MLXFast.RoPE(
+            a, dimensions: 8, traditional: false,
+            base: 10000, scale: 1.0, offset: scalarOffset)
+
+        let resultInt = MLXFast.RoPE(
+            a, dimensions: 8, traditional: false,
+            base: 10000, scale: 1.0, offset: 5)
+
+        XCTAssert(allClose(resultArray, resultInt).all().item())
+    }
+
     func testSinusoidalPositionalEncoding() {
         MLXRandom.seed(226)
         let a = MLXRandom.uniform(0.0 ..< 1.0, [2, 8, 16])

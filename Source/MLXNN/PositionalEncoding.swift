@@ -8,6 +8,20 @@ public protocol OffsetLayer: Module {
     func callAsFunction(_ x: MLXArray, offset: Int) -> MLXArray
 }
 
+/// A layer (``Module`` subclass) that can be evaluated with an input array and a per-example
+/// position offset.
+///
+/// Use this for batched inference when each sequence in the batch may be at a different position
+/// in the prompt. The `offset` is provided as an `MLXArray` so it can be:
+/// - a scalar (one offset applied to the whole batch), or
+/// - a vector of length `batchSize` (one offset per sequence).
+///
+/// Layers that support this protocol should broadcast the `offset` over the remaining dimensions
+/// of `x` as appropriate.
+public protocol ArrayOffsetLayer: Module {
+    func callAsFunction(_ x: MLXArray, offset: MLXArray) -> MLXArray
+}
+
 /// Implements the rotary positional encoding.
 ///
 /// The traditional implementation rotates consecutive pairs of elements in the
@@ -19,7 +33,7 @@ public protocol OffsetLayer: Module {
 ///
 /// ### See Also
 /// - <doc:positional-encoding>
-final public class RoPE: Module, UnaryLayer, OffsetLayer {
+final public class RoPE: Module, UnaryLayer, OffsetLayer, ArrayOffsetLayer {
 
     let dimensions: Int
     let traditional: Bool
@@ -45,6 +59,19 @@ final public class RoPE: Module, UnaryLayer, OffsetLayer {
         MLXFast.RoPE(
             x, dimensions: dimensions, traditional: traditional, base: base, scale: scale,
             offset: offset)
+    }
+
+    /// Evaluate with array offset for batched inference with different positions per sequence.
+    ///
+    /// - Parameters:
+    ///   - x: input array
+    ///   - offset: Integer position offsets (recommended `.int32`) as a scalar or a vector of length `batchSize`.
+    ///     For no offset, call ``callAsFunction(_:)`` or pass `MLXArray([Int32(0)])`.
+    /// - Returns: the input with rotary positional encoding applied
+    public func callAsFunction(_ x: MLXArray, offset: MLXArray) -> MLXArray {
+        MLXFast.RoPE(
+            x, dimensions: dimensions, traditional: traditional, base: base,
+            scale: scale, offset: offset)
     }
 
     /// Evaluate with `offset` of `0`.
