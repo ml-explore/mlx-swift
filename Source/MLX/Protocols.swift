@@ -9,12 +9,12 @@ import Foundation
 /// implemention detail for MLX and should not be depended on by outside callers.
 ///
 /// ### See Also
-/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
+/// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public protocol Updatable {
     func innerState() -> [MLXArray]
 }
 
-/// An object that can be passed to ``eval(_:)-3b2g9`` and can produce a list
+/// An object that can be passed to ``eval(_:)-(Collection<MLXArray>)`` and can produce a list
 /// of interior ``MLXArray`` to be evaluated.
 ///
 /// Types such as:
@@ -29,7 +29,7 @@ public protocol Evaluatable {
     func innerState() -> [MLXArray]
 }
 
-extension Array: Updatable, Evaluatable where Element == MLXArray {
+extension [MLXArray]: Updatable, Evaluatable {
     public func innerState() -> [MLXArray] {
         self
     }

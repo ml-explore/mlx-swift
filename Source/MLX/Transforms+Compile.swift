@@ -145,12 +145,12 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-8wq3u`` that takes a single ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])`` that takes a single ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
+/// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray) -> MLXArray
@@ -164,12 +164,12 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-8wq3u`` that takes two ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])`` that takes two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
+/// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray) -> MLXArray
@@ -185,12 +185,12 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(inputs:outputs:shapeless:_:)-8wq3u`` that takes three ``MLXArray`` and
+/// Overload of ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])`` that takes three ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(inputs:outputs:shapeless:_:)-8wq3u``
+/// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
@@ -206,7 +206,7 @@ public func compile(
     }
 }
 
-/// Globally enable or disable ``compile(inputs:outputs:shapeless:_:)-8wq3u``.
+/// Globally enable or disable ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``.
 ///
 /// Default is enabled.
 public func compile(enable: Bool = true) {

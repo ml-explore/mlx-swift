@@ -3,7 +3,7 @@
 Shape is a term to describe the number and size of the dimensions of an N dimension (ND) array.
 
 ``MLXArray`` is an N dimensional array.  The number of dimensions is described by ``MLXArray/ndim``
-and the size of each dimension can be examined with ``MLXArray/dim(_:)-8s2hf`` or ``MLXArray/shape``.
+and the size of each dimension can be examined with ``MLXArray/dim(_:)-(Int)`` or ``MLXArray/shape``.
 
 Some of these functions can manipulate the shape without changing the contents while others 
 will moves rows and columns as they modify the shape.
@@ -26,8 +26,8 @@ and ``MLXArray/shape`` of the dimensions without changing the number of elements
 - ``MLXArray/expandedDimensions(axis:stream:)``
 - ``MLXArray/expandedDimensions(axes:stream:)``
 - ``MLXArray/flattened(start:end:stream:)``
-- ``MLXArray/reshaped(_:stream:)-19x5z``
-- ``MLXArray/reshaped(_:stream:)-67a89``
+- ``MLXArray/reshaped(_:stream:)-(Collection<Int>,StreamOrDevice)``
+- ``MLXArray/reshaped(_:stream:)-(Int...,StreamOrDevice)``
 - ``MLXArray/squeezed(stream:)``
 - ``MLXArray/squeezed(axis:stream:)``
 - ``MLXArray/squeezed(axes:stream:)``
@@ -39,7 +39,7 @@ and ``MLXArray/shape`` of the dimensions without changing the number of elements
 - ``atLeast3D(_:stream:)``
 
 - ``flattened(_:start:end:stream:)``
-- ``reshaped(_:_:stream:)-5x3y0``
+- ``reshaped(_:_:stream:)-(MLXArray,Collection<Int>,StreamOrDevice)``
 - ``squeezed(_:axes:stream:)``
 - ``roll(_:shift:axis:stream:)``
 - ``roll(_:shift:axes:stream:)``
@@ -73,6 +73,6 @@ These methods manipulate the shape and contents of the array:
 - ``split(_:axis:stream:)``
 - ``stacked(_:axis:stream:)``
 - ``swappedAxes(_:_:_:stream:)``
-- ``tiled(_:repetitions:stream:)-72ntc``
-- ``tiled(_:repetitions:stream:)-eouf``
+- ``tiled(_:repetitions:stream:)-(MLXArray,Int,StreamOrDevice)``
+- ``tiled(_:repetitions:stream:)-(MLXArray,Collection<Int>,StreamOrDevice)``
 - ``transposed(_:axes:stream:)``

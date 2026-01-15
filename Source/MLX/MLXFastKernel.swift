@@ -40,17 +40,17 @@ extension MLXFast {
     ///
     /// let out = kernel([a])
     /// ```
-    open class MLXFastKernel {
+    final public class MLXFastKernel: @unchecked Sendable {
         let kernel: mlx_fast_metal_kernel
         public let outputNames: [String]
 
         init(
-            name: String, inputNames: [String], outputNames: [String],
+            name: String, inputNames: some Sequence<String>, outputNames: some Sequence<String>,
             source: String, header: String = "",
             ensureRowContiguous: Bool = true,
             atomicOutputs: Bool = false
         ) {
-            self.outputNames = outputNames
+            self.outputNames = Array(outputNames)
 
             let input_names = mlx_vector_string_new()
             defer { mlx_vector_string_free(input_names) }
@@ -60,7 +60,7 @@ extension MLXFast {
 
             let output_names = mlx_vector_string_new()
             defer { mlx_vector_string_free(output_names) }
-            for name in outputNames {
+            for name in self.outputNames {
                 mlx_vector_string_append_value(output_names, name)
             }
 
@@ -94,12 +94,12 @@ extension MLXFast {
         ///   - stream: stream to run on
         /// - Returns: array of `MLXArray`
         public func callAsFunction(
-            _ inputs: [ScalarOrArray],
-            template: [(String, KernelTemplateArg)]? = nil,
+            _ inputs: [any ScalarOrArray],
+            template: [(String, any KernelTemplateArg)]? = nil,
             grid: (Int, Int, Int),
             threadGroup: (Int, Int, Int),
-            outputShapes: [[Int]],
-            outputDTypes: [DType],
+            outputShapes: some Sequence<[Int]>,
+            outputDTypes: some Sequence<DType>,
             initValue: Float? = nil,
             verbose: Bool = false,
             stream: StreamOrDevice = .default
@@ -171,9 +171,8 @@ extension MLXFast {
     ///   e.g. `device atomic<float>`
     /// - Returns: an ``MLXFastKernel`` -- see that for information on how to call it
     public static func metalKernel(
-        name: String, inputNames: [String], outputNames: [String],
-        source: String, header: String = "",
-        ensureRowContiguous: Bool = true,
+        name: String, inputNames: some Sequence<String>, outputNames: some Sequence<String>,
+        source: String, header: String = "", ensureRowContiguous: Bool = true,
         atomicOutputs: Bool = false
     ) -> MLXFastKernel {
         MLXFastKernel(

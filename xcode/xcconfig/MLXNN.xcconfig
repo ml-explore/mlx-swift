@@ -1,0 +1,4 @@
+#include "common.xcconfig"
+
+
+PRODUCT_BUNDLE_IDENTIFIER = com.apple.mlx.MLXNN

@@ -39,8 +39,8 @@ See <doc:indexing> for more information.
 
 Note that the element-wise logical operations such as:
 
-- ``MLXArray/.==(_:_:)-56m0a``
-- ``MLXArray/.==(_:_:)-79hbc``
+- ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
+- ``MLXArray/.==(_:_:)-(MLXArray,ScalarOrArray)``
 
 are named using the Swift convention for SIMD operations, e.g. `.==`, `.<`, etc.  These
 operators produce a new ``MLXArray`` with `true`/`false` values for the elementwise comparison.
@@ -50,7 +50,7 @@ to `camelCase`.  A few exceptions to that rule follow swift naming for functions
 no side effects.  For example:
 
 - `flatten()` becomes ``flattened(_:start:end:stream:)``
-- `reshape()` becomes ``reshaped(_:_:stream:)-5x3y0``
+- `reshape()` becomes ``reshaped(_:_:stream:)-(_,Int...,_)``
 - `moveaxis()` becomes ``movedAxis(_:source:destination:stream:)``
 
 and so on.
@@ -64,7 +64,7 @@ Note: some of the symbols are not linkable.
 --- | ---
 `__init__` | see <doc:initialization>
 `__repr__` | ``MLXArray/description``
-`__eq__` | ``MLXArray/.==(_:_:)-56m0a``
+`__eq__` | ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
 `size` | ``MLXArray/size``
 `ndim` | ``MLXArray/ndim``
 `itemsize` | ``MLXArray/itemSize``
@@ -73,32 +73,32 @@ Note: some of the symbols are not linkable.
 `dtype` | ``MLXArray/dtype``
 `item` | ``MLXArray/item(_:)``
 `tolist` | ``MLXArray/asArray(_:)``
-`astype` | ``MLXArray/asType(_:stream:)-4eqoc`` or ``MLXArray/asType(_:stream:)-6d44y``
-`__getitem__` | ``MLXArray/subscript(_:stream:)-375a0``
+`astype` | ``MLXArray/asType(_:stream:)-(HasDType.Type,StreamOrDevice)`` or ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
+`__getitem__` | ``MLXArray/subscript(_:stream:)-(MLXArrayIndex,StreamOrDevice)``
 `__len__` | ``MLXArray/count``
 `__iter__` | implements `Sequence`
-`__add__` | ``MLXArray/+(_:_:)-1rv98``
-`__iadd__` | ``MLXArray/+=(_:_:)-3feg7``
-`__sub__` | ``MLXArray/-(_:_:)-7frdo``
-`__isub__` | ``MLXArray/-=(_:_:)-4d4ei``
-`__mul__` | ``MLXArray/*(_:_:)-1z2ck``
-`__imul__` | ``MLXArray/*=(_:_:)-9ukv3``
-`__truediv__` | ``MLXArray//(_:_:)-6ijef``
-`__div__` | ``MLXArray//(_:_:)-6ijef``
-`__idiv__` | ``MLXArray//=(_:_:)-9egbn``
+`__add__` | ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
+`__iadd__` | ``MLXArray/+=(_:_:)-(inout_MLXArray,MLXArray)``
+`__sub__` | ``MLXArray/-(_:_:)-(MLXArray,MLXArray)``
+`__isub__` | ``MLXArray/-=(_:_:)-(inout_MLXArray,MLXArray)``
+`__mul__` | ``MLXArray/*(_:_:)-(MLXArray,MLXArray)``
+`__imul__` | ``MLXArray/*=(_:_:)-(inout_MLXArray,MLXArray)``
+`__truediv__` | ``MLXArray//(_:_:)-(MLXArray,MLXArray)``
+`__div__` | ``MLXArray//(_:_:)-(MLXArray,MLXArray)``
+`__idiv__` | ``MLXArray//=(_:_:)-(inout_MLXArray,MLXArray)``
 `__floordiv__` | ``MLXArray/floorDivide(_:stream:)``
-`__mod__` | ``MLXArray/%(_:_:)-3ubwd``
-`__eq__` | ``MLXArray/.==(_:_:)-56m0a``
-`__lt__` | ``MLXArray/.<(_:_:)-9rzup``
-`__le__` | ``MLXArray/.<=(_:_:)-2a0s9``
-`__gt__` | ``MLXArray/.>(_:_:)-fwi1``
-`__ge__` | ``MLXArray/.>=(_:_:)-2gqml``
-`__ne__` | ``MLXArray/.!=(_:_:)-mbw0``
+`__mod__` | ``MLXArray/%(_:_:)-(MLXArray,MLXArray)``
+`__eq__` | ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
+`__lt__` | ``MLXArray/.<(_:_:)-(MLXArray,MLXArray)``
+`__le__` | ``MLXArray/.<=(_:_:)-(MLXArray,MLXArray)``
+`__gt__` | ``MLXArray/.>(_:_:)-(MLXArray,MLXArray)``
+`__ge__` | ``MLXArray/.>=(_:_:)-(MLXArray,MLXArray)``
+`__ne__` | ``MLXArray/.!=(_:_:)-(MLXArray,MLXArray)``
 `__neg__` | ``MLXArray/-(_:)``
 `__bool__` | ``MLXArray/all(keepDims:stream:)`` + ``MLXArray/item()``
 `__repr__` | ``MLXArray/description``
 `__matmul__` | ``MLXArray/matmul(_:stream:)``
-`__pow__` | ``MLXArray/**(_:_:)-8xxt3``
+`__pow__` | ``MLXArray/**(_:_:)-(MLXArray,MLXArray)``
 `abs` | ``MLXArray/abs(stream:)``
 `all` | ``MLXArray/all(axes:keepDims:stream:)``
 `any` | ``MLXArray/any(axes:keepDims:stream:)``
@@ -122,7 +122,7 @@ Note: some of the symbols are not linkable.
 `moveaxis` | ``MLXArray/movedAxis(source:destination:stream:)``
 `prod` | ``MLXArray/product(axes:keepDims:stream:)``
 `reciprocal` | ``MLXArray/reciprocal(stream:)``
-`reshape` | ``MLXArray/reshaped(_:stream:)-67a89``
+`reshape` | ``MLXArray/reshaped(_:stream:)-(Collection<Int>,StreamOrDevice)``
 `round` | ``MLXArray/round(decimals:stream:)``
 `rsqrt` | ``MLXArray/rsqrt(stream:)``
 `sin` | ``MLXArray/sin(stream:)``
@@ -173,7 +173,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `cummin` | ``MLX/cummin(_:axis:reverse:inclusive:stream:)``
 `cumprod` | ``MLX/cumprod(_:axis:reverse:inclusive:stream:)``
 `cumsum` | ``MLX/cumsum(_:axis:reverse:inclusive:stream:)``
-`dequantize` | ``MLX/dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+`dequantize` | ``MLX/dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
 `divide` | ``MLX/divide(_:_:stream:)``
 `equal` | ``MLX/equal(_:_:stream:)``
 `erf` | ``MLX/erf(_:stream:)``
@@ -190,7 +190,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `identity` | ``MLXArray/identity(_:type:stream:)``
 `less` | ``MLX/less(_:_:stream:)``
 `less_equal` | ``MLX/lessEqual(_:_:stream:)``
-`linspace` | ``MLXArray/linspace(_:_:count:stream:)-92x6l``
+`linspace` | ``MLXArray/linspace(_:_:count:stream:)-(Int,Int,Int,StreamOrDevice)``
 `load` | ``MLX/loadArray(url:stream:)`` and ``MLX/loadArrays(url:stream:)``
 `log` | ``MLX/log(_:stream:)``
 `log10` | ``MLX/log10(_:stream:)``
@@ -213,14 +213,15 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `ones_like` | ``MLXArray/ones(like:stream:)``
 `pad` | ``MLX/padded(_:width:mode:value:stream:)``
 `partition` | ``MLX/partitioned(_:kth:axis:stream:)``
-`power` | ``MLX/pow(_:_:stream:)-8ie9c``
+`power` | ``MLX/pow(_:_:stream:)-(MLXArray,MLXArray,_)``
 `prod` | ``MLX/product(_:axes:keepDims:stream:)``
+`qqmm` | ``MLX/quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
 `quantize` | ``MLX/quantized(_:groupSize:bits:mode:stream:)``
-`quantized_matmul` | ``MLX/quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
+`quantized_matmul` | ``MLX/quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 `reciprocal` | ``MLX/reciprocal(_:stream:)``
 `remainder` | ``MLX/remainder(_:_:stream:)``
 `repeat` | ``MLX/repeated(_:count:axis:stream:)``
-`reshape` | ``MLX/reshaped(_:_:stream:)-5x3y0``
+`reshape` | ``MLX/reshaped(_:_:stream:)-(MLXArray,Collection<Int>,StreamOrDevice)``
 `round` | ``MLX/round(_:decimals:stream:)``
 `rsqrt` | ``MLX/rsqrt(_:stream:)``
 `save` | ``MLX/save(array:url:stream:)`` and ``MLX/save(arrays:metadata:url:stream:)``

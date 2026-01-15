@@ -7,7 +7,7 @@ import Numerics
 public final class MLXArray {
 
     /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
-    public package(set) var ctx: mlx_array
+    public internal(set) var ctx: mlx_array
 
     /// Initialize with the given +1 context (transfer ownership).
     ///
@@ -506,8 +506,9 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    public func asType<T: HasDType>(_ type: T.Type, stream: StreamOrDevice = .default) -> MLXArray {
-        asType(T.dtype, stream: stream)
+    public func asType(_ type: (some HasDType).Type, stream: StreamOrDevice = .default) -> MLXArray
+    {
+        asType(type.dtype, stream: stream)
     }
 
     /// Convert the real array into a ``DType/complex64`` imaginary part.

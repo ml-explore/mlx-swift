@@ -21,8 +21,8 @@ import Numerics
 ///
 /// ### See Also
 /// - ``HasDType``
-/// - ``MLXArray/asType(_:stream:)-6d44y``
-/// - ``MLXArray/asType(_:stream:)-4eqoc``
+/// - ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
+/// - ``MLXArray/asType(_:stream:)-(HasDType.Type,StreamOrDevice)``
 /// - ``MLXArray/init(_:dtype:)``
 public enum DType: Hashable, Sendable, CaseIterable {
     case bool
@@ -124,7 +124,7 @@ public enum DType: Hashable, Sendable, CaseIterable {
 
         /// The difference between 1.0 and the next smallest representable float larger than 1.0
         ///
-        /// In Swift this is e.g. ``Double.ulpOfOne``
+        /// In Swift this is e.g. `Double.ulpOfOne`
         public var eps: Double {
             switch dtype {
             #if !arch(x86_64)
@@ -360,7 +360,7 @@ extension Float64: HasDType {
     }
 }
 
-extension Complex: HasDType where RealType == Float {
+extension Complex<Float>: HasDType {
     static public var dtype: DType { .complex64 }
 }
 
@@ -383,7 +383,7 @@ public protocol ScalarOrArray {
     func asMLXArray(dtype: DType?) -> MLXArray
 }
 
-extension Complex: ScalarOrArray where RealType == Float {
+extension Complex<Float>: ScalarOrArray {
     public func asMLXArray(dtype: DType?) -> MLXArray {
         MLXArray(self)
     }
@@ -420,8 +420,7 @@ extension Array: ScalarOrArray where Element: HasDType {
 ///
 /// See also ``ScalarOrArray``.
 @_documentation(visibility: internal)
-public func toArrays<T1: ScalarOrArray, T2: ScalarOrArray>(_ a: T1, _ b: T2) -> (MLXArray, MLXArray)
-{
+public func toArrays(_ a: some ScalarOrArray, _ b: some ScalarOrArray) -> (MLXArray, MLXArray) {
     if let a = a as? MLXArray {
         if let b = b as? MLXArray {
             return (a, b)

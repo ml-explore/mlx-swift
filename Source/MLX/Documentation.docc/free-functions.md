@@ -41,9 +41,9 @@ operations as methods for convenience.
 - ``multiply(_:_:stream:)``
 - ``negative(_:stream:)``
 - ``notEqual(_:_:stream:)``
-- ``pow(_:_:stream:)-7pe7j``
-- ``pow(_:_:stream:)-49xi0``
-- ``pow(_:_:stream:)-8ie9c``
+- ``pow(_:_:stream:)-(MLXArray,ScalarOrArray,_)``
+- ``pow(_:_:stream:)-(ScalarOrArray,MLXArray,_)``
+- ``pow(_:_:stream:)-(MLXArray,MLXArray,_)``
 - ``reciprocal(_:stream:)``
 - ``remainder(_:_:stream:)``
 - ``round(_:decimals:stream:)``
@@ -106,7 +106,6 @@ operations as methods for convenience.
 - ``MLX/full(_:values:type:stream:)``
 - ``MLX/full(_:values:stream:)``
 - ``MLX/identity(_:type:stream:)``
-- ``MLX/linspace(_:_:count:stream:)-7vj0o``
 - ``MLX/linspace(_:_:count:stream:)-6w959``
 - ``MLX/repeated(_:count:axis:stream:)``
 - ``MLX/repeated(_:count:stream:)``
@@ -168,8 +167,8 @@ operations as methods for convenience.
 - ``movedAxis(_:source:destination:stream:)``
 - ``padded(_:width:mode:value:stream:)``
 - ``padded(_:widths:mode:value:stream:)``
-- ``reshaped(_:_:stream:)-5x3y0``
-- ``reshaped(_:_:stream:)-96lgr``
+- ``reshaped(_:_:stream:)-(MLXArray,Collection<Int>,StreamOrDevice)``
+- ``reshaped(_:_:stream:)-(MLXArray,Int...,StreamOrDevice)``
 - ``split(_:indices:axis:stream:)``
 - ``split(_:parts:axis:stream:)``
 - ``split(_:axis:stream:)``
@@ -195,23 +194,24 @@ operations as methods for convenience.
 
 ### Quantization
 
+- ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
 - ``quantized(_:groupSize:bits:mode:stream:)``
 - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
-- ``dequantized(_:scales:biases:groupSize:bits:mode:stream:)``
+- ``dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
 
 ### Evaluation and Transformation
 
-- ``eval(_:)-190w1``
-- ``eval(_:)-3b2g9``
-- ``eval(_:)-8fexv``
-- ``eval(_:)-91pbd``
-- ``asyncEval(_:)-6j4zg``
-- ``asyncEval(_:)-6uc2e``
-- ``asyncEval(_:)-11gzm``
+- ``eval(_:)-(MLXArray...)``
+- ``eval(_:)-(Collection<MLXArray>)``
+- ``eval(_:)-(Any...)``
+- ``eval(_:)-(Sequence<Any>)``
+- ``asyncEval(_:)-(Collection<MLXArray>)``
+- ``asyncEval(_:)-(Any...)``
+- ``asyncEval(_:)-(Sequence<Any>)``
 - ``grad(_:)-r8dv``
 - ``grad(_:)-7z6i``
-- ``grad(_:argumentNumbers:)-2ictk``
-- ``grad(_:argumentNumbers:)-5va2g``
+- ``grad(_:argumentNumbers:)-(([MLXArray])->[MLXArray],Collection<Int>)``
+- ``grad(_:argumentNumbers:)-(([MLXArray])->MLXArray,Collection<Int>)``
 - ``valueAndGrad(_:)``
 - ``valueAndGrad(_:argumentNumbers:)``
 - ``stopGradient(_:stream:)``
@@ -224,6 +224,8 @@ operations as methods for convenience.
 
 ### Other
 
+- ``depends(input:dependencies:)``
+- ``depends(inputs:dependencies:)``
 - ``diag(_:k:stream:)``
 - ``diagonal(_:offset:axis1:axis2:stream:)``
 - ``einsum(_:operands:stream:)``

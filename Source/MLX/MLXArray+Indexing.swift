@@ -80,8 +80,9 @@ extension MLXArray {
         }
     }
 
-    private func resolve(_ rangeExpression: any RangeExpression<Int>, _ axis: Int) -> (Int32, Int32)
-    {
+    private func resolve(_ rangeExpression: some RangeExpression<Int>, _ axis: Int) -> (
+        Int32, Int32
+    ) {
         func resolve(_ index: Int, _ axis: Int) -> Int32 {
             if index < 0 {
                 return Int32(index + dim(axis))
@@ -184,7 +185,7 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:indexing>
     @available(*, deprecated, message: "please use subscript(.ellipsis, 0 ..< 3) or equivalent")
-    public subscript(range: any RangeExpression<Int>, axis axis: Int,
+    public subscript(range: some RangeExpression<Int>, axis axis: Int,
         stream stream: StreamOrDevice = .default
     ) -> MLXArray {
         get {
@@ -447,7 +448,7 @@ extension MLXArray {
     /// - ``MLXArrayIndex/newAxis``
     /// - ``MLXArrayIndex/stride(from:to:by:)``
     /// - ``MLXArray/at``
-    public subscript(indices: MLXArrayIndex..., stream stream: StreamOrDevice = .default)
+    public subscript(indices: any MLXArrayIndex..., stream stream: StreamOrDevice = .default)
         -> MLXArray
     {
         get {
@@ -462,7 +463,7 @@ extension MLXArray {
     /// General array indexing.
     ///
     /// See ``MLXArray/subscript(_:stream:)-375a0``
-    public subscript(indices: [MLXArrayIndex], stream stream: StreamOrDevice = .default)
+    public subscript(indices: [any MLXArrayIndex], stream stream: StreamOrDevice = .default)
         -> MLXArray
     {
         get {
@@ -478,7 +479,7 @@ extension MLXArray {
 
 // MARK: - Support
 
-func countNonNewAxisOperations(_ operations: any Sequence<MLXArrayIndexOperation>) -> Int {
+func countNonNewAxisOperations(_ operations: some Sequence<MLXArrayIndexOperation>) -> Int {
     operations
         .filter { !$0.isNewAxis }
         .count
@@ -1567,31 +1568,31 @@ extension MLXSlice: MLXArrayIndex {
     }
 }
 
-extension Range: MLXArrayIndex where Bound == Int {
+extension Range<Int>: MLXArrayIndex {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .slice(.init(start: self.lowerBound.int32, end: self.upperBound.int32))
     }
 }
 
-extension ClosedRange: MLXArrayIndex where Bound == Int {
+extension ClosedRange<Int>: MLXArrayIndex {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .slice(.init(start: self.lowerBound.int32, end: self.upperBound.int32 + 1))
     }
 }
 
-extension PartialRangeUpTo: MLXArrayIndex where Bound == Int {
+extension PartialRangeUpTo<Int>: MLXArrayIndex {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .slice(.init(start: 0, end: self.upperBound.int32))
     }
 }
 
-extension PartialRangeThrough: MLXArrayIndex where Bound == Int {
+extension PartialRangeThrough<Int>: MLXArrayIndex {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .slice(.init(start: 0, end: self.upperBound.int32 + 1))
     }
 }
 
-extension PartialRangeFrom: MLXArrayIndex where Bound == Int {
+extension PartialRangeFrom<Int>: MLXArrayIndex {
     public var mlxArrayIndexOperation: MLXArrayIndexOperation {
         .slice(.init(start: self.lowerBound.int32))
     }

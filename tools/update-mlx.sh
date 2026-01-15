@@ -31,15 +31,18 @@ make \
     copy \
     fft \
     fp_quantized \
+    fp_quantized_nax \
     gather \
     gather_axis \
     gather_front \
     gemm \
+    gemm_nax \
     gemv_masked \
     hadamard \
     logsumexp \
     masked_scatter \
     quantized \
+    quantized_nax \
     quantized_utils \
     reduce \
     reduce_utils \
@@ -48,10 +51,14 @@ make \
     scatter_axis \
     softmax \
     sort \
+    steel_attention \
+    steel_attention_nax \
     steel_conv \
     steel_conv_general \
     steel_gemm_fused \
+    steel_gemm_fused_nax \
     steel_gemm_gather \
+    steel_gemm_gather_nax \
     steel_gemm_masked \
     steel_gemm_segmented \
     steel_gemm_splitk \
@@ -82,3 +89,6 @@ rm Source/Cmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh
+
+# prepare xcodeproj files
+./tools/update-mlx-xcodeproj.sh

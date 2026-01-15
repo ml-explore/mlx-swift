@@ -3,7 +3,6 @@
 // clang-format off
 #include "../../../utils.h"
 
-#include "../../../steel/attn/attn.h"
 #include "../../../steel/attn/kernels/steel_attention.h"
 
 #define instantiate_attn(tname, dtype, bq, bk, bd, wm, wn, mname, mtype) \

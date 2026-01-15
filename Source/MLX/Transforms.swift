@@ -15,7 +15,8 @@ import Foundation
 ///     should be the same in number, shape and type as the inputs of `f`, e.g. the `primals`
 /// - Returns: array of the Jacobian-vector products which is the same in number, shape and type of the outputs of `f`
 public func jvp(
-    _ f: @escaping ([MLXArray]) -> [MLXArray], primals: [MLXArray], tangents: [MLXArray]
+    _ f: @escaping ([MLXArray]) -> [MLXArray], primals: some Collection<MLXArray>,
+    tangents: some Collection<MLXArray>
 ) -> ([MLXArray], [MLXArray]) {
     let primals_mlx = new_mlx_vector_array(primals)
     defer { mlx_vector_array_free(primals_mlx) }
@@ -47,7 +48,8 @@ public func jvp(
 ///     should be the same in number, shape and type as the outputs of `f`
 /// - Returns: array of the vector-Jacobian products which is the same in number, shape and type of the outputs of `f`
 public func vjp(
-    _ f: @escaping ([MLXArray]) -> [MLXArray], primals: [MLXArray], cotangents: [MLXArray]
+    _ f: @escaping ([MLXArray]) -> [MLXArray], primals: some Collection<MLXArray>,
+    cotangents: some Collection<MLXArray>
 ) -> ([MLXArray], [MLXArray]) {
     let primals_mlx = new_mlx_vector_array(primals)
     defer { mlx_vector_array_free(primals_mlx) }

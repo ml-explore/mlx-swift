@@ -1,0 +1,16 @@
+#include "common.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.apple.mlx.Cmlx
+
+DEFINES_MODULE = YES
+BUILD_LIBRARY_FOR_DISTRIBUTION = YES
+
+HEADER_SEARCH_PATHS = $(SDKROOT)/usr/include/c++/v1 $(SDKROOT)/usr/include $(inherited) $(SRCROOT)/../Source/Cmlx/metal-cpp $(SRCROOT)/../Source/Cmlx/fmt/include $(SRCROOT)/../Source/Cmlx/json/single_include/nlohmann
+
+OTHER_CFLAGS = -isysroot $(SDKROOT)
+
+USER_HEADER_SEARCH_PATHS = $(SRCROOT)/../Source/Cmlx/mlx-c $(SRCROOT)/../Source/Cmlx/mlx
+
+
+GCC_PREPROCESSOR_DEFINITIONS = _METAL_=1 SWIFTPM_BUNDLE=\"com.apple.mlx.Cmlx\" MLX_VERSION=\"0.29.1\" MLX_USE_ACCELERATE=1 METAL_PATH=\"default.metallib\" ACCELERATE_NEW_LAPACK=1
+

@@ -140,11 +140,45 @@ pre-generating the source when updating the `mlx` version.
 2. Add any vendored dependencies as needed in `/vendor`
 
 3. Regenerate any build-time source: `./tools/update-mlx.sh`
+    - this updates headers in Source/Cmlx/include
+    - this updates headers in Source/Cmlx/include-framework
+    - this generates various files in Source/Cmlx/mlx-generated
 
-4. Fix any build issues
+4. Fix any build issues with SwiftPM build (opening Package.swift)
+5. Fix any build issues with xcodeproj build (opening xcode/MLX.codeproj), see also [README.xcodeproj.md]
 
-5. Wrap any new API with swift, update documentation, etc.
+6. Wrap any new API with swift, update documentation, etc.
 
-6. Run `pre-commit run --all-files`
+7. Run `pre-commit run --all-files`
 
-7. Make a PR
+8. Make a PR
+
+## Updating `xcode/MLX.xcodeproj`
+
+### Updating
+
+After updating the mlx/mlx-c version the xcodeproj needs to be brought up to date.  
+
+- the headers in Cmlx/include-framework must all be public
+- no other headers in the project should be included as resources (public/private/project)
+    - the easiest way to adjust is look at Project -> Cmlx -> Build Phases and then look at the Headers task
+- similarly there should be _no_ Copy Bundle Resources from the same section
+- compilation issues in .metal files typically mean they are new to the project and need to be removed from Cmlx target membership
+
+### Cmlx
+
+This is set up to build roughly how Package.swift builds.
+
+- Look at Project -> Cmlx -> Build Phases
+- remove all Project headers
+- remove all Copy Bundle Resources
+- remove any files that should not be built from the Target membership, e.g the items in `exclude`
+
+Public headers are in `include-framework` and this is managed by tools/update-mlx
+
+Settings, including header search paths are in xcode/xcconfig.
+
+### MLX, etc.
+
+These are just normal frameworks that link to Cmlx and others as needed.  The source files are all swift and there are no special settings needed.
+

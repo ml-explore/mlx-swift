@@ -24,7 +24,7 @@ public func eval(_ arrays: MLXArray...) {
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
-public func eval(_ arrays: [MLXArray]) {
+public func eval(_ arrays: some Collection<MLXArray>) {
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_eval(vector_array)
@@ -36,8 +36,8 @@ public func eval(_ arrays: [MLXArray]) {
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
-/// - ``asyncEval(_:)-6j4zg``
-public func asyncEval(_ arrays: [MLXArray]) {
+/// - ``asyncEval(_:)-(Collection<MLXArray>)``
+public func asyncEval(_ arrays: some Collection<MLXArray>) {
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_async_eval(vector_array)
@@ -65,7 +65,7 @@ public func asyncEval(_ arrays: [MLXArray]) {
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
-/// - ``asyncEval(_:)-6j4zg``
+/// - ``asyncEval(_:)-(Collection<MLXArray>)``
 public func eval(_ values: Any...) {
     var arrays = [MLXArray]()
 
@@ -79,7 +79,7 @@ public func eval(_ values: Any...) {
 /// Evaluate one or more `MLXArray`.
 ///
 /// See ``eval(_:)``
-public func eval(_ values: [Any]) {
+public func eval(_ values: some Sequence<Any>) {
     var arrays = [MLXArray]()
 
     for item in values {
@@ -89,7 +89,7 @@ public func eval(_ values: [Any]) {
     eval(arrays)
 }
 
-/// Variant of ``eval(_:)-3b2g9`` that checks for errors in MLX and throws.
+/// Variant of ``eval(_:)-(Collection<MLXArray>)`` that checks for errors in MLX and throws.
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
@@ -105,11 +105,11 @@ public func checkedEval(_ values: Any...) throws {
     }
 }
 
-/// Variant of ``eval(_:)-190w1`` that checks for errors in MLX and throws.
+/// Variant of ``eval(_:)-(MLXArray...)`` that checks for errors in MLX and throws.
 ///
 /// ### See Also
 /// - <doc:lazy-evaluation>
-public func checkedEval(_ values: [Any]) throws {
+public func checkedEval(_ values: some Sequence<Any>) throws {
     var arrays = [MLXArray]()
 
     for item in values {
@@ -153,8 +153,8 @@ public func asyncEval(_ values: Any...) {
 
 /// Evaluate one or more `MLXArray` asynchronously.
 ///
-/// See ``asyncEval(_:)-6j4zg``
-public func asyncEval(_ values: [Any]) {
+/// See ``asyncEval(_:)-(Collection<MLXArray>)``
+public func asyncEval(_ values: some Sequence<Any>) {
     var arrays = [MLXArray]()
 
     for item in values {

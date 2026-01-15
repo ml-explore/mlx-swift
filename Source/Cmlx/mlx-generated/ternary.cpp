@@ -2,6 +2,17 @@ namespace mlx::core::metal {
 
 const char* ternary() {
   return R"preamble(
+// Copyright © 2025 Apple Inc.
+
+// Auto generated source for mlx/backend/metal/kernels/ternary.h
+
+///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/ternary.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/ternary.h"
+// Copyright © 2024 Apple Inc.
+
 template <
     typename T,
     typename Op,
@@ -30,6 +41,7 @@ template <
     }
   }
 }
+
 template <
     typename T,
     typename Op,
@@ -59,6 +71,7 @@ template <
     }
   }
 }
+
 template <typename T, typename Op, typename IdxT = int64_t>
 [[kernel]] void ternary_g_nd1(
     device const bool* a,
@@ -74,6 +87,7 @@ template <typename T, typename Op, typename IdxT = int64_t>
   auto c_idx = elem_to_loc_1<IdxT>(index, c_strides);
   d[index] = Op()(a[a_idx], b[b_idx], c[c_idx]);
 }
+
 template <typename T, typename Op, typename IdxT = int64_t>
 [[kernel]] void ternary_g_nd2(
     device const bool* a,
@@ -91,6 +105,7 @@ template <typename T, typename Op, typename IdxT = int64_t>
   IdxT out_idx = index.x + IdxT(grid_dim.x) * index.y;
   d[out_idx] = Op()(a[a_idx], b[b_idx], c[c_idx]);
 }
+
 template <typename T, typename Op, typename IdxT = int64_t>
 [[kernel]] void ternary_g_nd3(
     device const bool* a,
@@ -108,6 +123,7 @@ template <typename T, typename Op, typename IdxT = int64_t>
   IdxT out_idx = index.x + grid_dim.x * (index.y + IdxT(grid_dim.y) * index.z);
   d[out_idx] = Op()(a[a_idx], b[b_idx], c[c_idx]);
 }
+
 template <typename T, typename Op, int N = 1, typename IdxT = int64_t>
 [[kernel]] void ternary_g(
     device const bool* a,
@@ -140,6 +156,8 @@ template <typename T, typename Op, int N = 1, typename IdxT = int64_t>
     idx.z += c_xstride;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 )preamble";
 }
 

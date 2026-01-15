@@ -49,10 +49,11 @@ public func quantizeSingle(
 ///   - model: model to quantize
 ///   - groupSize: quantization group size
 ///   - bits: bits per parameter
+///   - mode: quantization mode
 ///   - filter: filter receiving path and module -- return `false` to skip a layer
 ///   - apply: function to attempt the quantization -- the default implementation will quantize ``Linear`` and ``Embedding``
 /// ### See Also
-/// - ``quantize(model:filter:apply:)``
+/// - ``quantize(model:filter:apply:)-(_,_,(Module,Int,Int,QuantizationMode)->Module?)``
 public func quantize(
     model: Module,
     groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
@@ -210,7 +211,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
     }
 
     open override func asLinear(_ x: MLXArray) -> MLXArray {
-        quantizedMatmul(
+        quantizedMM(
             x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize,
             bits: bits, mode: mode)
     }
@@ -233,7 +234,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
 /// Please see the discussion in ``Linear`` for considerations when replacing layers.
 ///
 /// ### See Also
-/// - ``init(weight:bias:groupSize:bits:)``
+/// - ``QuantizedLinear/init(_:_:bias:groupSize:bits:mode:)``
 open class QuantizedLinear: Linear, Quantized {
 
     public let groupSize: Int
@@ -258,6 +259,7 @@ open class QuantizedLinear: Linear, Quantized {
     ///   - bias: if `true` this layer will apply a bias
     ///   - groupSize: The group size to use for the quantized weight
     ///   - bits: The bit width to use for the quantized weight
+    ///   - mode: quantization mode
     public convenience init(
         _ inputDimensions: Int, _ outputDimensions: Int,
         bias: Bool = true, groupSize: Int = 64, bits: Int = 4,
@@ -278,6 +280,7 @@ open class QuantizedLinear: Linear, Quantized {
     ///   - other: a `Linear` layer
     ///   - groupSize: The group size to use for the quantized weight
     ///   - bits: The bit width to use for the quantized weight
+    ///   - mode: quantization mode
     public convenience init(
         _ other: Linear, groupSize: Int = 64, bits: Int = 4,
         mode: QuantizationMode = .affine
@@ -331,7 +334,7 @@ open class QuantizedLinear: Linear, Quantized {
     }
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var x = quantizedMatmul(
+        var x = quantizedMM(
             x,
             weight,
             scales: scales,
