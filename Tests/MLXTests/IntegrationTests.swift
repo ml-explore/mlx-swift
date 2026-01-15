@@ -7010,7 +7010,7 @@ class MLXIntegrationTests: XCTestCase {
         XCTAssertEqual(result.shape, [3, 8, 16])
 
         // Verify against individual scalar offset calls
-        for i in 0..<3 {
+        for i in 0 ..< 3 {
             let single = batch[i].expandedDimensions(axis: 0)
             let offsetValue = [50, 20, 0][i]
             let expected = MLXFast.RoPE(
