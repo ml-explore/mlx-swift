@@ -60,13 +60,13 @@ public enum MLXFast {
         traditional: Bool,
         base: Float?,
         scale: Float,
-        offset: MLXArray? = nil,
+        offset: MLXArray,
         freqs: MLXArray? = nil,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
         let base = mlx_optional_float(value: base ?? 0, has_value: base != nil)
-        let offset = offset ?? MLXArray([Int32(0)])
+        let offset = offset
         mlx_fast_rope_dynamic(
             &result,
             array.ctx, Int32(dimensions), traditional, base, scale, offset.ctx,
