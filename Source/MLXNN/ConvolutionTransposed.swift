@@ -51,7 +51,12 @@ open class ConvTransposed1d: Module, UnaryLayer {
         let scale = sqrt(1 / Float(inputChannels * kernelSize))
 
         self.weight = MLXRandom.uniform(
-            low: -scale, high: scale, [outputChannels, kernelSize, inputChannels])
+            low: -scale, high: scale,
+            [
+                outputChannels,
+                kernelSize,
+                inputChannels / groups,
+            ])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding
         self.dilation = dilation
@@ -123,7 +128,11 @@ open class ConvTransposed2d: Module, UnaryLayer {
 
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale,
-            [outputChannels, kernelSize.first, kernelSize.second, inputChannels])
+            [
+                outputChannels,
+                kernelSize.first, kernelSize.second,
+                inputChannels / groups,
+            ])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding.values
         self.dilation = dilation.values
@@ -196,7 +205,11 @@ open class ConvTransposed3d: Module, UnaryLayer {
 
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale,
-            [outputChannels, kernelSize.first, kernelSize.second, kernelSize.third, inputChannels])
+            [
+                outputChannels,
+                kernelSize.first, kernelSize.second, kernelSize.third,
+                inputChannels / groups,
+            ])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding.values
         self.dilation = dilation.values
