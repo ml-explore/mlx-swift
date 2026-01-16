@@ -348,6 +348,68 @@ class TransformTests: XCTestCase {
         assertEqual(gv(x), x * 2)
     }
 
+    func testCompileThreadSafety() async throws {
+
+        func swiglu(_ xLinear: MLXArray, _ xGlu: MLXArray, alpha: Float = 1.702, limit: Float = 7.0)
+            -> MLXArray
+        {
+            var xLinear = xLinear
+            var xGlu = xGlu
+            xGlu = clip(xGlu, max: MLXArray(limit))
+            xLinear = clip(xLinear, min: MLXArray(-limit), max: MLXArray(limit))
+
+            let gluScaled = alpha * xGlu
+            let sig = sigmoid(gluScaled)
+
+            let outGlu = xGlu * sig
+            return outGlu * (xLinear + 1)
+        }
+
+        func compileSwiglu() -> @Sendable (MLXArray, MLXArray) -> MLXArray {
+            compile(shapeless: true) { xLinear, xGlu in
+                swiglu(xLinear, xGlu)
+            }
+        }
+
+        await withTaskGroup(of: Void.self) { group in
+            for _ in 0 ..< 10 {
+                group.addTask {
+                    withRandomState(.init()) {
+                        let x = MLXRandom.normal([1024, 1024])
+                        let y = MLXRandom.normal(x.shape)
+                        let _ = compileSwiglu()(x, y)
+                    }
+                }
+            }
+
+            for await _ in group {
+
+            }
+        }
+    }
+
+    func testVmapThreadSafety() async throws {
+        await withTaskGroup(of: Void.self) { group in
+            for _ in 0 ..< 10 {
+                group.addTask {
+                    func f(_ x: MLXArray) -> MLXArray { x.square().sum() }
+
+                    let x = MLXArray(0 ..< 6, [3, 2])
+
+                    let gradF = grad(f)
+                    let vg = vmap(gradF)
+                    assertEqual(vg(x), x * 2)
+
+                    let _ = grad { vmap(f)($0).sum() }
+                }
+            }
+
+            for await _ in group {
+
+            }
+        }
+    }
+
     // Note: OptimizerTests contains additional integration tests of compile()
 
 }
