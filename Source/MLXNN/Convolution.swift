@@ -185,7 +185,7 @@ open class Conv3d: Module, UnaryLayer {
 
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale,
-            [outputChannels, kernelSize.first, kernelSize.second, kernelSize.third, inputChannels])
+            [outputChannels, kernelSize.first, kernelSize.second, kernelSize.third, inputChannels / groups])
         self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
         self.padding = padding.values
         self.dilation = dilation.values
