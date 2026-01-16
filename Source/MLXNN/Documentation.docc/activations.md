@@ -17,7 +17,9 @@ such as `alpha`.
 - ``geluApproximate(_:)``
 - ``geluFastApproximate(_:)``
 - ``glu(_:axis:)``
+- ``hardShrink(_:lambda:)``
 - ``hardSwish(_:)``
+- ``hardTanH(_:min:max:)``
 - ``leakyRelu(_:negativeSlope:)``
 - ``logSigmoid(_:)``
 - ``logSoftmax(_:axis:)``
@@ -27,18 +29,23 @@ such as `alpha`.
 - ``relu6(_:)``
 - ``reluSquared(_:)``
 - ``selu(_:)``
-- ``silu(_:)``
 - ``sigmoid(_:)``
+- ``silu(_:)``
+- ``softmin(_:axis:)``
 - ``softplus(_:)``
+- ``softshrink(_:lambda:)``
 - ``softsign(_:)``
 - ``step(_:threshold:)``
 
 ### Activation Modules
 
 - ``CELU``
+- ``ELU``
 - ``GELU``
 - ``GLU``
+- ``HardShrink``
 - ``HardSwish``
+- ``HardTanh``
 - ``LeakyReLU``
 - ``LogSigmoid``
 - ``LogSoftmax``
@@ -48,10 +55,12 @@ such as `alpha`.
 - ``ReLU6``
 - ``ReLUSquared``
 - ``SELU``
-- ``SiLU``
 - ``Sigmoid``
+- ``SiLU``
 - ``Softmax-63x8p``
+- ``Softmin``
 - ``Softplus``
+- ``Softshrink``
 - ``Softsign``
 - ``Step``
 - ``Tanh``

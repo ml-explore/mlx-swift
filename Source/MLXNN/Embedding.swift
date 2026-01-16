@@ -22,7 +22,7 @@ open class Embedding: Module, UnaryLayer, Quantizable {
     ///   - dimensions: dimensionality of the embeddings.
     public init(embeddingCount: Int, dimensions: Int) {
         let scale = sqrt(1 / Float(dimensions))
-        self.weight = MLXRandom.normal([embeddingCount, dimensions]) * scale
+        self.weight = MLXRandom.normal([embeddingCount, dimensions], scale: scale)
     }
 
     /// Initializer meant for subclasses to provide weight directly.

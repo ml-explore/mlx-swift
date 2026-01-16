@@ -160,6 +160,28 @@ public func softsign(_ x: MLXArray) -> MLXArray {
     compiledSoftsign(x)
 }
 
+/// Applies the Softshrink activation function.
+///
+/// This is (element-wise):
+///
+/// ```swift
+/// if x > lambda {
+///     x - lambda
+/// }  else if x < -lambda {
+///     x + lambda
+/// } else {
+///     0
+/// }
+/// ```
+///
+/// - Parameters:
+///   - x: input array
+///   - lambda: lambda value
+public func softshrink(_ x: MLXArray, lambda: Float = 0.5) -> MLXArray {
+    let lambda = lambda.asMLXArray(dtype: x.dtype)
+    return compiledSoftshrink(x, lambda)
+}
+
 /// Applies the Continuously Differentiable Exponential Linear Unit.
 ///
 /// This is:
@@ -353,6 +375,61 @@ public func hardSwish(_ x: MLXArray) -> MLXArray {
     compiledHardSwish(x)
 }
 
+/// Applies the HardTanh function.
+///
+/// This is (element-wise):
+///
+/// ```swift
+/// maximum(minimum(x, max), min)
+/// ```
+///
+/// - Parameters:
+///   - x: input array
+///   - min: minimum value
+///   - max: maximum value
+public func hardTanH(_ x: MLXArray, min: Float = -1, max: Float = 1) -> MLXArray {
+    let min = min.asMLXArray(dtype: x.dtype)
+    let max = max.asMLXArray(dtype: x.dtype)
+    return compiledHardTanh(x, min, max)
+}
+
+/// Applies the HardShrink activation function.
+///
+/// This is (element-wise):
+///
+/// ```swift
+/// if x > lambda {
+///     x
+/// }  else if x < -lambda {
+///     x
+/// } else {
+///     0
+/// }
+/// ```
+///
+/// - Parameters:
+///   - x: input array
+///   - lambda: lambda value
+public func hardShrink(_ x: MLXArray, lambda: Float = 0.5) -> MLXArray {
+    let lambda = lambda.asMLXArray(dtype: x.dtype)
+    return compiledHardShrink(x, lambda)
+}
+
+/// Applies the Softmin function.
+///
+/// This operation is a numerically stable version of:
+///
+/// ```swift
+///exp(-a) / sum(exp(-a), axis, keepdims: true)
+/// ```
+///
+/// - Parameters:
+///   - x: input array
+///   - axis: axis to evaluate on
+public func softmin(_ x: MLXArray, axis: Int = -1) -> MLXArray {
+    softmax(-x, axis: axis)
+}
+
 /// Applies the gated linear unit function.
 ///
 /// This function splits the `axis` dimension of the input into two halves
@@ -520,6 +597,29 @@ open class Softmax: Module, UnaryLayer {
     }
 }
 
+/// Applies the Softmin function.
+///
+/// This operation is a numerically stable version of:
+///
+/// ```swift
+/// exp(-a) / sum(exp(-a), axis, keepdims: true)
+/// ```
+///
+/// ### See Also
+/// - <doc:activations>
+/// - ``softmin(_:axis:)``
+open class Softmin: Module, UnaryLayer {
+    public var axis: Int
+
+    public init(axis: Int = -1) {
+        self.axis = axis
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        softmin(x, axis: axis)
+    }
+}
+
 @available(*, deprecated, renamed: "Softplus")
 @_documentation(visibility: internal)
 open class SoftPlus: Module, UnaryLayer {
@@ -567,6 +667,60 @@ open class SoftSign: Module, UnaryLayer {
 open class Softsign: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         softsign(x)
+    }
+}
+
+/// Applies the Softshrink activation function.
+///
+/// This is (element-wise):
+///
+/// ```swift
+/// if x > lambda {
+///     x - lambda
+/// }  else if x < -lambda {
+///     x + lambda
+/// } else {
+///     0
+/// }
+/// ```
+///
+/// ### See Also
+/// - <doc:activations>
+/// - ``softshrink(_:lambda:)``
+open class Softshrink: Module, UnaryLayer {
+    public var lambda: Float
+
+    public init(lambda: Float = 0.5) {
+        self.lambda = lambda
+        super.init()
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        softshrink(x, lambda: lambda)
+    }
+}
+
+/// Applies the Exponential Linear Unit.
+///
+/// This is:
+///
+/// ```swift
+/// MLX.which(x .> 0, x, alpha * (exp(x) - 1))
+/// ```
+///
+/// ### See Also
+/// - <doc:activations>
+/// - ``elu(_:alpha:)``
+open class ELU: Module, UnaryLayer {
+    public var alpha: Float
+
+    public init(alpha: Float = 1.0) {
+        self.alpha = alpha
+        super.init()
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        elu(x, alpha: alpha)
     }
 }
 
@@ -753,6 +907,62 @@ open class HardSwish: Module, UnaryLayer {
     }
 }
 
+/// Applies the HardTanh function.
+///
+/// This is (element-wise):
+///
+/// ```swift
+/// maximum(minimum(x, max), min)
+/// ```
+///
+/// ### See Also
+/// - <doc:activations>
+/// - ``hardTanH(_:min:max:)``
+open class HardTanh: Module, UnaryLayer {
+    public var min: Float
+    public var max: Float
+
+    public init(min: Float = -1, max: Float = 1) {
+        self.min = min
+        self.max = max
+        super.init()
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        hardTanH(x, min: min, max: max)
+    }
+}
+
+/// Applies the HardShrink activation function.
+///
+/// This is (element-wise):
+///
+/// ```swift
+/// if x > lambda {
+///     x
+/// }  else if x < -lambda {
+///     x
+/// } else {
+///     0
+/// }
+/// ```
+///
+/// ### See Also
+/// - <doc:activations>
+/// - ``hardShrink(_:lambda:)``
+open class HardShrink: Module, UnaryLayer {
+    public var lambda: Float
+
+    public init(lambda: Float = 0.5) {
+        self.lambda = lambda
+        super.init()
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        hardShrink(x, lambda: lambda)
+    }
+}
+
 /// Applies the Step Activation Function.
 ///
 /// This function implements a binary step activation, where the output is set
@@ -824,6 +1034,12 @@ private let compiledSoftsign: @Sendable (MLXArray) -> MLXArray = {
     }
 }()
 
+private let compiledSoftshrink: @Sendable (MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, lambda in
+        which(abs(x) .> lambda, x - sign(x) * lambda, 0)
+    }
+}()
+
 private let compiledCelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     compile(shapeless: true) { x, alpha in
         maximum(x, 0.0) + alpha * (exp(minimum(x, 0.0) / alpha) - 1)
@@ -882,6 +1098,18 @@ private let compiledHardSwish: @Sendable (MLXArray) -> MLXArray = {
     compile(shapeless: true) { x in
         let maxXPlus3 = maximum(x + 3, 0)
         return x * minimum(maxXPlus3, 6) / 6
+    }
+}()
+
+private let compiledHardTanh: @Sendable (MLXArray, MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, min, max in
+        minimum(maximum(x, min), max)
+    }
+}()
+
+private let compiledHardShrink: @Sendable (MLXArray, MLXArray) -> MLXArray = {
+    compile(shapeless: true) { x, lambda in
+        which(abs(x) .> lambda, x, 0)
     }
 }()
 

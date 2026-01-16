@@ -86,14 +86,17 @@ open class LayerNorm: Module, UnaryLayer {
     /// - Parameters:
     ///   - dimensions: number of features in the input
     ///   - eps: value added to the denominator for numerical stability
-    ///   - affine: if `true` adds a trainable `weight` and `bias`
-    public init(dimensions: Int, eps: Float = 1e-5, affine: Bool = true) {
+    ///   - affine: if `true` adds a trainable `weight`
+    ///   - bias: if `true` adds a trainable `bias`
+    public init(
+        dimensions: Int, eps: Float = 1e-5, affine: Bool = true, bias: Bool = true
+    ) {
         self.dimensions = dimensions
         self.eps = eps
 
         if affine {
             self.weight = MLXArray.ones([dimensions])
-            self.bias = MLXArray.zeros([dimensions])
+            self.bias = bias ? MLXArray.zeros([dimensions]) : nil
         } else {
             self.weight = nil
             self.bias = nil
