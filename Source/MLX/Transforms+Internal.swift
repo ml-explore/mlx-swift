@@ -5,6 +5,10 @@ import Foundation
 
 // see Transforms+Variants for generated grad() functions
 
+/// Global mutex to serialize access to MLX graph transformation functions (vjp, jvp, value_and_grad).
+/// This prevents race conditions in the C++ layer when constructing graphs from multiple threads.
+internal let transformMutex = NSRecursiveLock()
+
 private func valueAndGradient(
     apply valueAndGrad: mlx_closure_value_and_grad, arrays: some Collection<MLXArray>
 )
@@ -15,7 +19,10 @@ private func valueAndGradient(
 
     var r0 = mlx_vector_array_new()
     var r1 = mlx_vector_array_new()
+
+    transformMutex.lock()
     mlx_closure_value_and_grad_apply(&r0, &r1, valueAndGrad, input_vector)
+    transformMutex.unlock()
 
     defer { mlx_vector_array_free(r0) }
     defer { mlx_vector_array_free(r1) }
