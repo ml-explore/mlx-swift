@@ -93,7 +93,7 @@ open class LayerNorm: Module, UnaryLayer {
     ) {
         self.dimensions = dimensions
         self.eps = eps
-        
+
         if affine {
             self.weight = MLXArray.ones([dimensions])
             self.bias = bias ? MLXArray.zeros([dimensions]) : nil
