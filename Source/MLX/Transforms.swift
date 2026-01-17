@@ -27,7 +27,11 @@ public func jvp(
     var r1 = mlx_vector_array_new()
 
     let closure = new_mlx_closure(f)
-    mlx_jvp(&r0, &r1, closure, primals_mlx, tangents_mlx)
+
+    _ = evalLock.withLock {
+        mlx_jvp(&r0, &r1, closure, primals_mlx, tangents_mlx)
+    }
+
     mlx_closure_free(closure)
 
     defer { mlx_vector_array_free(r0) }
@@ -60,7 +64,11 @@ public func vjp(
     var r1 = mlx_vector_array_new()
 
     let closure = new_mlx_closure(f)
-    mlx_vjp(&r0, &r1, closure, primals_mlx, cotangents_mlx)
+
+    _ = evalLock.withLock {
+        mlx_vjp(&r0, &r1, closure, primals_mlx, cotangents_mlx)
+    }
+
     mlx_closure_free(closure)
 
     defer { mlx_vector_array_free(r0) }
