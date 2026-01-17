@@ -28,9 +28,9 @@ public func jvp(
 
     let closure = new_mlx_closure(f)
 
-    transformMutex.lock()
-    mlx_jvp(&r0, &r1, closure, primals_mlx, tangents_mlx)
-    transformMutex.unlock()
+    _ = evalLock.withLock {
+        mlx_jvp(&r0, &r1, closure, primals_mlx, tangents_mlx)
+    }
 
     mlx_closure_free(closure)
 
@@ -65,9 +65,9 @@ public func vjp(
 
     let closure = new_mlx_closure(f)
 
-    transformMutex.lock()
-    mlx_vjp(&r0, &r1, closure, primals_mlx, cotangents_mlx)
-    transformMutex.unlock()
+    _ = evalLock.withLock {
+        mlx_vjp(&r0, &r1, closure, primals_mlx, cotangents_mlx)
+    }
 
     mlx_closure_free(closure)
 
