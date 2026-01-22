@@ -89,6 +89,9 @@ jobs:
 
       - name: Build SwiftPM (Xcode, macOS)
         shell: sh
+        env:
+          # workaround for CI failure
+          DEVELOPER_DIR: /Applications/Xcode-latest.app
         run: |
           xcodebuild -version
           xcrun --show-sdk-build-version
@@ -98,18 +101,27 @@ jobs:
 
       - name: Run Tests SwiftPM (Xcode, macOS)
         shell: sh
+        env:
+          # workaround for CI failure
+          DEVELOPER_DIR: /Applications/Xcode-latest.app
         run: |
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
       - name: Build xcodeproj (Xcode, macOS)
         shell: sh
+        env:
+          # workaround for CI failure
+          DEVELOPER_DIR: /Applications/Xcode-latest.app
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           cd xcode
           xcodebuild build-for-testing -scheme MLX -destination 'platform=macOS'
 
       - name: Run Tests xcodeproj (Xcode, macOS)
+        env:
+          # workaround for CI failure
+          DEVELOPER_DIR: /Applications/Xcode-latest.app
         working-directory: xcode
         run: ../.github/scripts/run-xcode-tests.sh
 
