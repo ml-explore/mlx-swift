@@ -199,7 +199,7 @@ public func compile(
     inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
 )
-    -> (MLXArray, MLXArray, MLXArray) -> MLXArray
+    -> @Sendable (MLXArray, MLXArray, MLXArray) -> MLXArray
 {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
         [f($0[0], $0[1], $0[2])]

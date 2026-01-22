@@ -209,9 +209,21 @@ private func product<T>(values: [[T]]) -> [[T]] {
     return result
 }
 
-private func nearestIndices(dimension: Int, scale: Float, dim: Int, ndim: Int) -> MLXArray {
-    scaledIndices(dimension: dimension, scale: scale, alignCorners: true, dim: dim, ndim: ndim)
-        .asType(.int32)
+private func nearestIndices(dimension N: Int, scale: Float, dim: Int, ndim: Int) -> MLXArray {
+    let M = Int(scale * Float(N))
+    var indices = arange(M, dtype: .float32)
+
+    if M > N {
+        indices = (indices + 0.5) * (Float(N) / Float(M)) - 0.5
+        indices = indices.round()
+    } else {
+        indices = indices * (Float(N) / Float(M))
+    }
+
+    var shape = Array(repeating: 1, count: ndim)
+    shape[dim] = -1
+
+    return indices.asType(.uint32).reshaped(shape)
 }
 
 private func linearIndices(dimension: Int, scale: Float, alignCorners: Bool, dim: Int, ndim: Int)
@@ -289,11 +301,11 @@ private func scaledIndices(dimension N: Int, scale: Float, alignCorners: Bool, d
 
     var indices: MLXArray
     if alignCorners {
-        indices = MLXArray(0 ..< M).asType(.float32) * ((Float(N) - 1) / (Float(M) - 1))
+        indices = arange(M, dtype: .float32) * ((Float(N) - 1) / (Float(M) - 1))
     } else {
         let step = 1 / scale
         let start = ((Float(M) - 1) * step - Float(N) + 1) / 2
-        indices = MLXArray(0 ..< M).asType(.float32) * step - start
+        indices = arange(M, dtype: .float32) * step - start
     }
 
     var shape = Array(repeating: 1, count: ndim)
