@@ -29,13 +29,16 @@ public func vmap(
         var traceInputs = mlx_vector_array_new()
         var traceOutputs = mlx_vector_array_new()
 
-        let closure = new_mlx_closure(f)
-        _ = inAxes32.withUnsafeBufferPointer { inAxesBuf in
-            mlx_detail_vmap_trace(
-                &traceInputs, &traceOutputs, closure, inputs, inAxesBuf.baseAddress, inAxesBuf.count
-            )
+        evalLock.withLock {
+            let closure = new_mlx_closure(f)
+            _ = inAxes32.withUnsafeBufferPointer { inAxesBuf in
+                mlx_detail_vmap_trace(
+                    &traceInputs, &traceOutputs, closure, inputs, inAxesBuf.baseAddress,
+                    inAxesBuf.count
+                )
+            }
+            mlx_closure_free(closure)
         }
-        mlx_closure_free(closure)
 
         defer {
             mlx_vector_array_free(traceInputs)
