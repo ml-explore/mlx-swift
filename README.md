@@ -89,6 +89,17 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 
 ### xcodebuild
 
+**Update the submodules**
+
+The directories `Source/Cmlx/mlx` and `Source/Cmlx/mlx-c` are sourced as submodules. 
+Before you attempt to build the project locally, pull down the updates for those submodules:
+
+```shell
+git submodule update --init --recursive
+```
+
+**Use Xcode to build the binaries and metal shaders**
+
 Although `SwiftPM` (command line) cannot build the Metal shaders, `xcodebuild` can and
 it can be used to do command line builds:
 
