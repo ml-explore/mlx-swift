@@ -172,6 +172,20 @@ public struct WiredMemoryManagerConfiguration: Sendable, Hashable {
     /// Minimum time in seconds between shrink attempts while tickets are active.
     public var shrinkCooldown: TimeInterval
 
+    /// If true, policy admission and limit calculations still run even when
+    /// wired memory control is unsupported (e.g. CPU-only execution). The
+    /// manager will not attempt to change wired memory, but tickets can still
+    /// gate admission and emit events.
+    public var policyOnlyWhenUnsupported: Bool
+
+    /// Optional baseline to use instead of querying the wired limit.
+    /// This is useful in policy-only mode to provide a meaningful budget.
+    public var baselineOverride: Int?
+
+    /// If true and wired memory is unsupported, attempt to use Metal's
+    /// recommended working set size as the baseline when no override is set.
+    public var useRecommendedWorkingSetWhenUnsupported: Bool
+
     /// Creates a new configuration for hysteresis behavior.
     ///
     /// - Parameters:
@@ -179,10 +193,16 @@ public struct WiredMemoryManagerConfiguration: Sendable, Hashable {
     ///   - shrinkCooldown: Minimum time between shrink attempts while active.
     public init(
         shrinkThresholdRatio: Double = 0.25,
-        shrinkCooldown: TimeInterval = 1.0
+        shrinkCooldown: TimeInterval = 1.0,
+        policyOnlyWhenUnsupported: Bool = false,
+        baselineOverride: Int? = nil,
+        useRecommendedWorkingSetWhenUnsupported: Bool = true
     ) {
         self.shrinkThresholdRatio = max(0, min(1, shrinkThresholdRatio))
         self.shrinkCooldown = max(0, shrinkCooldown)
+        self.policyOnlyWhenUnsupported = policyOnlyWhenUnsupported
+        self.baselineOverride = baselineOverride
+        self.useRecommendedWorkingSetWhenUnsupported = useRecommendedWorkingSetWhenUnsupported
     }
 }
 
@@ -316,6 +336,11 @@ public actor WiredMemoryManager {
     /// Hysteresis configuration for shrink behavior.
     private let configuration: WiredMemoryManagerConfiguration
 
+    /// True when policy-only mode is enabled on an unsupported backend.
+    private var policyOnlyMode: Bool {
+        configuration.policyOnlyWhenUnsupported && !WiredMemoryBackend.isSupported
+    }
+
     /// Creates a manager with the given hysteresis configuration.
     public init(configuration: WiredMemoryManagerConfiguration = .init()) {
         self.configuration = configuration
@@ -353,7 +378,8 @@ public actor WiredMemoryManager {
         kind: WiredMemoryTicketKind
     ) async -> Int {
         let normalizedSize = max(0, size)
-        if !WiredMemoryBackend.isSupported {
+        let policyOnly = policyOnlyMode
+        if !WiredMemoryBackend.isSupported && !policyOnly {
             if baseline == nil {
                 baseline = 0
             }
@@ -438,7 +464,7 @@ public actor WiredMemoryManager {
             waiter.resume()
         }
 
-        guard WiredMemoryBackend.isSupported else {
+        guard WiredMemoryBackend.isSupported || policyOnlyMode else {
             if baseline == nil {
                 baseline = 0
             }
@@ -537,13 +563,28 @@ public actor WiredMemoryManager {
         #endif
     }
 
+    private func resolveBaseline() -> Int {
+        if let override = configuration.baselineOverride {
+            return max(0, override)
+        }
+        if WiredMemoryBackend.isSupported {
+            return WiredMemoryBackend.readCurrentLimit() ?? 0
+        }
+        if configuration.useRecommendedWorkingSetWhenUnsupported {
+            if let recommended = GPU.maxRecommendedWorkingSetBytes() {
+                return recommended
+            }
+        }
+        return 0
+    }
+
     private func ensureBaseline(refresh: Bool) -> Int {
         // The baseline is the wired limit observed on first entry into the
         // manager. We re-read it when requested to pick up external changes.
         if let baseline, !refresh {
             return baseline
         }
-        let current = WiredMemoryBackend.readCurrentLimit() ?? 0
+        let current = resolveBaseline()
         let previous = baseline
         baseline = current
         if previous == nil || previous != current {

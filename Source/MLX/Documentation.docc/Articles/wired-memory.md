@@ -95,3 +95,27 @@ preventing over-commit when many inferences launch simultaneously.
   specific reason to isolate coordination (e.g. tests).
 - Keep reservation tickets alive for the lifetime of a model or context.
 - Prefer `withWiredLimit` to ensure cancellation-safe start/end pairing.
+
+## Policy-only mode (CPU or unsupported backends)
+
+On systems where wired memory control is unavailable, you can still use the
+manager for **admission gating and budgeting** by enabling policy-only mode.
+In this mode the manager continues to track tickets and compute limits, but it
+does not attempt to change the process wired limit.
+
+```swift
+let manager = WiredMemoryManager(
+    configuration: .init(policyOnlyWhenUnsupported: true)
+)
+```
+
+### Choosing a baseline
+
+When wired memory is unsupported, the manager will use:
+
+1. `baselineOverride` if provided
+2. `GPU.maxRecommendedWorkingSetBytes()` if available (default)
+3. `0` as a fallback
+
+This allows Apple Silicon CPU-only workloads to reuse the Metal recommended
+working set as a reasonable budget when unified memory is in play.

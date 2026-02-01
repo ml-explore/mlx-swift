@@ -451,6 +451,80 @@ final class WiredMemoryTests: XCTestCase {
         }
     }
 
+    /// Policy-only mode should still enforce admission when wired limits are unsupported.
+    func testPolicyOnlyModeEnforcesAdmissionOnCPU() async throws {
+        try await Device.withDefaultDevice(.cpu) {
+            let manager = WiredMemoryManager(
+                configuration: .init(
+                    policyOnlyWhenUnsupported: true,
+                    baselineOverride: 1024,
+                    useRecommendedWorkingSetWhenUnsupported: false
+                )
+            )
+            let policy = CappedSumPolicy(capDelta: 150 * mib)
+
+            let reservation = WiredMemoryTicket(
+                size: 100 * mib,
+                policy: policy,
+                manager: manager,
+                kind: .reservation
+            )
+            let activeA = WiredMemoryTicket(
+                size: 40 * mib,
+                policy: policy,
+                manager: manager,
+                kind: .active
+            )
+            let blockedID = UUID()
+            let activeB = WiredMemoryTicket(
+                id: blockedID,
+                size: 20 * mib,
+                policy: policy,
+                manager: manager,
+                kind: .active
+            )
+
+            let stream = await manager.events()
+            let admissionStream = await manager.events()
+            async let collectedEvents = Self.collectEvents(stream: stream) { event in
+                event.kind == .baselineRestored && event.activeCount == 0
+            }
+
+            _ = await reservation.start()
+            _ = await activeA.start()
+
+            let startBlocked = Task { await activeB.start() }
+            let admissionEvents = try await Self.collectEvents(stream: admissionStream) { event in
+                event.kind == .admissionWait && event.ticketID == blockedID
+            }
+
+            guard admissionEvents.contains(where: { $0.kind == .admissionWait }) else {
+                XCTFail("Expected admission wait for the blocked ticket.")
+                return
+            }
+
+            _ = await activeA.end()
+            _ = await startBlocked.value
+            _ = await activeB.end()
+            _ = await reservation.end()
+
+            let events = try await collectedEvents
+            guard !events.isEmpty else {
+                throw XCTSkip("Wired memory events not available in this build.")
+            }
+
+            if events.contains(where: { $0.kind == .limitApplyFailed }) {
+                throw XCTSkip("Wired limit updates failed on this device.")
+            }
+
+            guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline
+            else {
+                throw TestError.missingBaseline
+            }
+            XCTAssertEqual(baseline, 1024)
+        }
+    }
+
     /// Collects events from a stream until a predicate matches or a timeout fires.
     private static func collectEvents(
         stream: AsyncStream<WiredMemoryEvent>,
