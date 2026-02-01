@@ -207,6 +207,19 @@ public enum GPU {
         public let memorySize: Int
     }
 
+    /// Returns Metal's recommended working set size in bytes as an `Int`.
+    ///
+    /// This value is derived from ``DeviceInfo/maxRecommendedWorkingSetSize`` and
+    /// is clamped to `Int.max` when necessary. Returns `nil` when unavailable.
+    public static func maxRecommendedWorkingSetBytes() -> Int? {
+        let maxBytes = deviceInfo().maxRecommendedWorkingSetSize
+        guard maxBytes > 0 else { return nil }
+        if maxBytes > UInt64(Int.max) {
+            return Int.max
+        }
+        return Int(maxBytes)
+    }
+
     /// Get information about the GPU device and system settings
     public static func deviceInfo() -> DeviceInfo {
         var mib = [CTL_HW, HW_MEMSIZE]

@@ -33,6 +33,21 @@ memory. Operations on MLX arrays can be performed on any of the supported
 device types without performing data copies. Currently supported device types
 are the CPU and GPU.
 
+## Wired Memory
+
+MLX includes a process-wide wired memory coordinator for GPU workloads. Use
+`WiredMemoryManager` and `WiredMemoryTicket` to coordinate wired limit changes
+across concurrent tasks, and implement `WiredMemoryPolicy` to define how limits
+are computed.
+
+MLX intentionally exposes only the generic interfaces; MLXLMCommon (from
+mlx-swift-lm) provides ready-to-use LLM-oriented policies such as
+`WiredSumPolicy`, `WiredMaxPolicy`, and `WiredFixedPolicy`.
+
+Tickets can represent active work (`kind: .active`) or long-lived reservations
+(`kind: .reservation`) so you can account for model weights without keeping the
+wired limit elevated while idle.
+
 ## Other MLX Packages
 
 - [MLXNN](mlxnn)
@@ -55,6 +70,7 @@ are the CPU and GPU.
 - <doc:compilation>
 - <doc:using-streams>
 - <doc:running-on-ios>
+- <doc:wired-memory>
 
 ### MLXArray
 
@@ -67,6 +83,10 @@ are the CPU and GPU.
 ### Memory
 
 - ``GPU``
+- ``WiredMemoryManager``
+- ``WiredMemoryTicket``
+- ``WiredMemoryPolicy``
+- ``WiredMemoryEvent``
 
 ### Data Types
 
