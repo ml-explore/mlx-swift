@@ -16,7 +16,8 @@ different policies to coexist. The core types are:
 
 MLX only provides the generic interfaces. MLXLMCommon (from mlx-swift-lm)
 provides LLM-focused policies such as `WiredSumPolicy`, `WiredMaxPolicy`, and
-`WiredFixedPolicy`.
+`WiredFixedPolicy`. You can use `GPU.maxRecommendedWorkingSetBytes()` as a
+portable upper bound when designing custom policies.
 
 ## Tickets and Work Types
 
