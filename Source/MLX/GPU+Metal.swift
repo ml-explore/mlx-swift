@@ -141,7 +141,7 @@ public enum GPU {
     /// - Parameters:
     ///   - limit: new limit in bytes
     ///   - body: block to perform
-    @available(*, deprecated, renamed: "Memory.withWiredLimit")
+    @available(*, deprecated, message: "Deprecated. Use WiredMemoryManager and tickets instead.")
     public static func withWiredLimit<R>(
         _ limit: Int, _ body: () throws -> R
     ) rethrows -> R {
@@ -158,7 +158,7 @@ public enum GPU {
     /// - Parameters:
     ///   - limit: new limit in bytes
     ///   - body: block to perform
-    @available(*, deprecated, renamed: "Memory.withWiredLimit")
+    @available(*, deprecated, message: "Deprecated. Use WiredMemoryManager and tickets instead.")
     public static func withWiredLimit<R>(
         _ limit: Int, _ body: () async throws -> R
     ) async rethrows -> R {
