@@ -614,10 +614,13 @@ public actor WiredMemoryManager {
         if let currentLimit {
             return currentLimit
         }
-        if !WiredMemoryBackend.isSupported && configuration.useRecommendedWorkingSetWhenUnsupported {
-            if let recommended = GPU.maxRecommendedWorkingSetBytes() {
-                return recommended
-            }
+        if !WiredMemoryBackend.isSupported && configuration.useRecommendedWorkingSetWhenUnsupported
+        {
+            #if canImport(Metal)
+                if let recommended = GPU.maxRecommendedWorkingSetBytes() {
+                    return recommended
+                }
+            #endif
         }
         return 0
     }
