@@ -173,43 +173,6 @@ ninja
 popd
 ```
 
-## Wired Memory Management
-
-MLX provides a process-wide wired memory coordinator that can be used to
-improve GPU performance during inference. The core API lives in MLX:
-`WiredMemoryManager`, `WiredMemoryTicket`, and `WiredMemoryPolicy`. MLX does
-not ship concrete policies; MLXLMCommon (from mlx-swift-lm) provides common
-LLM-focused policies like `WiredSumPolicy`, `WiredMaxPolicy`, and
-`WiredFixedPolicy`.
-
-At a high level you create a policy, then use tickets to represent memory
-demands. Tickets can represent active work (`kind: .active`) or long-lived
-reservations such as model weights (`kind: .reservation`).
-
-```swift
-struct SumPolicy: WiredMemoryPolicy, Hashable {
-    func limit(baseline: Int, activeSizes: [Int]) -> Int {
-        baseline + activeSizes.reduce(0, +)
-    }
-}
-
-let policy = SumPolicy()
-
-// Optional: reserve model weights without keeping the limit elevated while idle.
-let weights = policy.ticket(size: weightsBytes, kind: .reservation)
-_ = await weights.start()
-
-// Raise the limit only while inference is active.
-let ticket = policy.ticket(size: kvBytes, kind: .active)
-try await ticket.withWiredLimit {
-    // run inference
-}
-```
-
-The manager applies hysteresis (threshold + cooldown) to avoid shrinking the
-wired limit too frequently while active work is running. Debug events can be
-observed with `WiredMemoryManager.events()` in DEBUG builds.
-
 ## Contributing
 
 Check out the [contribution guidelines](CONTRIBUTING.md) for more information

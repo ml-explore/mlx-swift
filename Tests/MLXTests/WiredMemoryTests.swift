@@ -50,7 +50,7 @@ final class WiredMemoryTests: XCTestCase {
             throw XCTSkip("No recommended working set size available.")
         }
 
-        let manager = WiredMemoryManager()
+        let manager = WiredMemoryManager.makeForTesting()
         let sumPolicy = SumPolicy()
         let customPolicy = DoubleSumPolicy()
 
@@ -148,7 +148,7 @@ final class WiredMemoryTests: XCTestCase {
             throw XCTSkip("Wired memory control only available on GPU devices.")
         }
 
-        let manager = WiredMemoryManager()
+        let manager = WiredMemoryManager.makeForTesting()
         let policy = SumPolicy()
 
         let reservation = WiredMemoryTicket(
@@ -191,7 +191,7 @@ final class WiredMemoryTests: XCTestCase {
             throw XCTSkip("Wired memory control only available on GPU devices.")
         }
 
-        let manager = WiredMemoryManager()
+        let manager = WiredMemoryManager.makeForTesting()
         let policy = SumPolicy()
 
         let reservation = WiredMemoryTicket(
@@ -250,7 +250,7 @@ final class WiredMemoryTests: XCTestCase {
             throw XCTSkip("Wired memory control only available on GPU devices.")
         }
 
-        let manager = WiredMemoryManager(
+        let manager = WiredMemoryManager.makeForTesting(
             configuration: .init(shrinkThresholdRatio: 0.5, shrinkCooldown: 0)
         )
         let policy = SumPolicy()
@@ -318,7 +318,7 @@ final class WiredMemoryTests: XCTestCase {
             throw XCTSkip("Wired memory control only available on GPU devices.")
         }
 
-        let manager = WiredMemoryManager(
+        let manager = WiredMemoryManager.makeForTesting(
             configuration: .init(shrinkThresholdRatio: 0, shrinkCooldown: 0.5)
         )
         let policy = SumPolicy()
@@ -393,7 +393,7 @@ final class WiredMemoryTests: XCTestCase {
             throw XCTSkip("Wired memory control only available on GPU devices.")
         }
 
-        let manager = WiredMemoryManager()
+        let manager = WiredMemoryManager.makeForTesting()
         let policy = CappedSumPolicy(capDelta: 150 * mib)
 
         let reservation = WiredMemoryTicket(
@@ -454,7 +454,7 @@ final class WiredMemoryTests: XCTestCase {
     /// Policy-only mode should still enforce admission when wired limits are unsupported.
     func testPolicyOnlyModeEnforcesAdmissionOnCPU() async throws {
         try await Device.withDefaultDevice(.cpu) {
-            let manager = WiredMemoryManager(
+            let manager = WiredMemoryManager.makeForTesting(
                 configuration: .init(
                     policyOnlyWhenUnsupported: true,
                     baselineOverride: 1024,

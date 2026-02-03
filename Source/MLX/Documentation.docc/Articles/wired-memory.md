@@ -14,8 +14,8 @@ different policies to coexist. The core types are:
   optionally gates admission.
 - ``WiredMemoryTicket``: a handle representing a unit of memory demand.
 
-MLX only provides the generic interfaces. MLXLMCommon (from mlx-swift-lm)
-provides LLM-focused policies such as `WiredSumPolicy`, `WiredMaxPolicy`, and
+MLX provides generic policies such as `WiredSumPolicy` and `WiredMaxPolicy`.
+MLXLMCommon (from mlx-swift-lm) provides LLM-focused policies such as
 `WiredFixedPolicy`. You can use `GPU.maxRecommendedWorkingSetBytes()` as a
 portable upper bound when designing custom policies.
 
@@ -92,21 +92,26 @@ preventing over-commit when many inferences launch simultaneously.
 ## Best Practices
 
 - Use the shared manager (`WiredMemoryManager.shared`) unless you have a
-  specific reason to isolate coordination (e.g. tests).
+  specific reason to isolate coordination (e.g. tests via
+  `WiredMemoryManager.makeForTesting()`).
 - Keep reservation tickets alive for the lifetime of a model or context.
 - Prefer `withWiredLimit` to ensure cancellation-safe start/end pairing.
+- Treat the manager as the sole authority for wired limit changes; external
+  calls to `mlx_set_wired_limit` are undefined and may desynchronize the cached
+  baseline.
 
 ## Policy-only mode (CPU or unsupported backends)
 
 On systems where wired memory control is unavailable, you can still use the
 manager for **admission gating and budgeting** by enabling policy-only mode.
 In this mode the manager continues to track tickets and compute limits, but it
-does not attempt to change the process wired limit.
+does not attempt to change the process wired limit. Policy-only mode defaults
+to `true` on unsupported backends.
 
 ```swift
-let manager = WiredMemoryManager(
-    configuration: .init(policyOnlyWhenUnsupported: true)
-)
+await WiredMemoryManager.shared.updateConfiguration { configuration in
+    configuration.policyOnlyWhenUnsupported = true
+}
 ```
 
 ### Choosing a baseline
@@ -118,4 +123,5 @@ When wired memory is unsupported, the manager will use:
 3. `0` as a fallback
 
 This allows Apple Silicon CPU-only workloads to reuse the Metal recommended
-working set as a reasonable budget when unified memory is in play.
+working set as a reasonable budget when unified memory is in play. The
+baseline is used for admission math only and does not change any OS limit.

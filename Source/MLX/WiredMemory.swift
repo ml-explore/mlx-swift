@@ -16,19 +16,6 @@ private enum WiredMemoryBackend {
         Device.defaultDevice().deviceType == .gpu
     }
 
-    /// Reads the currently configured wired memory limit.
-    ///
-    /// Returns `nil` if wired limits are unsupported or the underlying call fails.
-    static func readCurrentLimit() -> Int? {
-        guard isSupported else { return nil }
-        var previous: size_t = 0
-        let result = mlx_set_wired_limit(&previous, 0)
-        guard result == 0 else { return nil }
-        var tmp: size_t = 0
-        _ = mlx_set_wired_limit(&tmp, previous)
-        return Int(previous)
-    }
-
     /// Attempts to apply a new wired memory limit.
     ///
     /// Returns `true` on success. This does not enforce any hysteresis or policy
@@ -86,7 +73,7 @@ public struct WiredMemoryEvent: Sendable {
     public let size: Int?
     /// Debug label for the policy group, if applicable.
     public let policy: String?
-    /// Baseline wired limit captured from the system.
+    /// Baseline wired limit captured before the manager applies any changes.
     public let baseline: Int?
     /// Desired limit computed by policy aggregation.
     public let desiredLimit: Int?
@@ -159,6 +146,34 @@ extension WiredMemoryPolicy where Self: Hashable {
     public var id: AnyHashable { AnyHashable(self) }
 }
 
+/// Policy that sums active ticket sizes and adds them to the baseline.
+public struct WiredSumPolicy: WiredMemoryPolicy, Hashable, Sendable {
+    /// Stable grouping identifier for this policy instance.
+    public let identifier: UUID
+
+    public init(id: UUID = UUID()) {
+        self.identifier = id
+    }
+
+    public func limit(baseline: Int, activeSizes: [Int]) -> Int {
+        baseline + activeSizes.reduce(0, +)
+    }
+}
+
+/// Policy that uses the maximum active ticket size and adds it to the baseline.
+public struct WiredMaxPolicy: WiredMemoryPolicy, Hashable, Sendable {
+    /// Stable grouping identifier for this policy instance.
+    public let identifier: UUID
+
+    public init(id: UUID = UUID()) {
+        self.identifier = id
+    }
+
+    public func limit(baseline: Int, activeSizes: [Int]) -> Int {
+        baseline + (activeSizes.max() ?? 0)
+    }
+}
+
 /// Configuration knobs for `WiredMemoryManager` behavior.
 ///
 /// These settings implement hysteresis to prevent small or frequent shrinks
@@ -175,10 +190,11 @@ public struct WiredMemoryManagerConfiguration: Sendable, Hashable {
     /// If true, policy admission and limit calculations still run even when
     /// wired memory control is unsupported (e.g. CPU-only execution). The
     /// manager will not attempt to change wired memory, but tickets can still
-    /// gate admission and emit events.
+    /// gate admission and emit events. Defaults to `true` to keep admission
+    /// behavior consistent across CPU/GPU backends.
     public var policyOnlyWhenUnsupported: Bool
 
-    /// Optional baseline to use instead of querying the wired limit.
+    /// Optional baseline to use instead of the cached limit.
     /// This is useful in policy-only mode to provide a meaningful budget.
     public var baselineOverride: Int?
 
@@ -194,7 +210,7 @@ public struct WiredMemoryManagerConfiguration: Sendable, Hashable {
     public init(
         shrinkThresholdRatio: Double = 0.25,
         shrinkCooldown: TimeInterval = 1.0,
-        policyOnlyWhenUnsupported: Bool = false,
+        policyOnlyWhenUnsupported: Bool = true,
         baselineOverride: Int? = nil,
         useRecommendedWorkingSetWhenUnsupported: Bool = true
     ) {
@@ -299,11 +315,19 @@ extension WiredMemoryTicket {
 ///
 /// The wired limit is a global resource. This manager serializes updates,
 /// performs admission control, and restores the baseline when work completes.
+/// Use the shared singleton in production; multiple managers are undefined.
 public actor WiredMemoryManager {
     /// Shared singleton used by default for tickets.
     public static let shared = WiredMemoryManager()
 
     #if DEBUG
+        /// Test-only factory to create isolated managers.
+        public static func makeForTesting(
+            configuration: WiredMemoryManagerConfiguration = .init()
+        ) -> WiredMemoryManager {
+            WiredMemoryManager(configuration: configuration)
+        }
+
         private var eventContinuations: [UUID: AsyncStream<WiredMemoryEvent>.Continuation] = [:]
         private var eventSequence: UInt64 = 0
     #endif
@@ -321,7 +345,7 @@ public actor WiredMemoryManager {
         case identifier(AnyHashable)
     }
 
-    /// Baseline limit captured from the system on first use.
+    /// Baseline limit captured before the manager applies any changes.
     private var baseline: Int?
     /// Active tickets keyed by ticket UUID.
     private var tickets: [UUID: TicketState] = [:]
@@ -334,7 +358,7 @@ public actor WiredMemoryManager {
     /// Timestamp used to enforce shrink cooldown.
     private var lastLimitChange: Date?
     /// Hysteresis configuration for shrink behavior.
-    private let configuration: WiredMemoryManagerConfiguration
+    private var configuration: WiredMemoryManagerConfiguration
 
     /// True when policy-only mode is enabled on an unsupported backend.
     private var policyOnlyMode: Bool {
@@ -342,8 +366,28 @@ public actor WiredMemoryManager {
     }
 
     /// Creates a manager with the given hysteresis configuration.
-    public init(configuration: WiredMemoryManagerConfiguration = .init()) {
+    ///
+    /// Use ``shared`` in production; multiple managers are undefined behavior.
+    init(configuration: WiredMemoryManagerConfiguration = .init()) {
         self.configuration = configuration
+    }
+
+    /// Update configuration when no tickets or waiters are active.
+    public func updateConfiguration(
+        _ update: (inout WiredMemoryManagerConfiguration) -> Void
+    ) {
+        precondition(
+            !hasActiveWork() && waiters.isEmpty,
+            "Configuration can only be updated when no active tickets are running."
+        )
+        update(&configuration)
+    }
+
+    /// Replace the shared manager configuration when no tickets or waiters exist.
+    public static func configureShared(
+        _ configuration: WiredMemoryManagerConfiguration
+    ) async {
+        await shared.updateConfiguration { $0 = configuration }
     }
 
     /// Debug-only event stream describing admission and limit changes.
@@ -386,7 +430,7 @@ public actor WiredMemoryManager {
             return baseline ?? 0
         }
 
-        var baselineValue = ensureBaseline(refresh: baseline == nil || !hasActiveWork())
+        var baselineValue = resolveBaselineAndEmit(refresh: baseline == nil || !hasActiveWork())
         if tickets[id] != nil {
             emit(
                 kind: .ticketStartIgnored,
@@ -424,7 +468,7 @@ public actor WiredMemoryManager {
                 Task { await self.cancelWaiter(id: id) }
             }
 
-            baselineValue = ensureBaseline(refresh: baseline == nil || !hasActiveWork())
+            baselineValue = resolveBaselineAndEmit(refresh: baseline == nil || !hasActiveWork())
             if Task.isCancelled {
                 return currentLimit ?? baselineValue
             }
@@ -459,7 +503,7 @@ public actor WiredMemoryManager {
     ///
     /// If this was the last ticket, the manager restores the baseline and
     /// clears internal state.
-    public func end(id: UUID, policy: any WiredMemoryPolicy) async -> Int {
+    public func end(id: UUID, policy: any WiredMemoryPolicy) -> Int {
         if let waiter = waiters.removeValue(forKey: id) {
             waiter.resume()
         }
@@ -496,7 +540,6 @@ public actor WiredMemoryManager {
                 appliedLimit: currentLimit
             )
             baseline = nil
-            currentLimit = nil
             resumeWaiters()
             return baselineValue
         }
@@ -567,10 +610,11 @@ public actor WiredMemoryManager {
         if let override = configuration.baselineOverride {
             return max(0, override)
         }
-        if WiredMemoryBackend.isSupported {
-            return WiredMemoryBackend.readCurrentLimit() ?? 0
+        // Use the manager's cached limit rather than probing the backend.
+        if let currentLimit {
+            return currentLimit
         }
-        if configuration.useRecommendedWorkingSetWhenUnsupported {
+        if !WiredMemoryBackend.isSupported && configuration.useRecommendedWorkingSetWhenUnsupported {
             if let recommended = GPU.maxRecommendedWorkingSetBytes() {
                 return recommended
             }
@@ -578,9 +622,9 @@ public actor WiredMemoryManager {
         return 0
     }
 
-    private func ensureBaseline(refresh: Bool) -> Int {
-        // The baseline is the wired limit observed on first entry into the
-        // manager. We re-read it when requested to pick up external changes.
+    private func resolveBaselineAndEmit(refresh: Bool) -> Int {
+        // The baseline is the limit observed when the manager begins coordinating.
+        // We re-resolve it when requested (e.g. after a full drain).
         if let baseline, !refresh {
             return baseline
         }
