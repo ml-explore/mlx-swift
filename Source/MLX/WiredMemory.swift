@@ -432,6 +432,9 @@ public actor WiredMemoryManager {
 
         var baselineValue = resolveBaselineAndEmit(refresh: baseline == nil || !hasActiveWork())
         if tickets[id] != nil {
+            #if DEBUG
+                assertionFailure("Ticket already started: \(id)")
+            #endif
             emit(
                 kind: .ticketStartIgnored,
                 ticketID: id,
@@ -516,6 +519,9 @@ public actor WiredMemoryManager {
         }
 
         guard let state = tickets.removeValue(forKey: id) else {
+            #if DEBUG
+                assertionFailure("Ticket not active: \(id)")
+            #endif
             emit(kind: .ticketEndIgnored, ticketID: id)
             return currentLimit ?? baseline ?? 0
         }
