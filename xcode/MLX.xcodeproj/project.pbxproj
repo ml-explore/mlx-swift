@@ -81,7 +81,6 @@
 		C3CBF1822EAC22110029A645 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = SOURCE_ROOT; };
 		C3CBF1832EAC22110029A645 /* MAINTENANCE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = MAINTENANCE.md; path = ../MAINTENANCE.md; sourceTree = SOURCE_ROOT; };
 		C3CBF1842EAC22110029A645 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
-		C3CBF1852EAC22110029A645 /* README.xcodeproj.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.xcodeproj.md; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -1644,7 +1643,6 @@
 				C3CBE6962EAC14BC0029A645 /* MLXTests */,
 				C3AE8EC52EAAA15F000BD280 /* Products */,
 				C3CBF1842EAC22110029A645 /* README.md */,
-				C3CBF1852EAC22110029A645 /* README.xcodeproj.md */,
 				C3CBF3382EAC243B0029A645 /* tools */,
 				C3AE8EDE2EAAA21C000BD280 /* xcconfig */,
 			);
