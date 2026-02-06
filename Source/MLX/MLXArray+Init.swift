@@ -75,24 +75,26 @@ extension MLXArray {
     ///   - shape: shape of the data in the rawPointer
     ///   - dtype: data type
     ///   - finalizer: closure that will release the associated resource
-    public convenience init(
-        rawPointer: UnsafeMutableRawPointer,
-        _ shape: (some Collection<Int>)? = [Int]?.none, dtype: DType,
-        finalizer: @escaping () -> Void
-    ) {
-        func free(ptr: UnsafeMutableRawPointer?) {
-            Unmanaged<FinalizerCaptureState>.fromOpaque(ptr!).release()
-        }
-
-        let payload = Unmanaged.passRetained(FinalizerCaptureState(finalizer)).toOpaque()
-
-        self.init(
-            mlx_array_new_data_managed_payload(
-                rawPointer,
-                shape?.asInt32, (shape?.count ?? 0).int32,
-                dtype.cmlxDtype,
-                payload, finalizerTrampoline))
-    }
+    // TODO: disabled per issue on mlx side -- buffer enters residency set but
+    // not removed -- enable in next release.  Also testIOSurface
+    //    public convenience init(
+    //        rawPointer: UnsafeMutableRawPointer,
+    //        _ shape: (some Collection<Int>)? = [Int]?.none, dtype: DType,
+    //        finalizer: @escaping () -> Void
+    //    ) {
+    //        func free(ptr: UnsafeMutableRawPointer?) {
+    //            Unmanaged<FinalizerCaptureState>.fromOpaque(ptr!).release()
+    //        }
+    //
+    //        let payload = Unmanaged.passRetained(FinalizerCaptureState(finalizer)).toOpaque()
+    //
+    //        self.init(
+    //            mlx_array_new_data_managed_payload(
+    //                rawPointer,
+    //                shape?.asInt32, (shape?.count ?? 0).int32,
+    //                dtype.cmlxDtype,
+    //                payload, finalizerTrampoline))
+    //    }
 
     /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
     ///
