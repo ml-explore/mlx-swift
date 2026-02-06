@@ -5,6 +5,7 @@
 
 #include <unordered_set>
 
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-array.h>
 #include <Cmlx/mlx-device.h>
 #include <Cmlx/mlx-io-load.h>
@@ -46,7 +47,7 @@
 namespace mlx::core {
 
 // Abstract base class
-class Primitive {
+class MLX_API Primitive {
  public:
   explicit Primitive(Stream stream) : stream_(stream) {}
 
@@ -124,7 +125,7 @@ class Primitive {
   Stream stream_;
 };
 
-class UnaryPrimitive : public Primitive {
+class MLX_API UnaryPrimitive : public Primitive {
   /**
    * An abstract base class for a primitive with a single output.
    */
@@ -173,7 +174,7 @@ class Abs : public UnaryPrimitive {
   DEFINE_INPUT_OUTPUT_SHAPE()
 };
 
-class Add : public UnaryPrimitive {
+class MLX_API Add : public UnaryPrimitive {
  public:
   explicit Add(Stream stream) : UnaryPrimitive(stream) {}
 
@@ -350,7 +351,7 @@ class ArgPartition : public UnaryPrimitive {
   int axis_;
 };
 
-class ArgReduce : public UnaryPrimitive {
+class MLX_API ArgReduce : public UnaryPrimitive {
  public:
   enum ReduceType {
     ArgMin,
@@ -624,7 +625,7 @@ class Ceil : public UnaryPrimitive {
   DEFINE_INPUT_OUTPUT_SHAPE()
 };
 
-class Compiled : public Primitive {
+class MLX_API Compiled : public Primitive {
  public:
   /*
    * The inputs, outputs and tape are either tracers or constants.
@@ -1018,7 +1019,7 @@ class ErfInv : public UnaryPrimitive {
   DEFINE_INPUT_OUTPUT_SHAPE()
 };
 
-class Exp : public UnaryPrimitive {
+class MLX_API Exp : public UnaryPrimitive {
  public:
   explicit Exp(Stream stream) : UnaryPrimitive(stream) {}
 
@@ -1768,7 +1769,7 @@ class Reshape : public UnaryPrimitive {
   Shape shape_;
 };
 
-class Reduce : public UnaryPrimitive {
+class MLX_API Reduce : public UnaryPrimitive {
  public:
   enum ReduceType { And, Or, Sum, Prod, Min, Max };
 

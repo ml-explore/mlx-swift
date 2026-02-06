@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup ops Core array operations
  */
 /**@{*/
+
 int mlx_abs(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_add(
     mlx_array* res,
@@ -1224,6 +1225,7 @@ int mlx_zeros(
     mlx_dtype dtype,
     const mlx_stream s);
 int mlx_zeros_like(mlx_array* res, const mlx_array a, const mlx_stream s);
+
 /**@}*/
 
 #ifdef __cplusplus

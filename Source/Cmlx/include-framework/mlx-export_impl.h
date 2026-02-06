@@ -1,6 +1,7 @@
 #ifdef __cplusplus
 // Copyright © 2024 Apple Inc.
 
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-io-load.h>
 
 #pragma once
@@ -9,7 +10,7 @@ namespace mlx::core {
 
 struct FunctionTable;
 
-struct FunctionExporter {
+struct MLX_API FunctionExporter {
   void operator()(const std::initializer_list<array>& args) {
     this->operator()(Args(args));
   }
@@ -24,32 +25,32 @@ struct FunctionExporter {
   FunctionExporter(FunctionExporter&& other) = default;
 
  private:
-  friend FunctionExporter exporter(
+  friend MLX_API FunctionExporter exporter(
       const std::string&,
       const std::function<std::vector<array>(const Args&)>&,
       bool shapeless);
 
-  friend FunctionExporter exporter(
+  friend MLX_API FunctionExporter exporter(
       const std::string&,
       const std::function<std::vector<array>(const Kwargs&)>&,
       bool shapeless);
 
-  friend FunctionExporter exporter(
+  friend MLX_API FunctionExporter exporter(
       const std::string&,
       const std::function<std::vector<array>(const Args&, const Kwargs&)>&,
       bool shapeless);
 
-  friend FunctionExporter exporter(
+  friend MLX_API FunctionExporter exporter(
       const ExportCallback&,
       const std::function<std::vector<array>(const Args&)>&,
       bool shapeless);
 
-  friend FunctionExporter exporter(
+  friend MLX_API FunctionExporter exporter(
       const ExportCallback&,
       const std::function<std::vector<array>(const Kwargs&)>&,
       bool shapeless);
 
-  friend FunctionExporter exporter(
+  friend MLX_API FunctionExporter exporter(
       const ExportCallback&,
       const std::function<std::vector<array>(const Args&, const Kwargs&)>&,
       bool shapeless);
@@ -79,7 +80,7 @@ struct FunctionExporter {
   std::shared_ptr<FunctionTable> ftable;
 };
 
-struct ImportedFunction {
+struct MLX_API ImportedFunction {
   std::vector<array> operator()(
       const std::initializer_list<array>& args) const {
     return this->operator()(Args(args));
@@ -90,7 +91,7 @@ struct ImportedFunction {
 
  private:
   ImportedFunction(const std::string& file);
-  friend ImportedFunction import_function(const std::string&);
+  friend MLX_API ImportedFunction import_function(const std::string&);
   ImportedFunction();
 
   std::shared_ptr<FunctionTable> ftable;

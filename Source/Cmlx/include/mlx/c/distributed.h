@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup distributed Distributed collectives
  */
 /**@{*/
+
 int mlx_distributed_all_gather(
     mlx_array* res,
     const mlx_array x,
@@ -72,6 +73,7 @@ int mlx_distributed_sum_scatter(
     const mlx_array x,
     const mlx_distributed_group group /* may be null */,
     const mlx_stream s);
+
 /**@}*/
 
 #ifdef __cplusplus

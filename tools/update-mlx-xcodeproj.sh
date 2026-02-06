@@ -36,9 +36,9 @@ EOF
 # c++ headers for xcodeproj -- these are transitively reachable
 # from mlx/mlx/mlx.h
 for x in \
+    api.h \
     array.h \
     backend/cuda/cuda.h \
-    backend/gpu/available.h \
     backend/metal/metal.h \
     compile.h \
     device.h \

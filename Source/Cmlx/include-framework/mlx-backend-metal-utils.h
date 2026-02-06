@@ -11,8 +11,8 @@
 
 namespace mlx::core {
 
-std::string type_to_name(const Dtype& t);
-std::string type_to_name(const array& a);
+MLX_API std::string type_to_name(const Dtype& t);
+MLX_API std::string type_to_name(const array& a);
 
 // Compute the grid and block dimensions, check backend-common-utils.h for docs.
 MTL::Size get_block_dims(int dim0, int dim1, int dim2, int pow2 = 10);
@@ -80,6 +80,21 @@ inline int get_work_per_thread(Dtype dtype, size_t size) {
 
 inline size_t ceildiv(size_t n, size_t m) {
   return (n + m - 1) / m;
+}
+
+inline void check_kernel_threadgroup_size(
+    const MTL::ComputePipelineState* kernel,
+    MTL::Size group_dims,
+    const std::string& name) {
+  auto max_size = kernel->maxTotalThreadsPerThreadgroup();
+  auto requested_size = group_dims.width * group_dims.height * group_dims.depth;
+
+  if (max_size < requested_size) {
+    std::ostringstream msg;
+    msg << "Maximum threads per threadgroup is " << max_size
+        << " but requested " << requested_size << " for kernel " << name << ".";
+    throw std::runtime_error(msg.str());
+  }
 }
 
 } // namespace mlx::core

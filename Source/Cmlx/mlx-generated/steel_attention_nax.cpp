@@ -19,10 +19,10 @@ const char* steel_attention_nax() {
 #define STEEL_PRAGMA_NO_UNROLL _Pragma("clang loop unroll(disable)")
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.5038.7.Znfp3O/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.830/include/metal/__exec/units.h"
+// Contents from "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.48.0.5BBI2H/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.850/include/metal/__exec/units.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.5038.7.Znfp3O/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.830/include/metal/__exec/units.h"
+#line 1 "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.48.0.5BBI2H/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.850/include/metal/__exec/units.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/steel/utils/type_traits.h"
@@ -1936,7 +1936,7 @@ template <
   metal::vec<AccumType, kRowsPT> rcp;
   STEEL_PRAGMA_UNROLL
   for (short i = 0; i < kRowsPT; ++i) {
-    rcp[i] = (1.f / sum_score[i]);
+    rcp[i] = 1.f / sum_score[i];
   }
 
   Otile.template row_bin_op<MulOp>(rcp);
