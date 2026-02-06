@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup transforms_impl Implementation detail operations
  */
 /**@{*/
+
 int mlx_detail_vmap_replace(
     mlx_vector_array* res,
     const mlx_vector_array inputs,
@@ -43,6 +44,7 @@ int mlx_detail_vmap_trace(
     const mlx_vector_array inputs,
     const int* in_axes,
     size_t in_axes_num);
+
 /**@}*/
 
 #ifdef __cplusplus

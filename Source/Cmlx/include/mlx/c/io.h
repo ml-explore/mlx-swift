@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup io IO operations
  */
 /**@{*/
+
 int mlx_load_reader(
     mlx_array* res,
     mlx_io_reader in_stream,
@@ -52,6 +53,7 @@ int mlx_save_safetensors(
     const char* file,
     const mlx_map_string_to_array param,
     const mlx_map_string_to_string metadata);
+
 /**@}*/
 
 #ifdef __cplusplus

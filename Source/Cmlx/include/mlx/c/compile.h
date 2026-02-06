@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup compile Compilation operations
  */
 /**@{*/
+
 typedef enum mlx_compile_mode_ {
   MLX_COMPILE_MODE_DISABLED,
   MLX_COMPILE_MODE_NO_SIMPLIFY,
@@ -46,6 +47,7 @@ int mlx_detail_compile_erase(uintptr_t fun_id);
 int mlx_disable_compile(void);
 int mlx_enable_compile(void);
 int mlx_set_compile_mode(mlx_compile_mode mode);
+
 /**@}*/
 
 #ifdef __cplusplus

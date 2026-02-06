@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup transforms Transform operations
  */
 /**@{*/
+
 int mlx_async_eval(const mlx_vector_array outputs);
 int mlx_checkpoint(mlx_closure* res, const mlx_closure fun);
 int mlx_custom_function(
@@ -57,6 +58,7 @@ int mlx_vjp(
     const mlx_closure fun,
     const mlx_vector_array primals,
     const mlx_vector_array cotangents);
+
 /**@}*/
 
 #ifdef __cplusplus

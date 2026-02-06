@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup memory Memory operations
  */
 /**@{*/
+
 int mlx_clear_cache(void);
 int mlx_get_active_memory(size_t* res);
 int mlx_get_cache_memory(size_t* res);
@@ -36,6 +37,7 @@ int mlx_reset_peak_memory(void);
 int mlx_set_cache_limit(size_t* res, size_t limit);
 int mlx_set_memory_limit(size_t* res, size_t limit);
 int mlx_set_wired_limit(size_t* res, size_t limit);
+
 /**@}*/
 
 #ifdef __cplusplus

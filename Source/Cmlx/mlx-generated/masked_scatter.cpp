@@ -14,6 +14,8 @@ const char* masked_scatter() {
 // Copyright © 2025 Apple Inc.
 
 
+constant mlx::os_log logger("mlx", "masked_assign");
+
 template <typename T, bool src_contiguous>
 [[kernel]] void masked_assign_impl(
     const device bool* mask [[buffer(0)]],
@@ -33,6 +35,7 @@ template <typename T, bool src_contiguous>
 
   const uint src_index = scatter_offsets[idx];
   if (src_index >= src_batch_size) {
+    logger.log_debug("Out of bound read from src");
     return;
   }
 
