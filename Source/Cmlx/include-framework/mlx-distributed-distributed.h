@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-array.h>
 #include <Cmlx/mlx-utils.h>
 
@@ -16,15 +17,15 @@ class GroupImpl;
 };
 
 /* Check if a communication backend is available */
-bool is_available();
-bool is_available(const std::string& bk);
+MLX_API bool is_available();
+MLX_API bool is_available(const std::string& bk);
 
 /**
  * A distributed::Group represents a group of independent mlx processes that
  * can communicate. We must also be able to create sub-groups from a group in
  * order to define more granular communication.
  */
-struct Group {
+struct MLX_API Group {
   Group(std::shared_ptr<detail::GroupImpl> group) : group_(std::move(group)) {}
 
   int rank() const;
@@ -56,7 +57,7 @@ struct Group {
  * distributed subsystem. Otherwise simply return a singleton group which will
  * render communication operations as no-op.
  */
-Group init(bool strict = false, const std::string& bk = "any");
+MLX_API Group init(bool strict = false, const std::string& bk = "any");
 
 } // namespace mlx::core::distributed
 #endif

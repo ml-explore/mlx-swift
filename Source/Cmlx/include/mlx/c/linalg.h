@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup linalg Linear algebra operations
  */
 /**@{*/
+
 int mlx_linalg_cholesky(
     mlx_array* res,
     const mlx_array a,
@@ -117,6 +118,7 @@ int mlx_linalg_tri_inv(
     const mlx_array a,
     bool upper,
     const mlx_stream s);
+
 /**@}*/
 
 #ifdef __cplusplus

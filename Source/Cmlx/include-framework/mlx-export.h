@@ -7,6 +7,7 @@
 #include <set>
 #include <unordered_map>
 #include <variant>
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-array.h>
 
 namespace mlx::core {
@@ -47,17 +48,17 @@ struct FunctionExporter;
  * Make an exporter to save multiple traces of a given function to
  * the same file.
  */
-FunctionExporter exporter(
+MLX_API FunctionExporter exporter(
     const std::string& file,
     const std::function<std::vector<array>(const Args&)>& fun,
     bool shapeless = false);
 
-FunctionExporter exporter(
+MLX_API FunctionExporter exporter(
     const std::string& file,
     const std::function<std::vector<array>(const Kwargs&)>& fun,
     bool shapeless = false);
 
-FunctionExporter exporter(
+MLX_API FunctionExporter exporter(
     const std::string& path,
     const std::function<std::vector<array>(const Args&, const Kwargs&)>& fun,
     bool shapeless = false);
@@ -65,19 +66,19 @@ FunctionExporter exporter(
 /**
  * Export a function to a file.
  */
-void export_function(
+MLX_API void export_function(
     const std::string& file,
     const std::function<std::vector<array>(const Args&)>& fun,
     const Args& args,
     bool shapeless = false);
 
-void export_function(
+MLX_API void export_function(
     const std::string& file,
     const std::function<std::vector<array>(const Kwargs&)>& fun,
     const Kwargs& kwargs,
     bool shapeless = false);
 
-void export_function(
+MLX_API void export_function(
     const std::string& file,
     const std::function<std::vector<array>(const Args&, const Kwargs&)>& fun,
     const Args& args,
@@ -89,23 +90,23 @@ struct ImportedFunction;
 /**
  * Import a function from a file.
  */
-ImportedFunction import_function(const std::string& file);
+MLX_API ImportedFunction import_function(const std::string& file);
 
 /**
  * Make an exporter to export multiple traces of a given function with the same
  * callback.
  */
-FunctionExporter exporter(
+MLX_API FunctionExporter exporter(
     const ExportCallback& callback,
     const std::function<std::vector<array>(const Args&)>& fun,
     bool shapeless = false);
 
-FunctionExporter exporter(
+MLX_API FunctionExporter exporter(
     const ExportCallback& callback,
     const std::function<std::vector<array>(const Kwargs&)>& fun,
     bool shapeless = false);
 
-FunctionExporter exporter(
+MLX_API FunctionExporter exporter(
     const ExportCallback& callback,
     const std::function<std::vector<array>(const Args&, const Kwargs&)>& fun,
     bool shapeless = false);
@@ -113,19 +114,19 @@ FunctionExporter exporter(
 /**
  * Export a function with a callback.
  */
-void export_function(
+MLX_API void export_function(
     const ExportCallback& callback,
     const std::function<std::vector<array>(const Args&)>& fun,
     const Args& args,
     bool shapeless = false);
 
-void export_function(
+MLX_API void export_function(
     const ExportCallback& callback,
     const std::function<std::vector<array>(const Kwargs&)>& fun,
     const Kwargs& kwargs,
     bool shapeless = false);
 
-void export_function(
+MLX_API void export_function(
     const ExportCallback& callback,
     const std::function<std::vector<array>(const Args&, const Kwargs&)>& fun,
     const Args& args,

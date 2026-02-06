@@ -29,7 +29,7 @@ template <
     bool transpose_a,
     bool transpose_b,
     typename AccumType = float>
-[[kernel, max_total_threads_per_threadgroup(WM* WN * 32)]] void
+[[kernel, max_total_threads_per_threadgroup(WM * WN * 32)]] void
 gather_mm_rhs_nax(
     const device T* A [[buffer(0)]],
     const device T* B [[buffer(1)]],
@@ -66,10 +66,14 @@ gather_mm_rhs_nax(
   const short tm = SM * (simd_group_id / WN);
   const short tn = SN * (simd_group_id % WN);
 
-  const short sgp_sm = align_M ? SM : min(SM, short(params->M - (c_row + tm)));
+  const int sgp_sm_int =
+      align_M ? int(SM) : min(int(SM), params->M - (c_row + tm));
+  const short sgp_sm = short(sgp_sm_int);
   const bool is_unaligned_sm = align_M ? false : (sgp_sm != SM);
 
-  const short sgp_sn = align_N ? SN : min(SN, short(params->N - (c_col + tn)));
+  const int sgp_sn_int =
+      align_N ? int(SN) : min(int(SN), params->N - (c_col + tn));
+  const short sgp_sn = short(sgp_sn_int);
   const bool is_unaligned_sn = align_N ? false : (sgp_sn != SN);
 
   A += transpose_a ? tm : (tm * params->lda);
@@ -119,7 +123,14 @@ gather_mm_rhs_nax(
               UK,
               AccumType>;
           Ctile = do_gemm(
-              A, B + index * params->batch_stride_b, params, sgp_sm, sgp_sn);
+              A,
+              B + index * params->batch_stride_b,
+              params->lda,
+              params->ldb,
+              params->K,
+              params->gemm_k_iterations_aligned,
+              sgp_sm,
+              sgp_sn);
 
           if constexpr (kAlignedN.value) {
             if (offset_next - offset == SM) {

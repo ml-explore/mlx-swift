@@ -8,6 +8,7 @@
 #include "bf16_math.h"
 #include "complex.h"
 #include "defines.h"
+#include "logging.h"
 
 typedef half float16_t;
 

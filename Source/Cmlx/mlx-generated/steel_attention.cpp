@@ -677,8 +677,8 @@ struct BaseMMAFrag<T, 8, 8> {
   template <typename U>
   using dtype_frag_t = typename metal::vec<U, kElemsPerFrag>;
 
-  METAL_FUNC static constexpr short2 get_coord(ushort simd_lane_id
-                                               [[thread_index_in_simdgroup]]) {
+  METAL_FUNC static constexpr short2 get_coord(
+      ushort simd_lane_id [[thread_index_in_simdgroup]]) {
     const short qid = simd_lane_id / 4;
     const short fm = (qid & 4) + ((simd_lane_id / 2) % 4);
     const short fn = (qid & 2) * 2 + (simd_lane_id % 2) * 2;
@@ -1460,6 +1460,7 @@ struct GEMMSpiltKParams {
   const int split_k_partition_stride;
   const int split_k_partition_size;
 
+  const int swizzle_log;
   const int gemm_k_iterations_aligned;
 };
 

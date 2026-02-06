@@ -9,6 +9,7 @@
 #include <thread>
 #include <unordered_map>
 
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-backend-gpu-eval.h>
 #include <Cmlx/mlx-device.h>
 #include <Cmlx/mlx-stream.h>
@@ -163,7 +164,7 @@ void Scheduler::enqueue(const Stream& stream, F&& f) {
   threads_[stream.index]->enqueue(std::forward<F>(f));
 }
 
-Scheduler& scheduler();
+MLX_API Scheduler& scheduler();
 
 template <typename F>
 void enqueue(const Stream& stream, F&& f) {

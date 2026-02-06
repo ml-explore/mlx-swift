@@ -27,6 +27,7 @@ extern "C" {
  * \defgroup random Random number operations
  */
 /**@{*/
+
 int mlx_random_bernoulli(
     mlx_array* res,
     const mlx_array p,
@@ -155,6 +156,7 @@ int mlx_random_uniform(
     mlx_dtype dtype,
     const mlx_array key /* may be null */,
     const mlx_stream s);
+
 /**@}*/
 
 #ifdef __cplusplus
