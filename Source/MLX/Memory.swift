@@ -306,49 +306,51 @@ public enum Memory {
 
     /// Perform the block with a temporarily altered wired memory limit.
     ///
-    /// Note: this manipulates a global value.  Nested calls will work as expected but
-    /// concurrent calls cannot.
-    ///
-    /// See also ``GPU/DeviceInfo/maxRecommendedWorkingSetSize``.
+    /// - Important: This synchronous overload is deprecated and is now a no-op.
+    ///   Use ``WiredMemoryManager`` with tickets instead.
     ///
     /// - Parameters:
-    ///   - limit: new limit in bytes
+    ///   - limit: requested limit in bytes (ignored)
     ///   - body: block to perform
+    @available(
+        *, deprecated,
+        message: "Deprecated. Use WiredMemoryManager and tickets; synchronous variant is a no-op."
+    )
     public static func withWiredLimit<R>(
         _ limit: Int, _ body: () throws -> R
     ) rethrows -> R {
-        var current = 0
-        mlx_set_wired_limit(&current, limit)
-        defer {
-            var tmp = 0
-            mlx_set_wired_limit(&tmp, current)
-        }
-
+        _ = limit
         return try body()
     }
 
     /// Perform the block with a temporarily altered wired memory limit.
     ///
-    /// Note: this manipulates a global value.  Nested calls will work as expected but
-    /// concurrent calls cannot.
-    ///
-    /// See also ``GPU/DeviceInfo/maxRecommendedWorkingSetSize``.
+    /// - Important: This overload is deprecated and now uses the shared
+    ///   ``WiredMemoryManager`` with a static sum policy to avoid bypassing
+    ///   admission control.
     ///
     /// - Parameters:
-    ///   - limit: new limit in bytes
+    ///   - limit: requested limit in bytes
     ///   - body: block to perform
+    @available(
+        *, deprecated,
+        message:
+            "Deprecated. Use WiredMemoryManager and tickets; async variant uses the shared manager."
+    )
     public static func withWiredLimit<R>(
         _ limit: Int, _ body: () async throws -> R
     ) async rethrows -> R {
-        var current = 0
-        mlx_set_wired_limit(&current, limit)
-        defer {
-            var tmp = 0
-            mlx_set_wired_limit(&tmp, current)
-        }
-
-        return try await body()
+        let ticket = WiredMemoryTicket(
+            size: max(0, limit),
+            policy: Memory.wiredLimitPolicy,
+            manager: .shared,
+            kind: .active
+        )
+        return try await ticket.withWiredLimit(body)
     }
+
+    private static let wiredLimitPolicy = WiredSumPolicy(
+        id: UUID(uuidString: "B8C3B7E9-1B2E-4C3A-8E3D-1C7F2B8A9D10")!)
 
     /// Cause all cached buffers to be deallocated.
     public static func clearCache() {

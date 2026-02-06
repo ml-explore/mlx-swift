@@ -141,7 +141,7 @@ public enum GPU {
     /// - Parameters:
     ///   - limit: new limit in bytes
     ///   - body: block to perform
-    @available(*, deprecated, renamed: "Memory.withWiredLimit")
+    @available(*, deprecated, message: "Deprecated. Use WiredMemoryManager and tickets instead.")
     public static func withWiredLimit<R>(
         _ limit: Int, _ body: () throws -> R
     ) rethrows -> R {
@@ -158,7 +158,7 @@ public enum GPU {
     /// - Parameters:
     ///   - limit: new limit in bytes
     ///   - body: block to perform
-    @available(*, deprecated, renamed: "Memory.withWiredLimit")
+    @available(*, deprecated, message: "Deprecated. Use WiredMemoryManager and tickets instead.")
     public static func withWiredLimit<R>(
         _ limit: Int, _ body: () async throws -> R
     ) async rethrows -> R {
@@ -205,6 +205,19 @@ public enum GPU {
         public let maxBufferSize: Int
         public let maxRecommendedWorkingSetSize: UInt64
         public let memorySize: Int
+    }
+
+    /// Returns Metal's recommended working set size in bytes as an `Int`.
+    ///
+    /// This value is derived from ``DeviceInfo/maxRecommendedWorkingSetSize`` and
+    /// is clamped to `Int.max` when necessary. Returns `nil` when unavailable.
+    public static func maxRecommendedWorkingSetBytes() -> Int? {
+        let maxBytes = deviceInfo().maxRecommendedWorkingSetSize
+        guard maxBytes > 0 else { return nil }
+        if maxBytes > UInt64(Int.max) {
+            return Int.max
+        }
+        return Int(maxBytes)
     }
 
     /// Get information about the GPU device and system settings
