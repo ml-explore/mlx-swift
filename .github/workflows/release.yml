@@ -1,0 +1,55 @@
+name: Release XCFrameworks
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to upload assets to (leave empty for dry run)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build_xcframeworks:
+    if: github.repository == 'ml-explore/mlx-swift'
+    runs-on: [self-hosted, macos]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Verify MetalToolchain installed
+        shell: bash
+        run: xcodebuild -showComponent MetalToolchain
+
+      - name: Build XCFrameworks
+        shell: bash
+        env:
+          DEVELOPER_DIR: /Applications/Xcode-latest.app
+        working-directory: xcode
+        run: |
+          xcodebuild -version
+          ../tools/create-xcframework.sh
+
+      - name: Create archives
+        shell: bash
+        working-directory: xcode/build/output
+        run: |
+          for framework in MLX Cmlx MLXNN MLXOptimizers; do
+            zip -r -y "${framework}.xcframework.zip" "${framework}.xcframework"
+          done
+
+      - name: Upload XCFrameworks to release
+        if: github.event.release.tag_name || inputs.tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name || inputs.tag }}" \
+            xcode/build/output/MLX.xcframework.zip \
+            xcode/build/output/Cmlx.xcframework.zip \
+            xcode/build/output/MLXNN.xcframework.zip \
+            xcode/build/output/MLXOptimizers.xcframework.zip
