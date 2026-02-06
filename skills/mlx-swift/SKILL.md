@@ -47,6 +47,8 @@ Cmlx (C/C++ bindings, Metal GPU)
 | Optimizers | Source/MLXOptimizers/Optimizers.swift |
 | Fast ops | Source/MLX/MLXFast.swift |
 | Custom kernels | Source/MLX/MLXFastKernel.swift |
+| Wired memory coordinator | Source/MLX/WiredMemory.swift |
+| GPU working-set helper | Source/MLX/GPU+Metal.swift |
 
 ## Quick Start
 
@@ -308,6 +310,28 @@ let output = compiledOp(arrayA, arrayB)
 // For models, call model methods directly (they can use internal compilation).
 ```
 
+## Quaternary Workflow: Wired Memory Coordination
+
+See [wired-memory.md](references/wired-memory.md) for full policy, hysteresis, and admission guidance.
+
+```swift
+import MLX
+
+let policy = WiredSumPolicy()
+
+// Reservation: participates in admission but does not keep the wired limit high while idle.
+let weightsTicket = policy.ticket(size: weightsBytes, kind: .reservation)
+_ = await weightsTicket.start()
+
+// Active work: raises limit while inference runs.
+let inferenceTicket = policy.ticket(size: kvCacheBytes, kind: .active)
+try await inferenceTicket.withWiredLimit {
+    // run model inference
+}
+
+_ = await weightsTicket.end()
+```
+
 ## Best Practices
 
 ### DO
@@ -317,6 +341,7 @@ let output = compiledOp(arrayA, arrayB)
 - **Use `@ModuleInfo`** for all module properties to enable quantization and updates.
 - **Use actors for concurrent code**: Encapsulate MLX state within actors for thread safety.
 - **Use namespaced functions**: `MLXRandom.uniform()`, `FFT.fft()`, `Linalg.inv()`.
+- **Use ticket-based wired memory coordination**: Prefer `WiredMemoryTicket.withWiredLimit` and `WiredMemoryManager.shared`.
 
 ### DON'T
 
@@ -324,6 +349,7 @@ let output = compiledOp(arrayA, arrayB)
 - **Don't use deprecated module imports**: Use `import MLX` not `import MLXRandom`.
 - **Don't forget to eval()**: Unevaluated arrays can accumulate large compute graphs.
 - **Don't mutate arrays directly**: Use operations that return new arrays.
+- **Don't call deprecated wired-limit APIs**: Avoid `GPU.withWiredLimit(...)` and `Memory.withWiredLimit(...)`.
 
 ## Deprecated Patterns
 
@@ -333,6 +359,8 @@ let output = compiledOp(arrayA, arrayB)
 | `import MLXFFT` | `import MLX` then `FFT.fft()` |
 | `import MLXLinalg` | `import MLX` then `Linalg.inv()` |
 | `GPU.activeMemory` | `Memory.activeMemory` |
+| `GPU.withWiredLimit(...)` | `WiredMemoryTicket(...).withWiredLimit { ... }` via `WiredMemoryManager` |
+| `Memory.withWiredLimit(...)` | `WiredMemoryTicket(...).withWiredLimit { ... }` |
 | `repeat(_:count:)` | `repeated(_:count:)` |
 | `addmm()` | `addMM()` |
 | `LogSoftMax` | `LogSoftmax` |
@@ -348,6 +376,7 @@ MLX has specific concurrency behavior:
 - **evalLock protects eval/stream creation**: The global lock serializes evaluation and stream operations.
 - **Lazy operations are NOT thread-safe**: Don't share arrays across tasks without proper synchronization.
 - **Use actors to encapsulate MLX state**: Create and use MLXArrays within the same actor.
+- **Use wired-memory tickets for concurrent inference**: Coordinate active/reservation budgets through the shared manager.
 
 See [concurrency.md](references/concurrency.md) for thread safety details.
 
@@ -360,5 +389,6 @@ See [concurrency.md](references/concurrency.md) for thread safety details.
 - [Optimizers](references/optimizers.md) - Training optimizers
 - [Custom Layers](references/custom-layers.md) - Building custom modules
 - [Custom Kernels](references/custom-kernels.md) - Metal kernels with MLXFast
+- [Wired Memory](references/wired-memory.md) - Ticket-based wired limit coordination
 - [Concurrency](references/concurrency.md) - Thread safety guide
 - [Deprecated](references/deprecated.md) - Migration guide

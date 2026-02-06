@@ -229,6 +229,32 @@ let cached = Memory.cacheMemory
 Memory.clearCache()
 ```
 
+### Wired Memory Tickets for Concurrent Inference
+
+Use tickets instead of deprecated `withWiredLimit` APIs when coordinating concurrent GPU requests.
+
+```swift
+let policy = WiredSumPolicy()
+
+// Reservation for long-lived model state.
+let weights = policy.ticket(size: weightsBytes, kind: .reservation)
+_ = await weights.start()
+
+// Active ticket for request-local state.
+let request = policy.ticket(size: kvBytes, kind: .active)
+try await request.withWiredLimit {
+    // run inference
+}
+
+_ = await weights.end()
+```
+
+Why this is better:
+
+- Admission control can block instead of overcommitting memory.
+- Shrink hysteresis avoids rapid limit oscillation under load.
+- Reservations model long-lived state without keeping wired limits elevated while idle.
+
 ## Thread Safety Checklist
 
 ### DO
@@ -238,6 +264,7 @@ Memory.clearCache()
 - Use actors to encapsulate MLX state
 - Pass Sendable types (`[Float]`, `Int`, etc.) between tasks
 - Use explicit stream parameters for device/stream control
+- Use `WiredMemoryTicket.withWiredLimit` for concurrent GPU workloads
 
 ### DON'T
 
@@ -245,6 +272,7 @@ Memory.clearCache()
 - Assume lazy operations are thread-safe
 - Create arrays in one task and use in another
 - Ignore the evalLock when doing custom threading
+- Use deprecated `GPU.withWiredLimit` / `Memory.withWiredLimit` in new code
 
 ## Example: Concurrent Batch Processing
 
