@@ -104,7 +104,7 @@ public:
 };
 
 }
-_MTL_PRIVATE_DEF_CONST(NS::ErrorDomain, IOErrorDomain);
+_MTL_PRIVATE_DEF_WEAK_CONST(NS::ErrorDomain, IOErrorDomain);
 _MTL_INLINE MTL::IOCommandBuffer* MTL::IOCommandQueue::commandBuffer()
 {
     return Object::sendMessage<MTL::IOCommandBuffer*>(this, _MTL_PRIVATE_SEL(commandBuffer));
