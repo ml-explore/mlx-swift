@@ -37,7 +37,7 @@ func finalizerTrampoline(
 
 extension MLXArray {
 
-    /// Initialize an MLXArray by transferring ownership of of a raw pointer.
+    /// Initialize an MLXArray by transferring ownership of a raw pointer.
     ///
     /// Note: the raw pointer must be compatible with the computational backing, e.g. a
     /// Metal stream requires something compatible with an `MTLBuffer`.
