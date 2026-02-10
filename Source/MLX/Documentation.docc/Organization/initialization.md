@@ -151,6 +151,8 @@ import MLX
 let a = #mlx([[1, 2], [3, 4]])
 let b = #mlx([[1, 2], [3, 4]], dtype: .int16)
 let c = #mlx([[[0.1, 0.2], [0.3, 0.4]]], dtype: .float16)
+let d = #mlx([[true, false], [false, true]])
+let e = #mlx([[0, 1], [1, 0]], dtype: .bool)
 ```
 
 This is especially convenient for small constants in model code and tests.
@@ -168,6 +170,9 @@ For dynamic dtype expressions, or dtypes that do not map cleanly to a Swift lite
 // promoted to floating-point because of 2.5
 let mixed = #mlx([[1, 2.5], [3, 4]])
 ```
+
+Boolean literals are supported directly (`true` / `false`). For `dtype: .bool`,
+integer literals are accepted only when each element is `0` or `1`.
 
 ### Random Value Arrays
 

@@ -27,6 +27,14 @@ final class MLXLiteralMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsBooleanLiteral() {
+        assertMacroExpansion(
+            "#mlx([[true, false], [false, true]])",
+            expandedSource: "MLXArray([true, false, false, true], [2, 2])",
+            macros: testMacros
+        )
+    }
+
     func testExpandsWithDtypeCast() {
         assertMacroExpansion(
             "#mlx([[1, 2], [3, 4]], dtype: .int16)",
@@ -63,6 +71,14 @@ final class MLXLiteralMacroTests: XCTestCase {
         assertMacroExpansion(
             "#mlx([[1.0, 2.0], [3.0, 4.0]], dtype: .float64)",
             expandedSource: "MLXArray(converting: [1.0, 2.0, 3.0, 4.0], [2, 2]).asType(.float64)",
+            macros: testMacros
+        )
+    }
+
+    func testExpandsBoolDtypeFromZeroOneLiterals() {
+        assertMacroExpansion(
+            "#mlx([[0, 1], [1, 0]], dtype: .bool)",
+            expandedSource: "MLXArray([false, true, true, false], [2, 2])",
             macros: testMacros
         )
     }
@@ -143,6 +159,34 @@ final class MLXLiteralMacroTests: XCTestCase {
                     line: 1,
                     column: 11,
                     severity: .warning)
+            ],
+            macros: testMacros
+        )
+    }
+
+    func testRejectsBoolDtypeWithOutOfRangeIntegerLiterals() {
+        assertMacroExpansion(
+            "#mlx([[0, 2], [1, 0]], dtype: .bool)",
+            expandedSource: "MLXArray([])",
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "#mlx dtype .bool only supports integer literals 0 or 1.",
+                    line: 1,
+                    column: 11)
+            ],
+            macros: testMacros
+        )
+    }
+
+    func testRejectsBoolDtypeWithFloatLiterals() {
+        assertMacroExpansion(
+            "#mlx([[0.0, 1.0]], dtype: .bool)",
+            expandedSource: "MLXArray([])",
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "#mlx dtype .bool only supports true/false literals or integer 0/1.",
+                    line: 1,
+                    column: 27)
             ],
             macros: testMacros
         )

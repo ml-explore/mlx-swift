@@ -6,14 +6,23 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 private enum ScalarKind {
+    case bool
     case int
     case float
 
-    static func merge(_ lhs: ScalarKind, _ rhs: ScalarKind) -> ScalarKind {
-        if lhs == .float || rhs == .float {
+    static func merge(_ lhs: ScalarKind, _ rhs: ScalarKind) -> ScalarKind? {
+        switch (lhs, rhs) {
+        case (.bool, .bool):
+            return .bool
+        case (.int, .int):
+            return .int
+        case (.float, .float):
             return .float
+        case (.int, .float), (.float, .int):
+            return .float
+        case (.bool, .int), (.int, .bool), (.bool, .float), (.float, .bool):
+            return nil
         }
-        return .int
     }
 }
 
@@ -92,8 +101,13 @@ public struct MLXLiteralMacro: ExpressionMacro {
 
         let flatSource = parsed.flat.map { $0.description }.joined(separator: ", ")
         let shapeSource = parsed.shape.map(String.init).joined(separator: ", ")
+        // Default lowering path:
+        // - integer-only literals use MLXArray([Int...], shape)
+        // - any float literal promotes the whole literal to converting:[Double...]
         let baseExpr: ExprSyntax =
             switch parsed.kind {
+            case .bool:
+                "MLXArray([\(raw: flatSource)], [\(raw: shapeSource)])"
             case .int:
                 "MLXArray([\(raw: flatSource)], [\(raw: shapeSource)])"
             case .float:
@@ -102,6 +116,37 @@ public struct MLXLiteralMacro: ExpressionMacro {
 
         if let dtypeExpr {
             if let knownDType = parseKnownDType(dtypeExpr) {
+                if knownDType == .bool {
+                    switch parsed.kind {
+                    case .bool:
+                        return baseExpr
+                    case .int:
+                        var boolValues: [String] = []
+                        boolValues.reserveCapacity(parsed.flat.count)
+                        for element in parsed.flat {
+                            guard let value = integerLiteralValue(element), value == 0 || value == 1
+                            else {
+                                diagnose(
+                                    "#mlx dtype .bool only supports integer literals 0 or 1.",
+                                    at: Syntax(element),
+                                    in: context)
+                                return "MLXArray([])"
+                            }
+                            boolValues.append(value == 1 ? "true" : "false")
+                        }
+                        let boolSource = boolValues.joined(separator: ", ")
+                        return "MLXArray([\(raw: boolSource)], [\(raw: shapeSource)])"
+                    case .float:
+                        diagnose(
+                            "#mlx dtype .bool only supports true/false literals or integer 0/1.",
+                            at: Syntax(dtypeExpr),
+                            in: context)
+                        return "MLXArray([])"
+                    }
+                }
+                // Keep explicit integer dtypes permissive but visible:
+                // if callers write float literals with an integer dtype, emit a warning
+                // since runtime conversion may truncate.
                 if isIntegerDType(knownDType), let floatExpr = parsed.flat.first(where: isFloat) {
                     diagnose(
                         "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
@@ -109,10 +154,14 @@ public struct MLXLiteralMacro: ExpressionMacro {
                         severity: .warning,
                         in: context)
                 }
+                // Fast path for dtypes we can materialize directly as Swift literals.
+                // This avoids emitting a trailing `.asType(...)` cast op.
                 if let typedExpr = makeTypedExpression(parsed: parsed, dtype: knownDType) {
                     return typedExpr
                 }
             }
+            // Fallback for dynamic dtype expressions and dtypes that do not map cleanly
+            // to a concrete Swift literal representation.
             return "\(baseExpr).asType(\(dtypeExpr))"
         } else {
             return baseExpr
@@ -132,6 +181,8 @@ public struct MLXLiteralMacro: ExpressionMacro {
         let typedFlat: String
 
         switch dtype {
+        case .bool:
+            return nil
         case .int8:
             guard parsed.kind == .int else { return nil }
             typedFlat = wrap(parsed.flat, with: "Int8")
@@ -157,12 +208,12 @@ public struct MLXLiteralMacro: ExpressionMacro {
             guard parsed.kind == .int else { return nil }
             typedFlat = wrap(parsed.flat, with: "UInt64")
         case .float32:
-            if parsed.kind == .int {
-                typedFlat = wrap(parsed.flat, with: "Float")
-            } else {
-                typedFlat = wrap(parsed.flat, with: "Float")
-            }
-        case .bool, .float16, .bfloat16, .complex64, .float64:
+            // Float32 has a stable, direct Swift literal representation.
+            // Emit typed elements instead of base+cast for lower graph overhead.
+            typedFlat = wrap(parsed.flat, with: "Float")
+        case .float16, .bfloat16, .complex64, .float64:
+            // These currently rely on base+cast to keep expansion predictable
+            // across targets and avoid lossy/ambiguous literal synthesis.
             return nil
         }
 
@@ -187,6 +238,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
     ) throws -> ParsedLiteral {
         if let arrayExpr = expr.as(ArrayExprSyntax.self) {
             if arrayExpr.elements.isEmpty {
+                // Keep empty arrays legal and representable at compile time.
                 return ParsedLiteral(flat: [], shape: [0], kind: .int)
             }
 
@@ -199,19 +251,36 @@ public struct MLXLiteralMacro: ExpressionMacro {
 
             let firstShape = children[0].shape
             if children.dropFirst().contains(where: { $0.shape != firstShape }) {
+                // MLXArray construction here assumes rectangular nested literals.
+                // Ragged arrays are rejected early with a macro diagnostic.
                 diagnose(
                     "#mlx does not support ragged nested arrays.", at: Syntax(expr), in: context)
                 throw MacroError()
             }
 
-            let kind = children.dropFirst().reduce(children[0].kind) {
-                ScalarKind.merge($0, $1.kind)
+            guard
+                let kind = children.dropFirst().reduce(
+                    Optional(children[0].kind),
+                    {
+                        partial, next in
+                        guard let partial else { return nil }
+                        return ScalarKind.merge(partial, next.kind)
+                    })
+            else {
+                diagnose(
+                    "#mlx does not support mixing boolean and numeric literals in the same array.",
+                    at: Syntax(expr),
+                    in: context)
+                throw MacroError()
             }
 
             return ParsedLiteral(
                 flat: children.flatMap(\.flat), shape: [children.count] + firstShape, kind: kind)
         }
 
+        if isBool(expr) {
+            return ParsedLiteral(flat: [expr], shape: [], kind: .bool)
+        }
         if isInteger(expr) {
             return ParsedLiteral(flat: [expr], shape: [], kind: .int)
         }
@@ -220,9 +289,14 @@ public struct MLXLiteralMacro: ExpressionMacro {
         }
 
         diagnose(
-            "#mlx only supports integer and floating-point literals.", at: Syntax(expr), in: context
+            "#mlx only supports boolean, integer, and floating-point literals.", at: Syntax(expr),
+            in: context
         )
         throw MacroError()
+    }
+
+    private static func isBool(_ expr: ExprSyntax) -> Bool {
+        expr.as(BooleanLiteralExprSyntax.self) != nil
     }
 
     private static func isInteger(_ expr: ExprSyntax) -> Bool {
@@ -230,6 +304,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
             return true
         }
         if let prefix = expr.as(PrefixOperatorExprSyntax.self) {
+            // Accept signed integer literals like -3 / +7.
             return isInteger(prefix.expression)
         }
         return false
@@ -240,9 +315,42 @@ public struct MLXLiteralMacro: ExpressionMacro {
             return true
         }
         if let prefix = expr.as(PrefixOperatorExprSyntax.self) {
+            // Accept signed float literals like -3.5 / +1.0e-3.
             return isFloat(prefix.expression)
         }
         return false
+    }
+
+    private static func integerLiteralValue(_ expr: ExprSyntax) -> Int? {
+        if let literal = expr.as(IntegerLiteralExprSyntax.self) {
+            return parseIntegerToken(literal.literal.text)
+        }
+        if let prefix = expr.as(PrefixOperatorExprSyntax.self) {
+            guard let value = integerLiteralValue(prefix.expression) else { return nil }
+            switch prefix.operator.text {
+            case "+":
+                return value
+            case "-":
+                return -value
+            default:
+                return nil
+            }
+        }
+        return nil
+    }
+
+    private static func parseIntegerToken(_ token: String) -> Int? {
+        let text = String(token.filter { $0 != "_" })
+        if text.hasPrefix("0x") || text.hasPrefix("0X") {
+            return Int(text.dropFirst(2), radix: 16)
+        }
+        if text.hasPrefix("0b") || text.hasPrefix("0B") {
+            return Int(text.dropFirst(2), radix: 2)
+        }
+        if text.hasPrefix("0o") || text.hasPrefix("0O") {
+            return Int(text.dropFirst(2), radix: 8)
+        }
+        return Int(text)
     }
 
     private static func diagnose(
