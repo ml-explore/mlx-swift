@@ -6,6 +6,7 @@
 #include <Cmlx/mlx-c-array.h>
 #include <Cmlx/mlx-c-closure.h>
 #include <Cmlx/mlx-c-compile.h>
+#include <Cmlx/mlx-c-cuda.h>
 #include <Cmlx/mlx-c-device.h>
 #include <Cmlx/mlx-c-distributed.h>
 #include <Cmlx/mlx-c-distributed_group.h>

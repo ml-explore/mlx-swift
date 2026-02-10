@@ -72,7 +72,10 @@ int mlx_get_default_device(mlx_device* dev);
  * Set the default MLX device.
  */
 int mlx_set_default_device(mlx_device dev);
-
+/**
+ * Check if device is available.
+ */
+int mlx_device_is_available(bool* avail, mlx_device dev);
 /**
  * Get the number of available devices for a device type.
  */
