@@ -125,8 +125,41 @@ Full list:
 - `GPU.set(cacheLimit:)` → `Memory.cacheLimit = ...`
 - `GPU.memoryLimit()` → `Memory.memoryLimit`
 - `GPU.set(memoryLimit:)` → `Memory.memoryLimit = ...`
-- `GPU.withWiredLimit()` → `Memory.withWiredLimit()`
+- `GPU.withWiredLimit()` → use `WiredMemoryTicket.withWiredLimit(...)` with `WiredMemoryManager`
 - `GPU.clearCache()` → `Memory.clearCache()`
+
+## Wired Limit API Migration
+
+`withWiredLimit` APIs are now deprecated in favor of ticket-based coordination.
+
+```swift
+// OLD (deprecated)
+try await GPU.withWiredLimit(bytes) {
+    try await runInference()
+}
+
+try await Memory.withWiredLimit(bytes) {
+    try await runInference()
+}
+
+// NEW
+let ticket = WiredMemoryTicket(
+    size: bytes,
+    policy: WiredSumPolicy(),
+    manager: .shared,
+    kind: .active
+)
+try await ticket.withWiredLimit {
+    try await runInference()
+}
+```
+
+Important details:
+
+- `GPU.withWiredLimit(...)` is deprecated with a migration message.
+- `Memory.withWiredLimit(...)` async still works as a compatibility wrapper, but is deprecated.
+- `Memory.withWiredLimit(...)` sync is deprecated and a no-op.
+- For long-lived allocations (for example, model weights), use `.reservation` tickets.
 
 ## Function Renames
 
