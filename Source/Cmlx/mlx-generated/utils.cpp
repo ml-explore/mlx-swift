@@ -620,6 +620,37 @@ static MTL_CONST constexpr int RMS_LOOPED_LIMIT = 4096;
       name)]] [[kernel]] decltype(func<__VA_ARGS__>) func<__VA_ARGS__>;
 
 ///////////////////////////////////////////////////////////////////////////////
+// Contents from "mlx/backend/metal/kernels/logging.h"
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "mlx/backend/metal/kernels/logging.h"
+// Copyright © 2025 Apple Inc.
+
+
+#if defined(__METAL_VERSION__) && (__METAL_VERSION__ >= 320)
+#include <metal_logging>
+
+namespace mlx {
+using os_log = metal::os_log;
+} // namespace mlx
+
+#else
+
+namespace mlx {
+struct os_log {
+  constexpr os_log(constant char*, constant char*) constant {}
+
+  template <typename... Args>
+  void log_debug(constant char*, Args...) const {}
+
+  template <typename... Args>
+  void log_debug(constant char*, Args...) const constant {}
+};
+} // namespace mlx
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/utils.h"
 ///////////////////////////////////////////////////////////////////////////////
 

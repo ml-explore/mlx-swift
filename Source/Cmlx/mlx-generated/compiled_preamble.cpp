@@ -151,6 +151,12 @@ struct Simd<T, 1> {
   Simd(Simd<U, 1> v) : value(v.value) {}
   template <typename U>
   Simd(U v) : value(v) {}
+  T operator[](int) const {
+    return value;
+  }
+  T& operator[](int) {
+    return value;
+  }
 };
 template <typename T, int N>
 Simd<T, N> load(const T* x) {
@@ -217,7 +223,7 @@ Simd<T, 1> log1p(Simd<T, 1> in) {
       if (r == 0) {
         return Simd<T, 1>{T{x, theta}};
       }
-      return Simd<T, 1>{T{((typeof(x))(0.5)) * std::log1p(r), theta}};
+      return Simd<T, 1>{T{((decltype(x))(0.5)) * std::log1p(r), theta}};
     } else {
       auto z0 = std::hypot(x + 1, y);
       return Simd<T, 1>{T{std::log(z0), theta}};
@@ -603,22 +609,19 @@ struct ToFP8 {
 struct FromFP8 {
   template <int N>
   Simd<float, N> operator()(Simd<uint8_t, N> x) {
-    auto w = Simd<uint32_t, N>(x) << 24;
-    auto sign = w & 0x80000000;
-    auto nonsign = w & 0x7FFFFFFF;
-    auto renorm_shift = clz(nonsign);
-    renorm_shift = simd::select(
-        renorm_shift > Simd<uint32_t, N>{4},
-        renorm_shift - Simd<uint32_t, N>{4},
-        Simd<uint32_t, N>{0});
-    Simd<int32_t, N> inf_nan_mask =
-        (Simd<int32_t, N>(nonsign + 0x01000000) >> 8) & 0x7F800000;
-    auto zero_mask = Simd<int32_t, N>(nonsign - 1) >> 31;
-    auto result = sign |
-        ((((nonsign << renorm_shift >> 4) + ((0x78 - renorm_shift) << 23)) |
-          inf_nan_mask) &
-         ~zero_mask);
-    return fp32_from_bits(result);
+    auto v = Simd<uint16_t, N>(x & 127) << 7;
+    Simd<float, N> out;
+    if constexpr (simd::max_size<float16_t> >= N) {
+      auto converted = *(Simd<float16_t, N>*)(&v);
+      out = converted * 256.0;
+    } else {
+      for (int i = 0; i < N; ++i) {
+        auto converted = *(float16_t*)(&v[i]);
+        out[i] = converted * 256.0;
+      }
+    }
+    auto sign = Simd<bool, N>(x & 128);
+    return select(sign, -out, out);
   }
   float operator()(uint8_t x) {
     return (*this)(Simd<uint8_t, 1>(x)).value;

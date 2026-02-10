@@ -3,8 +3,8 @@
 /* This file is auto-generated. Do not edit manually. */
 /*                                                    */
 
-#ifndef MLX_METAL_H
-#define MLX_METAL_H
+#ifndef MLX_CUDA_H
+#define MLX_CUDA_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -24,13 +24,11 @@ extern "C" {
 #endif
 
 /**
- * \defgroup metal Metal specific operations
+ * \defgroup cuda Cuda specific operations
  */
 /**@{*/
 
-int mlx_metal_is_available(bool* res);
-int mlx_metal_start_capture(const char* path);
-int mlx_metal_stop_capture(void);
+int mlx_cuda_is_available(bool* res);
 
 /**@}*/
 

@@ -6,6 +6,10 @@ import XCTest
 
 @testable import MLX
 
+#if canImport(IOSurface)
+    import IOSurface
+#endif
+
 class MLXArrayInitTests: XCTestCase {
 
     override class func setUp() {
@@ -263,4 +267,34 @@ class MLXArrayInitTests: XCTestCase {
         XCTAssertEqual(e.dtype, .float64)
     }
 
+    // TODO: disabled until next release
+    //    #if canImport(IOSurface)
+    //        func testIOSurface() {
+    //            let height = 100
+    //            let width = 128
+    //            let pixelFormat = kCVPixelFormatType_32BGRA
+    //
+    //            let properties: [IOSurfacePropertyKey: any Sendable] = [
+    //                .width: width,
+    //                .height: height,
+    //                .pixelFormat: pixelFormat,
+    //                .bytesPerElement: 4,
+    //            ]
+    //
+    //            guard let ioSurface = IOSurface(properties: properties) else {
+    //                XCTFail("unable to allocate IOSurface")
+    //                return
+    //            }
+    //
+    //            let array = MLXArray(
+    //                rawPointer: ioSurface.baseAddress, [height, width, 4], dtype: .uint8
+    //            ) {
+    //                [ioSurface] in
+    //                // this holds reference to the ioSurface and implicitly releases it when it returns
+    //                _ = ioSurface
+    //                print("release IOSurface")
+    //            }
+    //            print(mean(array))
+    //        }
+    //    #endif
 }

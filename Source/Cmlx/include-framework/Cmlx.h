@@ -3,9 +3,9 @@
 #include <Cmlx/mlx-c-linalg.h>
 #include <Cmlx/mlx-c-fast.h>
 
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-array.h>
 #include <Cmlx/mlx-backend-cuda-cuda.h>
-#include <Cmlx/mlx-backend-gpu-available.h>
 #include <Cmlx/mlx-backend-metal-metal.h>
 #include <Cmlx/mlx-compile.h>
 #include <Cmlx/mlx-device.h>

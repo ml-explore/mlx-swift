@@ -6,13 +6,14 @@
 #include <chrono>
 #include <optional>
 
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-array.h>
 #include <Cmlx/mlx-stream.h>
 #include <Cmlx/mlx-utils.h>
 
 namespace mlx::core::random {
 
-class KeySequence {
+class MLX_API KeySequence {
  public:
   explicit KeySequence(uint64_t seed);
 
@@ -36,13 +37,13 @@ class KeySequence {
 };
 
 /** Get a PRNG key from a seed. */
-array key(uint64_t seed);
+MLX_API array key(uint64_t seed);
 
 /** Seed the default PRNG key. */
-void seed(uint64_t seed);
+MLX_API void seed(uint64_t seed);
 
 /** Generate an array with type uint32 filled with random bits. */
-array bits(
+MLX_API array bits(
     const Shape& shape,
     int width,
     const std::optional<array>& key = std::nullopt,
@@ -55,13 +56,13 @@ inline array bits(
 }
 
 /** Split the rng key into a pair of keys. */
-std::pair<array, array> split(const array& key, StreamOrDevice s = {});
+MLX_API std::pair<array, array> split(const array& key, StreamOrDevice s = {});
 
 /** Split the rng key into `num` keys. */
-array split(const array& key, int num, StreamOrDevice s = {});
+MLX_API array split(const array& key, int num, StreamOrDevice s = {});
 
 /** Generate uniform random numbers between low and high. */
-array uniform(
+MLX_API array uniform(
     const array& low,
     const array& high,
     const Shape& shape,
@@ -81,7 +82,7 @@ array uniform(
 }
 
 /** Generate uniform random numbers between 0 and 1. */
-array uniform(
+MLX_API array uniform(
     const Shape& shape,
     Dtype dtype,
     const std::optional<array>& key = std::nullopt,
@@ -90,11 +91,11 @@ inline array uniform(
     const Shape& shape,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {}) {
-  return uniform(shape, float32, key);
+  return uniform(shape, float32, key, s);
 }
 
 /** Generate samples from the standard normal distribution. */
-array normal(
+MLX_API array normal(
     const Shape& shape,
     Dtype dtype,
     const std::optional<array>& loc,
@@ -136,7 +137,7 @@ inline array normal(
 }
 
 /** Generate samples from a multivariate normal distribution. **/
-array multivariate_normal(
+MLX_API array multivariate_normal(
     const array& mean,
     const array& cov,
     const Shape& shape,
@@ -145,7 +146,7 @@ array multivariate_normal(
     StreamOrDevice s = {});
 
 /** Generate integer samples uniformly at random */
-array randint(
+MLX_API array randint(
     const array& low,
     const array& high,
     const Shape& shape,
@@ -165,12 +166,12 @@ array randint(
 }
 
 /** Generate binary variables with probability to be true equal to p */
-array bernoulli(
+MLX_API array bernoulli(
     const array& p,
     const Shape& shape,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
-array bernoulli(
+MLX_API array bernoulli(
     const array& p,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
@@ -192,11 +193,11 @@ array bernoulli(
   return bernoulli(array(p), shape, key, s);
 }
 
-array bernoulli(
+MLX_API array bernoulli(
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
-array truncated_normal(
+MLX_API array truncated_normal(
     const array& lower,
     const array& upper,
     const Shape& shape,
@@ -204,41 +205,41 @@ array truncated_normal(
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
-array truncated_normal(
+MLX_API array truncated_normal(
     const array& lower,
     const array& upper,
     Dtype dtype = float32,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
-array gumbel(
+MLX_API array gumbel(
     const Shape& shape,
     Dtype dtype = float32,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
-array categorical(
+MLX_API array categorical(
     const array& logits,
     int axis,
     const Shape& shape,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
-array categorical(
+MLX_API array categorical(
     const array& logits_,
     int axis,
     int num_samples,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
-array categorical(
+MLX_API array categorical(
     const array& logits,
     int axis = -1,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
 /** Generate samples from the laplace distribution. */
-array laplace(
+MLX_API array laplace(
     const Shape& shape,
     Dtype dtype,
     const float loc,
@@ -268,14 +269,14 @@ inline array laplace(
 }
 
 /* Randomly permute the elements of x along the given axis. */
-array permutation(
+MLX_API array permutation(
     const array& x,
     int axis = 0,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});
 
 /* A random permutation of `arange(x)` */
-array permutation(
+MLX_API array permutation(
     int x,
     const std::optional<array>& key = std::nullopt,
     StreamOrDevice s = {});

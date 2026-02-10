@@ -18,7 +18,83 @@ private func shapePrecondition(shape: (some Collection<Int>)?, byteCount: Int, t
     }
 }
 
+// holds reference to `finalizer` as capture state
+private class FinalizerCaptureState {
+    let f: () -> Void
+
+    init(_ f: @escaping () -> Void) {
+        self.f = f
+    }
+}
+
+// the C function that the mlx_array_new_data_managed_payload will call
+func finalizerTrampoline(
+    payload: UnsafeMutableRawPointer?
+) {
+    let state = Unmanaged<FinalizerCaptureState>.fromOpaque(payload!).takeUnretainedValue()
+    state.f()
+}
+
 extension MLXArray {
+
+    /// Initialize an MLXArray by transferring ownership of a raw pointer.
+    ///
+    /// Note: the raw pointer must be compatible with the computational backing, e.g. a
+    /// Metal stream requires something compatible with an `MTLBuffer`.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// let height = 100
+    /// let width = 128
+    /// let pixelFormat = kCVPixelFormatType_32BGRA
+    ///
+    /// let properties: [IOSurfacePropertyKey: any Sendable] = [
+    ///     .width: width,
+    ///     .height: height,
+    ///     .pixelFormat: pixelFormat,
+    ///     .bytesPerElement: 4
+    /// ]
+    ///
+    /// guard let ioSurface = IOSurface(properties: properties) else {
+    ///     XCTFail("unable to allocate IOSurface")
+    ///     return
+    /// }
+    ///
+    /// let array = MLXArray(rawPointer: ioSurface.baseAddress, [height, width, 4] ,dtype: .uint8) {
+    ///     [ioSurface] in
+    ///     // this holds reference to the ioSurface and implicitly releases it when it returns
+    ///     _ = ioSurface
+    ///     print("release IOSurface")
+    /// }
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - rawPointer: raw pointer to input data -- ownership is transferred to MLXArray.  The data
+    ///     must be contiguous in the shape and dtype given (or at least it will be treated as such)
+    ///   - shape: shape of the data in the rawPointer
+    ///   - dtype: data type
+    ///   - finalizer: closure that will release the associated resource
+    // TODO: disabled per issue on mlx side -- buffer enters residency set but
+    // not removed -- enable in next release.  Also testIOSurface
+    //    public convenience init(
+    //        rawPointer: UnsafeMutableRawPointer,
+    //        _ shape: (some Collection<Int>)? = [Int]?.none, dtype: DType,
+    //        finalizer: @escaping () -> Void
+    //    ) {
+    //        func free(ptr: UnsafeMutableRawPointer?) {
+    //            Unmanaged<FinalizerCaptureState>.fromOpaque(ptr!).release()
+    //        }
+    //
+    //        let payload = Unmanaged.passRetained(FinalizerCaptureState(finalizer)).toOpaque()
+    //
+    //        self.init(
+    //            mlx_array_new_data_managed_payload(
+    //                rawPointer,
+    //                shape?.asInt32, (shape?.count ?? 0).int32,
+    //                dtype.cmlxDtype,
+    //                payload, finalizerTrampoline))
+    //    }
 
     /// Initializer allowing creation of scalar (0-dimension) `MLXArray` from an `Int32`.
     ///

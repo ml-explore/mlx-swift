@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <Cmlx/mlx-allocator.h>
+#include <Cmlx/mlx-api.h>
 #include <Cmlx/mlx-dtype.h>
 #include <Cmlx/mlx-event.h>
 #include <Cmlx/mlx-small_vector.h>
@@ -23,7 +24,7 @@ using ShapeElem = int32_t;
 using Shape = SmallVector<ShapeElem>;
 using Strides = SmallVector<int64_t>;
 
-class array {
+class MLX_API array {
   /* An array is really a node in a graph. It contains a shared ArrayDesc
    * object */
 
@@ -122,7 +123,7 @@ class array {
    *  This function supports negative indexing and provides
    *  bounds checking. */
   auto shape(int dim) const {
-    return shape().at(dim < 0 ? dim + ndim() : dim);
+    return shape().at(dim < 0 ? dim + static_cast<int>(ndim()) : dim);
   }
 
   /** The strides of the array. */
@@ -136,7 +137,7 @@ class array {
    *  This function supports negative indexing and provides
    *  bounds checking. */
   auto strides(int dim) const {
-    return strides().at(dim < 0 ? dim + ndim() : dim);
+    return strides().at(dim < 0 ? dim + static_cast<int>(ndim()) : dim);
   }
 
   /** Get the arrays data type. */
@@ -154,7 +155,7 @@ class array {
   template <typename T>
   T item() const;
 
-  struct ArrayIterator {
+  struct MLX_API ArrayIterator {
     using iterator_category = std::random_access_iterator_tag;
     using difference_type = size_t;
     using value_type = const array;
@@ -465,7 +466,7 @@ class array {
   template <typename It>
   void init(const It src);
 
-  struct ArrayDesc {
+  struct MLX_API ArrayDesc {
     Shape shape;
     Strides strides;
     size_t size;
@@ -489,10 +490,10 @@ class array {
     int64_t offset{0};
 
     // The size in elements of the data buffer the array accesses
-    size_t data_size;
+    size_t data_size{0};
 
     // Contains useful meta data about the array
-    Flags flags;
+    Flags flags{true, true, true};
 
     std::vector<array> inputs;
     // An array to keep track of the siblings from a multi-output
@@ -542,9 +543,10 @@ template <typename T>
 array::array(
     std::initializer_list<T> data,
     Dtype dtype /* = TypeToDtype<T>() */)
-    : array_desc_(std::make_shared<ArrayDesc>(
-          Shape{static_cast<ShapeElem>(data.size())},
-          dtype)) {
+    : array_desc_(
+          std::make_shared<ArrayDesc>(
+              Shape{static_cast<ShapeElem>(data.size())},
+              dtype)) {
   init(data.begin());
 }
 

@@ -10,6 +10,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+// Complex number support
+#ifdef _MSC_VER
+#define _CRT_USE_C_COMPLEX_H
+#include <complex.h>
+typedef _Fcomplex mlx_complex64_t;
+#else
+#include <complex.h>
+typedef float _Complex mlx_complex64_t;
+#endif
+
 #include "half.h"
 
 #ifdef __cplusplus
@@ -113,6 +123,37 @@ mlx_array mlx_array_new_data(
     const int* shape,
     int dim,
     mlx_dtype dtype);
+/**
+ * New array from existing buffer.
+ * @param data A buffer which will be copied.
+ * @param shape Shape of the array.
+ * @param dim Number of dimensions (size of `shape`).
+ * @param dtype Type of array elements.
+ * @param dtor Callback for when the buffer is no longer needed.
+ */
+mlx_array mlx_array_new_data_managed(
+    void* data,
+    const int* shape,
+    int dim,
+    mlx_dtype dtype,
+    void (*dtor)(void*));
+/**
+ * New array from existing buffer.
+ * @param data A buffer which will be copied.
+ * @param shape Shape of the array.
+ * @param dim Number of dimensions (size of `shape`).
+ * @param dtype Type of array elements.
+ * @param payload Payload pointer passed to the `dtor` callback instead of
+ * `data`.
+ * @param dtor Callback for when the buffer is no longer needed.
+ */
+mlx_array mlx_array_new_data_managed_payload(
+    void* data,
+    const int* shape,
+    int dim,
+    mlx_dtype dtype,
+    void* payload,
+    void (*dtor)(void*));
 /**
  * Set array to provided src array.
  */
@@ -247,7 +288,7 @@ int mlx_array_item_float64(double* res, const mlx_array arr);
 /**
  * Access the value of a scalar array.
  */
-int mlx_array_item_complex64(float _Complex* res, const mlx_array arr);
+int mlx_array_item_complex64(mlx_complex64_t* res, const mlx_array arr);
 
 #ifdef HAS_FLOAT16
 /**
@@ -322,7 +363,7 @@ const double* mlx_array_data_float64(const mlx_array arr);
  * Returns a pointer to the array data, cast to `_Complex*`.
  * Array must be evaluated, otherwise returns NULL.
  */
-const float _Complex* mlx_array_data_complex64(const mlx_array arr);
+const mlx_complex64_t* mlx_array_data_complex64(const mlx_array arr);
 
 #ifdef HAS_FLOAT16
 /**
