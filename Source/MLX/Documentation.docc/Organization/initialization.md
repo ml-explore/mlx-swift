@@ -155,12 +155,19 @@ let c = #mlx([[[0.1, 0.2], [0.3, 0.4]]], dtype: .float16)
 
 This is especially convenient for small constants in model code and tests.
 The macro requires rectangular nested arrays and numeric literals.
+Mixed numeric literals are promoted to floating-point behavior: if any element is a
+floating-point literal, the entire literal is treated as floating-point.
 
 When `dtype` is a known integer dtype (for example `.int16`, `.int64`, `.uint8`) or `.float32`,
 the expansion emits typed Swift literals directly and avoids a trailing `.asType(...)` cast.
 For dynamic dtype expressions, or dtypes that do not map cleanly to a Swift literal type
 (for example `.float16`, `.bfloat16`, `.complex64`), the macro emits a base array and applies
 `.asType(...)`.
+
+```swift
+// promoted to floating-point because of 2.5
+let mixed = #mlx([[1, 2.5], [3, 4]])
+```
 
 ### Random Value Arrays
 

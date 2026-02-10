@@ -100,6 +100,14 @@ final class MLXLiteralMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsSingleFloatElementAsFloatLiteral() {
+        assertMacroExpansion(
+            "#mlx([[1, 2], [3, 4.5]])",
+            expandedSource: "MLXArray(converting: [1, 2, 3, 4.5], [2, 2])",
+            macros: testMacros
+        )
+    }
+
     func testExpandsDeepLiteralWithFloat16Dtype() {
         assertMacroExpansion(
             "#mlx([[[1, 2], [3, 4]]], dtype: .float16)",
