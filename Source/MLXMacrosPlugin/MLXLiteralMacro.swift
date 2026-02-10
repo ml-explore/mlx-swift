@@ -28,10 +28,11 @@ private struct MacroError: Error {}
 private struct MacroMessage: DiagnosticMessage {
     let message: String
     let diagnosticID: MessageID
-    let severity: DiagnosticSeverity = .error
+    let severity: DiagnosticSeverity
 
-    init(_ message: String) {
+    init(_ message: String, severity: DiagnosticSeverity = .error) {
         self.message = message
+        self.severity = severity
         self.diagnosticID = MessageID(domain: "MLXMacros", id: "mlx_literal")
     }
 }
@@ -100,10 +101,17 @@ public struct MLXLiteralMacro: ExpressionMacro {
             }
 
         if let dtypeExpr {
-            if let knownDType = parseKnownDType(dtypeExpr),
-                let typedExpr = makeTypedExpression(parsed: parsed, dtype: knownDType)
-            {
-                return typedExpr
+            if let knownDType = parseKnownDType(dtypeExpr) {
+                if isIntegerDType(knownDType), let floatExpr = parsed.flat.first(where: isFloat) {
+                    diagnose(
+                        "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
+                        at: Syntax(floatExpr),
+                        severity: .warning,
+                        in: context)
+                }
+                if let typedExpr = makeTypedExpression(parsed: parsed, dtype: knownDType) {
+                    return typedExpr
+                }
             }
             return "\(baseExpr).asType(\(dtypeExpr))"
         } else {
@@ -163,6 +171,15 @@ public struct MLXLiteralMacro: ExpressionMacro {
 
     private static func wrap(_ values: [ExprSyntax], with typeName: String) -> String {
         values.map { "\(typeName)(\($0))" }.joined(separator: ", ")
+    }
+
+    private static func isIntegerDType(_ dtype: KnownDType) -> Bool {
+        switch dtype {
+        case .uint8, .uint16, .uint32, .uint64, .int8, .int16, .int32, .int64:
+            return true
+        default:
+            return false
+        }
     }
 
     private static func parseLiteral(
@@ -229,8 +246,11 @@ public struct MLXLiteralMacro: ExpressionMacro {
     }
 
     private static func diagnose(
-        _ message: String, at node: Syntax, in context: some MacroExpansionContext
+        _ message: String,
+        at node: Syntax,
+        severity: DiagnosticSeverity = .error,
+        in context: some MacroExpansionContext
     ) {
-        context.diagnose(Diagnostic(node: node, message: MacroMessage(message)))
+        context.diagnose(Diagnostic(node: node, message: MacroMessage(message, severity: severity)))
     }
 }

@@ -120,6 +120,30 @@ final class MLXLiteralMacroTests: XCTestCase {
         assertMacroExpansion(
             "#mlx([[1.25, 2], [3.5, 4]], dtype: .int8)",
             expandedSource: "MLXArray(converting: [1.25, 2, 3.5, 4], [2, 2]).asType(.int8)",
+            diagnostics: [
+                DiagnosticSpec(
+                    message:
+                        "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
+                    line: 1,
+                    column: 8,
+                    severity: .warning)
+            ],
+            macros: testMacros
+        )
+    }
+
+    func testWarnsOnIntegerDtypeWithFloatLiteral() {
+        assertMacroExpansion(
+            "#mlx([[1, 2.5], [3, 4]], dtype: .int16)",
+            expandedSource: "MLXArray(converting: [1, 2.5, 3, 4], [2, 2]).asType(.int16)",
+            diagnostics: [
+                DiagnosticSpec(
+                    message:
+                        "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
+                    line: 1,
+                    column: 11,
+                    severity: .warning)
+            ],
             macros: testMacros
         )
     }
