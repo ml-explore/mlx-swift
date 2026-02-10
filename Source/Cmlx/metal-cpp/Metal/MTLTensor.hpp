@@ -134,7 +134,7 @@ public:
 
 }
 
-_MTL_PRIVATE_DEF_CONST(NS::ErrorDomain, TensorDomain);
+_MTL_PRIVATE_DEF_WEAK_CONST(NS::ErrorDomain, TensorDomain);
 
 _MTL_INLINE MTL::TensorExtents* MTL::TensorExtents::alloc()
 {
