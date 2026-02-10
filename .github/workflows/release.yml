@@ -26,6 +26,11 @@ jobs:
         shell: bash
         run: xcodebuild -showComponent MetalToolchain
 
+      - name: Setup gh
+        shell: sh
+        run: |
+          brew install gh
+
       - name: Build XCFrameworks
         shell: bash
         env:
