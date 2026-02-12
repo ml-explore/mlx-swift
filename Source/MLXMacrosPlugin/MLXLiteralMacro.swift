@@ -70,7 +70,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
     ) throws -> ExprSyntax {
         let args = Array(node.arguments)
         guard let literalArg = args.first else {
-            diagnose("#mlx requires a nested numeric array literal.", at: Syntax(node), in: context)
+            diagnose("#MLXArray requires a nested numeric array literal.", at: Syntax(node), in: context)
             return "MLXArray([])"
         }
 
@@ -80,14 +80,14 @@ public struct MLXLiteralMacro: ExpressionMacro {
         } else if args.count == 2 {
             guard args[1].label?.text == "dtype" else {
                 diagnose(
-                    "#mlx second argument must be labeled 'dtype:'.",
+                    "#MLXArray second argument must be labeled 'dtype:'.",
                     at: Syntax(args[1]), in: context)
                 return "MLXArray([])"
             }
             dtypeExpr = args[1].expression
         } else {
             diagnose(
-                "#mlx accepts one literal argument and optional dtype:.", at: Syntax(node),
+                "#MLXArray accepts one literal argument and optional dtype:.", at: Syntax(node),
                 in: context)
             return "MLXArray([])"
         }
@@ -127,7 +127,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
                             guard let value = integerLiteralValue(element), value == 0 || value == 1
                             else {
                                 diagnose(
-                                    "#mlx dtype .bool only supports integer literals 0 or 1.",
+                                    "#MLXArray dtype .bool only supports integer literals 0 or 1.",
                                     at: Syntax(element),
                                     in: context)
                                 return "MLXArray([])"
@@ -138,7 +138,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
                         return "MLXArray([\(raw: boolSource)], [\(raw: shapeSource)])"
                     case .float:
                         diagnose(
-                            "#mlx dtype .bool only supports true/false literals or integer 0/1.",
+                            "#MLXArray dtype .bool only supports true/false literals or integer 0/1.",
                             at: Syntax(dtypeExpr),
                             in: context)
                         return "MLXArray([])"
@@ -149,7 +149,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
                 // since runtime conversion may truncate.
                 if isIntegerDType(knownDType), let floatExpr = parsed.flat.first(where: isFloat) {
                     diagnose(
-                        "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
+                        "#MLXArray integer dtype with floating-point literal(s) may truncate values during conversion.",
                         at: Syntax(floatExpr),
                         severity: .warning,
                         in: context)
@@ -254,7 +254,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
                 // MLXArray construction here assumes rectangular nested literals.
                 // Ragged arrays are rejected early with a macro diagnostic.
                 diagnose(
-                    "#mlx does not support ragged nested arrays.", at: Syntax(expr), in: context)
+                    "#MLXArray does not support ragged nested arrays.", at: Syntax(expr), in: context)
                 throw MacroError()
             }
 
@@ -268,7 +268,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
                     })
             else {
                 diagnose(
-                    "#mlx does not support mixing boolean and numeric literals in the same array.",
+                    "#MLXArray does not support mixing boolean and numeric literals in the same array.",
                     at: Syntax(expr),
                     in: context)
                 throw MacroError()
@@ -289,7 +289,7 @@ public struct MLXLiteralMacro: ExpressionMacro {
         }
 
         diagnose(
-            "#mlx only supports boolean, integer, and floating-point literals.", at: Syntax(expr),
+            "#MLXArray only supports boolean, integer, and floating-point literals.", at: Syntax(expr),
             in: context
         )
         throw MacroError()

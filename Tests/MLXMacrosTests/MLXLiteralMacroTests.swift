@@ -7,13 +7,13 @@ import XCTest
 @testable import MLXMacrosPlugin
 
 private let testMacros: [String: Macro.Type] = [
-    "mlx": MLXLiteralMacro.self
+    "MLXArray": MLXLiteralMacro.self,
 ]
 
 final class MLXLiteralMacroTests: XCTestCase {
     func testExpandsIntegerLiteral() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4]])",
+            "#MLXArray([[1, 2], [3, 4]])",
             expandedSource: "MLXArray([1, 2, 3, 4], [2, 2])",
             macros: testMacros
         )
@@ -21,7 +21,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsFloatLiteral() {
         assertMacroExpansion(
-            "#mlx([[0.1, 0.2], [0.3, 0.4]])",
+            "#MLXArray([[0.1, 0.2], [0.3, 0.4]])",
             expandedSource: "MLXArray(converting: [0.1, 0.2, 0.3, 0.4], [2, 2])",
             macros: testMacros
         )
@@ -29,7 +29,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsBooleanLiteral() {
         assertMacroExpansion(
-            "#mlx([[true, false], [false, true]])",
+            "#MLXArray([[true, false], [false, true]])",
             expandedSource: "MLXArray([true, false, false, true], [2, 2])",
             macros: testMacros
         )
@@ -37,7 +37,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsWithDtypeCast() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4]], dtype: .int16)",
+            "#MLXArray([[1, 2], [3, 4]], dtype: .int16)",
             expandedSource: "MLXArray([Int16(1), Int16(2), Int16(3), Int16(4)], [2, 2])",
             macros: testMacros
         )
@@ -45,7 +45,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsIntegerLiteralWithInt64Dtype() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4]], dtype: .int64)",
+            "#MLXArray([[1, 2], [3, 4]], dtype: .int64)",
             expandedSource: "MLXArray([Int64(1), Int64(2), Int64(3), Int64(4)], [2, 2])",
             macros: testMacros
         )
@@ -53,7 +53,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsIntegerLiteralWithUInt8Dtype() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4]], dtype: .uint8)",
+            "#MLXArray([[1, 2], [3, 4]], dtype: .uint8)",
             expandedSource: "MLXArray([UInt8(1), UInt8(2), UInt8(3), UInt8(4)], [2, 2])",
             macros: testMacros
         )
@@ -61,7 +61,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsIntegerLiteralWithFloat32Dtype() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4]], dtype: .float32)",
+            "#MLXArray([[1, 2], [3, 4]], dtype: .float32)",
             expandedSource: "MLXArray([Float(1), Float(2), Float(3), Float(4)], [2, 2])",
             macros: testMacros
         )
@@ -69,7 +69,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testFallsBackToAsTypeForFloat64Dtype() {
         assertMacroExpansion(
-            "#mlx([[1.0, 2.0], [3.0, 4.0]], dtype: .float64)",
+            "#MLXArray([[1.0, 2.0], [3.0, 4.0]], dtype: .float64)",
             expandedSource: "MLXArray(converting: [1.0, 2.0, 3.0, 4.0], [2, 2]).asType(.float64)",
             macros: testMacros
         )
@@ -77,7 +77,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsBoolDtypeFromZeroOneLiterals() {
         assertMacroExpansion(
-            "#mlx([[0, 1], [1, 0]], dtype: .bool)",
+            "#MLXArray([[0, 1], [1, 0]], dtype: .bool)",
             expandedSource: "MLXArray([false, true, true, false], [2, 2])",
             macros: testMacros
         )
@@ -85,7 +85,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testFallsBackToAsTypeForDynamicDtypeExpression() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4]], dtype: dtypeValue)",
+            "#MLXArray([[1, 2], [3, 4]], dtype: dtypeValue)",
             expandedSource: "MLXArray([1, 2, 3, 4], [2, 2]).asType(dtypeValue)",
             macros: testMacros
         )
@@ -93,7 +93,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsThreeDimensionalIntegerLiteral() {
         assertMacroExpansion(
-            "#mlx([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])",
+            "#MLXArray([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])",
             expandedSource: "MLXArray([1, 2, 3, 4, 5, 6, 7, 8], [2, 2, 2])",
             macros: testMacros
         )
@@ -101,7 +101,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsFourDimensionalFloatLiteral() {
         assertMacroExpansion(
-            "#mlx([[[[0.1, 0.2]], [[0.3, 0.4]]], [[[0.5, 0.6]], [[0.7, 0.8]]]])",
+            "#MLXArray([[[[0.1, 0.2]], [[0.3, 0.4]]], [[[0.5, 0.6]], [[0.7, 0.8]]]])",
             expandedSource:
                 "MLXArray(converting: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8], [2, 2, 1, 2])",
             macros: testMacros
@@ -110,7 +110,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsMixedIntegerFloatLiteralAsFloat() {
         assertMacroExpansion(
-            "#mlx([[1, 2.5], [3, 4.5]])",
+            "#MLXArray([[1, 2.5], [3, 4.5]])",
             expandedSource: "MLXArray(converting: [1, 2.5, 3, 4.5], [2, 2])",
             macros: testMacros
         )
@@ -118,7 +118,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsSingleFloatElementAsFloatLiteral() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3, 4.5]])",
+            "#MLXArray([[1, 2], [3, 4.5]])",
             expandedSource: "MLXArray(converting: [1, 2, 3, 4.5], [2, 2])",
             macros: testMacros
         )
@@ -126,7 +126,7 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsDeepLiteralWithFloat16Dtype() {
         assertMacroExpansion(
-            "#mlx([[[1, 2], [3, 4]]], dtype: .float16)",
+            "#MLXArray([[[1, 2], [3, 4]]], dtype: .float16)",
             expandedSource: "MLXArray([1, 2, 3, 4], [1, 2, 2]).asType(.float16)",
             macros: testMacros
         )
@@ -134,14 +134,14 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testExpandsMixedLiteralWithInt8Dtype() {
         assertMacroExpansion(
-            "#mlx([[1.25, 2], [3.5, 4]], dtype: .int8)",
+            "#MLXArray([[1.25, 2], [3.5, 4]], dtype: .int8)",
             expandedSource: "MLXArray(converting: [1.25, 2, 3.5, 4], [2, 2]).asType(.int8)",
             diagnostics: [
                 DiagnosticSpec(
                     message:
-                        "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
+                        "#MLXArray integer dtype with floating-point literal(s) may truncate values during conversion.",
                     line: 1,
-                    column: 8,
+                    column: 13,
                     severity: .warning)
             ],
             macros: testMacros
@@ -150,14 +150,14 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testWarnsOnIntegerDtypeWithFloatLiteral() {
         assertMacroExpansion(
-            "#mlx([[1, 2.5], [3, 4]], dtype: .int16)",
+            "#MLXArray([[1, 2.5], [3, 4]], dtype: .int16)",
             expandedSource: "MLXArray(converting: [1, 2.5, 3, 4], [2, 2]).asType(.int16)",
             diagnostics: [
                 DiagnosticSpec(
                     message:
-                        "#mlx integer dtype with floating-point literal(s) may truncate values during conversion.",
+                        "#MLXArray integer dtype with floating-point literal(s) may truncate values during conversion.",
                     line: 1,
-                    column: 11,
+                    column: 16,
                     severity: .warning)
             ],
             macros: testMacros
@@ -166,13 +166,13 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testRejectsBoolDtypeWithOutOfRangeIntegerLiterals() {
         assertMacroExpansion(
-            "#mlx([[0, 2], [1, 0]], dtype: .bool)",
+            "#MLXArray([[0, 2], [1, 0]], dtype: .bool)",
             expandedSource: "MLXArray([])",
             diagnostics: [
                 DiagnosticSpec(
-                    message: "#mlx dtype .bool only supports integer literals 0 or 1.",
+                    message: "#MLXArray dtype .bool only supports integer literals 0 or 1.",
                     line: 1,
-                    column: 11)
+                    column: 16)
             ],
             macros: testMacros
         )
@@ -180,13 +180,13 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testRejectsBoolDtypeWithFloatLiterals() {
         assertMacroExpansion(
-            "#mlx([[0.0, 1.0]], dtype: .bool)",
+            "#MLXArray([[0.0, 1.0]], dtype: .bool)",
             expandedSource: "MLXArray([])",
             diagnostics: [
                 DiagnosticSpec(
-                    message: "#mlx dtype .bool only supports true/false literals or integer 0/1.",
+                    message: "#MLXArray dtype .bool only supports true/false literals or integer 0/1.",
                     line: 1,
-                    column: 27)
+                    column: 32)
             ],
             macros: testMacros
         )
@@ -194,11 +194,11 @@ final class MLXLiteralMacroTests: XCTestCase {
 
     func testRaggedLiteralDiagnostics() {
         assertMacroExpansion(
-            "#mlx([[1, 2], [3]])",
+            "#MLXArray([[1, 2], [3]])",
             expandedSource: "MLXArray([])",
             diagnostics: [
                 DiagnosticSpec(
-                    message: "#mlx does not support ragged nested arrays.", line: 1, column: 6)
+                    message: "#MLXArray does not support ragged nested arrays.", line: 1, column: 11)
             ],
             macros: testMacros
         )
