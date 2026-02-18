@@ -336,7 +336,7 @@ let package = Package(
             sources: ["CustomFunctionExampleSimple.swift"]
         ),
     ],
-    cxxLanguageStandard: .gnucxx17
+    cxxLanguageStandard: .gnucxx20
 )
 
 if Context.environment["MLX_SWIFT_BUILD_DOC"] == "1"
