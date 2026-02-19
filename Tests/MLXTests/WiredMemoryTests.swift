@@ -525,6 +525,68 @@ final class WiredMemoryTests: XCTestCase {
         }
     }
 
+    /// Cancelling a task while `withWiredLimit` is running must not double-end the ticket.
+    func testWithWiredLimitCancellationDoesNotDoubleEnd() async throws {
+        try await Device.withDefaultDevice(.cpu) {
+            let manager = WiredMemoryManager.makeForTesting(
+                configuration: .init(
+                    policyOnlyWhenUnsupported: true,
+                    baselineOverride: 1024,
+                    useRecommendedWorkingSetWhenUnsupported: false
+                )
+            )
+            let policy = SumPolicy()
+            let ticket = WiredMemoryTicket(
+                size: 64 * mib,
+                policy: policy,
+                manager: manager,
+                kind: .active
+            )
+
+            let stream = await manager.events()
+
+            // Signal so the body can indicate it has started.
+            let bodyStarted = AsyncStream<Void>.makeStream()
+
+            let task = Task {
+                try await WiredMemoryTicket.withWiredLimit(ticket) {
+                    bodyStarted.continuation.yield()
+                    // Keep the body alive long enough for cancellation to race.
+                    try await Task.sleep(nanoseconds: 5_000_000_000)
+                }
+            }
+
+            // Wait for the body to begin, then cancel.
+            for await _ in bodyStarted.stream { break }
+            task.cancel()
+
+            // Let the cancellation and body settle.
+            _ = try? await task.value
+
+            // Collect events — look for at most one ticketEnded and no assertionFailure (crash).
+            let events = try await Self.collectEvents(stream: stream) { event in
+                event.kind == .ticketEnded || event.kind == .ticketEndIgnored
+            }
+
+            let endedCount = events.filter { $0.kind == .ticketEnded }.count
+            let ignoredCount = events.filter { $0.kind == .ticketEndIgnored }.count
+
+            // Exactly one end should have occurred; no double-end.
+            XCTAssertEqual(endedCount, 1, "Expected exactly one ticketEnded event.")
+            XCTAssertEqual(ignoredCount, 0, "Expected no ticketEndIgnored (double-end) events.")
+
+            // Verify the ticket is no longer active by starting a fresh ticket on the same manager.
+            let ticket2 = WiredMemoryTicket(
+                size: 32 * mib,
+                policy: policy,
+                manager: manager,
+                kind: .active
+            )
+            _ = await ticket2.start()
+            _ = await ticket2.end()
+        }
+    }
+
     /// Collects events from a stream until a predicate matches or a timeout fires.
     private static func collectEvents(
         stream: AsyncStream<WiredMemoryEvent>,
