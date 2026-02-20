@@ -75,17 +75,30 @@ echo "==> Merging static libraries"
 
 LIBS=()
 
-# libmlxc.a from the install tree.
+# All static libraries from the install tree (libmlxc.a and possibly libmlx.a
+# if MLX's own install rules ran).
 for dir in lib lib64; do
-  if [ -f "$INSTALL_DIR/$dir/libmlxc.a" ]; then
-    LIBS+=("$INSTALL_DIR/$dir/libmlxc.a")
-    break
+  if [ -d "$INSTALL_DIR/$dir" ]; then
+    while IFS= read -r -d '' f; do
+      LIBS+=("$f")
+    done < <(find "$INSTALL_DIR/$dir" -maxdepth 1 -name "lib*.a" -print0 2>/dev/null)
   fi
 done
 
 # All static libraries built by FetchContent dependencies (libmlx.a, etc.).
+# Skip any that were already collected from the install tree.
 while IFS= read -r -d '' f; do
-  LIBS+=("$f")
+  basename_f="$(basename "$f")"
+  already=false
+  for l in "${LIBS[@]}"; do
+    if [ "$(basename "$l")" = "$basename_f" ]; then
+      already=true
+      break
+    fi
+  done
+  if ! $already; then
+    LIBS+=("$f")
+  fi
 done < <(find "$BUILD_DIR/_deps" -name "lib*.a" -print0 2>/dev/null)
 
 if [ ${#LIBS[@]} -eq 0 ]; then
@@ -106,8 +119,15 @@ for i in "${!LIBS[@]}"; do
 done
 
 mkdir -p "$OUTPUT_DIR/lib"
+
+# Use ld -r (relocatable link) to merge all object files into a single
+# object. This is critical because ld.gold (used by Swift on Linux) does a
+# single pass through archive members. With hundreds of cross-referencing
+# objects the pass cannot resolve every symbol. A single merged .o guarantees
+# that pulling in any symbol pulls in everything.
 find "$MERGE" \( -name '*.o' -o -name '*.obj' \) -print0 \
-  | xargs -0 ar rcs "$OUTPUT_DIR/lib/libCmlx.a"
+  | xargs -0 ld -r -o "$MERGE/merged.o"
+ar rcs "$OUTPUT_DIR/lib/libCmlx.a" "$MERGE/merged.o"
 ranlib "$OUTPUT_DIR/lib/libCmlx.a"
 
 # ---------------------------------------------------------------------------
