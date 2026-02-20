@@ -82,6 +82,14 @@ jobs:
             mkdir -p "$dest"
             cp -r "staging/$arch/lib"     "$dest/"
             cp -r "staging/$arch/include" "$dest/"
+
+            # Generate module map
+            cat > "$dest/include/module.modulemap" << 'MODULEMAP'
+          module Cmlx {
+            header "mlx/c/mlx.h"
+            export *
+          }
+          MODULEMAP
           done
 
           cat > "$BUNDLE/info.json" << 'INFOJSON'
@@ -96,16 +104,16 @@ jobs:
                     "path": "Cmlx/linux-x86_64/lib/libCmlx.a",
                     "supportedTriples": ["x86_64-unknown-linux-gnu"],
                     "staticLibraryMetadata": {
-                        "headerPaths": ["Cmlx/include"],
-                        "moduleMapPath": "Cmlx/include/module.modulemap"
+                        "headerPaths": ["Cmlx/linux-x86_64/include"],
+                        "moduleMapPath": "Cmlx/linux-x86_64/include/module.modulemap"
                     }
                   },
                   {
                     "path": "Cmlx/linux-aarch64/lib/libCmlx.a",
                     "supportedTriples": ["aarch64-unknown-linux-gnu"],
                     "staticLibraryMetadata": {
-                        "headerPaths": ["Cmlx/include"],
-                        "moduleMapPath": "Cmlx/include/module.modulemap"
+                        "headerPaths": ["Cmlx/linux-aarch64/include"],
+                        "moduleMapPath": "Cmlx/linux-aarch64/include/module.modulemap"
                     }
                   }
                 ]
