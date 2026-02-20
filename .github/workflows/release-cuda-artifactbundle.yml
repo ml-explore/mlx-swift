@@ -1,0 +1,118 @@
+name: Release CUDA Artifact Bundle
+
+on:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to upload assets to (leave empty for dry run)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build CUDA static lib (${{ matrix.arch }})
+    if: github.repository == 'ml-explore/mlx-swift'
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: x86_64
+            runner: gpu-t4-4-core
+          - arch: aarch64
+            runner: gpu-arm64-4-core
+    runs-on: ${{ matrix.runner }}
+    env:
+      TOOLKIT_VERSION: "cuda-12.9"
+      SWIFT_VERSION: "swift-6.2.3-RELEASE"
+      SWIFT_SIGNING_KEY: "52BB7E3DE28A71BE22EC05FFEF80A866B47A981F"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup CUDA and Swift
+        run: bash .github/scripts/setup-linux-cuda.sh
+
+      - name: Build static library
+        run: bash .github/scripts/build-cuda-static.sh
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuda-${{ matrix.arch }}
+          path: build/output/${{ matrix.arch }}/
+
+  package:
+    name: Package artifact bundle
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download x86_64 build
+        uses: actions/download-artifact@v4
+        with:
+          name: cuda-x86_64
+          path: staging/x86_64/
+
+      - name: Download aarch64 build
+        uses: actions/download-artifact@v4
+        with:
+          name: cuda-aarch64
+          path: staging/aarch64/
+
+      - name: Assemble artifact bundle
+        run: |
+          set -euo pipefail
+          BUNDLE="Cmlx.artifactbundle"
+          mkdir -p "$BUNDLE/Cmlx"
+
+          for arch in x86_64 aarch64; do
+            dest="$BUNDLE/Cmlx/linux-$arch"
+            mkdir -p "$dest"
+            cp -r "staging/$arch/lib"     "$dest/"
+            cp -r "staging/$arch/include" "$dest/"
+          done
+
+          cat > "$BUNDLE/info.json" << 'INFOJSON'
+          {
+            "schemaVersion": "1.0",
+            "artifacts": {
+              "Cmlx": {
+                "version": "0.5.0",
+                "type": "staticLibrary",
+                "variants": [
+                  {
+                    "path": "Cmlx/linux-x86_64",
+                    "supportedTriples": ["x86_64-unknown-linux-gnu"]
+                  },
+                  {
+                    "path": "Cmlx/linux-aarch64",
+                    "supportedTriples": ["aarch64-unknown-linux-gnu"]
+                  }
+                ]
+              }
+            }
+          }
+          INFOJSON
+
+          zip -r -y Cmlx.artifactbundle.zip "$BUNDLE"
+          echo "==> Created Cmlx.artifactbundle.zip ($(du -sh Cmlx.artifactbundle.zip | cut -f1))"
+
+      - name: Upload artifact bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cmlx-cuda-artifactbundle
+          path: Cmlx.artifactbundle.zip
+
+      - name: Upload to release
+        if: github.event.release.tag_name || inputs.tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name || inputs.tag }}" \
+            Cmlx.artifactbundle.zip
