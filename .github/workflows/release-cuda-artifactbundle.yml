@@ -22,9 +22,9 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: gpu-t4-4-core
+            runner: ubuntu-24.04
           - arch: aarch64
-            runner: gpu-arm64-4-core
+            runner: ubuntu-24.04-arm
     runs-on: ${{ matrix.runner }}
     env:
       TOOLKIT_VERSION: "cuda-12.9"
