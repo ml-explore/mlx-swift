@@ -21,6 +21,12 @@ import PackageDescription
         .linkedLibrary("blas"),
         .linkedLibrary("lapack"),
         .linkedLibrary("openblas"),
+        .linkedLibrary("cudart"),
+        .linkedLibrary("cuda"),
+        .linkedLibrary("cudann"),
+        .linkedLibrary("cublas"),
+        .linkedLibrary("cublasLt"),
+        .linkedLibrary("nvrtc"),
     ]
 #else
     let platformExcludes: [String] = [
