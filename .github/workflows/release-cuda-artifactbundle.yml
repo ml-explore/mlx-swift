@@ -93,12 +93,20 @@ jobs:
                 "type": "staticLibrary",
                 "variants": [
                   {
-                    "path": "Cmlx/linux-x86_64",
-                    "supportedTriples": ["x86_64-unknown-linux-gnu"]
+                    "path": "Cmlx/linux-x86_64/lib/libCmlx.a",
+                    "supportedTriples": ["x86_64-unknown-linux-gnu"],
+                    "staticLibraryMetadata": {
+                        "headerPaths": ["Cmlx/include"],
+                        "moduleMapPath": "Cmlx/include/module.modulemap"
+                    }
                   },
                   {
-                    "path": "Cmlx/linux-aarch64",
-                    "supportedTriples": ["aarch64-unknown-linux-gnu"]
+                    "path": "Cmlx/linux-aarch64/lib/libCmlx.a",
+                    "supportedTriples": ["aarch64-unknown-linux-gnu"],
+                    "staticLibraryMetadata": {
+                        "headerPaths": ["Cmlx/include"],
+                        "moduleMapPath": "Cmlx/include/module.modulemap"
+                    }
                   }
                 ]
               }
@@ -119,7 +127,7 @@ jobs:
       - name: Upload artifact bundle
         uses: actions/upload-artifact@v4
         with:
-          name: Cmlx-cuda-artifactbundle
+          name: Cmlx.artifactbundle.zip
           path: Cmlx.artifactbundle.zip
 
       - name: Upload to release
