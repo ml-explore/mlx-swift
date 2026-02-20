@@ -7,13 +7,13 @@ import PackageDescription
 #if os(Linux)
     let cmlx: Target = .binaryTarget(
         name: "Cmlx",
-        url: "https://github.com/Joannis/mlx-swift/actions/runs/22228037323/artifacts/5592287500",
+        url: "https://github.com/Joannis/mlx-swift/releases/download/0.30.6/Cmlx-cuda.artifactbundle.zip",
         checksum: "29cc6ddf07fe79e7c56c216380362434aab68271489611dfa91c9feacfafbbfc"
     )
     let mlxSwiftExcludes: [String] = [
         "GPU+Metal.swift",
         "MLXArray+Metal.swift",
-        "MLXFast.swift",
+        "MLXFast+GPU.swift",
         "MLXFastKernel.swift",
     ]
     let mlxLinkerSettings: [LinkerSetting] = [
@@ -35,6 +35,8 @@ import PackageDescription
         "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
         "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
     ]
+
+    let mlxLinkerSettings: [LinkerSetting] = []
 
     let cxxSettings: [CXXSetting] = [
         .headerSearchPath("metal-cpp"),
@@ -162,8 +164,9 @@ import PackageDescription
         ]
     )
 
-    let mlxSwiftExcludes: [String] = []
-    let mlxLinkerSettings: [LinkerSetting] = []
+    let mlxSwiftExcludes: [String] = [
+        "MLXFast+CPU.swift"
+    ]
 #endif
 
 let package = Package(
@@ -188,7 +191,8 @@ let package = Package(
     ],
     dependencies: [
         // for Complex type
-        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-container-plugin", from: "1.0.0"),
     ],
     targets: [
         cmlx,
