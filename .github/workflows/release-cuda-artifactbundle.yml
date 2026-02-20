@@ -22,9 +22,9 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: ubuntu-24.04
+            runner: ubuntu-24.04-2xlarge
           - arch: aarch64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-24.04-arm-2xlarge
     runs-on: ${{ matrix.runner }}
     env:
       TOOLKIT_VERSION: "cuda-12.9"
@@ -51,7 +51,14 @@ jobs:
     name: Package artifact bundle
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve-tag.outputs.tag }}
+      sha256: ${{ steps.checksum.outputs.sha256 }}
     steps:
+      - name: Resolve tag
+        id: resolve-tag
+        run: echo "tag=${{ github.event.release.tag_name || inputs.tag }}" >> "$GITHUB_OUTPUT"
+
       - name: Download x86_64 build
         uses: actions/download-artifact@v4
         with:
@@ -102,6 +109,13 @@ jobs:
           zip -r -y Cmlx.artifactbundle.zip "$BUNDLE"
           echo "==> Created Cmlx.artifactbundle.zip ($(du -sh Cmlx.artifactbundle.zip | cut -f1))"
 
+      - name: Compute SHA256 checksum
+        id: checksum
+        run: |
+          SHA256=$(sha256sum Cmlx.artifactbundle.zip | awk '{print $1}')
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "==> SHA256: $SHA256"
+
       - name: Upload artifact bundle
         uses: actions/upload-artifact@v4
         with:
@@ -115,3 +129,34 @@ jobs:
         run: |
           gh release upload "${{ github.event.release.tag_name || inputs.tag }}" \
             Cmlx.artifactbundle.zip
+
+  update-package-swift:
+    name: Update Package.swift with artifact URL and checksum
+    needs: package
+    if: needs.package.outputs.tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Update Package.swift
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.package.outputs.tag }}"
+          SHA="${{ needs.package.outputs.sha256 }}"
+          URL="https://github.com/ml-explore/mlx-swift/releases/download/${TAG}/Cmlx.artifactbundle.zip"
+
+          sed -i "s|url: \"https://github.com/ml-explore/mlx-swift/releases/download/[^\"]*Cmlx.artifactbundle.zip\"|url: \"${URL}\"|" Package.swift
+          sed -i "s|checksum: \"[a-f0-9]*\"|checksum: \"${SHA}\"|" Package.swift
+
+          echo "==> Updated Package.swift with tag=${TAG} checksum=${SHA}"
+          grep -A1 'url:.*Cmlx.artifactbundle.zip' Package.swift
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Package.swift
+          git commit -m "Update Cmlx CUDA artifact bundle to ${{ needs.package.outputs.tag }}"
+          git push origin main
