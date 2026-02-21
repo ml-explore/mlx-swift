@@ -8,7 +8,7 @@ import PackageDescription
     let cmlx: Target = .binaryTarget(
         name: "Cmlx",
         url: "https://github.com/Joannis/mlx-swift/releases/download/0.30.6/Cmlx.artifactbundle.zip",
-        checksum: "77228d9f92d24b496f5e3334518559034b415759dab1dfed64d7aa704c6350b6"
+        checksum: "5976ec3869b6b62f36d52bfdce96ce8cca2818b3d7550359e95da8930dc65a03"
     )
     let mlxSwiftExcludes: [String] = [
         "GPU+Metal.swift",
