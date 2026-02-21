@@ -13,11 +13,18 @@ if [[ "$(uname -s)" != "Linux" ]]; then
     exit 1
 fi
 export ARCH=$(uname -m)
-if [[ "$ARCH" != "x86_64" ]]; then
-    echo "Error: This script is intended for x86_64 arch only."
-    echo "Detected arch: $(uname -m)"
+case "$ARCH" in
+  x86_64)
+    CUDA_REPO_ARCH="x86_64"
+    ;;
+  aarch64)
+    CUDA_REPO_ARCH="sbsa"
+    ;;
+  *)
+    echo "Error: Unsupported architecture: $ARCH"
     exit 1
-fi
+    ;;
+esac
 ID=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 || true)
 VERSION_ID=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' || true)
 if [[ "$ID" != "ubuntu" || "$VERSION_ID" != "24.04" ]]; then
@@ -74,7 +81,7 @@ CUDA_TOOLKIT_PKG="cuda-toolkit-${TOOLKIT_VERSION#cuda-}"
 CUDNN_PKG="libcudnn9-dev-${CUDA_MAJOR_VERSION}"
 CUDA_PACKAGES="$CUDNN_PKG $CUDA_TOOLKIT_PKG"
 
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/$ARCH/cuda-keyring_1.1-1_all.deb
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/$CUDA_REPO_ARCH/cuda-keyring_1.1-1_all.deb
 sudo dpkg -i cuda-keyring_1.1-1_all.deb
 sudo apt-get update
 sudo apt-get install -y \
