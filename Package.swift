@@ -23,7 +23,7 @@ import PackageDescription
         .linkedLibrary("openblas"),
         .linkedLibrary("cudart"),
         .linkedLibrary("cuda"),
-        .linkedLibrary("cudann"),
+        .linkedLibrary("cudnn"),
         .linkedLibrary("cublas"),
         .linkedLibrary("cublasLt"),
         .linkedLibrary("nvrtc"),
