@@ -78,12 +78,11 @@ jobs:
           mkdir -p "$BUNDLE/Cmlx"
 
           for arch in x86_64 aarch64; do
-            dest="$BUNDLE/Cmlx/linux-$arch"
-            mkdir -p "$dest"
-            cp -r "staging/$arch/lib"     "$dest/"
-            cp -r "staging/$arch/include" "$dest/"
+            dest="$BUNDLE/Cmlx/$arch"
+            mkdir -p "$dest/lib" "$dest/include"
+            cp "staging/$arch/lib/libCmlx.a" "$dest/lib/"
+            cp -r "staging/$arch/include/"*  "$dest/include/"
 
-            # Generate module map
             cat > "$dest/include/module.modulemap" << 'MODULEMAP'
           module Cmlx {
             header "mlx/c/mlx.h"
@@ -101,19 +100,19 @@ jobs:
                 "type": "staticLibrary",
                 "variants": [
                   {
-                    "path": "Cmlx/linux-x86_64/lib/libCmlx.a",
+                    "path": "Cmlx/x86_64/lib/libCmlx.a",
                     "supportedTriples": ["x86_64-unknown-linux-gnu"],
                     "staticLibraryMetadata": {
-                        "headerPaths": ["Cmlx/linux-x86_64/include"],
-                        "moduleMapPath": "Cmlx/linux-x86_64/include/module.modulemap"
+                        "headerPaths": ["Cmlx/x86_64/include"],
+                        "moduleMapPath": "Cmlx/x86_64/include/module.modulemap"
                     }
                   },
                   {
-                    "path": "Cmlx/linux-aarch64/lib/libCmlx.a",
+                    "path": "Cmlx/aarch64/lib/libCmlx.a",
                     "supportedTriples": ["aarch64-unknown-linux-gnu"],
                     "staticLibraryMetadata": {
-                        "headerPaths": ["Cmlx/linux-aarch64/include"],
-                        "moduleMapPath": "Cmlx/linux-aarch64/include/module.modulemap"
+                        "headerPaths": ["Cmlx/aarch64/include"],
+                        "moduleMapPath": "Cmlx/aarch64/include/module.modulemap"
                     }
                   }
                 ]
