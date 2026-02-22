@@ -493,7 +493,7 @@ open class Module {
                 for (dictionaryKey, dictionaryItem) in dictionary {
                     let newKey = "\(key).\(dictionaryKey)"
                     let path = path + [dictionaryKey]
-                    if let valueItem = values[key] {
+                    if let valueItem = values[dictionaryKey] {
                         try apply(key: newKey, path: path, dictionaryItem, valueItem)
                     } else if verify.contains(.allModelKeysSet) {
                         try apply(key: newKey, path: path, dictionaryItem, .none)

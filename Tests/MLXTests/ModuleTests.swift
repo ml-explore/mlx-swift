@@ -619,6 +619,21 @@ class ModuleTests: XCTestCase {
             "In verify none mode, parameters can be updated with a different shape")
     }
 
+    func testDictionaryParameterUpdate() {
+        class Model: Module {
+            var layers: [String: Linear] = ["a": Linear(2, 2)]
+        }
+
+        let m = Model()
+        eval(m)
+
+        m.update(parameters: m.mapParameters { MLXArray.ones(like: $0) })
+
+        let weight = m.layers["a"]!.weight
+        eval(weight)
+        XCTAssertEqual(weight[0, 0].item(Float.self), 1.0)
+    }
+
     func testQuantize() throws {
         class C: Module {
             @ModuleInfo
