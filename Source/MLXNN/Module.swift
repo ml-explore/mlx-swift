@@ -1395,10 +1395,12 @@ public enum ModuleValue {
         get {
             // note: this gives a warning but it does in fact do something
             // in the case where this is e.g. ParameterInfo<MLXArray?>
-            if let value = value as? T {
+            if let value {
                 return value
             } else {
-                return value!
+                preconditionFailure(
+                    "`value` should have been set in init -- this is a bug in the property wrapper implementation"
+                )
             }
         }
         set {
