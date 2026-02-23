@@ -286,6 +286,22 @@ public struct WiredMemoryTicket: Sendable, Identifiable {
 }
 
 extension WiredMemoryTicket {
+    /// Guards against calling `end()` more than once when task cancellation
+    /// races with normal completion inside `withWiredLimit`.
+    private final class EndOnceGuard: @unchecked Sendable {
+        private var _ended = false
+        private let _lock = NSLock()
+
+        /// Returns `true` exactly once; all subsequent calls return `false`.
+        func tryMark() -> Bool {
+            _lock.lock()
+            defer { _lock.unlock() }
+            if _ended { return false }
+            _ended = true
+            return true
+        }
+    }
+
     /// Convenience wrapper that guarantees start/end pairing and is safe under
     /// cancellation. This is the recommended pattern for inference.
     public static func withWiredLimit<R>(
@@ -293,17 +309,20 @@ extension WiredMemoryTicket {
         _ body: () async throws -> R
     ) async rethrows -> R {
         _ = await ticket.start()
+        let guard_ = EndOnceGuard()
         return try await withTaskCancellationHandler {
             do {
                 let result = try await body()
-                _ = await ticket.end()
+                if guard_.tryMark() { _ = await ticket.end() }
                 return result
             } catch {
-                _ = await ticket.end()
+                if guard_.tryMark() { _ = await ticket.end() }
                 throw error
             }
         } onCancel: {
-            Task { _ = await ticket.end() }
+            Task {
+                if guard_.tryMark() { _ = await ticket.end() }
+            }
         }
     }
 
