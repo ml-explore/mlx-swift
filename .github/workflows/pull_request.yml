@@ -145,6 +145,42 @@ jobs:
           cmake .. -G Ninja
           ninja
 
+  linux_build_swiftpm:
+    name: Linux SwiftPM Build (${{ matrix.container }} ${{ matrix.arch }})
+    needs: lint
+    if: github.repository == 'ml-explore/mlx-swift'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - host: ubuntu-24.04
+            arch: x86_64
+            container: swift:6.2.3-noble
+          - host: ubuntu-24.04-arm
+            arch: aarch64
+            container: swift:6.2.3-noble
+    runs-on: ${{ matrix.host }}
+    container:
+      image: ${{ matrix.container }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          apt-get update -y
+          apt-get install -y \
+            build-essential \
+            libblas-dev \
+            liblapacke-dev \
+            libopenblas-dev \
+            libgfortran-13-dev
+
+      - name: Build (SwiftPM)
+        run: swift build --verbose
+
   linux_build_cmake_container:
     name: Linux Container CMake Swift Build (${{ matrix.container }} ${{ matrix.arch }})
     needs: lint
