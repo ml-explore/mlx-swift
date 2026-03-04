@@ -393,6 +393,23 @@ public func asStrided(
     return MLXArray(result)
 }
 
+/// Return the Blackman window.
+///
+/// The Blackman window is a taper formed by using the first three terms of a summation of cosines.
+///
+/// - Parameters:
+///   - m: number of points in the output window
+///   - stream: stream to evaluate on
+/// - Returns: The window, with the maximum value normalized to one (the value one appears only if
+///     the number of samples is odd).
+public func blackman(
+    _ m: Int, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_blackman(&result, Int32(m), stream.ctx)
+    return MLXArray(result)
+}
+
 /// Matrix multiplication with block masking.
 ///
 /// Perform the (possibly batched) matrix multiplication of two arrays and with blocks
@@ -1102,6 +1119,7 @@ public enum QuantizationMode: String, Codable, Sendable {
 ///   - groupSize: The size of each quantization group. Elements are quantized in groups of this size. Default is 64
 ///   - bits: The number of bits used per quantized element. Default is 4
 ///   - mode: The quantization mode used. Either `.affine` for standard affine quantization or `.mxfp4` for MXFP4 format. Default is `.affine`
+///   - globalScale: The per-input float32 scale used for  ``QuantizationMode/nvfp4``
 ///   - dtype: data type of the output.  If not specified it will be inferred from the scales and biases.
 ///   - stream: Stream or device to evaluate on
 ///
@@ -1109,8 +1127,11 @@ public enum QuantizationMode: String, Codable, Sendable {
 /// - ``quantized(_:groupSize:bits:mode:stream:)``
 /// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func dequantized(
-    _ w: MLXArray, scales: MLXArray, biases: MLXArray?, groupSize: Int? = nil, bits: Int? = nil,
-    mode: QuantizationMode = .affine, dtype: DType? = nil,
+    _ w: MLXArray,
+    scales: MLXArray, biases: MLXArray?,
+    groupSize: Int? = nil, bits: Int? = nil, mode: QuantizationMode = .affine,
+    globalScale: MLXArray? = nil,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
@@ -1118,9 +1139,9 @@ public func dequantized(
     let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
     let dtype = mlx_optional_dtype(value: dtype?.cmlxDtype ?? MLX_FLOAT16, has_value: dtype != nil)
     mlx_dequantize(
-        &result, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx,
-        gs, bits,
-        mode.rawValue,
+        &result, w.ctx,
+        scales.ctx, (biases ?? .mlxNone).ctx, gs, bits, mode.rawValue,
+        (globalScale ?? .mlxNone).ctx,
         dtype,
         stream.ctx)
     return MLXArray(result)
@@ -1527,6 +1548,40 @@ public func hadamardTransform(
     let scale = mlx_optional_float(value: scale ?? 0, has_value: scale != nil)
     var result = mlx_array_new()
     mlx_hadamard_transform(&result, array.ctx, scale, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Return the Hamming window.
+///
+/// The Hamming window is a taper formed by using a weighted cosine.
+///
+/// - Parameters:
+///   - m: number of points in the output window
+///   - stream: stream to evaluate on
+/// - Returns: The window, with the maximum value normalized to one (the value one appears only if
+///     the number of samples is odd).
+public func hamming(
+    _ m: Int, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_hamming(&result, Int32(m), stream.ctx)
+    return MLXArray(result)
+}
+
+/// Return the Hanning window.
+///
+/// The Hanning window is a taper formed by using a weighted cosine.
+///
+/// - Parameters:
+///   - m: number of points in the output window
+///   - stream: stream to evaluate on
+/// - Returns: The window, with the maximum value normalized to one (the value one appears only if
+///     the number of samples is odd).
+public func hanning(
+    _ m: Int, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_hanning(&result, Int32(m), stream.ctx)
     return MLXArray(result)
 }
 
@@ -2267,6 +2322,7 @@ public func putAlong(
 ///   - groupSize: The size of the group in `w` that shares a scale and bias. Default is `64`
 ///   - bits: The number of bits occupied by each element of `w` in the returned quantized matrix. Default is `4`
 ///   - mode: The quantization mode. Default is `.affine`
+///   - globalScale: The per-input float32 scale used for  ``QuantizationMode/nvfp4``
 ///   - stream: Stream or device to evaluate on
 /// - Returns: A tuple containing the quantized weights (`wq`), scaling factors (`scales`), and bias values (`biases`).
 ///     Note that `biases` may be nil in for some `mode`.
@@ -2278,8 +2334,10 @@ public func putAlong(
 /// - ``dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
 /// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func quantized(
-    _ w: MLXArray, groupSize: Int? = nil, bits: Int? = nil,
+    _ w: MLXArray,
+    groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine,
+    globalScale: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> (wq: MLXArray, scales: MLXArray, biases: MLXArray?) {
     var r = mlx_vector_array_new()
@@ -2290,6 +2348,7 @@ public func quantized(
 
     mlx_quantize(
         &r, w.ctx, gs, bits, mode.rawValue,
+        (globalScale ?? .mlxNone).ctx,
         stream.ctx)
 
     let arrays = mlx_vector_array_values(r)
@@ -2380,11 +2439,15 @@ public func quantizedMM(
 ///   - groupSize: Number of elements in `x` and `w` that share a scale
 ///   - bits: Number of bits used to represent each element of `x` and `w`
 ///   - mode: The quantization mode. Default is `.affine`
+///   - globalScaleX: The per-input float32 scale used for `x` with  ``QuantizationMode/nvfp4``
+///   - globalScaleW: The per-input float32 scale used for  `w` with ``QuantizationMode/nvfp4``
 ///   - stream: Stream or device to evaluate on
 public func quantizedQuantizedMM(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray?,
     groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .nvfp4,
+    globalScaleX: MLXArray? = nil,
+    globalScaleW: MLXArray? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
@@ -2397,6 +2460,8 @@ public func quantizedQuantizedMM(
         x.ctx, w.ctx, (scales ?? .mlxNone).ctx,
         gs, bits,
         mode.rawValue,
+        (globalScaleX ?? .mlxNone).ctx,
+        (globalScaleW ?? .mlxNone).ctx,
         stream.ctx
     )
     return MLXArray(result)

@@ -38,7 +38,6 @@
 #include <Cmlx/mlx-scheduler.h>
 #include <Cmlx/mlx-primitives.h>
 #include <Cmlx/mlx-backend-metal-device.h>
-#include <Cmlx/mlx-backend-metal-utils.h>
 #include <Cmlx/mlx-backend-common-utils.h>
 #include <Cmlx/mlx-backend-cpu-encoder.h>
 #include <Cmlx/mlx-backend-gpu-eval.h>
