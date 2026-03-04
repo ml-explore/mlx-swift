@@ -662,4 +662,18 @@ class MLXArrayIndexingTests: XCTestCase {
         assertEqual(b, expected)
     }
 
+    public func testCopyEllipsis() {
+        // https://github.com/ml-explore/mlx-swift/issues/364
+        let x = arange(0, 12).reshaped([3, 4])
+
+        // this should produce an independent copy of x -- they share the same backing
+        // but if y is mutated then x should have reference to the original values
+        let y = x[.ellipsis]
+
+        y[.ellipsis, 1] *= 10
+
+        // x and y should be different
+        XCTAssertFalse(x.allClose(y).all().item())
+    }
+
 }
