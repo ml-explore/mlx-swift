@@ -106,8 +106,8 @@ open class Module {
     /// See ``noGrad()``
     private var _noGrad = Set<String>()
 
-    private var _items: ModuleItems!
-    private var _setters: [String: TypeErasedSetter]!
+    private var _items: ModuleItems?
+    private var _setters: [String: TypeErasedSetter]?
 
     /// Initializes the module.
     public init() {
@@ -141,7 +141,13 @@ open class Module {
     ///
     /// Subclasses could potentially override this to provide custom introspection.
     open func items() -> ModuleItems {
-        _items
+        if _items == nil {
+            buildCaches()
+        }
+        guard let items = _items else {
+            fatalError("_items not set after buildCaches()")
+        }
+        return items
     }
 
     /// Describe extra parameters.
@@ -782,7 +788,11 @@ open class Module {
     ///   - key: module key, see ``ModuleInfo``
     ///   - value: the replacement module
     open func updateModule(key: String, _ value: Any) throws {
-        if let setter = _setters[key] {
+        if _setters == nil {
+            buildCaches()
+        }
+
+        if let setter = _setters?[key] {
             do {
                 try setter.updateModule(value)
             } catch {
