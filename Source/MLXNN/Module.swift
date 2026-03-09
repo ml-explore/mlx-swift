@@ -111,7 +111,6 @@ open class Module {
 
     /// Initializes the module.
     public init() {
-        buildCaches()
     }
 
     private func buildCaches() {
