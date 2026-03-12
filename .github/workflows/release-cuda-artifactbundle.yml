@@ -1,0 +1,177 @@
+name: Release CUDA Artifact Bundle
+
+on:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to upload assets to (leave empty for dry run)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build CUDA static lib (${{ matrix.arch }})
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    env:
+      TOOLKIT_VERSION: "cuda-12.9"
+      SWIFT_VERSION: "swift-6.2.3-RELEASE"
+      SWIFT_SIGNING_KEY: "52BB7E3DE28A71BE22EC05FFEF80A866B47A981F"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup CUDA and Swift
+        run: bash .github/scripts/setup-linux-cuda.sh
+
+      - name: Build static library
+        run: bash .github/scripts/build-cuda-static.sh
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuda-${{ matrix.arch }}
+          path: build/output/${{ matrix.arch }}/
+
+  package:
+    name: Package artifact bundle
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve-tag.outputs.tag }}
+      sha256: ${{ steps.checksum.outputs.sha256 }}
+    steps:
+      - name: Resolve tag
+        id: resolve-tag
+        run: echo "tag=${{ github.event.release.tag_name || inputs.tag }}" >> "$GITHUB_OUTPUT"
+
+      - name: Download x86_64 build
+        uses: actions/download-artifact@v4
+        with:
+          name: cuda-x86_64
+          path: staging/x86_64/
+
+      - name: Download aarch64 build
+        uses: actions/download-artifact@v4
+        with:
+          name: cuda-aarch64
+          path: staging/aarch64/
+
+      - name: Assemble artifact bundle
+        run: |
+          set -euo pipefail
+          BUNDLE="Cmlx.artifactbundle"
+          mkdir -p "$BUNDLE/Cmlx"
+
+          for arch in x86_64 aarch64; do
+            dest="$BUNDLE/Cmlx/$arch"
+            mkdir -p "$dest/lib" "$dest/include"
+            cp "staging/$arch/lib/libCmlx.a" "$dest/lib/"
+            cp -r "staging/$arch/include/"*  "$dest/include/"
+
+            cat > "$dest/include/module.modulemap" << 'MODULEMAP'
+          module Cmlx {
+            header "mlx/c/mlx.h"
+            export *
+          }
+          MODULEMAP
+          done
+
+          cat > "$BUNDLE/info.json" << 'INFOJSON'
+          {
+            "schemaVersion": "1.0",
+            "artifacts": {
+              "Cmlx": {
+                "version": "0.5.0",
+                "type": "staticLibrary",
+                "variants": [
+                  {
+                    "path": "Cmlx/x86_64/lib/libCmlx.a",
+                    "supportedTriples": ["x86_64-unknown-linux-gnu"],
+                    "staticLibraryMetadata": {
+                        "headerPaths": ["Cmlx/x86_64/include"],
+                        "moduleMapPath": "Cmlx/x86_64/include/module.modulemap"
+                    }
+                  },
+                  {
+                    "path": "Cmlx/aarch64/lib/libCmlx.a",
+                    "supportedTriples": ["aarch64-unknown-linux-gnu"],
+                    "staticLibraryMetadata": {
+                        "headerPaths": ["Cmlx/aarch64/include"],
+                        "moduleMapPath": "Cmlx/aarch64/include/module.modulemap"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+          INFOJSON
+
+          zip -r -y Cmlx.artifactbundle.zip "$BUNDLE"
+          echo "==> Created Cmlx.artifactbundle.zip ($(du -sh Cmlx.artifactbundle.zip | cut -f1))"
+
+      - name: Compute SHA256 checksum
+        id: checksum
+        run: |
+          SHA256=$(sha256sum Cmlx.artifactbundle.zip | awk '{print $1}')
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "==> SHA256: $SHA256"
+
+      - name: Upload artifact bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cmlx.artifactbundle.zip
+          path: Cmlx.artifactbundle.zip
+
+      - name: Upload to release
+        if: github.event.release.tag_name || inputs.tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name || inputs.tag }}" \
+            Cmlx.artifactbundle.zip
+
+  update-package-swift:
+    name: Update Package.swift with artifact URL and checksum
+    needs: package
+    if: needs.package.outputs.tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Update Package.swift
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.package.outputs.tag }}"
+          SHA="${{ needs.package.outputs.sha256 }}"
+          URL="https://github.com/ml-explore/mlx-swift/releases/download/${TAG}/Cmlx.artifactbundle.zip"
+
+          sed -i "s|url: \"https://github.com/ml-explore/mlx-swift/releases/download/[^\"]*Cmlx.artifactbundle.zip\"|url: \"${URL}\"|" Package.swift
+          sed -i "s|checksum: \"[a-f0-9]*\"|checksum: \"${SHA}\"|" Package.swift
+
+          echo "==> Updated Package.swift with tag=${TAG} checksum=${SHA}"
+          grep -A1 'url:.*Cmlx.artifactbundle.zip' Package.swift
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Package.swift
+          git commit -m "Update Cmlx CUDA artifact bundle to ${{ needs.package.outputs.tag }}"
+          git push origin main
