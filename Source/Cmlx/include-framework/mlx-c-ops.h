@@ -166,6 +166,7 @@ int mlx_astype(
 int mlx_atleast_1d(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_atleast_2d(mlx_array* res, const mlx_array a, const mlx_stream s);
 int mlx_atleast_3d(mlx_array* res, const mlx_array a, const mlx_stream s);
+int mlx_bartlett(mlx_array* res, int M, const mlx_stream s);
 int mlx_bitwise_and(
     mlx_array* res,
     const mlx_array a,

@@ -393,6 +393,23 @@ public func asStrided(
     return MLXArray(result)
 }
 
+/// Return the Bartlett window.
+///
+/// The Bartlett window is a taper formed by using a weighted cosine.
+///
+/// - Parameters:
+///   - m: number of points in the output window
+///   - stream: stream to evaluate on
+/// - Returns: The window, with the maximum value normalized to one (the value one appears only if
+///     the number of samples is odd).
+public func bartlett(
+    _ m: Int, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_bartlett(&result, Int32(m), stream.ctx)
+    return MLXArray(result)
+}
+
 /// Return the Blackman window.
 ///
 /// The Blackman window is a taper formed by using the first three terms of a summation of cosines.
