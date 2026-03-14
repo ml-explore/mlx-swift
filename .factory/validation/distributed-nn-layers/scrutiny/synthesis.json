@@ -1,6 +1,6 @@
 {
   "milestone": "distributed-nn-layers",
-  "round": 1,
+  "round": 2,
   "status": "fail",
   "validatorsRun": {
     "test": {
@@ -20,75 +20,27 @@
     }
   },
   "reviewsSummary": {
-    "total": 5,
-    "passed": 2,
-    "failed": 3,
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
     "failedFeatures": [
-      "distributed-nn-linear-layers",
-      "distributed-nn-sharding-utilities",
-      "distributed-nn-tests"
+      "fix-non-divisible-error-handling"
     ]
   },
   "blockingIssues": [
     {
-      "featureId": "distributed-nn-linear-layers",
+      "featureId": "fix-non-divisible-error-handling",
       "severity": "blocking",
-      "description": "Source/MLXNN/Distributed.swift still enforces non-divisible dimensions with precondition failures instead of surfacing a recoverable Swift error, so the implementation does not satisfy the required VAL-NN-017 behavior for invalid sharding dimensions."
+      "description": "Source/MLXNN/Distributed.swift still uses process-terminating precondition checks for non-divisible dimensions at lines 91, 200, 323, and 489, so VAL-NN-017's required recoverable error behavior is still not implemented."
     },
     {
-      "featureId": "distributed-nn-tests",
+      "featureId": "fix-non-divisible-error-handling",
       "severity": "blocking",
-      "description": "Tests/MLXTests/DistributedNNTests.swift:testNonDivisibleDimensionError() does not exercise a real failing case and therefore leaves VAL-NN-017 uncovered; it only documents the current singleton success path."
+      "description": "Tests/MLXTests/DistributedNNTests.swift:testNonDivisibleDimensionError() still does not trigger or verify a real non-divisible failure path, so VAL-NN-017 remains unproven even though the comments were improved."
     }
   ],
-  "appliedUpdates": [
-    {
-      "target": "library",
-      "description": "Updated .factory/library/architecture.md to note that distributed quantized layers should use quantizedMM, the non-deprecated API name used elsewhere in the repo.",
-      "sourceFeature": "distributed-nn-quantized-layers"
-    },
-    {
-      "target": "library",
-      "description": "Updated .factory/library/architecture.md to record that QuantizedLinear subclasses Linear and that type-based shardLinear dispatch must match QuantizedLinear before Linear.",
-      "sourceFeature": "distributed-nn-sharding-utilities"
-    },
-    {
-      "target": "library",
-      "description": "Updated .factory/library/architecture.md to record that plain stored MLXArray properties already participate in Module parameter discovery, so @ParameterInfo is only needed for renamed or wrapped storage.",
-      "sourceFeature": "distributed-nn-linear-layers"
-    }
-  ],
-  "suggestedGuidanceUpdates": [
-    {
-      "target": "swift-nn-worker skill",
-      "suggestion": "Add an explicit implementation-only / separate-test-feature exception to the TDD step, and require workers to record that deviation in skillFeedback instead of claiming the procedure was fully followed.",
-      "evidence": "Reviews for distributed-nn-linear-layers, distributed-nn-quantized-layers, and distributed-nn-sharding-utilities all found the skill's mandatory read-the-reference + red-test-first flow did not match this mission's split implementation/test feature plan, yet the handoffs still marked followedProcedure=true.",
-      "isSystemic": true
-    },
-    {
-      "target": "swift-library-worker skill",
-      "suggestion": "Add a lightweight formatting-only path that skips full context/TDD setup and goes straight to lint plus required validation commands for pure swift-format fixes.",
-      "evidence": "The fix-swift-format-nn-tests review found the worker reasonably went straight to pre-commit because the change was a semantics-preserving format cleanup, but the current skill procedure still assumes full implementation/TDD work.",
-      "isSystemic": true
-    },
-    {
-      "target": "AGENTS.md",
-      "suggestion": "Clarify that plain stored MLXArray properties are already discovered by Module.parameters(), and that @ParameterInfo is only needed when metadata or custom storage behavior is required.",
-      "evidence": "The distributed-nn-linear-layers review found mission guidance steering workers toward @ParameterInfo for ordinary weight/bias storage even though Source/MLXNN/Linear.swift and Module.swift already treat plain MLXArray stored properties as parameters.",
-      "isSystemic": false
-    },
-    {
-      "target": "swift-nn-worker skill",
-      "suggestion": "Document an expected pattern for fatal/precondition-path validation, or steer future distributed-layer specs toward throwing initializers so the required error behavior can be tested directly in XCTest.",
-      "evidence": "The distributed-nn-linear-layers and distributed-nn-tests reviews both found that VAL-NN-017 asked for a recoverable error path while the implementation used precondition failures, leaving the team without a supported way to prove the required negative case in the test suite.",
-      "isSystemic": false
-    }
-  ],
-  "rejectedObservations": [
-    {
-      "observation": "Carry forward the distributed-nn-sharding-utilities review's QuantizedLinear dispatch issue as a current milestone blocker.",
-      "reason": "Resolved later in the milestone: current HEAD checks QuantizedLinear before Linear in shardLinear (the fix landed with commit 22eeffc), so this should not spawn a duplicate fix feature."
-    }
-  ],
-  "previousRound": null
+  "appliedUpdates": [],
+  "suggestedGuidanceUpdates": [],
+  "rejectedObservations": [],
+  "previousRound": ".factory/validation/distributed-nn-layers/scrutiny/synthesis.round1.json"
 }
