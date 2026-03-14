@@ -21,12 +21,25 @@ public final class DistributedGroup: @unchecked Sendable {
     }
 
     deinit {
-        // Note: mlx_distributed_group is a value type wrapping void* ctx.
-        // The MLX-C API (v0.5.0) does not expose a public free function for
-        // distributed groups. The underlying C++ Group uses shared_ptr internally,
-        // so the Group object itself is lightweight. Groups are typically long-lived
-        // (singleton-like) so the minor leak is acceptable until MLX-C adds a
-        // public free function.
+        // UPSTREAM GAP: mlx_distributed_group is a value type wrapping a
+        // heap-allocated C++ Group object (void* ctx). Other MLX-C handle
+        // types (mlx_device, mlx_stream, mlx_array, etc.) expose a public
+        // free function (e.g., mlx_device_free), but MLX-C v0.5.0 does NOT
+        // expose mlx_distributed_group_free(). The private C++ header
+        // (mlx/c/private/distributed_group.h) has mlx_distributed_group_free_()
+        // but it is an inline C++ function, inaccessible from Swift/C.
+        //
+        // Calling C free() on ctx is NOT safe because the underlying object
+        // is allocated with C++ new and may have a non-trivial destructor.
+        //
+        // Practical impact is minimal: groups are typically singleton-like and
+        // long-lived (one per distributed init, occasionally split). The C++
+        // Group internally holds a shared_ptr to the backend, so the leaked
+        // memory per group is small.
+        //
+        // TODO: File upstream issue to add mlx_distributed_group_free() to
+        // the public MLX-C API, then call it here like Device.deinit calls
+        // mlx_device_free(ctx).
     }
 
     /// The rank of this process in the group.

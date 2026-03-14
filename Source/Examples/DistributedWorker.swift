@@ -64,6 +64,8 @@ struct DistributedWorker {
             runAllGather(rank: rank, group: group)
         case "sendRecv":
             runSendRecv(rank: rank, group: group)
+        case "split":
+            runSplit(rank: rank, group: group)
         default:
             fputs("ERROR: Unknown test operation: \(testOp)\n", stderr)
             exit(1)
@@ -135,6 +137,64 @@ struct DistributedWorker {
             if abs(values[i] - expected[i]) > 1e-5 {
                 fputs(
                     "ERROR: allGather mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
+                    stderr)
+                exit(1)
+            }
+        }
+    }
+
+    /// split test: exercises group.split(color:key:) across multiple processes.
+    ///
+    /// Currently, the ring backend (and all other MLX backends) do NOT support
+    /// group split — they throw "[ring] Group split not supported." This test
+    /// verifies that:
+    /// 1. The split call is attempted and the error is detected (not a crash)
+    /// 2. The parent group remains usable after the failed split
+    /// 3. An allSum on the original parent group still works correctly
+    ///
+    /// When upstream adds split support, this test should be updated to verify
+    /// the child group works independently after parent deinit.
+    static func runSplit(rank: Int, group: DistributedGroup) {
+        // Attempt to split — expect an error from the ring backend
+        var splitErrorCaught = false
+        withErrorHandler({ errMsg in
+            fputs("Worker rank=\(rank) split error (expected): \(errMsg)\n", stderr)
+            splitErrorCaught = true
+        }) {
+            let _ = group.split(color: 0, key: rank)
+        }
+
+        if !splitErrorCaught {
+            // If split succeeds in the future (backend support added), this
+            // path should be expanded to test child group functionality.
+            fputs("Worker rank=\(rank) split unexpectedly succeeded\n", stderr)
+        }
+
+        // Verify the parent group is still usable after the failed split
+        let input: MLXArray
+        if rank == 0 {
+            input = MLXArray(converting: [1.0, 2.0, 3.0])
+        } else {
+            input = MLXArray(converting: [4.0, 5.0, 6.0])
+        }
+
+        let result = MLXDistributed.allSum(input, group: group)
+        eval(result)
+
+        let values = result.asArray(Float.self)
+        let shape = result.shape
+
+        // Output result as JSON to stdout — include split error status
+        print(
+            "{\"splitErrorCaught\": \(splitErrorCaught), \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+        )
+
+        // Verify allSum locally
+        let expected: [Float] = [5.0, 7.0, 9.0]
+        for i in 0 ..< 3 {
+            if abs(values[i] - expected[i]) > 1e-5 {
+                fputs(
+                    "ERROR: split allSum mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
                     stderr)
                 exit(1)
             }
