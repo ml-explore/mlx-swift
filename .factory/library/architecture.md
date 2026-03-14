@@ -57,6 +57,8 @@ Distributed operations (AllReduce, AllGather, Send, Recv) have **no GPU implemen
 - On a size-1 group, `allSum`, `allGather`, `allMax`, `allMin`, and `sumScatter` behave like identity operations.
 - `send`, `recv`, and `recvLike` do not have a successful singleton-group path in the current backend; cover those APIs via `withErrorHandler` in single-process tests and use multi-process tests for success-path validation.
 - `split` currently has no successful path in any compiled MLX backend (`ring`, `jaccl`, `nccl`) regardless of group size. Tests can validate error surfacing and parent-group recovery after a failed split attempt, but they cannot validate split-child success semantics until upstream backend support exists.
+- The localhost `ring` backend used by this repo's multi-process tests does **not** currently implement multi-process `ReduceScatter` / `sumScatter`. Tests can validate graceful error surfacing for that path, but they cannot prove the scattered result until upstream backend support lands.
+- `averageGradients(...)` returns immediately when `group.size == 1`, so singleton-group tests only validate the identity fast path. Coverage for `communicationType`, mixed-dtype fallback, or batching behavior must use a multi-rank setup (or other instrumentation) that bypasses the early return.
 
 ### JACCL Testing Limitations
 
@@ -75,3 +77,9 @@ When these requirements are not met, `MLXDistributed.isAvailable()` still return
 ### MLX-C Gaps
 1. `mlx_distributed_init()` has no backend parameter (C++ has `bk` string). Filed as issue on ml-explore/mlx-c. Workaround: compile desired backends; `"any"` picks first available.
 2. `mlx_distributed_group_free()` is not publicly exposed in MLX-C v0.5.0. The private inline helper exists in `mlx/c/private/distributed_group.h` but is C++-only. Groups are singleton-like and long-lived, so practical impact is minimal. Should file upstream issue.
+
+### Multi-Process Test Harness Notes
+
+- The ring backend can finish the distributed operation, emit valid JSON, and then hang during socket/C++ destructor cleanup while the child process exits.
+- The current test harness mitigates that by draining stdout/stderr asynchronously, accepting timed-out workers as success when they already emitted valid JSON, and flushing output before the worker terminates with `_exit(0)`.
+- Deterministic high-port allocation, launch staggering, brief socket cleanup delays, and retry-on-timeout are the current anti-flake patterns for localhost multi-process tests in this repo.

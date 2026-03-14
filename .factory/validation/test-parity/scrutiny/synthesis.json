@@ -1,0 +1,111 @@
+{
+  "milestone": "test-parity",
+  "round": 1,
+  "status": "fail",
+  "validatorsRun": {
+    "test": {
+      "passed": true,
+      "command": "xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'",
+      "exitCode": 0
+    },
+    "typecheck": {
+      "passed": true,
+      "command": "xcodebuild build -scheme mlx-swift-Package -destination 'platform=macOS'",
+      "exitCode": 0
+    },
+    "lint": {
+      "passed": true,
+      "command": "pre-commit run --all-files",
+      "exitCode": 0
+    }
+  },
+  "reviewsSummary": {
+    "total": 6,
+    "passed": 2,
+    "failed": 4,
+    "failedFeatures": [
+      "add-multiprocess-collective-ops",
+      "add-average-gradients-parity",
+      "add-multiprocess-nn-parity-tests",
+      "fix-multiprocess-test-flakiness"
+    ]
+  },
+  "blockingIssues": [
+    {
+      "featureId": "add-multiprocess-collective-ops",
+      "severity": "blocking",
+      "description": "testMultiProcessSumScatter accepts the ring backend's unimplemented ReduceScatter error as success, so the feature does not prove the rank-local scattered result required for VAL-DIST-022."
+    },
+    {
+      "featureId": "add-average-gradients-parity",
+      "severity": "blocking",
+      "description": "The new averageGradients tests only use singletonGroup(), so the group.size == 1 early return bypasses communicationType casting, mixed-dtype fallback, and batching logic instead of validating the new parity behavior."
+    },
+    {
+      "featureId": "add-multiprocess-nn-parity-tests",
+      "severity": "blocking",
+      "description": "DistributedWorker originally exited through normal process teardown, allowing ring-backend socket cleanup to hang and making the new parity tests flaky even after the work completed."
+    },
+    {
+      "featureId": "add-multiprocess-nn-parity-tests",
+      "severity": "blocking",
+      "description": "The multi-process NN parity harness discovered-and-released ephemeral ports before use and launched both ranks without a readiness handshake or retry, making the tests race-prone."
+    },
+    {
+      "featureId": "fix-multiprocess-test-flakiness",
+      "severity": "blocking",
+      "description": "runMultiProcessTest still defaults to a 30-second timeout in both DistributedTests and DistributedNNTests, so the explicitly requested 60-second timeout increase was never implemented."
+    },
+    {
+      "featureId": "fix-multiprocess-test-flakiness",
+      "severity": "blocking",
+      "description": "The timeout path still reported timed-out workers as failures even when stdout already contained valid success JSON, leaving a false-negative teardown-hang path unresolved until the later recvLike timeout fix."
+    }
+  ],
+  "appliedUpdates": [
+    {
+      "target": "library",
+      "description": "Updated .factory/library/architecture.md with the ring backend's multi-process sumScatter limitation, averageGradients singleton short-circuit behavior, and the current multi-process harness anti-flake patterns.",
+      "sourceFeature": "add-multiprocess-collective-ops"
+    },
+    {
+      "target": "library",
+      "description": "Updated .factory/library/user-testing.md with the current multi-process test harness behavior: async pipe draining, timeout retry/valid-JSON acceptance, deterministic ports, _exit(0), and the current ring-backend sumScatter limitation.",
+      "sourceFeature": "fix-recvlike-timeout"
+    }
+  ],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "swift-nn-worker skill",
+      "suggestion": "Clarify that singleton-group tests cannot validate averageGradients communicationType, batching, or mixed-dtype fallback because the implementation returns early for group.size == 1.",
+      "evidence": "The add-average-gradients-parity review found all new tests used singletonGroup(), which bypassed the new logic entirely in Source/MLXNN/Distributed.swift.",
+      "isSystemic": false
+    },
+    {
+      "target": "swift-nn-worker skill",
+      "suggestion": "Document repo-specific requirements for NN parity helpers: the DistributedWorker executable must depend on MLXNN for layer-based worker flows, and Module.parameters().flattened() exposes dotted keys like layers.0.weight for gradient lookups.",
+      "evidence": "The add-multiprocess-nn-parity-tests worker had to discover both requirements during implementation, and the review flagged that the skill currently omits them.",
+      "isSystemic": false
+    },
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Harmonize the mission boundary on test-file edits with the worker skills so workers are not simultaneously told to avoid modifying existing test files and to add new coverage to the established DistributedTests.swift / DistributedNNTests.swift files.",
+      "evidence": "The add-multiprocess-nn-parity-tests review found AGENTS.md forbids modifying existing test files while the swift-nn-worker skill explicitly allows adding to an existing DistributedNNTests.swift.",
+      "isSystemic": true
+    },
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Update the multi-process timeout guidance to match the intended harness policy, since AGENTS.md still documents a 30-second timeout while the flakiness fix feature explicitly required a 60-second default.",
+      "evidence": "The fix-multiprocess-test-flakiness review traced the unchanged 30-second timeout to the mission guidance still documenting '30-second timeout per process'.",
+      "isSystemic": true
+    },
+    {
+      "target": "swift-library-worker skill",
+      "suggestion": "Add guidance for multi-process harness reliability work: use async pipe draining/readabilityHandler, and clarify when strict write-tests-first sequencing may be relaxed for teardown/debugging fixes to existing test infrastructure.",
+      "evidence": "Both fix-multiprocess-test-flakiness and fix-recvlike-timeout reviews surfaced missing skill guidance around async pipe draining and rigid TDD wording for infrastructure reliability fixes.",
+      "isSystemic": true
+    }
+  ],
+  "rejectedObservations": [],
+  "previousRound": null
+}
