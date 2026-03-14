@@ -12,6 +12,7 @@ Environment variables, external dependencies, and setup notes.
 - **Xcode 26.3** (Build 17C529), Swift 6.2.4
 - **macOS 26.3**, Apple M1 Max, 32GB RAM, 10 cores
 - Metal shaders require xcodebuild (swift test cannot compile them)
+- The active macOS SDK includes `usr/include/infiniband/verbs.h`, so the vendored JACCL sources compile without installing extra RDMA headers on this machine
 
 ## Git Submodules
 
