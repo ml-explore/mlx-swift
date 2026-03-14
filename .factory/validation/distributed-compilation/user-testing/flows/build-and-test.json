@@ -1,0 +1,92 @@
+{
+  "milestone": "distributed-compilation",
+  "testedAt": "2026-03-14T05:38:42.554656+00:00",
+  "assertionResults": [
+    {
+      "id": "VAL-COMP-001",
+      "status": "pass",
+      "evidence": {
+        "log": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/distributed-compilation/build-and-test/xcodebuild-build.txt",
+        "markers": [
+          "** BUILD SUCCEEDED **"
+        ],
+        "exitCode": 0
+      },
+      "reason": "xcodebuild build exited 0 and the saved build log contains '** BUILD SUCCEEDED **' with no build error or linker-conflict matches."
+    },
+    {
+      "id": "VAL-COMP-002",
+      "status": "pass",
+      "evidence": {
+        "log": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/distributed-compilation/build-and-test/xcodebuild-test.txt",
+        "markers": [
+          "Executed 507 tests, with 0 failures (0 unexpected)",
+          "** TEST SUCCEEDED **"
+        ],
+        "exitCode": 0
+      },
+      "reason": "xcodebuild test exited 0 and the saved test log shows 507 tests executed with 0 failures plus '** TEST SUCCEEDED **'."
+    },
+    {
+      "id": "VAL-COMP-003",
+      "status": "pass",
+      "evidence": {
+        "log": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/distributed-compilation/build-and-test/xcodebuild-build.txt",
+        "checkedFor": [
+          "duplicate symbol",
+          "duplicate symbols",
+          "no_ring",
+          "linker command failed",
+          "error:"
+        ],
+        "matches": []
+      },
+      "reason": "The build log contains no duplicate-symbol, linker-conflict, or no_ring stub-conflict output, so ring compiled without stub conflicts."
+    },
+    {
+      "id": "VAL-COMP-004",
+      "status": "pass",
+      "evidence": {
+        "log": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/distributed-compilation/build-and-test/xcodebuild-build.txt",
+        "checkedFor": [
+          "duplicate symbol",
+          "duplicate symbols",
+          "no_jaccl",
+          "linker command failed",
+          "error:"
+        ],
+        "matches": []
+      },
+      "reason": "The build log contains no duplicate-symbol, linker-conflict, or no_jaccl stub-conflict output, so JACCL compiled without stub conflicts."
+    }
+  ],
+  "toolsUsed": [
+    "Read",
+    "LS",
+    "Grep",
+    "Execute",
+    "XcodeBuildMCP___session_show_defaults"
+  ],
+  "frictions": [
+    {
+      "description": "Both xcodebuild commands emitted the known package-resolution warning: 'Invalid Exclude ... cuda.cpp: File not found'.",
+      "resolved": true,
+      "resolution": "Per flow-validator guidance, recorded the warning and treated it as non-fatal because both commands exited 0 and completed successfully.",
+      "affectedAssertions": [
+        "VAL-COMP-001",
+        "VAL-COMP-002"
+      ]
+    },
+    {
+      "description": "xcodebuild reported multiple matching macOS destinations and chose the first one automatically.",
+      "resolved": true,
+      "resolution": "Allowed xcodebuild to use the first matching macOS destination; build and tests still passed.",
+      "affectedAssertions": [
+        "VAL-COMP-001",
+        "VAL-COMP-002"
+      ]
+    }
+  ],
+  "blockers": [],
+  "summary": "Ran the required macOS xcodebuild build and test commands sequentially. All assigned assertions passed: build succeeded, tests succeeded with 507 tests and 0 failures, and no ring/JACCL duplicate-symbol or linker-conflict errors were present in the build log."
+}
