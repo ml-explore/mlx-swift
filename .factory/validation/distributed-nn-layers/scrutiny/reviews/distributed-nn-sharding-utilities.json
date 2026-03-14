@@ -1,0 +1,41 @@
+{
+  "featureId": "distributed-nn-sharding-utilities",
+  "reviewedAt": "2026-03-14T07:23:55Z",
+  "commitId": "0a508bb",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The reviewed commit adds the requested sharding utility surface in `Source/MLXNN/Distributed.swift`, and `shardInPlace` plus `averageGradients` track the Python reference closely, but the implementation does not fully meet the feature contract because `shardLinear` dispatches quantized modules incorrectly.",
+    "issues": [
+      {
+        "file": "Source/MLXNN/Distributed.swift",
+        "line": 734,
+        "severity": "blocking",
+        "description": "In the reviewed commit, `shardLinear` matches `Linear` before `QuantizedLinear`. Because `QuantizedLinear` inherits from `Linear` (`Source/MLXNN/Quantized.swift:238`), both quantized branches are unreachable and quantized inputs are converted to the non-quantized distributed layers instead of `QuantizedAllToShardedLinear` / `QuantizedShardedToAllLinear`. That breaks the feature's required `shardLinear` dispatch behavior for quantized modules."
+      }
+    ]
+  },
+  "issues": [
+    {
+      "file": "Source/MLXNN/Distributed.swift",
+      "line": 734,
+      "severity": "blocking",
+      "description": "In the reviewed commit, `shardLinear` matches `Linear` before `QuantizedLinear`. Because `QuantizedLinear` inherits from `Linear` (`Source/MLXNN/Quantized.swift:238`), both quantized branches are unreachable and quantized inputs are converted to the non-quantized distributed layers instead of `QuantizedAllToShardedLinear` / `QuantizedShardedToAllLinear`. That breaks the feature's required `shardLinear` dispatch behavior for quantized modules."
+    }
+  ],
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "observation": "The `swift-nn-worker` procedure is too rigid for missions that intentionally split implementation and tests into separate features. This worker skipped the skill's TDD step, yet the handoff still marked `followedProcedure: true`, which indicates the procedure does not match how these utility-only features are actually executed.",
+      "evidence": "/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/.factory/skills/swift-nn-worker/SKILL.md:33-43 requires creating `Tests/MLXTests/DistributedNNTests.swift` and running failing tests first, while /Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/features.json:425-429 defines a separate `distributed-nn-tests` feature and /Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/handoffs/2026-03-14T07-07-58-634Z__distributed-nn-sharding-utilities__f64fbc1b-7e68-462b-b3ec-40cff26e0dd6.json:41-43 says no tests were added for this feature."
+    },
+    {
+      "area": "knowledge",
+      "observation": "Shared state should explicitly record that `QuantizedLinear` subclasses `Linear`, so type-based dispatch must check `QuantizedLinear` first. Missing that detail allowed a broken `shardLinear` switch to ship in this feature and required a later follow-up fix.",
+      "evidence": "/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/Source/MLXNN/Quantized.swift:238 declares `QuantizedLinear: Linear`; the reviewed commit at Source/MLXNN/Distributed.swift:733-742 placed the `Linear` cases before `QuantizedLinear`; `git log --oneline --grep='fix shardLinear type dispatch' -n 1` returns `22eeffc Add comprehensive distributed NN tests and fix shardLinear type dispatch`."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Fail. The feature mostly matches the requested API, but reviewed commit `0a508bb` does not satisfy the required `shardLinear` quantized dispatch semantics because `QuantizedLinear` is shadowed by earlier `Linear` cases."
+}

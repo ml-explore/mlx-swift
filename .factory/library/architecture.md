@@ -43,8 +43,12 @@ When both ring and JACCL are compiled:
 ### Distributed NN Layer Design
 - `AllToShardedLinear`: identity forward for input, all_sum backward for gradients (via CustomFunction VJP)
 - `ShardedToAllLinear`: all_sum in forward pass after matmul
-- Quantized variants use `quantizedMatmul` instead of standard matmul
+- Quantized variants use `quantizedMM` instead of standard matmul (`quantizedMatmul` is the deprecated alias in this repo)
+- `QuantizedLinear` subclasses `Linear`, so type-based dispatch must check `QuantizedLinear` before `Linear` in helpers like `shardLinear`
 - `group` stored as plain property (NOT `@ModuleInfo` / `@ParameterInfo`) to exclude from parameter tree
+
+### MLXNN Parameter Discovery
+- Plain stored `MLXArray` properties are already discovered by `Module.parameters()`; `@ParameterInfo` is only needed when a parameter needs custom metadata/renaming rather than for ordinary weight/bias storage.
 
 ### GPU Limitation
 Distributed operations (AllReduce, AllGather, Send, Recv) have **no GPU implementation** -- they must run on CPU. For multi-process distributed code, set `MLX.Device.setDefault(.cpu)`. Single-process tests on size-1 groups work on GPU because identity operations don't actually invoke the distributed primitives. The NN layers must handle this: data may need CPU transfer for collective ops then back to GPU.
