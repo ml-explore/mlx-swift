@@ -1,0 +1,244 @@
+{
+  "surface": "xcodebuild",
+  "testedAt": "2026-03-13T23:49:29.859274-07:00",
+  "assertionsTested": [
+    {
+      "id": "VAL-DIST-001",
+      "status": "pass",
+      "reason": "`testGroupLifecycle` and `testGroupLifecycleManyCreations` both passed, covering singleton group creation plus 150 repeated create/destroy cycles without a crash.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:770-773",
+        "Tests/MLXTests/DistributedTests.swift:testGroupLifecycle",
+        "Tests/MLXTests/DistributedTests.swift:testGroupLifecycleManyCreations"
+      ]
+    },
+    {
+      "id": "VAL-DIST-002",
+      "status": "pass",
+      "reason": "`testIsAvailable` passed under `xcodebuild test`, confirming the distributed backend reports available in this build.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:780-781",
+        "Tests/MLXTests/DistributedTests.swift:testIsAvailable"
+      ]
+    },
+    {
+      "id": "VAL-DIST-003",
+      "status": "pass",
+      "reason": "`testInitSingletonGroup` passed and asserts `rank == 0` and `size == 1` for `MLXDistributed.init()` in the single-process case.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:776-777",
+        "Tests/MLXTests/DistributedTests.swift:testInitSingletonGroup"
+      ]
+    },
+    {
+      "id": "VAL-DIST-004",
+      "status": "pass",
+      "reason": "`testAllSumIdentity` passed, validating singleton `allSum` shape, dtype, and value identity.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:766-767",
+        "Tests/MLXTests/DistributedTests.swift:testAllSumIdentity"
+      ]
+    },
+    {
+      "id": "VAL-DIST-005",
+      "status": "pass",
+      "reason": "`testAllGatherIdentity` passed, validating singleton `allGather` identity semantics.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:758-759",
+        "Tests/MLXTests/DistributedTests.swift:testAllGatherIdentity"
+      ]
+    },
+    {
+      "id": "VAL-DIST-006",
+      "status": "pass",
+      "reason": "`testAllMaxIdentity` passed, validating singleton `allMax` identity semantics.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:760-761",
+        "Tests/MLXTests/DistributedTests.swift:testAllMaxIdentity"
+      ]
+    },
+    {
+      "id": "VAL-DIST-007",
+      "status": "pass",
+      "reason": "`testAllMinIdentity` passed, validating singleton `allMin` identity semantics.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:762-763",
+        "Tests/MLXTests/DistributedTests.swift:testAllMinIdentity"
+      ]
+    },
+    {
+      "id": "VAL-DIST-008",
+      "status": "pass",
+      "reason": "`testSumScatterIdentity` passed, validating singleton `sumScatter` identity semantics.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:798-799",
+        "Tests/MLXTests/DistributedTests.swift:testSumScatterIdentity"
+      ]
+    },
+    {
+      "id": "VAL-DIST-009",
+      "status": "fail",
+      "reason": "The contract expects `send`/`recv` to succeed on a size-1 group, but the implemented and validated behavior is different: `testSendRecvAPISignatures` explicitly expects graceful singleton errors, while `testMultiProcessSendRecv` validates the success path only with two processes.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:788-795",
+        "Tests/MLXTests/DistributedTests.swift:testSendRecvAPISignatures",
+        "Tests/MLXTests/DistributedTests.swift:testMultiProcessSendRecv",
+        ".factory/library/architecture.md:54",
+        ".factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/validation-contract.md:55-57"
+      ]
+    },
+    {
+      "id": "VAL-DIST-010",
+      "status": "fail",
+      "reason": "The contract says `recvLike` returns an array matching the template, but the validated singleton test (`testRecvLikeAPISignature`) explicitly expects an error instead of a successful receive. No dedicated success-path `recvLike` assertion is exercised in the `xcodebuild` logs.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:792-793",
+        "Tests/MLXTests/DistributedTests.swift:testRecvLikeAPISignature",
+        ".factory/library/architecture.md:54",
+        ".factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/validation-contract.md:59-61"
+      ]
+    },
+    {
+      "id": "VAL-DIST-011",
+      "status": "fail",
+      "reason": "The contract expects `split(color:key:)` on a size-1 group to return a valid subgroup, but both the singleton test and the multi-process test validate the opposite: split is expected to error, and only parent-group recovery after the failed split is exercised.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:774-775",
+        "swift-bindings/distributed-bindings/test.log:790-791",
+        "Tests/MLXTests/DistributedTests.swift:testGroupSplitSingletonError",
+        "Tests/MLXTests/DistributedTests.swift:testMultiProcessSplit",
+        ".factory/library/architecture.md:55",
+        ".factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/validation-contract.md:63-65"
+      ]
+    },
+    {
+      "id": "VAL-DIST-012",
+      "status": "pass",
+      "reason": "`testMultiProcessAllSum` passed with two worker processes, validating the ring-backend multi-process all-sum success path.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:786-787",
+        "Tests/MLXTests/DistributedTests.swift:testMultiProcessAllSum"
+      ]
+    },
+    {
+      "id": "VAL-DIST-013",
+      "status": "pass",
+      "reason": "`testMultiProcessAllGather` passed with two worker processes, validating the expected concatenated `[6]` result shape.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:784-785",
+        "Tests/MLXTests/DistributedTests.swift:testMultiProcessAllGather"
+      ]
+    },
+    {
+      "id": "VAL-DIST-014",
+      "status": "pass",
+      "reason": "`testMultiProcessSendRecv` passed with two worker processes, validating the real send/recv success path and received payload values.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:788-789",
+        "Tests/MLXTests/DistributedTests.swift:testMultiProcessSendRecv"
+      ]
+    },
+    {
+      "id": "VAL-DIST-015",
+      "status": "pass",
+      "reason": "`testStreamParameter` passed, confirming the distributed APIs accept an explicit `stream:` argument and produce the expected singleton results.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:796-797",
+        "Tests/MLXTests/DistributedTests.swift:testStreamParameter"
+      ]
+    },
+    {
+      "id": "VAL-DIST-016",
+      "status": "pass",
+      "reason": "`testInitStrictMode` passed and verified the strict-mode path does not crash. Note that the test implementation is broader than the contract and accepts either an error or a valid returned group, so the exact runtime branch is not surfaced in the `xcodebuild` log.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:778-779",
+        "Tests/MLXTests/DistributedTests.swift:testInitStrictMode",
+        ".factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/validation-contract.md:83-85"
+      ]
+    },
+    {
+      "id": "VAL-DIST-017",
+      "status": "pass",
+      "reason": "`testAllSumMultipleDtypes` passed, covering `float16` and `int32` all-sum calls with matching output dtypes.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:768-769",
+        "Tests/MLXTests/DistributedTests.swift:testAllSumMultipleDtypes"
+      ]
+    },
+    {
+      "id": "VAL-DIST-018",
+      "status": "pass",
+      "reason": "`testAllSumHighDimensional` passed, covering a `[2, 3, 4]` tensor through singleton `allSum`.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:764-765",
+        "Tests/MLXTests/DistributedTests.swift:testAllSumHighDimensional"
+      ]
+    },
+    {
+      "id": "VAL-DIST-019",
+      "status": "pass",
+      "reason": "`testMultipleGroupLifecycle` passed for multiple independently initialized groups, and `testMultiProcessSplit` passed for the documented split-error recovery path. This matches the contract note that split is currently unsupported upstream.",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:782-783",
+        "swift-bindings/distributed-bindings/test.log:790-791",
+        "Tests/MLXTests/DistributedTests.swift:testMultipleGroupLifecycle",
+        "Tests/MLXTests/DistributedTests.swift:testMultiProcessSplit"
+      ]
+    }
+  ],
+  "commandsRun": [
+    {
+      "command": "xcodebuild build -scheme mlx-swift-Package -destination 'platform=macOS' -derivedDataPath '/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/swift-bindings/distributed-bindings/DerivedData'",
+      "exitCode": 0,
+      "summary": "BUILD SUCCEEDED. No duplicate-symbol errors were present in the build log. The known `Invalid Exclude ... cuda.cpp: File not found` package-resolution warning appeared."
+    },
+    {
+      "command": "xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -derivedDataPath '/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/swift-bindings/distributed-bindings/DerivedData'",
+      "exitCode": 0,
+      "summary": "TEST SUCCEEDED. 528 tests ran with 0 failures, including the full `DistributedTests` suite. Compile-time Swift 6 concurrency warnings were emitted from `DistributedTests.swift`."
+    }
+  ],
+  "blockers": [],
+  "frictions": [
+    {
+      "description": "Both `xcodebuild` commands emitted the known package-resolution warning `Invalid Exclude ... cuda.cpp: File not found`.",
+      "impact": "warning only; build and test still exited 0",
+      "evidence": [
+        "swift-bindings/distributed-bindings/build.log:12",
+        "swift-bindings/distributed-bindings/test.log:5"
+      ]
+    },
+    {
+      "description": "Compiling `Tests/MLXTests/DistributedTests.swift` emitted Swift 6 concurrency warnings about mutating captured vars inside `withErrorHandler` closures.",
+      "impact": "warning only; tests still passed",
+      "evidence": [
+        "swift-bindings/distributed-bindings/test.log:436-448"
+      ]
+    },
+    {
+      "description": "The validation contract for VAL-DIST-009, VAL-DIST-010, and VAL-DIST-011 expects singleton success semantics for point-to-point receive and group split, but the implementation, tests, and architecture note all validate graceful error handling instead.",
+      "impact": "these three assertions fail as written",
+      "evidence": [
+        ".factory/library/architecture.md:54-55",
+        "Tests/MLXTests/DistributedTests.swift:testSendRecvAPISignatures",
+        "Tests/MLXTests/DistributedTests.swift:testRecvLikeAPISignature",
+        "Tests/MLXTests/DistributedTests.swift:testGroupSplitSingletonError"
+      ]
+    }
+  ],
+  "toolsUsed": [
+    "xcodebuild",
+    "Read",
+    "Grep",
+    "Execute"
+  ],
+  "counts": {
+    "pass": 16,
+    "fail": 3,
+    "blocked": 0,
+    "skipped": 0
+  },
+  "overallStatus": "fail",
+  "summary": "Assessed 19 distributed-binding assertions via `xcodebuild`. 16 passed and 3 failed: VAL-DIST-009, VAL-DIST-010, and VAL-DIST-011 do not match the implemented singleton behavior that is actually validated by the test suite."
+}
