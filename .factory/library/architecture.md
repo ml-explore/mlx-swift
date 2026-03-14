@@ -51,7 +51,8 @@ Distributed operations (AllReduce, AllGather, Send, Recv) have **no GPU implemen
 
 ### Singleton Group Behavior
 - On a size-1 group, `allSum`, `allGather`, `allMax`, `allMin`, and `sumScatter` behave like identity operations.
-- `send`, `recv`, `recvLike`, and `split` do not have a successful singleton-group path in the current backend; cover those APIs via `withErrorHandler` in single-process tests and use multi-process tests for success-path validation.
+- `send`, `recv`, and `recvLike` do not have a successful singleton-group path in the current backend; cover those APIs via `withErrorHandler` in single-process tests and use multi-process tests for success-path validation.
+- `split` currently has no successful path in any compiled MLX backend (`ring`, `jaccl`, `nccl`) regardless of group size. Tests can validate error surfacing and parent-group recovery after a failed split attempt, but they cannot validate split-child success semantics until upstream backend support exists.
 
 ### MLX-C Gaps
 1. `mlx_distributed_init()` has no backend parameter (C++ has `bk` string). Filed as issue on ml-explore/mlx-c. Workaround: compile desired backends; `"any"` picks first available.

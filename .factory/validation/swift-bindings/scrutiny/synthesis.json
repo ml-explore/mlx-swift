@@ -1,6 +1,6 @@
 {
   "milestone": "swift-bindings",
-  "round": 1,
+  "round": 2,
   "status": "fail",
   "validatorsRun": {
     "test": {
@@ -20,75 +20,35 @@
     }
   },
   "reviewsSummary": {
-    "total": 4,
-    "passed": 2,
-    "failed": 2,
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
     "failedFeatures": [
-      "distributed-swift-bindings",
-      "distributed-single-process-tests"
+      "fix-scrutiny-bindings-issues"
     ]
   },
   "blockingIssues": [
     {
-      "featureId": "distributed-swift-bindings",
+      "featureId": "fix-scrutiny-bindings-issues",
       "severity": "blocking",
-      "description": "Source/MLX/Distributed.swift:23 leaves DistributedGroup.deinit empty, so groups created by mlx_distributed_init() or mlx_distributed_group_split() leak their underlying handle instead of meeting the required no-leak lifecycle behavior."
-    },
-    {
-      "featureId": "distributed-single-process-tests",
-      "severity": "blocking",
-      "description": "Tests/MLXTests/DistributedTests.swift:106 only checks singleton-group error handling for send/recv/recvLike, so it does not verify the requested result semantics for the API signatures."
-    },
-    {
-      "featureId": "distributed-single-process-tests",
-      "severity": "blocking",
-      "description": "Tests/MLXTests/DistributedTests.swift:192 never exercises DistributedGroup.split(color:key:) and therefore misses the required parent→split child→parent deinit→child use lifecycle scenario."
+      "description": "Tests/MLXTests/DistributedTests.swift:645 only verifies that split throws and that the original parent group still works. The helper never retains a split child, deinitializes the parent, or performs an operation on the child, so the original split-child lifecycle validation gap remains unresolved."
     }
   ],
   "appliedUpdates": [
     {
       "target": "library",
-      "description": "Updated .factory/library/architecture.md to document the public MLX-C distributed-group free API gap and the singleton-group limitation for send/recv/recvLike/split, including when to use single-process error-path coverage versus multi-process success-path tests.",
-      "sourceFeature": "distributed-single-process-tests"
+      "description": "Updated .factory/library/architecture.md to record that `DistributedGroup.split` currently has no successful path in any compiled MLX backend, so validation can only cover error surfacing and parent-group recovery until upstream backend support exists.",
+      "sourceFeature": "fix-scrutiny-bindings-issues"
     }
   ],
   "suggestedGuidanceUpdates": [
     {
-      "target": "AGENTS.md",
-      "suggestion": "Clarify the distributed-group lifecycle guidance so it does not simultaneously require freeing groups in deinit while shared architecture notes state that the public MLX-C API has no distributed-group free function.",
-      "evidence": "The distributed-swift-bindings review found a blocking leak after the worker tried to satisfy conflicting guidance between mission rules and existing architecture notes.",
-      "isSystemic": false
-    },
-    {
       "target": "swift-library-worker skill",
-      "suggestion": "Document explicit exceptions to the TDD-first step for features whose tests are intentionally split into later mission features and for formatting-only or validation-only fixes.",
-      "evidence": "Both distributed-swift-bindings and fix-swift-format-bindings reported that the skill's unconditional TDD step conflicted with their actual feature scopes.",
-      "isSystemic": true
-    },
-    {
-      "target": "swift-library-worker skill",
-      "suggestion": "Add distributed-testing guidance that singleton groups cannot successfully execute send/recv/recvLike/split, so single-process coverage should use error-path assertions while success paths belong in multi-process tests.",
-      "evidence": "The distributed-single-process-tests review found missing intended coverage because the worker had to discover singleton-group limitations ad hoc.",
-      "isSystemic": false
-    },
-    {
-      "target": "swift-library-worker skill",
-      "suggestion": "Allow multi-process test features to make minimal Package.swift changes such as adding a small helper executable target when subprocess-based validation requires it.",
-      "evidence": "The distributed-multi-process-tests review noted that the skill advertises multi-process testing but its Package.swift guidance only allows exclude-list edits, while this feature required a DistributedWorker executable target.",
-      "isSystemic": false
-    },
-    {
-      "target": "AGENTS.md",
-      "suggestion": "Clarify that the rule against modifying existing test files applies to preexisting repository tests, or explicitly allow later milestone features to extend feature-owned test files created earlier in the mission.",
-      "evidence": "The distributed-multi-process-tests feature was instructed to extend Tests/MLXTests/DistributedTests.swift even though AGENTS.md says only new test files may be added.",
+      "suggestion": "Warn workers that `DistributedGroup.split` is currently unsupported across MLX backends, so multi-process distributed test features should not plan split-child success-path validation until upstream backend support exists.",
+      "evidence": "The fix-scrutiny-bindings-issues review found the worker redesigning the fix after discovering that ring/jaccl/nccl all throw for `group.split(...)`, but the skill currently omits that backend limitation.",
       "isSystemic": false
     }
   ],
-  "rejectedObservations": [
-    {
-      "observation": "Document an explicit TDD exception for formatting-only or validation-only fixes.",
-      "reason": "duplicate of the broader swift-library-worker TDD guidance update synthesized from multiple reviews"
-    }
-  ],
-  "previousRound": null
+  "rejectedObservations": [],
+  "previousRound": ".factory/validation/swift-bindings/scrutiny/synthesis.round1.json"
 }
