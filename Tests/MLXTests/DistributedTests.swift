@@ -640,7 +640,441 @@ class DistributedTests: XCTestCase {
         XCTAssertEqual(values[2], 30.0, accuracy: 1e-5, "Rank 1 recv value[2] mismatch")
     }
 
-    // MARK: - (16) Multi-process split
+    // MARK: - (16) Multi-process allMax
+
+    func testMultiProcessAllMax() {
+        guard let results = runMultiProcessTest(operation: "allMax") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Both ranks should get [4, 5, 6]
+        let expected: [Double] = [4.0, 5.0, 6.0]
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let values = json["values"] as? [Double],
+                let shape = json["shape"] as? [Int]
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertEqual(shape, [3], "Rank \(rank) shape mismatch")
+            XCTAssertEqual(values.count, 3, "Rank \(rank) values count mismatch")
+            for i in 0 ..< 3 {
+                XCTAssertEqual(
+                    values[i], expected[i], accuracy: 1e-5,
+                    "Rank \(rank) value[\(i)] mismatch")
+            }
+        }
+    }
+
+    // MARK: - (17) Multi-process allMin
+
+    func testMultiProcessAllMin() {
+        guard let results = runMultiProcessTest(operation: "allMin") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Both ranks should get [1, 2, 3]
+        let expected: [Double] = [1.0, 2.0, 3.0]
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let values = json["values"] as? [Double],
+                let shape = json["shape"] as? [Int]
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertEqual(shape, [3], "Rank \(rank) shape mismatch")
+            XCTAssertEqual(values.count, 3, "Rank \(rank) values count mismatch")
+            for i in 0 ..< 3 {
+                XCTAssertEqual(
+                    values[i], expected[i], accuracy: 1e-5,
+                    "Rank \(rank) value[\(i)] mismatch")
+            }
+        }
+    }
+
+    // MARK: - (18) Multi-process sumScatter
+
+    func testMultiProcessSumScatter() {
+        // NOTE: The ring backend currently does not implement ReduceScatter
+        // for multi-process groups ("[ReduceScatter] Not implemented yet.").
+        // This test verifies the operation completes without crashing and that
+        // the error is handled gracefully. When upstream adds support, the
+        // test will automatically validate the correct results.
+        guard let results = runMultiProcessTest(operation: "sumScatter") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Parse JSON output from both ranks
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let errorCaught = json["errorCaught"] as? Bool
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            if errorCaught {
+                // ReduceScatter not implemented in ring backend — expected
+                // Verify it was detected gracefully (process didn't crash)
+                continue
+            }
+
+            // If/when the backend supports it, verify the results
+            guard let values = json["values"] as? [Double],
+                let shape = json["shape"] as? [Int]
+            else {
+                XCTFail("Rank \(rank) missing values/shape in JSON: '\(stdout)'")
+                continue
+            }
+
+            // Both have [1,2,3,4], sum is [2,4,6,8], scattered in half:
+            // rank 0 gets [2,4], rank 1 gets [6,8]
+            let expected: [Double] = rank == 0 ? [2.0, 4.0] : [6.0, 8.0]
+            XCTAssertEqual(shape, [2], "Rank \(rank) shape mismatch")
+            XCTAssertEqual(values.count, 2, "Rank \(rank) values count mismatch")
+            for i in 0 ..< 2 {
+                XCTAssertEqual(
+                    values[i], expected[i], accuracy: 1e-5,
+                    "Rank \(rank) value[\(i)] mismatch")
+            }
+        }
+    }
+
+    // MARK: - (19) Multi-process recvLike
+
+    func testMultiProcessRecvLike() {
+        guard let results = runMultiProcessTest(operation: "recvLike") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify rank 1 received [42, 43, 44] with correct shape and dtype
+        let rank1Stdout = results.rank1.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !rank1Stdout.isEmpty,
+            let data = rank1Stdout.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let values = json["values"] as? [Double],
+            let shape = json["shape"] as? [Int],
+            let dtype = json["dtype"] as? String
+        else {
+            XCTFail("Rank 1 produced invalid JSON output: '\(rank1Stdout)'")
+            return
+        }
+
+        XCTAssertEqual(shape, [3], "Rank 1 recvLike shape mismatch")
+        XCTAssertEqual(dtype, "float32", "Rank 1 recvLike dtype mismatch")
+        XCTAssertEqual(values.count, 3, "Rank 1 recvLike values count mismatch")
+        XCTAssertEqual(values[0], 42.0, accuracy: 1e-5, "Rank 1 recvLike value[0] mismatch")
+        XCTAssertEqual(values[1], 43.0, accuracy: 1e-5, "Rank 1 recvLike value[1] mismatch")
+        XCTAssertEqual(values[2], 44.0, accuracy: 1e-5, "Rank 1 recvLike value[2] mismatch")
+    }
+
+    // MARK: - (20) Multi-process multi-dtype allSum
+
+    func testMultiProcessMultiDtype() {
+        guard let results = runMultiProcessTest(operation: "allSumMultiDtype") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify JSON output from both ranks
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let float16Values = json["float16Values"] as? [Double],
+                let float16Dtype = json["float16Dtype"] as? String,
+                let int32Values = json["int32Values"] as? [Double],
+                let int32Dtype = json["int32Dtype"] as? String
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            // float16: [1,2,3] + [4,5,6] = [5,7,9], dtype preserved
+            XCTAssertEqual(float16Dtype, "float16", "Rank \(rank) float16 dtype mismatch")
+            XCTAssertEqual(float16Values.count, 3, "Rank \(rank) float16 values count mismatch")
+            XCTAssertEqual(
+                float16Values[0], 5.0, accuracy: 0.1, "Rank \(rank) float16 value[0]")
+            XCTAssertEqual(
+                float16Values[1], 7.0, accuracy: 0.1, "Rank \(rank) float16 value[1]")
+            XCTAssertEqual(
+                float16Values[2], 9.0, accuracy: 0.1, "Rank \(rank) float16 value[2]")
+
+            // int32: [10,20,30] + [40,50,60] = [50,70,90], dtype preserved
+            XCTAssertEqual(int32Dtype, "int32", "Rank \(rank) int32 dtype mismatch")
+            XCTAssertEqual(int32Values.count, 3, "Rank \(rank) int32 values count mismatch")
+            XCTAssertEqual(
+                int32Values[0], 50.0, accuracy: 1e-5, "Rank \(rank) int32 value[0]")
+            XCTAssertEqual(
+                int32Values[1], 70.0, accuracy: 1e-5, "Rank \(rank) int32 value[1]")
+            XCTAssertEqual(
+                int32Values[2], 90.0, accuracy: 1e-5, "Rank \(rank) int32 value[2]")
+        }
+    }
+
+    // MARK: - (21) Multi-process multi-shape allSum
+
+    func testMultiProcessMultiShape() {
+        guard let results = runMultiProcessTest(operation: "allSumMultiShape") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify both ranks get [11,22,33,44,55,66] with shape [2,3]
+        let expected: [Double] = [11.0, 22.0, 33.0, 44.0, 55.0, 66.0]
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let values = json["values"] as? [Double],
+                let shape = json["shape"] as? [Int]
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertEqual(shape, [2, 3], "Rank \(rank) shape mismatch")
+            XCTAssertEqual(values.count, 6, "Rank \(rank) values count mismatch")
+            for i in 0 ..< 6 {
+                XCTAssertEqual(
+                    values[i], expected[i], accuracy: 1e-5,
+                    "Rank \(rank) value[\(i)] mismatch")
+            }
+        }
+    }
+
+    // MARK: - (22) Multi-process iterative send/recv
+
+    func testMultiProcessIterativeSendRecv() {
+        guard let results = runMultiProcessTest(operation: "sendRecvIterative") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify final values: both ranks should have 32.0 after 10 rounds
+        for (rank, result, expectedValue) in [
+            (0, results.rank0, 32.0), (1, results.rank1, 32.0),
+        ] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let finalValue = json["finalValue"] as? Double
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertEqual(
+                finalValue, expectedValue, accuracy: 1e-5,
+                "Rank \(rank) final value mismatch")
+        }
+    }
+
+    // MARK: - (23) allGather VJP (single-process)
+
+    func testAllGatherVJP() {
+        // Test that grad through allGather on a size-1 group produces identity gradient.
+        // On a singleton group, allGather is identity, so the gradient of allGather(x)[0]
+        // w.r.t. x is 1.0.
+        let group = MLXDistributed.`init`()!
+
+        let gradFn = grad { (x: MLXArray) -> MLXArray in
+            let gathered = MLXDistributed.allGather(x, group: group)
+            return gathered[0]
+        }
+
+        let x = MLXArray(converting: [1.0])
+        let dfdx = gradFn(x)
+        eval(dfdx)
+
+        XCTAssertEqual(dfdx.asArray(Float.self)[0], 1.0, accuracy: 1e-5)
+    }
+
+    // MARK: - (24) Multi-process allGather VJP
+
+    func testMultiProcessAllGatherVJP() {
+        guard let results = runMultiProcessTest(operation: "allGatherVjp") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // rank 0 should get grad 1.0, rank 1 should get grad 0.0
+        for (rank, result, expectedGrad) in [
+            (0, results.rank0, 1.0), (1, results.rank1, 0.0),
+        ] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let gradValue = json["gradValue"] as? Double
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertEqual(
+                gradValue, expectedGrad, accuracy: 1e-5,
+                "Rank \(rank) grad value mismatch")
+        }
+    }
+
+    // MARK: - (25) Multi-process split
 
     func testMultiProcessSplit() {
         // Tests group.split(color:key:) across two processes.
