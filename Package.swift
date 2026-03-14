@@ -328,6 +328,12 @@ let package = Package(
             path: "Source/Examples",
             sources: ["CustomFunctionExampleSimple.swift"]
         ),
+        .executableTarget(
+            name: "DistributedWorker",
+            dependencies: ["MLX"],
+            path: "Source/Examples",
+            sources: ["DistributedWorker.swift"]
+        ),
     ],
     cxxLanguageStandard: .gnucxx20
 )
