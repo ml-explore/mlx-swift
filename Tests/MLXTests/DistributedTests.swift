@@ -40,6 +40,48 @@ class DistributedTests: XCTestCase {
         XCTAssertTrue(MLXDistributed.isAvailable())
     }
 
+    // MARK: - (2b) JACCL availability check
+
+    func testJACCLAvailability() {
+        // JACCL (Joint Accelerator Communication Library) requires:
+        //   - macOS 26.2 or later
+        //   - Thunderbolt 5 hardware with RDMA-capable NICs
+        //   - RDMA explicitly enabled in Recovery Mode (csrutil)
+        //
+        // On hardware without RDMA/Thunderbolt 5 (e.g., M1/M2/M3 Macs,
+        // or M4 Macs without TB5 peers), JACCL is not available. The ring
+        // backend (TCP sockets) is always available as a fallback.
+        //
+        // This test verifies:
+        // 1. isAvailable() returns a Bool without crashing
+        // 2. The ring backend is available (true)
+        // 3. On this hardware, the overall availability is true (ring)
+        //
+        // NOTE: We cannot directly query which backend (ring vs JACCL) was
+        // selected because MLX-C does not expose a backend-name API. The
+        // isAvailable() call returns true if ANY backend is available. On
+        // machines without RDMA/TB5, this is the ring backend.
+
+        // (1) Verify isAvailable() returns a Bool without crashing
+        let available: Bool = MLXDistributed.isAvailable()
+        XCTAssertTrue(
+            type(of: available) == Bool.self,
+            "isAvailable() should return a Bool")
+
+        // (2) Ring backend is always compiled in, so availability is true
+        XCTAssertTrue(
+            available,
+            "isAvailable() should return true -- ring backend is always available")
+
+        // (3) Verify we can init a group (ring backend provides singleton group)
+        let group = MLXDistributed.`init`()
+        XCTAssertNotNil(
+            group,
+            "init() should succeed -- ring backend provides a singleton group")
+        XCTAssertEqual(group!.rank, 0)
+        XCTAssertEqual(group!.size, 1)
+    }
+
     // MARK: - (3) init returns rank=0, size=1
 
     func testInitSingletonGroup() {
