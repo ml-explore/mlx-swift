@@ -46,5 +46,6 @@ When both ring and JACCL are compiled:
 - Quantized variants use `quantizedMatmul` instead of standard matmul
 - `group` stored as plain property (NOT `@ModuleInfo` / `@ParameterInfo`) to exclude from parameter tree
 
-### MLX-C Gap
-`mlx_distributed_init()` has no backend parameter (C++ has `bk` string). Filed as issue on ml-explore/mlx-c. Workaround: compile desired backends; `"any"` picks first available.
+### MLX-C Gaps
+1. `mlx_distributed_init()` has no backend parameter (C++ has `bk` string). Filed as issue on ml-explore/mlx-c. Workaround: compile desired backends; `"any"` picks first available.
+2. `mlx_distributed_group_free()` is not publicly exposed in MLX-C v0.5.0. The private inline helper exists in `mlx/c/private/distributed_group.h` but is C++-only. Groups are singleton-like and long-lived, so practical impact is minimal. Should file upstream issue.
