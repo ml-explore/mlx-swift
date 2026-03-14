@@ -1,0 +1,39 @@
+{
+  "featureId": "distributed-nn-linear-layers",
+  "reviewedAt": "2026-03-14T07:24:08.986598Z",
+  "commitId": "40f0b84",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The main layer logic tracks the Python reference well, but the feature does not satisfy the required error-handling contract: invalid sharding dimensions crash via `precondition` instead of surfacing an error, and the added tests only exercise valid size-1-group paths, so VAL-NN-017 is still unmet.",
+    "issues": [
+      {
+        "file": "Source/MLXNN/Distributed.swift",
+        "line": 91,
+        "severity": "blocking",
+        "description": "Both distributed layer initializers enforce divisibility with `precondition` (`AllToShardedLinear` here and `ShardedToAllLinear` again at line 200), which terminates the caller instead of raising a recoverable error. The feature description and validation contract require these non-divisible dimension cases to raise an error, matching the Python reference's `ValueError` behavior."
+      },
+      {
+        "file": "Tests/MLXTests/DistributedNNTests.swift",
+        "line": 18,
+        "severity": "blocking",
+        "description": "The new test suite only constructs a singleton group and verifies success-path behavior. There is no coverage for the required non-divisible-dimension failure cases from VAL-NN-017, so the crash-vs-error mismatch above would not be detected by this feature's tests."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "The mission/skill guidance around `@ParameterInfo` is misleading for MLXNN layers. The reviewed worker omitted `@ParameterInfo` for `weight`/`bias`, yet `Module` still treated the plain `MLXArray` properties as parameters just like `Linear` does. Shared state should clarify that `@ParameterInfo` is only needed for renamed or wrapped storage, not ordinary `MLXArray` properties.",
+      "evidence": "mission.md:112 says NN layers should use `@ParameterInfo`/`@ModuleInfo` where appropriate; .factory/skills/swift-nn-worker/SKILL.md:45 says to use `@ParameterInfo` for weight/bias; Source/MLXNN/Linear.swift:63-84 uses plain `let weight`/`let bias`; Source/MLXNN/Module.swift:1285-1369 shows bare `MLXArray` properties are discovered as parameters; Source/MLXNN/Distributed.swift:67-72 likewise uses plain properties and still passes its module-parameter tests."
+    },
+    {
+      "area": "skills",
+      "observation": "`swift-nn-worker`'s recorded compliance overstated how closely the procedure was followed. The skill requires reading `skills/mlx-swift/SKILL.md` and doing a red test run first, but the transcript skeleton only shows the worker loading `swift-nn-worker`, reading project files, and running a baseline build before implementation, while the handoff still reports `followedProcedure: true`.",
+      "evidence": ".factory/skills/swift-nn-worker/SKILL.md:16-31 and 33-42 require reading `skills/mlx-swift/SKILL.md` plus writing/running failing tests first; the transcript skeleton for worker session 31e3dd7d-18b4-47ab-a5c8-e58303300869 shows no `Read` of that skill file and no explicit red test run before creating Source/MLXNN/Distributed.swift, yet the handoff file /Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/handoffs/2026-03-14T07-00-30-402Z__distributed-nn-linear-layers__31e3dd7d-18b4-47ab-a5c8-e58303300869.json marks `skillFeedback.followedProcedure` as true."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Review failed. Commit 40f0b84 adds the distributed linear layers and supporting tests, but it does not implement or validate the required recoverable error path for non-divisible dimensions, leaving VAL-NN-017 unsatisfied."
+}
