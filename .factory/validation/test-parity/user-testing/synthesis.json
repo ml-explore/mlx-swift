@@ -1,0 +1,33 @@
+{
+  "milestone": "test-parity",
+  "round": 1,
+  "status": "pass",
+  "assertionsSummary": {
+    "total": 13,
+    "passed": 13,
+    "failed": 0,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-DIST-020",
+    "VAL-DIST-021",
+    "VAL-DIST-022",
+    "VAL-DIST-023",
+    "VAL-DIST-024",
+    "VAL-DIST-025",
+    "VAL-DIST-026",
+    "VAL-DIST-027",
+    "VAL-DIST-028",
+    "VAL-NN-021",
+    "VAL-NN-022",
+    "VAL-NN-023",
+    "VAL-NN-024"
+  ],
+  "failedAssertions": [],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "flowReports": [
+    ".factory/validation/test-parity/user-testing/flows/xcodebuild.json"
+  ],
+  "previousRound": null
+}
