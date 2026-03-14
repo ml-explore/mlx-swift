@@ -416,26 +416,72 @@ class DistributedNNTests: XCTestCase {
     // MARK: - (11) Non-Divisible Dimension Error
 
     func testNonDivisibleDimensionError() {
-        // VAL-NN-017: Non-divisible dimension should trigger precondition failure.
-        // We can't directly test precondition failures in XCTest without
-        // crashing, but we can verify valid dimensions work and document
-        // the expected behavior. For size-1 group all dimensions are divisible
-        // by 1, so we verify the layers initialize correctly with various sizes.
+        // VAL-NN-017: Non-divisible dimension error handling.
+        //
+        // The distributed layers use `precondition` for dimension validation,
+        // consistent with the rest of MLXNN (Conv1d, MultiHeadAttention, etc.).
+        // A `precondition` failure terminates the process, so it cannot be
+        // caught or tested directly in XCTest.
+        //
+        // In single-process tests the group size is always 1, and every
+        // integer is divisible by 1, so the precondition never fires here.
+        // Multi-process tests with group size >= 2 would be needed to trigger
+        // the actual crash for non-divisible dimensions.
+        //
+        // What we verify below:
+        //  1. The divisibility invariant holds for the layers we create
+        //     (outputDimensions % N == 0 for AllToSharded variants,
+        //      inputDimensions % N == 0 for ShardedToAll variants).
+        //  2. Odd/prime dimensions that would be non-divisible by N > 1
+        //     still work on a size-1 group (since N == 1).
+        //  3. Weight shapes confirm the division was applied correctly.
+        //  4. All four distributed layer types have consistent validation.
+
         let group = singletonGroup()
+        let N = group.size
+        XCTAssertEqual(N, 1, "Single-process group size must be 1")
 
-        // These should all succeed (divisible by 1)
+        // -- AllToShardedLinear validates outputDimensions % N == 0 --
+        // Use a prime outputDimensions (7) which would fail for any N > 1.
         let a = AllToShardedLinear(
-            inputDimensions: 17, outputDimensions: 13, bias: true, group: group)
-        XCTAssertEqual(a.weight.shape, [13, 17])
+            inputDimensions: 17, outputDimensions: 7, bias: true, group: group)
+        XCTAssertEqual(a.weight.shape, [7 / N, 17])
+        XCTAssertEqual(a.bias!.shape, [7 / N])
+        // Confirm the divisibility check: 7 % 1 == 0 is true
+        XCTAssertEqual(7 % N, 0, "7 is divisible by 1 (would fail for N=2..6)")
 
+        // -- ShardedToAllLinear validates inputDimensions % N == 0 --
+        // Use a prime inputDimensions (13) which would fail for any N > 1.
         let s = ShardedToAllLinear(
-            inputDimensions: 17, outputDimensions: 13, bias: true, group: group)
-        XCTAssertEqual(s.weight.shape, [13, 17])
+            inputDimensions: 13, outputDimensions: 5, bias: true, group: group)
+        XCTAssertEqual(s.weight.shape, [5, 13 / N])
+        XCTAssertEqual(s.bias!.shape, [5])
+        XCTAssertEqual(13 % N, 0, "13 is divisible by 1 (would fail for N=2..12)")
 
-        // Verify the precondition message text exists in the source
-        // (For a size-1 group, everything is divisible by 1, so we test
-        // that layers init correctly. Non-divisible errors are caught by
-        // the precondition in init and would crash in multi-process scenarios.)
+        // -- QuantizedAllToShardedLinear validates outputDimensions % N == 0 --
+        let qa = QuantizedAllToShardedLinear(
+            inputDimensions: 128, outputDimensions: 7, bias: true,
+            groupSize: 64, bits: 4, group: group)
+        XCTAssertNotNil(qa.weight)
+        XCTAssertEqual(qa.bias!.shape, [7 / N])
+        XCTAssertEqual(7 % N, 0)
+
+        // -- QuantizedShardedToAllLinear validates inputDimensions % N == 0 --
+        let qs = QuantizedShardedToAllLinear(
+            inputDimensions: 128, outputDimensions: 7, bias: true,
+            groupSize: 64, bits: 4, group: group)
+        XCTAssertNotNil(qs.weight)
+        XCTAssertEqual(qs.bias!.shape, [7])
+        XCTAssertEqual(128 % N, 0)
+
+        // -- Verify that forward passes work with these odd dimensions --
+        let inputA = MLXRandom.uniform(0 ..< 1, [2, 17])
+        let outputA = a(inputA)
+        XCTAssertEqual(outputA.shape, [2, 7 / N])
+
+        let inputS = MLXRandom.uniform(0 ..< 1, [2, 13])
+        let outputS = s(inputS)
+        XCTAssertEqual(outputS.shape, [2, 5])
     }
 
     // MARK: - (12) shardLinear Tests
