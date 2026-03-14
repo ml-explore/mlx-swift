@@ -269,6 +269,335 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     }
 }
 
+// MARK: - QuantizedAllToShardedLinear
+
+/// Each member of the group applies part of the affine transformation with
+/// a quantized matrix such that the result is sharded across the group.
+///
+/// It is the quantized equivalent of ``AllToShardedLinear``.
+/// Similar to ``QuantizedLinear``, its parameters are frozen and will not be
+/// included in any gradient computation.
+///
+/// ### See Also
+/// - ``AllToShardedLinear``
+/// - ``QuantizedShardedToAllLinear``
+open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
+
+    public let groupSize: Int
+    public let bits: Int
+    public let mode: QuantizationMode
+
+    public let weight: MLXArray
+    public let scales: MLXArray
+    public let biases: MLXArray?
+    public let bias: MLXArray?
+
+    /// The distributed group. Stored as a plain property so it is excluded
+    /// from `parameters()` and `children()`.
+    public let group: DistributedGroup
+
+    /// Initialize a ``QuantizedAllToShardedLinear`` layer.
+    ///
+    /// Validates that `outputDimensions` is divisible by the group size.
+    ///
+    /// - Parameters:
+    ///   - inputDimensions: number of input dimensions
+    ///   - outputDimensions: number of output dimensions (must be divisible by group size)
+    ///   - bias: if `true`, apply a bias
+    ///   - groupSize: the group size used for quantization. Default is 64.
+    ///   - bits: the bit width used for quantization. Default is 4.
+    ///   - mode: the quantization mode. Default is `.affine`.
+    ///   - group: the distributed group (defaults to `MLXDistributed.init()`)
+    public init(
+        inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
+        groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
+        group: DistributedGroup? = nil
+    ) {
+        let group = group ?? MLXDistributed.`init`()!
+        self.group = group
+        self.groupSize = groupSize
+        self.bits = bits
+        self.mode = mode
+        let N = group.size
+
+        precondition(
+            outputDimensions % N == 0,
+            "Cannot shard the output of size \(outputDimensions) across \(N) devices."
+        )
+
+        let scale = sqrt(1.0 / Float(inputDimensions))
+        let w = MLXRandom.uniform(
+            low: -scale, high: scale, [outputDimensions / N, inputDimensions])
+        let (quantizedWeight, scales, biases) = MLX.quantized(
+            w, groupSize: groupSize, bits: bits, mode: mode)
+        self.weight = quantizedWeight
+        self.scales = scales
+        self.biases = biases
+
+        if bias {
+            self.bias = MLXArray.zeros([outputDimensions / N])
+        } else {
+            self.bias = nil
+        }
+        super.init()
+
+        self.freeze()
+    }
+
+    /// Internal initializer for providing arrays directly (used by `fromQuantizedLinear`).
+    init(
+        weight: MLXArray, bias: MLXArray?, scales: MLXArray, biases: MLXArray?,
+        groupSize: Int, bits: Int, mode: QuantizationMode,
+        group: DistributedGroup
+    ) {
+        self.weight = weight
+        self.bias = bias
+        self.scales = scales
+        self.biases = biases
+        self.groupSize = groupSize
+        self.bits = bits
+        self.mode = mode
+        self.group = group
+        super.init()
+
+        self.freeze()
+    }
+
+    public override func unfreeze(
+        recursive: Bool = true, keys: [String]? = nil, strict: Bool = false
+    ) throws {
+        try super.unfreeze(recursive: recursive, keys: keys, strict: strict)
+        self.freeze(recursive: false)
+    }
+
+    open override func describeExtra(_ indent: Int) -> String {
+        let (outDims, inDims) = weight.shape2
+        let inDimsReal = (inDims * 32) / bits
+        let outDimsReal = outDims * group.size
+        return
+            "(inputDimensions=\(inDimsReal), outputDimensions=\(outDimsReal), bias=\(bias != nil), groupSize=\(groupSize), bits=\(bits))"
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        // Aggregate the gradients coming from each shard
+        var x = sumGradients(group: group)(x)
+
+        x = quantizedMM(
+            x,
+            weight,
+            scales: scales,
+            biases: biases,
+            transpose: true,
+            groupSize: groupSize,
+            bits: bits,
+            mode: mode
+        )
+        if let bias {
+            x = x + bias
+        }
+        return x
+    }
+
+    /// Create a ``QuantizedAllToShardedLinear`` from an existing ``QuantizedLinear`` layer.
+    ///
+    /// For a size-1 group, the sharded weights are identical to the original.
+    ///
+    /// - Parameters:
+    ///   - quantizedLinear: the quantized linear layer to convert
+    ///   - segments: number of segments for fused weights (e.g. 3 for QKV). Default is 1.
+    ///   - group: the distributed group
+    /// - Returns: a new ``QuantizedAllToShardedLinear`` layer with sharded weights
+    public class func fromQuantizedLinear(
+        _ quantizedLinear: QuantizedLinear, segments: Int = 1,
+        group: DistributedGroup? = nil
+    ) -> QuantizedAllToShardedLinear {
+        let group = group ?? MLXDistributed.`init`()!
+        let (outputDimensions, inputDimensions) = quantizedLinear.weight.shape2
+        let inputDimsReal = (inputDimensions * 32) / quantizedLinear.bits
+
+        let layer = QuantizedAllToShardedLinear(
+            inputDimensions: inputDimsReal, outputDimensions: outputDimensions,
+            bias: quantizedLinear.bias != nil,
+            groupSize: quantizedLinear.groupSize,
+            bits: quantizedLinear.bits,
+            mode: quantizedLinear.mode,
+            group: group)
+
+        // Shard the parameters from the original quantized linear layer
+        let shardedParams = shardParameterTree(
+            quantizedLinear.parameters(), predicate: allToShardedPredicate(segments: segments),
+            group: group)
+        layer.update(parameters: shardedParams)
+
+        return layer
+    }
+}
+
+// MARK: - QuantizedShardedToAllLinear
+
+/// Each member of the group applies part of the affine transformation using
+/// the quantized matrix and then aggregates the results.
+///
+/// All nodes will have the same exact result after this layer.
+///
+/// It is the quantized equivalent of ``ShardedToAllLinear``.
+/// Similar to ``QuantizedLinear``, its parameters are frozen and will not be
+/// included in any gradient computation.
+///
+/// ### See Also
+/// - ``ShardedToAllLinear``
+/// - ``QuantizedAllToShardedLinear``
+open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
+
+    public let groupSize: Int
+    public let bits: Int
+    public let mode: QuantizationMode
+
+    public let weight: MLXArray
+    public let scales: MLXArray
+    public let biases: MLXArray?
+    public let bias: MLXArray?
+
+    /// The distributed group. Stored as a plain property so it is excluded
+    /// from `parameters()` and `children()`.
+    public let group: DistributedGroup
+
+    /// Initialize a ``QuantizedShardedToAllLinear`` layer.
+    ///
+    /// Validates that `inputDimensions` is divisible by the group size.
+    ///
+    /// - Parameters:
+    ///   - inputDimensions: number of input dimensions (must be divisible by group size)
+    ///   - outputDimensions: number of output dimensions
+    ///   - bias: if `true`, apply a bias
+    ///   - groupSize: the group size used for quantization. Default is 64.
+    ///   - bits: the bit width used for quantization. Default is 4.
+    ///   - mode: the quantization mode. Default is `.affine`.
+    ///   - group: the distributed group (defaults to `MLXDistributed.init()`)
+    public init(
+        inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
+        groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
+        group: DistributedGroup? = nil
+    ) {
+        let group = group ?? MLXDistributed.`init`()!
+        self.group = group
+        self.groupSize = groupSize
+        self.bits = bits
+        self.mode = mode
+        let N = group.size
+
+        precondition(
+            inputDimensions % N == 0,
+            "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
+        )
+
+        let scale = sqrt(1.0 / Float(inputDimensions))
+        let w = MLXRandom.uniform(
+            low: -scale, high: scale, [outputDimensions, inputDimensions / N])
+        let (quantizedWeight, scales, biases) = MLX.quantized(
+            w, groupSize: groupSize, bits: bits, mode: mode)
+        self.weight = quantizedWeight
+        self.scales = scales
+        self.biases = biases
+
+        if bias {
+            self.bias = MLXArray.zeros([outputDimensions])
+        } else {
+            self.bias = nil
+        }
+        super.init()
+
+        self.freeze()
+    }
+
+    /// Internal initializer for providing arrays directly (used by `fromQuantizedLinear`).
+    init(
+        weight: MLXArray, bias: MLXArray?, scales: MLXArray, biases: MLXArray?,
+        groupSize: Int, bits: Int, mode: QuantizationMode,
+        group: DistributedGroup
+    ) {
+        self.weight = weight
+        self.bias = bias
+        self.scales = scales
+        self.biases = biases
+        self.groupSize = groupSize
+        self.bits = bits
+        self.mode = mode
+        self.group = group
+        super.init()
+
+        self.freeze()
+    }
+
+    public override func unfreeze(
+        recursive: Bool = true, keys: [String]? = nil, strict: Bool = false
+    ) throws {
+        try super.unfreeze(recursive: recursive, keys: keys, strict: strict)
+        self.freeze(recursive: false)
+    }
+
+    open override func describeExtra(_ indent: Int) -> String {
+        let (outDims, inDims) = weight.shape2
+        let inDimsReal = (inDims * 32) / bits * group.size
+        return
+            "(inputDimensions=\(inDimsReal), outputDimensions=\(outDims), bias=\(bias != nil), groupSize=\(groupSize), bits=\(bits))"
+    }
+
+    open func callAsFunction(_ x: MLXArray) -> MLXArray {
+        var x = quantizedMM(
+            x,
+            weight,
+            scales: scales,
+            biases: biases,
+            transpose: true,
+            groupSize: groupSize,
+            bits: bits,
+            mode: mode
+        )
+
+        x = MLXDistributed.allSum(x, group: group)
+
+        if let bias {
+            x = x + bias
+        }
+        return x
+    }
+
+    /// Create a ``QuantizedShardedToAllLinear`` from an existing ``QuantizedLinear`` layer.
+    ///
+    /// For a size-1 group, the sharded weights are identical to the original.
+    ///
+    /// - Parameters:
+    ///   - quantizedLinear: the quantized linear layer to convert
+    ///   - segments: number of segments for fused weights (e.g. 3 for QKV). Default is 1.
+    ///   - group: the distributed group
+    /// - Returns: a new ``QuantizedShardedToAllLinear`` layer with sharded weights
+    public class func fromQuantizedLinear(
+        _ quantizedLinear: QuantizedLinear, segments: Int = 1,
+        group: DistributedGroup? = nil
+    ) -> QuantizedShardedToAllLinear {
+        let group = group ?? MLXDistributed.`init`()!
+        let (outputDimensions, inputDimensions) = quantizedLinear.weight.shape2
+        let inputDimsReal = (inputDimensions * 32) / quantizedLinear.bits
+
+        let layer = QuantizedShardedToAllLinear(
+            inputDimensions: inputDimsReal, outputDimensions: outputDimensions,
+            bias: quantizedLinear.bias != nil,
+            groupSize: quantizedLinear.groupSize,
+            bits: quantizedLinear.bits,
+            mode: quantizedLinear.mode,
+            group: group)
+
+        // Shard the parameters from the original quantized linear layer
+        let shardedParams = shardParameterTree(
+            quantizedLinear.parameters(), predicate: shardedToAllPredicate(segments: segments),
+            group: group)
+        layer.update(parameters: shardedParams)
+
+        return layer
+    }
+}
+
 // MARK: - Internal Sharding Helpers
 
 /// Sharding predicate result: axis to shard on, and number of segments.
