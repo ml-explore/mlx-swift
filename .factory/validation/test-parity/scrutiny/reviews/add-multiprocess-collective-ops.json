@@ -1,0 +1,28 @@
+{
+  "featureId": "add-multiprocess-collective-ops",
+  "reviewedAt": "2026-03-14T19:09:25.316580Z",
+  "commitId": "7185f79",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The feature adds the requested worker operations and most of the new test coverage, but the sumScatter path does not actually verify the required behavior. Instead, the worker and test both treat the ring backend's '[ReduceScatter] Not implemented yet.' error as a successful outcome, so VAL-DIST-022 and the feature's promised sumScatter parity are not truly satisfied.",
+    "issues": [
+      {
+        "file": "Tests/MLXTests/DistributedTests.swift",
+        "line": 939,
+        "severity": "blocking",
+        "description": "`testMultiProcessSumScatter` explicitly accepts `errorCaught == true` as success instead of requiring the rank-local `[2,4]` / `[6,8]` results promised by the feature and validation contract. The paired worker implementation does the same by catching the backend error and exiting 0 (`Source/Examples/DistributedWorker.swift:300-313`). As written, the new coverage will pass even when multi-process `sumScatter` is unimplemented on the exercised backend, so the feature does not actually deliver the requested parity for VAL-DIST-022."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "knowledge",
+      "observation": "The mission shared state does not record that the localhost ring backend used by these tests lacks multi-process ReduceScatter/sumScatter support, even though this feature had to special-case that limitation.",
+      "evidence": "`Source/Examples/DistributedWorker.swift:300-313` and `Tests/MLXTests/DistributedTests.swift:940-984` handle '[ReduceScatter] Not implemented yet.' as an expected outcome, but `.factory/library/architecture.md:56-59` documents singleton and split limitations without capturing this ring-backend sumScatter gap."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Reviewed worker session `40ca95e6-f191-463f-83f8-ca6bbfffe379`, handoff commit `7185f79`, the transcript skeleton, mission docs, skill file, and the diff for `DistributedWorker.swift` / `DistributedTests.swift`. Most of the added collective-op coverage looks aligned with the feature request, but the new multi-process `sumScatter` test only verifies graceful failure on the ring backend rather than the required scattered result, so the feature review result is fail."
+}

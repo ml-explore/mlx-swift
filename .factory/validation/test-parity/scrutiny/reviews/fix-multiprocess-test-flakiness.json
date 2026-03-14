@@ -1,0 +1,44 @@
+{
+  "featureId": "fix-multiprocess-test-flakiness",
+  "reviewedAt": "2026-03-14T19:07:47Z",
+  "commitId": "ce1a90e",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The commit materially hardens the multi-process harness with deterministic port allocation, staggered launches, async pipe draining, retry logic, and teardown cleanup, but it does not fully satisfy the feature requirements and leaves a timeout-related false-negative path in place.",
+    "issues": [
+      {
+        "file": "Tests/MLXTests/DistributedTests.swift",
+        "line": 567,
+        "severity": "blocking",
+        "description": "`runMultiProcessTest` still defaults to `timeout: 30.0` (and the same bug is duplicated in `Tests/MLXTests/DistributedNNTests.swift:1267`), so the feature never implements the explicitly requested increase to 60 seconds for all multi-process tests. All existing call sites therefore continue to run with 30-second worker timeouts, which means the mission requirement was missed even though retries were added." 
+      },
+      {
+        "file": "Tests/MLXTests/DistributedTests.swift",
+        "line": 531,
+        "severity": "blocking",
+        "description": "The timeout path always returns `exitCode == -1` after terminating the child, even if `stdoutStr` already contains a complete success payload. The same logic is duplicated in `Tests/MLXTests/DistributedNNTests.swift:1232`. That means a worker that finishes the operation but hangs during distributed teardown is still reported as a failed timeout, so the harness can continue to produce false negatives instead of reliably fixing the flake." 
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "Mission guidance still documents a 30-second timeout per process for multi-process tests, which conflicts with this feature's requirement to raise the timeout to 60 seconds and likely contributed to the worker preserving the old default.",
+      "evidence": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/AGENTS.md:87 says '30-second timeout per process'; ce1a90e keeps `timeout: TimeInterval = 30.0` in `Tests/MLXTests/DistributedTests.swift:567` and `Tests/MLXTests/DistributedNNTests.swift:1267`."
+    },
+    {
+      "area": "skills",
+      "observation": "The `swift-library-worker` skill does not mention async pipe draining / `readabilityHandler` as a necessary safeguard for multi-process tests, even though this feature had to discover and implement that to avoid child-process deadlocks.",
+      "evidence": "`/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/.factory/skills/swift-library-worker/SKILL.md:68` only says to verify both processes complete; the handoff's `skillFeedback.suggestedChanges` explicitly asks to document pipe deadlock prevention with `async readabilityHandler`."
+    },
+    {
+      "area": "knowledge",
+      "observation": "The shared architecture notes still do not capture the hardened multi-process test-harness patterns discovered here (deterministic non-ephemeral port ranges, launch staggering, socket cleanup delay, and retry-on-timeout), so later workers would need to rediscover them.",
+      "evidence": "`/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/.factory/library/architecture.md` has distributed-backend notes but no mention of port allocation, `TIME_WAIT`, retry logic, or launch staggering, while the handoff `salientSummary` lists those as the core flake mitigations added in ce1a90e."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Review failed. ce1a90e improves the multi-process test harness substantially, but it misses the explicit 60-second timeout requirement and still treats timed-out children as failures even when they have already emitted success output, leaving a real flake path unresolved."
+}

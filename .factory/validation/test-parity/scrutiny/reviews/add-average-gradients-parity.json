@@ -1,0 +1,33 @@
+{
+  "featureId": "add-average-gradients-parity",
+  "reviewedAt": "2026-03-14T19:07:31.464416Z",
+  "commitId": "5db5802",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The averageGradients implementation change appears aligned with the Python reference, but the new tests only exercise the singleton fast path and therefore do not validate the communicationType, mixed-dtype fallback, or batching behavior this feature was supposed to cover.",
+    "issues": [
+      {
+        "file": "Tests/MLXTests/DistributedNNTests.swift",
+        "line": 693,
+        "severity": "blocking",
+        "description": "All three new tests use singletonGroup(), but averageGradients returns immediately when group.size == 1 (Source/MLXNN/Distributed.swift:829-834). As a result, the assertions at 693-819 never exercise the new communicationType cast path, the mixed-dtype fallback, or the batching/grouping logic (including the communicationType.size threshold), so the feature's required test coverage is not actually provided. Compare with the Python parity test in Source/Cmlx/mlx/python/tests/mlx_distributed_tests.py:11-59, which checks dtype conversion and batching by observing all_sum calls."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "observation": "The swift-nn-worker skill requires 'Write Tests First (TDD)', but this worker edited the implementation before adding tests. Either compliance checks should flag that deviation, or the skill should be updated if tests-first is not actually required for these features.",
+      "evidence": "skills/swift-nn-worker/SKILL.md section '2. Write Tests First (TDD)'; worker-transcripts.jsonl:24 shows the Edit to Source/MLXNN/Distributed.swift before the later Edit to Tests/MLXTests/DistributedNNTests.swift."
+    },
+    {
+      "area": "knowledge",
+      "observation": "Future workers may need an explicit note that singleton-group tests cannot validate averageGradients batching, mixed-dtype fallback, or communicationType casting, because the function short-circuits before that logic runs.",
+      "evidence": "Source/MLXNN/Distributed.swift:829-834 returns early for N == 1; all new tests in Tests/MLXTests/DistributedNNTests.swift:693-819 use singletonGroup()."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Reviewed commit 5db5802 and the worker transcript/handoff. The implementation change itself looks consistent with Python parity, but the added tests are insufficient because they only hit the size-1 early-return path, so this feature does not yet demonstrate the behavior it was meant to verify."
+}
