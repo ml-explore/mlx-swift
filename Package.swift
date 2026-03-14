@@ -330,7 +330,7 @@ let package = Package(
         ),
         .executableTarget(
             name: "DistributedWorker",
-            dependencies: ["MLX"],
+            dependencies: ["MLX", "MLXNN"],
             path: "Source/Examples",
             sources: ["DistributedWorker.swift"]
         ),
