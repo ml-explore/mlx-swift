@@ -31,7 +31,7 @@ Swift (MLXDistributed.allSum) -> C (mlx_distributed_all_sum) -> C++ (mlx::core::
 ### Handle Lifecycle
 `DistributedGroup` wraps `mlx_distributed_group` (opaque `void* ctx`).
 - Created by `mlx_distributed_init(strict)` or `mlx_distributed_group_split(group, color, key)`
-- `deinit` must call appropriate free function
+- Public MLX-C v0.5.0 does not expose `mlx_distributed_group_free()`, so Swift wrappers cannot currently release group handles through the public C API
 - Split children are independent of parent (own reference-counted C++ object)
 
 ### Backend Selection
@@ -48,6 +48,10 @@ When both ring and JACCL are compiled:
 
 ### GPU Limitation
 Distributed operations (AllReduce, AllGather, Send, Recv) have **no GPU implementation** -- they must run on CPU. For multi-process distributed code, set `MLX.Device.setDefault(.cpu)`. Single-process tests on size-1 groups work on GPU because identity operations don't actually invoke the distributed primitives. The NN layers must handle this: data may need CPU transfer for collective ops then back to GPU.
+
+### Singleton Group Behavior
+- On a size-1 group, `allSum`, `allGather`, `allMax`, `allMin`, and `sumScatter` behave like identity operations.
+- `send`, `recv`, `recvLike`, and `split` do not have a successful singleton-group path in the current backend; cover those APIs via `withErrorHandler` in single-process tests and use multi-process tests for success-path validation.
 
 ### MLX-C Gaps
 1. `mlx_distributed_init()` has no backend parameter (C++ has `bk` string). Filed as issue on ml-explore/mlx-c. Workaround: compile desired backends; `"any"` picks first available.

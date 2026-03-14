@@ -1,0 +1,57 @@
+{
+  "featureId": "distributed-single-process-tests",
+  "reviewedAt": "2026-03-14T06:20:47.035399+00:00",
+  "commitId": "0f38009",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The reviewed commit adds a well-structured DistributedTests suite and covers the singleton lifecycle, identity collectives, dtype handling, 3D arrays, stream usage, and strict-mode error path, but it does not fully implement the requested coverage for split-child lifecycle ordering or for the send/recv/recvLike result semantics.",
+    "issues": [
+      {
+        "file": "Tests/MLXTests/DistributedTests.swift",
+        "line": 106,
+        "severity": "blocking",
+        "description": "The send/recv/recvLike tests only assert that singleton groups raise errors, so they never verify the requested result behavior: `send` returning an `MLXArray` token, `recv(shape:dtype:...)` honoring the requested shape and dtype, or `recvLike` mirroring the template array. For a test-only feature, that leaves the requested API coverage incomplete."
+      },
+      {
+        "file": "Tests/MLXTests/DistributedTests.swift",
+        "line": 192,
+        "severity": "blocking",
+        "description": "`testMultipleGroupLifecycle` does not exercise `DistributedGroup.split(color:key:)` at all. It replaces the requested parent→split child→parent deinit→child use scenario with two independent calls to `MLXDistributed.init()`, so the split-child lifecycle ordering called out in the feature description remains untested."
+      }
+    ]
+  },
+  "issues": [
+    {
+      "file": "Tests/MLXTests/DistributedTests.swift",
+      "line": 106,
+      "severity": "blocking",
+      "description": "The send/recv/recvLike tests only assert that singleton groups raise errors, so they never verify the requested result behavior: `send` returning an `MLXArray` token, `recv(shape:dtype:...)` honoring the requested shape and dtype, or `recvLike` mirroring the template array. For a test-only feature, that leaves the requested API coverage incomplete."
+    },
+    {
+      "file": "Tests/MLXTests/DistributedTests.swift",
+      "line": 192,
+      "severity": "blocking",
+      "description": "`testMultipleGroupLifecycle` does not exercise `DistributedGroup.split(color:key:)` at all. It replaces the requested parent→split child→parent deinit→child use scenario with two independent calls to `MLXDistributed.init()`, so the split-child lifecycle ordering called out in the feature description remains untested."
+    }
+  ],
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "target": "skill",
+      "description": "The swift-library-worker skill does not warn test authors that singleton distributed groups cannot execute send/recv/recvLike/split successfully.",
+      "observation": "Add guidance that single-process tests must treat those operations as error-path coverage (using `withErrorHandler`) or defer their success-path assertions to multi-process tests.",
+      "evidence": "/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/.factory/skills/swift-library-worker/SKILL.md:15-16,28-35 describes single-process and multi-process test development but gives no singleton-group caveat; /Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/handoffs/2026-03-14T06-02-55-394Z__distributed-single-process-tests__261092c8-e2d3-42f0-808d-ec1ad964cafd.json:105-117 records the worker discovering that limitation and explicitly requesting the skill update."
+    },
+    {
+      "area": "knowledge",
+      "target": "library",
+      "description": "The shared architecture notes describe GPU limitations for distributed ops but not the singleton-group runtime limitation that shaped this test design.",
+      "observation": "Record in `.factory/library/architecture.md` or a related library note that `send`, `recv`, `recvLike`, and `split` are unsupported on size-1 groups and should be validated either via `withErrorHandler` or dedicated multi-process tests.",
+      "evidence": "/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/.factory/library/architecture.md:49-54 documents GPU and MLX-C limitations but not singleton-group behavior; /Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/handoffs/2026-03-14T06-02-55-394Z__distributed-single-process-tests__261092c8-e2d3-42f0-808d-ec1ad964cafd.json:107-109 identifies singleton-group failures for those operations."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Fail. The suite passes and covers many singleton behaviors, but it does not verify the requested send/recv/recvLike result semantics and it never exercises the split-child lifecycle ordering scenario that this feature was supposed to cover."
+}
