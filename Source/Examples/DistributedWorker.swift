@@ -93,7 +93,19 @@ struct DistributedWorker {
         }
 
         fputs("Worker rank=\(rank) completed successfully\n", stderr)
-        exit(0)
+
+        // Flush all output buffers before terminating. Swift's print() may buffer
+        // stdout, so we must ensure JSON results are fully written to the pipe
+        // before the process exits.
+        fflush(stdout)
+        fflush(stderr)
+
+        // Use _exit(0) instead of exit(0) to force immediate process termination.
+        // The ring backend's TCP sockets can block in their destructor waiting for
+        // peer socket closure, causing exit(0) (which runs atexit handlers and C++
+        // destructors) to hang indefinitely. _exit(0) bypasses all cleanup handlers
+        // and terminates the process immediately.
+        _exit(0)
     }
 
     /// allSum test: rank 0 has [1,2,3], rank 1 has [4,5,6], both should get [5,7,9]
