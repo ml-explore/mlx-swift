@@ -58,6 +58,20 @@ Distributed operations (AllReduce, AllGather, Send, Recv) have **no GPU implemen
 - `send`, `recv`, and `recvLike` do not have a successful singleton-group path in the current backend; cover those APIs via `withErrorHandler` in single-process tests and use multi-process tests for success-path validation.
 - `split` currently has no successful path in any compiled MLX backend (`ring`, `jaccl`, `nccl`) regardless of group size. Tests can validate error surfacing and parent-group recovery after a failed split attempt, but they cannot validate split-child success semantics until upstream backend support exists.
 
+### JACCL Testing Limitations
+
+JACCL (Joint Accelerator Communication Library) cannot be tested in CI or on most developer machines because it requires all of the following:
+- **macOS 26.2 or later** (JACCL APIs were introduced in this version)
+- **Thunderbolt 5 hardware** with RDMA-capable network interfaces (currently only Apple M4 Mac mini/MacBook Pro with TB5 ports connected to TB5 peers)
+- **RDMA explicitly enabled** in Recovery Mode via `csrutil enable --rdma` (disabled by default)
+
+When these requirements are not met, `MLXDistributed.isAvailable()` still returns `true` because the ring backend (TCP sockets) is always available as a fallback. There is no public MLX-C API to query which specific backend was selected, so tests cannot distinguish "ring is available" from "JACCL is available."
+
+**Testing strategy:**
+- `testJACCLAvailability` verifies `isAvailable()` returns `true` (ring backend) without crashing, and documents that JACCL requires the hardware/software prerequisites above.
+- All multi-process tests use the ring backend on localhost. JACCL multi-process tests would require two TB5-connected Macs.
+- Full JACCL validation requires a manual test lab with TB5-connected hardware running macOS 26.2+.
+
 ### MLX-C Gaps
 1. `mlx_distributed_init()` has no backend parameter (C++ has `bk` string). Filed as issue on ml-explore/mlx-c. Workaround: compile desired backends; `"any"` picks first available.
 2. `mlx_distributed_group_free()` is not publicly exposed in MLX-C v0.5.0. The private inline helper exists in `mlx/c/private/distributed_group.h` but is C++-only. Groups are singleton-like and long-lived, so practical impact is minimal. Should file upstream issue.
