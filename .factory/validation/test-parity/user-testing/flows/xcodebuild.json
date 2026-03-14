@@ -1,0 +1,517 @@
+{
+  "groupId": "xcodebuild",
+  "testedAt": "2026-03-14T19:26:25.101431+00:00",
+  "isolation": {
+    "surface": "xcodebuild",
+    "repoRoot": "/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift",
+    "missionDir": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4",
+    "evidenceDirectory": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/test-parity/xcodebuild",
+    "flowReportPath": "/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/.factory/validation/test-parity/user-testing/flows/xcodebuild.json",
+    "derivedDataPath": "/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/test-parity/xcodebuild/derived-data",
+    "concurrency": "sequential"
+  },
+  "toolsUsed": [
+    "shell",
+    "xcodebuild"
+  ],
+  "commands": [
+    {
+      "command": "xcodebuild build -scheme \"mlx-swift-Package\" -destination \"platform=macOS\" -derivedDataPath \"/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/test-parity/xcodebuild/derived-data\"",
+      "status": "pass",
+      "evidence": {
+        "log": "test-parity/xcodebuild/build.log",
+        "markers": [
+          "build.log:77805 ** BUILD SUCCEEDED **",
+          "build.log:12 Invalid Exclude '/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/Source/Cmlx/mlx/mlx/backend/cuda/cuda.cpp': File not found."
+        ],
+        "duplicateSymbolCheck": "No 'duplicate symbol' marker found in build.log"
+      }
+    },
+    {
+      "command": "xcodebuild test -scheme \"mlx-swift-Package\" -destination \"platform=macOS\" -derivedDataPath \"/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/test-parity/xcodebuild/derived-data\" -resultBundlePath \"/Users/ronaldmannak/.factory/missions/019bac78-c826-4d65-837d-6a4194223ed4/evidence/test-parity/xcodebuild/assigned-tests.xcresult\" [14 only-testing selectors]",
+      "status": "pass",
+      "evidence": {
+        "log": "test-parity/xcodebuild/test-assigned.log",
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "markers": [
+          "test-assigned.log:796 Executed 14 tests, with 0 failures (0 unexpected) in 58.328 (58.354) seconds",
+          "test-assigned.log:806 ** TEST SUCCEEDED **"
+        ]
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "id": "VAL-DIST-020",
+      "title": "Multi-process allMax",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "DistributedTests.testMultiProcessAllMax drives a 2-rank allMax and expects [4,5,6] on both ranks.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:841 to Source/Examples/DistributedWorker.swift:238 (runAllMax)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:779 started; test-assigned.log:780 passed (2.416 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:841",
+          "Source/Examples/DistributedWorker.swift:238"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:779 Test Case '-[MLXTests.DistributedTests testMultiProcessAllMax]' started.",
+          "test-assigned.log:780 Test Case '-[MLXTests.DistributedTests testMultiProcessAllMax]' passed (2.416 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-021",
+      "title": "Multi-process allMin",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "DistributedTests.testMultiProcessAllMin drives a 2-rank allMin and expects [1,2,3] on both ranks.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:890 to Source/Examples/DistributedWorker.swift:268 (runAllMin)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:781 started; test-assigned.log:782 passed (2.397 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:890",
+          "Source/Examples/DistributedWorker.swift:268"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:781 Test Case '-[MLXTests.DistributedTests testMultiProcessAllMin]' started.",
+          "test-assigned.log:782 Test Case '-[MLXTests.DistributedTests testMultiProcessAllMin]' passed (2.397 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-022",
+      "title": "Multi-process sumScatter graceful handling",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "The test should treat the ring backend's missing ReduceScatter implementation as a graceful, non-crashing limitation and automatically validate real scattered results if upstream support appears later.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:939 to Source/Examples/DistributedWorker.swift:303 (runSumScatter), which catches the expected backend error and emits JSON instead of crashing."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:791 started; test-assigned.log:792 passed (2.405 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:939",
+          "Source/Examples/DistributedWorker.swift:303"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:791 Test Case '-[MLXTests.DistributedTests testMultiProcessSumScatter]' started.",
+          "test-assigned.log:792 Test Case '-[MLXTests.DistributedTests testMultiProcessSumScatter]' passed (2.405 seconds)."
+        ],
+        "upstreamLimitation": "ReduceScatter is still unimplemented in the ring backend; the contract expects graceful error surfacing rather than successful scatter output."
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-023",
+      "title": "Multi-process recvLike",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "Rank 0 sends [42,43,44]; rank 1 receives via recvLike and verifies shape [3] and dtype float32.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:1008 to Source/Examples/DistributedWorker.swift:346 (runRecvLike)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:789 started; test-assigned.log:790 passed (32.539 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:1008",
+          "Source/Examples/DistributedWorker.swift:346"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:789 Test Case '-[MLXTests.DistributedTests testMultiProcessRecvLike]' started.",
+          "test-assigned.log:790 Test Case '-[MLXTests.DistributedTests testMultiProcessRecvLike]' passed (32.539 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-024",
+      "title": "Multi-process multi-dtype collectives",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "The test should cover float16 and int32 allSum across 2 ranks while preserving dtype.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:1054 to Source/Examples/DistributedWorker.swift:442 (runAllSumMultiDtype)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:785 started; test-assigned.log:786 passed (2.404 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:1054",
+          "Source/Examples/DistributedWorker.swift:442"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:785 Test Case '-[MLXTests.DistributedTests testMultiProcessMultiDtype]' started.",
+          "test-assigned.log:786 Test Case '-[MLXTests.DistributedTests testMultiProcessMultiDtype]' passed (2.404 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-025",
+      "title": "Multi-process multi-shape collectives",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "The test should cover 2D allSum on shape [2,3] across 2 ranks and preserve shape.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:1116 to Source/Examples/DistributedWorker.swift:507 (runAllSumMultiShape)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:787 started; test-assigned.log:788 passed (2.400 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:1116",
+          "Source/Examples/DistributedWorker.swift:507"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:787 Test Case '-[MLXTests.DistributedTests testMultiProcessMultiShape]' started.",
+          "test-assigned.log:788 Test Case '-[MLXTests.DistributedTests testMultiProcessMultiShape]' passed (2.400 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-026",
+      "title": "Multi-process iterative send/recv",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "The test should perform 10 rounds of alternating send/recv and finish with value 32.0 on both ranks.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:1165 to Source/Examples/DistributedWorker.swift:389 (runSendRecvIterative)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:783 started; test-assigned.log:784 passed (2.395 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:1165",
+          "Source/Examples/DistributedWorker.swift:389"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:783 Test Case '-[MLXTests.DistributedTests testMultiProcessIterativeSendRecv]' started.",
+          "test-assigned.log:784 Test Case '-[MLXTests.DistributedTests testMultiProcessIterativeSendRecv]' passed (2.395 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-027",
+      "title": "allGather VJP backward",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "The contract requires size-1 identity-gradient coverage plus multi-process rank-slice gradient coverage.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:1210 (testAllGatherVJP) and :1230 (testMultiProcessAllGatherVJP) to Source/Examples/DistributedWorker.swift:547 (runAllGatherVjp)."
+        },
+        {
+          "action": "Run targeted xcodebuild tests",
+          "expected": "Both the singleton VJP test and the 2-rank VJP test pass under xcodebuild.",
+          "observed": "test-assigned.log:773-774 passed for testAllGatherVJP; test-assigned.log:777-778 passed for testMultiProcessAllGatherVJP."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:1210",
+          "Tests/MLXTests/DistributedTests.swift:1230",
+          "Source/Examples/DistributedWorker.swift:547"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:773 Test Case '-[MLXTests.DistributedTests testAllGatherVJP]' started.",
+          "test-assigned.log:774 Test Case '-[MLXTests.DistributedTests testAllGatherVJP]' passed (1.018 seconds).",
+          "test-assigned.log:777 Test Case '-[MLXTests.DistributedTests testMultiProcessAllGatherVJP]' started.",
+          "test-assigned.log:778 Test Case '-[MLXTests.DistributedTests testMultiProcessAllGatherVJP]' passed (2.406 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-DIST-028",
+      "title": "JACCL availability check",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest coverage",
+          "expected": "The test should verify MLXDistributed.isAvailable() is callable, returns a Bool, remains true via ring fallback, and does not crash on hardware without JACCL prerequisites.",
+          "observed": "Mapped Tests/MLXTests/DistributedTests.swift:74 (testJACCLAvailability), which documents the RDMA/Thunderbolt 5 limitation and verifies ring fallback behavior."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:775 started; test-assigned.log:776 passed (1.011 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedTests.swift:74"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:775 Test Case '-[MLXTests.DistributedTests testJACCLAvailability]' started.",
+          "test-assigned.log:776 Test Case '-[MLXTests.DistributedTests testJACCLAvailability]' passed (1.011 seconds)."
+        ],
+        "hardwareLimitation": "The contract and test source note that JACCL requires macOS 26.2+, Thunderbolt 5 RDMA hardware, and Recovery Mode configuration; validation here confirms graceful availability probing and ring fallback rather than JACCL activation."
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-NN-021",
+      "title": "averageGradients communicationType parameter",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest coverage",
+          "expected": "The API should accept communicationType and preserve identity behavior on a size-1 group.",
+          "observed": "Mapped Tests/MLXTests/DistributedNNTests.swift:693 (testAverageGradientsCommunicationType), which checks communicationType .float16 and .bfloat16 on a singleton group."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:760 started; test-assigned.log:763 passed (1.034 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedNNTests.swift:693"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:760 Test Case '-[MLXTests.DistributedNNTests testAverageGradientsCommunicationType]' started.",
+          "test-assigned.log:763 Test Case '-[MLXTests.DistributedNNTests testAverageGradientsCommunicationType]' passed (1.034 seconds)."
+        ],
+        "contractNote": "Per the contract, this validates the size-1 identity path; multi-process casting behavior remains future coverage."
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-NN-022",
+      "title": "averageGradients mixed-dtype fallback",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest coverage",
+          "expected": "Mixed float32/float16 gradient trees should preserve values and dtypes on a size-1 group while exercising the fallback-facing API contract.",
+          "observed": "Mapped Tests/MLXTests/DistributedNNTests.swift:731 (testAverageGradientsMixedDtypeFallback), including a communicationType variant on the same mixed-dtype tree."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:764 started; test-assigned.log:765 passed (1.024 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedNNTests.swift:731"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:764 Test Case '-[MLXTests.DistributedNNTests testAverageGradientsMixedDtypeFallback]' started.",
+          "test-assigned.log:765 Test Case '-[MLXTests.DistributedNNTests testAverageGradientsMixedDtypeFallback]' passed (1.024 seconds)."
+        ],
+        "contractNote": "Per the contract, this confirms the singleton fallback contract; true multi-process fallback behavior remains future coverage."
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-NN-023",
+      "title": "Multi-process shard_linear forward parity",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "Two ranks should shard the same seeded Linear layer and match both AllToSharded and ShardedToAll forward parity against the non-sharded reference.",
+          "observed": "Mapped Tests/MLXTests/DistributedNNTests.swift:1388 to Source/Examples/DistributedWorker.swift:615 (runShardLinearForward)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:768 started; test-assigned.log:769 passed (2.488 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedNNTests.swift:1388",
+          "Source/Examples/DistributedWorker.swift:615"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:768 Test Case '-[MLXTests.DistributedNNTests testMultiProcessShardLinearForward]' started.",
+          "test-assigned.log:769 Test Case '-[MLXTests.DistributedNNTests testMultiProcessShardLinearForward]' passed (2.488 seconds)."
+        ]
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-NN-024",
+      "title": "Multi-process shard_linear backward gradient parity",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Inspect XCTest and helper coverage",
+          "expected": "Two ranks should match loss plus all layer weight/bias gradient slices between sharded and non-sharded sequential models.",
+          "observed": "Mapped Tests/MLXTests/DistributedNNTests.swift:1438 to Source/Examples/DistributedWorker.swift:692 (runShardLinearBackward)."
+        },
+        {
+          "action": "Run targeted xcodebuild test",
+          "expected": "Named XCTest passes under the real xcodebuild surface.",
+          "observed": "test-assigned.log:766 started; test-assigned.log:767 passed (2.392 seconds)."
+        }
+      ],
+      "evidence": {
+        "sourceReferences": [
+          "Tests/MLXTests/DistributedNNTests.swift:1438",
+          "Source/Examples/DistributedWorker.swift:692"
+        ],
+        "logs": [
+          "test-parity/xcodebuild/test-assigned.log"
+        ],
+        "resultBundle": "test-parity/xcodebuild/assigned-tests.xcresult",
+        "logMarkers": [
+          "test-assigned.log:766 Test Case '-[MLXTests.DistributedNNTests testMultiProcessShardLinearBackward]' started.",
+          "test-assigned.log:767 Test Case '-[MLXTests.DistributedNNTests testMultiProcessShardLinearBackward]' passed (2.392 seconds)."
+        ]
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "xcodebuild printed a non-fatal package-graph warning, `Invalid Exclude '/Users/ronaldmannak/Developer/Projects/Pico AI Homelab/mlx-swift/Source/Cmlx/mlx/mlx/backend/cuda/cuda.cpp': File not found`, in both build and test logs.",
+      "resolved": true,
+      "resolution": "Recorded as a tooling fact because both xcodebuild commands exited 0 and the guidance says this warning alone is not a failure.",
+      "affectedAssertions": [
+        "VAL-DIST-020",
+        "VAL-DIST-021",
+        "VAL-DIST-022",
+        "VAL-DIST-023",
+        "VAL-DIST-024",
+        "VAL-DIST-025",
+        "VAL-DIST-026",
+        "VAL-DIST-027",
+        "VAL-DIST-028",
+        "VAL-NN-021",
+        "VAL-NN-022",
+        "VAL-NN-023",
+        "VAL-NN-024"
+      ]
+    },
+    {
+      "description": "xcodebuild warned about multiple matching macOS destinations and used the first `My Mac` destination automatically.",
+      "resolved": true,
+      "resolution": "Left the destination as `platform=macOS`; the build and targeted test run still succeeded.",
+      "affectedAssertions": [
+        "VAL-DIST-020",
+        "VAL-DIST-021",
+        "VAL-DIST-022",
+        "VAL-DIST-023",
+        "VAL-DIST-024",
+        "VAL-DIST-025",
+        "VAL-DIST-026",
+        "VAL-DIST-027",
+        "VAL-DIST-028",
+        "VAL-NN-021",
+        "VAL-NN-022",
+        "VAL-NN-023",
+        "VAL-NN-024"
+      ]
+    },
+    {
+      "description": "`testMultiProcessRecvLike` took 32.539 seconds of XCTest wall-clock time, so future validators should allow extra wall-clock overhead beyond the helper's nominal 30-second per-worker timeout budget.",
+      "resolved": true,
+      "resolution": "Recorded as a timing/tooling fact because the assertion still passed cleanly at test-assigned.log:789-790.",
+      "affectedAssertions": [
+        "VAL-DIST-023"
+      ]
+    }
+  ],
+  "blockers": [],
+  "summary": "Executed sequential xcodebuild build and targeted xcodebuild test commands with a dedicated derived-data path. The build finished with BUILD SUCCEEDED, the targeted run executed 14 tests with 0 failures and ** TEST SUCCEEDED **, and all 13 assigned assertions passed."
+}
