@@ -46,6 +46,7 @@ Multi-process tests (VAL-DIST-012/013/014) require:
 - Required commands for the distributed-compilation milestone are:
   - `xcodebuild build -scheme mlx-swift-Package -destination 'platform=macOS'`
   - `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'`
+- For the `swift-bindings` milestone, singleton `send`/`recv`, `recvLike`, and `split` do not have a validated success path on the current upstream backends. The current tests validate graceful error surfacing for singleton groups, while multi-process coverage validates the send/recv success path separately.
 - Run validators sequentially because `xcodebuild` shares DerivedData and this surface has a max concurrency of 1.
 - Treat `BUILD SUCCEEDED` and `** TEST SUCCEEDED **` as the success markers, and inspect output for duplicate symbol errors to validate stub-conflict assertions.
 - The current environment may print an `Invalid Exclude ... cuda.cpp: File not found` warning during package graph resolution; record it if seen, but it is not by itself a failure unless the build or test command exits non-zero.

@@ -1,0 +1,55 @@
+{
+  "milestone": "swift-bindings",
+  "round": 1,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 19,
+    "passed": 16,
+    "failed": 3,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-DIST-001",
+    "VAL-DIST-002",
+    "VAL-DIST-003",
+    "VAL-DIST-004",
+    "VAL-DIST-005",
+    "VAL-DIST-006",
+    "VAL-DIST-007",
+    "VAL-DIST-008",
+    "VAL-DIST-012",
+    "VAL-DIST-013",
+    "VAL-DIST-014",
+    "VAL-DIST-015",
+    "VAL-DIST-016",
+    "VAL-DIST-017",
+    "VAL-DIST-018",
+    "VAL-DIST-019"
+  ],
+  "failedAssertions": [
+    {
+      "id": "VAL-DIST-009",
+      "reason": "The contract expects singleton send/recv success, but `xcodebuild test` only validated graceful singleton error handling and multi-process send/recv success."
+    },
+    {
+      "id": "VAL-DIST-010",
+      "reason": "The contract expects singleton recvLike success, but the validated behavior is graceful singleton error handling and no singleton success path was observed."
+    },
+    {
+      "id": "VAL-DIST-011",
+      "reason": "The contract expects singleton split success, but the implementation/tests validated graceful split failure and parent-group recovery instead."
+    }
+  ],
+  "blockedAssertions": [],
+  "appliedUpdates": [
+    {
+      "target": "user-testing.md",
+      "description": "Recorded that swift-bindings singleton send/recv, recvLike, and split are currently validated as graceful error paths, with multi-process send/recv coverage separate from singleton behavior.",
+      "source": "flow-report"
+    }
+  ],
+  "flowReports": [
+    ".factory/validation/swift-bindings/user-testing/flows/distributed-bindings.json"
+  ],
+  "previousRound": null
+}
