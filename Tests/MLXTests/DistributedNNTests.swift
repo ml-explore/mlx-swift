@@ -270,7 +270,8 @@ class DistributedNNTests: XCTestCase {
         try! allToSharded.unfreeze()
         XCTAssertTrue(
             allToSharded.trainableParameters().flattened().isEmpty,
-            "Quantized layer should stay frozen after unfreeze (Python: self.freeze(recurse=False))")
+            "Quantized layer should stay frozen after unfreeze (Python: self.freeze(recurse=False))"
+        )
 
         let shardedToAll = QuantizedShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
@@ -333,7 +334,8 @@ class DistributedNNTests: XCTestCase {
 
         let keys = Set(flatParams.map { $0.0 })
         XCTAssertTrue(keys.contains("weight"))
-        XCTAssertFalse(keys.contains("bias"), "parameters() should not contain bias when bias=false")
+        XCTAssertFalse(
+            keys.contains("bias"), "parameters() should not contain bias when bias=false")
         XCTAssertFalse(keys.contains("group"))
     }
 
