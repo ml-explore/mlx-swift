@@ -686,3 +686,233 @@ private func shardParameterTree(
 
     return ModuleParameters.unflattened(sharded)
 }
+
+// MARK: - ShardingType
+
+/// Describes the type of sharding for distributed linear layers.
+///
+/// - ``allToSharded``: Common (replicated) input is projected into a sharded
+///   representation. Each rank holds a slice of the output features.
+/// - ``shardedToAll``: Sharded input is projected and then aggregated so that
+///   every rank obtains the full (common) output.
+///
+/// ### See Also
+/// - ``shardLinear(module:sharding:segments:group:)``
+/// - ``shardInPlace(module:sharding:segments:group:)``
+public enum ShardingType {
+    case allToSharded
+    case shardedToAll
+}
+
+// MARK: - shardLinear
+
+/// Create a new distributed linear layer from an existing ``Linear`` or
+/// ``QuantizedLinear``.
+///
+/// The returned layer has its parameters sharded across the group and
+/// performs distributed communication in either the forward or backward pass
+/// depending on the sharding type.
+///
+/// - Parameters:
+///   - module: the ``Linear`` or ``QuantizedLinear`` layer to shard
+///   - sharding: the type of sharding (``ShardingType/allToSharded`` or
+///     ``ShardingType/shardedToAll``)
+///   - segments: number of segments for fused weights (e.g. 3 for QKV).
+///     Default is 1.
+///   - group: the distributed group. If `nil`, uses `MLXDistributed.init()`.
+/// - Returns: a new distributed ``Module`` with sharded parameters
+///
+/// ### See Also
+/// - ``shardInPlace(module:sharding:segments:group:)``
+/// - ``AllToShardedLinear``
+/// - ``ShardedToAllLinear``
+public func shardLinear(
+    module: Module, sharding: ShardingType, segments: Int = 1,
+    group: DistributedGroup? = nil
+) -> Module {
+    switch (sharding, module) {
+    case (.allToSharded, let linear as Linear):
+        return AllToShardedLinear.fromLinear(linear, segments: segments, group: group)
+    case (.allToSharded, let quantized as QuantizedLinear):
+        return QuantizedAllToShardedLinear.fromQuantizedLinear(
+            quantized, segments: segments, group: group)
+    case (.shardedToAll, let linear as Linear):
+        return ShardedToAllLinear.fromLinear(linear, segments: segments, group: group)
+    case (.shardedToAll, let quantized as QuantizedLinear):
+        return QuantizedShardedToAllLinear.fromQuantizedLinear(
+            quantized, segments: segments, group: group)
+    default:
+        preconditionFailure(
+            "shardLinear: unsupported module type \(type(of: module)). "
+                + "Expected Linear or QuantizedLinear.")
+    }
+}
+
+// MARK: - shardInPlace
+
+/// Shard a module's parameters in-place using ``Module/update(parameters:)``.
+///
+/// Unlike ``shardLinear(module:sharding:segments:group:)`` which returns a new
+/// distributed layer type, this function modifies the parameters of the
+/// existing module without changing its type. The module itself must
+/// natively support distributed communication for the collective ops to
+/// take effect.
+///
+/// - Parameters:
+///   - module: the module whose parameters will be sharded in-place
+///   - sharding: the type of sharding (``ShardingType/allToSharded`` or
+///     ``ShardingType/shardedToAll``), or a custom predicate
+///   - segments: number of segments for fused weights (e.g. 3 for QKV).
+///     Default is 1.
+///   - group: the distributed group. If `nil`, uses `MLXDistributed.init()`.
+///
+/// ### See Also
+/// - ``shardLinear(module:sharding:segments:group:)``
+public func shardInPlace(
+    module: Module, sharding: ShardingType, segments: Int = 1,
+    group: DistributedGroup? = nil
+) {
+    let group = group ?? MLXDistributed.`init`()!
+    let predicate: (String, MLXArray) -> ShardInfo?
+
+    switch sharding {
+    case .allToSharded:
+        predicate = allToShardedPredicate(segments: segments)
+    case .shardedToAll:
+        predicate = shardedToAllPredicate(segments: segments)
+    }
+
+    let shardedParams = shardParameterTree(
+        module.parameters(), predicate: predicate, group: group)
+    module.update(parameters: shardedParams)
+}
+
+// MARK: - averageGradients
+
+/// Average a gradient tree across the processes in the distributed group.
+///
+/// When the group has a single member the gradients are returned unchanged.
+/// Otherwise each gradient array is sum-reduced across the group and divided
+/// by the group size.
+///
+/// This helper supports batching small gradient arrays into larger
+/// concatenated chunks before performing the all-reduce, which can improve
+/// networking performance.
+///
+/// - Parameters:
+///   - gradients: the gradient tree (typically from ``Module/parameters()``
+///     or ``Module/trainableParameters()``)
+///   - group: the distributed group. If `nil`, uses `MLXDistributed.init()`.
+///   - allReduceSize: maximum byte size for batching gradient arrays into a
+///     single all-reduce call. Set to 0 or negative to disable batching.
+///     Default is 32 MiB.
+///   - communicationStream: optional stream for the communication. If `nil`,
+///     the default stream is used.
+/// - Returns: the averaged gradient tree with the same structure as the input
+///
+/// ### See Also
+/// - ``shardLinear(module:sharding:segments:group:)``
+/// - ``shardInPlace(module:sharding:segments:group:)``
+public func averageGradients(
+    gradients: ModuleParameters,
+    group: DistributedGroup? = nil,
+    allReduceSize: Int = 32 * 1024 * 1024,
+    communicationStream: StreamOrDevice? = nil
+) -> ModuleParameters {
+    let group = group ?? MLXDistributed.`init`()!
+    let N = group.size
+
+    if N == 1 {
+        return gradients
+    }
+
+    let stream: StreamOrDevice = communicationStream ?? .default
+
+    // Helper to average a single gradient array
+    func average(_ x: MLXArray) -> MLXArray {
+        MLXDistributed.allSum(x, group: group, stream: stream) / Float(N)
+    }
+
+    if allReduceSize <= 0 {
+        // No batching: average each gradient independently
+        return gradients.mapValues(transform: { array in
+            average(array)
+        })
+    }
+
+    // Batched mode: concatenate small gradients, reduce, split back
+    let flat = gradients.flattened()
+    if flat.isEmpty {
+        return gradients
+    }
+
+    // Collect metadata
+    let keys = flat.map { $0.0 }
+    let values = flat.map { $0.1 }
+    let shapes = values.map { $0.shape }
+    let sizes = values.map { $0.size }
+    let dtypes = values.map { $0.dtype }
+
+    // Check for mixed types -- if mixed, fall back to non-batched
+    let firstDtype = dtypes[0]
+    if !dtypes.allSatisfy({ $0 == firstDtype }) {
+        return averageGradients(
+            gradients: gradients, group: group, allReduceSize: 0,
+            communicationStream: communicationStream)
+    }
+
+    let itemSize = firstDtype.size
+
+    // Group gradients into batches that are at least allReduceSize bytes
+    var gradGroups = [[Int]]()
+    var currentGroup = [Int]()
+    var currentSize = 0
+
+    for i in 0 ..< keys.count {
+        currentGroup.append(i)
+        currentSize += sizes[i] * itemSize
+        if currentSize >= allReduceSize {
+            gradGroups.append(currentGroup)
+            currentGroup = []
+            currentSize = 0
+        }
+    }
+    if !currentGroup.isEmpty {
+        gradGroups.append(currentGroup)
+    }
+
+    // Concatenate-reduce-split for each group
+    var newFlat = [(String, MLXArray)]()
+    for group in gradGroups {
+        // Flatten each gradient to 1D and concatenate
+        let flatArrays = group.map { values[$0].reshaped(-1) }
+        let bigGrad = concatenated(flatArrays, axis: 0)
+
+        // Average the concatenated gradient
+        let averaged = average(bigGrad)
+
+        // Split back using cumulative sizes as indices
+        var indices = [Int]()
+        var cumulative = 0
+        for (i, idx) in group.enumerated() {
+            cumulative += sizes[idx]
+            if i < group.count - 1 {
+                indices.append(cumulative)
+            }
+        }
+
+        let splitGrads: [MLXArray]
+        if indices.isEmpty {
+            splitGrads = [averaged]
+        } else {
+            splitGrads = split(averaged, indices: indices, axis: 0)
+        }
+
+        for (i, idx) in group.enumerated() {
+            let reshaped = splitGrads[i].reshaped(shapes[idx])
+            newFlat.append((keys[idx], reshaped))
+        }
+    }
+
+    return ModuleParameters.unflattened(newFlat)
+}
