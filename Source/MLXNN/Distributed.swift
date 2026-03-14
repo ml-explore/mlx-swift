@@ -808,6 +808,10 @@ public func shardInPlace(
 ///   - allReduceSize: maximum byte size for batching gradient arrays into a
 ///     single all-reduce call. Set to 0 or negative to disable batching.
 ///     Default is 32 MiB.
+///   - communicationType: if provided, cast each gradient to this type before
+///     communication and cast back to the original type after. Typically used
+///     to cast to a smaller float (e.g. `.float16`) to reduce communication
+///     size. Default is `nil`.
 ///   - communicationStream: optional stream for the communication. If `nil`,
 ///     the default stream is used.
 /// - Returns: the averaged gradient tree with the same structure as the input
@@ -819,6 +823,7 @@ public func averageGradients(
     gradients: ModuleParameters,
     group: DistributedGroup? = nil,
     allReduceSize: Int = 32 * 1024 * 1024,
+    communicationType: DType? = nil,
     communicationStream: StreamOrDevice? = nil
 ) -> ModuleParameters {
     let group = group ?? MLXDistributed.`init`()!
@@ -830,9 +835,12 @@ public func averageGradients(
 
     let stream: StreamOrDevice = communicationStream ?? .default
 
-    // Helper to average a single gradient array
+    // Helper to average a single gradient array, optionally casting to
+    // communicationType before the all-reduce and back after.
     func average(_ x: MLXArray) -> MLXArray {
-        MLXDistributed.allSum(x, group: group, stream: stream) / Float(N)
+        let dt = x.dtype
+        let y = communicationType != nil ? x.asType(communicationType!) : x
+        return (MLXDistributed.allSum(y, group: group, stream: stream)).asType(dt) / Float(N)
     }
 
     if allReduceSize <= 0 {
@@ -860,10 +868,13 @@ public func averageGradients(
     if !dtypes.allSatisfy({ $0 == firstDtype }) {
         return averageGradients(
             gradients: gradients, group: group, allReduceSize: 0,
+            communicationType: communicationType,
             communicationStream: communicationStream)
     }
 
-    let itemSize = firstDtype.size
+    // Use communicationType size for batching threshold if provided,
+    // matching Python's behavior
+    let itemSize = communicationType?.size ?? firstDtype.size
 
     // Group gradients into batches that are at least allReduceSize bytes
     var gradGroups = [[Int]]()
