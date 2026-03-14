@@ -660,6 +660,135 @@ class DistributedNNTests: XCTestCase {
         }
     }
 
+    func testAverageGradientsCommunicationType() {
+        // VAL-NN-021: averageGradients with communicationType preserves identity
+        // on a size-1 group. When communicationType is provided, gradients are
+        // cast to that type before communication and cast back after.
+        let group = singletonGroup()
+
+        let layer = Linear(32, 16, bias: true)
+        eval(layer)
+
+        let grads = layer.parameters()
+
+        // Call with communicationType: .float16
+        let averaged = averageGradients(
+            gradients: grads, group: group, communicationType: .float16)
+
+        // On size-1 group, N==1 returns early (identity), so dtypes unchanged
+        let flatGrads = grads.flattened()
+        let flatAveraged = averaged.flattened()
+
+        XCTAssertEqual(flatGrads.count, flatAveraged.count)
+        for (g, a) in zip(flatGrads, flatAveraged) {
+            XCTAssertEqual(g.0, a.0, "Keys should match")
+            // Identity on size-1 group
+            assertEqual(a.1, g.1, atol: 1e-5)
+            // dtype should remain float32 (the original dtype)
+            XCTAssertEqual(a.1.dtype, g.1.dtype)
+        }
+
+        // Also verify with communicationType: .bfloat16
+        let averaged2 = averageGradients(
+            gradients: grads, group: group, communicationType: .bfloat16)
+        let flatAveraged2 = averaged2.flattened()
+        for (g, a) in zip(flatGrads, flatAveraged2) {
+            assertEqual(a.1, g.1, atol: 1e-5)
+            XCTAssertEqual(a.1.dtype, g.1.dtype)
+        }
+    }
+
+    func testAverageGradientsMixedDtypeFallback() {
+        // VAL-NN-022: gradient tree with mixed float32/float16 arrays falls
+        // back to non-batched reduction. On a size-1 group all gradients are
+        // returned unchanged.
+        let group = singletonGroup()
+
+        // Build a gradient tree with mixed dtypes using ModuleParameters
+        let grad1 = MLXRandom.uniform(0 ..< 1, [4, 8])  // float32
+        let grad2 = MLXRandom.uniform(0 ..< 1, [4, 8]).asType(.float16)  // float16
+        let grad3 = MLXRandom.uniform(0 ..< 1, [2, 3])  // float32
+        eval(grad1, grad2, grad3)
+
+        var grads = ModuleParameters()
+        grads["weight"] = .value(grad1)
+        grads["bias"] = .value(grad2)
+        grads["scale"] = .value(grad3)
+
+        // With default allReduceSize (batched), the mixed types trigger fallback
+        let averaged = averageGradients(gradients: grads, group: group)
+
+        let flatGrads = grads.flattened()
+        let flatAveraged = averaged.flattened()
+
+        XCTAssertEqual(flatGrads.count, flatAveraged.count)
+        for (g, a) in zip(flatGrads, flatAveraged) {
+            XCTAssertEqual(g.0, a.0, "Keys should match")
+            // On size-1 group, should be identity
+            assertEqual(a.1, g.1, atol: 1e-3)
+            // dtype should be preserved
+            XCTAssertEqual(a.1.dtype, g.1.dtype)
+        }
+
+        // Also test with communicationType on mixed-dtype tree
+        let averaged2 = averageGradients(
+            gradients: grads, group: group, communicationType: .float16)
+        let flatAveraged2 = averaged2.flattened()
+        for (g, a) in zip(flatGrads, flatAveraged2) {
+            assertEqual(a.1, g.1, atol: 1e-3)
+            XCTAssertEqual(a.1.dtype, g.1.dtype)
+        }
+    }
+
+    func testAverageGradientsBatchingBehavior() {
+        // Verify averageGradients accepts allReduceSize parameter with various
+        // values including 0, negative, and small positive values.
+        let group = singletonGroup()
+
+        let layer = Linear(64, 32, bias: true)
+        eval(layer)
+
+        let grads = layer.parameters()
+        let flatGrads = grads.flattened()
+
+        // allReduceSize = 0 disables batching
+        let avg0 = averageGradients(
+            gradients: grads, group: group, allReduceSize: 0)
+        for (g, a) in zip(flatGrads, avg0.flattened()) {
+            assertEqual(a.1, g.1, atol: 1e-5)
+        }
+
+        // allReduceSize = -1 also disables batching
+        let avgNeg = averageGradients(
+            gradients: grads, group: group, allReduceSize: -1)
+        for (g, a) in zip(flatGrads, avgNeg.flattened()) {
+            assertEqual(a.1, g.1, atol: 1e-5)
+        }
+
+        // allReduceSize = 1 (very small, forces many batches)
+        let avg1 = averageGradients(
+            gradients: grads, group: group, allReduceSize: 1)
+        for (g, a) in zip(flatGrads, avg1.flattened()) {
+            assertEqual(a.1, g.1, atol: 1e-5)
+        }
+
+        // allReduceSize = very large (everything in one batch)
+        let avgBig = averageGradients(
+            gradients: grads, group: group, allReduceSize: 1024 * 1024 * 1024)
+        for (g, a) in zip(flatGrads, avgBig.flattened()) {
+            assertEqual(a.1, g.1, atol: 1e-5)
+        }
+
+        // Also with communicationType combined with various allReduceSize
+        let avgComm = averageGradients(
+            gradients: grads, group: group, allReduceSize: 100,
+            communicationType: .float16)
+        for (g, a) in zip(flatGrads, avgComm.flattened()) {
+            assertEqual(a.1, g.1, atol: 1e-5)
+            XCTAssertEqual(a.1.dtype, g.1.dtype)
+        }
+    }
+
     // MARK: - (16) sumGradients Forward Identity
 
     func testSumGradientsForwardIdentity() {
