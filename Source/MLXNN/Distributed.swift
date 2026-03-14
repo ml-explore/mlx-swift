@@ -730,17 +730,19 @@ public func shardLinear(
     module: Module, sharding: ShardingType, segments: Int = 1,
     group: DistributedGroup? = nil
 ) -> Module {
+    // QuantizedLinear must be checked before Linear because QuantizedLinear
+    // is a subclass of Linear and would otherwise match the Linear case.
     switch (sharding, module) {
-    case (.allToSharded, let linear as Linear):
-        return AllToShardedLinear.fromLinear(linear, segments: segments, group: group)
     case (.allToSharded, let quantized as QuantizedLinear):
         return QuantizedAllToShardedLinear.fromQuantizedLinear(
             quantized, segments: segments, group: group)
-    case (.shardedToAll, let linear as Linear):
-        return ShardedToAllLinear.fromLinear(linear, segments: segments, group: group)
+    case (.allToSharded, let linear as Linear):
+        return AllToShardedLinear.fromLinear(linear, segments: segments, group: group)
     case (.shardedToAll, let quantized as QuantizedLinear):
         return QuantizedShardedToAllLinear.fromQuantizedLinear(
             quantized, segments: segments, group: group)
+    case (.shardedToAll, let linear as Linear):
+        return ShardedToAllLinear.fromLinear(linear, segments: segments, group: group)
     default:
         preconditionFailure(
             "shardLinear: unsupported module type \(type(of: module)). "
