@@ -8,8 +8,38 @@ import XCTest
 
 class DistributedNNTests: XCTestCase {
 
+    /// Sequential port counter to avoid ephemeral port collisions between tests.
+    /// Each multi-process test increments by 2 (one port per rank). The base port
+    /// is randomized per test run to avoid TIME_WAIT conflicts when the suite is
+    /// run multiple times in quick succession. Range: 35000-48999 avoids both
+    /// well-known ports and the macOS ephemeral range, and is offset from
+    /// DistributedTests (15000-28999) to prevent cross-class collisions.
+    private static var nextPort: Int = 35000 + Int.random(in: 0 ..< 7000) * 2
+
+    /// Track spawned process PIDs for cleanup in tearDown.
+    private var spawnedProcesses: [Process] = []
+
     override class func setUp() {
         setDefaultDevice()
+    }
+
+    override func tearDown() {
+        // Kill any orphan worker processes that may still be running
+        for process in spawnedProcesses where process.isRunning {
+            process.terminate()
+            Thread.sleep(forTimeInterval: 0.5)
+            if process.isRunning {
+                kill(process.processIdentifier, SIGKILL)
+            }
+        }
+        spawnedProcesses.removeAll()
+
+        // Allow socket cleanup between tests. The ring backend uses TCP sockets
+        // that enter TIME_WAIT state after close. A delay ensures all sockets
+        // from the previous test are fully released before the next test starts.
+        Thread.sleep(forTimeInterval: 1.0)
+
+        super.tearDown()
     }
 
     // MARK: - Helper
@@ -1060,41 +1090,54 @@ class DistributedNNTests: XCTestCase {
         return nil
     }
 
-    /// Find two available TCP ports for the ring backend.
-    private func findAvailablePorts() -> (Int, Int)? {
-        func findPort() -> Int? {
-            let sock = socket(AF_INET, SOCK_STREAM, 0)
-            guard sock >= 0 else { return nil }
-            defer { close(sock) }
-
-            var addr = sockaddr_in()
-            addr.sin_family = sa_family_t(AF_INET)
-            addr.sin_port = 0
-            addr.sin_addr.s_addr = UInt32(INADDR_LOOPBACK).bigEndian
-
-            var addrCopy = addr
-            let bindResult = withUnsafePointer(to: &addrCopy) { ptr in
-                ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockPtr in
-                    Darwin.bind(sock, sockPtr, socklen_t(MemoryLayout<sockaddr_in>.size))
-                }
-            }
-            guard bindResult == 0 else { return nil }
-
-            var len = socklen_t(MemoryLayout<sockaddr_in>.size)
-            let nameResult = withUnsafeMutablePointer(to: &addrCopy) { ptr in
-                ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockPtr in
-                    getsockname(sock, sockPtr, &len)
-                }
-            }
-            guard nameResult == 0 else { return nil }
-
-            return Int(UInt16(bigEndian: addrCopy.sin_port))
-        }
-
-        guard let port1 = findPort(), let port2 = findPort(), port1 != port2 else {
-            return nil
-        }
+    /// Allocate two unique TCP ports for the ring backend using a sequential counter.
+    ///
+    /// Instead of binding to port 0 (which lets the OS pick an ephemeral port and risks
+    /// TIME_WAIT collisions when tests run in rapid succession), we use a monotonically
+    /// increasing counter with a random base. Each call advances by 2, guaranteeing unique
+    /// port pairs across all tests within a single run. The random base avoids TIME_WAIT
+    /// conflicts when the test suite is run multiple times in quick succession.
+    ///
+    /// Each candidate port is validated by binding with SO_REUSEADDR to confirm it is not
+    /// stuck in TIME_WAIT or occupied by another process.
+    private func allocatePorts() -> (Int, Int) {
+        let port1 = nextAvailablePort()
+        let port2 = nextAvailablePort()
         return (port1, port2)
+    }
+
+    /// Advance the port counter and verify the port is bindable (not in TIME_WAIT).
+    private func nextAvailablePort() -> Int {
+        while true {
+            let port = DistributedNNTests.nextPort
+            DistributedNNTests.nextPort += 1
+            if isPortAvailable(port) {
+                return port
+            }
+            // Skip ports that are in TIME_WAIT or otherwise occupied
+        }
+    }
+
+    /// Check if a port can be bound on loopback with SO_REUSEADDR.
+    private func isPortAvailable(_ port: Int) -> Bool {
+        let sock = socket(AF_INET, SOCK_STREAM, 0)
+        guard sock >= 0 else { return false }
+        defer { close(sock) }
+
+        var reuse: Int32 = 1
+        setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, socklen_t(MemoryLayout<Int32>.size))
+
+        var addr = sockaddr_in()
+        addr.sin_family = sa_family_t(AF_INET)
+        addr.sin_port = UInt16(port).bigEndian
+        addr.sin_addr.s_addr = UInt32(INADDR_LOOPBACK).bigEndian
+
+        let bindResult = withUnsafePointer(to: &addr) { ptr in
+            ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockPtr in
+                Darwin.bind(sock, sockPtr, socklen_t(MemoryLayout<sockaddr_in>.size))
+            }
+        }
+        return bindResult == 0
     }
 
     /// Create a temporary hostfile for 2-process ring backend on localhost.
@@ -1116,6 +1159,9 @@ class DistributedNNTests: XCTestCase {
     }
 
     /// Spawn a worker process with the given rank and operation, wait for completion.
+    ///
+    /// Pipe data is read asynchronously to prevent deadlocks when the process
+    /// fills the pipe buffer before the test reads it.
     private func spawnWorker(
         workerBinary: URL, rank: Int, hostfilePath: URL, operation: String, timeout: TimeInterval
     ) -> (exitCode: Int32, stdout: String, stderr: String) {
@@ -1138,11 +1184,36 @@ class DistributedNNTests: XCTestCase {
         process.standardOutput = stdoutPipe
         process.standardError = stderrPipe
 
+        // Read pipe data asynchronously to prevent deadlocks
+        var stdoutData = Data()
+        var stderrData = Data()
+        let dataLock = NSLock()
+
+        stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            if !data.isEmpty {
+                dataLock.lock()
+                stdoutData.append(data)
+                dataLock.unlock()
+            }
+        }
+        stderrPipe.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            if !data.isEmpty {
+                dataLock.lock()
+                stderrData.append(data)
+                dataLock.unlock()
+            }
+        }
+
         do {
             try process.run()
         } catch {
             return (-1, "", "Failed to start process: \(error)")
         }
+
+        // Track for cleanup in tearDown
+        spawnedProcesses.append(process)
 
         let deadline = DispatchTime.now() + timeout
         let group = DispatchGroup()
@@ -1154,27 +1225,47 @@ class DistributedNNTests: XCTestCase {
         }
 
         let result = group.wait(timeout: deadline)
+
+        stdoutPipe.fileHandleForReading.readabilityHandler = nil
+        stderrPipe.fileHandleForReading.readabilityHandler = nil
+
         if result == .timedOut {
             process.terminate()
             Thread.sleep(forTimeInterval: 0.5)
             if process.isRunning {
                 kill(process.processIdentifier, SIGKILL)
             }
-            return (-1, "", "Process timed out after \(timeout) seconds")
+            dataLock.lock()
+            let stdoutStr = String(data: stdoutData, encoding: .utf8) ?? ""
+            let stderrStr = String(data: stderrData, encoding: .utf8) ?? ""
+            dataLock.unlock()
+            let timeoutMsg = "Process timed out after \(timeout) seconds"
+            return (
+                -1, stdoutStr,
+                stderrStr.isEmpty ? timeoutMsg : "\(stderrStr)\n\(timeoutMsg)"
+            )
         }
 
-        let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
-        let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+        Thread.sleep(forTimeInterval: 0.1)
+
+        dataLock.lock()
         let stdoutStr = String(data: stdoutData, encoding: .utf8) ?? ""
         let stderrStr = String(data: stderrData, encoding: .utf8) ?? ""
+        dataLock.unlock()
 
         return (process.terminationStatus, stdoutStr, stderrStr)
     }
 
     /// Run a multi-process test with the given operation.
+    ///
+    /// Spawns 2 worker processes with rank 0 and rank 1, waits for both,
+    /// and returns their results. Uses a 30-second per-attempt timeout. If a
+    /// timeout occurs (ring backend TCP race), the test is retried once with
+    /// fresh ports. Total worst-case: ~62 seconds (30s + 2s wait + 30s retry).
     private func runMultiProcessTest(
         operation: String,
         timeout: TimeInterval = 30.0,
+        retries: Int = 1,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> (
@@ -1188,22 +1279,61 @@ class DistributedNNTests: XCTestCase {
             return nil
         }
 
-        guard let (port1, port2) = findAvailablePorts() else {
-            XCTFail("Could not find two available ports", file: file, line: line)
-            return nil
-        }
+        for attempt in 0 ... retries {
+            let (port1, port2) = allocatePorts()
 
-        let hostfilePath: URL
-        do {
-            hostfilePath = try createHostfile(port1: port1, port2: port2)
-        } catch {
-            XCTFail("Failed to create hostfile: \(error)", file: file, line: line)
-            return nil
-        }
-        defer {
+            let hostfilePath: URL
+            do {
+                hostfilePath = try createHostfile(port1: port1, port2: port2)
+            } catch {
+                XCTFail("Failed to create hostfile: \(error)", file: file, line: line)
+                return nil
+            }
+
+            let result = runWorkerPair(
+                workerBinary: workerBinary, hostfilePath: hostfilePath,
+                operation: operation, timeout: timeout)
+
             try? FileManager.default.removeItem(at: hostfilePath)
+
+            guard let (rank0Result, rank1Result) = result else {
+                XCTFail(
+                    "Multi-process test timed out waiting for workers", file: file, line: line)
+                return nil
+            }
+
+            if rank0Result.exitCode == 0 && rank1Result.exitCode == 0 {
+                return (rank0Result, rank1Result)
+            }
+
+            let rank0TimedOut =
+                rank0Result.exitCode == -1
+                && rank0Result.stderr.contains("timed out")
+            let rank1TimedOut =
+                rank1Result.exitCode == -1
+                && rank1Result.stderr.contains("timed out")
+
+            if (rank0TimedOut || rank1TimedOut) && attempt < retries {
+                Thread.sleep(forTimeInterval: 2.0)
+                continue
+            }
+
+            return (rank0Result, rank1Result)
         }
 
+        return nil
+    }
+
+    /// Spawn a pair of worker processes for a multi-process test.
+    private func runWorkerPair(
+        workerBinary: URL,
+        hostfilePath: URL,
+        operation: String,
+        timeout: TimeInterval
+    ) -> (
+        rank0: (exitCode: Int32, stdout: String, stderr: String),
+        rank1: (exitCode: Int32, stdout: String, stderr: String)
+    )? {
         var rank0Result: (exitCode: Int32, stdout: String, stderr: String)!
         var rank1Result: (exitCode: Int32, stdout: String, stderr: String)!
 
@@ -1217,6 +1347,9 @@ class DistributedNNTests: XCTestCase {
             group.leave()
         }
 
+        // Delay to let rank 0 start up and begin its accept() listener.
+        Thread.sleep(forTimeInterval: 1.0)
+
         group.enter()
         DispatchQueue.global().async {
             rank1Result = self.spawnWorker(
@@ -1227,8 +1360,6 @@ class DistributedNNTests: XCTestCase {
 
         let waitResult = group.wait(timeout: .now() + timeout + 10)
         if waitResult == .timedOut {
-            XCTFail(
-                "Multi-process test timed out waiting for workers", file: file, line: line)
             return nil
         }
 
