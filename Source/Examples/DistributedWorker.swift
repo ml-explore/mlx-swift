@@ -43,7 +43,9 @@ struct DistributedWorker {
             exit(1)
         }
 
-        fputs("Worker rank=\(rank) initialized: group.rank=\(group.rank) group.size=\(group.size)\n", stderr)
+        fputs(
+            "Worker rank=\(rank) initialized: group.rank=\(group.rank) group.size=\(group.size)\n",
+            stderr)
 
         guard group.rank == rank else {
             fputs("ERROR: group.rank (\(group.rank)) != expected rank (\(rank))\n", stderr)
@@ -87,13 +89,17 @@ struct DistributedWorker {
         let shape = result.shape
 
         // Output result as JSON to stdout
-        print("{\"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}")
+        print(
+            "{\"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+        )
 
         // Verify locally
         let expected: [Float] = [5.0, 7.0, 9.0]
-        for i in 0..<3 {
+        for i in 0 ..< 3 {
             if abs(values[i] - expected[i]) > 1e-5 {
-                fputs("ERROR: allSum mismatch at index \(i): got \(values[i]), expected \(expected[i])\n", stderr)
+                fputs(
+                    "ERROR: allSum mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
+                    stderr)
                 exit(1)
             }
         }
@@ -115,7 +121,9 @@ struct DistributedWorker {
         let shape = result.shape
 
         // Output result as JSON to stdout
-        print("{\"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}")
+        print(
+            "{\"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+        )
 
         // Verify locally
         let expected: [Float] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
@@ -123,9 +131,11 @@ struct DistributedWorker {
             fputs("ERROR: allGather shape mismatch: got \(shape), expected [6]\n", stderr)
             exit(1)
         }
-        for i in 0..<6 {
+        for i in 0 ..< 6 {
             if abs(values[i] - expected[i]) > 1e-5 {
-                fputs("ERROR: allGather mismatch at index \(i): got \(values[i]), expected \(expected[i])\n", stderr)
+                fputs(
+                    "ERROR: allGather mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
+                    stderr)
                 exit(1)
             }
         }
@@ -149,7 +159,9 @@ struct DistributedWorker {
             let shape = received.shape
 
             // Output result as JSON to stdout
-            print("{\"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}")
+            print(
+                "{\"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+            )
 
             // Verify locally
             let expected: [Float] = [10.0, 20.0, 30.0]
@@ -157,9 +169,11 @@ struct DistributedWorker {
                 fputs("ERROR: recv shape mismatch: got \(shape), expected [3]\n", stderr)
                 exit(1)
             }
-            for i in 0..<3 {
+            for i in 0 ..< 3 {
                 if abs(values[i] - expected[i]) > 1e-5 {
-                    fputs("ERROR: recv mismatch at index \(i): got \(values[i]), expected \(expected[i])\n", stderr)
+                    fputs(
+                        "ERROR: recv mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
+                        stderr)
                     exit(1)
                 }
             }

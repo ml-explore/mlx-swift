@@ -421,9 +421,10 @@ class DistributedTests: XCTestCase {
         timeout: TimeInterval = 30.0,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) -> (rank0: (exitCode: Int32, stdout: String, stderr: String),
-        rank1: (exitCode: Int32, stdout: String, stderr: String))?
-    {
+    ) -> (
+        rank0: (exitCode: Int32, stdout: String, stderr: String),
+        rank1: (exitCode: Int32, stdout: String, stderr: String)
+    )? {
         guard let workerBinary = findWorkerBinary() else {
             XCTFail(
                 "DistributedWorker binary not found. Build with: xcodebuild build -scheme mlx-swift-Package",
@@ -569,7 +570,7 @@ class DistributedTests: XCTestCase {
 
             XCTAssertEqual(shape, [6], "Rank \(rank) shape mismatch")
             XCTAssertEqual(values.count, 6, "Rank \(rank) values count mismatch")
-            for i in 0..<6 {
+            for i in 0 ..< 6 {
                 XCTAssertEqual(
                     values[i], expected[i], accuracy: 1e-5,
                     "Rank \(rank) value[\(i)] mismatch")
