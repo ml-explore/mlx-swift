@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXNN
 
 /// A helper executable for multi-process distributed tests.
 ///
@@ -82,6 +83,10 @@ struct DistributedWorker {
             runAllSumMultiShape(rank: rank, group: group)
         case "allGatherVjp":
             runAllGatherVjp(rank: rank, group: group)
+        case "shardLinearForward":
+            runShardLinearForward(rank: rank, group: group)
+        case "shardLinearBackward":
+            runShardLinearBackward(rank: rank, group: group)
         default:
             fputs("ERROR: Unknown test operation: \(testOp)\n", stderr)
             exit(1)
@@ -585,6 +590,230 @@ struct DistributedWorker {
                         stderr)
                     exit(1)
                 }
+            }
+        }
+    }
+
+    /// shardLinearForward test: matching Python test_shard_linear forward parity.
+    ///
+    /// Both ranks seed the PRNG identically, create the same Linear(1024, 1024),
+    /// shard it, and forward. Verify:
+    ///   - AllToSharded: y[part] == slin1(x) where part is rank's output slice
+    ///   - ShardedToAll: y == slin2(x[part]) where part is rank's input slice
+    static func runShardLinearForward(rank: Int, group: DistributedGroup) {
+        let N = group.size
+
+        // Seed identically on all ranks so Linear weights are the same
+        MLXRandom.seed(0xF0F0_F0F0)
+
+        // Create the same input and linear layer on all ranks
+        let x = MLXRandom.normal([4, 1024])
+        let lin = Linear(1024, 1024, bias: true)
+        eval(x, lin)
+
+        // Compute the non-sharded reference output
+        let y = lin(x)
+        eval(y)
+
+        // Shard to AllToShardedLinear and ShardedToAllLinear
+        let slin1 = shardLinear(module: lin, sharding: .allToSharded, group: group) as! UnaryLayer
+        let slin2 = shardLinear(module: lin, sharding: .shardedToAll, group: group) as! UnaryLayer
+        eval(slin1 as! Module, slin2 as! Module)
+
+        // AllToShardedLinear forward: input is full x, output is a slice
+        let y1 = slin1(x)
+        eval(y1)
+
+        // ShardedToAllLinear forward: input is a slice of x, output is full
+        // The input slice for this rank: columns [rank * 1024/N ..< (rank+1) * 1024/N]
+        let colStart = rank * 1024 / N
+        let colEnd = (rank + 1) * 1024 / N
+        let xPart = x[0..., colStart ..< colEnd]
+        eval(xPart)
+        let y2 = slin2(xPart)
+        eval(y2)
+
+        // Verify AllToSharded: y[part] should match y1
+        // The output slice for this rank: columns [rank * 1024/N ..< (rank+1) * 1024/N]
+        let rowStart = rank * 1024 / N
+        let rowEnd = (rank + 1) * 1024 / N
+        let yPart = y[0..., rowStart ..< rowEnd]
+        eval(yPart)
+
+        // Check AllToSharded forward parity
+        let allToShardedClose = yPart.allClose(y1, rtol: 1e-4, atol: 1e-5).item(Bool.self)
+
+        // Check ShardedToAll forward parity
+        let shardedToAllClose = y.allClose(y2, rtol: 1e-4, atol: 1e-5).item(Bool.self)
+
+        print(
+            "{\"allToShardedMatch\": \(allToShardedClose), \"shardedToAllMatch\": \(shardedToAllClose), \"y1Shape\": [\(y1.shape.map { String($0) }.joined(separator: ","))], \"y2Shape\": [\(y2.shape.map { String($0) }.joined(separator: ","))]}"
+        )
+
+        if !allToShardedClose {
+            fputs("ERROR: AllToSharded forward parity failed\n", stderr)
+            // Print some debug info
+            let diff = abs(yPart - y1).max().item(Float.self)
+            fputs("  max diff: \(diff)\n", stderr)
+            exit(1)
+        }
+
+        if !shardedToAllClose {
+            fputs("ERROR: ShardedToAll forward parity failed\n", stderr)
+            let diff = abs(y - y2).max().item(Float.self)
+            fputs("  max diff: \(diff)\n", stderr)
+            exit(1)
+        }
+    }
+
+    /// shardLinearBackward test: matching Python test_shard_linear backward parity.
+    ///
+    /// Both ranks seed the PRNG identically, create a 4-layer model:
+    ///   layers[0] = Linear(128, 128) -> allToSharded
+    ///   layers[1] = Linear(128, 128) -> shardedToAll
+    ///   layers[2] = Linear(128, 128) -> allToSharded
+    ///   layers[3] = Linear(128, 128) -> shardedToAll
+    ///
+    /// Compute gradient of dummy_loss = sum(model(x) * y).
+    /// Verify that each rank's sharded weight/bias gradients match the
+    /// corresponding slice of the non-sharded model's gradients.
+    static func runShardLinearBackward(rank: Int, group: DistributedGroup) {
+        let N = group.size
+
+        // Seed identically on all ranks
+        MLXRandom.seed(0xF0F0_F0F0)
+
+        // Create the non-sharded 4-layer model
+        let mod = Sequential(
+            layers:
+                Linear(128, 128, bias: true),
+            Linear(128, 128, bias: true),
+            Linear(128, 128, bias: true),
+            Linear(128, 128, bias: true)
+        )
+        eval(mod)
+
+        // Create the sharded version from the same weights
+        let smod = Sequential(
+            layers:
+                shardLinear(
+                    module: (mod.layers[0] as! Module), sharding: .allToSharded,
+                    group: group) as! UnaryLayer,
+            shardLinear(
+                module: (mod.layers[1] as! Module), sharding: .shardedToAll,
+                group: group) as! UnaryLayer,
+            shardLinear(
+                module: (mod.layers[2] as! Module), sharding: .allToSharded,
+                group: group) as! UnaryLayer,
+            shardLinear(
+                module: (mod.layers[3] as! Module), sharding: .shardedToAll,
+                group: group) as! UnaryLayer
+        )
+        eval(smod)
+
+        // Create the same input and target on all ranks
+        let x = MLXRandom.normal([4, 128])
+        let yTarget = MLXRandom.normal([4, 128])
+        eval(x, yTarget)
+
+        // Define loss function: sum(model(x) * y)
+        func dummyLoss(model: Sequential, x: MLXArray, y: MLXArray) -> MLXArray {
+            (model(x) * y).sum()
+        }
+
+        // Compute value and gradients for the non-sharded model
+        let grad1 = valueAndGrad(model: mod, dummyLoss)
+        let (l1, g1) = grad1(mod, x, yTarget)
+        eval(l1, g1)
+
+        // Compute value and gradients for the sharded model
+        let grad2 = valueAndGrad(model: smod, dummyLoss)
+        let (l2, g2) = grad2(smod, x, yTarget)
+        eval(l2, g2)
+
+        // The rank's slice for dimension 128
+        let part = rank * 128 / N ..< (rank + 1) * 128 / N
+
+        // Verify losses match
+        let lossMatch = l1.allClose(l2).item(Bool.self)
+
+        // Extract gradients via flattened key paths.
+        // The flattened keys for a Sequential of Linears are:
+        //   "layers.0.weight", "layers.0.bias", "layers.1.weight", ...
+        let g1Flat = Dictionary(uniqueKeysWithValues: g1.flattened())
+        let g2Flat = Dictionary(uniqueKeysWithValues: g2.flattened())
+
+        // Helper to get a gradient array by key path
+        func g1Array(_ key: String) -> MLXArray { g1Flat[key]! }
+        func g2Array(_ key: String) -> MLXArray { g2Flat[key]! }
+
+        // Check layer 0 (allToSharded): g1.weight[part, :] == g2.weight
+        let l0WeightMatch = g1Array("layers.0.weight")[part].allClose(
+            g2Array("layers.0.weight"), rtol: 1e-4, atol: 1e-6
+        ).item(Bool.self)
+
+        // Check layer 0 bias: g1.bias[part] == g2.bias
+        let l0BiasMatch = g1Array("layers.0.bias")[part].allClose(
+            g2Array("layers.0.bias"), rtol: 1e-4, atol: 1e-6
+        ).item(Bool.self)
+
+        // Check layer 1 (shardedToAll): g1.weight[:, part] == g2.weight
+        let l1WeightMatch = g1Array("layers.1.weight")[0..., part].allClose(
+            g2Array("layers.1.weight"), rtol: 1e-4, atol: 1e-6
+        ).item(Bool.self)
+
+        // Check layer 1 bias: g1.bias == g2.bias (shardedToAll bias is not sharded)
+        let l1BiasMatch = g1Array("layers.1.bias").allClose(
+            g2Array("layers.1.bias"), rtol: 1e-4, atol: 1e-5
+        ).item(Bool.self)
+
+        // Check layer 2 (allToSharded): g1.weight[part, :] == g2.weight
+        let l2WeightMatch = g1Array("layers.2.weight")[part].allClose(
+            g2Array("layers.2.weight"), rtol: 1e-4, atol: 1e-6
+        ).item(Bool.self)
+
+        // Check layer 2 bias: g1.bias[part] == g2.bias
+        let l2BiasMatch = g1Array("layers.2.bias")[part].allClose(
+            g2Array("layers.2.bias"), rtol: 1e-4, atol: 1e-6
+        ).item(Bool.self)
+
+        // Check layer 3 (shardedToAll): g1.weight[:, part] == g2.weight
+        let l3WeightMatch = g1Array("layers.3.weight")[0..., part].allClose(
+            g2Array("layers.3.weight"), rtol: 1e-4, atol: 1e-6
+        ).item(Bool.self)
+
+        // Check layer 3 bias: g1.bias == g2.bias (shardedToAll bias is not sharded)
+        let l3BiasMatch = g1Array("layers.3.bias").allClose(
+            g2Array("layers.3.bias"), rtol: 1e-4, atol: 1e-5
+        ).item(Bool.self)
+
+        print(
+            "{\"lossMatch\": \(lossMatch), \"l0WeightMatch\": \(l0WeightMatch), \"l0BiasMatch\": \(l0BiasMatch), \"l1WeightMatch\": \(l1WeightMatch), \"l1BiasMatch\": \(l1BiasMatch), \"l2WeightMatch\": \(l2WeightMatch), \"l2BiasMatch\": \(l2BiasMatch), \"l3WeightMatch\": \(l3WeightMatch), \"l3BiasMatch\": \(l3BiasMatch)}"
+        )
+
+        // Verify all match
+        if !lossMatch {
+            fputs("ERROR: Losses don't match between sharded and non-sharded models\n", stderr)
+            let diff = abs(l1 - l2).item(Float.self)
+            fputs("  loss diff: \(diff)\n", stderr)
+            exit(1)
+        }
+
+        let checks: [(String, Bool)] = [
+            ("layer0 weight", l0WeightMatch),
+            ("layer0 bias", l0BiasMatch),
+            ("layer1 weight", l1WeightMatch),
+            ("layer1 bias", l1BiasMatch),
+            ("layer2 weight", l2WeightMatch),
+            ("layer2 bias", l2BiasMatch),
+            ("layer3 weight", l3WeightMatch),
+            ("layer3 bias", l3BiasMatch),
+        ]
+
+        for (name, matched) in checks {
+            if !matched {
+                fputs("ERROR: \(name) gradient parity failed\n", stderr)
+                exit(1)
             }
         }
     }

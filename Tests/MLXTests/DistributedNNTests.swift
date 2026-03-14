@@ -1043,4 +1043,305 @@ class DistributedNNTests: XCTestCase {
         XCTAssertTrue(keys.contains("scales"), "parameters() should contain scales")
         XCTAssertTrue(keys.contains("bias"), "parameters() should contain bias")
     }
+
+    // MARK: - Multi-Process NN Parity Tests
+
+    /// Find the DistributedWorker binary in the build products directory.
+    private func findWorkerBinary() -> URL? {
+        let testBundle = Bundle(for: type(of: self))
+        let bundleURL = testBundle.bundleURL
+        let productsDir = bundleURL.deletingLastPathComponent()
+        let workerURL = productsDir.appendingPathComponent("DistributedWorker")
+
+        if FileManager.default.isExecutableFile(atPath: workerURL.path) {
+            return workerURL
+        }
+
+        return nil
+    }
+
+    /// Find two available TCP ports for the ring backend.
+    private func findAvailablePorts() -> (Int, Int)? {
+        func findPort() -> Int? {
+            let sock = socket(AF_INET, SOCK_STREAM, 0)
+            guard sock >= 0 else { return nil }
+            defer { close(sock) }
+
+            var addr = sockaddr_in()
+            addr.sin_family = sa_family_t(AF_INET)
+            addr.sin_port = 0
+            addr.sin_addr.s_addr = UInt32(INADDR_LOOPBACK).bigEndian
+
+            var addrCopy = addr
+            let bindResult = withUnsafePointer(to: &addrCopy) { ptr in
+                ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockPtr in
+                    Darwin.bind(sock, sockPtr, socklen_t(MemoryLayout<sockaddr_in>.size))
+                }
+            }
+            guard bindResult == 0 else { return nil }
+
+            var len = socklen_t(MemoryLayout<sockaddr_in>.size)
+            let nameResult = withUnsafeMutablePointer(to: &addrCopy) { ptr in
+                ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockPtr in
+                    getsockname(sock, sockPtr, &len)
+                }
+            }
+            guard nameResult == 0 else { return nil }
+
+            return Int(UInt16(bigEndian: addrCopy.sin_port))
+        }
+
+        guard let port1 = findPort(), let port2 = findPort(), port1 != port2 else {
+            return nil
+        }
+        return (port1, port2)
+    }
+
+    /// Create a temporary hostfile for 2-process ring backend on localhost.
+    private func createHostfile(port1: Int, port2: Int) throws -> URL {
+        let hostfile = [
+            ["\("127.0.0.1"):\(port1)"],
+            ["\("127.0.0.1"):\(port2)"],
+        ]
+        let jsonData = try JSONSerialization.data(
+            withJSONObject: hostfile, options: [.prettyPrinted])
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+
+        let tempDir = FileManager.default.temporaryDirectory
+        let hostfilePath = tempDir.appendingPathComponent(
+            "mlx_test_hostfile_\(UUID().uuidString).json")
+        try jsonString.write(to: hostfilePath, atomically: true, encoding: .utf8)
+
+        return hostfilePath
+    }
+
+    /// Spawn a worker process with the given rank and operation, wait for completion.
+    private func spawnWorker(
+        workerBinary: URL, rank: Int, hostfilePath: URL, operation: String, timeout: TimeInterval
+    ) -> (exitCode: Int32, stdout: String, stderr: String) {
+        let process = Process()
+        process.executableURL = workerBinary
+        process.environment = [
+            "MLX_RANK": "\(rank)",
+            "MLX_HOSTFILE": hostfilePath.path,
+            "MLX_TEST_OP": operation,
+            "PATH": ProcessInfo.processInfo.environment["PATH"] ?? "/usr/bin:/bin",
+            "HOME": ProcessInfo.processInfo.environment["HOME"] ?? "/tmp",
+            "DYLD_LIBRARY_PATH":
+                ProcessInfo.processInfo.environment["DYLD_LIBRARY_PATH"] ?? "",
+            "DYLD_FRAMEWORK_PATH":
+                ProcessInfo.processInfo.environment["DYLD_FRAMEWORK_PATH"] ?? "",
+        ]
+
+        let stdoutPipe = Pipe()
+        let stderrPipe = Pipe()
+        process.standardOutput = stdoutPipe
+        process.standardError = stderrPipe
+
+        do {
+            try process.run()
+        } catch {
+            return (-1, "", "Failed to start process: \(error)")
+        }
+
+        let deadline = DispatchTime.now() + timeout
+        let group = DispatchGroup()
+        group.enter()
+
+        DispatchQueue.global().async {
+            process.waitUntilExit()
+            group.leave()
+        }
+
+        let result = group.wait(timeout: deadline)
+        if result == .timedOut {
+            process.terminate()
+            Thread.sleep(forTimeInterval: 0.5)
+            if process.isRunning {
+                kill(process.processIdentifier, SIGKILL)
+            }
+            return (-1, "", "Process timed out after \(timeout) seconds")
+        }
+
+        let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
+        let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+        let stdoutStr = String(data: stdoutData, encoding: .utf8) ?? ""
+        let stderrStr = String(data: stderrData, encoding: .utf8) ?? ""
+
+        return (process.terminationStatus, stdoutStr, stderrStr)
+    }
+
+    /// Run a multi-process test with the given operation.
+    private func runMultiProcessTest(
+        operation: String,
+        timeout: TimeInterval = 30.0,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> (
+        rank0: (exitCode: Int32, stdout: String, stderr: String),
+        rank1: (exitCode: Int32, stdout: String, stderr: String)
+    )? {
+        guard let workerBinary = findWorkerBinary() else {
+            XCTFail(
+                "DistributedWorker binary not found. Build with: xcodebuild build -scheme mlx-swift-Package",
+                file: file, line: line)
+            return nil
+        }
+
+        guard let (port1, port2) = findAvailablePorts() else {
+            XCTFail("Could not find two available ports", file: file, line: line)
+            return nil
+        }
+
+        let hostfilePath: URL
+        do {
+            hostfilePath = try createHostfile(port1: port1, port2: port2)
+        } catch {
+            XCTFail("Failed to create hostfile: \(error)", file: file, line: line)
+            return nil
+        }
+        defer {
+            try? FileManager.default.removeItem(at: hostfilePath)
+        }
+
+        var rank0Result: (exitCode: Int32, stdout: String, stderr: String)!
+        var rank1Result: (exitCode: Int32, stdout: String, stderr: String)!
+
+        let group = DispatchGroup()
+
+        group.enter()
+        DispatchQueue.global().async {
+            rank0Result = self.spawnWorker(
+                workerBinary: workerBinary, rank: 0, hostfilePath: hostfilePath,
+                operation: operation, timeout: timeout)
+            group.leave()
+        }
+
+        group.enter()
+        DispatchQueue.global().async {
+            rank1Result = self.spawnWorker(
+                workerBinary: workerBinary, rank: 1, hostfilePath: hostfilePath,
+                operation: operation, timeout: timeout)
+            group.leave()
+        }
+
+        let waitResult = group.wait(timeout: .now() + timeout + 10)
+        if waitResult == .timedOut {
+            XCTFail(
+                "Multi-process test timed out waiting for workers", file: file, line: line)
+            return nil
+        }
+
+        return (rank0Result, rank1Result)
+    }
+
+    // MARK: - (23) Multi-Process Shard Linear Forward Parity
+
+    func testMultiProcessShardLinearForward() {
+        // VAL-NN-023: Two processes create same Linear (seeded), shardLinear to
+        // AllToShardedLinear and ShardedToAllLinear, forward on same input.
+        // Verify concatenated sharded outputs match original Linear output.
+        guard let results = runMultiProcessTest(operation: "shardLinearForward") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify JSON output from both ranks
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let allToShardedMatch = json["allToShardedMatch"] as? Bool,
+                let shardedToAllMatch = json["shardedToAllMatch"] as? Bool
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertTrue(
+                allToShardedMatch,
+                "Rank \(rank): AllToSharded forward parity failed")
+            XCTAssertTrue(
+                shardedToAllMatch,
+                "Rank \(rank): ShardedToAll forward parity failed")
+        }
+    }
+
+    // MARK: - (24) Multi-Process Shard Linear Backward Gradient Parity
+
+    func testMultiProcessShardLinearBackward() {
+        // VAL-NN-024: Two processes with 4-layer Sequential (sharded Linear layers).
+        // Backward pass gradients for each rank's weight slice should match
+        // the corresponding slice from the non-sharded model's gradient.
+        guard let results = runMultiProcessTest(operation: "shardLinearBackward") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify JSON output from both ranks
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let lossMatch = json["lossMatch"] as? Bool,
+                let l0WeightMatch = json["l0WeightMatch"] as? Bool,
+                let l0BiasMatch = json["l0BiasMatch"] as? Bool,
+                let l1WeightMatch = json["l1WeightMatch"] as? Bool,
+                let l1BiasMatch = json["l1BiasMatch"] as? Bool,
+                let l2WeightMatch = json["l2WeightMatch"] as? Bool,
+                let l2BiasMatch = json["l2BiasMatch"] as? Bool,
+                let l3WeightMatch = json["l3WeightMatch"] as? Bool,
+                let l3BiasMatch = json["l3BiasMatch"] as? Bool
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertTrue(lossMatch, "Rank \(rank): loss mismatch")
+            XCTAssertTrue(l0WeightMatch, "Rank \(rank): layer 0 weight gradient mismatch")
+            XCTAssertTrue(l0BiasMatch, "Rank \(rank): layer 0 bias gradient mismatch")
+            XCTAssertTrue(l1WeightMatch, "Rank \(rank): layer 1 weight gradient mismatch")
+            XCTAssertTrue(l1BiasMatch, "Rank \(rank): layer 1 bias gradient mismatch")
+            XCTAssertTrue(l2WeightMatch, "Rank \(rank): layer 2 weight gradient mismatch")
+            XCTAssertTrue(l2BiasMatch, "Rank \(rank): layer 2 bias gradient mismatch")
+            XCTAssertTrue(l3WeightMatch, "Rank \(rank): layer 3 weight gradient mismatch")
+            XCTAssertTrue(l3BiasMatch, "Rank \(rank): layer 3 bias gradient mismatch")
+        }
+    }
 }
