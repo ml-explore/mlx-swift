@@ -1438,6 +1438,15 @@ class DistributedTests: XCTestCase {
             XCTAssertTrue(int32Match, "Rank \(rank): int32 allGather mismatch")
             XCTAssertEqual(float16Shape, [4], "Rank \(rank): float16 shape mismatch")
             XCTAssertEqual(int32Shape, [2], "Rank \(rank): int32 shape mismatch")
+
+            let float16Dtype = json["float16Dtype"] as? String
+            let int32Dtype = json["int32Dtype"] as? String
+            XCTAssertEqual(
+                float16Dtype, "float16",
+                "Rank \(rank): allGather should preserve float16 dtype")
+            XCTAssertEqual(
+                int32Dtype, "int32",
+                "Rank \(rank): allGather should preserve int32 dtype")
         }
     }
 

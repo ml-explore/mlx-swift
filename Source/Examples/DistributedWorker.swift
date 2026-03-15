@@ -915,8 +915,30 @@ struct DistributedWorker {
         }
         if abs(avg3BiasValues[0] - expectedBias[0]) > 0.1 { commTypeMatch = false }
 
+        // 4. Mixed-dtype gradients — triggers fallback to non-batched mode
+        let mixedFlat: [String: MLXArray] = [
+            "weight_f32": MLXArray(
+                rank == 0 ? [2.0, 4.0] as [Float] : [4.0, 8.0] as [Float]),
+            "weight_f16": MLXArray(
+                rank == 0 ? [10.0, 20.0] as [Float] : [30.0, 40.0] as [Float]).asType(.float16),
+        ]
+        let mixedGrads = ModuleParameters.unflattened(mixedFlat)
+        let mixedResult = averageGradients(gradients: mixedGrads, group: group)
+        eval(mixedResult)
+
+        let mixedResultFlat = mixedResult.flattened()
+        let f32Result = Dictionary(uniqueKeysWithValues: mixedResultFlat)["weight_f32"]!
+        let f16Result = Dictionary(uniqueKeysWithValues: mixedResultFlat)["weight_f16"]!
+
+        let f32Values = f32Result.asArray(Float.self)
+        let f16Values = f16Result.asType(.float32).asArray(Float.self)
+        let mixedDtypeMatch =
+            abs(f32Values[0] - 3.0) < 0.1 && abs(f32Values[1] - 6.0) < 0.1
+            && abs(f16Values[0] - 20.0) < 1.0 && abs(f16Values[1] - 30.0) < 1.0
+        let mixedDtypePreserved = f16Result.dtype == .float16
+
         print(
-            "{\"defaultMatch\": \(defaultMatch), \"unbatchedMatch\": \(unbatchedMatch), \"commTypeMatch\": \(commTypeMatch), \"commTypeDtype\": \"\(commTypeDtype)\"}"
+            "{\"defaultMatch\": \(defaultMatch), \"unbatchedMatch\": \(unbatchedMatch), \"commTypeMatch\": \(commTypeMatch), \"commTypeDtype\": \"\(commTypeDtype)\", \"mixedDtypeMatch\": \(mixedDtypeMatch), \"mixedDtypePreserved\": \(mixedDtypePreserved)}"
         )
     }
 
@@ -1002,8 +1024,11 @@ struct DistributedWorker {
         let int32Match =
             i32Result.shape == [2] && i32Values[0] == 10 && i32Values[1] == 20
 
+        let float16Dtype = String(describing: f16Result.dtype)
+        let int32Dtype = String(describing: i32Result.dtype)
+
         print(
-            "{\"float16Match\": \(float16Match), \"int32Match\": \(int32Match), \"float16Shape\": [\(f16Result.shape.map { String($0) }.joined(separator: ","))], \"int32Shape\": [\(i32Result.shape.map { String($0) }.joined(separator: ","))]}"
+            "{\"float16Match\": \(float16Match), \"int32Match\": \(int32Match), \"float16Shape\": [\(f16Result.shape.map { String($0) }.joined(separator: ","))], \"int32Shape\": [\(i32Result.shape.map { String($0) }.joined(separator: ","))], \"float16Dtype\": \"\(float16Dtype)\", \"int32Dtype\": \"\(int32Dtype)\"}"
         )
     }
 
