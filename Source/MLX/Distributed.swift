@@ -105,6 +105,10 @@ public enum MLXDistributed {
     /// When `strict` is `true`, returns `nil` if initialization fails
     /// (e.g., no hostfile configured).
     ///
+    /// > Note: MLX-C does not currently expose a backend selection parameter.
+    /// > The C layer tries backends in priority order (JACCL first, then ring).
+    /// > Track upstream mlx-c for a future `backend` parameter.
+    ///
     /// - Parameter strict: if `true`, return `nil` on initialization failure
     ///   instead of falling back to a singleton group
     /// - Returns: the ``DistributedGroup`` for this process, or `nil` if

@@ -88,6 +88,8 @@ open class AllToShardedLinear: Module, UnaryLayer {
         self.group = group
         let N = group.size
 
+        // Uses precondition (not throwing) to match the convention used throughout
+        // MLXNN (Linear, Conv1d, Embedding, etc.).
         precondition(
             outputDimensions % N == 0,
             "Cannot shard the output of size \(outputDimensions) across \(N) devices."
@@ -712,6 +714,10 @@ public enum ShardingType {
 /// The returned layer has its parameters sharded across the group and
 /// performs distributed communication in either the forward or backward pass
 /// depending on the sharding type.
+///
+/// > Note: The `segments` parameter accepts an integer count (e.g. 3 for fused QKV).
+/// > Python's upstream `_shard`/`_split` helpers also support list-based and fractional
+/// > segment boundaries; these can be added here if upstream use cases require them.
 ///
 /// - Parameters:
 ///   - module: the ``Linear`` or ``QuantizedLinear`` layer to shard
