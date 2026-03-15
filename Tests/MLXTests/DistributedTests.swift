@@ -97,7 +97,7 @@ class DistributedTests: XCTestCase {
 
         // (1) Verify isAvailable() returns a Bool
         let available = MLXDistributed.isAvailable()
-        
+
         // (2) Ring backend is always compiled in, so availability is true
         XCTAssertTrue(
             available,
