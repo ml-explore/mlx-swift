@@ -1525,7 +1525,9 @@ class DistributedNNTests: XCTestCase {
                 let defaultMatch = json["defaultMatch"] as? Bool,
                 let unbatchedMatch = json["unbatchedMatch"] as? Bool,
                 let commTypeMatch = json["commTypeMatch"] as? Bool,
-                let commTypeDtype = json["commTypeDtype"] as? String
+                let commTypeDtype = json["commTypeDtype"] as? String,
+                let mixedDtypeMatch = json["mixedDtypeMatch"] as? Bool,
+                let mixedDtypePreserved = json["mixedDtypePreserved"] as? Bool
             else {
                 XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
                 continue
@@ -1543,6 +1545,12 @@ class DistributedNNTests: XCTestCase {
             XCTAssertEqual(
                 commTypeDtype, "float32",
                 "Rank \(rank): communicationType should preserve original float32 dtype")
+            XCTAssertTrue(
+                mixedDtypeMatch,
+                "Rank \(rank): mixed-dtype averageGradients values mismatch")
+            XCTAssertTrue(
+                mixedDtypePreserved,
+                "Rank \(rank): mixed-dtype averageGradients should preserve float16")
         }
     }
 }
