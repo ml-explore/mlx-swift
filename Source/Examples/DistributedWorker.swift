@@ -322,9 +322,10 @@ struct DistributedWorker {
         let input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
 
         do {
-            try withError {
+            try withError { error in
                 let result = MLXDistributed.sumScatter(input, group: group)
                 eval(result)
+                try error.check()
 
                 let values = result.asArray(Float.self)
                 let shape = result.shape
