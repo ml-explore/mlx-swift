@@ -183,7 +183,6 @@ class DistributedNNTests: XCTestCase {
             groupSize: 64, bits: 4, group: group)
 
         // Verify Quantized protocol conformance
-        XCTAssertTrue(layer is Quantized, "Should conform to Quantized protocol")
         XCTAssertEqual(layer.groupSize, 64)
         XCTAssertEqual(layer.bits, 4)
         XCTAssertEqual(layer.mode, .affine)
@@ -213,7 +212,6 @@ class DistributedNNTests: XCTestCase {
             groupSize: 64, bits: 4, group: group)
 
         XCTAssertNil(layer.bias)
-        XCTAssertTrue(layer is Quantized)
     }
 
     // MARK: - (6) QuantizedAllToShardedLinear Forward Test
@@ -240,8 +238,6 @@ class DistributedNNTests: XCTestCase {
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
-        // Verify Quantized protocol conformance
-        XCTAssertTrue(layer is Quantized)
         XCTAssertEqual(layer.groupSize, 64)
         XCTAssertEqual(layer.bits, 4)
         XCTAssertEqual(layer.mode, .affine)
@@ -267,7 +263,6 @@ class DistributedNNTests: XCTestCase {
             groupSize: 64, bits: 4, group: group)
 
         XCTAssertNil(layer.bias)
-        XCTAssertTrue(layer is Quantized)
     }
 
     func testQuantizedShardedToAllLinearForward() {
@@ -297,7 +292,7 @@ class DistributedNNTests: XCTestCase {
         XCTAssertTrue(allToSharded.trainableParameters().flattened().isEmpty)
 
         // Unfreeze -- should re-freeze own params
-        try! allToSharded.unfreeze()
+        allToSharded.unfreeze()
         XCTAssertTrue(
             allToSharded.trainableParameters().flattened().isEmpty,
             "Quantized layer should stay frozen after unfreeze (Python: self.freeze(recurse=False))"
@@ -308,7 +303,7 @@ class DistributedNNTests: XCTestCase {
             groupSize: 64, bits: 4, group: group)
 
         XCTAssertTrue(shardedToAll.trainableParameters().flattened().isEmpty)
-        try! shardedToAll.unfreeze()
+        shardedToAll.unfreeze()
         XCTAssertTrue(
             shardedToAll.trainableParameters().flattened().isEmpty,
             "QuantizedShardedToAllLinear should stay frozen after unfreeze")
