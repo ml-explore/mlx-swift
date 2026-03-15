@@ -91,6 +91,18 @@ struct DistributedWorker {
             runShardLinearForward(rank: rank, group: group)
         case "shardLinearBackward":
             runShardLinearBackward(rank: rank, group: group)
+        case "averageGradients":
+            runAverageGradients(rank: rank, group: group)
+        case "sendRecvMultiDtype":
+            runSendRecvMultiDtype(rank: rank, group: group)
+        case "allGatherMultiDtype":
+            runAllGatherMultiDtype(rank: rank, group: group)
+        case "sendRecv2D":
+            runSendRecv2D(rank: rank, group: group)
+        case "allGather2D":
+            runAllGather2D(rank: rank, group: group)
+        case "recvLikeMultiDtype":
+            runRecvLikeMultiDtype(rank: rank, group: group)
         default:
             fputs("ERROR: Unknown test operation: \(testOp)\n", stderr)
             exit(1)
@@ -186,9 +198,9 @@ struct DistributedWorker {
 
     /// split test: exercises group.split(color:key:) across multiple processes.
     ///
-    /// Currently, the ring backend (and all other MLX backends) do NOT support
-    /// group split — they throw "[ring] Group split not supported." This test
-    /// verifies that:
+    /// The ring and JACCL backends do not support split. MPI does support it
+    /// but is not available on macOS. The ring backend throws
+    /// "[ring] Group split not supported." This test verifies that:
     /// 1. The split call is attempted and the error is detected (not a crash)
     /// 2. The parent group remains usable after the failed split
     /// 3. An allSum on the original parent group still works correctly
@@ -305,9 +317,9 @@ struct DistributedWorker {
     /// sumScatter test: rank 0 and rank 1 each have [1,2,3,4], result shape is halved,
     /// each rank gets its slice of the element-wise sum [2,4,6,8].
     ///
-    /// NOTE: The ring backend currently does not implement ReduceScatter for
-    /// multi-process groups. This test detects the error gracefully and reports
-    /// the backend limitation rather than crashing.
+    /// NOTE: The ring backend does not implement ReduceScatter. Other backends
+    /// (NCCL on Linux/CUDA, MPI) do support it. This test detects the error
+    /// gracefully and reports the backend limitation rather than crashing.
     static func runSumScatter(rank: Int, group: DistributedGroup) {
         let input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
 
@@ -835,6 +847,265 @@ struct DistributedWorker {
                 fputs("ERROR: \(name) gradient parity failed\n", stderr)
                 exit(1)
             }
+        }
+    }
+
+    /// averageGradients test: exercises batched allSum, non-batched, and communicationType
+    /// paths with a 2-process group (N==2), so the early-return `if N == 1` is bypassed.
+    ///
+    /// Rank 0: weight=[2,4,6], bias=[10]
+    /// Rank 1: weight=[4,8,12], bias=[20]
+    /// Expected average: weight=[3,6,9], bias=[15]
+    static func runAverageGradients(rank: Int, group: DistributedGroup) {
+        // Build a gradient tree with known per-rank values
+        let weight: MLXArray
+        let bias: MLXArray
+        if rank == 0 {
+            weight = MLXArray(converting: [2.0, 4.0, 6.0])
+            bias = MLXArray(converting: [10.0])
+        } else {
+            weight = MLXArray(converting: [4.0, 8.0, 12.0])
+            bias = MLXArray(converting: [20.0])
+        }
+        eval(weight, bias)
+
+        var grads = ModuleParameters()
+        grads["weight"] = .value(weight)
+        grads["bias"] = .value(bias)
+
+        let expectedWeight: [Float] = [3.0, 6.0, 9.0]
+        let expectedBias: [Float] = [15.0]
+
+        // 1. Default averageGradients (batched allSum path)
+        let avg1 = averageGradients(gradients: grads, group: group)
+        let avg1Flat = Dictionary(uniqueKeysWithValues: avg1.flattened())
+        let avg1Weight = avg1Flat["weight"]!.asArray(Float.self)
+        let avg1Bias = avg1Flat["bias"]!.asArray(Float.self)
+
+        var defaultMatch = true
+        for i in 0 ..< 3 {
+            if abs(avg1Weight[i] - expectedWeight[i]) > 1e-4 { defaultMatch = false }
+        }
+        if abs(avg1Bias[0] - expectedBias[0]) > 1e-4 { defaultMatch = false }
+
+        // 2. Non-batched path (allReduceSize=0)
+        let avg2 = averageGradients(gradients: grads, group: group, allReduceSize: 0)
+        let avg2Flat = Dictionary(uniqueKeysWithValues: avg2.flattened())
+        let avg2Weight = avg2Flat["weight"]!.asArray(Float.self)
+        let avg2Bias = avg2Flat["bias"]!.asArray(Float.self)
+
+        var unbatchedMatch = true
+        for i in 0 ..< 3 {
+            if abs(avg2Weight[i] - expectedWeight[i]) > 1e-4 { unbatchedMatch = false }
+        }
+        if abs(avg2Bias[0] - expectedBias[0]) > 1e-4 { unbatchedMatch = false }
+
+        // 3. communicationType: .float16 (cast-on-wire)
+        let avg3 = averageGradients(
+            gradients: grads, group: group, communicationType: .float16)
+        let avg3Flat = Dictionary(uniqueKeysWithValues: avg3.flattened())
+        let avg3Weight = avg3Flat["weight"]!
+        let avg3Bias = avg3Flat["bias"]!
+        let avg3WeightValues = avg3Weight.asArray(Float.self)
+        let avg3BiasValues = avg3Bias.asArray(Float.self)
+
+        // Verify the output dtype is still float32 (preserved after round-trip)
+        let commTypeDtype = String(describing: avg3Weight.dtype)
+
+        var commTypeMatch = true
+        for i in 0 ..< 3 {
+            // float16 round-trip allows slightly larger tolerance
+            if abs(avg3WeightValues[i] - expectedWeight[i]) > 0.1 { commTypeMatch = false }
+        }
+        if abs(avg3BiasValues[0] - expectedBias[0]) > 0.1 { commTypeMatch = false }
+
+        print(
+            "{\"defaultMatch\": \(defaultMatch), \"unbatchedMatch\": \(unbatchedMatch), \"commTypeMatch\": \(commTypeMatch), \"commTypeDtype\": \"\(commTypeDtype)\"}"
+        )
+    }
+
+    /// sendRecvMultiDtype test: rank 0 sends float16, int32, bfloat16 arrays to rank 1
+    static func runSendRecvMultiDtype(rank: Int, group: DistributedGroup) {
+        if rank == 0 {
+            let f16 = MLXArray(converting: [1.0, 2.0]).asType(.float16)
+            let i32 = MLXArray([100, 200] as [Int32])
+            let bf16 = MLXArray(converting: [0.5, 1.5]).asType(.bfloat16)
+            eval(f16, i32, bf16)
+
+            let t1 = MLXDistributed.send(f16, to: 1, group: group)
+            eval(t1)
+            let t2 = MLXDistributed.send(i32, to: 1, group: group)
+            eval(t2)
+            let t3 = MLXDistributed.send(bf16, to: 1, group: group)
+            eval(t3)
+
+            print(
+                "{\"float16Match\": true, \"int32Match\": true, \"bfloat16Match\": true}"
+            )
+        } else {
+            let recvF16 = MLXDistributed.recv(
+                shape: [2], dtype: .float16, from: 0, group: group)
+            eval(recvF16)
+            let recvI32 = MLXDistributed.recv(
+                shape: [2], dtype: .int32, from: 0, group: group)
+            eval(recvI32)
+            let recvBf16 = MLXDistributed.recv(
+                shape: [2], dtype: .bfloat16, from: 0, group: group)
+            eval(recvBf16)
+
+            let f16Values = recvF16.asArray(Float.self)
+            let i32Values = recvI32.asArray(Int32.self)
+            let bf16Values = recvBf16.asArray(Float.self)
+
+            let float16Match =
+                abs(f16Values[0] - 1.0) < 0.1 && abs(f16Values[1] - 2.0) < 0.1
+            let int32Match = i32Values[0] == 100 && i32Values[1] == 200
+            let bfloat16Match =
+                abs(bf16Values[0] - 0.5) < 0.1 && abs(bf16Values[1] - 1.5) < 0.1
+
+            print(
+                "{\"float16Match\": \(float16Match), \"int32Match\": \(int32Match), \"bfloat16Match\": \(bfloat16Match)}"
+            )
+        }
+    }
+
+    /// allGatherMultiDtype test: float16 and int32 allGather across 2 processes
+    static func runAllGatherMultiDtype(rank: Int, group: DistributedGroup) {
+        // float16 test: rank 0 [1,2], rank 1 [3,4] -> gathered [1,2,3,4]
+        let f16Input: MLXArray
+        if rank == 0 {
+            f16Input = MLXArray(converting: [1.0, 2.0]).asType(.float16)
+        } else {
+            f16Input = MLXArray(converting: [3.0, 4.0]).asType(.float16)
+        }
+        eval(f16Input)
+
+        let f16Result = MLXDistributed.allGather(f16Input, group: group)
+        eval(f16Result)
+
+        let f16Values = f16Result.asArray(Float.self)
+        let f16Expected: [Float] = [1.0, 2.0, 3.0, 4.0]
+        var float16Match = f16Result.shape == [4]
+        for i in 0 ..< 4 {
+            if abs(f16Values[i] - f16Expected[i]) > 0.1 { float16Match = false }
+        }
+
+        // int32 test: rank 0 [10], rank 1 [20] -> gathered [10, 20]
+        let i32Input: MLXArray
+        if rank == 0 {
+            i32Input = MLXArray([10] as [Int32])
+        } else {
+            i32Input = MLXArray([20] as [Int32])
+        }
+        eval(i32Input)
+
+        let i32Result = MLXDistributed.allGather(i32Input, group: group)
+        eval(i32Result)
+
+        let i32Values = i32Result.asArray(Int32.self)
+        let int32Match =
+            i32Result.shape == [2] && i32Values[0] == 10 && i32Values[1] == 20
+
+        print(
+            "{\"float16Match\": \(float16Match), \"int32Match\": \(int32Match), \"float16Shape\": [\(f16Result.shape.map { String($0) }.joined(separator: ","))], \"int32Shape\": [\(i32Result.shape.map { String($0) }.joined(separator: ","))]}"
+        )
+    }
+
+    /// sendRecv2D test: rank 0 sends a [2,3] float32 array, rank 1 receives and verifies
+    static func runSendRecv2D(rank: Int, group: DistributedGroup) {
+        if rank == 0 {
+            let data = MLXArray(converting: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]).reshaped([2, 3])
+            eval(data)
+            let token = MLXDistributed.send(data, to: 1, group: group)
+            eval(token)
+
+            print("{\"valuesMatch\": true, \"shape\": [2,3]}")
+        } else {
+            let received = MLXDistributed.recv(
+                shape: [2, 3], dtype: .float32, from: 0, group: group)
+            eval(received)
+
+            let values = received.asArray(Float.self)
+            let shape = received.shape
+
+            let expected: [Float] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+            var valuesMatch = shape == [2, 3]
+            for i in 0 ..< 6 {
+                if abs(values[i] - expected[i]) > 1e-5 { valuesMatch = false }
+            }
+
+            print(
+                "{\"valuesMatch\": \(valuesMatch), \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+            )
+        }
+    }
+
+    /// allGather2D test: rank 0 [[1,2],[3,4]], rank 1 [[5,6],[7,8]]
+    /// After allGather along axis 0: [[1,2],[3,4],[5,6],[7,8]] shape [4,2]
+    static func runAllGather2D(rank: Int, group: DistributedGroup) {
+        let input: MLXArray
+        if rank == 0 {
+            input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0]).reshaped([2, 2])
+        } else {
+            input = MLXArray(converting: [5.0, 6.0, 7.0, 8.0]).reshaped([2, 2])
+        }
+        eval(input)
+
+        let result = MLXDistributed.allGather(input, group: group)
+        eval(result)
+
+        let values = result.asArray(Float.self)
+        let shape = result.shape
+
+        let expected: [Float] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
+        var valuesMatch = shape == [4, 2]
+        for i in 0 ..< 8 {
+            if abs(values[i] - expected[i]) > 1e-5 { valuesMatch = false }
+        }
+
+        print(
+            "{\"valuesMatch\": \(valuesMatch), \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+        )
+    }
+
+    /// recvLikeMultiDtype test: rank 0 sends float16 and int32 arrays,
+    /// rank 1 uses recvLike with matching templates to verify dtype preservation
+    static func runRecvLikeMultiDtype(rank: Int, group: DistributedGroup) {
+        if rank == 0 {
+            let f16 = MLXArray(converting: [1.0, 2.0]).asType(.float16)
+            let i32 = MLXArray([100, 200] as [Int32])
+            eval(f16, i32)
+
+            let t1 = MLXDistributed.send(f16, to: 1, group: group)
+            eval(t1)
+            let t2 = MLXDistributed.send(i32, to: 1, group: group)
+            eval(t2)
+
+            print(
+                "{\"float16Match\": true, \"float16Dtype\": \"float16\", \"int32Match\": true, \"int32Dtype\": \"int32\"}"
+            )
+        } else {
+            let f16Template = MLXArray(converting: [0.0, 0.0]).asType(.float16)
+            let i32Template = MLXArray([0, 0] as [Int32])
+            eval(f16Template, i32Template)
+
+            let recvF16 = MLXDistributed.recvLike(f16Template, from: 0, group: group)
+            eval(recvF16)
+            let recvI32 = MLXDistributed.recvLike(i32Template, from: 0, group: group)
+            eval(recvI32)
+
+            let f16Values = recvF16.asArray(Float.self)
+            let i32Values = recvI32.asArray(Int32.self)
+
+            let float16Match =
+                abs(f16Values[0] - 1.0) < 0.1 && abs(f16Values[1] - 2.0) < 0.1
+            let int32Match = i32Values[0] == 100 && i32Values[1] == 200
+            let float16Dtype = String(describing: recvF16.dtype)
+            let int32Dtype = String(describing: recvI32.dtype)
+
+            print(
+                "{\"float16Match\": \(float16Match), \"float16Dtype\": \"\(float16Dtype)\", \"int32Match\": \(int32Match), \"int32Dtype\": \"\(int32Dtype)\"}"
+            )
         }
     }
 }

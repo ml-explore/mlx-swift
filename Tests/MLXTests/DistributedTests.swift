@@ -938,11 +938,11 @@ class DistributedTests: XCTestCase {
     // MARK: - (18) Multi-process sumScatter
 
     func testMultiProcessSumScatter() {
-        // NOTE: The ring backend currently does not implement ReduceScatter
-        // for multi-process groups ("[ReduceScatter] Not implemented yet.").
-        // This test verifies the operation completes without crashing and that
-        // the error is handled gracefully. When upstream adds support, the
-        // test will automatically validate the correct results.
+        // NOTE: The ring backend does not implement ReduceScatter. Other
+        // backends (NCCL on Linux/CUDA, MPI) do support it. This test verifies
+        // the operation completes without crashing and that the error is handled
+        // gracefully. When upstream adds support, the test will automatically
+        // validate the correct results.
         guard let results = runMultiProcessTest(operation: "sumScatter") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
@@ -1276,9 +1276,9 @@ class DistributedTests: XCTestCase {
     func testMultiProcessSplit() {
         // Tests group.split(color:key:) across two processes.
         //
-        // Currently, the ring backend (and all other MLX backends) do NOT
-        // support group split — they throw "[ring] Group split not supported."
-        // This test verifies that:
+        // The ring and JACCL backends do not support split. MPI does support
+        // it but is not available on macOS. The ring backend throws
+        // "[ring] Group split not supported." This test verifies that:
         // 1. The split error is caught gracefully (no crash, no abort)
         // 2. The parent group remains usable after the failed split
         // 3. An allSum on the original group still produces correct results
@@ -1337,5 +1337,224 @@ class DistributedTests: XCTestCase {
             XCTAssertEqual(values[1], 7.0, accuracy: 1e-5, "Rank \(rank) value[1] mismatch")
             XCTAssertEqual(values[2], 9.0, accuracy: 1e-5, "Rank \(rank) value[2] mismatch")
         }
+    }
+
+    // MARK: - (26) Multi-process send/recv multi-dtype
+
+    func testMultiProcessSendRecvMultiDtype() {
+        guard let results = runMultiProcessTest(operation: "sendRecvMultiDtype") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify rank 1 received all dtypes correctly
+        let rank1Stdout = results.rank1.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !rank1Stdout.isEmpty,
+            let data = rank1Stdout.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let float16Match = json["float16Match"] as? Bool,
+            let int32Match = json["int32Match"] as? Bool,
+            let bfloat16Match = json["bfloat16Match"] as? Bool
+        else {
+            XCTFail("Rank 1 produced invalid JSON output: '\(rank1Stdout)'")
+            return
+        }
+
+        XCTAssertTrue(float16Match, "float16 send/recv values mismatch")
+        XCTAssertTrue(int32Match, "int32 send/recv values mismatch")
+        XCTAssertTrue(bfloat16Match, "bfloat16 send/recv values mismatch")
+    }
+
+    // MARK: - (27) Multi-process allGather multi-dtype
+
+    func testMultiProcessAllGatherMultiDtype() {
+        guard let results = runMultiProcessTest(operation: "allGatherMultiDtype") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify JSON output from both ranks
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let float16Match = json["float16Match"] as? Bool,
+                let int32Match = json["int32Match"] as? Bool,
+                let float16Shape = json["float16Shape"] as? [Int],
+                let int32Shape = json["int32Shape"] as? [Int]
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertTrue(float16Match, "Rank \(rank): float16 allGather mismatch")
+            XCTAssertTrue(int32Match, "Rank \(rank): int32 allGather mismatch")
+            XCTAssertEqual(float16Shape, [4], "Rank \(rank): float16 shape mismatch")
+            XCTAssertEqual(int32Shape, [2], "Rank \(rank): int32 shape mismatch")
+        }
+    }
+
+    // MARK: - (28) Multi-process send/recv 2D
+
+    func testMultiProcessSendRecv2D() {
+        guard let results = runMultiProcessTest(operation: "sendRecv2D") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify rank 1 received [2,3] shaped array with correct values
+        let rank1Stdout = results.rank1.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !rank1Stdout.isEmpty,
+            let data = rank1Stdout.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let valuesMatch = json["valuesMatch"] as? Bool,
+            let shape = json["shape"] as? [Int]
+        else {
+            XCTFail("Rank 1 produced invalid JSON output: '\(rank1Stdout)'")
+            return
+        }
+
+        XCTAssertTrue(valuesMatch, "2D send/recv values mismatch")
+        XCTAssertEqual(shape, [2, 3], "2D send/recv shape mismatch")
+    }
+
+    // MARK: - (29) Multi-process allGather 2D
+
+    func testMultiProcessAllGather2D() {
+        guard let results = runMultiProcessTest(operation: "allGather2D") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify both ranks got [4,2] shaped array with correct values
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let valuesMatch = json["valuesMatch"] as? Bool,
+                let shape = json["shape"] as? [Int]
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertTrue(valuesMatch, "Rank \(rank): 2D allGather values mismatch")
+            XCTAssertEqual(shape, [4, 2], "Rank \(rank): 2D allGather shape mismatch")
+        }
+    }
+
+    // MARK: - (30) Multi-process recvLike multi-dtype
+
+    func testMultiProcessRecvLikeMultiDtype() {
+        guard let results = runMultiProcessTest(operation: "recvLikeMultiDtype") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify rank 1 received both dtypes correctly with dtype preservation
+        let rank1Stdout = results.rank1.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !rank1Stdout.isEmpty,
+            let data = rank1Stdout.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let float16Match = json["float16Match"] as? Bool,
+            let float16Dtype = json["float16Dtype"] as? String,
+            let int32Match = json["int32Match"] as? Bool,
+            let int32Dtype = json["int32Dtype"] as? String
+        else {
+            XCTFail("Rank 1 produced invalid JSON output: '\(rank1Stdout)'")
+            return
+        }
+
+        XCTAssertTrue(float16Match, "float16 recvLike values mismatch")
+        XCTAssertEqual(float16Dtype, "float16", "float16 dtype not preserved by recvLike")
+        XCTAssertTrue(int32Match, "int32 recvLike values mismatch")
+        XCTAssertEqual(int32Dtype, "int32", "int32 dtype not preserved by recvLike")
     }
 }
