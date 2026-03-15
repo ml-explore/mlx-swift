@@ -1487,4 +1487,62 @@ class DistributedNNTests: XCTestCase {
             XCTAssertTrue(l3BiasMatch, "Rank \(rank): layer 3 bias gradient mismatch")
         }
     }
+
+    // MARK: - (25) Multi-Process averageGradients
+
+    func testMultiProcessAverageGradients() {
+        // VAL-NN-025: Two processes exercise averageGradients with N==2,
+        // bypassing the early-return `if N == 1` path. Tests batched allSum,
+        // non-batched (allReduceSize=0), and communicationType: .float16.
+        guard let results = runMultiProcessTest(operation: "averageGradients") else { return }
+
+        if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
+            print("=== Rank 0 stderr ===")
+            print(results.rank0.stderr)
+            print("=== Rank 0 stdout ===")
+            print(results.rank0.stdout)
+            print("=== Rank 1 stderr ===")
+            print(results.rank1.stderr)
+            print("=== Rank 1 stdout ===")
+            print(results.rank1.stdout)
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        // Verify JSON output from both ranks
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let defaultMatch = json["defaultMatch"] as? Bool,
+                let unbatchedMatch = json["unbatchedMatch"] as? Bool,
+                let commTypeMatch = json["commTypeMatch"] as? Bool,
+                let commTypeDtype = json["commTypeDtype"] as? String
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
+            }
+
+            XCTAssertTrue(
+                defaultMatch,
+                "Rank \(rank): default averageGradients (batched) mismatch")
+            XCTAssertTrue(
+                unbatchedMatch,
+                "Rank \(rank): non-batched averageGradients mismatch")
+            XCTAssertTrue(
+                commTypeMatch,
+                "Rank \(rank): communicationType averageGradients mismatch")
+            XCTAssertEqual(
+                commTypeDtype, "float32",
+                "Rank \(rank): communicationType should preserve original float32 dtype")
+        }
+    }
 }
