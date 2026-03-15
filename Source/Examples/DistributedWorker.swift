@@ -192,10 +192,6 @@ struct DistributedWorker {
         }
     }
 
-    private final class BoolBox: @unchecked Sendable {
-        var value = false
-    }
-
     /// split test: exercises group.split(color:key:) across multiple processes.
     ///
     /// The ring and JACCL backends do not support split. MPI does support it
@@ -209,15 +205,17 @@ struct DistributedWorker {
     /// the child group works independently after parent deinit.
     static func runSplit(rank: Int, group: DistributedGroup) {
         // Attempt to split — expect an error from the ring backend
-        let splitErrorCaught = BoolBox()
-        withErrorHandler({ errMsg in
-            fputs("Worker rank=\(rank) split error (expected): \(errMsg)\n", stderr)
-            splitErrorCaught.value = true
-        }) {
-            let _ = group.split(color: 0, key: rank)
+        var splitErrorCaught = false
+        do {
+            try withError {
+                let _ = group.split(color: 0, key: rank)
+            }
+        } catch {
+            fputs("Worker rank=\(rank) split error (expected): \(error)\n", stderr)
+            splitErrorCaught = true
         }
 
-        if !splitErrorCaught.value {
+        if !splitErrorCaught {
             // If split succeeds in the future (backend support added), this
             // path should be expanded to test child group functionality.
             fputs("Worker rank=\(rank) split unexpectedly succeeded\n", stderr)
@@ -239,7 +237,7 @@ struct DistributedWorker {
 
         // Output result as JSON to stdout — include split error status
         print(
-            "{\"splitErrorCaught\": \(splitErrorCaught.value), \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+            "{\"splitErrorCaught\": \(splitErrorCaught), \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
         )
 
         // Verify allSum locally
@@ -323,41 +321,38 @@ struct DistributedWorker {
     static func runSumScatter(rank: Int, group: DistributedGroup) {
         let input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
 
-        // Use withErrorHandler to catch the C++ backend error. When eval()
-        // triggers an error, the handler is called. We must print the result
-        // and exit immediately from within the handler because the C++ code
-        // may continue executing undefined behavior after the handler returns.
-        withErrorHandler({ errMsg in
-            fputs("Worker rank=\(rank) sumScatter error (expected): \(errMsg)\n", stderr)
-            print("{\"errorCaught\": true, \"errorMessage\": \"ReduceScatter not implemented\"}")
-            exit(0)
-        }) {
-            let result = MLXDistributed.sumScatter(input, group: group)
-            eval(result)
+        do {
+            try withError {
+                let result = MLXDistributed.sumScatter(input, group: group)
+                eval(result)
 
-            let values = result.asArray(Float.self)
-            let shape = result.shape
+                let values = result.asArray(Float.self)
+                let shape = result.shape
 
-            print(
-                "{\"errorCaught\": false, \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
-            )
+                print(
+                    "{\"errorCaught\": false, \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+                )
 
-            // The element-wise sum is [2,4,6,8], split in half:
-            // rank 0 gets [2,4], rank 1 gets [6,8]
-            guard shape == [2] else {
-                fputs("ERROR: sumScatter shape mismatch: got \(shape), expected [2]\n", stderr)
-                exit(1)
-            }
-
-            let expected: [Float] = rank == 0 ? [2.0, 4.0] : [6.0, 8.0]
-            for i in 0 ..< 2 {
-                if abs(values[i] - expected[i]) > 1e-5 {
-                    fputs(
-                        "ERROR: sumScatter mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
-                        stderr)
+                // The element-wise sum is [2,4,6,8], split in half:
+                // rank 0 gets [2,4], rank 1 gets [6,8]
+                guard shape == [2] else {
+                    fputs("ERROR: sumScatter shape mismatch: got \(shape), expected [2]\n", stderr)
                     exit(1)
                 }
+
+                let expected: [Float] = rank == 0 ? [2.0, 4.0] : [6.0, 8.0]
+                for i in 0 ..< 2 {
+                    if abs(values[i] - expected[i]) > 1e-5 {
+                        fputs(
+                            "ERROR: sumScatter mismatch at index \(i): got \(values[i]), expected \(expected[i])\n",
+                            stderr)
+                        exit(1)
+                    }
+                }
             }
+        } catch {
+            fputs("Worker rank=\(rank) sumScatter error (expected): \(error)\n", stderr)
+            print("{\"errorCaught\": true, \"errorMessage\": \"ReduceScatter not implemented\"}")
         }
     }
 
