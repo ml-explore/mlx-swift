@@ -1,5 +1,0 @@
-commands:
-  build: xcodebuild build -scheme mlx-swift-Package -destination 'platform=macOS'
-  test: xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'
-  test-mlx: xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests
-  clean: xcodebuild clean -scheme mlx-swift-Package -destination 'platform=macOS'
