@@ -36,8 +36,12 @@ struct DistributedWorker {
         fputs("Worker rank=\(rank) starting operation=\(testOp)\n", stderr)
 
         // Distributed operations only have CPU implementations, so use CPU device
-        MLX.Device.setDefault(device: .cpu)
+        MLX.Device.withDefaultDevice(.cpu) {
+            runWorker(rank: rank, testOp: testOp)
+        }
+    }
 
+    static func runWorker(rank: Int, testOp: String) {
         // Initialize distributed with strict=true (ring backend must be available)
         guard let group = MLXDistributed.`init`(strict: true) else {
             fputs("ERROR: Failed to initialize distributed group (strict=true)\n", stderr)
@@ -176,6 +180,10 @@ struct DistributedWorker {
         }
     }
 
+    private final class BoolBox: @unchecked Sendable {
+        var value = false
+    }
+
     /// split test: exercises group.split(color:key:) across multiple processes.
     ///
     /// Currently, the ring backend (and all other MLX backends) do NOT support
@@ -189,15 +197,15 @@ struct DistributedWorker {
     /// the child group works independently after parent deinit.
     static func runSplit(rank: Int, group: DistributedGroup) {
         // Attempt to split — expect an error from the ring backend
-        var splitErrorCaught = false
+        let splitErrorCaught = BoolBox()
         withErrorHandler({ errMsg in
             fputs("Worker rank=\(rank) split error (expected): \(errMsg)\n", stderr)
-            splitErrorCaught = true
+            splitErrorCaught.value = true
         }) {
             let _ = group.split(color: 0, key: rank)
         }
 
-        if !splitErrorCaught {
+        if !splitErrorCaught.value {
             // If split succeeds in the future (backend support added), this
             // path should be expanded to test child group functionality.
             fputs("Worker rank=\(rank) split unexpectedly succeeded\n", stderr)
@@ -219,7 +227,7 @@ struct DistributedWorker {
 
         // Output result as JSON to stdout — include split error status
         print(
-            "{\"splitErrorCaught\": \(splitErrorCaught), \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
+            "{\"splitErrorCaught\": \(splitErrorCaught.value), \"values\": [\(values.map { String($0) }.joined(separator: ","))], \"shape\": [\(shape.map { String($0) }.joined(separator: ","))]}"
         )
 
         // Verify allSum locally
@@ -630,7 +638,7 @@ struct DistributedWorker {
         // Shard to AllToShardedLinear and ShardedToAllLinear
         let slin1 = shardLinear(module: lin, sharding: .allToSharded, group: group) as! UnaryLayer
         let slin2 = shardLinear(module: lin, sharding: .shardedToAll, group: group) as! UnaryLayer
-        eval(slin1 as! Module, slin2 as! Module)
+        eval(slin1, slin2)
 
         // AllToShardedLinear forward: input is full x, output is a slice
         let y1 = slin1(x)
@@ -709,16 +717,16 @@ struct DistributedWorker {
         let smod = Sequential(
             layers:
                 shardLinear(
-                    module: (mod.layers[0] as! Module), sharding: .allToSharded,
+                    module: mod.layers[0], sharding: .allToSharded,
                     group: group) as! UnaryLayer,
             shardLinear(
-                module: (mod.layers[1] as! Module), sharding: .shardedToAll,
+                module: mod.layers[1], sharding: .shardedToAll,
                 group: group) as! UnaryLayer,
             shardLinear(
-                module: (mod.layers[2] as! Module), sharding: .allToSharded,
+                module: mod.layers[2], sharding: .allToSharded,
                 group: group) as! UnaryLayer,
             shardLinear(
-                module: (mod.layers[3] as! Module), sharding: .shardedToAll,
+                module: mod.layers[3], sharding: .shardedToAll,
                 group: group) as! UnaryLayer
         )
         eval(smod)

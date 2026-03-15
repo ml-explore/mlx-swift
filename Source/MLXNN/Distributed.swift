@@ -10,7 +10,7 @@ import MLX
 /// Each closure uses `CustomFunction` with an identity forward pass and an
 /// `allSum` VJP so that gradients are aggregated across the distributed group
 /// during backpropagation.
-private var _sumGradientsCache = [ObjectIdentifier: (MLXArray) -> MLXArray]()
+private nonisolated(unsafe) var _sumGradientsCache = [ObjectIdentifier: (MLXArray) -> MLXArray]()
 private let _sumGradientsCacheLock = NSLock()
 
 /// Returns a closure that is the identity in the forward pass but performs
