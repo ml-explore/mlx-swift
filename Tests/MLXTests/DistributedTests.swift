@@ -4,6 +4,10 @@ import Foundation
 import MLX
 import XCTest
 
+private final class BoolBox: @unchecked Sendable {
+    var value = false
+}
+
 class DistributedTests: XCTestCase {
 
     /// Sequential port counter to avoid ephemeral port collisions between tests.
@@ -91,12 +95,9 @@ class DistributedTests: XCTestCase {
         // isAvailable() call returns true if ANY backend is available. On
         // machines without RDMA/TB5, this is the ring backend.
 
-        // (1) Verify isAvailable() returns a Bool without crashing
-        let available: Bool = MLXDistributed.isAvailable()
-        XCTAssertTrue(
-            type(of: available) == Bool.self,
-            "isAvailable() should return a Bool")
-
+        // (1) Verify isAvailable() returns a Bool
+        let available = MLXDistributed.isAvailable()
+        
         // (2) Ring backend is always compiled in, so availability is true
         XCTAssertTrue(
             available,
@@ -187,20 +188,20 @@ class DistributedTests: XCTestCase {
         let group = MLXDistributed.`init`()!
 
         // Verify send raises an error on singleton group
-        var sendErrorCaught = false
-        withErrorHandler({ _ in sendErrorCaught = true }) {
+        let sendErrorCaught = BoolBox()
+        withErrorHandler({ _ in sendErrorCaught.value = true }) {
             let _ = MLXDistributed.send(
                 MLXArray(converting: [10.0, 20.0, 30.0]), to: 0, group: group)
         }
-        XCTAssertTrue(sendErrorCaught, "send on singleton group should produce an error")
+        XCTAssertTrue(sendErrorCaught.value, "send on singleton group should produce an error")
 
         // Verify recv raises an error on singleton group
-        var recvErrorCaught = false
-        withErrorHandler({ _ in recvErrorCaught = true }) {
+        let recvErrorCaught = BoolBox()
+        withErrorHandler({ _ in recvErrorCaught.value = true }) {
             let _ = MLXDistributed.recv(
                 shape: [3], dtype: .float32, from: 0, group: group)
         }
-        XCTAssertTrue(recvErrorCaught, "recv on singleton group should produce an error")
+        XCTAssertTrue(recvErrorCaught.value, "recv on singleton group should produce an error")
     }
 
     // MARK: - (6) recvLike returns correct shape/dtype
@@ -217,11 +218,11 @@ class DistributedTests: XCTestCase {
         let group = MLXDistributed.`init`()!
         let template = MLXArray(converting: [1.0, 2.0, 3.0, 4.0, 5.0])
 
-        var errorCaught = false
-        withErrorHandler({ _ in errorCaught = true }) {
+        let errorCaught = BoolBox()
+        withErrorHandler({ _ in errorCaught.value = true }) {
             let _ = MLXDistributed.recvLike(template, from: 0, group: group)
         }
-        XCTAssertTrue(errorCaught, "recvLike on singleton group should produce an error")
+        XCTAssertTrue(errorCaught.value, "recvLike on singleton group should produce an error")
     }
 
     // MARK: - (7) Group split on size-1 group
@@ -231,11 +232,11 @@ class DistributedTests: XCTestCase {
         // Verify the error is caught gracefully.
         let group = MLXDistributed.`init`()!
 
-        var errorCaught = false
-        withErrorHandler({ _ in errorCaught = true }) {
+        let errorCaught = BoolBox()
+        withErrorHandler({ _ in errorCaught.value = true }) {
             let _ = group.split(color: 0)
         }
-        XCTAssertTrue(errorCaught, "split on singleton group should produce an error")
+        XCTAssertTrue(errorCaught.value, "split on singleton group should produce an error")
     }
 
     // MARK: - (8) Multiple dtype test: allSum with float16 and int32
@@ -345,14 +346,14 @@ class DistributedTests: XCTestCase {
         // init should either return nil or trigger an error (not crash the process).
         // The C backend raises an error when strict=true and no backend can initialize,
         // so we use withErrorHandler to catch it gracefully.
-        var errorCaught = false
+        let errorCaught = BoolBox()
         var group: DistributedGroup?
 
-        withErrorHandler({ _ in errorCaught = true }) {
+        withErrorHandler({ _ in errorCaught.value = true }) {
             group = MLXDistributed.`init`(strict: true)
         }
 
-        if errorCaught {
+        if errorCaught.value {
             // Error was caught -- strict mode correctly detected no multi-process backend
             // group may or may not be nil depending on when error was raised
         } else if let group = group {
