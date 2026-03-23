@@ -11,6 +11,7 @@ OTHER_CFLAGS = -isysroot $(SDKROOT)
 
 USER_HEADER_SEARCH_PATHS = $(SRCROOT)/../Source/Cmlx/mlx-c $(SRCROOT)/../Source/Cmlx/mlx
 
+MTL_COMPILER_FLAGS = -Wall -Wextra -fno-fast-math -Wno-c++17-extensions -Wno-c++20-extensions
 
-GCC_PREPROCESSOR_DEFINITIONS = _METAL_=1 SWIFTPM_BUNDLE=\"com.apple.mlx.Cmlx\" MLX_VERSION=\"0.29.1\" MLX_USE_ACCELERATE=1 METAL_PATH=\"default.metallib\" ACCELERATE_NEW_LAPACK=1
+GCC_PREPROCESSOR_DEFINITIONS = _METAL_=1 SWIFTPM_BUNDLE=\"com.apple.mlx.Cmlx\" MLX_VERSION=\"0.31.1\" MLX_USE_ACCELERATE=1 METAL_PATH=\"default.metallib\" ACCELERATE_NEW_LAPACK=1
 

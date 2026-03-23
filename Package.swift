@@ -209,8 +209,7 @@ let cmlx = Target.target(
         .headerSearchPath("mlx-c"),
         .headerSearchPath("json/single_include/nlohmann"),
         .headerSearchPath("fmt/include"),
-        .define("MLX_VERSION", to: "\"0.24.2\""),
-        .define("MLX_ENABLE_NAX", to: "1"),
+        .define("MLX_VERSION", to: "\"0.31.1\""),
     ],
     linkerSettings: linkerSettings
 )
