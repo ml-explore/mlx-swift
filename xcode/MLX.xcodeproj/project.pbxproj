@@ -84,6 +84,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C370C72C2F71CEBA00582499 /* Exceptions for "MLXOptimizers" folder in "MLXOptimizers" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Documentation.docc,
+			);
+			target = C3CBE6CE2EAC15310029A645 /* MLXOptimizers */;
+		};
+		C370C72D2F71CEC100582499 /* Exceptions for "MLXNN" folder in "MLXNN" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Documentation.docc,
+			);
+			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
+		};
+		C370C72E2F71CECB00582499 /* Exceptions for "MLX" folder in "MLX" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Documentation.docc,
+			);
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+		};
 		C3AE939F2EAAAA5A000BD280 /* Exceptions for "metal-cpp" folder in "Cmlx" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -286,6 +307,7 @@
 				mlx/c/array.h,
 				mlx/c/closure.h,
 				mlx/c/compile.h,
+				mlx/c/cuda.cpp,
 				mlx/c/cuda.h,
 				mlx/c/device.h,
 				mlx/c/distributed_group.h,
@@ -388,6 +410,7 @@
 				benchmarks/python/conv2d_train_bench_cpu.py,
 				benchmarks/python/conv2d_transpose_bench_cpu.py,
 				benchmarks/python/conv3d_bench_cpu.py,
+				benchmarks/python/conv3d_bench.py,
 				benchmarks/python/conv3d_train_bench_cpu.py,
 				benchmarks/python/conv3d_transpose_bench_cpu.py,
 				benchmarks/python/distributed_bench.py,
@@ -535,6 +558,7 @@
 				mlx/backend/common/copy.h,
 				mlx/backend/common/hadamard.h,
 				mlx/backend/common/matmul.h,
+				mlx/backend/common/quantized.h,
 				mlx/backend/common/reduce.h,
 				mlx/backend/common/slicing.h,
 				mlx/backend/common/ternary.h,
@@ -665,19 +689,23 @@
 				mlx/backend/cuda/quantized/convert_fp8.cu,
 				mlx/backend/cuda/quantized/cublas_qqmm.cpp,
 				mlx/backend/cuda/quantized/cublas_qqmm.h,
-				mlx/backend/cuda/quantized/cuda_fp4.h,
 				mlx/backend/cuda/quantized/fp_quantize.cu,
 				mlx/backend/cuda/quantized/mxfp8_quantize.cuh,
 				mlx/backend/cuda/quantized/no_qqmm_impl.cpp,
 				mlx/backend/cuda/quantized/nvfp4_quantize.cuh,
-				mlx/backend/cuda/quantized/qmv.cu,
-				mlx/backend/cuda/quantized/qmv.h,
+				mlx/backend/cuda/quantized/qmm/CMakeLists.txt,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n16_m1.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n32_m1.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n64_m2.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n128_m2.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n256_m2.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90.cuh,
+				mlx/backend/cuda/quantized/qmm/qmm.h,
 				mlx/backend/cuda/quantized/qqmm_impl.cpp,
 				mlx/backend/cuda/quantized/qqmm_impl.h,
 				mlx/backend/cuda/quantized/qqmm_utils.cu,
 				mlx/backend/cuda/quantized/qqmm_utils.h,
 				mlx/backend/cuda/quantized/qqmm.cpp,
-				mlx/backend/cuda/quantized/quantized_utils.cuh,
 				mlx/backend/cuda/quantized/quantized_utils.h,
 				mlx/backend/cuda/quantized/quantized.cpp,
 				mlx/backend/cuda/quantized/quantized.h,
@@ -836,6 +864,8 @@
 				mlx/backend/metal/kernels/steel/attn/params.h,
 				mlx/backend/metal/kernels/steel/attn/transforms.h,
 				mlx/backend/metal/kernels/steel/conv/conv.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_3d.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_3d.metal,
 				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.h,
 				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.metal,
 				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv.h,
@@ -913,8 +943,10 @@
 				mlx/distributed/jaccl/CMakeLists.txt,
 				mlx/distributed/jaccl/jaccl.cpp,
 				mlx/distributed/jaccl/jaccl.h,
+				mlx/distributed/jaccl/mesh_impl.h,
 				mlx/distributed/jaccl/mesh.cpp,
 				mlx/distributed/jaccl/mesh.h,
+				mlx/distributed/jaccl/ring_impl.h,
 				mlx/distributed/jaccl/ring.cpp,
 				mlx/distributed/jaccl/ring.h,
 				mlx/distributed/jaccl/utils.cpp,
@@ -1117,7 +1149,6 @@
 				"mlx-backend-gpu-eval.h",
 				"mlx-backend-metal-device.h",
 				"mlx-backend-metal-metal.h",
-				"mlx-backend-metal-utils.h",
 				"mlx-c-array.h",
 				"mlx-c-closure.h",
 				"mlx-c-compile.h",
@@ -1235,6 +1266,7 @@
 				metal/steel/attn/params.h,
 				metal/steel/attn/transforms.h,
 				metal/steel/conv/conv.h,
+				metal/steel/conv/kernels/steel_conv_3d.h,
 				metal/steel/conv/kernels/steel_conv_general.h,
 				metal/steel/conv/kernels/steel_conv.h,
 				metal/steel/conv/loader.h,
@@ -1480,6 +1512,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C3434F7C2EABEF1E0010D6B8 /* MLX */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C370C72E2F71CECB00582499 /* Exceptions for "MLX" folder in "MLX" target */,
+			);
 			name = MLX;
 			path = ../Source/MLX;
 			sourceTree = SOURCE_ROOT;
@@ -1552,12 +1587,18 @@
 		};
 		C3CBE6E92EAC15530029A645 /* MLXNN */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C370C72D2F71CEC100582499 /* Exceptions for "MLXNN" folder in "MLXNN" target */,
+			);
 			name = MLXNN;
 			path = ../Source/MLXNN;
 			sourceTree = SOURCE_ROOT;
 		};
 		C3CBE6FF2EAC15650029A645 /* MLXOptimizers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C370C72C2F71CEBA00582499 /* Exceptions for "MLXOptimizers" folder in "MLXOptimizers" target */,
+			);
 			name = MLXOptimizers;
 			path = ../Source/MLXOptimizers;
 			sourceTree = SOURCE_ROOT;

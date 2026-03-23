@@ -22,8 +22,8 @@ struct _MLX_BFloat16 {
   _MLX_BFloat16() = default;
   _MLX_BFloat16(_MLX_BFloat16 const&) = default;
   _MLX_BFloat16& operator=(std::vector<bool>::reference x) {
-    bits_ = x;
-    return *this;
+    bits_ = (x) ? 0x3F80 : 0;
+    return (*this);
   }
   _MLX_BFloat16& operator=(const float& x) {
     return (*this = _MLX_BFloat16(x));

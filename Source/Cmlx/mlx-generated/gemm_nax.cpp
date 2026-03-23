@@ -142,10 +142,10 @@ struct BlockSwizzle {
 } // namespace mlx
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.48.0.5BBI2H/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.850/include/metal/__exec/units.h"
+// Contents from "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.525.0.RrIjD2/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.850/include/metal/__exec/units.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.48.0.5BBI2H/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.850/include/metal/__exec/units.h"
+#line 1 "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.525.0.RrIjD2/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.850/include/metal/__exec/units.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/steel/utils/type_traits.h"
