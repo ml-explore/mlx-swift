@@ -101,7 +101,7 @@ import PackageDescription
         .linkedFramework("Accelerate"),
     ]
 
-    let mlxSwiftExcludes: [String] = []
+    let mlxSwiftExcludes: [String] = ["Documentation.docc"]
 #endif
 
 let cmlx = Target.target(
@@ -154,7 +154,6 @@ let cmlx = Target.target(
         "mlx/mlx/backend/cuda/compiled.cpp",
         "mlx/mlx/backend/cuda/conv.cpp",
         "mlx/mlx/backend/cuda/cublas_utils.cpp",
-        "mlx/mlx/backend/cuda/cuda.cpp",
         "mlx/mlx/backend/cuda/cudnn_utils.cpp",
         "mlx/mlx/backend/cuda/custom_kernel.cpp",
         "mlx/mlx/backend/cuda/delayload.cpp",
@@ -275,6 +274,7 @@ let package = Package(
         .target(
             name: "MLXNN",
             dependencies: ["MLX"],
+            exclude: ["Documentation.docc"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
@@ -282,6 +282,7 @@ let package = Package(
         .target(
             name: "MLXOptimizers",
             dependencies: ["MLX", "MLXNN"],
+            exclude: ["Documentation.docc"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
