@@ -920,7 +920,8 @@ struct DistributedWorker {
             "weight_f32": MLXArray(
                 rank == 0 ? [2.0, 4.0] as [Float] : [4.0, 8.0] as [Float]),
             "weight_f16": MLXArray(
-                rank == 0 ? [10.0, 20.0] as [Float] : [30.0, 40.0] as [Float]).asType(.float16),
+                rank == 0 ? [10.0, 20.0] as [Float] : [30.0, 40.0] as [Float]
+            ).asType(.float16),
         ]
         let mixedGrads = ModuleParameters.unflattened(mixedFlat)
         let mixedResult = averageGradients(gradients: mixedGrads, group: group)
