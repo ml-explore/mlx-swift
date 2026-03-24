@@ -67,6 +67,11 @@ class DistributedTests: XCTestCase {
     func testIsAvailable() {
         // Ring backend is compiled in, so isAvailable should return true
         XCTAssertTrue(MLXDistributed.isAvailable())
+
+        // Verify backend-specific availability check
+        XCTAssertTrue(
+            MLXDistributed.isAvailable(backend: .ring),
+            "Ring backend should always be available")
     }
 
     // MARK: - (2b) JACCL availability check
@@ -86,10 +91,9 @@ class DistributedTests: XCTestCase {
         // 2. The ring backend is available (true)
         // 3. On this hardware, the overall availability is true (ring)
         //
-        // NOTE: We cannot directly query which backend (ring vs JACCL) was
-        // selected because MLX-C does not expose a backend-name API. The
-        // isAvailable() call returns true if ANY backend is available. On
-        // machines without RDMA/TB5, this is the ring backend.
+        // NOTE: Backend selection is supported (e.g., .ring, .jaccl), but
+        // MLX-C does not expose a backend introspection API — there is no way
+        // to query which backend was actually initialized for an existing group.
 
         // (1) Verify isAvailable() returns a Bool
         let available = MLXDistributed.isAvailable()

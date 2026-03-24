@@ -42,8 +42,8 @@ struct DistributedWorker {
     }
 
     static func runWorker(rank: Int, testOp: String) {
-        // Initialize distributed with strict=true (ring backend must be available)
-        guard let group = MLXDistributed.`init`(strict: true) else {
+        // Initialize distributed with strict=true using the ring backend
+        guard let group = MLXDistributed.`init`(strict: true, backend: .ring) else {
             fputs("ERROR: Failed to initialize distributed group (strict=true)\n", stderr)
             exit(1)
         }

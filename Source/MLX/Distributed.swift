@@ -6,12 +6,12 @@ import Foundation
 /// Wrapper around the MLX C distributed group handle.
 ///
 /// A `DistributedGroup` represents a group of independent MLX processes
-/// that can communicate using collective operations. Use ``MLXDistributed/init(strict:)``
+/// that can communicate using collective operations. Use ``MLXDistributed/init(strict:backend:)``
 /// to create the initial group, then ``split(color:key:)`` to create sub-groups.
 ///
 /// ### See Also
 /// - ``MLXDistributed``
-/// - ``MLXDistributed/init(strict:)``
+/// - ``MLXDistributed/init(strict:backend:)``
 public final class DistributedGroup: @unchecked Sendable {
 
     let ctx: mlx_distributed_group
@@ -69,6 +69,23 @@ public final class DistributedGroup: @unchecked Sendable {
     }
 }
 
+/// The distributed communication backend to use.
+///
+/// When ``DistributedBackend/any`` is specified, MLX chooses the best available
+/// backend automatically. Use a specific case to force a particular backend.
+public enum DistributedBackend: String, CaseIterable, Sendable {
+    /// Let MLX choose the best available backend automatically.
+    case any
+    /// TCP socket-based ring backend.
+    case ring
+    /// Joint Accelerator Communication Library (Thunderbolt 5 RDMA).
+    case jaccl
+    /// Message Passing Interface backend.
+    case mpi
+    /// NVIDIA Collective Communications Library backend.
+    case nccl
+}
+
 /// Collection of distributed communication operations.
 ///
 /// Use ``MLXDistributed`` to check for distributed backend availability,
@@ -77,7 +94,7 @@ public final class DistributedGroup: @unchecked Sendable {
 ///
 /// ```swift
 /// // Initialize distributed communication
-/// let group = MLXDistributed.init()
+/// let group = MLXDistributed.`init`()
 /// print("Rank \(group.rank) of \(group.size)")
 ///
 /// // Perform an all-sum reduction
@@ -91,10 +108,10 @@ public enum MLXDistributed {
 
     /// Check if a distributed communication backend is available.
     ///
-    /// Returns `true` when the ring backend (or another backend) is compiled and
-    /// available for use.
-    public static func isAvailable() -> Bool {
-        mlx_distributed_is_available()
+    /// - Parameter backend: the backend to check (default: `.any`, checks all)
+    /// - Returns: `true` when the specified backend is available
+    public static func isAvailable(backend: DistributedBackend = .any) -> Bool {
+        backend.rawValue.withCString { mlx_distributed_is_available($0) }
     }
 
     /// Initialize the distributed backend and return the group containing
@@ -105,16 +122,21 @@ public enum MLXDistributed {
     /// When `strict` is `true`, returns `nil` if initialization fails
     /// (e.g., no hostfile configured).
     ///
-    /// > Note: MLX-C does not currently expose a backend selection parameter.
-    /// > The C layer tries backends in priority order (JACCL first, then ring).
-    /// > Track upstream mlx-c for a future `backend` parameter.
+    /// ```swift
+    /// // Use a specific backend
+    /// let group = MLXDistributed.`init`(strict: true, backend: .ring)
+    /// ```
     ///
-    /// - Parameter strict: if `true`, return `nil` on initialization failure
-    ///   instead of falling back to a singleton group
+    /// - Parameters:
+    ///   - strict: if `true`, return `nil` on initialization failure
+    ///     instead of falling back to a singleton group
+    ///   - backend: the backend to use (default: `.any`, let MLX choose)
     /// - Returns: the ``DistributedGroup`` for this process, or `nil` if
     ///   `strict` is `true` and initialization failed
-    public static func `init`(strict: Bool = false) -> DistributedGroup? {
-        let group = mlx_distributed_init(strict)
+    public static func `init`(strict: Bool = false, backend: DistributedBackend = .any)
+        -> DistributedGroup?
+    {
+        let group = backend.rawValue.withCString { mlx_distributed_init(strict, $0) }
         if group.ctx == nil {
             return nil
         }
