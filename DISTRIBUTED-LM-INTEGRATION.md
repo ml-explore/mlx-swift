@@ -894,7 +894,7 @@ Implement in this order. Each step produces a testable, shippable increment:
 | Limitation | Impact | Workaround |
 |-----------|--------|------------|
 | All distributed ops are CPU-only | Must use `Device.withDefaultDevice(.cpu)` | Wrap model loading and generation in CPU scope |
-| MLX-C has no backend selection parameter | Cannot programmatically choose ring vs JACCL | MLX-C tries JACCL first, then ring — usually correct |
+| No backend introspection API | Cannot query which backend was initialized for an existing group | Use `isAvailable(backend:)` to check before init |
 | `mlx_distributed_group_free()` not in public C API | Group deallocation relies on C++ shared_ptr | No action needed — works via ref counting |
 | `group.split()` unsupported by ring/JACCL | Cannot create subgroups | Not needed for tensor parallelism |
 | `sumScatter` not implemented in ring backend | Cannot use reduce-scatter collective | Use allSum instead (slightly more bandwidth) |

@@ -25,7 +25,7 @@ JACCL (Joint Accelerator Communication Library) uses RDMA over Thunderbolt 5 for
 - RDMA explicitly enabled in Recovery Mode (`csrutil`)
 - Physical Thunderbolt 5 cable between nodes
 
-> **Note:** MLX-C does not expose a backend selection parameter. You cannot force one backend over the other. If JACCL hardware is present, it will be preferred.
+> **Note:** You can select a specific backend using the `backend` parameter (e.g., `MLXDistributed.\`init\`(backend: .jaccl)`). Use `.any` (the default) to let MLX choose automatically.
 
 ---
 

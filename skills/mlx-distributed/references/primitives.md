@@ -81,36 +81,46 @@ public enum MLXDistributed
 
 ### Static Methods
 
-#### isAvailable()
+#### isAvailable(backend:)
 
 Check if a distributed communication backend is available.
 
 ```swift
-public static func isAvailable() -> Bool
+public static func isAvailable(backend: DistributedBackend = .any) -> Bool
 ```
 
-**Returns:** `true` when the ring backend (or another backend) is compiled and available.
+**Parameters:**
+- `backend`: The backend to check. Default is `.any`, which checks if any backend is available.
+
+**Returns:** `true` when the specified backend is available.
 
 ```swift
+// Check if any backend is available
 if MLXDistributed.isAvailable() {
     print("Distributed backend ready")
 }
+
+// Check a specific backend
+if MLXDistributed.isAvailable(backend: .ring) {
+    print("Ring backend ready")
+}
 ```
 
-#### init(strict:)
+#### init(strict:backend:)
 
 Initialize the distributed backend and return the group containing all discoverable processes.
 
 ```swift
-public static func `init`(strict: Bool = false) -> DistributedGroup?
+public static func `init`(strict: Bool = false, backend: DistributedBackend = .any) -> DistributedGroup?
 ```
 
 **Parameters:**
 - `strict`: If `true`, returns `nil` on initialization failure instead of falling back to a singleton group. Default is `false`.
+- `backend`: The backend to use. Default is `.any`, which lets MLX choose automatically.
 
 **Returns:** The `DistributedGroup` for this process, or `nil` if `strict` is `true` and initialization failed.
 
-When `strict` is `false` (default), returns a singleton group (rank 0, size 1) if no distributed backend can be initialized. MLX-C does not expose a backend selection parameter — it tries JACCL first, then ring.
+When `strict` is `false` (default), returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
 
 ```swift
 // Non-strict: always returns a group (size-1 fallback)

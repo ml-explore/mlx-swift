@@ -403,7 +403,7 @@ let avgGrads3 = averageGradients(
 
 | Limitation | Impact |
 |------------|--------|
-| MLX-C doesn't expose backend selection parameter | Cannot choose between JACCL and ring; tries JACCL first, falls back to ring |
+| No backend introspection API | Cannot query which backend was initialized for an existing group; use `isAvailable(backend:)` to check before init |
 | `mlx_distributed_group_free()` not exposed in public C API | Groups leak small amounts of memory on deallocation (minimal practical impact) |
 | `group.split()` unsupported by ring and JACCL backends | Only MPI (not available on macOS) supports sub-group creation |
 | `sumScatter`/`reduceScatter` not implemented in ring backend | Use allSum + manual slicing as a workaround |
