@@ -16,4 +16,4 @@ Note that `metal-cpp.patch` has been applied to the contents of that zip.
 
 ## fmt
 
-This is https://github.com/fmtlib/fmt.git tag 10.2.1
+This is https://github.com/fmtlib/fmt.git tag 12.1.0
