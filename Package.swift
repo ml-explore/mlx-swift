@@ -68,7 +68,7 @@ import PackageDescription
     let mlxSwiftExcludes: [String] = [
         "GPU+Metal.swift",
         "MLXArray+Metal.swift",
-        "MLXFast.swift",
+        "MLXFast+GPU.swift",
         "MLXFastKernel.swift",
     ]
 #else
@@ -101,7 +101,9 @@ import PackageDescription
         .linkedFramework("Accelerate"),
     ]
 
-    let mlxSwiftExcludes: [String] = []
+    let mlxSwiftExcludes: [String] = [
+        "MLXFast+CPU.swift"
+    ]
 #endif
 
 let cmlx = Target.target(
