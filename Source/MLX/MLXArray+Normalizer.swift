@@ -1,7 +1,5 @@
 // Copyright © 2026 Apple Inc.
 
-import MLX
-
 extension MLXArray {
 
     /// Returns a new array normalized by its L2 norm along the specified axis.
