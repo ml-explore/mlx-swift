@@ -283,7 +283,7 @@ struct double_double {
   double a;
   double b;
 
-  explicit constexpr double_double(double a_val = 0, double b_val = 0)
+  constexpr explicit double_double(double a_val = 0, double b_val = 0)
       : a(a_val), b(b_val) {}
 
   operator double() const { return a + b; }
@@ -292,14 +292,14 @@ struct double_double {
 
 auto format_as(double_double d) -> double { return d; }
 
-bool operator>=(const double_double& lhs, const double_double& rhs) {
+auto operator>=(const double_double& lhs, const double_double& rhs) -> bool {
   return lhs.a + lhs.b >= rhs.a + rhs.b;
 }
 
 struct slow_float {
   float value;
 
-  explicit constexpr slow_float(float val = 0) : value(val) {}
+  constexpr explicit slow_float(float val = 0) : value(val) {}
   operator float() const { return value; }
   auto operator-() const -> slow_float { return slow_float(-value); }
 };
@@ -307,19 +307,20 @@ struct slow_float {
 auto format_as(slow_float f) -> float { return f; }
 
 namespace std {
-template <> struct is_floating_point<double_double> : std::true_type {};
 template <> struct numeric_limits<double_double> {
   // is_iec559 is true for double-double in libstdc++.
   static constexpr bool is_iec559 = true;
   static constexpr int digits = 106;
+  static constexpr int digits10 = 33;
 };
 
-template <> struct is_floating_point<slow_float> : std::true_type {};
 template <> struct numeric_limits<slow_float> : numeric_limits<float> {};
 }  // namespace std
 
 FMT_BEGIN_NAMESPACE
 namespace detail {
+template <> struct is_floating_point<double_double> : std::true_type {};
+template <> struct is_floating_point<slow_float> : std::true_type {};
 template <> struct is_fast_float<slow_float> : std::false_type {};
 namespace dragonbox {
 template <> struct float_info<slow_float> {
@@ -341,10 +342,10 @@ TEST(format_impl_test, write_dragon_even) {
   auto s = std::string();
   fmt::detail::write<char>(std::back_inserter(s), slow_float(33554450.0f), {});
   // Specializing is_floating_point is broken in MSVC.
-  if (!FMT_MSC_VERSION) EXPECT_EQ(s, "33554450");
+  if (!FMT_MSC_VERSION) EXPECT_EQ(s, "3.355445e+07");
 }
 
-#if defined(_WIN32) && !defined(FMT_WINDOWS_NO_WCHAR)
+#if defined(_WIN32) && !defined(FMT_USE_WRITE_CONSOLE)
 #  include <windows.h>
 
 TEST(format_impl_test, write_console_signature) {
@@ -355,11 +356,11 @@ TEST(format_impl_test, write_console_signature) {
 
 // A public domain branchless UTF-8 decoder by Christopher Wellons:
 // https://github.com/skeeto/branchless-utf8
-constexpr bool unicode_is_surrogate(uint32_t c) {
+constexpr auto unicode_is_surrogate(uint32_t c) -> bool {
   return c >= 0xD800U && c <= 0xDFFFU;
 }
 
-FMT_CONSTEXPR char* utf8_encode(char* s, uint32_t c) {
+FMT_CONSTEXPR auto utf8_encode(char* s, uint32_t c) -> char* {
   if (c >= (1UL << 16)) {
     s[0] = static_cast<char>(0xf0 | (c >> 18));
     s[1] = static_cast<char>(0x80 | ((c >> 12) & 0x3f));

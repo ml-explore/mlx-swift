@@ -71,7 +71,6 @@ for x in \
     scheduler.h \
     primitives.h \
     backend/metal/device.h \
-    backend/metal/utils.h \
     backend/common/utils.h \
     backend/cpu/encoder.h \
     backend/gpu/eval.h

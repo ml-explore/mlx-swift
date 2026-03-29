@@ -84,6 +84,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C370C72C2F71CEBA00582499 /* Exceptions for "MLXOptimizers" folder in "MLXOptimizers" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Documentation.docc,
+			);
+			target = C3CBE6CE2EAC15310029A645 /* MLXOptimizers */;
+		};
+		C370C72D2F71CEC100582499 /* Exceptions for "MLXNN" folder in "MLXNN" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Documentation.docc,
+			);
+			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
+		};
+		C370C72E2F71CECB00582499 /* Exceptions for "MLX" folder in "MLX" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Documentation.docc,
+			);
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+		};
 		C3AE939F2EAAAA5A000BD280 /* Exceptions for "metal-cpp" folder in "Cmlx" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -286,6 +307,7 @@
 				mlx/c/array.h,
 				mlx/c/closure.h,
 				mlx/c/compile.h,
+				mlx/c/cuda.cpp,
 				mlx/c/cuda.h,
 				mlx/c/device.h,
 				mlx/c/distributed_group.h,
@@ -388,6 +410,7 @@
 				benchmarks/python/conv2d_train_bench_cpu.py,
 				benchmarks/python/conv2d_transpose_bench_cpu.py,
 				benchmarks/python/conv3d_bench_cpu.py,
+				benchmarks/python/conv3d_bench.py,
 				benchmarks/python/conv3d_train_bench_cpu.py,
 				benchmarks/python/conv3d_transpose_bench_cpu.py,
 				benchmarks/python/distributed_bench.py,
@@ -535,6 +558,7 @@
 				mlx/backend/common/copy.h,
 				mlx/backend/common/hadamard.h,
 				mlx/backend/common/matmul.h,
+				mlx/backend/common/quantized.h,
 				mlx/backend/common/reduce.h,
 				mlx/backend/common/slicing.h,
 				mlx/backend/common/ternary.h,
@@ -665,19 +689,23 @@
 				mlx/backend/cuda/quantized/convert_fp8.cu,
 				mlx/backend/cuda/quantized/cublas_qqmm.cpp,
 				mlx/backend/cuda/quantized/cublas_qqmm.h,
-				mlx/backend/cuda/quantized/cuda_fp4.h,
 				mlx/backend/cuda/quantized/fp_quantize.cu,
 				mlx/backend/cuda/quantized/mxfp8_quantize.cuh,
 				mlx/backend/cuda/quantized/no_qqmm_impl.cpp,
 				mlx/backend/cuda/quantized/nvfp4_quantize.cuh,
-				mlx/backend/cuda/quantized/qmv.cu,
-				mlx/backend/cuda/quantized/qmv.h,
+				mlx/backend/cuda/quantized/qmm/CMakeLists.txt,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n16_m1.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n32_m1.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n64_m2.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n128_m2.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n256_m2.cu,
+				mlx/backend/cuda/quantized/qmm/qmm_impl_sm90.cuh,
+				mlx/backend/cuda/quantized/qmm/qmm.h,
 				mlx/backend/cuda/quantized/qqmm_impl.cpp,
 				mlx/backend/cuda/quantized/qqmm_impl.h,
 				mlx/backend/cuda/quantized/qqmm_utils.cu,
 				mlx/backend/cuda/quantized/qqmm_utils.h,
 				mlx/backend/cuda/quantized/qqmm.cpp,
-				mlx/backend/cuda/quantized/quantized_utils.cuh,
 				mlx/backend/cuda/quantized/quantized_utils.h,
 				mlx/backend/cuda/quantized/quantized.cpp,
 				mlx/backend/cuda/quantized/quantized.h,
@@ -836,6 +864,8 @@
 				mlx/backend/metal/kernels/steel/attn/params.h,
 				mlx/backend/metal/kernels/steel/attn/transforms.h,
 				mlx/backend/metal/kernels/steel/conv/conv.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_3d.h,
+				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_3d.metal,
 				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.h,
 				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv_general.metal,
 				mlx/backend/metal/kernels/steel/conv/kernels/steel_conv.h,
@@ -913,8 +943,10 @@
 				mlx/distributed/jaccl/CMakeLists.txt,
 				mlx/distributed/jaccl/jaccl.cpp,
 				mlx/distributed/jaccl/jaccl.h,
+				mlx/distributed/jaccl/mesh_impl.h,
 				mlx/distributed/jaccl/mesh.cpp,
 				mlx/distributed/jaccl/mesh.h,
+				mlx/distributed/jaccl/ring_impl.h,
 				mlx/distributed/jaccl/ring.cpp,
 				mlx/distributed/jaccl/ring.h,
 				mlx/distributed/jaccl/utils.cpp,
@@ -1117,7 +1149,6 @@
 				"mlx-backend-gpu-eval.h",
 				"mlx-backend-metal-device.h",
 				"mlx-backend-metal-metal.h",
-				"mlx-backend-metal-utils.h",
 				"mlx-c-array.h",
 				"mlx-c-closure.h",
 				"mlx-c-compile.h",
@@ -1235,6 +1266,7 @@
 				metal/steel/attn/params.h,
 				metal/steel/attn/transforms.h,
 				metal/steel/conv/conv.h,
+				metal/steel/conv/kernels/steel_conv_3d.h,
 				metal/steel/conv/kernels/steel_conv_general.h,
 				metal/steel/conv/kernels/steel_conv.h,
 				metal/steel/conv/loader.h,
@@ -1277,88 +1309,7 @@
 				ChangeLog.md,
 				CMakeLists.txt,
 				CONTRIBUTING.md,
-				doc/_static/bootstrap.min.js,
-				doc/_static/breathe.css,
-				"doc/_static/fonts/glyphicons-halflings-regular.eot",
-				"doc/_static/fonts/glyphicons-halflings-regular.svg",
-				"doc/_static/fonts/glyphicons-halflings-regular.ttf",
-				"doc/_static/fonts/glyphicons-halflings-regular.woff",
-				doc/_templates/layout.html,
-				doc/_templates/search.html,
 				doc/api.rst,
-				"doc/basic-bootstrap/layout.html",
-				"doc/basic-bootstrap/README",
-				"doc/basic-bootstrap/theme.conf",
-				doc/bootstrap/alerts.less,
-				doc/bootstrap/badges.less,
-				doc/bootstrap/bootstrap.less,
-				doc/bootstrap/breadcrumbs.less,
-				"doc/bootstrap/button-groups.less",
-				doc/bootstrap/buttons.less,
-				doc/bootstrap/carousel.less,
-				doc/bootstrap/close.less,
-				doc/bootstrap/code.less,
-				"doc/bootstrap/component-animations.less",
-				doc/bootstrap/dropdowns.less,
-				doc/bootstrap/forms.less,
-				doc/bootstrap/glyphicons.less,
-				doc/bootstrap/grid.less,
-				"doc/bootstrap/input-groups.less",
-				doc/bootstrap/jumbotron.less,
-				doc/bootstrap/labels.less,
-				"doc/bootstrap/list-group.less",
-				doc/bootstrap/media.less,
-				doc/bootstrap/mixins.less,
-				doc/bootstrap/mixins/alerts.less,
-				"doc/bootstrap/mixins/background-variant.less",
-				"doc/bootstrap/mixins/border-radius.less",
-				doc/bootstrap/mixins/buttons.less,
-				"doc/bootstrap/mixins/center-block.less",
-				doc/bootstrap/mixins/clearfix.less,
-				doc/bootstrap/mixins/forms.less,
-				doc/bootstrap/mixins/gradients.less,
-				"doc/bootstrap/mixins/grid-framework.less",
-				doc/bootstrap/mixins/grid.less,
-				"doc/bootstrap/mixins/hide-text.less",
-				doc/bootstrap/mixins/image.less,
-				doc/bootstrap/mixins/labels.less,
-				"doc/bootstrap/mixins/list-group.less",
-				"doc/bootstrap/mixins/nav-divider.less",
-				"doc/bootstrap/mixins/nav-vertical-align.less",
-				doc/bootstrap/mixins/opacity.less,
-				doc/bootstrap/mixins/pagination.less,
-				doc/bootstrap/mixins/panels.less,
-				"doc/bootstrap/mixins/progress-bar.less",
-				"doc/bootstrap/mixins/reset-filter.less",
-				doc/bootstrap/mixins/resize.less,
-				"doc/bootstrap/mixins/responsive-visibility.less",
-				doc/bootstrap/mixins/size.less,
-				"doc/bootstrap/mixins/tab-focus.less",
-				"doc/bootstrap/mixins/table-row.less",
-				"doc/bootstrap/mixins/text-emphasis.less",
-				"doc/bootstrap/mixins/text-overflow.less",
-				"doc/bootstrap/mixins/vendor-prefixes.less",
-				doc/bootstrap/modals.less,
-				doc/bootstrap/navbar.less,
-				doc/bootstrap/navs.less,
-				doc/bootstrap/normalize.less,
-				doc/bootstrap/pager.less,
-				doc/bootstrap/pagination.less,
-				doc/bootstrap/panels.less,
-				doc/bootstrap/popovers.less,
-				doc/bootstrap/print.less,
-				"doc/bootstrap/progress-bars.less",
-				"doc/bootstrap/responsive-embed.less",
-				"doc/bootstrap/responsive-utilities.less",
-				doc/bootstrap/scaffolding.less,
-				doc/bootstrap/tables.less,
-				doc/bootstrap/theme.less,
-				doc/bootstrap/thumbnails.less,
-				doc/bootstrap/tooltip.less,
-				doc/bootstrap/type.less,
-				doc/bootstrap/utilities.less,
-				doc/bootstrap/variables.less,
-				doc/bootstrap/wells.less,
 				doc/build.py,
 				doc/CMakeLists.txt,
 				doc/conf.py,
@@ -1369,6 +1320,7 @@
 				doc/syntax.rst,
 				doc/usage.rst,
 				include/fmt/args.h,
+				include/fmt/base.h,
 				include/fmt/chrono.h,
 				include/fmt/color.h,
 				include/fmt/compile.h,
@@ -1387,10 +1339,6 @@
 				src/os.cc,
 				support/Android.mk,
 				support/AndroidManifest.xml,
-				support/bazel/.bazelversion,
-				support/bazel/BUILD.bazel,
-				support/bazel/README.md,
-				support/bazel/WORKSPACE.bazel,
 				"support/build-docs.py",
 				support/build.gradle,
 				"support/C++.sublime-syntax",
@@ -1403,15 +1351,12 @@
 				support/manage.py,
 				support/printable.py,
 				support/README,
-				support/rtd/conf.py,
-				support/rtd/index.rst,
-				support/rtd/theme/layout.html,
-				support/rtd/theme/theme.conf,
 				support/Vagrantfile,
 				"test/add-subdirectory-test/CMakeLists.txt",
 				"test/add-subdirectory-test/main.cc",
 				"test/args-test.cc",
 				"test/assert-test.cc",
+				"test/base-test.cc",
 				"test/chrono-test.cc",
 				test/CMakeLists.txt,
 				"test/color-test.cc",
@@ -1452,6 +1397,7 @@
 				"test/header-only-test.cc",
 				"test/mock-allocator.h",
 				"test/module-test.cc",
+				"test/no-builtin-types-test.cc",
 				"test/noexception-test.cc",
 				"test/os-test.cc",
 				"test/ostream-test.cc",
@@ -1480,6 +1426,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C3434F7C2EABEF1E0010D6B8 /* MLX */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C370C72E2F71CECB00582499 /* Exceptions for "MLX" folder in "MLX" target */,
+			);
 			name = MLX;
 			path = ../Source/MLX;
 			sourceTree = SOURCE_ROOT;
@@ -1552,12 +1501,18 @@
 		};
 		C3CBE6E92EAC15530029A645 /* MLXNN */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C370C72D2F71CEC100582499 /* Exceptions for "MLXNN" folder in "MLXNN" target */,
+			);
 			name = MLXNN;
 			path = ../Source/MLXNN;
 			sourceTree = SOURCE_ROOT;
 		};
 		C3CBE6FF2EAC15650029A645 /* MLXOptimizers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C370C72C2F71CEBA00582499 /* Exceptions for "MLXOptimizers" folder in "MLXOptimizers" target */,
+			);
 			name = MLXOptimizers;
 			path = ../Source/MLXOptimizers;
 			sourceTree = SOURCE_ROOT;
