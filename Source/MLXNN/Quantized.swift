@@ -299,7 +299,7 @@ open class QuantizedLinear: Linear, Quantized {
         self.mode = mode
 
         let (quantizedWeight, scales, biases) = MLX.quantized(
-            weight, groupSize: groupSize, bits: bits)
+            weight, groupSize: groupSize, bits: bits, mode: mode)
 
         self.scales = scales
         self.biases = biases
@@ -331,6 +331,16 @@ open class QuantizedLinear: Linear, Quantized {
     ) throws {
         try super.unfreeze(recursive: recursive, keys: keys, strict: strict)
         self.freeze(recursive: false)
+    }
+
+    open override func updateMissing(
+        parameter: String, verify: VerifyUpdate, path: [String], modulePath: [String]
+    ) throws {
+        if parameter == "biases" && mode != .affine {
+            return
+        }
+        try super.updateMissing(
+            parameter: parameter, verify: verify, path: path, modulePath: modulePath)
     }
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
