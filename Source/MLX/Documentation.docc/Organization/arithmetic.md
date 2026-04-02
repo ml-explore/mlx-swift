@@ -215,7 +215,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``addMM(_:_:_:alpha:beta:stream:)``
 - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 - ``gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)``
-- ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
+- ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:globalScaleX:globalScaleW:stream:)``
 - ``inner(_:_:stream:)``
 - ``outer(_:_:stream:)``
 - ``tensordot(_:_:axes:stream:)-(MLXArray,MLXArray,Int,StreamOrDevice)``

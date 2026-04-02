@@ -602,7 +602,7 @@ public final class MLXArray {
     /// update values.
     ///
     /// ### See Also
-    /// - ``subscript(indices:stream:)``
+    /// - ``ArrayAt``
     /// - ``ArrayAtIndices``
     public var at: ArrayAt { ArrayAt(array: self) }
 }

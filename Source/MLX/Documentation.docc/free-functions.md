@@ -194,10 +194,10 @@ operations as methods for convenience.
 
 ### Quantization
 
-- ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
-- ``quantized(_:groupSize:bits:mode:stream:)``
+- ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:globalScaleX:globalScaleW:stream:)``
+- ``quantized(_:groupSize:bits:mode:globalScale:stream:)``
 - ``quantizedMatmul(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
-- ``dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
+- ``dequantized(_:scales:biases:groupSize:bits:mode:globalScale:dtype:stream:)``
 
 ### Evaluation and Transformation
 

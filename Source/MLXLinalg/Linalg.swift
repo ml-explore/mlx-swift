@@ -50,7 +50,7 @@ public let deprecationWarning: Void = ()
 /// - Returns: output containing the norm(s)
 ///
 /// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)``
+/// - `norm(_:ord:axes:keepDims:stream:)` (Double variant)
 @available(*, deprecated, message: "norm is now available in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -100,7 +100,7 @@ public func norm(
 /// - Returns: output containing the norm(s)
 ///
 /// ### See Also
-/// - ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+/// - `norm(_:ord:axes:keepDims:stream:)` (NormKind variant)
 @available(*, deprecated, message: "norm is now available in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -112,7 +112,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+/// See `norm(_:ord:axes:keepDims:stream:)` (NormKind variant)
 @available(*, deprecated, message: "norm is now available in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -124,7 +124,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)``
+/// See `norm(_:ord:axes:keepDims:stream:)` (Double variant)
 @available(*, deprecated, message: "norm is now available in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -136,7 +136,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)-4dwwp``
+/// See `norm(_:ord:axes:keepDims:stream:)` (NormKind variant)
 @available(*, deprecated, message: "norm is now available in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -148,7 +148,7 @@ public func norm(
 
 /// Matrix or vector norm.
 ///
-/// See ``norm(_:ord:axes:keepDims:stream:)``
+/// See `norm(_:ord:axes:keepDims:stream:)` (Double variant)
 @available(*, deprecated, message: "norm is now available in the main MLX module")
 @_disfavoredOverload
 public func norm(
@@ -286,11 +286,11 @@ public func cross(_ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOr
     return MLXLinalg.cross(a, b, axis: axis, stream: stream)
 }
 
-/// Compute the LU factorization of the given matrix ``A``.
+/// Compute the LU factorization of the given matrix `A`.
 ///
-/// Note, unlike the default behavior of ``scipy.linalg.lu``, the pivots
-/// are indices. To reconstruct the input use ``L[P] @ U`` for 2
-/// dimensions or ``takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U``
+/// Note, unlike the default behavior of `scipy.linalg.lu`, the pivots
+/// are indices. To reconstruct the input use `L[P] @ U` for 2
+/// dimensions or `takeAlong(L, P[.ellipsis, .newAxis], axis: -2) @ U`
 /// for more than 2 dimensions.
 ///
 /// To construct the full permuation matrix do:

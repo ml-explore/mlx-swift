@@ -158,6 +158,7 @@ public func uniform(
 ///   - loc: mean of the distribution
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 @available(*, deprecated, message: "normal is now available in the main MLX module")
 @_disfavoredOverload
 public func normal<T>(
@@ -189,6 +190,7 @@ public func normal<T>(
 ///   - loc: mean of the distribution
 ///   - scale: standard deviation of the distribution
 ///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 @available(*, deprecated, message: "normal is now available in the main MLX module")
 @_disfavoredOverload
 public func normal(
@@ -215,6 +217,7 @@ public func normal(
 /// shapes of `mean` and `covariance`.
 ///   - dtype: DType of the result
 ///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 @available(*, deprecated, message: "multivariateNormal is now available in the main MLX module")
 @_disfavoredOverload
 public func multivariateNormal(
@@ -496,6 +499,10 @@ public func gumbel(
 ///
 /// - Parameters:
 ///     - logits: The *unnormalized* categorical distribution(s).
+///     - axis: the axis which specifies the distribution
+///     - shape: the shape of the output
+///     - key: PRNG key
+///     - stream: stream or device to evaluate on
 @available(*, deprecated, message: "categorical is now available in the main MLX module")
 @_disfavoredOverload
 public func categorical(
@@ -521,6 +528,10 @@ public func categorical(
 ///
 /// - Parameters:
 ///     - logits: The *unnormalized* categorical distribution(s).
+///     - axis: the axis which specifies the distribution
+///     - count: number of samples to draw
+///     - key: PRNG key
+///     - stream: stream or device to evaluate on
 @available(*, deprecated, message: "categorical is now available in the main MLX module")
 @_disfavoredOverload
 public func categorical(
@@ -537,6 +548,8 @@ public func categorical(
 ///   - dtype: type of the output
 ///   - loc: mean of the distribution
 ///   - scale: scale "b" of the distribution
+///   - key: PRNG key
+///   - stream: stream or device to evaluate on
 @available(*, deprecated, message: "laplace is now available in the main MLX module")
 @_disfavoredOverload
 public func laplace(

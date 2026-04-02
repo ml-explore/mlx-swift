@@ -1,6 +1,6 @@
 # Vectorization
 
-Automatic vectorization with ``vmap(_:inAxes:outAxes:)``.
+Automatic vectorization with `vmap`.
 
 `vmap` transforms a function so that it operates independently over a batch
 axis. This is convenient for evaluating a function over many inputs without
@@ -41,11 +41,6 @@ Here `x` is mapped over its first axis while `y` is used as a broadcast value.
 
 ## Nested Mapping
 
-You can nest calls to ``vmap(_:inAxes:outAxes:)`` to map over multiple axes.
+You can nest calls to `vmap` to map over multiple axes.
 Each nested `vmap` introduces another batch dimension in the result.
 
-## Topics
-
-### Functions
-
-- ``vmap(_:inAxes:outAxes:)``
