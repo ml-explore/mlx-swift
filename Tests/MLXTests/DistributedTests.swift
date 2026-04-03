@@ -602,10 +602,12 @@ class DistributedTests: XCTestCase {
         retries: Int = 1,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) -> (
+    ) throws -> (
         rank0: (exitCode: Int32, stdout: String, stderr: String),
         rank1: (exitCode: Int32, stdout: String, stderr: String)
     )? {
+        try skipIfRunningOnGitHubActionsForDistributedMultiProcessTests()
+
         guard let workerBinary = findWorkerBinary() else {
             XCTFail(
                 "DistributedWorker binary not found. Build with: xcodebuild build -scheme mlx-swift-Package",
@@ -713,8 +715,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (13) Multi-process allSum
 
-    func testMultiProcessAllSum() {
-        guard let results = runMultiProcessTest(operation: "allSum") else { return }
+    func testMultiProcessAllSum() throws {
+        guard let results = try runMultiProcessTest(operation: "allSum") else { return }
 
         // Log debug output
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
@@ -760,8 +762,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (14) Multi-process allGather
 
-    func testMultiProcessAllGather() {
-        guard let results = runMultiProcessTest(operation: "allGather") else { return }
+    func testMultiProcessAllGather() throws {
+        guard let results = try runMultiProcessTest(operation: "allGather") else { return }
 
         // Log debug output
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
@@ -810,8 +812,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (15) Multi-process send/recv
 
-    func testMultiProcessSendRecv() {
-        guard let results = runMultiProcessTest(operation: "sendRecv") else { return }
+    func testMultiProcessSendRecv() throws {
+        guard let results = try runMultiProcessTest(operation: "sendRecv") else { return }
 
         // Log debug output
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
@@ -855,8 +857,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (16) Multi-process allMax
 
-    func testMultiProcessAllMax() {
-        guard let results = runMultiProcessTest(operation: "allMax") else { return }
+    func testMultiProcessAllMax() throws {
+        guard let results = try runMultiProcessTest(operation: "allMax") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -904,8 +906,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (17) Multi-process allMin
 
-    func testMultiProcessAllMin() {
-        guard let results = runMultiProcessTest(operation: "allMin") else { return }
+    func testMultiProcessAllMin() throws {
+        guard let results = try runMultiProcessTest(operation: "allMin") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -953,13 +955,13 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (18) Multi-process sumScatter
 
-    func testMultiProcessSumScatter() {
+    func testMultiProcessSumScatter() throws {
         // NOTE: The ring backend does not implement ReduceScatter. Other
         // backends (NCCL on Linux/CUDA, MPI) do support it. This test verifies
         // the operation completes without crashing and that the error is handled
         // gracefully. When upstream adds support, the test will automatically
         // validate the correct results.
-        guard let results = runMultiProcessTest(operation: "sumScatter") else { return }
+        guard let results = try runMultiProcessTest(operation: "sumScatter") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1022,8 +1024,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (19) Multi-process recvLike
 
-    func testMultiProcessRecvLike() {
-        guard let results = runMultiProcessTest(operation: "recvLike") else { return }
+    func testMultiProcessRecvLike() throws {
+        guard let results = try runMultiProcessTest(operation: "recvLike") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1068,8 +1070,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (20) Multi-process multi-dtype allSum
 
-    func testMultiProcessMultiDtype() {
-        guard let results = runMultiProcessTest(operation: "allSumMultiDtype") else { return }
+    func testMultiProcessMultiDtype() throws {
+        guard let results = try runMultiProcessTest(operation: "allSumMultiDtype") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1130,8 +1132,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (21) Multi-process multi-shape allSum
 
-    func testMultiProcessMultiShape() {
-        guard let results = runMultiProcessTest(operation: "allSumMultiShape") else { return }
+    func testMultiProcessMultiShape() throws {
+        guard let results = try runMultiProcessTest(operation: "allSumMultiShape") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1179,8 +1181,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (22) Multi-process iterative send/recv
 
-    func testMultiProcessIterativeSendRecv() {
-        guard let results = runMultiProcessTest(operation: "sendRecvIterative") else { return }
+    func testMultiProcessIterativeSendRecv() throws {
+        guard let results = try runMultiProcessTest(operation: "sendRecvIterative") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1244,8 +1246,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (24) Multi-process allGather VJP
 
-    func testMultiProcessAllGatherVJP() {
-        guard let results = runMultiProcessTest(operation: "allGatherVjp") else { return }
+    func testMultiProcessAllGatherVJP() throws {
+        guard let results = try runMultiProcessTest(operation: "allGatherVjp") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1289,7 +1291,7 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (25) Multi-process split
 
-    func testMultiProcessSplit() {
+    func testMultiProcessSplit() throws {
         // Tests group.split(color:key:) across two processes.
         //
         // The ring and JACCL backends do not support split. MPI does support
@@ -1301,7 +1303,7 @@ class DistributedTests: XCTestCase {
         //
         // When upstream adds split support, this test should be updated to
         // verify child group functionality (split, deinit parent, use child).
-        guard let results = runMultiProcessTest(operation: "split") else { return }
+        guard let results = try runMultiProcessTest(operation: "split") else { return }
 
         // Log debug output
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
@@ -1357,8 +1359,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (26) Multi-process send/recv multi-dtype
 
-    func testMultiProcessSendRecvMultiDtype() {
-        guard let results = runMultiProcessTest(operation: "sendRecvMultiDtype") else { return }
+    func testMultiProcessSendRecvMultiDtype() throws {
+        guard let results = try runMultiProcessTest(operation: "sendRecvMultiDtype") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1400,8 +1402,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (27) Multi-process allGather multi-dtype
 
-    func testMultiProcessAllGatherMultiDtype() {
-        guard let results = runMultiProcessTest(operation: "allGatherMultiDtype") else { return }
+    func testMultiProcessAllGatherMultiDtype() throws {
+        guard let results = try runMultiProcessTest(operation: "allGatherMultiDtype") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1456,8 +1458,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (28) Multi-process send/recv 2D
 
-    func testMultiProcessSendRecv2D() {
-        guard let results = runMultiProcessTest(operation: "sendRecv2D") else { return }
+    func testMultiProcessSendRecv2D() throws {
+        guard let results = try runMultiProcessTest(operation: "sendRecv2D") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1497,8 +1499,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (29) Multi-process allGather 2D
 
-    func testMultiProcessAllGather2D() {
-        guard let results = runMultiProcessTest(operation: "allGather2D") else { return }
+    func testMultiProcessAllGather2D() throws {
+        guard let results = try runMultiProcessTest(operation: "allGather2D") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1540,8 +1542,8 @@ class DistributedTests: XCTestCase {
 
     // MARK: - (30) Multi-process recvLike multi-dtype
 
-    func testMultiProcessRecvLikeMultiDtype() {
-        guard let results = runMultiProcessTest(operation: "recvLikeMultiDtype") else { return }
+    func testMultiProcessRecvLikeMultiDtype() throws {
+        guard let results = try runMultiProcessTest(operation: "recvLikeMultiDtype") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")

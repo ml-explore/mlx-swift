@@ -1,5 +1,6 @@
 // Copyright © 2024 Apple Inc.
 
+import Foundation
 import MLX
 import XCTest
 
@@ -36,4 +37,11 @@ func assertNotEqual(
 
 func setDefaultDevice() {
     MLX.Device.setDefault(device: .gpu)
+}
+
+func skipIfRunningOnGitHubActionsForDistributedMultiProcessTests() throws {
+    if ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" {
+        throw XCTSkip(
+            "Multi-process distributed tests are excluded from the default GitHub Actions lane.")
+    }
 }

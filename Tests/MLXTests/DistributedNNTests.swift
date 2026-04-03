@@ -1280,10 +1280,12 @@ class DistributedNNTests: XCTestCase {
         retries: Int = 1,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) -> (
+    ) throws -> (
         rank0: (exitCode: Int32, stdout: String, stderr: String),
         rank1: (exitCode: Int32, stdout: String, stderr: String)
     )? {
+        try skipIfRunningOnGitHubActionsForDistributedMultiProcessTests()
+
         guard let workerBinary = findWorkerBinary() else {
             XCTFail(
                 "DistributedWorker binary not found. Build with: xcodebuild build -scheme mlx-swift-Package",
@@ -1380,11 +1382,11 @@ class DistributedNNTests: XCTestCase {
 
     // MARK: - (23) Multi-Process Shard Linear Forward Parity
 
-    func testMultiProcessShardLinearForward() {
+    func testMultiProcessShardLinearForward() throws {
         // VAL-NN-023: Two processes create same Linear (seeded), shardLinear to
         // AllToShardedLinear and ShardedToAllLinear, forward on same input.
         // Verify concatenated sharded outputs match original Linear output.
-        guard let results = runMultiProcessTest(operation: "shardLinearForward") else { return }
+        guard let results = try runMultiProcessTest(operation: "shardLinearForward") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1430,11 +1432,11 @@ class DistributedNNTests: XCTestCase {
 
     // MARK: - (24) Multi-Process Shard Linear Backward Gradient Parity
 
-    func testMultiProcessShardLinearBackward() {
+    func testMultiProcessShardLinearBackward() throws {
         // VAL-NN-024: Two processes with 4-layer Sequential (sharded Linear layers).
         // Backward pass gradients for each rank's weight slice should match
         // the corresponding slice from the non-sharded model's gradient.
-        guard let results = runMultiProcessTest(operation: "shardLinearBackward") else { return }
+        guard let results = try runMultiProcessTest(operation: "shardLinearBackward") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
@@ -1490,11 +1492,11 @@ class DistributedNNTests: XCTestCase {
 
     // MARK: - (25) Multi-Process averageGradients
 
-    func testMultiProcessAverageGradients() {
+    func testMultiProcessAverageGradients() throws {
         // VAL-NN-025: Two processes exercise averageGradients with N==2,
         // bypassing the early-return `if N == 1` path. Tests batched allSum,
         // non-batched (allReduceSize=0), and communicationType: .float16.
-        guard let results = runMultiProcessTest(operation: "averageGradients") else { return }
+        guard let results = try runMultiProcessTest(operation: "averageGradients") else { return }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")
