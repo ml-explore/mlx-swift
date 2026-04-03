@@ -4,7 +4,7 @@ import Cmlx
 import MLX
 
 /// Container for a kernel created by
-/// ``metalKernel(name:inputNames:outputNames:source:header:ensureRowContiguous:atomicOutputs:template:grid:threadGroup:outputShapes:outputDTypes:initValue:verbose:)``
+/// ``metalKernel(name:inputNames:outputNames:source:header:ensureRowContiguous:atomicOutputs:)``
 ///
 /// The ``MLXFast/MLXFastKernel`` can be used to evaluate the kernel with inputs:
 ///

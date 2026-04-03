@@ -9,7 +9,6 @@ public enum MLXLinalg {
     ///
     /// ### See Also
     /// - ``norm(_:ord:axes:keepDims:stream:)``
-    /// - ``norm(_:ord:axes:keepDims:stream:)-8zljj``
     /// - ``MLXLinalg``
     public enum NormKind: String, Sendable {
         /// Frobenius norm

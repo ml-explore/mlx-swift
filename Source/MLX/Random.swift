@@ -766,6 +766,8 @@ public enum MLXRandom {
     ///   - dtype: type of the output
     ///   - loc: mean of the distribution
     ///   - scale: scale "b" of the distribution
+    ///   - key: optional PRNG key
+    ///   - stream: stream or device to evaluate on
     public static func laplace(
         _ shape: some Collection<Int> = [], dtype: DType, loc: Float = 0, scale: Float = 1,
         key: (some RandomStateOrKey)? = MLXArray?.none, stream: StreamOrDevice = .default

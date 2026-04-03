@@ -5,6 +5,8 @@ import Foundation
 /// - Parameters:
 ///   - handler: An error handler. Pass nil to reset to the default error handler. Pass
 ///   ``fatalErrorHandler`` to make the error handler call `fatalError` for improved Xcode debugging.
+///   - data: Optional pointer to user data passed to the handler callback.
+///   - dtor: Optional destructor called on `data` when the handler is replaced or the process exits.
 @available(*, deprecated, message: "please use withErrorHandler() or withError()")
 public func setErrorHandler(
     _ handler: (@convention(c) (UnsafePointer<CChar>?, UnsafeMutableRawPointer?) -> Void)?,

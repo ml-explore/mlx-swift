@@ -10,7 +10,7 @@
 - ``Module/parameters()``
 - ``Module/trainableParameters()``
 - ``Module/update(parameters:)``
-- ``Module/update(parameters:verify:)``
+- ``Module/update(parameters:verify:path:modulePath:)``
 
 ### Layers (sub-modules)
 
@@ -20,7 +20,7 @@
 - ``Module/modules()``
 - ``Module/namedModules()``
 - ``Module/update(modules:)``
-- ``Module/update(modules:verify:)``
+- ``Module/update(modules:verify:path:modulePath:)``
 - ``Module/visit(modules:)``
 
 ### Traversal

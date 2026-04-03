@@ -173,7 +173,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `cummin` | ``MLX/cummin(_:axis:reverse:inclusive:stream:)``
 `cumprod` | ``MLX/cumprod(_:axis:reverse:inclusive:stream:)``
 `cumsum` | ``MLX/cumsum(_:axis:reverse:inclusive:stream:)``
-`dequantize` | ``MLX/dequantized(_:scales:biases:groupSize:bits:mode:dtype:stream:)``
+`dequantize` | ``MLX/dequantized(_:scales:biases:groupSize:bits:mode:globalScale:dtype:stream:)``
 `divide` | ``MLX/divide(_:_:stream:)``
 `equal` | ``MLX/equal(_:_:stream:)``
 `erf` | ``MLX/erf(_:stream:)``
@@ -215,8 +215,8 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `partition` | ``MLX/partitioned(_:kth:axis:stream:)``
 `power` | ``MLX/pow(_:_:stream:)-(MLXArray,MLXArray,_)``
 `prod` | ``MLX/product(_:axes:keepDims:stream:)``
-`qqmm` | ``MLX/quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:stream:)``
-`quantize` | ``MLX/quantized(_:groupSize:bits:mode:stream:)``
+`qqmm` | ``MLX/quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:globalScaleX:globalScaleW:stream:)``
+`quantize` | ``MLX/quantized(_:groupSize:bits:mode:globalScale:stream:)``
 `quantized_matmul` | ``MLX/quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 `reciprocal` | ``MLX/reciprocal(_:stream:)``
 `remainder` | ``MLX/remainder(_:_:stream:)``

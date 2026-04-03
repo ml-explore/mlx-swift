@@ -209,6 +209,11 @@ public struct WiredMemoryManagerConfiguration: Sendable, Hashable {
     /// - Parameters:
     ///   - shrinkThresholdRatio: Minimum fractional drop to allow shrinking.
     ///   - shrinkCooldown: Minimum time between shrink attempts while active.
+    ///   - policyOnlyWhenUnsupported: If true, policy admission and limit calculations still run
+    ///     even when wired memory control is unsupported.
+    ///   - baselineOverride: Optional baseline to use instead of the cached limit.
+    ///   - useRecommendedWorkingSetWhenUnsupported: If true and wired memory is unsupported,
+    ///     attempt to use Metal's recommended working set size as the baseline.
     public init(
         shrinkThresholdRatio: Double = 0.25,
         shrinkCooldown: TimeInterval = 1.0,

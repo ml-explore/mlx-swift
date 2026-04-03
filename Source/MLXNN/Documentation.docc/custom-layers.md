@@ -86,7 +86,7 @@ these in swift.
 
 MLX modules allow accessing and updating individual parameters. However, most
 times we need to update large subsets of a module's parameters. This action is
-performed by ``Module/update(parameters:verify:)``.
+performed by ``Module/update(parameters:verify:path:modulePath:)``.
 
 See also <doc:training>.
 
@@ -140,7 +140,7 @@ The ``ModuleInfo`` and ``ParameterInfo`` provide two important features for modu
 instance variables:
 
 - both property wrappers allow replacement keys to be specified
-- the ``ModuleInfo`` allows ``Module/update(modules:verify:)`` to replace the module
+- the ``ModuleInfo`` allows ``Module/update(modules:verify:path:modulePath:)`` to replace the module
 
 Replacement keys are important because many times models and weights are defined
 in terms of their python implementation.  For example
@@ -196,7 +196,7 @@ public class FeedForward : Module {
     }
 ```
 
-The `ModuleInfo` provides a hook for ``QuantizedLinear`` and ``Module/update(modules:verify:)`` to
+The `ModuleInfo` provides a hook for ``QuantizedLinear`` and ``Module/update(modules:verify:path:modulePath:)`` to
 replace the contents of `w1`, etc. with a new compatible `Model` after it is created.
 
 Note that `MLXArray` is settable without any ``ParameterInfo`` -- it has an `update()` method.
