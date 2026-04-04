@@ -357,6 +357,44 @@ public enum MLXRandom {
         return MLXArray(result)
     }
 
+    /// Generate a random permutation of integers from `0` to `max`.
+    ///
+    /// - Parameters:
+    ///   - max: max value to permute
+    ///   - key: PRNG key
+    ///   - stream: stream
+    /// - Returns: permuted array
+    public static func permutation(
+        _ max: Int,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        let key = resolve(key: key)
+        var result = mlx_array_new()
+        mlx_random_permutation_arange(&result, max.int32, key.ctx, stream.ctx)
+        return MLXArray(result)
+    }
+
+    /// Generate a random permutation of the entries of an array.
+    ///
+    /// - Parameters:
+    ///   - array: array to permute
+    ///   - axis: axis along which to permute
+    ///   - key: PRNG key
+    ///   - stream: stream
+    /// - Returns: permuted array
+    public static func permutation(
+        _ array: MLXArray,
+        axis: Int = 0,
+        key: (some RandomStateOrKey)? = MLXArray?.none,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        let key = resolve(key: key)
+        var result = mlx_array_new()
+        mlx_random_permutation(&result, array.ctx, axis.int32, key.ctx, stream.ctx)
+        return MLXArray(result)
+    }
+
     /// Generate random integers from the given interval using a `RangeExpression<Int>`.
     ///
     /// The values are sampled with equal probability from the integers in
