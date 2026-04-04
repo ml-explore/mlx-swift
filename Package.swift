@@ -297,8 +297,18 @@ let package = Package(
         .testTarget(
             name: "MLXTests",
             dependencies: [
-                "MLX", "MLXNN", "MLXOptimizers",
+                "MLX", "MLXNN", "MLXOptimizers", "DistributedWorker",
             ]
+        ),
+
+        // ------
+        // Test support executables
+
+        .executableTarget(
+            name: "DistributedWorker",
+            dependencies: ["MLX", "MLXNN"],
+            path: "Tests/DistributedTestSupport",
+            sources: ["DistributedWorkerMain.swift", "DistributedWorkerOperations.swift"]
         ),
 
         // ------
@@ -327,12 +337,6 @@ let package = Package(
             dependencies: ["MLX"],
             path: "Source/Examples",
             sources: ["CustomFunctionExampleSimple.swift"]
-        ),
-        .executableTarget(
-            name: "DistributedWorker",
-            dependencies: ["MLX", "MLXNN"],
-            path: "Source/Examples",
-            sources: ["DistributedWorker.swift"]
         ),
     ],
     cxxLanguageStandard: .gnucxx20

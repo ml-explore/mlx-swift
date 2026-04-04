@@ -6,7 +6,7 @@ import XCTest
 
 @testable import MLXNN
 
-class DistributedNNTests: XCTestCase {
+class DistributedNNTests: CPUDeviceScopedTestCase {
 
     /// Sequential port counter to avoid ephemeral port collisions between tests.
     /// Each multi-process test increments by 2 (one port per rank). The base port
@@ -18,10 +18,6 @@ class DistributedNNTests: XCTestCase {
 
     /// Track spawned process PIDs for cleanup in tearDown.
     private var spawnedProcesses: [Process] = []
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
 
     override func tearDown() {
         // Kill any orphan worker processes that may still be running
@@ -1071,18 +1067,9 @@ class DistributedNNTests: XCTestCase {
 
     // MARK: - Multi-Process NN Parity Tests
 
-    /// Find the DistributedWorker binary in the build products directory.
+    /// Find the DistributedWorker binary in the active build products directory.
     private func findWorkerBinary() -> URL? {
-        let testBundle = Bundle(for: type(of: self))
-        let bundleURL = testBundle.bundleURL
-        let productsDir = bundleURL.deletingLastPathComponent()
-        let workerURL = productsDir.appendingPathComponent("DistributedWorker")
-
-        if FileManager.default.isExecutableFile(atPath: workerURL.path) {
-            return workerURL
-        }
-
-        return nil
+        findBuiltExecutable(named: "DistributedWorker", for: self)
     }
 
     /// Allocate two unique TCP ports for the ring backend using a sequential counter.
@@ -1284,11 +1271,9 @@ class DistributedNNTests: XCTestCase {
         rank0: (exitCode: Int32, stdout: String, stderr: String),
         rank1: (exitCode: Int32, stdout: String, stderr: String)
     )? {
-        try skipIfRunningOnGitHubActionsForDistributedMultiProcessTests()
-
         guard let workerBinary = findWorkerBinary() else {
             XCTFail(
-                "DistributedWorker binary not found. Build with: xcodebuild build -scheme mlx-swift-Package",
+                builtExecutableNotFoundMessage(named: "DistributedWorker", for: self),
                 file: file, line: line)
             return nil
         }
