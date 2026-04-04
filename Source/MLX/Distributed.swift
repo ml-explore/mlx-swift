@@ -55,8 +55,12 @@ public final class DistributedGroup: @unchecked Sendable {
     /// preserves MLX's fallback behavior and returns a singleton group (rank 0,
     /// size 1).
     ///
-    /// - Parameter backend: the backend to use (default: `.any`, let MLX choose)
-    public convenience init(backend: DistributedBackend = .any) {
+    public convenience init() {
+        self.init(backend: .any)
+    }
+
+    /// - Parameter backend: the backend to use
+    public convenience init(backend: DistributedBackend) {
         let group = Self.initialize(strict: false, backend: backend)
         precondition(
             group.ctx != nil,
@@ -71,8 +75,8 @@ public final class DistributedGroup: @unchecked Sendable {
     /// Unlike ``init(backend:)``, this initializer does not fall back to a
     /// singleton group.
     ///
-    /// - Parameter backend: the backend to use (default: `.any`, let MLX choose)
-    public convenience init?(strict backend: DistributedBackend = .any) {
+    /// - Parameter backend: the backend to use
+    public convenience init?(strict backend: DistributedBackend) {
         let group = Self.initialize(strict: true, backend: backend)
         guard group.ctx != nil else {
             return nil

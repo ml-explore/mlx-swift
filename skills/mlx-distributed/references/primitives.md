@@ -105,16 +105,31 @@ if DistributedBackend.ring.isAvailable {
 
 ## DistributedGroup Constructors
 
+#### init()
+
+Initialize the distributed backend using `.any` and return the group containing
+all discoverable processes.
+
+```swift
+public init()
+```
+
+Returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
+
+```swift
+let group = DistributedGroup()
+```
+
 #### init(backend:)
 
 Initialize the distributed backend and return the group containing all discoverable processes.
 
 ```swift
-public init(backend: DistributedBackend = .any)
+public init(backend: DistributedBackend)
 ```
 
 **Parameters:**
-- `backend`: The backend to use. Default is `.any`, which lets MLX choose automatically.
+- `backend`: The backend to use.
 
 Returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
 
@@ -128,7 +143,7 @@ let group = DistributedGroup()
 Initialize the distributed backend and return `nil` when no real distributed backend can be formed.
 
 ```swift
-public init?(strict backend: DistributedBackend = .any)
+public init?(strict backend: DistributedBackend)
 ```
 
 ```swift

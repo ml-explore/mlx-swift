@@ -62,9 +62,10 @@ All APIs below are already implemented in mlx-swift. This is what you will call 
 // Check if any distributed backend is available
 DistributedBackend.any.isAvailable -> Bool
 
-// Initialize a distributed group (returns nil if no backend, or if strict and init fails)
-DistributedGroup.init(backend: DistributedBackend = .any) -> DistributedGroup
-DistributedGroup.init?(strict: DistributedBackend = .any) -> DistributedGroup?
+// Initialize a distributed group
+DistributedGroup.init() -> DistributedGroup
+DistributedGroup.init(backend: DistributedBackend) -> DistributedGroup
+DistributedGroup.init?(strict: DistributedBackend) -> DistributedGroup?
 
 // Group properties
 group.rank  -> Int   // This process's rank (0-indexed)

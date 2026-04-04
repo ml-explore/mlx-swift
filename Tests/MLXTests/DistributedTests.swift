@@ -313,6 +313,14 @@ class DistributedTests: CPUDeviceScopedTestCase {
         assertEqual(result, input, atol: 1e-5)
     }
 
+    func testNoArgInitializerAssignedToOptionalUsesFallbackInitializer() {
+        let group: DistributedGroup? = DistributedGroup()
+
+        XCTAssertNotNil(group)
+        XCTAssertEqual(group?.rank, 0)
+        XCTAssertEqual(group?.size, 1)
+    }
+
     // MARK: - (11) Stream parameter test: call ops with explicit stream
 
     func testStreamParameter() {
