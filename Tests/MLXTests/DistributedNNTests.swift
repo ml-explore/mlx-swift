@@ -1421,7 +1421,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         // VAL-NN-024: Two processes with 4-layer Sequential (sharded Linear layers).
         // Backward pass gradients for each rank's weight slice should match
         // the corresponding slice from the non-sharded model's gradient.
-        guard let results = try runMultiProcessTest(operation: "shardLinearBackward") else { return }
+        guard let results = try runMultiProcessTest(operation: "shardLinearBackward") else {
+            return
+        }
 
         if results.rank0.exitCode != 0 || results.rank1.exitCode != 0 {
             print("=== Rank 0 stderr ===")

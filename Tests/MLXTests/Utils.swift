@@ -83,7 +83,8 @@ private func builtProductSearchDirectories(for testCase: XCTestCase) -> [URL] {
         appendUnique(URL(fileURLWithPath: builtProductsDir, isDirectory: true))
     }
 
-    let executableDirectory = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent()
+    let executableDirectory = URL(fileURLWithPath: CommandLine.arguments[0])
+        .deletingLastPathComponent()
     appendUnique(executableDirectory)
 
     return directories

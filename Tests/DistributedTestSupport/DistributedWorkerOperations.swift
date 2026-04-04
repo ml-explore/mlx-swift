@@ -163,12 +163,14 @@ private func runShardLinearForward(rank: Int, group: DistributedGroup) {
     let reference = linear(x)
     eval(reference)
 
-    let allToSharded = shardLinear(
-        module: linear, sharding: .allToSharded, group: group
-    ) as! UnaryLayer
-    let shardedToAll = shardLinear(
-        module: linear, sharding: .shardedToAll, group: group
-    ) as! UnaryLayer
+    let allToSharded =
+        shardLinear(
+            module: linear, sharding: .allToSharded, group: group
+        ) as! UnaryLayer
+    let shardedToAll =
+        shardLinear(
+            module: linear, sharding: .shardedToAll, group: group
+        ) as! UnaryLayer
     eval(allToSharded, shardedToAll)
 
     let shardedOutput = allToSharded(x)
@@ -226,7 +228,8 @@ private func runShardLinearBackward(rank: Int, group: DistributedGroup) {
 
     let shardedModel = Sequential(
         layers:
-            shardLinear(module: model.layers[0], sharding: .allToSharded, group: group) as! UnaryLayer,
+            shardLinear(module: model.layers[0], sharding: .allToSharded, group: group)
+            as! UnaryLayer,
         shardLinear(module: model.layers[1], sharding: .shardedToAll, group: group) as! UnaryLayer,
         shardLinear(module: model.layers[2], sharding: .allToSharded, group: group) as! UnaryLayer,
         shardLinear(module: model.layers[3], sharding: .shardedToAll, group: group) as! UnaryLayer

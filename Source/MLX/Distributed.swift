@@ -44,7 +44,8 @@ public final class DistributedGroup: @unchecked Sendable {
         self.ctx = ctx
     }
 
-    private static func initialize(strict: Bool, backend: DistributedBackend) -> mlx_distributed_group
+    private static func initialize(strict: Bool, backend: DistributedBackend)
+        -> mlx_distributed_group
     {
         backend.rawValue.withCString { mlx_distributed_init(strict, $0) }
     }
