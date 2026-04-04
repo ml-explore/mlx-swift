@@ -16,7 +16,8 @@ private let _sumGradientsCacheLock = NSLock()
 /// Returns a closure that is the identity in the forward pass but performs
 /// `allSum` on the cotangents during the backward pass.
 ///
-/// The result is cached per group instance.
+/// The result is cached per group instance. On a singleton group, the returned
+/// closure is just identity.
 ///
 /// - Parameter group: the distributed group to aggregate gradients over
 /// - Returns: a closure `(MLXArray) -> MLXArray` that is identity forward,
@@ -166,10 +167,10 @@ open class AllToShardedLinear: Module, UnaryLayer {
 
 // MARK: - ShardedToAllLinear
 
-/// Each member of the group applies part of the affine transformation and
-/// then aggregates the results via `allSum`.
+/// Each rank applies part of the affine transformation and then aggregates the
+/// partial results via ``DistributedGroup/allSum(_:stream:)``.
 ///
-/// All nodes will have the same exact result after this layer.
+/// All ranks receive the same result after this layer.
 ///
 /// ### See Also
 /// - ``AllToShardedLinear``
@@ -437,10 +438,10 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
 
 // MARK: - QuantizedShardedToAllLinear
 
-/// Each member of the group applies part of the affine transformation using
-/// the quantized matrix and then aggregates the results.
+/// Each rank applies part of the affine transformation using the quantized
+/// matrix and then aggregates the partial results.
 ///
-/// All nodes will have the same exact result after this layer.
+/// All ranks receive the same result after this layer.
 ///
 /// It is the quantized equivalent of ``ShardedToAllLinear``.
 /// Similar to ``QuantizedLinear``, its parameters are frozen and will not be
@@ -805,7 +806,7 @@ public func shardInPlace(
 ///
 /// This helper supports batching small gradient arrays into larger
 /// concatenated chunks before performing the all-reduce, which can improve
-/// networking performance.
+/// communication performance.
 ///
 /// - Parameters:
 ///   - gradients: the gradient tree (typically from ``Module/parameters()``

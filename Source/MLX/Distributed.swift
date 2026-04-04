@@ -28,13 +28,14 @@ public enum DistributedBackend: String, CaseIterable, Sendable {
 /// Wrapper around the MLX C distributed group handle.
 ///
 /// A `DistributedGroup` represents a group of independent MLX processes that
-/// can communicate using collective operations. Create the initial group with
-/// ``init(backend:)`` or ``init(strict:)``, then use ``split(color:key:)`` to
-/// create sub-groups.
+/// can communicate using distributed operations. Create the initial group with
+/// ``init()``, ``init(backend:)``, or ``init(strict:)``, then use
+/// ``split(color:key:)`` to create sub-groups.
 ///
 /// `DistributedGroup()` preserves MLX's size-1 fallback behavior: if no real
-/// distributed backend can be formed, MLX returns a singleton group whose
-/// collective operations become no-ops.
+/// distributed backend can be formed, MLX returns a singleton group (rank 0,
+/// size 1). On that singleton group, collective operations such as `allSum`,
+/// `allGather`, `allMax`, `allMin`, and `sumScatter` behave as no-ops.
 public final class DistributedGroup: @unchecked Sendable {
 
     let ctx: mlx_distributed_group
@@ -53,12 +54,20 @@ public final class DistributedGroup: @unchecked Sendable {
     ///
     /// When the backend cannot form a real distributed group, this initializer
     /// preserves MLX's fallback behavior and returns a singleton group (rank 0,
-    /// size 1).
+    /// size 1). This is equivalent to calling ``init(backend:)`` with
+    /// ``DistributedBackend/any``.
     ///
     public convenience init() {
         self.init(backend: .any)
     }
 
+    /// Initialize the distributed backend and return the group containing all
+    /// discoverable processes.
+    ///
+    /// Unlike ``init(strict:)``, this initializer preserves MLX's fallback
+    /// behavior and returns a singleton group (rank 0, size 1) when the chosen
+    /// backend cannot form a real distributed group.
+    ///
     /// - Parameter backend: the backend to use
     public convenience init(backend: DistributedBackend) {
         let group = Self.initialize(strict: false, backend: backend)
@@ -73,7 +82,8 @@ public final class DistributedGroup: @unchecked Sendable {
     /// distributed group can be formed.
     ///
     /// Unlike ``init(backend:)``, this initializer does not fall back to a
-    /// singleton group.
+    /// singleton group. It succeeds only when the chosen backend can form a
+    /// real distributed group at runtime.
     ///
     /// - Parameter backend: the backend to use
     public convenience init?(strict backend: DistributedBackend) {
@@ -137,6 +147,8 @@ public final class DistributedGroup: @unchecked Sendable {
     /// Each process contributes its local array and all processes receive
     /// the element-wise sum.
     ///
+    /// On a singleton group, this behaves as identity.
+    ///
     /// - Parameters:
     ///   - array: the local array to sum
     ///   - stream: stream or device to evaluate on
@@ -151,6 +163,8 @@ public final class DistributedGroup: @unchecked Sendable {
     ///
     /// Each process contributes its local array and all processes receive
     /// the concatenated result.
+    ///
+    /// On a singleton group, this behaves as identity.
     ///
     /// - Parameters:
     ///   - array: the local array to gather
@@ -167,6 +181,8 @@ public final class DistributedGroup: @unchecked Sendable {
     /// Each process contributes its local array and all processes receive
     /// the element-wise maximum.
     ///
+    /// On a singleton group, this behaves as identity.
+    ///
     /// - Parameters:
     ///   - array: the local array to max-reduce
     ///   - stream: stream or device to evaluate on
@@ -181,6 +197,8 @@ public final class DistributedGroup: @unchecked Sendable {
     ///
     /// Each process contributes its local array and all processes receive
     /// the element-wise minimum.
+    ///
+    /// On a singleton group, this behaves as identity.
     ///
     /// - Parameters:
     ///   - array: the local array to min-reduce
@@ -197,6 +215,8 @@ public final class DistributedGroup: @unchecked Sendable {
     /// The array is sum-reduced and the result is scattered (split) across
     /// processes so each process receives its portion.
     ///
+    /// On a singleton group, this behaves as identity.
+    ///
     /// - Parameters:
     ///   - array: the local array to sum-scatter
     ///   - stream: stream or device to evaluate on
@@ -212,6 +232,8 @@ public final class DistributedGroup: @unchecked Sendable {
     /// Returns a dependency token (an ``MLXArray``) that can be used to
     /// sequence operations.
     ///
+    /// Requires a group size of at least 2.
+    ///
     /// - Parameters:
     ///   - array: the array to send
     ///   - dst: the destination rank
@@ -225,6 +247,8 @@ public final class DistributedGroup: @unchecked Sendable {
     }
 
     /// Receive an array from another process in the group.
+    ///
+    /// Requires a group size of at least 2.
     ///
     /// - Parameters:
     ///   - shape: the shape of the expected array
@@ -244,6 +268,8 @@ public final class DistributedGroup: @unchecked Sendable {
 
     /// Receive an array from another process, using a template array for
     /// shape and dtype.
+    ///
+    /// Requires a group size of at least 2.
     ///
     /// - Parameters:
     ///   - array: template array whose shape and dtype define the expected result
