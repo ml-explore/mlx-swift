@@ -34,4 +34,19 @@ class QuantizationTests: XCTestCase {
         XCTAssertEqual(
             quantized3.describeExtra(0), "(embeddingCount=512, dimensions=1024)")
     }
+
+    func testQuantizedLinearMxfp4DoesNotCreateAffineBiases() {
+        let quantized = QuantizedLinear(64, 64, groupSize: 32, bits: 4, mode: .mxfp4)
+        XCTAssertNil(quantized.biases)
+    }
+
+    func testQuantizedLinearMxfp4ParametersRoundTripWithoutBiases() throws {
+        let source = QuantizedLinear(64, 64, groupSize: 32, bits: 4, mode: .mxfp4)
+        let target = QuantizedLinear(64, 64, groupSize: 32, bits: 4, mode: .mxfp4)
+        let parameters = source.parameters()
+        let keys = Set(parameters.flattened().map(\.0))
+
+        XCTAssertFalse(keys.contains("biases"))
+        XCTAssertNoThrow(try target.update(parameters: parameters, verify: .all))
+    }
 }
