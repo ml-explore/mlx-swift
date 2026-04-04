@@ -78,8 +78,18 @@ MLXRandom.seed(42)
 
 // Key-based RNG
 let key = MLXRandom.key(42)
-let (newKey, values) = MLXRandom.split(key)
+let (nextKey, sampleKey) = MLXRandom.split(key: key)
+let values = MLXRandom.uniform(0.0 ..< 1.0, [3, 3], key: sampleKey)
+
+// Stateful RNG convenience
+let state = MLXRandom.RandomState(seed: 42)
+let moreValues = MLXRandom.uniform(0.0 ..< 1.0, [3, 3], key: state)
 ```
+
+If you reuse the same `MLXArray` key without splitting it first, you will get
+the same random values each time. Use `MLXRandom.split(key:)` or
+`MLXRandom.RandomState` when you need a reproducible sequence instead of a
+single repeated sample.
 
 ## Data Types (DType)
 

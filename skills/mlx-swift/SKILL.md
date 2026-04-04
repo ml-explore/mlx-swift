@@ -66,6 +66,11 @@ let d = MLXArray.ones([4, 4], dtype: .float32)
 // Random arrays (use MLXRandom namespace or free functions)
 let uniform = MLXRandom.uniform(0.0 ..< 1.0, [3, 3])
 let normal = MLXRandom.normal([100])
+
+// Reproducible sequences: split keys or use RandomState
+let key = MLXRandom.key(42)
+let (_, sampleKey) = MLXRandom.split(key: key)
+let seeded = MLXRandom.uniform(0.0 ..< 1.0, [3, 3], key: sampleKey)
 ```
 
 ### Array Properties
@@ -341,6 +346,7 @@ _ = await weightsTicket.end()
 - **Use `@ModuleInfo`** for all module properties to enable quantization and updates.
 - **Use actors for concurrent code**: Encapsulate MLX state within actors for thread safety.
 - **Use namespaced functions**: `MLXRandom.uniform()`, `FFT.fft()`, `Linalg.inv()`.
+- **Use split keys or `MLXRandom.RandomState` for reproducible RNG**: Reusing the same key without splitting repeats the same sample.
 - **Use ticket-based wired memory coordination**: Prefer `WiredMemoryTicket.withWiredLimit` and `WiredMemoryManager.shared`.
 
 ### DON'T

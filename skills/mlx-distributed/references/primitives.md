@@ -79,6 +79,9 @@ Choose a backend and check whether it is available on the current runtime.
 public enum DistributedBackend: String, CaseIterable, Sendable
 ```
 
+Known cases: `.any`, `.ring`, `.jaccl`, `.mpi`, `.nccl`.
+Use `.any` to let MLX choose the best available backend automatically.
+
 ### Properties
 
 #### isAvailable
@@ -115,6 +118,7 @@ public init()
 ```
 
 Returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
+Equivalent to `DistributedGroup(backend: .any)`.
 
 ```swift
 let group = DistributedGroup()
@@ -131,7 +135,9 @@ public init(backend: DistributedBackend)
 **Parameters:**
 - `backend`: The backend to use.
 
-Returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
+Unlike `init(strict:)`, this preserves MLX's fallback behavior and returns a
+singleton group (rank 0, size 1) if the requested backend cannot form a real
+distributed group.
 
 ```swift
 // Non-strict: always returns a group (size-1 fallback)
@@ -157,6 +163,8 @@ guard let group = DistributedGroup(strict: .ring) else {
 ## DistributedGroup Collective Operations
 
 All collective operations accept a `stream` parameter (`StreamOrDevice`, default `.default`). Distributed operations only have CPU implementations.
+On a singleton group, `allSum`, `allGather`, `allMax`, `allMin`, and
+`sumScatter` behave as identity operations.
 
 #### allSum(_:stream:)
 

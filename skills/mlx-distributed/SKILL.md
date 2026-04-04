@@ -16,14 +16,14 @@ triggers:
 
 # MLX Swift Distributed
 
-MLX Swift Distributed provides multi-device communication primitives for tensor parallelism across Apple Silicon nodes. It supports two backends: ring (TCP/IP sockets) and JACCL (RDMA over Thunderbolt 5). The API enables collective operations, distributed neural network layers, and gradient averaging for multi-process training and inference.
+MLX Swift Distributed provides multi-device communication primitives for tensor parallelism across Apple Silicon nodes. On Apple Silicon, the common backends are ring (TCP/IP sockets) and JACCL (RDMA over Thunderbolt 5), while the API also exposes `.any`, `.mpi`, and `.nccl` for upstream parity. The API enables collective operations, distributed neural network layers, and gradient averaging for multi-process training and inference.
 
 ## When to Use This Skill
 
 - Multi-device / multi-node model inference or training
 - Tensor parallelism (column/row sharding)
 - Gradient averaging across distributed workers
-- Collective operations (allSum, allGather, allMax, allMin, send, recv)
+- Collective operations and point-to-point communication (`allSum`, `allGather`, `allMax`, `allMin`, `sumScatter`, `send`, `recv`, `recvLike`)
 
 ## Architecture Overview
 
@@ -43,7 +43,7 @@ MLX-C distributed (ring TCP + JACCL RDMA backends)
 |---------|-----------|
 | Distributed group + collective ops | Source/MLX/Distributed.swift |
 | NN layers + sharding utilities | Source/MLXNN/Distributed.swift |
-| Example multi-process worker | Source/Examples/DistributedWorker.swift |
+| Test worker entrypoint | Tests/DistributedTestSupport/DistributedWorkerMain.swift |
 | Distributed primitive tests | Tests/MLXTests/DistributedTests.swift |
 | Distributed NN layer tests | Tests/MLXTests/DistributedNNTests.swift |
 
@@ -54,7 +54,8 @@ MLX-C distributed (ring TCP + JACCL RDMA backends)
 ```swift
 import MLX
 
-// Initialize the distributed group (falls back to a size-1 singleton group)
+// Equivalent to DistributedGroup(backend: .any).
+// Falls back to a size-1 singleton group when no real backend can be formed.
 let group = DistributedGroup()
 print("Rank \(group.rank) of \(group.size)")
 
