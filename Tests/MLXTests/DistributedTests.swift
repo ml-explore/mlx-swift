@@ -39,11 +39,9 @@ class DistributedTests: CPUDeviceScopedTestCase {
 
     func testGroupLifecycle() {
         // Create a group, access rank/size, and let it deinit without crash
-        let group = MLXDistributed.`init`()
-        XCTAssertNotNil(group)
-
-        let rank = group!.rank
-        let size = group!.size
+        let group = DistributedGroup()
+        let rank = group.rank
+        let size = group.size
         XCTAssertEqual(rank, 0)
         XCTAssertEqual(size, 1)
     }
@@ -51,22 +49,21 @@ class DistributedTests: CPUDeviceScopedTestCase {
     func testGroupLifecycleManyCreations() {
         // Create 100+ groups in a loop to verify no double-free or use-after-free
         for _ in 0 ..< 150 {
-            let group = MLXDistributed.`init`()
-            XCTAssertNotNil(group)
-            XCTAssertEqual(group!.rank, 0)
-            XCTAssertEqual(group!.size, 1)
+            let group = DistributedGroup()
+            XCTAssertEqual(group.rank, 0)
+            XCTAssertEqual(group.size, 1)
         }
     }
 
-    // MARK: - (2) isAvailable
+    // MARK: - (2) Backend availability
 
     func testIsAvailable() {
-        // Ring backend is compiled in, so isAvailable should return true
-        XCTAssertTrue(MLXDistributed.isAvailable())
+        // Ring backend is compiled in, so availability should return true
+        XCTAssertTrue(DistributedBackend.any.isAvailable)
 
         // Verify backend-specific availability check
         XCTAssertTrue(
-            MLXDistributed.isAvailable(backend: .ring),
+            DistributedBackend.ring.isAvailable,
             "Ring backend should always be available")
     }
 
@@ -83,7 +80,7 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // backend (TCP sockets) is always available as a fallback.
         //
         // This test verifies:
-        // 1. isAvailable() returns a Bool without crashing
+        // 1. Backend availability returns a Bool without crashing
         // 2. The ring backend is available (true)
         // 3. On this hardware, the overall availability is true (ring)
         //
@@ -91,38 +88,34 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // MLX-C does not expose a backend introspection API — there is no way
         // to query which backend was actually initialized for an existing group.
 
-        // (1) Verify isAvailable() returns a Bool
-        let available = MLXDistributed.isAvailable()
+        // (1) Verify availability returns a Bool
+        let available = DistributedBackend.any.isAvailable
 
         // (2) Ring backend is always compiled in, so availability is true
         XCTAssertTrue(
             available,
-            "isAvailable() should return true -- ring backend is always available")
+            "availability should return true -- ring backend is always available")
 
-        // (3) Verify we can init a group (ring backend provides singleton group)
-        let group = MLXDistributed.`init`()
-        XCTAssertNotNil(
-            group,
-            "init() should succeed -- ring backend provides a singleton group")
-        XCTAssertEqual(group!.rank, 0)
-        XCTAssertEqual(group!.size, 1)
+        // (3) Verify we can create a group (ring backend provides singleton group)
+        let group = DistributedGroup()
+        XCTAssertEqual(group.rank, 0)
+        XCTAssertEqual(group.size, 1)
     }
 
     // MARK: - (3) init returns rank=0, size=1
 
     func testInitSingletonGroup() {
-        let group = MLXDistributed.`init`()
-        XCTAssertNotNil(group)
-        XCTAssertEqual(group!.rank, 0)
-        XCTAssertEqual(group!.size, 1)
+        let group = DistributedGroup()
+        XCTAssertEqual(group.rank, 0)
+        XCTAssertEqual(group.size, 1)
     }
 
     // MARK: - (4) Collective ops as identity on size-1 group
 
     func testAllSumIdentity() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
-        let result = MLXDistributed.allSum(input, group: group)
+        let result = group.allSum(input)
 
         XCTAssertEqual(result.shape, input.shape)
         XCTAssertEqual(result.dtype, input.dtype)
@@ -130,9 +123,9 @@ class DistributedTests: CPUDeviceScopedTestCase {
     }
 
     func testAllGatherIdentity() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let input = MLXArray(converting: [1.0, 2.0, 3.0])
-        let result = MLXDistributed.allGather(input, group: group)
+        let result = group.allGather(input)
 
         XCTAssertEqual(result.shape, input.shape)
         XCTAssertEqual(result.dtype, input.dtype)
@@ -140,9 +133,9 @@ class DistributedTests: CPUDeviceScopedTestCase {
     }
 
     func testAllMaxIdentity() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let input = MLXArray(converting: [5.0, 3.0, 7.0, 1.0])
-        let result = MLXDistributed.allMax(input, group: group)
+        let result = group.allMax(input)
 
         XCTAssertEqual(result.shape, input.shape)
         XCTAssertEqual(result.dtype, input.dtype)
@@ -150,9 +143,9 @@ class DistributedTests: CPUDeviceScopedTestCase {
     }
 
     func testAllMinIdentity() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let input = MLXArray(converting: [5.0, 3.0, 7.0, 1.0])
-        let result = MLXDistributed.allMin(input, group: group)
+        let result = group.allMin(input)
 
         XCTAssertEqual(result.shape, input.shape)
         XCTAssertEqual(result.dtype, input.dtype)
@@ -160,9 +153,9 @@ class DistributedTests: CPUDeviceScopedTestCase {
     }
 
     func testSumScatterIdentity() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
-        let result = MLXDistributed.sumScatter(input, group: group)
+        let result = group.sumScatter(input)
 
         XCTAssertEqual(result.shape, input.shape)
         XCTAssertEqual(result.dtype, input.dtype)
@@ -181,13 +174,12 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // covered by the multi-process test `testMultiProcessSendRecv`, which
         // spawns two worker processes over the ring backend and verifies that
         // rank 0 can send [10, 20, 30] and rank 1 receives the same values.
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
 
         // Verify send raises an error on singleton group
         do {
             try withError {
-                let _ = MLXDistributed.send(
-                    MLXArray(converting: [10.0, 20.0, 30.0]), to: 0, group: group)
+                let _ = group.send(MLXArray(converting: [10.0, 20.0, 30.0]), to: 0)
             }
             XCTFail("send on singleton group should produce an error")
         } catch {
@@ -197,8 +189,7 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // Verify recv raises an error on singleton group
         do {
             try withError {
-                let _ = MLXDistributed.recv(
-                    shape: [3], dtype: .float32, from: 0, group: group)
+                let _ = group.recv(shape: [3], dtype: .float32, from: 0)
             }
             XCTFail("recv on singleton group should produce an error")
         } catch {
@@ -217,12 +208,12 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // Success-path semantics are covered by `testMultiProcessSendRecv`,
         // which exercises the full send/recv pipeline (including recvLike's
         // underlying recv implementation) across two ring-backend processes.
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let template = MLXArray(converting: [1.0, 2.0, 3.0, 4.0, 5.0])
 
         do {
             try withError {
-                let _ = MLXDistributed.recvLike(template, from: 0, group: group)
+                let _ = group.recvLike(template, from: 0)
             }
             XCTFail("recvLike on singleton group should produce an error")
         } catch {
@@ -235,7 +226,7 @@ class DistributedTests: CPUDeviceScopedTestCase {
     func testGroupSplitSingletonError() {
         // The C backend does not allow splitting a singleton group.
         // Verify the error is caught gracefully.
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
 
         do {
             try withError {
@@ -250,17 +241,17 @@ class DistributedTests: CPUDeviceScopedTestCase {
     // MARK: - (8) Multiple dtype test: allSum with float16 and int32
 
     func testAllSumMultipleDtypes() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
 
         // float16 test
         let float16Input = MLXArray(converting: [1.0, 2.0, 3.0]).asType(.float16)
-        let float16Result = MLXDistributed.allSum(float16Input, group: group)
+        let float16Result = group.allSum(float16Input)
         XCTAssertEqual(float16Result.dtype, .float16)
         XCTAssertEqual(float16Result.shape, float16Input.shape)
 
         // int32 test
         let int32Input = MLXArray([10, 20, 30] as [Int32])
-        let int32Result = MLXDistributed.allSum(int32Input, group: group)
+        let int32Result = group.allSum(int32Input)
         XCTAssertEqual(int32Result.dtype, .int32)
         XCTAssertEqual(int32Result.shape, int32Input.shape)
         assertEqual(int32Result, int32Input)
@@ -269,11 +260,11 @@ class DistributedTests: CPUDeviceScopedTestCase {
     // MARK: - (9) High-dimensional array test: allSum on [2,3,4] shape
 
     func testAllSumHighDimensional() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
 
         // Create a 3D array of shape [2, 3, 4]
         let input = MLXArray(0 ..< 24, [2, 3, 4]).asType(.float32)
-        let result = MLXDistributed.allSum(input, group: group)
+        let result = group.allSum(input)
 
         XCTAssertEqual(result.shape, [2, 3, 4])
         XCTAssertEqual(result.dtype, .float32)
@@ -294,18 +285,18 @@ class DistributedTests: CPUDeviceScopedTestCase {
         var child: DistributedGroup?
 
         do {
-            let parent = MLXDistributed.`init`()!
+            let parent = DistributedGroup()
             XCTAssertEqual(parent.rank, 0)
             XCTAssertEqual(parent.size, 1)
 
             // Create a second independent group
-            child = MLXDistributed.`init`()!
+            child = DistributedGroup()
             XCTAssertEqual(child!.rank, 0)
             XCTAssertEqual(child!.size, 1)
 
             // Use parent for a collective op
             let parentInput = MLXArray(converting: [1.0, 2.0])
-            let parentResult = MLXDistributed.allSum(parentInput, group: parent)
+            let parentResult = parent.allSum(parentInput)
             assertEqual(parentResult, parentInput, atol: 1e-5)
 
             // parent deinits here when exiting scope
@@ -318,48 +309,48 @@ class DistributedTests: CPUDeviceScopedTestCase {
 
         // Use child for a collective operation after parent is gone
         let input = MLXArray(converting: [1.0, 2.0, 3.0])
-        let result = MLXDistributed.allSum(input, group: child!)
+        let result = child!.allSum(input)
         assertEqual(result, input, atol: 1e-5)
     }
 
     // MARK: - (11) Stream parameter test: call ops with explicit stream
 
     func testStreamParameter() {
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         let input = MLXArray(converting: [1.0, 2.0, 3.0])
 
         // Call with an explicit CPU stream to verify the stream override path.
         let cpuStream = StreamOrDevice.device(.cpu)
 
-        let sumResult = MLXDistributed.allSum(input, group: group, stream: cpuStream)
+        let sumResult = group.allSum(input, stream: cpuStream)
         assertEqual(sumResult, input, atol: 1e-5)
 
-        let gatherResult = MLXDistributed.allGather(input, group: group, stream: cpuStream)
+        let gatherResult = group.allGather(input, stream: cpuStream)
         assertEqual(gatherResult, input, atol: 1e-5)
 
-        let maxResult = MLXDistributed.allMax(input, group: group, stream: cpuStream)
+        let maxResult = group.allMax(input, stream: cpuStream)
         assertEqual(maxResult, input, atol: 1e-5)
 
-        let minResult = MLXDistributed.allMin(input, group: group, stream: cpuStream)
+        let minResult = group.allMin(input, stream: cpuStream)
         assertEqual(minResult, input, atol: 1e-5)
 
-        let scatterResult = MLXDistributed.sumScatter(input, group: group, stream: cpuStream)
+        let scatterResult = group.sumScatter(input, stream: cpuStream)
         assertEqual(scatterResult, input, atol: 1e-5)
     }
 
-    // MARK: - (12) strict=true error handling test
+    // MARK: - (12) Strict initializer error handling test
 
     func testInitStrictMode() {
-        // With strict=true and no hostfile/distributed backend configured,
-        // init should either return nil or trigger an error (not crash the process).
-        // The C backend raises an error when strict=true and no backend can initialize,
+        // With the strict initializer and no hostfile/distributed backend configured,
+        // creation should either return nil or trigger an error (not crash the process).
+        // The C backend raises an error when no backend can initialize,
         // so we use withError to catch it gracefully.
         var errorCaught = false
         var group: DistributedGroup?
 
         do {
             try withError {
-                group = MLXDistributed.`init`(strict: true)
+                group = DistributedGroup(strict: .any)
             }
         } catch {
             errorCaught = true
@@ -791,10 +782,10 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // Test that grad through allGather on a size-1 group produces identity gradient.
         // On a singleton group, allGather is identity, so the gradient of allGather(x)[0]
         // w.r.t. x is 1.0.
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
 
         let gradFn = grad { (x: MLXArray) -> MLXArray in
-            let gathered = MLXDistributed.allGather(x, group: group)
+            let gathered = group.allGather(x)
             return gathered[0]
         }
 

@@ -37,7 +37,7 @@ public func shardLinear(
 - `module`: The `Linear` or `QuantizedLinear` layer to shard.
 - `sharding`: The type of sharding (`.allToSharded` or `.shardedToAll`).
 - `segments`: Number of segments for fused weights (e.g., 3 for QKV). Default is `1`.
-- `group`: The distributed group. If `nil`, uses `MLXDistributed.init()`.
+- `group`: The distributed group. If `nil`, uses `DistributedGroup()`.
 
 **Returns:** A new distributed `Module` with sharded parameters.
 
@@ -57,7 +57,7 @@ public func shardLinear(
 ### Example
 
 ```swift
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 
 // Standard Linear → AllToShardedLinear
 let linear = Linear(1024, 1024, bias: true)
@@ -91,7 +91,7 @@ public func shardInPlace(
 - `module`: The module whose parameters will be sharded in-place.
 - `sharding`: The type of sharding (`.allToSharded` or `.shardedToAll`).
 - `segments`: Number of segments for fused weights (e.g., 3 for QKV). Default is `1`.
-- `group`: The distributed group. If `nil`, uses `MLXDistributed.init()`.
+- `group`: The distributed group. If `nil`, uses `DistributedGroup()`.
 
 Unlike `shardLinear`, this function modifies the parameters of the existing module without changing its type. The module itself must natively support distributed communication for the collective ops to take effect.
 
@@ -176,7 +176,7 @@ Applies the predicate to each parameter in a flattened parameter tree:
 import MLX
 import MLXNN
 
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 
 // Example: Shard a 4-layer model for tensor parallelism
 // Alternating allToSharded / shardedToAll for proper data flow

@@ -39,7 +39,7 @@ enum DistributedWorkerRunner {
     }
 
     private static func run(rank: Int, operation: DistributedWorkerOperation) {
-        guard let group = MLXDistributed.`init`(strict: true, backend: .ring) else {
+        guard let group = DistributedGroup(strict: .ring) else {
             fail("Failed to initialize distributed group (strict=true)")
         }
 
@@ -79,7 +79,7 @@ private func runAllSum(rank: Int, group: DistributedGroup) {
         ? MLXArray(converting: [1.0, 2.0, 3.0])
         : MLXArray(converting: [4.0, 5.0, 6.0])
 
-    let result = MLXDistributed.allSum(input, group: group)
+    let result = group.allSum(input)
     eval(result)
 
     let values = result.asArray(Float.self)
@@ -95,13 +95,13 @@ private func runAllSum(rank: Int, group: DistributedGroup) {
 private func runSendRecv(rank: Int, group: DistributedGroup) {
     if rank == 0 {
         let data = MLXArray(converting: [10.0, 20.0, 30.0])
-        let token = MLXDistributed.send(data, to: 1, group: group)
+        let token = group.send(data, to: 1)
         eval(token)
         emitJSON(["sent": [10.0, 20.0, 30.0]])
         return
     }
 
-    let received = MLXDistributed.recv(shape: [3], dtype: .float32, from: 0, group: group)
+    let received = group.recv(shape: [3], dtype: .float32, from: 0)
     eval(received)
 
     let values = received.asArray(Float.self)
@@ -137,7 +137,7 @@ private func runSplit(rank: Int, group: DistributedGroup) {
         ? MLXArray(converting: [1.0, 2.0, 3.0])
         : MLXArray(converting: [4.0, 5.0, 6.0])
 
-    let result = MLXDistributed.allSum(input, group: group)
+    let result = group.allSum(input)
     eval(result)
 
     let values = result.asArray(Float.self)

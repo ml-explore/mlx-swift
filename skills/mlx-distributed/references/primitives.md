@@ -1,6 +1,6 @@
 # Distributed Primitives API Reference
 
-Complete API reference for `DistributedGroup` and `MLXDistributed` enum.
+Complete API reference for `DistributedGroup` and `DistributedBackend`.
 
 ## DistributedGroup
 
@@ -21,7 +21,7 @@ public var rank: Int { get }
 ```
 
 ```swift
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 print("I am rank \(group.rank)")  // e.g., "I am rank 0"
 ```
 
@@ -34,7 +34,7 @@ public var size: Int { get }
 ```
 
 ```swift
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 print("Group has \(group.size) members")  // e.g., "Group has 2 members"
 ```
 
@@ -67,120 +67,120 @@ withErrorHandler({ errMsg in
 
 ### Lifecycle
 
-Groups are created via `MLXDistributed.init(strict:)`. The C API does not expose `mlx_distributed_group_free()`, so groups leak a small amount of memory on deallocation. This has minimal practical impact since groups are typically singleton-like and long-lived.
+Groups are created via `DistributedGroup(backend:)` or `DistributedGroup(strict:)`. The C API does not expose `mlx_distributed_group_free()`, so groups leak a small amount of memory on deallocation. This has minimal practical impact since groups are typically singleton-like and long-lived.
 
 ---
 
-## MLXDistributed
+## DistributedBackend
 
-Collection of distributed communication operations.
+Choose a backend and check whether it is available on the current runtime.
 
 ```swift
-public enum MLXDistributed
+public enum DistributedBackend: String, CaseIterable, Sendable
 ```
 
-### Static Methods
+### Properties
 
-#### isAvailable(backend:)
+#### isAvailable
 
 Check if a distributed communication backend is available.
 
 ```swift
-public static func isAvailable(backend: DistributedBackend = .any) -> Bool
+public var isAvailable: Bool { get }
 ```
-
-**Parameters:**
-- `backend`: The backend to check. Default is `.any`, which checks if any backend is available.
 
 **Returns:** `true` when the specified backend is available.
 
 ```swift
 // Check if any backend is available
-if MLXDistributed.isAvailable() {
+if DistributedBackend.any.isAvailable {
     print("Distributed backend ready")
 }
 
 // Check a specific backend
-if MLXDistributed.isAvailable(backend: .ring) {
+if DistributedBackend.ring.isAvailable {
     print("Ring backend ready")
 }
 ```
 
-#### init(strict:backend:)
+## DistributedGroup Constructors
+
+#### init(backend:)
 
 Initialize the distributed backend and return the group containing all discoverable processes.
 
 ```swift
-public static func `init`(strict: Bool = false, backend: DistributedBackend = .any) -> DistributedGroup?
+public init(backend: DistributedBackend = .any)
 ```
 
 **Parameters:**
-- `strict`: If `true`, returns `nil` on initialization failure instead of falling back to a singleton group. Default is `false`.
 - `backend`: The backend to use. Default is `.any`, which lets MLX choose automatically.
 
-**Returns:** The `DistributedGroup` for this process, or `nil` if `strict` is `true` and initialization failed.
-
-When `strict` is `false` (default), returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
+Returns a singleton group (rank 0, size 1) if no distributed backend can be initialized.
 
 ```swift
 // Non-strict: always returns a group (size-1 fallback)
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
+```
 
+#### init?(strict:)
+
+Initialize the distributed backend and return `nil` when no real distributed backend can be formed.
+
+```swift
+public init?(strict backend: DistributedBackend = .any)
+```
+
+```swift
 // Strict: returns nil if no multi-process backend available
-guard let group = MLXDistributed.`init`(strict: true) else {
+guard let group = DistributedGroup(strict: .any) else {
     print("No distributed backend configured")
     return
 }
 ```
 
-### Collective Operations
+## DistributedGroup Collective Operations
 
 All collective operations accept a `stream` parameter (`StreamOrDevice`, default `.default`). Distributed operations only have CPU implementations.
 
-#### allSum(_:group:stream:)
+#### allSum(_:stream:)
 
 Sum-reduce the array across all processes. Each process contributes its local array and all processes receive the element-wise sum.
 
 ```swift
-public static func allSum(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: The local array to sum.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** The element-wise sum across all processes.
 
 ```swift
 // Rank 0: [1, 2, 3], Rank 1: [4, 5, 6]
-let result = MLXDistributed.allSum(localData, group: group)
+let result = group.allSum(localData)
 eval(result)
 // Both ranks get: [5, 7, 9]
 ```
 
-#### allGather(_:group:stream:)
+#### allGather(_:stream:)
 
 Gather arrays from all processes. Each process contributes its local array and all processes receive the concatenated result.
 
 ```swift
-public static func allGather(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: The local array to gather.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** The concatenation of arrays from all processes.
 
 ```swift
 // Rank 0: [1, 2, 3], Rank 1: [4, 5, 6]
-let result = MLXDistributed.allGather(localData, group: group)
+let result = group.allGather(localData)
 eval(result)
 // Both ranks get: [1, 2, 3, 4, 5, 6]
 ```
@@ -191,67 +191,58 @@ Works with multi-dimensional arrays:
 // Result: [[1, 2], [3, 4], [5, 6], [7, 8]] shape [4, 2]
 ```
 
-#### allMax(_:group:stream:)
+#### allMax(_:stream:)
 
 Max-reduce the array across all processes. Each process contributes its local array and all processes receive the element-wise maximum.
 
 ```swift
-public static func allMax(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: The local array to max-reduce.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** The element-wise maximum across all processes.
 
 ```swift
 // Rank 0: [1, 5, 3], Rank 1: [4, 2, 6]
-let result = MLXDistributed.allMax(localData, group: group)
+let result = group.allMax(localData)
 eval(result)
 // Both ranks get: [4, 5, 6]
 ```
 
-#### allMin(_:group:stream:)
+#### allMin(_:stream:)
 
 Min-reduce the array across all processes. Each process contributes its local array and all processes receive the element-wise minimum.
 
 ```swift
-public static func allMin(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allMin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: The local array to min-reduce.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** The element-wise minimum across all processes.
 
 ```swift
 // Rank 0: [1, 5, 3], Rank 1: [4, 2, 6]
-let result = MLXDistributed.allMin(localData, group: group)
+let result = group.allMin(localData)
 eval(result)
 // Both ranks get: [1, 2, 3]
 ```
 
-#### sumScatter(_:group:stream:)
+#### sumScatter(_:stream:)
 
 Sum-reduce and scatter the array across all processes. The array is sum-reduced and the result is scattered (split) across processes so each process receives its portion.
 
 ```swift
-public static func sumScatter(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: The local array to sum-scatter.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** This process's portion of the sum-scattered result.
@@ -264,26 +255,22 @@ public static func sumScatter(
 withErrorHandler({ errMsg in
     print("sumScatter not supported: \(errMsg)")
 }) {
-    let result = MLXDistributed.sumScatter(localData, group: group)
+    let result = group.sumScatter(localData)
     eval(result)
 }
 ```
 
-#### send(_:to:group:stream:)
+#### send(_:to:stream:)
 
 Send an array to another process in the group. Returns a dependency token that can be used to sequence operations.
 
 ```swift
-public static func send(
-    _ array: MLXArray, to dst: Int, group: DistributedGroup,
-    stream: StreamOrDevice = .default
-) -> MLXArray
+public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: The array to send.
 - `dst`: The destination rank.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** A dependency token (an `MLXArray`).
@@ -291,18 +278,17 @@ public static func send(
 > **Note:** Requires group size ≥ 2. Raises an error on singleton groups.
 
 ```swift
-let token = MLXDistributed.send(data, to: 1, group: group)
+let token = group.send(data, to: 1)
 eval(token)  // Must eval to initiate the send
 ```
 
-#### recv(shape:dtype:from:group:stream:)
+#### recv(shape:dtype:from:stream:)
 
 Receive an array from another process in the group.
 
 ```swift
-public static func recv(
-    shape: [Int], dtype: DType, from src: Int, group: DistributedGroup,
-    stream: StreamOrDevice = .default
+public func recv(
+    shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default
 ) -> MLXArray
 ```
 
@@ -310,7 +296,6 @@ public static func recv(
 - `shape`: The shape of the expected array.
 - `dtype`: The data type of the expected array.
 - `src`: The source rank.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** The received array.
@@ -318,26 +303,23 @@ public static func recv(
 > **Note:** Requires group size ≥ 2. Raises an error on singleton groups.
 
 ```swift
-let received = MLXDistributed.recv(
-    shape: [3], dtype: .float32, from: 0, group: group)
+let received = group.recv(shape: [3], dtype: .float32, from: 0)
 eval(received)
 ```
 
-#### recvLike(_:from:group:stream:)
+#### recvLike(_:from:stream:)
 
 Receive an array from another process, using a template array for shape and dtype.
 
 ```swift
-public static func recvLike(
-    _ array: MLXArray, from src: Int, group: DistributedGroup,
-    stream: StreamOrDevice = .default
+public func recvLike(
+    _ array: MLXArray, from src: Int, stream: StreamOrDevice = .default
 ) -> MLXArray
 ```
 
 **Parameters:**
 - `array`: Template array whose shape and dtype define the expected result.
 - `src`: The source rank.
-- `group`: The communication group.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
 **Returns:** The received array with the same shape and dtype as the template.
@@ -346,7 +328,7 @@ public static func recvLike(
 
 ```swift
 let template = MLXArray(converting: [0.0, 0.0, 0.0])
-let received = MLXDistributed.recvLike(template, from: 0, group: group)
+let received = group.recvLike(template, from: 0)
 eval(received)
 ```
 

@@ -32,7 +32,7 @@ averageGradients / shardLinear / shardInPlace (utilities)
          ↓
 AllToShardedLinear / ShardedToAllLinear (NN layers)
          ↓
-MLXDistributed (collective ops: allSum, allGather, send, recv, etc.)
+DistributedGroup (collective ops: allSum, allGather, send, recv, etc.)
          ↓
 DistributedGroup (group management, rank, size, split)
          ↓
@@ -57,19 +57,19 @@ MLX-C distributed (ring TCP + JACCL RDMA backends)
 import MLX
 
 // Check if a distributed backend is available
-guard MLXDistributed.isAvailable() else {
+guard DistributedBackend.any.isAvailable else {
     print("No distributed backend available")
     return
 }
 
 // Initialize the distributed group (non-strict: falls back to size-1 group)
-guard let group = MLXDistributed.`init`() else {
+let group = DistributedGroup()
     return
 }
 print("Rank \(group.rank) of \(group.size)")
 
 // Strict mode: returns nil if no multi-process backend can initialize
-let strictGroup = MLXDistributed.`init`(strict: true)
+let strictGroup = DistributedGroup(strict: .any)
 ```
 
 ### Simple allSum Collective Operation
@@ -77,13 +77,13 @@ let strictGroup = MLXDistributed.`init`(strict: true)
 ```swift
 import MLX
 
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 
 // Each process contributes its local array
 let localData = MLXArray(converting: [1.0, 2.0, 3.0])
 
 // All processes receive the element-wise sum
-let globalSum = MLXDistributed.allSum(localData, group: group)
+let globalSum = group.allSum(localData)
 eval(globalSum)
 ```
 
@@ -93,7 +93,7 @@ eval(globalSum)
 import MLX
 import MLXNN
 
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 
 // Start with a standard Linear layer (e.g., loaded from a model)
 let linear = Linear(1024, 1024, bias: true)
@@ -114,7 +114,7 @@ import MLX
 import MLXNN
 import MLXOptimizers
 
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 let model = MLP(inputDim: 784, hiddenDim: 256, outputDim: 10)
 let optimizer = Adam(learningRate: 0.001)
 
@@ -150,7 +150,7 @@ public static func allSum(
 
 ```swift
 // Rank 0: [1, 2, 3], Rank 1: [4, 5, 6] → Both get: [5, 7, 9]
-let result = MLXDistributed.allSum(localData, group: group)
+let result = group.allSum(localData)
 eval(result)
 ```
 
@@ -164,7 +164,7 @@ public static func allGather(
 
 ```swift
 // Rank 0: [1, 2, 3], Rank 1: [4, 5, 6] → Both get: [1, 2, 3, 4, 5, 6]
-let result = MLXDistributed.allGather(localData, group: group)
+let result = group.allGather(localData)
 eval(result)
 ```
 
@@ -205,7 +205,7 @@ public static func send(
 
 ```swift
 // Rank 0 sends data to rank 1
-let token = MLXDistributed.send(data, to: 1, group: group)
+let token = group.send(data, to: 1)
 eval(token)
 ```
 
@@ -220,7 +220,7 @@ public static func recv(
 
 ```swift
 // Rank 1 receives data from rank 0
-let received = MLXDistributed.recv(shape: [3], dtype: .float32, from: 0, group: group)
+let received = group.recv(shape: [3], dtype: .float32, from: 0)
 eval(received)
 ```
 
@@ -236,7 +236,7 @@ public static func recvLike(
 ```swift
 // Uses template's shape and dtype automatically
 let template = MLXArray(converting: [0.0, 0.0, 0.0])
-let received = MLXDistributed.recvLike(template, from: 0, group: group)
+let received = group.recvLike(template, from: 0)
 eval(received)
 ```
 
@@ -387,7 +387,7 @@ let avgGrads3 = averageGradients(
 - **Use `_exit(0)` in multi-process workers**: The ring backend's TCP socket destructors can hang waiting for peer socket closure. Use `_exit(0)` to bypass cleanup handlers.
 - **Use `shardLinear` to auto-detect layer types**: It checks `QuantizedLinear` before `Linear` (subclass ordering) and dispatches correctly.
 - **Use `averageGradients` with `communicationType`** for bandwidth reduction: Cast gradients to `.float16` or `.bfloat16` before communication.
-- **Check `MLXDistributed.isAvailable()` before initializing**: Verify a backend exists before attempting group creation.
+- **Check `DistributedBackend.any.isAvailable` before initializing**: Verify a backend exists before attempting group creation.
 - **Call `eval()` before distributed communication**: Ensure arrays are materialized before sending across processes.
 - **Use sequential port allocation in tests**: Avoid ephemeral port collisions by using a monotonically increasing port counter with a random base.
 
@@ -421,7 +421,7 @@ There are currently no deprecated patterns in the distributed API, as it is a ne
 
 ## Reference Documentation
 
-- [Primitives](references/primitives.md) - DistributedGroup and MLXDistributed collective operations
+- [Primitives](references/primitives.md) - DistributedGroup and DistributedBackend APIs
 - [NN Layers](references/nn-layers.md) - Distributed linear layers and sumGradients
 - [Sharding](references/sharding.md) - shardLinear, shardInPlace, and ShardingType
 - [Gradient Averaging](references/gradient-averaging.md) - averageGradients with batching and type casting

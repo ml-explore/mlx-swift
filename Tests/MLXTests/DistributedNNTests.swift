@@ -42,7 +42,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     /// Get a size-1 distributed group for single-process testing.
     private func singletonGroup() -> DistributedGroup {
-        MLXDistributed.`init`()!
+        DistributedGroup()
     }
 
     // MARK: - (1) AllToShardedLinear Init Tests

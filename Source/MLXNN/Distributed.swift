@@ -40,7 +40,7 @@ public func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray {
         let cf = CustomFunction {
             Forward { inputs in inputs }
             VJP { _, cotangents in
-                cotangents.map { MLXDistributed.allSum($0, group: group) }
+                cotangents.map { group.allSum($0) }
             }
         }
 
@@ -79,12 +79,12 @@ open class AllToShardedLinear: Module, UnaryLayer {
     ///   - inputDimensions: number of input dimensions
     ///   - outputDimensions: number of output dimensions (must be divisible by group size)
     ///   - bias: if `true`, apply a bias
-    ///   - group: the distributed group (defaults to `MLXDistributed.init()`)
+    ///   - group: the distributed group (defaults to `DistributedGroup()`)
     public init(
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         group: DistributedGroup? = nil
     ) {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         self.group = group
         let N = group.size
 
@@ -147,7 +147,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
     public class func fromLinear(
         _ linear: Linear, segments: Int = 1, group: DistributedGroup? = nil
     ) -> AllToShardedLinear {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = linear.weight.shape2
 
         let layer = AllToShardedLinear(
@@ -190,12 +190,12 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     ///   - inputDimensions: number of input dimensions (must be divisible by group size)
     ///   - outputDimensions: number of output dimensions
     ///   - bias: if `true`, apply a bias
-    ///   - group: the distributed group (defaults to `MLXDistributed.init()`)
+    ///   - group: the distributed group (defaults to `DistributedGroup()`)
     public init(
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         group: DistributedGroup? = nil
     ) {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         self.group = group
         let N = group.size
 
@@ -234,7 +234,7 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var x = matmul(x, weight.T)
 
-        x = MLXDistributed.allSum(x, group: group)
+        x = group.allSum(x)
 
         if let bias {
             x = x + bias
@@ -254,7 +254,7 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     public class func fromLinear(
         _ linear: Linear, segments: Int = 1, group: DistributedGroup? = nil
     ) -> ShardedToAllLinear {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = linear.weight.shape2
 
         let layer = ShardedToAllLinear(
@@ -309,13 +309,13 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
     ///   - groupSize: the group size used for quantization. Default is 64.
     ///   - bits: the bit width used for quantization. Default is 4.
     ///   - mode: the quantization mode. Default is `.affine`.
-    ///   - group: the distributed group (defaults to `MLXDistributed.init()`)
+    ///   - group: the distributed group (defaults to `DistributedGroup()`)
     public init(
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
         group: DistributedGroup? = nil
     ) {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         self.group = group
         self.groupSize = groupSize
         self.bits = bits
@@ -413,7 +413,7 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
         _ quantizedLinear: QuantizedLinear, segments: Int = 1,
         group: DistributedGroup? = nil
     ) -> QuantizedAllToShardedLinear {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = quantizedLinear.weight.shape2
         let inputDimsReal = (inputDimensions * 32) / quantizedLinear.bits
 
@@ -475,13 +475,13 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
     ///   - groupSize: the group size used for quantization. Default is 64.
     ///   - bits: the bit width used for quantization. Default is 4.
     ///   - mode: the quantization mode. Default is `.affine`.
-    ///   - group: the distributed group (defaults to `MLXDistributed.init()`)
+    ///   - group: the distributed group (defaults to `DistributedGroup()`)
     public init(
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
         group: DistributedGroup? = nil
     ) {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         self.group = group
         self.groupSize = groupSize
         self.bits = bits
@@ -557,7 +557,7 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
             mode: mode
         )
 
-        x = MLXDistributed.allSum(x, group: group)
+        x = group.allSum(x)
 
         if let bias {
             x = x + bias
@@ -578,7 +578,7 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
         _ quantizedLinear: QuantizedLinear, segments: Int = 1,
         group: DistributedGroup? = nil
     ) -> QuantizedShardedToAllLinear {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = quantizedLinear.weight.shape2
         let inputDimsReal = (inputDimensions * 32) / quantizedLinear.bits
 
@@ -725,7 +725,7 @@ public enum ShardingType {
 ///     ``ShardingType/shardedToAll``)
 ///   - segments: number of segments for fused weights (e.g. 3 for QKV).
 ///     Default is 1.
-///   - group: the distributed group. If `nil`, uses `MLXDistributed.init()`.
+///   - group: the distributed group. If `nil`, uses `DistributedGroup()`.
 /// - Returns: a new distributed ``Module`` with sharded parameters
 ///
 /// ### See Also
@@ -772,7 +772,7 @@ public func shardLinear(
 ///     ``ShardingType/shardedToAll``), or a custom predicate
 ///   - segments: number of segments for fused weights (e.g. 3 for QKV).
 ///     Default is 1.
-///   - group: the distributed group. If `nil`, uses `MLXDistributed.init()`.
+///   - group: the distributed group. If `nil`, uses `DistributedGroup()`.
 ///
 /// ### See Also
 /// - ``shardLinear(module:sharding:segments:group:)``
@@ -780,7 +780,7 @@ public func shardInPlace(
     module: Module, sharding: ShardingType, segments: Int = 1,
     group: DistributedGroup? = nil
 ) {
-    let group = group ?? MLXDistributed.`init`()!
+    let group = group ?? DistributedGroup()
     let predicate: (String, MLXArray) -> ShardInfo?
 
     switch sharding {
@@ -810,7 +810,7 @@ public func shardInPlace(
 /// - Parameters:
 ///   - gradients: the gradient tree (typically from ``Module/parameters()``
 ///     or ``Module/trainableParameters()``)
-///   - group: the distributed group. If `nil`, uses `MLXDistributed.init()`.
+///   - group: the distributed group. If `nil`, uses `DistributedGroup()`.
 ///   - allReduceSize: maximum byte size for batching gradient arrays into a
 ///     single all-reduce call. Set to 0 or negative to disable batching.
 ///     Default is 32 MiB.
@@ -832,7 +832,7 @@ public func averageGradients(
     communicationType: DType? = nil,
     communicationStream: StreamOrDevice? = nil
 ) -> ModuleParameters {
-    let group = group ?? MLXDistributed.`init`()!
+    let group = group ?? DistributedGroup()
     let N = group.size
 
     if N == 1 {
@@ -846,7 +846,7 @@ public func averageGradients(
     func average(_ x: MLXArray) -> MLXArray {
         let dt = x.dtype
         let y = communicationType != nil ? x.asType(communicationType!) : x
-        return (MLXDistributed.allSum(y, group: group, stream: stream)).asType(dt) / Float(N)
+        return group.allSum(y, stream: stream).asType(dt) / Float(N)
     }
 
     if allReduceSize <= 0 {

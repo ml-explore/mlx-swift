@@ -25,7 +25,7 @@ JACCL (Joint Accelerator Communication Library) uses RDMA over Thunderbolt 5 for
 - RDMA explicitly enabled in Recovery Mode (`csrutil`)
 - Physical Thunderbolt 5 cable between nodes
 
-> **Note:** You can select a specific backend using the `backend` parameter (e.g., `MLXDistributed.\`init\`(backend: .jaccl)`). Use `.any` (the default) to let MLX choose automatically.
+> **Note:** You can select a specific backend using the `backend` parameter (e.g., `DistributedGroup(backend: .jaccl)`). Use `.any` (the default) to let MLX choose automatically.
 
 ---
 
@@ -59,7 +59,7 @@ The rank of each process corresponds to its index in the outer array (rank 0 is 
 | `MLX_RANK` | The rank of this process (0-based) | `0`, `1` |
 | `MLX_HOSTFILE` | Path to the JSON hostfile | `/tmp/hostfile.json` |
 
-These must be set before calling `MLXDistributed.init(strict: true)`.
+These must be set before calling `DistributedGroup(strict: .any)`.
 
 ```swift
 guard let rankStr = ProcessInfo.processInfo.environment["MLX_RANK"],
@@ -97,7 +97,7 @@ Device.withDefaultDevice(.cpu) {
 ### 3. Initialize Distributed Group (strict)
 
 ```swift
-guard let group = MLXDistributed.`init`(strict: true) else {
+guard let group = DistributedGroup(strict: .any) else {
     fputs("ERROR: Failed to initialize distributed group\n", stderr)
     exit(1)
 }
@@ -112,7 +112,7 @@ guard group.rank == rank else {
 
 ```swift
 let localData = MLXArray(converting: rank == 0 ? [1.0, 2.0, 3.0] : [4.0, 5.0, 6.0])
-let result = MLXDistributed.allSum(localData, group: group)
+let result = group.allSum(localData)
 eval(result)
 ```
 
@@ -151,14 +151,14 @@ struct DistributedWorker {
         }
 
         Device.withDefaultDevice(.cpu) {
-            guard let group = MLXDistributed.`init`(strict: true) else {
+            guard let group = DistributedGroup(strict: .any) else {
                 fputs("ERROR: Failed to initialize\n", stderr)
                 exit(1)
             }
 
             // Perform work...
             let data = MLXArray(converting: [Float(rank + 1)])
-            let sum = MLXDistributed.allSum(data, group: group)
+            let sum = group.allSum(data)
             eval(sum)
 
             print("Rank \(rank): sum = \(sum.asArray(Float.self))")
@@ -349,7 +349,7 @@ withErrorHandler({ errMsg in
     print("Distributed error: \(errMsg)")
     errorCaught.value = true
 }) {
-    let result = MLXDistributed.sumScatter(data, group: group)
+    let result = group.sumScatter(data)
     eval(result)
 }
 ```

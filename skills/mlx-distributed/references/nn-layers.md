@@ -77,7 +77,7 @@ public init(
 - `inputDimensions`: Number of input dimensions.
 - `outputDimensions`: Number of output dimensions. **Must be divisible by group size.**
 - `bias`: If `true`, apply a bias. Default is `true`.
-- `group`: The distributed group. If `nil`, uses `MLXDistributed.init()`.
+- `group`: The distributed group. If `nil`, uses `DistributedGroup()`.
 
 **Precondition:** `outputDimensions % group.size == 0`
 
@@ -148,7 +148,7 @@ public init(
 - `inputDimensions`: Number of input dimensions. **Must be divisible by group size.**
 - `outputDimensions`: Number of output dimensions.
 - `bias`: If `true`, apply a bias. Default is `true`.
-- `group`: The distributed group. If `nil`, uses `MLXDistributed.init()`.
+- `group`: The distributed group. If `nil`, uses `DistributedGroup()`.
 
 **Precondition:** `inputDimensions % group.size == 0`
 
@@ -175,7 +175,7 @@ open func callAsFunction(_ x: MLXArray) -> MLXArray
 
 Forward pass:
 1. Compute `matmul(x, weight.T)`.
-2. Apply `MLXDistributed.allSum(x, group: group)` to aggregate across ranks.
+2. Apply `group.allSum(x)` to aggregate across ranks.
 3. Add bias if present.
 
 **Input shape:** `[batch, inputDimensions / N]`
@@ -300,7 +300,7 @@ public class func fromQuantizedLinear(
 
 Forward pass:
 1. Compute `quantizedMM(x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize, bits: bits, mode: mode)`.
-2. Apply `MLXDistributed.allSum(x, group: group)`.
+2. Apply `group.allSum(x)`.
 3. Add bias if present.
 
 ---
@@ -322,7 +322,7 @@ The result is cached per group instance using `ObjectIdentifier`. On a size-1 gr
 
 Internally uses `CustomFunction` with:
 - `Forward { inputs in inputs }` — identity pass-through
-- `VJP { _, cotangents in cotangents.map { MLXDistributed.allSum($0, group: group) } }` — sum cotangents across group
+- `VJP { _, cotangents in cotangents.map { group.allSum($0) } }` — sum cotangents across group
 
 ```swift
 let fn = sumGradients(group: group)

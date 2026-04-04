@@ -27,8 +27,7 @@ Tensor parallelism splits individual weight matrices across devices. Each device
                     │                      mlx-swift                               │
                     │   MLXNN: AllToShardedLinear, ShardedToAllLinear              │
                     │   MLXNN: shardLinear(), shardInPlace(), averageGradients()   │
-                    │   MLX:  MLXDistributed (allSum, allGather, send, recv, ...)  │
-                    │   MLX:  DistributedGroup (rank, size)                        │
+                    │   MLX:  DistributedGroup (rank, size, allSum, send, ...)    │
                     └───────────────────────────┬─────────────────────────────────┘
                                                 │
                     ┌───────────────────────────▼─────────────────────────────────┐
@@ -61,10 +60,11 @@ All APIs below are already implemented in mlx-swift. This is what you will call 
 
 ```swift
 // Check if any distributed backend is available
-MLXDistributed.isAvailable() -> Bool
+DistributedBackend.any.isAvailable -> Bool
 
 // Initialize a distributed group (returns nil if no backend, or if strict and init fails)
-MLXDistributed.`init`(strict: Bool = false) -> DistributedGroup?
+DistributedGroup.init(backend: DistributedBackend = .any) -> DistributedGroup
+DistributedGroup.init?(strict: DistributedBackend = .any) -> DistributedGroup?
 
 // Group properties
 group.rank  -> Int   // This process's rank (0-indexed)
@@ -109,10 +109,10 @@ public func averageGradients(
 ### Collective Operations (lower level, rarely needed directly)
 
 ```swift
-MLXDistributed.allSum(_ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default) -> MLXArray
-MLXDistributed.allGather(_ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default) -> MLXArray
-MLXDistributed.send(_ array: MLXArray, to dst: Int, group: DistributedGroup, stream: StreamOrDevice = .default) -> MLXArray
-MLXDistributed.recv(shape: [Int], dtype: DType, from src: Int, group: DistributedGroup, stream: StreamOrDevice = .default) -> MLXArray
+DistributedGroup.allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+DistributedGroup.allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+DistributedGroup.send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) -> MLXArray
+DistributedGroup.recv(shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 ## 3. Changes to MLXLMCommon
@@ -210,9 +210,7 @@ public func shardedLoad(
     eval(model)
 
     // Step 6: Barrier sync — ensures all ranks have finished loading
-    let barrier = MLXDistributed.allSum(
-        MLXArray(Float(1.0)), group: group, stream: .cpu
-    )
+    let barrier = group.allSum(MLXArray(Float(1.0)), stream: .cpu)
     eval(barrier)
 
     // Step 7: Load tokenizer (same on all ranks)
@@ -316,7 +314,7 @@ Option B — Let the caller handle rank filtering (simpler, less invasive):
 
 ```swift
 // In the app layer:
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 
 for await generation in generate(input: input, parameters: params, context: context) {
     if group.rank == 0 {
@@ -403,7 +401,7 @@ class MLP {
 ```swift
 extension LlamaModel: ShardableModel {
     mutating func shard(group: DistributedGroup? = nil) {
-        let group = group ?? MLXDistributed.`init`()!
+        let group = group ?? DistributedGroup()
         let N = group.size
 
         for i in model.layers.indices {
@@ -634,11 +632,11 @@ struct DistributedInferenceApp {
 
     static func run() async throws {
         // Step 1: Initialize distributed group
-        guard MLXDistributed.isAvailable() else {
+        guard DistributedBackend.any.isAvailable else {
             fatalError("No distributed backend available. Set MLX_RANK and MLX_HOSTFILE.")
         }
 
-        guard let group = MLXDistributed.`init`(strict: true) else {
+        guard let group = DistributedGroup(strict: .any) else {
             fatalError("Failed to initialize distributed group")
         }
 
@@ -732,7 +730,7 @@ class ShardingTests: XCTestCase {
         XCTAssertTrue(model.layers[0].mlp.gateProj is Linear)
 
         // Create a singleton group (size 1)
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         model.shard(group: group)
 
         // After sharding: projections are distributed variants
@@ -751,7 +749,7 @@ class ShardingTests: XCTestCase {
     /// Verify head counts are divided by group size.
     func testShardDividesHeadCounts() {
         let model = createTestLlamaModel(nHeads: 32, nKVHeads: 8)
-        let group = MLXDistributed.`init`()!  // size 1
+        let group = DistributedGroup()  // size 1
 
         let originalHeads = model.layers[0].selfAttn.nHeads
         let originalKVHeads = model.layers[0].selfAttn.nKVHeads
@@ -772,7 +770,7 @@ class ShardingTests: XCTestCase {
         let originalOutput = model(input)
         eval(originalOutput)
 
-        let group = MLXDistributed.`init`()!
+        let group = DistributedGroup()
         model.shard(group: group)
         eval(model)
 

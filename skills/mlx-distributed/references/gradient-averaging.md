@@ -21,7 +21,7 @@ public func averageGradients(
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `gradients` | `ModuleParameters` | — | The gradient tree (typically from `Module.parameters()` or `Module.trainableParameters()`) |
-| `group` | `DistributedGroup?` | `nil` | The distributed group. If `nil`, uses `MLXDistributed.init()` |
+| `group` | `DistributedGroup?` | `nil` | The distributed group. If `nil`, uses `DistributedGroup()` |
 | `allReduceSize` | `Int` | `32 * 1024 * 1024` (32 MiB) | Maximum byte size for batching gradient arrays into a single all-reduce call. Set to 0 or negative to disable batching |
 | `communicationType` | `DType?` | `nil` | If provided, cast each gradient to this type before communication and cast back to original type after. Used for bandwidth reduction (e.g., `.float16`) |
 | `communicationStream` | `StreamOrDevice?` | `nil` | Optional stream for communication. If `nil`, the default stream is used |
@@ -39,7 +39,7 @@ The averaged gradient tree with the same structure as the input.
 When the group has a single member, the gradients are returned unchanged immediately. This is the fast path for single-process execution.
 
 ```swift
-let group = MLXDistributed.`init`()!  // size-1 group
+let group = DistributedGroup()  // size-1 group
 let averaged = averageGradients(gradients: grads, group: group)
 // averaged is identical to grads (no communication)
 ```
@@ -129,7 +129,7 @@ import MLXNN
 import MLXOptimizers
 
 // Initialize distributed group
-let group = MLXDistributed.`init`()!
+let group = DistributedGroup()
 
 // Set CPU device (distributed ops are CPU-only)
 Device.withDefaultDevice(.cpu) {
