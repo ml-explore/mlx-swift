@@ -115,7 +115,7 @@ The `segments` parameter allows sharding of fused weight matrices. This is criti
 ### How It Works
 
 1. The weight is split into `segments` equal parts along the sharding axis.
-2. Each segment is independently split across the `N` processes in the group.
+2. Each segment is independently split across the `N` ranks in the group.
 3. The rank-local parts from each segment are concatenated back together.
 
 ### Example: Fused QKV (segments=3)

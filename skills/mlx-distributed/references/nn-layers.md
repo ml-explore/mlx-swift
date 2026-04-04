@@ -48,7 +48,7 @@ Row-Parallel (ShardedToAll):
 
 ## AllToShardedLinear
 
-Each member of the group applies part of the affine transformation such that the result is sharded across the group. Gradients are automatically aggregated from each member via `sumGradients`.
+Each rank in the group applies part of the affine transformation such that the result is sharded across the group. Gradients are automatically aggregated from each rank via `sumGradients`.
 
 ```swift
 open class AllToShardedLinear: Module, UnaryLayer
@@ -119,7 +119,7 @@ Forward pass:
 
 ## ShardedToAllLinear
 
-Each member of the group applies part of the affine transformation and then aggregates the results via `allSum`. All nodes will have the same exact result.
+Each rank applies part of the affine transformation and then aggregates the partial results via `allSum`. All ranks receive the same result.
 
 ```swift
 open class ShardedToAllLinear: Module, UnaryLayer

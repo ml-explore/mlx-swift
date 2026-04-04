@@ -32,9 +32,7 @@ averageGradients / shardLinear / shardInPlace (utilities)
          ↓
 AllToShardedLinear / ShardedToAllLinear (NN layers)
          ↓
-DistributedGroup (collective ops: allSum, allGather, send, recv, etc.)
-         ↓
-DistributedGroup (group management, rank, size, split)
+DistributedGroup (construction, rank, size, split, collectives)
          ↓
 MLX-C distributed (ring TCP + JACCL RDMA backends)
 ```
@@ -56,20 +54,19 @@ MLX-C distributed (ring TCP + JACCL RDMA backends)
 ```swift
 import MLX
 
-// Check if a distributed backend is available
-guard DistributedBackend.any.isAvailable else {
-    print("No distributed backend available")
-    return
-}
-
-// Initialize the distributed group (non-strict: falls back to size-1 group)
+// Initialize the distributed group (falls back to a size-1 singleton group)
 let group = DistributedGroup()
-    return
-}
 print("Rank \(group.rank) of \(group.size)")
 
-// Strict mode: returns nil if no multi-process backend can initialize
-let strictGroup = DistributedGroup(strict: .any)
+// Strict mode: succeeds only if the requested backend forms a real group
+guard DistributedBackend.ring.isAvailable else {
+    print("Ring backend unavailable")
+    return
+}
+guard let strictGroup = DistributedGroup(strict: .ring) else {
+    print("Couldn't form a ring group")
+    return
+}
 ```
 
 ### Simple allSum Collective Operation
@@ -79,10 +76,10 @@ import MLX
 
 let group = DistributedGroup()
 
-// Each process contributes its local array
+// Each rank contributes its local array
 let localData = MLXArray(converting: [1.0, 2.0, 3.0])
 
-// All processes receive the element-wise sum
+// All ranks receive the element-wise sum
 let globalSum = group.allSum(localData)
 eval(globalSum)
 ```
@@ -128,7 +125,7 @@ let lossAndGrad = valueAndGrad(model: model, loss)
 for (x, y) in dataLoader {
     let (lossValue, grads) = lossAndGrad(model, x, y)
 
-    // Average gradients across all distributed processes
+    // Average gradients across all distributed ranks
     let avgGrads = averageGradients(gradients: grads, group: group)
 
     optimizer.update(model: model, gradients: avgGrads)
@@ -140,12 +137,14 @@ for (x, y) in dataLoader {
 
 See [primitives.md](references/primitives.md) for complete API reference.
 
-### allSum — Sum-reduce across all processes
+On a singleton group, collective operations such as `allSum`, `allGather`,
+`allMax`, `allMin`, and `sumScatter` behave as identity/no-op operations.
+`send`, `recv`, `recvLike`, and `split` still require a multi-rank group.
+
+### allSum — Sum-reduce across all ranks
 
 ```swift
-public static func allSum(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 ```swift
@@ -154,12 +153,10 @@ let result = group.allSum(localData)
 eval(result)
 ```
 
-### allGather — Concatenate arrays from all processes
+### allGather — Concatenate arrays from all ranks
 
 ```swift
-public static func allGather(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 ```swift
@@ -168,38 +165,31 @@ let result = group.allGather(localData)
 eval(result)
 ```
 
-### allMax — Element-wise maximum across all processes
+### allMax — Element-wise maximum across all ranks
 
 ```swift
-public static func allMax(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
-### allMin — Element-wise minimum across all processes
+### allMin — Element-wise minimum across all ranks
 
 ```swift
-public static func allMin(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func allMin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
-### sumScatter — Sum-reduce and scatter across processes
+### sumScatter — Sum-reduce and scatter across ranks
 
 ```swift
-public static func sumScatter(
-    _ array: MLXArray, group: DistributedGroup, stream: StreamOrDevice = .default
-) -> MLXArray
+public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 ```
 
 > **Warning:** `sumScatter` is not implemented in the ring backend. It will raise an error at eval time. MPI and NCCL backends support it.
 
-### send — Send an array to another process
+### send — Send an array to another rank
 
 ```swift
-public static func send(
-    _ array: MLXArray, to dst: Int, group: DistributedGroup,
-    stream: StreamOrDevice = .default
+public func send(
+    _ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default
 ) -> MLXArray  // Returns a dependency token
 ```
 
@@ -209,12 +199,11 @@ let token = group.send(data, to: 1)
 eval(token)
 ```
 
-### recv — Receive an array from another process
+### recv — Receive an array from another rank
 
 ```swift
-public static func recv(
-    shape: [Int], dtype: DType, from src: Int, group: DistributedGroup,
-    stream: StreamOrDevice = .default
+public func recv(
+    shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default
 ) -> MLXArray
 ```
 
@@ -227,9 +216,8 @@ eval(received)
 ### recvLike — Receive using a template array
 
 ```swift
-public static func recvLike(
-    _ array: MLXArray, from src: Int, group: DistributedGroup,
-    stream: StreamOrDevice = .default
+public func recvLike(
+    _ array: MLXArray, from src: Int, stream: StreamOrDevice = .default
 ) -> MLXArray
 ```
 
@@ -240,7 +228,7 @@ let received = group.recvLike(template, from: 0)
 eval(received)
 ```
 
-> **Note:** `send`, `recv`, and `recvLike` require a multi-process setup (group size ≥ 2). They will raise errors on a singleton group.
+> **Note:** `send`, `recv`, and `recvLike` require a multi-rank setup (group size ≥ 2). They will raise errors on a singleton group.
 
 ## Secondary Workflow: Distributed NN Layers
 
@@ -248,7 +236,7 @@ See [nn-layers.md](references/nn-layers.md) for complete API reference.
 
 ### AllToShardedLinear — Column-parallel sharding
 
-Each process applies part of the affine transformation such that the output is sharded across the group. Gradients are aggregated via `sumGradients`.
+Each rank applies part of the affine transformation such that the output is sharded across the group. Gradients are aggregated via `sumGradients`.
 
 ```swift
 // Create from an existing Linear layer
@@ -264,7 +252,7 @@ let output = layer(input)
 
 ### ShardedToAllLinear — Row-parallel sharding
 
-Each process applies part of the affine transformation and then aggregates the results via `allSum`. All nodes receive the same output.
+Each rank applies part of the affine transformation and then aggregates the partial results via `allSum`. All ranks receive the same output.
 
 ```swift
 // Create from an existing Linear layer
@@ -387,13 +375,13 @@ let avgGrads3 = averageGradients(
 - **Use `_exit(0)` in multi-process workers**: The ring backend's TCP socket destructors can hang waiting for peer socket closure. Use `_exit(0)` to bypass cleanup handlers.
 - **Use `shardLinear` to auto-detect layer types**: It checks `QuantizedLinear` before `Linear` (subclass ordering) and dispatches correctly.
 - **Use `averageGradients` with `communicationType`** for bandwidth reduction: Cast gradients to `.float16` or `.bfloat16` before communication.
-- **Check `DistributedBackend.any.isAvailable` before initializing**: Verify a backend exists before attempting group creation.
+- **Check `DistributedBackend.<backend>.isAvailable` before a strict init**: Verify the requested backend exists before attempting `DistributedGroup(strict: ...)`.
 - **Call `eval()` before distributed communication**: Ensure arrays are materialized before sending across processes.
 - **Use sequential port allocation in tests**: Avoid ephemeral port collisions by using a monotonically increasing port counter with a random base.
 
 ### DON'T
 
-- **Don't try to use distributed ops on GPU**: They only have CPU implementations. GPU streams will fail.
+- **Don't rely on GPU execution for distributed ops**: Distributed communication is CPU-backed. Use CPU device scope for worker processes.
 - **Don't call `group.split()`**: Ring and JACCL backends don't support it (MPI only). The call will raise an error.
 - **Don't use `sumScatter` with ring backend**: Not implemented; will raise an error at eval time.
 - **Don't forget to `eval()` before distributed communication**: Unevaluated arrays can cause unexpected behavior in collective ops.
@@ -403,7 +391,7 @@ let avgGrads3 = averageGradients(
 
 | Limitation | Impact |
 |------------|--------|
-| No backend introspection API | Cannot query which backend was initialized for an existing group; use `isAvailable(backend:)` to check before init |
+| No backend introspection API | Cannot query which backend was initialized for an existing group; use `DistributedBackend.<backend>.isAvailable` to check before init |
 | `mlx_distributed_group_free()` not exposed in public C API | Groups leak small amounts of memory on deallocation (minimal practical impact) |
 | `group.split()` unsupported by ring and JACCL backends | Only MPI (not available on macOS) supports sub-group creation |
 | `sumScatter`/`reduceScatter` not implemented in ring backend | Use allSum + manual slicing as a workaround |

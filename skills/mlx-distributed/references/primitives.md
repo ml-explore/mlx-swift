@@ -4,7 +4,7 @@ Complete API reference for `DistributedGroup` and `DistributedBackend`.
 
 ## DistributedGroup
 
-A wrapper around the MLX C distributed group handle. Represents a group of independent MLX processes that can communicate using collective operations.
+A wrapper around the MLX C distributed group handle. Represents a group of independent MLX ranks/processes that can communicate using collective operations.
 
 ```swift
 public final class DistributedGroup: @unchecked Sendable
@@ -27,7 +27,7 @@ print("I am rank \(group.rank)")  // e.g., "I am rank 0"
 
 #### size
 
-The number of processes in the group.
+The number of ranks in the group.
 
 ```swift
 public var size: Int { get }
@@ -35,7 +35,7 @@ public var size: Int { get }
 
 ```swift
 let group = DistributedGroup()
-print("Group has \(group.size) members")  // e.g., "Group has 2 members"
+print("Group has \(group.size) ranks")  // e.g., "Group has 2 ranks"
 ```
 
 ### Methods
@@ -49,7 +49,7 @@ public func split(color: Int, key: Int = -1) -> DistributedGroup
 ```
 
 **Parameters:**
-- `color`: Processes with the same color are placed in the same sub-group.
+- `color`: Ranks with the same color are placed in the same sub-group.
 - `key`: Determines rank ordering in the new group. Negative value uses the current rank. Default is `-1`.
 
 **Returns:** A new `DistributedGroup` for the sub-group.
@@ -67,7 +67,7 @@ withErrorHandler({ errMsg in
 
 ### Lifecycle
 
-Groups are created via `DistributedGroup(backend:)` or `DistributedGroup(strict:)`. The C API does not expose `mlx_distributed_group_free()`, so groups leak a small amount of memory on deallocation. This has minimal practical impact since groups are typically singleton-like and long-lived.
+Groups are created via `DistributedGroup()`, `DistributedGroup(backend:)`, or `DistributedGroup(strict:)`. The C API does not expose `mlx_distributed_group_free()`, so groups leak a small amount of memory on deallocation. This has minimal practical impact since groups are typically singleton-like and long-lived.
 
 ---
 
@@ -89,7 +89,7 @@ Check if a distributed communication backend is available.
 public var isAvailable: Bool { get }
 ```
 
-**Returns:** `true` when the specified backend is available.
+**Returns:** `true` when that backend is available.
 
 ```swift
 // Check if any backend is available
@@ -108,7 +108,7 @@ if DistributedBackend.ring.isAvailable {
 #### init()
 
 Initialize the distributed backend using `.any` and return the group containing
-all discoverable processes.
+all discoverable ranks.
 
 ```swift
 public init()
@@ -122,7 +122,7 @@ let group = DistributedGroup()
 
 #### init(backend:)
 
-Initialize the distributed backend and return the group containing all discoverable processes.
+Initialize the distributed backend and return the group containing all discoverable ranks.
 
 ```swift
 public init(backend: DistributedBackend)
@@ -135,7 +135,7 @@ Returns a singleton group (rank 0, size 1) if no distributed backend can be init
 
 ```swift
 // Non-strict: always returns a group (size-1 fallback)
-let group = DistributedGroup()
+let group = DistributedGroup(backend: .ring)
 ```
 
 #### init?(strict:)
@@ -147,9 +147,9 @@ public init?(strict backend: DistributedBackend)
 ```
 
 ```swift
-// Strict: returns nil if no multi-process backend available
-guard let group = DistributedGroup(strict: .any) else {
-    print("No distributed backend configured")
+// Strict: returns nil if the requested backend can't form a real group
+guard let group = DistributedGroup(strict: .ring) else {
+    print("Ring backend unavailable")
     return
 }
 ```
@@ -160,7 +160,7 @@ All collective operations accept a `stream` parameter (`StreamOrDevice`, default
 
 #### allSum(_:stream:)
 
-Sum-reduce the array across all processes. Each process contributes its local array and all processes receive the element-wise sum.
+Sum-reduce the array across all ranks. Each rank contributes its local array and all ranks receive the element-wise sum.
 
 ```swift
 public func allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
@@ -170,7 +170,7 @@ public func allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 - `array`: The local array to sum.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
-**Returns:** The element-wise sum across all processes.
+**Returns:** The element-wise sum across all ranks.
 
 ```swift
 // Rank 0: [1, 2, 3], Rank 1: [4, 5, 6]
@@ -181,7 +181,7 @@ eval(result)
 
 #### allGather(_:stream:)
 
-Gather arrays from all processes. Each process contributes its local array and all processes receive the concatenated result.
+Gather arrays from all ranks. Each rank contributes its local array and all ranks receive the concatenated result.
 
 ```swift
 public func allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
@@ -191,7 +191,7 @@ public func allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> M
 - `array`: The local array to gather.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
-**Returns:** The concatenation of arrays from all processes.
+**Returns:** The concatenation of arrays from all ranks.
 
 ```swift
 // Rank 0: [1, 2, 3], Rank 1: [4, 5, 6]
@@ -208,7 +208,7 @@ Works with multi-dimensional arrays:
 
 #### allMax(_:stream:)
 
-Max-reduce the array across all processes. Each process contributes its local array and all processes receive the element-wise maximum.
+Max-reduce the array across all ranks. Each rank contributes its local array and all ranks receive the element-wise maximum.
 
 ```swift
 public func allMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
@@ -218,7 +218,7 @@ public func allMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 - `array`: The local array to max-reduce.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
-**Returns:** The element-wise maximum across all processes.
+**Returns:** The element-wise maximum across all ranks.
 
 ```swift
 // Rank 0: [1, 5, 3], Rank 1: [4, 2, 6]
@@ -229,7 +229,7 @@ eval(result)
 
 #### allMin(_:stream:)
 
-Min-reduce the array across all processes. Each process contributes its local array and all processes receive the element-wise minimum.
+Min-reduce the array across all ranks. Each rank contributes its local array and all ranks receive the element-wise minimum.
 
 ```swift
 public func allMin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
@@ -239,7 +239,7 @@ public func allMin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 - `array`: The local array to min-reduce.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
-**Returns:** The element-wise minimum across all processes.
+**Returns:** The element-wise minimum across all ranks.
 
 ```swift
 // Rank 0: [1, 5, 3], Rank 1: [4, 2, 6]
@@ -250,7 +250,7 @@ eval(result)
 
 #### sumScatter(_:stream:)
 
-Sum-reduce and scatter the array across all processes. The array is sum-reduced and the result is scattered (split) across processes so each process receives its portion.
+Sum-reduce and scatter the array across all ranks. The array is sum-reduced and the result is scattered (split) across ranks so each rank receives its portion.
 
 ```swift
 public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
@@ -260,7 +260,7 @@ public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 - `array`: The local array to sum-scatter.
 - `stream`: Stream or device to evaluate on. Default is `.default`.
 
-**Returns:** This process's portion of the sum-scattered result.
+**Returns:** This rank's portion of the sum-scattered result.
 
 > **Warning:** Not implemented in the ring backend. Will raise a C++ error at eval time. Use `withErrorHandler` to catch the error gracefully.
 
@@ -277,7 +277,7 @@ withErrorHandler({ errMsg in
 
 #### send(_:to:stream:)
 
-Send an array to another process in the group. Returns a dependency token that can be used to sequence operations.
+Send an array to another rank in the group. Returns a dependency token that can be used to sequence operations.
 
 ```swift
 public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) -> MLXArray
@@ -299,7 +299,7 @@ eval(token)  // Must eval to initiate the send
 
 #### recv(shape:dtype:from:stream:)
 
-Receive an array from another process in the group.
+Receive an array from another rank in the group.
 
 ```swift
 public func recv(
@@ -324,7 +324,7 @@ eval(received)
 
 #### recvLike(_:from:stream:)
 
-Receive an array from another process, using a template array for shape and dtype.
+Receive an array from another rank, using a template array for shape and dtype.
 
 ```swift
 public func recvLike(

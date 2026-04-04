@@ -4,7 +4,7 @@ Guide for setting up multi-process distributed execution with MLX Swift, includi
 
 ## Backends
 
-MLX-C supports two distributed backends. The C layer tries backends in priority order: JACCL first, then ring.
+MLX Swift commonly uses two distributed backends on Apple Silicon: ring and JACCL. When you let MLX choose automatically with `.any`, it follows upstream backend selection order; on typical Apple Silicon setups that means ring is attempted before JACCL unless you explicitly request `.jaccl`.
 
 ### Ring Backend (TCP/IP)
 
@@ -25,7 +25,7 @@ JACCL (Joint Accelerator Communication Library) uses RDMA over Thunderbolt 5 for
 - RDMA explicitly enabled in Recovery Mode (`csrutil`)
 - Physical Thunderbolt 5 cable between nodes
 
-> **Note:** You can select a specific backend using the `backend` parameter (e.g., `DistributedGroup(backend: .jaccl)`). Use `.any` (the default) to let MLX choose automatically.
+> **Note:** You can select a specific backend using the `backend` parameter (e.g., `DistributedGroup(backend: .jaccl)`). Use `DistributedGroup()` or `DistributedGroup(backend: .any)` to let MLX choose automatically.
 
 ---
 
@@ -59,7 +59,7 @@ The rank of each process corresponds to its index in the outer array (rank 0 is 
 | `MLX_RANK` | The rank of this process (0-based) | `0`, `1` |
 | `MLX_HOSTFILE` | Path to the JSON hostfile | `/tmp/hostfile.json` |
 
-These must be set before calling `DistributedGroup(strict: .any)`.
+These must be set before calling `DistributedGroup(strict: .ring)` for ring-backend execution.
 
 ```swift
 guard let rankStr = ProcessInfo.processInfo.environment["MLX_RANK"],
@@ -97,7 +97,7 @@ Device.withDefaultDevice(.cpu) {
 ### 3. Initialize Distributed Group (strict)
 
 ```swift
-guard let group = DistributedGroup(strict: .any) else {
+guard let group = DistributedGroup(strict: .ring) else {
     fputs("ERROR: Failed to initialize distributed group\n", stderr)
     exit(1)
 }
@@ -151,7 +151,7 @@ struct DistributedWorker {
         }
 
         Device.withDefaultDevice(.cpu) {
-            guard let group = DistributedGroup(strict: .any) else {
+            guard let group = DistributedGroup(strict: .ring) else {
                 fputs("ERROR: Failed to initialize\n", stderr)
                 exit(1)
             }

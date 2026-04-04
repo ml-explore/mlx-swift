@@ -4,7 +4,7 @@ Complete API reference for `averageGradients`.
 
 ## averageGradients(gradients:group:allReduceSize:communicationType:communicationStream:)
 
-Average a gradient tree across the processes in the distributed group.
+Average a gradient tree across the ranks in the distributed group.
 
 ```swift
 public func averageGradients(
@@ -36,7 +36,7 @@ The averaged gradient tree with the same structure as the input.
 
 ### N == 1 Optimization
 
-When the group has a single member, the gradients are returned unchanged immediately. This is the fast path for single-process execution.
+When the group has a single rank, the gradients are returned unchanged immediately. This is the fast path for single-process execution.
 
 ```swift
 let group = DistributedGroup()  // size-1 group
@@ -46,7 +46,7 @@ let averaged = averageGradients(gradients: grads, group: group)
 
 ### Averaging Formula
 
-For each gradient array `g` across `N` processes:
+For each gradient array `g` across `N` ranks:
 
 ```
 averaged_g = allSum(g) / N
@@ -59,13 +59,13 @@ When `allReduceSize > 0` (default: 32 MiB):
 1. Flatten all gradient arrays to 1D.
 2. Group gradients into batches where cumulative byte size ≥ `allReduceSize`.
 3. Concatenate each batch into a single large array.
-4. Perform one `allSum` per batch (fewer network round-trips).
+4. Perform one `allSum` per batch (fewer communication round-trips).
 5. Split the result back into individual gradient arrays.
 6. Reshape each gradient back to its original shape.
 
 When `allReduceSize <= 0`:
 
-Each gradient is averaged independently with its own `allSum` call. This may result in more network round-trips but avoids concatenation overhead for very large gradients.
+Each gradient is averaged independently with its own `allSum` call. This may result in more communication round-trips but avoids concatenation overhead for very large gradients.
 
 ```swift
 // Default batched mode (32 MiB chunks)
