@@ -1,6 +1,6 @@
 # Distributed NN Layers API Reference
 
-Complete API reference for distributed linear layers and the `sumGradients` helper.
+Complete API reference for distributed linear layers.
 
 ## Architecture: Column-Parallel vs Row-Parallel Sharding
 
@@ -10,7 +10,7 @@ Column-Parallel (AllToSharded):
 │         Input (full)            │  ← All ranks have same input
 │        [batch, inDims]          │
 └─────────┬───────────────────────┘
-          │ sumGradients (identity fwd, allSum bwd)
+          │ internal gradient reducer (identity fwd, allSum bwd)
           ▼
 ┌─────────────────────────────────┐
 │  weight[outDims/N, inDims]      │  ← Each rank has slice of output features
@@ -48,7 +48,7 @@ Row-Parallel (ShardedToAll):
 
 ## AllToShardedLinear
 
-Each rank in the group applies part of the affine transformation such that the result is sharded across the group. Gradients are automatically aggregated from each rank via `sumGradients`.
+Each rank in the group applies part of the affine transformation such that the result is sharded across the group. Gradients are automatically aggregated from each rank via an internal reducer.
 
 ```swift
 open class AllToShardedLinear: Module, UnaryLayer
@@ -109,7 +109,7 @@ open func callAsFunction(_ x: MLXArray) -> MLXArray
 ```
 
 Forward pass:
-1. Apply `sumGradients(group:)` to input (identity forward, allSum backward).
+1. Apply the layer's internal gradient reducer to input (identity forward, allSum backward).
 2. Compute `addMM(bias, x, weight.T)` if bias exists, or `matmul(x, weight.T)` otherwise.
 
 **Input shape:** `[batch, inputDimensions]`
@@ -243,7 +243,7 @@ public class func fromQuantizedLinear(
 ### callAsFunction(_:)
 
 Forward pass:
-1. Apply `sumGradients(group:)` to input.
+1. Apply the layer's internal gradient reducer to input.
 2. Compute `quantizedMM(x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize, bits: bits, mode: mode)`.
 3. Add bias if present.
 
@@ -304,31 +304,6 @@ Forward pass:
 3. Add bias if present.
 
 ---
-
-## sumGradients(group:)
-
-Returns a closure that is the identity in the forward pass but performs `allSum` on the cotangents during the backward pass.
-
-```swift
-public func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray
-```
-
-**Parameters:**
-- `group`: The distributed group to aggregate gradients over.
-
-**Returns:** A closure `(MLXArray) -> MLXArray` that is identity forward, allSum backward.
-
-The result is cached per group instance using `ObjectIdentifier`. On a size-1 group, returns a pure identity closure (optimization).
-
-Internally uses `CustomFunction` with:
-- `Forward { inputs in inputs }` — identity pass-through
-- `VJP { _, cotangents in cotangents.map { group.allSum($0) } }` — sum cotangents across group
-
-```swift
-let fn = sumGradients(group: group)
-let output = fn(input)  // Forward: output == input
-// Backward: gradient of output is allSum'd across group
-```
 
 ## Module Protocol Compliance
 

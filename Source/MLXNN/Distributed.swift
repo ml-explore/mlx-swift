@@ -5,51 +5,35 @@ import MLX
 
 // MARK: - sumGradients Helper
 
-/// Cache of `sumGradients` closures keyed by group identity (ObjectIdentifier).
-///
 /// Each closure uses `CustomFunction` with an identity forward pass and an
 /// `allSum` VJP so that gradients are aggregated across the distributed group
 /// during backpropagation.
-private nonisolated(unsafe) var _sumGradientsCache = [ObjectIdentifier: (MLXArray) -> MLXArray]()
-private let _sumGradientsCacheLock = NSLock()
-
 /// Returns a closure that is the identity in the forward pass but performs
 /// `allSum` on the cotangents during the backward pass.
 ///
-/// The result is cached per group instance. On a singleton group, the returned
-/// closure is just identity.
+/// This helper is internal. Callers that reuse it on a hot path should retain
+/// the returned closure themselves. On a singleton group, the returned closure
+/// is just identity.
 ///
 /// - Parameter group: the distributed group to aggregate gradients over
 /// - Returns: a closure `(MLXArray) -> MLXArray` that is identity forward,
 ///   allSum backward
-public func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray {
-    let key = ObjectIdentifier(group)
+func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray {
+    if group.size == 1 {
+        // Optimization: on a size-1 group, just return identity
+        return { x in x }
+    }
 
-    return _sumGradientsCacheLock.withLock {
-        if let cached = _sumGradientsCache[key] {
-            return cached
+    // Build a CustomFunction with identity forward and allSum VJP
+    let cf = CustomFunction {
+        Forward { inputs in inputs }
+        VJP { _, cotangents in
+            cotangents.map { group.allSum($0) }
         }
+    }
 
-        if group.size == 1 {
-            // Optimization: on a size-1 group, just return identity
-            let fn: (MLXArray) -> MLXArray = { x in x }
-            _sumGradientsCache[key] = fn
-            return fn
-        }
-
-        // Build a CustomFunction with identity forward and allSum VJP
-        let cf = CustomFunction {
-            Forward { inputs in inputs }
-            VJP { _, cotangents in
-                cotangents.map { group.allSum($0) }
-            }
-        }
-
-        let fn: (MLXArray) -> MLXArray = { x in
-            cf([x])[0]
-        }
-        _sumGradientsCache[key] = fn
-        return fn
+    return { x in
+        cf([x])[0]
     }
 }
 
@@ -59,7 +43,7 @@ public func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray {
 /// that the result is sharded across the group.
 ///
 /// The gradients are automatically aggregated from each member of the group
-/// via ``sumGradients(group:)``.
+/// via an internal gradient reducer for the distributed group.
 ///
 /// ### See Also
 /// - ``ShardedToAllLinear``
@@ -67,6 +51,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
 
     public let weight: MLXArray
     public let bias: MLXArray?
+    private let gradientReducer: (MLXArray) -> MLXArray
 
     /// The distributed group. Stored as a plain property so it is excluded
     /// from `parameters()` and `children()`.
@@ -87,6 +72,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
     ) {
         let group = group ?? DistributedGroup()
         self.group = group
+        self.gradientReducer = sumGradients(group: group)
         let N = group.size
 
         // Uses precondition (not throwing) to match the convention used throughout
@@ -113,6 +99,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
         self.weight = weight
         self.bias = bias
         self.group = group
+        self.gradientReducer = sumGradients(group: group)
         super.init()
     }
 
@@ -125,7 +112,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         // Aggregate the gradients coming from each shard
-        var x = sumGradients(group: group)(x)
+        var x = gradientReducer(x)
 
         // Compute the affine projection
         if let bias {
@@ -294,6 +281,7 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
     public let scales: MLXArray
     public let biases: MLXArray?
     public let bias: MLXArray?
+    private let gradientReducer: (MLXArray) -> MLXArray
 
     /// The distributed group. Stored as a plain property so it is excluded
     /// from `parameters()` and `children()`.
@@ -318,6 +306,7 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
     ) {
         let group = group ?? DistributedGroup()
         self.group = group
+        self.gradientReducer = sumGradients(group: group)
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
@@ -361,6 +350,7 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
         self.bits = bits
         self.mode = mode
         self.group = group
+        self.gradientReducer = sumGradients(group: group)
         super.init()
 
         self.freeze()
@@ -383,7 +373,7 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
 
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         // Aggregate the gradients coming from each shard
-        var x = sumGradients(group: group)(x)
+        var x = gradientReducer(x)
 
         x = quantizedMM(
             x,

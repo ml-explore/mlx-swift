@@ -237,7 +237,7 @@ See [nn-layers.md](references/nn-layers.md) for complete API reference.
 
 ### AllToShardedLinear — Column-parallel sharding
 
-Each rank applies part of the affine transformation such that the output is sharded across the group. Gradients are aggregated via `sumGradients`.
+Each rank applies part of the affine transformation such that the output is sharded across the group. Gradients are aggregated via an internal reducer.
 
 ```swift
 // Create from an existing Linear layer
@@ -284,14 +284,6 @@ Quantized equivalent of `ShardedToAllLinear`. Parameters are frozen and excluded
 let sharded = QuantizedShardedToAllLinear.fromQuantizedLinear(
     quantizedLinear, segments: 1, group: group)
 ```
-
-### sumGradients — Identity forward, allSum backward
-
-```swift
-public func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray
-```
-
-Returns a closure that passes through the input unchanged in the forward pass but performs `allSum` on cotangents during backpropagation. Used internally by `AllToShardedLinear` and `QuantizedAllToShardedLinear`.
 
 ## Tertiary Workflow: Sharding Utilities
 
@@ -386,7 +378,7 @@ let avgGrads3 = averageGradients(
 - **Don't call `group.split()`**: Ring and JACCL backends don't support it (MPI only). The call will raise an error.
 - **Don't use `sumScatter` with ring backend**: Not implemented; will raise an error at eval time.
 - **Don't forget to `eval()` before distributed communication**: Unevaluated arrays can cause unexpected behavior in collective ops.
-- **Don't share `DistributedGroup` across actors without synchronization**: While `DistributedGroup` is `@unchecked Sendable`, the underlying C++ object is not thread-safe.
+- **Don't pass `DistributedGroup` across concurrency boundaries casually**: `DistributedGroup` is intentionally not `Sendable`. Keep group ownership within one isolation domain.
 
 ## Known Upstream Limitations
 
@@ -404,14 +396,15 @@ There are currently no deprecated patterns in the distributed API, as it is a ne
 
 ## Swift Concurrency Notes
 
-- **`DistributedGroup` is `@unchecked Sendable`**: The class wraps a C handle and can be passed across concurrency boundaries, but the underlying C++ object is not thread-safe.
-- **Use actors to encapsulate distributed state**: Coordinate group access and collective operations within a single actor.
+- **`DistributedGroup` is intentionally not `Sendable`**: Treat it as an opaque runtime handle and keep it within one isolation domain.
+- **`sumGradients(group:)` is internal**: Distributed layers use an internal reducer and cache it per layer instance; external code should not depend on that helper.
+- **Use actors to encapsulate distributed state when needed**: Coordinate group access and collective operations within a single actor or task context.
 - **Workers should use `_exit(0)` for clean termination**: Avoids ring backend destructor hangs in multi-process setups.
 
 ## Reference Documentation
 
 - [Primitives](references/primitives.md) - DistributedGroup and DistributedBackend APIs
-- [NN Layers](references/nn-layers.md) - Distributed linear layers and sumGradients
+- [NN Layers](references/nn-layers.md) - Distributed linear layers
 - [Sharding](references/sharding.md) - shardLinear, shardInPlace, and ShardingType
 - [Gradient Averaging](references/gradient-averaging.md) - averageGradients with batching and type casting
 - [Multi-Process](references/multi-process.md) - Worker setup, hostfile format, and testing patterns

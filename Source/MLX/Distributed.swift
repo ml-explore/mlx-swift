@@ -36,7 +36,10 @@ public enum DistributedBackend: String, CaseIterable, Sendable {
 /// distributed backend can be formed, MLX returns a singleton group (rank 0,
 /// size 1). On that singleton group, collective operations such as `allSum`,
 /// `allGather`, `allMax`, `allMin`, and `sumScatter` behave as no-ops.
-public final class DistributedGroup: @unchecked Sendable {
+///
+/// `DistributedGroup` is an opaque runtime handle and is intentionally not
+/// `Sendable`.
+public final class DistributedGroup {
 
     let ctx: mlx_distributed_group
 

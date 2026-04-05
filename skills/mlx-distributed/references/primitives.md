@@ -7,8 +7,10 @@ Complete API reference for `DistributedGroup` and `DistributedBackend`.
 A wrapper around the MLX C distributed group handle. Represents a group of independent MLX ranks/processes that can communicate using collective operations.
 
 ```swift
-public final class DistributedGroup: @unchecked Sendable
+public final class DistributedGroup
 ```
+
+`DistributedGroup` is intentionally not `Sendable`. Treat it as an opaque runtime handle and keep it within a single isolation domain.
 
 ### Properties
 
