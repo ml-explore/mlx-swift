@@ -1,0 +1,410 @@
+---
+name: mlx-distributed
+description: MLX Swift Distributed - Multi-device communication for tensor parallelism across Apple Silicon nodes via ring (TCP/IP) or JACCL (RDMA/Thunderbolt 5) backends
+triggers:
+  - mlx distributed
+  - distributed mlx
+  - tensor parallelism swift
+  - multi-device inference
+  - ring backend
+  - jaccl
+  - thunderbolt 5 ml
+  - sharded linear
+  - distributed training
+  - multi-node inference
+---
+
+# MLX Swift Distributed
+
+MLX Swift Distributed provides multi-device communication primitives for tensor parallelism across Apple Silicon nodes. On Apple Silicon, the common backends are ring (TCP/IP sockets) and JACCL (RDMA over Thunderbolt 5), while the API also exposes `.any`, `.mpi`, and `.nccl` for upstream parity. The API enables collective operations, distributed neural network layers, and gradient averaging for multi-process training and inference.
+
+## When to Use This Skill
+
+- Multi-device / multi-node model inference or training
+- Tensor parallelism (column/row sharding)
+- Gradient averaging across distributed workers
+- Collective operations and point-to-point communication (`allSum`, `allGather`, `allMax`, `allMin`, `sumScatter`, `send`, `recv`, `recvLike`)
+
+## Architecture Overview
+
+```
+averageGradients / shardLinear / shardInPlace (utilities)
+         ↓
+AllToShardedLinear / ShardedToAllLinear (NN layers)
+         ↓
+DistributedGroup (construction, rank, size, split, collectives)
+         ↓
+MLX-C distributed (ring TCP + JACCL RDMA backends)
+```
+
+## Key File Reference
+
+| Purpose | File Path |
+|---------|-----------|
+| Distributed group + collective ops | Source/MLX/Distributed.swift |
+| NN layers + sharding utilities | Source/MLXNN/Distributed.swift |
+| Test worker entrypoint | Tests/DistributedTestSupport/DistributedWorkerMain.swift |
+| Distributed primitive tests | Tests/MLXTests/DistributedTests.swift |
+| Distributed NN layer tests | Tests/MLXTests/DistributedNNTests.swift |
+
+## Quick Start
+
+### Basic Group Initialization
+
+```swift
+import MLX
+
+// Equivalent to DistributedGroup(backend: .any).
+// Falls back to a size-1 singleton group when no real backend can be formed.
+let group = DistributedGroup()
+print("Rank \(group.rank) of \(group.size)")
+
+// Strict mode: succeeds only if the requested backend forms a real group
+guard DistributedBackend.ring.isAvailable else {
+    print("Ring backend unavailable")
+    return
+}
+guard let strictGroup = DistributedGroup(strict: .ring) else {
+    print("Couldn't form a ring group")
+    return
+}
+```
+
+### Simple allSum Collective Operation
+
+```swift
+import MLX
+
+let group = DistributedGroup()
+
+// Each rank contributes its local array
+let localData = MLXArray(converting: [1.0, 2.0, 3.0])
+
+// All ranks receive the element-wise sum
+let globalSum = group.allSum(localData)
+eval(globalSum)
+```
+
+### Creating a Sharded Linear Layer
+
+```swift
+import MLX
+import MLXNN
+
+let group = DistributedGroup()
+
+// Start with a standard Linear layer (e.g., loaded from a model)
+let linear = Linear(1024, 1024, bias: true)
+eval(linear)
+
+// Convert to a distributed sharded layer (auto-detects Linear vs QuantizedLinear)
+let sharded = shardLinear(module: linear, sharding: .allToSharded, group: group)
+
+// Use the sharded layer in a forward pass
+let input = MLXRandom.uniform(0 ..< 1, [4, 1024])
+let output = (sharded as! UnaryLayer)(input)
+```
+
+### Using averageGradients in a Training Loop
+
+```swift
+import MLX
+import MLXNN
+import MLXOptimizers
+
+let group = DistributedGroup()
+let model = MLP(inputDim: 784, hiddenDim: 256, outputDim: 10)
+let optimizer = Adam(learningRate: 0.001)
+
+func loss(model: MLP, x: MLXArray, y: MLXArray) -> MLXArray {
+    let logits = model(x)
+    return crossEntropy(logits: logits, targets: y, reduction: .mean)
+}
+
+let lossAndGrad = valueAndGrad(model: model, loss)
+
+for (x, y) in dataLoader {
+    let (lossValue, grads) = lossAndGrad(model, x, y)
+
+    // Average gradients across all distributed ranks
+    let avgGrads = averageGradients(gradients: grads, group: group)
+
+    optimizer.update(model: model, gradients: avgGrads)
+    eval(model, optimizer)
+}
+```
+
+## Primary Workflow: Collective Operations
+
+See [primitives.md](references/primitives.md) for complete API reference.
+
+On a singleton group, collective operations such as `allSum`, `allGather`,
+`allMax`, `allMin`, and `sumScatter` behave as identity/no-op operations.
+`send`, `recv`, `recvLike`, and `split` still require a multi-rank group.
+
+### allSum — Sum-reduce across all ranks
+
+```swift
+public func allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+```
+
+```swift
+// Rank 0: [1, 2, 3], Rank 1: [4, 5, 6] → Both get: [5, 7, 9]
+let result = group.allSum(localData)
+eval(result)
+```
+
+### allGather — Concatenate arrays from all ranks
+
+```swift
+public func allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+```
+
+```swift
+// Rank 0: [1, 2, 3], Rank 1: [4, 5, 6] → Both get: [1, 2, 3, 4, 5, 6]
+let result = group.allGather(localData)
+eval(result)
+```
+
+### allMax — Element-wise maximum across all ranks
+
+```swift
+public func allMax(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+```
+
+### allMin — Element-wise minimum across all ranks
+
+```swift
+public func allMin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+```
+
+### sumScatter — Sum-reduce and scatter across ranks
+
+```swift
+public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+```
+
+> **Warning:** `sumScatter` is not implemented in the ring backend. It will raise an error at eval time. MPI and NCCL backends support it.
+
+### send — Send an array to another rank
+
+```swift
+public func send(
+    _ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default
+) -> MLXArray  // Returns a dependency token
+```
+
+```swift
+// Rank 0 sends data to rank 1
+let token = group.send(data, to: 1)
+eval(token)
+```
+
+### recv — Receive an array from another rank
+
+```swift
+public func recv(
+    shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default
+) -> MLXArray
+```
+
+```swift
+// Rank 1 receives data from rank 0
+let received = group.recv(shape: [3], dtype: .float32, from: 0)
+eval(received)
+```
+
+### recvLike — Receive using a template array
+
+```swift
+public func recvLike(
+    _ array: MLXArray, from src: Int, stream: StreamOrDevice = .default
+) -> MLXArray
+```
+
+```swift
+// Uses template's shape and dtype automatically
+let template = MLXArray(converting: [0.0, 0.0, 0.0])
+let received = group.recvLike(template, from: 0)
+eval(received)
+```
+
+> **Note:** `send`, `recv`, and `recvLike` require a multi-rank setup (group size ≥ 2). They will raise errors on a singleton group.
+
+## Secondary Workflow: Distributed NN Layers
+
+See [nn-layers.md](references/nn-layers.md) for complete API reference.
+
+### AllToShardedLinear — Column-parallel sharding
+
+Each rank applies part of the affine transformation such that the output is sharded across the group. Gradients are aggregated via an internal reducer.
+
+```swift
+// Create from an existing Linear layer
+let sharded = AllToShardedLinear.fromLinear(linear, segments: 1, group: group)
+
+// Or initialize directly
+let layer = AllToShardedLinear(
+    inputDimensions: 1024, outputDimensions: 512, bias: true, group: group)
+
+// Forward: input [batch, inDims] → output [batch, outDims/N]
+let output = layer(input)
+```
+
+### ShardedToAllLinear — Row-parallel sharding
+
+Each rank applies part of the affine transformation and then aggregates the partial results via `allSum`. All ranks receive the same output.
+
+```swift
+// Create from an existing Linear layer
+let sharded = ShardedToAllLinear.fromLinear(linear, segments: 1, group: group)
+
+// Or initialize directly
+let layer = ShardedToAllLinear(
+    inputDimensions: 1024, outputDimensions: 512, bias: true, group: group)
+
+// Forward: input [batch, inDims/N] → output [batch, outDims]
+let output = layer(input)
+```
+
+### QuantizedAllToShardedLinear — Quantized column-parallel
+
+Quantized equivalent of `AllToShardedLinear`. Parameters are frozen and excluded from gradient computation.
+
+```swift
+let sharded = QuantizedAllToShardedLinear.fromQuantizedLinear(
+    quantizedLinear, segments: 1, group: group)
+```
+
+### QuantizedShardedToAllLinear — Quantized row-parallel
+
+Quantized equivalent of `ShardedToAllLinear`. Parameters are frozen and excluded from gradient computation.
+
+```swift
+let sharded = QuantizedShardedToAllLinear.fromQuantizedLinear(
+    quantizedLinear, segments: 1, group: group)
+```
+
+## Tertiary Workflow: Sharding Utilities
+
+See [sharding.md](references/sharding.md) for complete API reference.
+
+### shardLinear — Create a distributed layer from Linear or QuantizedLinear
+
+```swift
+public func shardLinear(
+    module: Module, sharding: ShardingType, segments: Int = 1,
+    group: DistributedGroup? = nil
+) -> Module
+```
+
+Automatically dispatches to the correct distributed layer type. `QuantizedLinear` is checked before `Linear` (since it is a subclass).
+
+```swift
+let distributed = shardLinear(module: linear, sharding: .allToSharded, group: group)
+// Returns AllToShardedLinear for Linear, QuantizedAllToShardedLinear for QuantizedLinear
+```
+
+### shardInPlace — Shard parameters without changing module type
+
+```swift
+public func shardInPlace(
+    module: Module, sharding: ShardingType, segments: Int = 1,
+    group: DistributedGroup? = nil
+)
+```
+
+### ShardingType Enum
+
+```swift
+public enum ShardingType {
+    case allToSharded   // Column-parallel: replicated input → sharded output
+    case shardedToAll   // Row-parallel: sharded input → replicated output
+}
+```
+
+### Segments Parameter
+
+The `segments` parameter supports fused weights (e.g., `segments: 3` for fused QKV projections). Each segment is split independently across the group, then concatenated.
+
+```swift
+// Fused QKV: weight shape [3*hidden, hidden]
+let sharded = shardLinear(module: fusedQKV, sharding: .allToSharded, segments: 3, group: group)
+```
+
+## Quaternary Workflow: Gradient Averaging
+
+See [gradient-averaging.md](references/gradient-averaging.md) for complete API reference.
+
+```swift
+public func averageGradients(
+    gradients: ModuleParameters,
+    group: DistributedGroup? = nil,
+    allReduceSize: Int = 32 * 1024 * 1024,  // 32 MiB
+    communicationType: DType? = nil,
+    communicationStream: StreamOrDevice? = nil
+) -> ModuleParameters
+```
+
+```swift
+let grads = lossAndGrad(model, x, y).1
+
+// Default: batched allSum with 32 MiB chunks
+let avgGrads = averageGradients(gradients: grads, group: group)
+
+// Non-batched: average each gradient independently
+let avgGrads2 = averageGradients(gradients: grads, group: group, allReduceSize: 0)
+
+// Cast to float16 before communication for bandwidth reduction
+let avgGrads3 = averageGradients(
+    gradients: grads, group: group, communicationType: .float16)
+```
+
+## Best Practices
+
+### DO
+
+- **Use CPU device for distributed operations**: Distributed ops only have CPU implementations. Set `Device.withDefaultDevice(.cpu) { ... }` in worker processes.
+- **Use `_exit(0)` in multi-process workers**: The ring backend's TCP socket destructors can hang waiting for peer socket closure. Use `_exit(0)` to bypass cleanup handlers.
+- **Use `shardLinear` to auto-detect layer types**: It checks `QuantizedLinear` before `Linear` (subclass ordering) and dispatches correctly.
+- **Use `averageGradients` with `communicationType`** for bandwidth reduction: Cast gradients to `.float16` or `.bfloat16` before communication.
+- **Check `DistributedBackend.<backend>.isAvailable` before a strict init**: Verify the requested backend exists before attempting `DistributedGroup(strict: ...)`.
+- **Call `eval()` before distributed communication**: Ensure arrays are materialized before sending across processes.
+- **Use sequential port allocation in tests**: Avoid ephemeral port collisions by using a monotonically increasing port counter with a random base.
+
+### DON'T
+
+- **Don't rely on GPU execution for distributed ops**: Distributed communication is CPU-backed. Use CPU device scope for worker processes.
+- **Don't call `group.split()`**: Ring and JACCL backends don't support it (MPI only). The call will raise an error.
+- **Don't use `sumScatter` with ring backend**: Not implemented; will raise an error at eval time.
+- **Don't forget to `eval()` before distributed communication**: Unevaluated arrays can cause unexpected behavior in collective ops.
+- **Don't pass `DistributedGroup` across concurrency boundaries casually**: `DistributedGroup` is intentionally not `Sendable`. Keep group ownership within one isolation domain.
+
+## Known Upstream Limitations
+
+| Limitation | Impact |
+|------------|--------|
+| No backend introspection API | Cannot query which backend was initialized for an existing group; use `DistributedBackend.<backend>.isAvailable` to check before init |
+| `mlx_distributed_group_free()` not exposed in public C API | Groups leak small amounts of memory on deallocation (minimal practical impact) |
+| `group.split()` unsupported by ring and JACCL backends | Only MPI (not available on macOS) supports sub-group creation |
+| `sumScatter`/`reduceScatter` not implemented in ring backend | Use allSum + manual slicing as a workaround |
+| All distributed ops are CPU-only | Must set CPU device in worker processes |
+
+## Deprecated Patterns
+
+There are currently no deprecated patterns in the distributed API, as it is a new addition.
+
+## Swift Concurrency Notes
+
+- **`DistributedGroup` is intentionally not `Sendable`**: Treat it as an opaque runtime handle and keep it within one isolation domain.
+- **`sumGradients(group:)` is internal**: Distributed layers use an internal reducer and cache it per layer instance; external code should not depend on that helper.
+- **Use actors to encapsulate distributed state when needed**: Coordinate group access and collective operations within a single actor or task context.
+- **Workers should use `_exit(0)` for clean termination**: Avoids ring backend destructor hangs in multi-process setups.
+
+## Reference Documentation
+
+- [Primitives](references/primitives.md) - DistributedGroup and DistributedBackend APIs
+- [NN Layers](references/nn-layers.md) - Distributed linear layers
+- [Sharding](references/sharding.md) - shardLinear, shardInPlace, and ShardingType
+- [Gradient Averaging](references/gradient-averaging.md) - averageGradients with batching and type casting
+- [Multi-Process](references/multi-process.md) - Worker setup, hostfile format, and testing patterns

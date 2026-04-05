@@ -18,6 +18,8 @@
 		C3CBE70B2EAC15850029A645 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
 		C3CBE7102EAC15960029A645 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
 		C3CBE7142EAC15960029A645 /* MLXNN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; };
+		D4A100012F7B000100000001 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
+		D4A100022F7B000100000001 /* MLXNN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,27 @@
 			remoteGlobalIDString = C3CBE6B42EAC14DE0029A645;
 			remoteInfo = MLXNN;
 		};
+		D4A100032F7B000100000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3AE8EC32EAAA15F000BD280;
+			remoteInfo = MLX;
+		};
+		D4A100042F7B000100000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3CBE6B42EAC14DE0029A645;
+			remoteInfo = MLXNN;
+		};
+		D4A100052F7B000100000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4A100092F7B000100000001;
+			remoteInfo = DistributedWorker;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +104,7 @@
 		C3CBF1822EAC22110029A645 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = SOURCE_ROOT; };
 		C3CBF1832EAC22110029A645 /* MAINTENANCE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = MAINTENANCE.md; path = ../MAINTENANCE.md; sourceTree = SOURCE_ROOT; };
 		C3CBF1842EAC22110029A645 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
+		D4A100062F7B000100000001 /* DistributedWorker */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DistributedWorker; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -963,9 +987,7 @@
 				mlx/distributed/ops.h,
 				mlx/distributed/primitives.h,
 				mlx/distributed/reduction_ops.h,
-				mlx/distributed/ring/CMakeLists.txt,
-				mlx/distributed/ring/ring.cpp,
-				mlx/distributed/ring/ring.h,
+				mlx/distributed/ring/no_ring.cpp,
 				mlx/distributed/utils.h,
 				mlx/dtype_utils.h,
 				mlx/dtype.h,
@@ -1499,6 +1521,12 @@
 			path = ../Tests/MLXTests;
 			sourceTree = SOURCE_ROOT;
 		};
+		D4A100072F7B000100000001 /* DistributedTestSupport */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = DistributedTestSupport;
+			path = ../Tests/DistributedTestSupport;
+			sourceTree = SOURCE_ROOT;
+		};
 		C3CBE6E92EAC15530029A645 /* MLXNN */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -1580,6 +1608,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4A100082F7B000100000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4A100022F7B000100000001 /* MLXNN.framework in Frameworks */,
+				D4A100012F7B000100000001 /* MLX.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -1598,6 +1635,7 @@
 				C3CBE6E92EAC15530029A645 /* MLXNN */,
 				C3CBE6FF2EAC15650029A645 /* MLXOptimizers */,
 				C3CBE6962EAC14BC0029A645 /* MLXTests */,
+				D4A100072F7B000100000001 /* DistributedTestSupport */,
 				C3AE8EC52EAAA15F000BD280 /* Products */,
 				C3CBF1842EAC22110029A645 /* README.md */,
 				C3CBF3382EAC243B0029A645 /* tools */,
@@ -1613,6 +1651,7 @@
 				C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */,
 				C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */,
 				C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */,
+				D4A100062F7B000100000001 /* DistributedWorker */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1716,6 +1755,7 @@
 				C3AE8ED02EAAA15F000BD280 /* PBXTargetDependency */,
 				C3CBE7052EAC15780029A645 /* PBXTargetDependency */,
 				C3CBE7092EAC15780029A645 /* PBXTargetDependency */,
+				D4A1000E2F7B000100000001 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C3CBE6962EAC14BC0029A645 /* MLXTests */,
@@ -1726,6 +1766,30 @@
 			productName = MLXTests;
 			productReference = C3AE8ECD2EAAA15F000BD280 /* MLXTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D4A100092F7B000100000001 /* DistributedWorker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4A100112F7B000100000001 /* Build configuration list for PBXNativeTarget "DistributedWorker" */;
+			buildPhases = (
+				D4A1000B2F7B000100000001 /* Sources */,
+				D4A100082F7B000100000001 /* Frameworks */,
+				D4A1000A2F7B000100000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4A1000C2F7B000100000001 /* PBXTargetDependency */,
+				D4A1000D2F7B000100000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D4A100072F7B000100000001 /* DistributedTestSupport */,
+			);
+			name = DistributedWorker;
+			packageProductDependencies = (
+			);
+			productName = DistributedWorker;
+			productReference = D4A100062F7B000100000001 /* DistributedWorker */;
+			productType = "com.apple.product-type.tool";
 		};
 		C3AE8EE52EAAA3C5000BD280 /* Cmlx */ = {
 			isa = PBXNativeTarget;
@@ -1832,6 +1896,9 @@
 					C3CBE6CE2EAC15310029A645 = {
 						CreatedOnToolsVersion = 16.4;
 					};
+					D4A100092F7B000100000001 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 				};
 			};
 			buildConfigurationList = C3AE8EBE2EAAA15F000BD280 /* Build configuration list for PBXProject "MLX" */;
@@ -1853,6 +1920,7 @@
 			targets = (
 				C3AE8EC32EAAA15F000BD280 /* MLX */,
 				C3AE8ECC2EAAA15F000BD280 /* MLXTests */,
+				D4A100092F7B000100000001 /* DistributedWorker */,
 				C3AE8EE52EAAA3C5000BD280 /* Cmlx */,
 				C3CBE6B42EAC14DE0029A645 /* MLXNN */,
 				C3CBE6CE2EAC15310029A645 /* MLXOptimizers */,
@@ -1890,6 +1958,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C3CBE6CD2EAC15310029A645 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4A1000A2F7B000100000001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1934,6 +2009,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4A1000B2F7B000100000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1966,6 +2048,21 @@
 			isa = PBXTargetDependency;
 			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
 			targetProxy = C3CBE7162EAC15960029A645 /* PBXContainerItemProxy */;
+		};
+		D4A1000C2F7B000100000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+			targetProxy = D4A100032F7B000100000001 /* PBXContainerItemProxy */;
+		};
+		D4A1000D2F7B000100000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
+			targetProxy = D4A100042F7B000100000001 /* PBXContainerItemProxy */;
+		};
+		D4A1000E2F7B000100000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4A100092F7B000100000001 /* DistributedWorker */;
+			targetProxy = D4A100052F7B000100000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2066,6 +2163,22 @@
 			};
 			name = Release;
 		};
+		D4A1000F2F7B000100000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = DistributedWorker.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		D4A100102F7B000100000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
+			baseConfigurationReferenceRelativePath = DistributedWorker.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2119,6 +2232,15 @@
 			buildConfigurations = (
 				C3CBE6D42EAC15320029A645 /* Debug */,
 				C3CBE6D52EAC15320029A645 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4A100112F7B000100000001 /* Build configuration list for PBXNativeTarget "DistributedWorker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4A1000F2F7B000100000001 /* Debug */,
+				D4A100102F7B000100000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
