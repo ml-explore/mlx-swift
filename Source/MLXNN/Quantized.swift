@@ -299,7 +299,7 @@ open class QuantizedLinear: Linear, Quantized {
         self.mode = mode
 
         let (quantizedWeight, scales, biases) = MLX.quantized(
-            weight, groupSize: groupSize, bits: bits)
+            weight, groupSize: groupSize, bits: bits, mode: mode)
 
         self.scales = scales
         self.biases = biases
