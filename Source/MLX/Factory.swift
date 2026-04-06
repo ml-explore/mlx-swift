@@ -23,10 +23,29 @@ extension MLXArray {
     /// - ``zeros(like:stream:)``
     /// - ``ones(_:type:stream:)``
     static public func zeros(
-        _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
+        _ shape: some Collection<Int>, type: (some HasDType).Type,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.zeros(shape, type: type, stream: stream)
+    }
+
+    /// Construct an array of zeros with default `Float` type.
+    ///
+    /// - Parameters:
+    ///     - shape: desired shape
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``zeros(_:type:stream:)``
+    @available(
+        *, deprecated, message: "specify the type explicitly, e.g. zeros([...], type: Float.self)"
+    )
+    static public func zeros(
+        _ shape: some Collection<Int>,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.zeros(shape, type: Float.self, stream: stream)
     }
 
     /// Construct an array of zeros with a given ``DType``
@@ -91,10 +110,29 @@ extension MLXArray {
     /// - ``ones(like:stream:)``
     /// - ``zeros(_:type:stream:)``
     static public func ones(
-        _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
+        _ shape: some Collection<Int>, type: (some HasDType).Type,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.ones(shape, type: type, stream: stream)
+    }
+
+    /// Construct an array of ones with default `Float` type.
+    ///
+    /// - Parameters:
+    ///     - shape: desired shape
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``ones(_:type:stream:)``
+    @available(
+        *, deprecated, message: "specify the type explicitly, e.g. ones([...], type: Float.self)"
+    )
+    static public func ones(
+        _ shape: some Collection<Int>,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.ones(shape, type: Float.self, stream: stream)
     }
 
     /// Construct an array of ones with a given ``DType``
@@ -161,10 +199,31 @@ extension MLXArray {
     /// - <doc:initialization>
     /// - ``identity(_:type:stream:)``
     static public func eye(
-        _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type = Float.self,
+        _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.eye(n, m: m, k: k, type: type, stream: stream)
+    }
+
+    /// Create an identity matrix or a general diagonal matrix with default `Float` type.
+    ///
+    /// - Parameters:
+    ///     - n: number of rows in the output
+    ///     - m: number of columns in the output -- equal to `n` if not specified
+    ///     - k: index of the diagonal
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``eye(_:m:k:type:stream:)``
+    @available(
+        *, deprecated, message: "specify the type explicitly, e.g. eye(..., type: Float.self)"
+    )
+    static public func eye(
+        _ n: Int, m: Int? = nil, k: Int = 0,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.eye(n, m: m, k: k, type: Float.self, stream: stream)
     }
 
     /// Create an identity matrix or a general diagonal matrix given a ``DType``.
@@ -215,7 +274,7 @@ extension MLXArray {
     /// - ``full(_:values:stream:)``
     /// - ``repeated(_:count:axis:stream:)``
     static public func full(
-        _ shape: some Collection<Int>, values: MLXArray, type: (some HasDType).Type = Float.self,
+        _ shape: some Collection<Int>, values: MLXArray, type: (some HasDType).Type,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.full(shape, values: values, type: type, stream: stream)
@@ -297,9 +356,27 @@ extension MLXArray {
     /// - <doc:initialization>
     /// - ``eye(_:m:k:type:stream:)``
     static public func identity(
-        _ n: Int, type: (some HasDType).Type = Float.self, stream: StreamOrDevice = .default
+        _ n: Int, type: (some HasDType).Type, stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.identity(n, type: type, stream: stream)
+    }
+
+    /// Create a square identity matrix with default `Float` type.
+    ///
+    /// - Parameters:
+    ///     - n: number of rows and columns in the output
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``identity(_:type:stream:)``
+    @available(
+        *, deprecated, message: "specify the type explicitly, e.g. identity(..., type: Float.self)"
+    )
+    static public func identity(
+        _ n: Int, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.identity(n, type: Float.self, stream: stream)
     }
 
     /// Create a square identity matrix with a given ``DType``.
@@ -388,7 +465,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``arange(_:_:step:stream:)``
+    /// - ``arange(_:_:step:stream:)-3wme1``
     static public func arange(_ stop: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLX.arange(0, stop, stream: stream)
     }
@@ -458,7 +535,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``arange(_:_:step:stream:)``
+    /// - ``arange(_:_:step:stream:)-3wme1``
     static public func arange(
         _ start: Int, _ stop: Int, step: Int = 1, dtype: DType, stream: StreamOrDevice = .default
     ) -> MLXArray {
@@ -512,6 +589,74 @@ extension MLXArray {
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.arange(start, stop, step: step, dtype: dtype, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[0, stop)` inferring the dtype from the input type.
+    ///
+    /// This generic overload infers the output dtype from the Swift type of `stop`.
+    /// For example, `arange(Int16(10))` produces an `.int16` array.
+    ///
+    /// - Parameters:
+    ///     - stop: stop value
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:stream:)-(Int,_)``
+    static public func arange<T: HasDType & BinaryInteger>(
+        _ stop: T, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(stop, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[start, stop)` spaced by `step`, inferring the dtype from the input type.
+    ///
+    /// - Parameters:
+    ///     - start: start value
+    ///     - stop: stop value
+    ///     - step: step size (default: 1)
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    static public func arange<T: HasDType & BinaryInteger>(
+        _ start: T, _ stop: T, step: T = 1, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(start, stop, step: step, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[0, stop)` inferring the dtype from the input type (floating point version).
+    ///
+    /// This generic overload infers the output dtype from the Swift type of `stop`.
+    /// For example, `arange(Float16(5.0))` produces a `.float16` array.
+    ///
+    /// - Parameters:
+    ///     - stop: stop value
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``arange(_:dtype:stream:)-(Double,_,_)``
+    static public func arange<T: HasDType & BinaryFloatingPoint>(
+        _ stop: T, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(stop, stream: stream)
+    }
+
+    /// Generate values in the half-open interval `[start, stop)` spaced by `step`, inferring the dtype from the input type (floating point version).
+    ///
+    /// - Parameters:
+    ///     - start: start value
+    ///     - stop: stop value
+    ///     - step: step size
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    static public func arange<T: HasDType & BinaryFloatingPoint>(
+        _ start: T, _ stop: T, step: T, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.arange(start, stop, step: step, stream: stream)
     }
 
     /// Repeat an array along a specified axis.
@@ -612,10 +757,31 @@ extension MLXArray {
     /// ### See Also
     /// - <doc:initialization>
     static public func tri(
-        _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type = Float.self,
+        _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         MLX.tri(n, m: m, k: k, type: type, stream: stream)
+    }
+
+    /// An array with ones at and below the given diagonal and zeros elsewhere, with default `Float` type.
+    ///
+    /// - Parameters:
+    ///     - n: number of rows in the output
+    ///     - m: number of columns in the output -- equal to `n` if not specified
+    ///     - k: index of the diagonal
+    ///     - stream: stream or device to evaluate on
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    /// - ``tri(_:m:k:type:stream:)``
+    @available(
+        *, deprecated, message: "specify the type explicitly, e.g. tri(..., type: Float.self)"
+    )
+    static public func tri(
+        _ n: Int, m: Int? = nil, k: Int = 0,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.tri(n, m: m, k: k, type: Float.self, stream: stream)
     }
 
     /// An array with ones at and below the given diagonal and zeros elsewhere and a given ``DType``.
@@ -662,12 +828,31 @@ extension MLXArray {
 /// - ``zeros(like:stream:)``
 /// - ``ones(_:type:stream:)``
 public func zeros(
-    _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
+    _ shape: some Collection<Int>, type: (some HasDType).Type,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_zeros(&result, shape.map { Int32($0) }, shape.count, type.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
+}
+
+/// Construct an array of zeros with default `Float` type.
+///
+/// - Parameters:
+///     - shape: desired shape
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``zeros(_:type:stream:)``
+@available(
+    *, deprecated, message: "specify the type explicitly, e.g. zeros([...], type: Float.self)"
+)
+public func zeros(
+    _ shape: some Collection<Int>,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    zeros(shape, type: Float.self, stream: stream)
 }
 
 /// Construct an array of zeros with a given ``DType``
@@ -736,12 +921,31 @@ public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> ML
 /// - ``ones(like:stream:)``
 /// - ``zeros(_:type:stream:)``
 public func ones(
-    _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
+    _ shape: some Collection<Int>, type: (some HasDType).Type,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_ones(&result, shape.map { Int32($0) }, shape.count, type.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
+}
+
+/// Construct an array of ones with default `Float` type.
+///
+/// - Parameters:
+///     - shape: desired shape
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``ones(_:type:stream:)``
+@available(
+    *, deprecated, message: "specify the type explicitly, e.g. ones([...], type: Float.self)"
+)
+public func ones(
+    _ shape: some Collection<Int>,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    ones(shape, type: Float.self, stream: stream)
 }
 
 /// Construct an array of ones with a given ``DType``
@@ -812,12 +1016,31 @@ public func ones(like array: MLXArray, stream: StreamOrDevice = .default) -> MLX
 /// - <doc:initialization>
 /// - ``identity(_:type:stream:)``
 public func eye(
-    _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type = Float.self,
+    _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_eye(&result, n.int32, (m ?? n).int32, k.int32, type.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
+}
+
+/// Create an identity matrix or a general diagonal matrix with default `Float` type.
+///
+/// - Parameters:
+///     - n: number of rows in the output
+///     - m: number of columns in the output -- equal to `n` if not specified
+///     - k: index of the diagonal
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``eye(_:m:k:type:stream:)``
+@available(*, deprecated, message: "specify the type explicitly, e.g. eye(..., type: Float.self)")
+public func eye(
+    _ n: Int, m: Int? = nil, k: Int = 0,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    eye(n, m: m, k: k, type: Float.self, stream: stream)
 }
 
 /// Create an identity matrix or a general diagonal matrix given a ``DType``.
@@ -957,11 +1180,29 @@ public func full(
 /// - <doc:initialization>
 /// - ``eye(_:m:k:type:stream:)``
 public func identity(
-    _ n: Int, type: (some HasDType).Type = Float.self, stream: StreamOrDevice = .default
+    _ n: Int, type: (some HasDType).Type, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_identity(&result, n.int32, type.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
+}
+
+/// Create a square identity matrix with default `Float` type.
+///
+/// - Parameters:
+///     - n: number of rows and columns in the output
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``identity(_:type:stream:)``
+@available(
+    *, deprecated, message: "specify the type explicitly, e.g. identity(..., type: Float.self)"
+)
+public func identity(
+    _ n: Int, stream: StreamOrDevice = .default
+) -> MLXArray {
+    identity(n, type: Float.self, stream: stream)
 }
 
 /// Create a square identity matrix with a given ``DType``.
@@ -1054,7 +1295,7 @@ public func linspace<T: HasDType>(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``arange(_:_:step:stream:)``
+/// - ``arange(_:_:step:stream:)-563go``
 public func arange(_ stop: Int, stream: StreamOrDevice = .default) -> MLXArray {
     var result = mlx_array_new()
     mlx_arange(&result, 0, Double(stop), 1, DType.int32.cmlxDtype, stream.ctx)
@@ -1129,7 +1370,7 @@ public func arange(_ stop: Int, dtype: DType, stream: StreamOrDevice = .default)
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``arange(_:_:step:stream:)``
+/// - ``arange(_:_:step:stream:)-563go``
 public func arange(
     _ start: Int, _ stop: Int, step: Int = 1, dtype: DType, stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1188,6 +1429,82 @@ public func arange(
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_arange(&result, start, stop, step, dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[0, stop)` inferring the dtype from the input type.
+///
+/// This generic overload infers the output dtype from the Swift type of `stop`.
+/// For example, `arange(Int16(10))` produces an `.int16` array.
+///
+/// - Parameters:
+///     - stop: stop value
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:stream:)-(Int,_)``
+public func arange<T: HasDType & BinaryInteger>(
+    _ stop: T, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, 0, Double(stop), 1, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[start, stop)` spaced by `step`, inferring the dtype from the input type.
+///
+/// - Parameters:
+///     - start: start value
+///     - stop: stop value
+///     - step: step size (default: 1)
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+public func arange<T: HasDType & BinaryInteger>(
+    _ start: T, _ stop: T, step: T = 1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, Double(start), Double(stop), Double(step), T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[0, stop)` inferring the dtype from the input type (floating point version).
+///
+/// This generic overload infers the output dtype from the Swift type of `stop`.
+/// For example, `arange(Float16(5.0))` produces a `.float16` array.
+///
+/// - Parameters:
+///     - stop: stop value
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``arange(_:dtype:stream:)-(Double,_,_)``
+public func arange<T: HasDType & BinaryFloatingPoint>(
+    _ stop: T, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, 0, Double(stop), 1, T.dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Generate values in the half-open interval `[start, stop)` spaced by `step`, inferring the dtype from the input type (floating point version).
+///
+/// - Parameters:
+///     - start: start value
+///     - stop: stop value
+///     - step: step size
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+public func arange<T: HasDType & BinaryFloatingPoint>(
+    _ start: T, _ stop: T, step: T, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_arange(&result, Double(start), Double(stop), Double(step), T.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1293,12 +1610,31 @@ public func repeated(_ array: MLXArray, count: Int, stream: StreamOrDevice = .de
 /// ### See Also
 /// - <doc:initialization>
 public func tri(
-    _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type = Float.self,
+    _ n: Int, m: Int? = nil, k: Int = 0, type: (some HasDType).Type,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_tri(&result, n.int32, (m ?? n).int32, k.int32, type.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
+}
+
+/// An array with ones at and below the given diagonal and zeros elsewhere, with default `Float` type.
+///
+/// - Parameters:
+///     - n: number of rows in the output
+///     - m: number of columns in the output -- equal to `n` if not specified
+///     - k: index of the diagonal
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:initialization>
+/// - ``tri(_:m:k:type:stream:)``
+@available(*, deprecated, message: "specify the type explicitly, e.g. tri(..., type: Float.self)")
+public func tri(
+    _ n: Int, m: Int? = nil, k: Int = 0,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    tri(n, m: m, k: k, type: Float.self, stream: stream)
 }
 
 /// An array with ones at and below the given diagonal and zeros elsewhere and a given ``DType``.

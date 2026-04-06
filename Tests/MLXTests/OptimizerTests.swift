@@ -14,8 +14,8 @@ class OptimizerTests: XCTestCase {
     }
 
     class ShapeModule: Module {
-        let first = [MLXArray.zeros([10]), MLXArray.zeros([1])]
-        let second = MLXArray.zeros([1])
+        let first = [MLXArray.zeros([10], type: Float.self), MLXArray.zeros([1], type: Float.self)]
+        let second = MLXArray.zeros([1], type: Float.self)
     }
 
     func checkShape<T>(optimizer: OptimizerBase<T>) {
