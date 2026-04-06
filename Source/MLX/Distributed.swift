@@ -3,6 +3,71 @@
 import Cmlx
 import Foundation
 
+/// Error type for synchronous distributed API failures.
+///
+/// Distributed collectives and layers are often lazy. These errors only
+/// describe failures that can be detected at call time; execution-time backend
+/// failures may still surface later when the returned value is evaluated.
+public enum DistributedError: LocalizedError, Sendable, Equatable {
+    case initializationFailed(backend: DistributedBackend)
+    case initializationError(backend: DistributedBackend, message: String)
+    case runtime(String)
+    case invalidConfiguration(String)
+    case unsupportedModuleType(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .initializationFailed(let backend):
+            "Failed to initialize a distributed group for backend '\(backend.rawValue)'."
+        case .initializationError(let backend, let message):
+            "Failed to initialize distributed backend '\(backend.rawValue)': \(message)"
+        case .runtime(let message):
+            "Distributed runtime error: \(message)"
+        case .invalidConfiguration(let message):
+            "Invalid distributed configuration: \(message)"
+        case .unsupportedModuleType(let typeName):
+            "Unsupported distributed module type: \(typeName)"
+        }
+    }
+}
+
+private func withDistributedRuntimeError<R>(_ body: () throws -> R) throws -> R {
+    do {
+        return try withError(body)
+    } catch let MLXError.caught(message) {
+        throw DistributedError.runtime(message)
+    }
+}
+
+private func withDistributedInitializationError<R>(
+    backend: DistributedBackend, _ body: () throws -> R
+) throws -> R {
+    do {
+        return try withError(body)
+    } catch let MLXError.caught(message) {
+        if backend == .any, message.contains("Couldn't initialize any backend") {
+            throw DistributedError.initializationFailed(backend: backend)
+        }
+        throw DistributedError.initializationError(backend: backend, message: message)
+    }
+}
+
+private func requireDistributedGroup(
+    _ group: mlx_distributed_group, operation: String
+) throws -> DistributedGroup {
+    guard group.ctx != nil else {
+        throw DistributedError.runtime("\(operation) returned an empty distributed group.")
+    }
+    return DistributedGroup(group)
+}
+
+private func requireDistributedArray(_ array: mlx_array, operation: String) throws -> MLXArray {
+    guard array.ctx != nil else {
+        throw DistributedError.runtime("\(operation) returned an empty MLXArray.")
+    }
+    return MLXArray(array)
+}
+
 /// The distributed communication backend to use.
 ///
 /// When ``DistributedBackend/any`` is specified, MLX chooses the best available
@@ -82,18 +147,20 @@ public final class DistributedGroup {
         self.init(group)
     }
 
-    /// Initialize the distributed backend and return `nil` when no real
-    /// distributed group can be formed.
+    /// Initialize the distributed backend and return a real distributed group.
     ///
     /// Unlike ``init(backend:)``, this initializer does not fall back to a
     /// singleton group. It succeeds only when the chosen backend can form a
-    /// real distributed group at runtime.
+    /// real distributed group at runtime, and throws when strict initialization
+    /// reports a backend-specific configuration error.
     ///
     /// - Parameter backend: the backend to use
-    public convenience init?(strict backend: DistributedBackend) {
-        let group = Self.initialize(strict: true, backend: backend)
+    public convenience init(strict backend: DistributedBackend) throws {
+        let group = try withDistributedInitializationError(backend: backend) {
+            Self.initialize(strict: true, backend: backend)
+        }
         guard group.ctx != nil else {
-            return nil
+            throw DistributedError.initializationFailed(backend: backend)
         }
         self.init(group)
     }
@@ -137,13 +204,19 @@ public final class DistributedGroup {
     /// the key, the smaller the rank. If the key is negative, the rank in the
     /// current group is used.
     ///
+    /// This method throws only for failures that are detectable when the split
+    /// is requested. It does not force later communication on the returned
+    /// group to evaluate.
+    ///
     /// - Parameters:
     ///   - color: processes with the same color go to the same sub-group
     ///   - key: determines rank ordering in the new group (negative = use current rank)
     /// - Returns: a new ``DistributedGroup`` for the sub-group
-    public func split(color: Int, key: Int = -1) -> DistributedGroup {
-        let result = mlx_distributed_group_split(ctx, Int32(color), Int32(key))
-        return DistributedGroup(result)
+    public func split(color: Int, key: Int = -1) throws -> DistributedGroup {
+        let result = try withDistributedRuntimeError {
+            mlx_distributed_group_split(ctx, Int32(color), Int32(key))
+        }
+        return try requireDistributedGroup(result, operation: "split(color:key:)")
     }
 
     /// Sum-reduce the array across all processes in the group.
@@ -152,6 +225,10 @@ public final class DistributedGroup {
     /// the element-wise sum.
     ///
     /// On a singleton group, this behaves as identity.
+    /// This method is lazy and non-throwing: backend failures may still
+    /// surface only when the returned array is evaluated. Use
+    /// ``withError(_:)-6g4wn`` or ``checkedEval(_:)`` around the operation plus
+    /// its evaluation boundary if you need a Swift error.
     ///
     /// - Parameters:
     ///   - array: the local array to sum
@@ -169,6 +246,10 @@ public final class DistributedGroup {
     /// the concatenated result.
     ///
     /// On a singleton group, this behaves as identity.
+    /// This method is lazy and non-throwing: backend failures may still
+    /// surface only when the returned array is evaluated. Use
+    /// ``withError(_:)-6g4wn`` or ``checkedEval(_:)`` around the operation plus
+    /// its evaluation boundary if you need a Swift error.
     ///
     /// - Parameters:
     ///   - array: the local array to gather
@@ -186,6 +267,10 @@ public final class DistributedGroup {
     /// the element-wise maximum.
     ///
     /// On a singleton group, this behaves as identity.
+    /// This method is lazy and non-throwing: backend failures may still
+    /// surface only when the returned array is evaluated. Use
+    /// ``withError(_:)-6g4wn`` or ``checkedEval(_:)`` around the operation plus
+    /// its evaluation boundary if you need a Swift error.
     ///
     /// - Parameters:
     ///   - array: the local array to max-reduce
@@ -203,6 +288,10 @@ public final class DistributedGroup {
     /// the element-wise minimum.
     ///
     /// On a singleton group, this behaves as identity.
+    /// This method is lazy and non-throwing: backend failures may still
+    /// surface only when the returned array is evaluated. Use
+    /// ``withError(_:)-6g4wn`` or ``checkedEval(_:)`` around the operation plus
+    /// its evaluation boundary if you need a Swift error.
     ///
     /// - Parameters:
     ///   - array: the local array to min-reduce
@@ -220,15 +309,23 @@ public final class DistributedGroup {
     /// processes so each process receives its portion.
     ///
     /// On a singleton group, this behaves as identity.
+    /// This method throws only for immediate validation or setup failures such
+    /// as an invalid input shape. Backend support and execution failures may
+    /// still surface later when the returned array is evaluated. Wrap the
+    /// operation plus its evaluation boundary in ``withError(_:)-6g4wn`` or
+    /// use ``checkedEval(_:)`` when you need a Swift error.
     ///
     /// - Parameters:
     ///   - array: the local array to sum-scatter
     ///   - stream: stream or device to evaluate on
     /// - Returns: this process's portion of the sum-scattered result
-    public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) throws -> MLXArray
+    {
         var result = mlx_array_new()
-        mlx_distributed_sum_scatter(&result, array.ctx, ctx, stream.ctx)
-        return MLXArray(result)
+        _ = try withDistributedRuntimeError {
+            mlx_distributed_sum_scatter(&result, array.ctx, ctx, stream.ctx)
+        }
+        return try requireDistributedArray(result, operation: "sumScatter(_:stream:)")
     }
 
     /// Send an array to another process in the group.
@@ -237,22 +334,36 @@ public final class DistributedGroup {
     /// sequence operations.
     ///
     /// Requires a group size of at least 2.
+    /// This method throws only for immediate validation or setup failures such
+    /// as an invalid destination rank. Transport and backend failures may
+    /// still surface later when the returned dependency token is evaluated.
+    /// Wrap the operation plus its evaluation boundary in
+    /// ``withError(_:)-6g4wn`` or use ``checkedEval(_:)`` when you need a
+    /// Swift error.
     ///
     /// - Parameters:
     ///   - array: the array to send
     ///   - dst: the destination rank
     ///   - stream: stream or device to evaluate on
     /// - Returns: a dependency token
-    public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) -> MLXArray
+    public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) throws
+        -> MLXArray
     {
         var result = mlx_array_new()
-        mlx_distributed_send(&result, array.ctx, Int32(dst), ctx, stream.ctx)
-        return MLXArray(result)
+        _ = try withDistributedRuntimeError {
+            mlx_distributed_send(&result, array.ctx, Int32(dst), ctx, stream.ctx)
+        }
+        return try requireDistributedArray(result, operation: "send(_:to:stream:)")
     }
 
     /// Receive an array from another process in the group.
     ///
     /// Requires a group size of at least 2.
+    /// This method throws only for immediate validation or setup failures such
+    /// as an invalid source rank. Transport and backend failures may still
+    /// surface later when the returned array is evaluated. Wrap the operation
+    /// plus its evaluation boundary in ``withError(_:)-6g4wn`` or use
+    /// ``checkedEval(_:)`` when you need a Swift error.
     ///
     /// - Parameters:
     ///   - shape: the shape of the expected array
@@ -262,18 +373,25 @@ public final class DistributedGroup {
     /// - Returns: the received array
     public func recv(
         shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default
-    ) -> MLXArray {
+    ) throws -> MLXArray {
         var result = mlx_array_new()
         let cShape = shape.map { Int32($0) }
-        mlx_distributed_recv(
-            &result, cShape, cShape.count, dtype.cmlxDtype, Int32(src), ctx, stream.ctx)
-        return MLXArray(result)
+        _ = try withDistributedRuntimeError {
+            mlx_distributed_recv(
+                &result, cShape, cShape.count, dtype.cmlxDtype, Int32(src), ctx, stream.ctx)
+        }
+        return try requireDistributedArray(result, operation: "recv(shape:dtype:from:stream:)")
     }
 
     /// Receive an array from another process, using a template array for
     /// shape and dtype.
     ///
     /// Requires a group size of at least 2.
+    /// This method throws only for immediate validation or setup failures.
+    /// Transport and backend failures may still surface later when the returned
+    /// array is evaluated. Wrap the operation plus its evaluation boundary in
+    /// ``withError(_:)-6g4wn`` or use ``checkedEval(_:)`` when you need a
+    /// Swift error.
     ///
     /// - Parameters:
     ///   - array: template array whose shape and dtype define the expected result
@@ -282,9 +400,11 @@ public final class DistributedGroup {
     /// - Returns: the received array with the same shape and dtype as the template
     public func recvLike(
         _ array: MLXArray, from src: Int, stream: StreamOrDevice = .default
-    ) -> MLXArray {
+    ) throws -> MLXArray {
         var result = mlx_array_new()
-        mlx_distributed_recv_like(&result, array.ctx, Int32(src), ctx, stream.ctx)
-        return MLXArray(result)
+        _ = try withDistributedRuntimeError {
+            mlx_distributed_recv_like(&result, array.ctx, Int32(src), ctx, stream.ctx)
+        }
+        return try requireDistributedArray(result, operation: "recvLike(_:from:stream:)")
     }
 }

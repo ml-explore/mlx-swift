@@ -152,10 +152,10 @@ class DistributedTests: CPUDeviceScopedTestCase {
         assertEqual(result, input, atol: 1e-5)
     }
 
-    func testSumScatterIdentity() {
+    func testSumScatterIdentity() throws {
         let group = DistributedGroup()
         let input = MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
-        let result = group.sumScatter(input)
+        let result = try group.sumScatter(input)
 
         XCTAssertEqual(result.shape, input.shape)
         XCTAssertEqual(result.dtype, input.dtype)
@@ -177,24 +177,10 @@ class DistributedTests: CPUDeviceScopedTestCase {
         let group = DistributedGroup()
 
         // Verify send raises an error on singleton group
-        do {
-            try withError {
-                let _ = group.send(MLXArray(converting: [10.0, 20.0, 30.0]), to: 0)
-            }
-            XCTFail("send on singleton group should produce an error")
-        } catch {
-            // Expected error
-        }
+        XCTAssertThrowsError(try group.send(MLXArray(converting: [10.0, 20.0, 30.0]), to: 0))
 
         // Verify recv raises an error on singleton group
-        do {
-            try withError {
-                let _ = group.recv(shape: [3], dtype: .float32, from: 0)
-            }
-            XCTFail("recv on singleton group should produce an error")
-        } catch {
-            // Expected error
-        }
+        XCTAssertThrowsError(try group.recv(shape: [3], dtype: .float32, from: 0))
     }
 
     // MARK: - (6) recvLike returns correct shape/dtype
@@ -211,14 +197,7 @@ class DistributedTests: CPUDeviceScopedTestCase {
         let group = DistributedGroup()
         let template = MLXArray(converting: [1.0, 2.0, 3.0, 4.0, 5.0])
 
-        do {
-            try withError {
-                let _ = group.recvLike(template, from: 0)
-            }
-            XCTFail("recvLike on singleton group should produce an error")
-        } catch {
-            // Expected error
-        }
+        XCTAssertThrowsError(try group.recvLike(template, from: 0))
     }
 
     // MARK: - (7) Group split on size-1 group
@@ -228,14 +207,7 @@ class DistributedTests: CPUDeviceScopedTestCase {
         // Verify the error is caught gracefully.
         let group = DistributedGroup()
 
-        do {
-            try withError {
-                let _ = group.split(color: 0)
-            }
-            XCTFail("split on singleton group should produce an error")
-        } catch {
-            // Expected error
-        }
+        XCTAssertThrowsError(try group.split(color: 0))
     }
 
     // MARK: - (8) Multiple dtype test: allSum with float16 and int32
@@ -323,7 +295,7 @@ class DistributedTests: CPUDeviceScopedTestCase {
 
     // MARK: - (11) Stream parameter test: call ops with explicit stream
 
-    func testStreamParameter() {
+    func testStreamParameter() throws {
         let group = DistributedGroup()
         let input = MLXArray(converting: [1.0, 2.0, 3.0])
 
@@ -342,37 +314,45 @@ class DistributedTests: CPUDeviceScopedTestCase {
         let minResult = group.allMin(input, stream: cpuStream)
         assertEqual(minResult, input, atol: 1e-5)
 
-        let scatterResult = group.sumScatter(input, stream: cpuStream)
+        let scatterResult = try group.sumScatter(input, stream: cpuStream)
         assertEqual(scatterResult, input, atol: 1e-5)
     }
 
     // MARK: - (12) Strict initializer error handling test
 
     func testInitStrictMode() {
-        // With the strict initializer and no hostfile/distributed backend configured,
-        // creation should either return nil or trigger an error (not crash the process).
-        // The C backend raises an error when no backend can initialize,
-        // so we use withError to catch it gracefully.
-        var errorCaught = false
-        var group: DistributedGroup?
+        XCTAssertThrowsError(try DistributedGroup(strict: .any))
+    }
 
-        do {
-            try withError {
-                group = DistributedGroup(strict: .any)
+    func testMultiProcessSumScatterFailsAtEvaluationBoundary() throws {
+        guard let results = try runMultiProcessTest(operation: "sumScatterUnsupported") else {
+            return
+        }
+
+        XCTAssertEqual(
+            results.rank0.exitCode, 0,
+            "Rank 0 failed with exit code \(results.rank0.exitCode). stderr: \(results.rank0.stderr)"
+        )
+        XCTAssertEqual(
+            results.rank1.exitCode, 0,
+            "Rank 1 failed with exit code \(results.rank1.exitCode). stderr: \(results.rank1.stderr)"
+        )
+
+        for (rank, result) in [(0, results.rank0), (1, results.rank1)] {
+            let stdout = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !stdout.isEmpty,
+                let data = stdout.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let callReturned = json["callReturned"] as? Bool,
+                let evalErrorCaught = json["evalErrorCaught"] as? Bool
+            else {
+                XCTFail("Rank \(rank) produced invalid JSON output: '\(stdout)'")
+                continue
             }
-        } catch {
-            errorCaught = true
-        }
 
-        if errorCaught {
-            // Error was caught -- strict mode correctly detected no multi-process backend
-            // group may or may not be nil depending on when error was raised
-        } else if let group = group {
-            // If a group is returned without error, it should be valid
-            XCTAssertEqual(group.rank, 0)
-            XCTAssertGreaterThanOrEqual(group.size, 1)
+            XCTAssertTrue(callReturned, "Rank \(rank) should reach the evaluation boundary")
+            XCTAssertTrue(evalErrorCaught, "Rank \(rank) should catch the eval-time error")
         }
-        // Either nil/error or a valid group is acceptable -- the key is no crash
     }
 
     // MARK: - Multi-Process Tests

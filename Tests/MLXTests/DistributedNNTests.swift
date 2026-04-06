@@ -47,10 +47,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (1) AllToShardedLinear Init Tests
 
-    func testAllToShardedLinearInit() {
+    func testAllToShardedLinearInit() throws {
         // VAL-NN-001: weight shape [outDims/N, inDims], bias shape [outDims/N], dtype float32
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true, group: group)
 
         // N=1, so outDims/N = 64
@@ -60,10 +60,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertEqual(layer.weight.dtype, .float32)
     }
 
-    func testAllToShardedLinearInitNoBias() {
+    func testAllToShardedLinearInitNoBias() throws {
         // VAL-NN-016: layers work with bias=false
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: false, group: group)
 
         XCTAssertEqual(layer.weight.shape, [64, 128])
@@ -72,10 +72,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (2) AllToShardedLinear Forward Tests
 
-    func testAllToShardedLinearForwardBatch1() {
+    func testAllToShardedLinearForwardBatch1() throws {
         // VAL-NN-002: output shape [batch, outDims/N] for input [batch, inDims]
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
 
         let input = MLXRandom.uniform(0 ..< 1, [1, 32])
@@ -83,9 +83,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertEqual(output.shape, [1, 16])
     }
 
-    func testAllToShardedLinearForwardBatch4() {
+    func testAllToShardedLinearForwardBatch4() throws {
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
 
         let input = MLXRandom.uniform(0 ..< 1, [4, 32])
@@ -93,10 +93,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertEqual(output.shape, [4, 16])
     }
 
-    func testAllToShardedLinearForwardNoBias() {
+    func testAllToShardedLinearForwardNoBias() throws {
         // VAL-NN-016: forward with bias=false
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: false, group: group)
 
         let input = MLXRandom.uniform(0 ..< 1, [2, 32])
@@ -106,10 +106,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (3) ShardedToAllLinear Init Tests
 
-    func testShardedToAllLinearInit() {
+    func testShardedToAllLinearInit() throws {
         // VAL-NN-003: weight shape [outDims, inDims/N], bias shape [outDims]
         let group = singletonGroup()
-        let layer = ShardedToAllLinear(
+        let layer = try ShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true, group: group)
 
         // N=1, so inDims/N = 128
@@ -119,9 +119,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertEqual(layer.weight.dtype, .float32)
     }
 
-    func testShardedToAllLinearInitNoBias() {
+    func testShardedToAllLinearInitNoBias() throws {
         let group = singletonGroup()
-        let layer = ShardedToAllLinear(
+        let layer = try ShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: false, group: group)
 
         XCTAssertEqual(layer.weight.shape, [64, 128])
@@ -130,7 +130,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (4) ShardedToAllLinear Forward Tests
 
-    func testShardedToAllLinearForward() {
+    func testShardedToAllLinearForward() throws {
         // VAL-NN-004: output matches standard Linear within atol=1e-5
         let group = singletonGroup()
 
@@ -138,7 +138,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let linear = Linear(32, 16, bias: true)
         eval(linear)
 
-        let sharded = ShardedToAllLinear.fromLinear(linear, group: group)
+        let sharded = try ShardedToAllLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         let input = MLXRandom.uniform(0 ..< 1, [4, 32])
@@ -151,13 +151,13 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         assertEqual(shardedOutput, linearOutput, atol: 1e-5)
     }
 
-    func testShardedToAllLinearForwardNoBias() {
+    func testShardedToAllLinearForwardNoBias() throws {
         let group = singletonGroup()
 
         let linear = Linear(32, 16, bias: false)
         eval(linear)
 
-        let sharded = ShardedToAllLinear.fromLinear(linear, group: group)
+        let sharded = try ShardedToAllLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         let input = MLXRandom.uniform(0 ..< 1, [2, 32])
@@ -171,10 +171,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (5) QuantizedAllToShardedLinear Init Tests
 
-    func testQuantizedAllToShardedLinearInit() {
+    func testQuantizedAllToShardedLinearInit() throws {
         // VAL-NN-005: frozen state, Quantized protocol conformance, parameter shapes
         let group = singletonGroup()
-        let layer = QuantizedAllToShardedLinear(
+        let layer = try QuantizedAllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
@@ -200,10 +200,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertFalse(layer.scales.shape.isEmpty)
     }
 
-    func testQuantizedAllToShardedLinearInitNoBias() {
+    func testQuantizedAllToShardedLinearInitNoBias() throws {
         // VAL-NN-016: no-bias test for quantized layer
         let group = singletonGroup()
-        let layer = QuantizedAllToShardedLinear(
+        let layer = try QuantizedAllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: false,
             groupSize: 64, bits: 4, group: group)
 
@@ -212,10 +212,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (6) QuantizedAllToShardedLinear Forward Test
 
-    func testQuantizedAllToShardedLinearForward() {
+    func testQuantizedAllToShardedLinearForward() throws {
         // VAL-NN-006: correct output shape
         let group = singletonGroup()
-        let layer = QuantizedAllToShardedLinear(
+        let layer = try QuantizedAllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
@@ -227,10 +227,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (7) QuantizedShardedToAllLinear Init and Forward Tests
 
-    func testQuantizedShardedToAllLinearInit() {
+    func testQuantizedShardedToAllLinearInit() throws {
         // VAL-NN-007: init with quantized parameters, bias shape [outDims] (not sharded)
         let group = singletonGroup()
-        let layer = QuantizedShardedToAllLinear(
+        let layer = try QuantizedShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
@@ -251,20 +251,20 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertFalse(params.isEmpty)
     }
 
-    func testQuantizedShardedToAllLinearInitNoBias() {
+    func testQuantizedShardedToAllLinearInitNoBias() throws {
         // VAL-NN-016: no-bias test for quantized ShardedToAll
         let group = singletonGroup()
-        let layer = QuantizedShardedToAllLinear(
+        let layer = try QuantizedShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: false,
             groupSize: 64, bits: 4, group: group)
 
         XCTAssertNil(layer.bias)
     }
 
-    func testQuantizedShardedToAllLinearForward() {
+    func testQuantizedShardedToAllLinearForward() throws {
         // VAL-NN-008: correct output shape [batch, outDims]
         let group = singletonGroup()
-        let layer = QuantizedShardedToAllLinear(
+        let layer = try QuantizedShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
@@ -276,11 +276,11 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (8) Quantized Unfreeze Override Tests
 
-    func testQuantizedUnfreezeOverride() {
+    func testQuantizedUnfreezeOverride() throws {
         // VAL-NN-018: after unfreeze, quantized params remain frozen
         let group = singletonGroup()
 
-        let allToSharded = QuantizedAllToShardedLinear(
+        let allToSharded = try QuantizedAllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
@@ -294,7 +294,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
             "Quantized layer should stay frozen after unfreeze (Python: self.freeze(recurse=False))"
         )
 
-        let shardedToAll = QuantizedShardedToAllLinear(
+        let shardedToAll = try QuantizedShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 
@@ -307,10 +307,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (9) Module Protocol Compliance Tests
 
-    func testAllToShardedLinearModuleProtocol() {
+    func testAllToShardedLinearModuleProtocol() throws {
         // VAL-NN-015: parameters() returns weight (not group), children() excludes group
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
 
         let params = layer.parameters()
@@ -327,9 +327,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertTrue(children.isEmpty, "children() should be empty (no sub-modules)")
     }
 
-    func testShardedToAllLinearModuleProtocol() {
+    func testShardedToAllLinearModuleProtocol() throws {
         let group = singletonGroup()
-        let layer = ShardedToAllLinear(
+        let layer = try ShardedToAllLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
 
         let params = layer.parameters()
@@ -344,10 +344,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertTrue(children.isEmpty, "children() should be empty (no sub-modules)")
     }
 
-    func testNoBiasModuleProtocol() {
+    func testNoBiasModuleProtocol() throws {
         // Parameters should only contain weight when bias=false
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: false, group: group)
 
         let params = layer.parameters()
@@ -360,9 +360,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertFalse(keys.contains("group"))
     }
 
-    func testFreezeUnfreeze() {
+    func testFreezeUnfreeze() throws {
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
 
         // Initially all parameters are trainable
@@ -381,10 +381,10 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
             unfrozenTrainable.isEmpty, "After unfreeze, trainable parameters expected")
     }
 
-    func testUpdateParameters() {
+    func testUpdateParameters() throws {
         // VAL-NN-015: update(parameters:) updates weights used in next forward pass
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
         eval(layer)
 
@@ -410,9 +410,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
     // No-bias tests for AllToShardedLinear and ShardedToAllLinear are covered
     // in the init/forward sections above. No-bias for quantized layers:
 
-    func testQuantizedAllToShardedNoBiasForward() {
+    func testQuantizedAllToShardedNoBiasForward() throws {
         let group = singletonGroup()
-        let layer = QuantizedAllToShardedLinear(
+        let layer = try QuantizedAllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: false,
             groupSize: 64, bits: 4, group: group)
 
@@ -422,9 +422,9 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertEqual(output.shape, [2, 64])
     }
 
-    func testQuantizedShardedToAllNoBiasForward() {
+    func testQuantizedShardedToAllNoBiasForward() throws {
         let group = singletonGroup()
-        let layer = QuantizedShardedToAllLinear(
+        let layer = try QuantizedShardedToAllLinear(
             inputDimensions: 128, outputDimensions: 64, bias: false,
             groupSize: 64, bits: 4, group: group)
 
@@ -436,84 +436,78 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (11) Non-Divisible Dimension Error
 
-    func testNonDivisibleDimensionError() {
-        // VAL-NN-017: Non-divisible dimension error handling.
-        //
-        // The distributed layers use `precondition` for dimension validation,
-        // consistent with the rest of MLXNN (Conv1d, MultiHeadAttention, etc.).
-        // A `precondition` failure terminates the process, so it cannot be
-        // caught or tested directly in XCTest.
-        //
-        // In single-process tests the group size is always 1, and every
-        // integer is divisible by 1, so the precondition never fires here.
-        // Multi-process tests with group size >= 2 would be needed to trigger
-        // the actual crash for non-divisible dimensions.
-        //
-        // What we verify below:
-        //  1. The divisibility invariant holds for the layers we create
-        //     (outputDimensions % N == 0 for AllToSharded variants,
-        //      inputDimensions % N == 0 for ShardedToAll variants).
-        //  2. Odd/prime dimensions that would be non-divisible by N > 1
-        //     still work on a size-1 group (since N == 1).
-        //  3. Weight shapes confirm the division was applied correctly.
-        //  4. All four distributed layer types have consistent validation.
-
+    func testNonDivisibleDimensionError() throws {
+        // VAL-NN-017: sharding validation should raise Swift errors instead of trapping.
         let group = singletonGroup()
-        let N = group.size
-        XCTAssertEqual(N, 1, "Single-process group size must be 1")
+        let linear = Linear(17, 7, bias: true)
+        eval(linear)
 
-        // -- AllToShardedLinear validates outputDimensions % N == 0 --
-        // Use a prime outputDimensions (7) which would fail for any N > 1.
-        let a = AllToShardedLinear(
-            inputDimensions: 17, outputDimensions: 7, bias: true, group: group)
-        XCTAssertEqual(a.weight.shape, [7 / N, 17])
-        XCTAssertEqual(a.bias!.shape, [7 / N])
-        // Confirm the divisibility check: 7 % 1 == 0 is true
-        XCTAssertEqual(7 % N, 0, "7 is divisible by 1 (would fail for N=2..6)")
+        XCTAssertThrowsError(
+            try shardLinear(module: linear, sharding: .allToSharded, segments: 2, group: group)
+        ) { error in
+            guard case DistributedError.invalidConfiguration(let message) = error else {
+                return XCTFail("Expected invalidConfiguration, got \(error)")
+            }
+            XCTAssertTrue(message.contains("cannot be split into 2 segments"))
+        }
 
-        // -- ShardedToAllLinear validates inputDimensions % N == 0 --
-        // Use a prime inputDimensions (13) which would fail for any N > 1.
-        let s = ShardedToAllLinear(
-            inputDimensions: 13, outputDimensions: 5, bias: true, group: group)
-        XCTAssertEqual(s.weight.shape, [5, 13 / N])
-        XCTAssertEqual(s.bias!.shape, [5])
-        XCTAssertEqual(13 % N, 0, "13 is divisible by 1 (would fail for N=2..12)")
+        XCTAssertThrowsError(
+            try shardInPlace(module: linear, sharding: .allToSharded, segments: 2, group: group)
+        ) { error in
+            guard case DistributedError.invalidConfiguration(let message) = error else {
+                return XCTFail("Expected invalidConfiguration, got \(error)")
+            }
+            XCTAssertTrue(message.contains("cannot be split into 2 segments"))
+        }
+    }
 
-        // -- QuantizedAllToShardedLinear validates outputDimensions % N == 0 --
-        let qa = QuantizedAllToShardedLinear(
-            inputDimensions: 128, outputDimensions: 7, bias: true,
-            groupSize: 64, bits: 4, group: group)
-        XCTAssertNotNil(qa.weight)
-        XCTAssertEqual(qa.bias!.shape, [7 / N])
-        XCTAssertEqual(7 % N, 0)
+    func testInvalidShardingConfigurationThrows() throws {
+        let group = singletonGroup()
+        let linear = Linear(64, 32, bias: true)
+        eval(linear)
 
-        // -- QuantizedShardedToAllLinear validates inputDimensions % N == 0 --
-        let qs = QuantizedShardedToAllLinear(
-            inputDimensions: 128, outputDimensions: 7, bias: true,
-            groupSize: 64, bits: 4, group: group)
-        XCTAssertNotNil(qs.weight)
-        XCTAssertEqual(qs.bias!.shape, [7])
-        XCTAssertEqual(128 % N, 0)
+        XCTAssertThrowsError(
+            try shardLinear(module: linear, sharding: .allToSharded, segments: 0, group: group)
+        ) { error in
+            guard case DistributedError.invalidConfiguration(let message) = error else {
+                return XCTFail("Expected invalidConfiguration, got \(error)")
+            }
+            XCTAssertTrue(message.contains("segments must be positive"))
+        }
 
-        // -- Verify that forward passes work with these odd dimensions --
-        let inputA = MLXRandom.uniform(0 ..< 1, [2, 17])
-        let outputA = a(inputA)
-        XCTAssertEqual(outputA.shape, [2, 7 / N])
+        XCTAssertThrowsError(
+            try shardInPlace(module: linear, sharding: .shardedToAll, segments: 0, group: group)
+        ) { error in
+            guard case DistributedError.invalidConfiguration(let message) = error else {
+                return XCTFail("Expected invalidConfiguration, got \(error)")
+            }
+            XCTAssertTrue(message.contains("segments must be positive"))
+        }
+    }
 
-        let inputS = MLXRandom.uniform(0 ..< 1, [2, 13])
-        let outputS = s(inputS)
-        XCTAssertEqual(outputS.shape, [2, 5])
+    func testUnsupportedModuleTypeThrows() throws {
+        let group = singletonGroup()
+        let embedding = Embedding(embeddingCount: 128, dimensions: 64)
+
+        XCTAssertThrowsError(
+            try shardLinear(module: embedding, sharding: .allToSharded, group: group)
+        ) { error in
+            guard case DistributedError.unsupportedModuleType(let typeName) = error else {
+                return XCTFail("Expected unsupportedModuleType, got \(error)")
+            }
+            XCTAssertTrue(typeName.contains("Embedding"))
+        }
     }
 
     // MARK: - (12) shardLinear Tests
 
-    func testShardLinearAllToSharded() {
+    func testShardLinearAllToSharded() throws {
         // VAL-NN-009: Linear -> AllToShardedLinear
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
-        let sharded = shardLinear(module: linear, sharding: .allToSharded, group: group)
+        let sharded = try shardLinear(module: linear, sharding: .allToSharded, group: group)
         XCTAssertTrue(sharded is AllToShardedLinear, "Should return AllToShardedLinear")
 
         let asLayer = sharded as! AllToShardedLinear
@@ -523,13 +517,13 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         assertEqual(asLayer.bias!, linear.bias!, atol: 1e-5)
     }
 
-    func testShardLinearShardedToAll() {
+    func testShardLinearShardedToAll() throws {
         // VAL-NN-010: Linear -> ShardedToAllLinear
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
-        let sharded = shardLinear(module: linear, sharding: .shardedToAll, group: group)
+        let sharded = try shardLinear(module: linear, sharding: .shardedToAll, group: group)
         XCTAssertTrue(sharded is ShardedToAllLinear, "Should return ShardedToAllLinear")
 
         let asLayer = sharded as! ShardedToAllLinear
@@ -538,7 +532,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         assertEqual(asLayer.bias!, linear.bias!, atol: 1e-5)
     }
 
-    func testShardLinearQuantizedAllToSharded() {
+    func testShardLinearQuantizedAllToSharded() throws {
         // VAL-NN-011: QuantizedLinear -> QuantizedAllToShardedLinear
         let group = singletonGroup()
         let linear = Linear(128, 64, bias: true)
@@ -547,13 +541,13 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let quantized = QuantizedLinear(linear, groupSize: 64, bits: 4)
         eval(quantized)
 
-        let sharded = shardLinear(module: quantized, sharding: .allToSharded, group: group)
+        let sharded = try shardLinear(module: quantized, sharding: .allToSharded, group: group)
         XCTAssertTrue(
             sharded is QuantizedAllToShardedLinear,
             "Should return QuantizedAllToShardedLinear")
     }
 
-    func testShardLinearQuantizedShardedToAll() {
+    func testShardLinearQuantizedShardedToAll() throws {
         // VAL-NN-011: QuantizedLinear -> QuantizedShardedToAllLinear
         let group = singletonGroup()
         let linear = Linear(128, 64, bias: true)
@@ -562,7 +556,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let quantized = QuantizedLinear(linear, groupSize: 64, bits: 4)
         eval(quantized)
 
-        let sharded = shardLinear(module: quantized, sharding: .shardedToAll, group: group)
+        let sharded = try shardLinear(module: quantized, sharding: .shardedToAll, group: group)
         XCTAssertTrue(
             sharded is QuantizedShardedToAllLinear,
             "Should return QuantizedShardedToAllLinear")
@@ -570,7 +564,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (13) shardLinear with segments=3
 
-    func testShardLinearWithSegments() {
+    func testShardLinearWithSegments() throws {
         // VAL-NN-020: shardLinear with segments=3 for fused QKV
         let group = singletonGroup()
 
@@ -578,7 +572,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let linear = Linear(64, 192, bias: true)
         eval(linear)
 
-        let sharded = shardLinear(
+        let sharded = try shardLinear(
             module: linear, sharding: .allToSharded, segments: 3, group: group)
         XCTAssertTrue(sharded is AllToShardedLinear)
 
@@ -595,7 +589,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (14) shardInPlace Tests
 
-    func testShardInPlace() {
+    func testShardInPlace() throws {
         // VAL-NN-012: shardInPlace modifies parameters without changing module type
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: true)
@@ -604,7 +598,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let originalWeightShape = linear.weight.shape
         let originalBiasShape = linear.bias!.shape
 
-        shardInPlace(module: linear, sharding: .allToSharded, group: group)
+        try shardInPlace(module: linear, sharding: .allToSharded, group: group)
 
         // For size-1 group, shapes remain unchanged
         XCTAssertEqual(linear.weight.shape, originalWeightShape)
@@ -614,14 +608,14 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertTrue(type(of: linear) == Linear.self, "Module type should remain Linear")
     }
 
-    func testShardInPlaceShardedToAll() {
+    func testShardInPlaceShardedToAll() throws {
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
         let originalWeightShape = linear.weight.shape
 
-        shardInPlace(module: linear, sharding: .shardedToAll, group: group)
+        try shardInPlace(module: linear, sharding: .shardedToAll, group: group)
 
         // For size-1 group with shardedToAll: weight shape unchanged, bias unchanged
         XCTAssertEqual(linear.weight.shape, originalWeightShape)
@@ -630,12 +624,12 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (15) averageGradients Tests
 
-    func testAverageGradientsIdentity() {
+    func testAverageGradientsIdentity() throws {
         // VAL-NN-014: averageGradients on size-1 group returns unchanged
         let group = singletonGroup()
 
         // Create a simple module and get its parameter structure
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 32, outputDimensions: 16, bias: true, group: group)
         eval(layer)
 
@@ -653,7 +647,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         }
     }
 
-    func testAverageGradientsWithAllReduceSize() {
+    func testAverageGradientsWithAllReduceSize() throws {
         // Test that averageGradients accepts allReduceSize and communicationStream params
         let group = singletonGroup()
 
@@ -681,7 +675,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         }
     }
 
-    func testAverageGradientsCommunicationType() {
+    func testAverageGradientsCommunicationType() throws {
         // VAL-NN-021: averageGradients with communicationType preserves identity
         // on a size-1 group. When communicationType is provided, gradients are
         // cast to that type before communication and cast back after.
@@ -719,7 +713,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         }
     }
 
-    func testAverageGradientsMixedDtypeFallback() {
+    func testAverageGradientsMixedDtypeFallback() throws {
         // VAL-NN-022: gradient tree with mixed float32/float16 arrays falls
         // back to non-batched reduction. On a size-1 group all gradients are
         // returned unchanged.
@@ -761,7 +755,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         }
     }
 
-    func testAverageGradientsBatchingBehavior() {
+    func testAverageGradientsBatchingBehavior() throws {
         // Verify averageGradients accepts allReduceSize parameter with various
         // values including 0, negative, and small positive values.
         let group = singletonGroup()
@@ -812,7 +806,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (16) sumGradients Forward Identity
 
-    func testSumGradientsForwardIdentity() {
+    func testSumGradientsForwardIdentity() throws {
         // VAL-NN-013: sumGradients is identity in forward pass
         let group = singletonGroup()
         let fn = sumGradients(group: group)
@@ -825,65 +819,65 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (17) Rectangular Matrix Handling
 
-    func testRectangularMatrixAllToSharded() {
+    func testRectangularMatrixAllToSharded() throws {
         // VAL-NN-019: non-square Linear layers
         let group = singletonGroup()
 
         // Wide: 512 -> 128
         let wide = Linear(512, 128, bias: true)
         eval(wide)
-        let shardedWide = AllToShardedLinear.fromLinear(wide, group: group)
+        let shardedWide = try AllToShardedLinear.fromLinear(wide, group: group)
         eval(shardedWide)
         XCTAssertEqual(shardedWide.weight.shape, [128, 512])
 
         // Tall: 128 -> 512
         let tall = Linear(128, 512, bias: true)
         eval(tall)
-        let shardedTall = AllToShardedLinear.fromLinear(tall, group: group)
+        let shardedTall = try AllToShardedLinear.fromLinear(tall, group: group)
         eval(shardedTall)
         XCTAssertEqual(shardedTall.weight.shape, [512, 128])
     }
 
-    func testRectangularMatrixShardedToAll() {
+    func testRectangularMatrixShardedToAll() throws {
         let group = singletonGroup()
 
         let wide = Linear(512, 128, bias: true)
         eval(wide)
-        let shardedWide = ShardedToAllLinear.fromLinear(wide, group: group)
+        let shardedWide = try ShardedToAllLinear.fromLinear(wide, group: group)
         eval(shardedWide)
         XCTAssertEqual(shardedWide.weight.shape, [128, 512])
 
         let tall = Linear(128, 512, bias: true)
         eval(tall)
-        let shardedTall = ShardedToAllLinear.fromLinear(tall, group: group)
+        let shardedTall = try ShardedToAllLinear.fromLinear(tall, group: group)
         eval(shardedTall)
         XCTAssertEqual(shardedTall.weight.shape, [512, 128])
     }
 
-    func testRectangularMatrixShardLinear() {
+    func testRectangularMatrixShardLinear() throws {
         // shardLinear on non-square dimensions
         let group = singletonGroup()
 
         let linear1 = Linear(512, 128, bias: true)
         eval(linear1)
-        let sharded1 = shardLinear(module: linear1, sharding: .allToSharded, group: group)
+        let sharded1 = try shardLinear(module: linear1, sharding: .allToSharded, group: group)
         XCTAssertTrue(sharded1 is AllToShardedLinear)
         XCTAssertEqual((sharded1 as! AllToShardedLinear).weight.shape, [128, 512])
 
         let linear2 = Linear(128, 512, bias: false)
         eval(linear2)
-        let sharded2 = shardLinear(module: linear2, sharding: .shardedToAll, group: group)
+        let sharded2 = try shardLinear(module: linear2, sharding: .shardedToAll, group: group)
         XCTAssertTrue(sharded2 is ShardedToAllLinear)
         XCTAssertEqual((sharded2 as! ShardedToAllLinear).weight.shape, [512, 128])
     }
 
     // MARK: - (18) Gradient Flow Through AllToShardedLinear
 
-    func testGradientFlowThroughAllToShardedLinear() {
+    func testGradientFlowThroughAllToShardedLinear() throws {
         // VAL-CROSS-004: grad of a scalar loss through AllToShardedLinear
         // produces non-zero gradients
         let group = singletonGroup()
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: 8, outputDimensions: 4, bias: true, group: group)
         eval(layer)
 
@@ -906,14 +900,14 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (19) ShardedToAllLinear vs Linear Comparison
 
-    func testShardedToAllMatchesLinear() {
+    func testShardedToAllMatchesLinear() throws {
         // VAL-CROSS-002: ShardedToAllLinear produces same result as Linear
         let group = singletonGroup()
 
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
-        let sharded = ShardedToAllLinear.fromLinear(linear, group: group)
+        let sharded = try ShardedToAllLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         // Test with multiple batch sizes
@@ -929,14 +923,14 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         }
     }
 
-    func testAllToShardedMatchesLinear() {
+    func testAllToShardedMatchesLinear() throws {
         // On size-1 group, AllToShardedLinear should also match Linear
         let group = singletonGroup()
 
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
-        let sharded = AllToShardedLinear.fromLinear(linear, group: group)
+        let sharded = try AllToShardedLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         let input = MLXRandom.uniform(0 ..< 1, [4, 64])
@@ -950,14 +944,14 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - (20) Quantization Round-Trip
 
-    func testQuantizationRoundTrip() {
+    func testQuantizationRoundTrip() throws {
         // VAL-CROSS-003: Linear -> shardLinear -> forward pass succeeds
         let group = singletonGroup()
 
         // Linear -> AllToShardedLinear via shardLinear
         let linear1 = Linear(128, 64, bias: true)
         eval(linear1)
-        let sharded1 = shardLinear(module: linear1, sharding: .allToSharded, group: group)
+        let sharded1 = try shardLinear(module: linear1, sharding: .allToSharded, group: group)
         let input1 = MLXRandom.uniform(0 ..< 1, [2, 128])
         let output1 = (sharded1 as! UnaryLayer)(input1)
         XCTAssertEqual(output1.shape, [2, 64])
@@ -968,7 +962,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let quantized = QuantizedLinear(linear2, groupSize: 64, bits: 4)
         eval(quantized)
 
-        let shardedQuantized = shardLinear(
+        let shardedQuantized = try shardLinear(
             module: quantized, sharding: .allToSharded, group: group)
         XCTAssertTrue(shardedQuantized is QuantizedAllToShardedLinear)
 
@@ -977,7 +971,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         XCTAssertEqual(output2.shape, [2, 64])
     }
 
-    func testQuantizationRoundTripShardedToAll() {
+    func testQuantizationRoundTripShardedToAll() throws {
         // QuantizedLinear -> QuantizedShardedToAllLinear via shardLinear
         let group = singletonGroup()
 
@@ -986,7 +980,7 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         let quantized = QuantizedLinear(linear, groupSize: 64, bits: 4)
         eval(quantized)
 
-        let sharded = shardLinear(module: quantized, sharding: .shardedToAll, group: group)
+        let sharded = try shardLinear(module: quantized, sharding: .shardedToAll, group: group)
         XCTAssertTrue(sharded is QuantizedShardedToAllLinear)
 
         let input = MLXRandom.uniform(0 ..< 1, [2, 128])
@@ -996,13 +990,13 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - Additional: fromLinear Conversion Tests
 
-    func testAllToShardedFromLinear() {
+    func testAllToShardedFromLinear() throws {
         // VAL-NN-009: shardLinear -> AllToShardedLinear, weights identical for size-1 group
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
-        let sharded = AllToShardedLinear.fromLinear(linear, group: group)
+        let sharded = try AllToShardedLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         // For size-1 group, sharded weights should be identical to original
@@ -1011,13 +1005,13 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         assertEqual(sharded.bias!, linear.bias!, atol: 1e-5)
     }
 
-    func testShardedToAllFromLinear() {
+    func testShardedToAllFromLinear() throws {
         // VAL-NN-010: shardLinear -> ShardedToAllLinear, weights identical for size-1 group
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: true)
         eval(linear)
 
-        let sharded = ShardedToAllLinear.fromLinear(linear, group: group)
+        let sharded = try ShardedToAllLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         // For size-1 group, sharded weights should be identical to original
@@ -1026,12 +1020,12 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
         assertEqual(sharded.bias!, linear.bias!, atol: 1e-5)
     }
 
-    func testFromLinearNoBias() {
+    func testFromLinearNoBias() throws {
         let group = singletonGroup()
         let linear = Linear(64, 32, bias: false)
         eval(linear)
 
-        let sharded = AllToShardedLinear.fromLinear(linear, group: group)
+        let sharded = try AllToShardedLinear.fromLinear(linear, group: group)
         eval(sharded)
 
         assertEqual(sharded.weight, linear.weight, atol: 1e-5)
@@ -1040,11 +1034,11 @@ class DistributedNNTests: CPUDeviceScopedTestCase {
 
     // MARK: - Additional: Quantized Module Protocol Tests
 
-    func testQuantizedModuleProtocol() {
+    func testQuantizedModuleProtocol() throws {
         // Verify quantized distributed layers have correct Module behavior
         let group = singletonGroup()
 
-        let layer = QuantizedAllToShardedLinear(
+        let layer = try QuantizedAllToShardedLinear(
             inputDimensions: 128, outputDimensions: 64, bias: true,
             groupSize: 64, bits: 4, group: group)
 

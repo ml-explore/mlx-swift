@@ -47,7 +47,7 @@ print("Group has \(group.size) ranks")  // e.g., "Group has 2 ranks"
 Split this group into sub-groups based on the provided color.
 
 ```swift
-public func split(color: Int, key: Int = -1) -> DistributedGroup
+public func split(color: Int, key: Int = -1) throws -> DistributedGroup
 ```
 
 **Parameters:**
@@ -56,14 +56,14 @@ public func split(color: Int, key: Int = -1) -> DistributedGroup
 
 **Returns:** A new `DistributedGroup` for the sub-group.
 
-> **Warning:** Ring and JACCL backends do not support `split`. Only MPI (not available on macOS) supports it. The call will raise a C++ error: `"[ring] Group split not supported."` Use `withErrorHandler` to catch it gracefully.
+> **Warning:** Ring and JACCL backends do not support `split`. Only MPI (not available on macOS) supports it. This is now a call-time `throw`, so catch it with normal Swift `do` / `catch`.
 
 ```swift
-// Attempt to split (will fail on ring/JACCL backends)
-withErrorHandler({ errMsg in
-    print("Split not supported: \(errMsg)")
-}) {
-    let subGroup = group.split(color: 0, key: rank)
+do {
+    let subGroup = try group.split(color: 0, key: group.rank)
+    print("Created subgroup with size \(subGroup.size)")
+} catch {
+    print("Split not supported: \(error)")
 }
 ```
 
@@ -146,27 +146,31 @@ distributed group.
 let group = DistributedGroup(backend: .ring)
 ```
 
-#### init?(strict:)
+#### init(strict:)
 
-Initialize the distributed backend and return `nil` when no real distributed backend can be formed.
+Initialize the distributed backend and return a real distributed group.
 
 ```swift
-public init?(strict backend: DistributedBackend)
+public init(strict backend: DistributedBackend) throws
 ```
 
 ```swift
-// Strict: returns nil if the requested backend can't form a real group
-guard let group = DistributedGroup(strict: .ring) else {
-    print("Ring backend unavailable")
-    return
+do {
+    let group = try DistributedGroup(strict: .ring)
+    print("Ring group size: \(group.size)")
+} catch {
+    print("Couldn't form a ring group: \(error)")
 }
 ```
 
 ## DistributedGroup Collective Operations
 
 All collective operations accept a `stream` parameter (`StreamOrDevice`, default `.default`). Distributed operations only have CPU implementations.
-On a singleton group, `allSum`, `allGather`, `allMax`, `allMin`, and
-`sumScatter` behave as identity operations.
+`allSum`, `allGather`, `allMax`, and `allMin` remain lazy and non-throwing.
+Use `withError { ... }` plus `checkedEval(...)` if you need Swift errors at the
+evaluation boundary. On a singleton group, those collectives behave as identity
+operations. `sumScatter` is now `throws` for immediate validation/setup errors
+but may still report backend failures only at evaluation time.
 
 #### allSum(_:stream:)
 
@@ -263,7 +267,7 @@ eval(result)
 Sum-reduce and scatter the array across all ranks. The array is sum-reduced and the result is scattered (split) across ranks so each rank receives its portion.
 
 ```swift
-public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) throws -> MLXArray
 ```
 
 **Parameters:**
@@ -272,16 +276,18 @@ public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> 
 
 **Returns:** This rank's portion of the sum-scattered result.
 
-> **Warning:** Not implemented in the ring backend. Will raise a C++ error at eval time. Use `withErrorHandler` to catch the error gracefully.
+> **Warning:** `sumScatter` only throws immediate validation/setup errors. On the ring backend, the unsupported-operation error still appears when the returned array is evaluated.
 
 ```swift
 // Both ranks: [1, 2, 3, 4], sum = [2, 4, 6, 8]
 // Rank 0 gets: [2, 4], Rank 1 gets: [6, 8]
-withErrorHandler({ errMsg in
-    print("sumScatter not supported: \(errMsg)")
-}) {
-    let result = group.sumScatter(localData)
-    eval(result)
+do {
+    try withError {
+        let result = try group.sumScatter(localData)
+        try checkedEval(result)
+    }
+} catch {
+    print("sumScatter failed: \(error)")
 }
 ```
 
@@ -290,7 +296,7 @@ withErrorHandler({ errMsg in
 Send an array to another rank in the group. Returns a dependency token that can be used to sequence operations.
 
 ```swift
-public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) -> MLXArray
+public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) throws -> MLXArray
 ```
 
 **Parameters:**
@@ -300,11 +306,15 @@ public func send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .defau
 
 **Returns:** A dependency token (an `MLXArray`).
 
-> **Note:** Requires group size ≥ 2. Raises an error on singleton groups.
+> **Note:** Requires group size ≥ 2. This is now a call-time `throw` on singleton groups or invalid rank setups. Transport/backend failures may still surface later when the returned token is evaluated.
 
 ```swift
-let token = group.send(data, to: 1)
-eval(token)  // Must eval to initiate the send
+do {
+    let token = try group.send(data, to: 1)
+    try checkedEval(token)
+} catch {
+    print("send failed: \(error)")
+}
 ```
 
 #### recv(shape:dtype:from:stream:)
@@ -314,7 +324,7 @@ Receive an array from another rank in the group.
 ```swift
 public func recv(
     shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default
-) -> MLXArray
+) throws -> MLXArray
 ```
 
 **Parameters:**
@@ -325,11 +335,15 @@ public func recv(
 
 **Returns:** The received array.
 
-> **Note:** Requires group size ≥ 2. Raises an error on singleton groups.
+> **Note:** Requires group size ≥ 2. This now throws for immediate validation/setup failures. Backend failures can still surface when the returned array is evaluated.
 
 ```swift
-let received = group.recv(shape: [3], dtype: .float32, from: 0)
-eval(received)
+do {
+    let received = try group.recv(shape: [3], dtype: .float32, from: 0)
+    try checkedEval(received)
+} catch {
+    print("recv failed: \(error)")
+}
 ```
 
 #### recvLike(_:from:stream:)
@@ -339,7 +353,7 @@ Receive an array from another rank, using a template array for shape and dtype.
 ```swift
 public func recvLike(
     _ array: MLXArray, from src: Int, stream: StreamOrDevice = .default
-) -> MLXArray
+) throws -> MLXArray
 ```
 
 **Parameters:**
@@ -349,12 +363,16 @@ public func recvLike(
 
 **Returns:** The received array with the same shape and dtype as the template.
 
-> **Note:** Requires group size ≥ 2. Raises an error on singleton groups.
+> **Note:** Requires group size ≥ 2. This now throws for immediate validation/setup failures. Backend failures can still surface when the returned array is evaluated.
 
 ```swift
 let template = MLXArray(converting: [0.0, 0.0, 0.0])
-let received = group.recvLike(template, from: 0)
-eval(received)
+do {
+    let received = try group.recvLike(template, from: 0)
+    try checkedEval(received)
+} catch {
+    print("recvLike failed: \(error)")
+}
 ```
 
 ## Supported Data Types

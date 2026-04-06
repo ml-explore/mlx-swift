@@ -112,8 +112,8 @@ public func averageGradients(
 ```swift
 DistributedGroup.allSum(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
 DistributedGroup.allGather(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
-DistributedGroup.send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) -> MLXArray
-DistributedGroup.recv(shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default) -> MLXArray
+DistributedGroup.send(_ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default) throws -> MLXArray
+DistributedGroup.recv(shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default) throws -> MLXArray
 ```
 
 ## 3. Changes to MLXLMCommon
@@ -637,9 +637,7 @@ struct DistributedInferenceApp {
             fatalError("No distributed backend available. Set MLX_RANK and MLX_HOSTFILE.")
         }
 
-        guard let group = DistributedGroup(strict: .any) else {
-            fatalError("Failed to initialize distributed group")
-        }
+        let group = try DistributedGroup(strict: .any)
 
         let isRankZero = group.rank == 0
 

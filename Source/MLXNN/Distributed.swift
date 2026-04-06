@@ -37,6 +37,39 @@ func sumGradients(group: DistributedGroup) -> (MLXArray) -> MLXArray {
     }
 }
 
+private func validateShardedDimension(
+    _ dimension: Int, across groupSize: Int, description: String
+) throws {
+    guard dimension % groupSize == 0 else {
+        throw DistributedError.invalidConfiguration(description)
+    }
+}
+
+private func validatePositiveSegments(_ segments: Int) throws {
+    guard segments > 0 else {
+        throw DistributedError.invalidConfiguration(
+            "segments must be positive and non-zero but got \(segments).")
+    }
+}
+
+private func normalizeShardAxis(path: String, value: MLXArray, axis: Int) throws -> Int {
+    let normalizedAxis = axis < 0 ? value.ndim + axis : axis
+    guard normalizedAxis >= 0, normalizedAxis < value.ndim else {
+        throw DistributedError.invalidConfiguration(
+            "Cannot shard parameter '\(path)' with axis \(axis) for shape \(value.shape).")
+    }
+    return normalizedAxis
+}
+
+private func applyShardedParameters(_ module: Module, parameters: ModuleParameters) throws {
+    do {
+        try module.update(parameters: parameters, verify: .none)
+    } catch {
+        throw DistributedError.invalidConfiguration(
+            "Failed to apply sharded parameters: \(error.localizedDescription)")
+    }
+}
+
 // MARK: - AllToShardedLinear
 
 /// Each member of the group applies part of the affine transformation such
@@ -59,7 +92,8 @@ open class AllToShardedLinear: Module, UnaryLayer {
 
     /// Initialize an ``AllToShardedLinear`` layer.
     ///
-    /// Validates that `outputDimensions` is divisible by the group size.
+    /// Validates that `outputDimensions` is divisible by the group size and
+    /// throws instead of trapping when the requested sharding is invalid.
     ///
     /// - Parameters:
     ///   - inputDimensions: number of input dimensions
@@ -69,19 +103,17 @@ open class AllToShardedLinear: Module, UnaryLayer {
     public init(
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         group: DistributedGroup? = nil
-    ) {
+    ) throws {
         let group = group ?? DistributedGroup()
-        self.group = group
-        self.gradientReducer = sumGradients(group: group)
         let N = group.size
 
-        // Uses precondition (not throwing) to match the convention used throughout
-        // MLXNN (Linear, Conv1d, Embedding, etc.).
-        precondition(
-            outputDimensions % N == 0,
+        try validateShardedDimension(
+            outputDimensions, across: N, description:
             "Cannot shard the output of size \(outputDimensions) across \(N) devices."
         )
 
+        self.group = group
+        self.gradientReducer = sumGradients(group: group)
         let scale = sqrt(1.0 / Float(inputDimensions))
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale, [outputDimensions / N, inputDimensions])
@@ -110,6 +142,8 @@ open class AllToShardedLinear: Module, UnaryLayer {
             "(inputDimensions=\(inDims), outputDimensions=\(outDims * N), bias=\(bias != nil))"
     }
 
+    /// This forward pass remains lazy and non-throwing. Distributed backend
+    /// failures may still surface only when the returned array is evaluated.
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         // Aggregate the gradients coming from each shard
         var x = gradientReducer(x)
@@ -134,19 +168,19 @@ open class AllToShardedLinear: Module, UnaryLayer {
     /// - Returns: a new ``AllToShardedLinear`` layer with sharded weights
     public class func fromLinear(
         _ linear: Linear, segments: Int = 1, group: DistributedGroup? = nil
-    ) -> AllToShardedLinear {
+    ) throws -> AllToShardedLinear {
         let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = linear.weight.shape2
 
-        let layer = AllToShardedLinear(
+        let layer = try AllToShardedLinear(
             inputDimensions: inputDimensions, outputDimensions: outputDimensions,
             bias: linear.bias != nil, group: group)
 
         // Shard the parameters from the original linear layer
-        let shardedParams = shardParameterTree(
+        let shardedParams = try shardParameterTree(
             linear.parameters(), predicate: allToShardedPredicate(segments: segments),
             group: group)
-        layer.update(parameters: shardedParams)
+        try applyShardedParameters(layer, parameters: shardedParams)
 
         return layer
     }
@@ -172,7 +206,8 @@ open class ShardedToAllLinear: Module, UnaryLayer {
 
     /// Initialize a ``ShardedToAllLinear`` layer.
     ///
-    /// Validates that `inputDimensions` is divisible by the group size.
+    /// Validates that `inputDimensions` is divisible by the group size and
+    /// throws instead of trapping when the requested sharding is invalid.
     ///
     /// - Parameters:
     ///   - inputDimensions: number of input dimensions (must be divisible by group size)
@@ -182,16 +217,16 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     public init(
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         group: DistributedGroup? = nil
-    ) {
+    ) throws {
         let group = group ?? DistributedGroup()
-        self.group = group
         let N = group.size
 
-        precondition(
-            inputDimensions % N == 0,
+        try validateShardedDimension(
+            inputDimensions, across: N, description:
             "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
         )
 
+        self.group = group
         let scale = sqrt(1.0 / Float(inputDimensions))
         self.weight = MLXRandom.uniform(
             low: -scale, high: scale, [outputDimensions, inputDimensions / N])
@@ -219,6 +254,8 @@ open class ShardedToAllLinear: Module, UnaryLayer {
             "(inputDimensions=\(inDims * N), outputDimensions=\(outDims), bias=\(bias != nil))"
     }
 
+    /// This forward pass remains lazy and non-throwing. Distributed backend
+    /// failures may still surface only when the returned array is evaluated.
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var x = matmul(x, weight.T)
 
@@ -241,19 +278,19 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     /// - Returns: a new ``ShardedToAllLinear`` layer with sharded weights
     public class func fromLinear(
         _ linear: Linear, segments: Int = 1, group: DistributedGroup? = nil
-    ) -> ShardedToAllLinear {
+    ) throws -> ShardedToAllLinear {
         let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = linear.weight.shape2
 
-        let layer = ShardedToAllLinear(
+        let layer = try ShardedToAllLinear(
             inputDimensions: inputDimensions, outputDimensions: outputDimensions,
             bias: linear.bias != nil, group: group)
 
         // Shard the parameters from the original linear layer
-        let shardedParams = shardParameterTree(
+        let shardedParams = try shardParameterTree(
             linear.parameters(), predicate: shardedToAllPredicate(segments: segments),
             group: group)
-        layer.update(parameters: shardedParams)
+        try applyShardedParameters(layer, parameters: shardedParams)
 
         return layer
     }
@@ -289,7 +326,8 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
 
     /// Initialize a ``QuantizedAllToShardedLinear`` layer.
     ///
-    /// Validates that `outputDimensions` is divisible by the group size.
+    /// Validates that `outputDimensions` is divisible by the group size and
+    /// throws instead of trapping when the requested sharding is invalid.
     ///
     /// - Parameters:
     ///   - inputDimensions: number of input dimensions
@@ -303,20 +341,20 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
         group: DistributedGroup? = nil
-    ) {
+    ) throws {
         let group = group ?? DistributedGroup()
+        let N = group.size
+
+        try validateShardedDimension(
+            outputDimensions, across: N, description:
+            "Cannot shard the output of size \(outputDimensions) across \(N) devices."
+        )
+
         self.group = group
         self.gradientReducer = sumGradients(group: group)
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
-        let N = group.size
-
-        precondition(
-            outputDimensions % N == 0,
-            "Cannot shard the output of size \(outputDimensions) across \(N) devices."
-        )
-
         let scale = sqrt(1.0 / Float(inputDimensions))
         let w = MLXRandom.uniform(
             low: -scale, high: scale, [outputDimensions / N, inputDimensions])
@@ -371,6 +409,8 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
             "(inputDimensions=\(inDimsReal), outputDimensions=\(outDimsReal), bias=\(bias != nil), groupSize=\(groupSize), bits=\(bits))"
     }
 
+    /// This forward pass remains lazy and non-throwing. Distributed backend
+    /// failures may still surface only when the returned array is evaluated.
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         // Aggregate the gradients coming from each shard
         var x = gradientReducer(x)
@@ -403,12 +443,12 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
     public class func fromQuantizedLinear(
         _ quantizedLinear: QuantizedLinear, segments: Int = 1,
         group: DistributedGroup? = nil
-    ) -> QuantizedAllToShardedLinear {
+    ) throws -> QuantizedAllToShardedLinear {
         let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = quantizedLinear.weight.shape2
         let inputDimsReal = (inputDimensions * 32) / quantizedLinear.bits
 
-        let layer = QuantizedAllToShardedLinear(
+        let layer = try QuantizedAllToShardedLinear(
             inputDimensions: inputDimsReal, outputDimensions: outputDimensions,
             bias: quantizedLinear.bias != nil,
             groupSize: quantizedLinear.groupSize,
@@ -417,10 +457,10 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
             group: group)
 
         // Shard the parameters from the original quantized linear layer
-        let shardedParams = shardParameterTree(
+        let shardedParams = try shardParameterTree(
             quantizedLinear.parameters(), predicate: allToShardedPredicate(segments: segments),
             group: group)
-        layer.update(parameters: shardedParams)
+        try applyShardedParameters(layer, parameters: shardedParams)
 
         return layer
     }
@@ -457,7 +497,8 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
 
     /// Initialize a ``QuantizedShardedToAllLinear`` layer.
     ///
-    /// Validates that `inputDimensions` is divisible by the group size.
+    /// Validates that `inputDimensions` is divisible by the group size and
+    /// throws instead of trapping when the requested sharding is invalid.
     ///
     /// - Parameters:
     ///   - inputDimensions: number of input dimensions (must be divisible by group size)
@@ -471,19 +512,19 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
         inputDimensions: Int, outputDimensions: Int, bias: Bool = true,
         groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
         group: DistributedGroup? = nil
-    ) {
+    ) throws {
         let group = group ?? DistributedGroup()
+        let N = group.size
+
+        try validateShardedDimension(
+            inputDimensions, across: N, description:
+            "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
+        )
+
         self.group = group
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
-        let N = group.size
-
-        precondition(
-            inputDimensions % N == 0,
-            "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
-        )
-
         let scale = sqrt(1.0 / Float(inputDimensions))
         let w = MLXRandom.uniform(
             low: -scale, high: scale, [outputDimensions, inputDimensions / N])
@@ -536,6 +577,8 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
             "(inputDimensions=\(inDimsReal), outputDimensions=\(outDims), bias=\(bias != nil), groupSize=\(groupSize), bits=\(bits))"
     }
 
+    /// This forward pass remains lazy and non-throwing. Distributed backend
+    /// failures may still surface only when the returned array is evaluated.
     open func callAsFunction(_ x: MLXArray) -> MLXArray {
         var x = quantizedMM(
             x,
@@ -568,12 +611,12 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
     public class func fromQuantizedLinear(
         _ quantizedLinear: QuantizedLinear, segments: Int = 1,
         group: DistributedGroup? = nil
-    ) -> QuantizedShardedToAllLinear {
+    ) throws -> QuantizedShardedToAllLinear {
         let group = group ?? DistributedGroup()
         let (outputDimensions, inputDimensions) = quantizedLinear.weight.shape2
         let inputDimsReal = (inputDimensions * 32) / quantizedLinear.bits
 
-        let layer = QuantizedShardedToAllLinear(
+        let layer = try QuantizedShardedToAllLinear(
             inputDimensions: inputDimsReal, outputDimensions: outputDimensions,
             bias: quantizedLinear.bias != nil,
             groupSize: quantizedLinear.groupSize,
@@ -582,10 +625,10 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
             group: group)
 
         // Shard the parameters from the original quantized linear layer
-        let shardedParams = shardParameterTree(
+        let shardedParams = try shardParameterTree(
             quantizedLinear.parameters(), predicate: shardedToAllPredicate(segments: segments),
             group: group)
-        layer.update(parameters: shardedParams)
+        try applyShardedParameters(layer, parameters: shardedParams)
 
         return layer
     }
@@ -633,7 +676,7 @@ private func shardParameterTree(
     _ parameters: ModuleParameters,
     predicate: (String, MLXArray) -> ShardInfo?,
     group: DistributedGroup
-) -> ModuleParameters {
+) throws -> ModuleParameters {
     let N = group.size
     let r = group.rank
 
@@ -641,17 +684,21 @@ private func shardParameterTree(
     let flat = parameters.flattened()
 
     // Shard each parameter
-    let sharded = flat.map { (path, value) -> (String, MLXArray) in
+    let sharded = try flat.map { (path, value) -> (String, MLXArray) in
         guard let info = predicate(path, value) else {
             return (path, value)
         }
 
-        var axis = info.axis
+        try validatePositiveSegments(info.segments)
+        let axis = try normalizeShardAxis(path: path, value: value, axis: info.axis)
         let segments = info.segments
 
-        // Normalize negative axis
-        if axis < 0 {
-            axis = value.ndim + axis
+        if segments > 1 {
+            try validateShardedDimension(
+                value.shape[axis], across: segments,
+                description:
+                    "Parameter '\(path)' with shape \(value.shape) cannot be split into \(segments) segments along axis \(axis)."
+            )
         }
 
         // Split into segments, then split each segment across group, take rank-th part
@@ -662,7 +709,12 @@ private func shardParameterTree(
             segmentParts = [value]
         }
 
-        let shardedParts = segmentParts.map { part -> MLXArray in
+        let shardedParts = try segmentParts.map { part -> MLXArray in
+            try validateShardedDimension(
+                part.shape[axis], across: N,
+                description:
+                    "Parameter '\(path)' with shape \(part.shape) cannot be sharded across \(N) devices along axis \(axis)."
+            )
             let groupParts = part.split(parts: N, axis: axis)
             return groupParts[r]
         }
@@ -718,6 +770,10 @@ public enum ShardingType {
 ///     Default is 1.
 ///   - group: the distributed group. If `nil`, uses `DistributedGroup()`.
 /// - Returns: a new distributed ``Module`` with sharded parameters
+/// - Throws: ``DistributedError/invalidConfiguration(_:)`` for invalid
+///   segment or divisibility requests, or
+///   ``DistributedError/unsupportedModuleType(_:)`` when the module cannot be
+///   sharded by this helper.
 ///
 /// ### See Also
 /// - ``shardInPlace(module:sharding:segments:group:)``
@@ -726,24 +782,22 @@ public enum ShardingType {
 public func shardLinear(
     module: Module, sharding: ShardingType, segments: Int = 1,
     group: DistributedGroup? = nil
-) -> Module {
+) throws -> Module {
     // QuantizedLinear must be checked before Linear because QuantizedLinear
     // is a subclass of Linear and would otherwise match the Linear case.
     switch (sharding, module) {
     case (.allToSharded, let quantized as QuantizedLinear):
-        return QuantizedAllToShardedLinear.fromQuantizedLinear(
+        return try QuantizedAllToShardedLinear.fromQuantizedLinear(
             quantized, segments: segments, group: group)
     case (.allToSharded, let linear as Linear):
-        return AllToShardedLinear.fromLinear(linear, segments: segments, group: group)
+        return try AllToShardedLinear.fromLinear(linear, segments: segments, group: group)
     case (.shardedToAll, let quantized as QuantizedLinear):
-        return QuantizedShardedToAllLinear.fromQuantizedLinear(
+        return try QuantizedShardedToAllLinear.fromQuantizedLinear(
             quantized, segments: segments, group: group)
     case (.shardedToAll, let linear as Linear):
-        return ShardedToAllLinear.fromLinear(linear, segments: segments, group: group)
+        return try ShardedToAllLinear.fromLinear(linear, segments: segments, group: group)
     default:
-        preconditionFailure(
-            "shardLinear: unsupported module type \(type(of: module)). "
-                + "Expected Linear or QuantizedLinear.")
+        throw DistributedError.unsupportedModuleType(String(describing: type(of: module)))
     }
 }
 
@@ -764,13 +818,15 @@ public func shardLinear(
 ///   - segments: number of segments for fused weights (e.g. 3 for QKV).
 ///     Default is 1.
 ///   - group: the distributed group. If `nil`, uses `DistributedGroup()`.
+/// - Throws: ``DistributedError/invalidConfiguration(_:)`` when the parameter
+///   tree cannot be sharded with the requested configuration.
 ///
 /// ### See Also
 /// - ``shardLinear(module:sharding:segments:group:)``
 public func shardInPlace(
     module: Module, sharding: ShardingType, segments: Int = 1,
     group: DistributedGroup? = nil
-) {
+) throws {
     let group = group ?? DistributedGroup()
     let predicate: (String, MLXArray) -> ShardInfo?
 
@@ -781,9 +837,9 @@ public func shardInPlace(
         predicate = shardedToAllPredicate(segments: segments)
     }
 
-    let shardedParams = shardParameterTree(
+    let shardedParams = try shardParameterTree(
         module.parameters(), predicate: predicate, group: group)
-    module.update(parameters: shardedParams)
+    try applyShardedParameters(module, parameters: shardedParams)
 }
 
 // MARK: - averageGradients
@@ -797,6 +853,8 @@ public func shardInPlace(
 /// This helper supports batching small gradient arrays into larger
 /// concatenated chunks before performing the all-reduce, which can improve
 /// communication performance.
+/// This API is lazy and non-throwing: runtime communication failures may still
+/// surface only when the returned arrays are evaluated.
 ///
 /// - Parameters:
 ///   - gradients: the gradient tree (typically from ``Module/parameters()``

@@ -59,7 +59,7 @@ The rank of each process corresponds to its index in the outer array (rank 0 is 
 | `MLX_RANK` | The rank of this process (0-based) | `0`, `1` |
 | `MLX_HOSTFILE` | Path to the JSON hostfile | `/tmp/hostfile.json` |
 
-These must be set before calling `DistributedGroup(strict: .ring)` for ring-backend execution.
+These must be set before calling `try DistributedGroup(strict: .ring)` for ring-backend execution.
 
 ```swift
 guard let rankStr = ProcessInfo.processInfo.environment["MLX_RANK"],
@@ -97,13 +97,15 @@ Device.withDefaultDevice(.cpu) {
 ### 3. Initialize Distributed Group (strict)
 
 ```swift
-guard let group = DistributedGroup(strict: .ring) else {
-    fputs("ERROR: Failed to initialize distributed group\n", stderr)
-    exit(1)
-}
-
-guard group.rank == rank else {
-    fputs("ERROR: rank mismatch\n", stderr)
+let group: DistributedGroup
+do {
+    group = try DistributedGroup(strict: .ring)
+    guard group.rank == rank else {
+        fputs("ERROR: rank mismatch\n", stderr)
+        exit(1)
+    }
+} catch {
+    fputs("ERROR: Failed to initialize distributed group: \(error)\n", stderr)
     exit(1)
 }
 ```
@@ -151,21 +153,23 @@ struct DistributedWorker {
         }
 
         Device.withDefaultDevice(.cpu) {
-            guard let group = DistributedGroup(strict: .ring) else {
-                fputs("ERROR: Failed to initialize\n", stderr)
+            do {
+                let group = try DistributedGroup(strict: .ring)
+
+                // Perform work...
+                let data = MLXArray(converting: [Float(rank + 1)])
+                let sum = group.allSum(data)
+                eval(sum)
+
+                print("Rank \(rank): sum = \(sum.asArray(Float.self))")
+
+                fflush(stdout)
+                fflush(stderr)
+                _exit(0)
+            } catch {
+                fputs("ERROR: Failed to initialize: \(error)\n", stderr)
                 exit(1)
             }
-
-            // Perform work...
-            let data = MLXArray(converting: [Float(rank + 1)])
-            let sum = group.allSum(data)
-            eval(sum)
-
-            print("Rank \(rank): sum = \(sum.asArray(Float.self))")
-
-            fflush(stdout)
-            fflush(stderr)
-            _exit(0)
         }
     }
 }
@@ -175,20 +179,22 @@ struct DistributedWorker {
 
 ## Error Handling
 
-Use `withErrorHandler` to catch C++ errors from the distributed backend gracefully:
+Use normal Swift `try` / `catch` for call-time failures such as strict init,
+`split`, `send`, `recv`, and `recvLike`. Use `withError { ... }` plus
+`checkedEval(...)` for lazy evaluation-time failures:
 
 ```swift
-let errorCaught = BoolBox()
-withErrorHandler({ errMsg in
-    print("Distributed error: \(errMsg)")
-    errorCaught.value = true
-}) {
-    let result = group.sumScatter(data)
-    eval(result)
+do {
+    try withError {
+        let result = try group.sumScatter(data)
+        try checkedEval(result)
+    }
+} catch {
+    print("Distributed error: \(error)")
 }
 ```
 
 This is essential for:
-- `sumScatter` on ring backend (not implemented)
-- `group.split()` on ring/JACCL backends (not supported)
-- `send`/`recv` on singleton groups (requires size ≥ 2)
+- `sumScatter` on ring backend (lazy eval-time failure)
+- `group.split()` on ring/JACCL backends (call-time throw)
+- `send`/`recv` on singleton groups or invalid ranks (call-time throw)

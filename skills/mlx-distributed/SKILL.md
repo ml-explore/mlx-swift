@@ -64,9 +64,11 @@ guard DistributedBackend.ring.isAvailable else {
     print("Ring backend unavailable")
     return
 }
-guard let strictGroup = DistributedGroup(strict: .ring) else {
-    print("Couldn't form a ring group")
-    return
+do {
+    let strictGroup = try DistributedGroup(strict: .ring)
+    print("Strict group size: \(strictGroup.size)")
+} catch {
+    print("Couldn't form a ring group: \(error)")
 }
 ```
 
@@ -98,7 +100,7 @@ let linear = Linear(1024, 1024, bias: true)
 eval(linear)
 
 // Convert to a distributed sharded layer (auto-detects Linear vs QuantizedLinear)
-let sharded = shardLinear(module: linear, sharding: .allToSharded, group: group)
+let sharded = try shardLinear(module: linear, sharding: .allToSharded, group: group)
 
 // Use the sharded layer in a forward pass
 let input = MLXRandom.uniform(0 ..< 1, [4, 1024])
@@ -181,23 +183,23 @@ public func allMin(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXA
 ### sumScatter — Sum-reduce and scatter across ranks
 
 ```swift
-public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray
+public func sumScatter(_ array: MLXArray, stream: StreamOrDevice = .default) throws -> MLXArray
 ```
 
-> **Warning:** `sumScatter` is not implemented in the ring backend. It will raise an error at eval time. MPI and NCCL backends support it.
+> **Warning:** `sumScatter` throws immediate validation/setup errors, but ring backend support failures still appear when the returned array is evaluated. Catch those with `withError { ... }` plus `checkedEval(...)`.
 
 ### send — Send an array to another rank
 
 ```swift
 public func send(
     _ array: MLXArray, to dst: Int, stream: StreamOrDevice = .default
-) -> MLXArray  // Returns a dependency token
+) throws -> MLXArray  // Returns a dependency token
 ```
 
 ```swift
 // Rank 0 sends data to rank 1
-let token = group.send(data, to: 1)
-eval(token)
+let token = try group.send(data, to: 1)
+try checkedEval(token)
 ```
 
 ### recv — Receive an array from another rank
@@ -205,13 +207,13 @@ eval(token)
 ```swift
 public func recv(
     shape: [Int], dtype: DType, from src: Int, stream: StreamOrDevice = .default
-) -> MLXArray
+) throws -> MLXArray
 ```
 
 ```swift
 // Rank 1 receives data from rank 0
-let received = group.recv(shape: [3], dtype: .float32, from: 0)
-eval(received)
+let received = try group.recv(shape: [3], dtype: .float32, from: 0)
+try checkedEval(received)
 ```
 
 ### recvLike — Receive using a template array
@@ -219,14 +221,14 @@ eval(received)
 ```swift
 public func recvLike(
     _ array: MLXArray, from src: Int, stream: StreamOrDevice = .default
-) -> MLXArray
+) throws -> MLXArray
 ```
 
 ```swift
 // Uses template's shape and dtype automatically
 let template = MLXArray(converting: [0.0, 0.0, 0.0])
-let received = group.recvLike(template, from: 0)
-eval(received)
+let received = try group.recvLike(template, from: 0)
+try checkedEval(received)
 ```
 
 > **Note:** `send`, `recv`, and `recvLike` require a multi-rank setup (group size ≥ 2). They will raise errors on a singleton group.

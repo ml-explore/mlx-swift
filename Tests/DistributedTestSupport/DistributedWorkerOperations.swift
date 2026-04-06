@@ -9,6 +9,7 @@ private enum DistributedWorkerOperation: String {
     case allSum
     case sendRecv
     case split
+    case sumScatterUnsupported
     case shardLinearForward
     case shardLinearBackward
     case averageGradients
@@ -34,14 +35,16 @@ enum DistributedWorkerRunner {
 
         // Distributed operations are CPU-only; keep the worker pinned to CPU.
         MLX.Device.withDefaultDevice(.cpu) {
-            run(rank: rank, operation: operation)
+            do {
+                try run(rank: rank, operation: operation)
+            } catch {
+                fail("Worker rank=\(rank) failed: \(error)")
+            }
         }
     }
 
-    private static func run(rank: Int, operation: DistributedWorkerOperation) {
-        guard let group = DistributedGroup(strict: .ring) else {
-            fail("Failed to initialize distributed group (strict=true)")
-        }
+    private static func run(rank: Int, operation: DistributedWorkerOperation) throws {
+        let group = try DistributedGroup(strict: .ring)
 
         fputs(
             "Worker rank=\(rank) initialized: group.rank=\(group.rank) group.size=\(group.size)\n",
@@ -58,13 +61,15 @@ enum DistributedWorkerRunner {
         case .allSum:
             runAllSum(rank: rank, group: group)
         case .sendRecv:
-            runSendRecv(rank: rank, group: group)
+            try runSendRecv(rank: rank, group: group)
         case .split:
-            runSplit(rank: rank, group: group)
+            try runSplit(rank: rank, group: group)
+        case .sumScatterUnsupported:
+            try runSumScatterUnsupported(rank: rank, group: group)
         case .shardLinearForward:
-            runShardLinearForward(rank: rank, group: group)
+            try runShardLinearForward(rank: rank, group: group)
         case .shardLinearBackward:
-            runShardLinearBackward(rank: rank, group: group)
+            try runShardLinearBackward(rank: rank, group: group)
         case .averageGradients:
             runAverageGradients(rank: rank, group: group)
         }
@@ -92,16 +97,16 @@ private func runAllSum(rank: Int, group: DistributedGroup) {
     ])
 }
 
-private func runSendRecv(rank: Int, group: DistributedGroup) {
+private func runSendRecv(rank: Int, group: DistributedGroup) throws {
     if rank == 0 {
         let data = MLXArray(converting: [10.0, 20.0, 30.0])
-        let token = group.send(data, to: 1)
+        let token = try group.send(data, to: 1)
         eval(token)
         emitJSON(["sent": [10.0, 20.0, 30.0]])
         return
     }
 
-    let received = group.recv(shape: [3], dtype: .float32, from: 0)
+    let received = try group.recv(shape: [3], dtype: .float32, from: 0)
     eval(received)
 
     let values = received.asArray(Float.self)
@@ -117,12 +122,10 @@ private func runSendRecv(rank: Int, group: DistributedGroup) {
     ])
 }
 
-private func runSplit(rank: Int, group: DistributedGroup) {
+private func runSplit(rank: Int, group: DistributedGroup) throws {
     var splitErrorCaught = false
     do {
-        try withError {
-            _ = group.split(color: 0, key: rank)
-        }
+        _ = try group.split(color: 0, key: rank)
     } catch {
         fputs("Worker rank=\(rank) split error (expected): \(error)\n", stderr)
         splitErrorCaught = true
@@ -151,7 +154,34 @@ private func runSplit(rank: Int, group: DistributedGroup) {
     ])
 }
 
-private func runShardLinearForward(rank: Int, group: DistributedGroup) {
+private func runSumScatterUnsupported(rank: Int, group: DistributedGroup) throws {
+    let input =
+        rank == 0
+        ? MLXArray(converting: [1.0, 2.0, 3.0, 4.0])
+        : MLXArray(converting: [5.0, 6.0, 7.0, 8.0])
+
+    var callReturned = false
+    var evalErrorCaught = false
+
+    do {
+        try withError {
+            let result = try group.sumScatter(input)
+            callReturned = true
+            try checkedEval(result)
+        }
+        fail("sumScatter unexpectedly succeeded on ring backend")
+    } catch {
+        fputs("Worker rank=\(rank) sumScatter eval error (expected): \(error)\n", stderr)
+        evalErrorCaught = true
+    }
+
+    emitJSON([
+        "callReturned": callReturned,
+        "evalErrorCaught": evalErrorCaught,
+    ])
+}
+
+private func runShardLinearForward(rank: Int, group: DistributedGroup) throws {
     let count = group.size
 
     MLXRandom.seed(0xF0F0_F0F0)
@@ -164,11 +194,11 @@ private func runShardLinearForward(rank: Int, group: DistributedGroup) {
     eval(reference)
 
     let allToSharded =
-        shardLinear(
+        try shardLinear(
             module: linear, sharding: .allToSharded, group: group
         ) as! UnaryLayer
     let shardedToAll =
-        shardLinear(
+        try shardLinear(
             module: linear, sharding: .shardedToAll, group: group
         ) as! UnaryLayer
     eval(allToSharded, shardedToAll)
@@ -212,7 +242,7 @@ private func runShardLinearForward(rank: Int, group: DistributedGroup) {
     ])
 }
 
-private func runShardLinearBackward(rank: Int, group: DistributedGroup) {
+private func runShardLinearBackward(rank: Int, group: DistributedGroup) throws {
     let count = group.size
 
     MLXRandom.seed(0xF0F0_F0F0)
@@ -228,11 +258,14 @@ private func runShardLinearBackward(rank: Int, group: DistributedGroup) {
 
     let shardedModel = Sequential(
         layers:
-            shardLinear(module: model.layers[0], sharding: .allToSharded, group: group)
+            try shardLinear(module: model.layers[0], sharding: .allToSharded, group: group)
             as! UnaryLayer,
-        shardLinear(module: model.layers[1], sharding: .shardedToAll, group: group) as! UnaryLayer,
-        shardLinear(module: model.layers[2], sharding: .allToSharded, group: group) as! UnaryLayer,
-        shardLinear(module: model.layers[3], sharding: .shardedToAll, group: group) as! UnaryLayer
+        try shardLinear(module: model.layers[1], sharding: .shardedToAll, group: group)
+            as! UnaryLayer,
+        try shardLinear(module: model.layers[2], sharding: .allToSharded, group: group)
+            as! UnaryLayer,
+        try shardLinear(module: model.layers[3], sharding: .shardedToAll, group: group)
+            as! UnaryLayer
     )
     eval(shardedModel)
 
