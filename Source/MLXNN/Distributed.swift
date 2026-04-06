@@ -108,8 +108,9 @@ open class AllToShardedLinear: Module, UnaryLayer {
         let N = group.size
 
         try validateShardedDimension(
-            outputDimensions, across: N, description:
-            "Cannot shard the output of size \(outputDimensions) across \(N) devices."
+            outputDimensions, across: N,
+            description:
+                "Cannot shard the output of size \(outputDimensions) across \(N) devices."
         )
 
         self.group = group
@@ -222,8 +223,9 @@ open class ShardedToAllLinear: Module, UnaryLayer {
         let N = group.size
 
         try validateShardedDimension(
-            inputDimensions, across: N, description:
-            "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
+            inputDimensions, across: N,
+            description:
+                "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
         )
 
         self.group = group
@@ -346,8 +348,9 @@ open class QuantizedAllToShardedLinear: Module, UnaryLayer, Quantized {
         let N = group.size
 
         try validateShardedDimension(
-            outputDimensions, across: N, description:
-            "Cannot shard the output of size \(outputDimensions) across \(N) devices."
+            outputDimensions, across: N,
+            description:
+                "Cannot shard the output of size \(outputDimensions) across \(N) devices."
         )
 
         self.group = group
@@ -517,8 +520,9 @@ open class QuantizedShardedToAllLinear: Module, UnaryLayer, Quantized {
         let N = group.size
 
         try validateShardedDimension(
-            inputDimensions, across: N, description:
-            "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
+            inputDimensions, across: N,
+            description:
+                "The input of size \(inputDimensions) cannot be sharded across \(N) devices."
         )
 
         self.group = group
