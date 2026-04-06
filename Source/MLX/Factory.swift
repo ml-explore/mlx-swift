@@ -465,7 +465,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``arange(_:_:step:stream:)``
+    /// - ``arange(_:_:step:stream:)-3wme1``
     static public func arange(_ stop: Int, stream: StreamOrDevice = .default) -> MLXArray {
         MLX.arange(0, stop, stream: stream)
     }
@@ -535,7 +535,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``arange(_:_:step:stream:)``
+    /// - ``arange(_:_:step:stream:)-3wme1``
     static public func arange(
         _ start: Int, _ stop: Int, step: Int = 1, dtype: DType, stream: StreamOrDevice = .default
     ) -> MLXArray {
@@ -1295,7 +1295,7 @@ public func linspace<T: HasDType>(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``arange(_:_:step:stream:)``
+/// - ``arange(_:_:step:stream:)-563go``
 public func arange(_ stop: Int, stream: StreamOrDevice = .default) -> MLXArray {
     var result = mlx_array_new()
     mlx_arange(&result, 0, Double(stop), 1, DType.int32.cmlxDtype, stream.ctx)
@@ -1370,7 +1370,7 @@ public func arange(_ stop: Int, dtype: DType, stream: StreamOrDevice = .default)
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``arange(_:_:step:stream:)``
+/// - ``arange(_:_:step:stream:)-563go``
 public func arange(
     _ start: Int, _ stop: Int, step: Int = 1, dtype: DType, stream: StreamOrDevice = .default
 ) -> MLXArray {
