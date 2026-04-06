@@ -643,8 +643,8 @@ class MLXArrayIndexingTests: XCTestCase {
     public func testSliceWithBroadcast() {
         // https://github.com/ml-explore/mlx-swift/issues/76
 
-        let a = MLXArray.ones([2, 6, 6, 6])
-        let b = MLXArray.zeros([3, 4, 4, 4])
+        let a = MLXArray.ones([2, 6, 6, 6], type: Float.self)
+        let b = MLXArray.zeros([3, 4, 4, 4], type: Float.self)
 
         b[0, 0 ..< 4, 3, 0 ..< 4] = a[0, 1 ..< 5, 5, 1 ..< 5]
 
