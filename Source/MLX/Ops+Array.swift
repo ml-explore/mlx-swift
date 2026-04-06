@@ -828,6 +828,46 @@ public func log1p(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
     return MLXArray(result)
 }
 
+/// Return the cumulative logsumexp of the elements along the given axis.
+///
+/// - Parameters:
+///     - array: input array
+///     - axis: axis to reduce over
+///     - reverse: reverse the reduction
+///     - inclusive: include the initial value
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:cumulative>
+public func logCumsumExp(
+    _ array: MLXArray,
+    axis: Int, reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_logcumsumexp(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Return the cumulative logsumexp of the elements of the flattened array.
+///
+/// - Parameters:
+///     - array: input array
+///     - reverse: reverse the reduction
+///     - inclusive: include the initial value
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:cumulative>
+public func logCumsumExp(
+    _ array: MLXArray,
+    reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let flat = array.reshaped([-1], stream: stream)
+    var result = mlx_array_new()
+    mlx_logcumsumexp(&result, flat.ctx, 0, reverse, inclusive, stream.ctx)
+    return MLXArray(result)
+}
+
 /// A `log-sum-exp` reduction over the given axes.
 ///
 /// The log-sum-exp reduction is a numerically stable version of:

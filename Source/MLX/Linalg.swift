@@ -415,6 +415,116 @@ public enum MLXLinalg {
         return MLXArray(result)
     }
 
+    /// Compute the eigenvalues and eigenvectors of a square matrix.
+    ///
+    /// This function differs from `numpy.linalg.eig` in that the
+    /// return type is always complex even if the eigenvalues are all real.
+    ///
+    /// This function supports arrays with at least 2 dimensions. When the input
+    /// has more than two dimensions, the eigenvalues and eigenvectors are
+    /// computed for each matrix in the last two dimensions.
+    ///
+    /// - Parameters:
+    ///   - array: input array
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: a tuple containing the eigenvalues and the normalized right
+    ///   eigenvectors. The column `v[0..., i]` is the eigenvector corresponding
+    ///   to the i-th eigenvalue.
+    public static func eig(_ array: MLXArray, stream: StreamOrDevice = .default) -> (
+        MLXArray, MLXArray
+    ) {
+        var r0 = mlx_array_new()
+        var r1 = mlx_array_new()
+        mlx_linalg_eig(&r0, &r1, array.ctx, stream.ctx)
+        return (MLXArray(r0), MLXArray(r1))
+    }
+
+    /// Compute the eigenvalues of a square matrix.
+    ///
+    /// This function differs from `numpy.linalg.eigvals` in that the
+    /// return type is always complex even if the eigenvalues are all real.
+    ///
+    /// This function supports arrays with at least 2 dimensions. When the
+    /// input has more than two dimensions, the eigenvalues are computed for
+    /// each matrix in the last two dimensions.
+    ///
+    /// - Parameters:
+    ///   - array: input array
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: the eigenvalues (not necessarily in order)
+    public static func eigvals(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+        var result = mlx_array_new()
+        mlx_linalg_eigvals(&result, array.ctx, stream.ctx)
+        return MLXArray(result)
+    }
+
+    /// Compute the eigenvalues and eigenvectors of a complex Hermitian or
+    /// real symmetric matrix.
+    ///
+    /// This function supports arrays with at least 2 dimensions. When the input
+    /// has more than two dimensions, the eigenvalues and eigenvectors are
+    /// computed for each matrix in the last two dimensions.
+    ///
+    /// > The input matrix is assumed to be symmetric (or Hermitian). Only
+    /// the selected triangle is used. No checks for symmetry are performed.
+    ///
+    /// - Parameters:
+    ///   - array: input array. Must be a real symmetric or complex Hermitian matrix.
+    ///   - UPLO: whether to use the upper (`"U"`) or lower (`"L"`) triangle of the matrix.
+    ///         Default is `"L"`.
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: a tuple containing the eigenvalues in ascending order and
+    ///   the normalized eigenvectors. The column `v[0..., i]` is the eigenvector
+    ///   corresponding to the i-th eigenvalue.
+    public static func eigh(
+        _ array: MLXArray, UPLO: String = "L", stream: StreamOrDevice = .default
+    ) -> (MLXArray, MLXArray) {
+        var r0 = mlx_array_new()
+        var r1 = mlx_array_new()
+        mlx_linalg_eigh(&r0, &r1, array.ctx, UPLO, stream.ctx)
+        return (MLXArray(r0), MLXArray(r1))
+    }
+
+    /// Compute the eigenvalues of a complex Hermitian or real symmetric matrix.
+    ///
+    /// This function supports arrays with at least 2 dimensions. When the
+    /// input has more than two dimensions, the eigenvalues are computed for
+    /// each matrix in the last two dimensions.
+    ///
+    /// > The input matrix is assumed to be symmetric (or Hermitian). Only
+    /// the selected triangle is used. No checks for symmetry are performed.
+    ///
+    /// - Parameters:
+    ///   - array: input array. Must be a real symmetric or complex Hermitian matrix.
+    ///   - UPLO: whether to use the upper (`"U"`) or lower (`"L"`) triangle of the matrix.
+    ///         Default is `"L"`.
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: the eigenvalues in ascending order
+    public static func eigvalsh(
+        _ array: MLXArray, UPLO: String = "L", stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+        mlx_linalg_eigvalsh(&result, array.ctx, UPLO, stream.ctx)
+        return MLXArray(result)
+    }
+
+    /// Compute the (Moore-Penrose) pseudo-inverse of a matrix.
+    ///
+    /// This function calculates a generalized inverse of a matrix using its
+    /// singular-value decomposition. This function supports arrays with at least
+    /// 2 dimensions. When the input has more than two dimensions, the inverse is
+    /// computed for each matrix in the last two dimensions of `array`.
+    ///
+    /// - Parameters:
+    ///   - array: input array
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: `aplus` such that `a @ aplus @ a = a`
+    public static func pinv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+        var result = mlx_array_new()
+        mlx_linalg_pinv(&result, array.ctx, stream.ctx)
+        return MLXArray(result)
+    }
+
 }  // MLXLinalg
 
 /// Matrix or vector norm.
@@ -715,4 +825,100 @@ public func solveTriangular(
     -> MLXArray
 {
     return MLXLinalg.solveTriangular(a, b, upper: upper, stream: stream)
+}
+
+/// Compute the eigenvalues and eigenvectors of a square matrix.
+///
+/// This function differs from `numpy.linalg.eig` in that the
+/// return type is always complex even if the eigenvalues are all real.
+///
+/// This function supports arrays with at least 2 dimensions. When the input
+/// has more than two dimensions, the eigenvalues and eigenvectors are
+/// computed for each matrix in the last two dimensions.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: a tuple containing the eigenvalues and the normalized right
+///   eigenvectors. The column `v[0..., i]` is the eigenvector corresponding
+///   to the i-th eigenvalue.
+public func eig(_ array: MLXArray, stream: StreamOrDevice = .default) -> (MLXArray, MLXArray) {
+    return MLXLinalg.eig(array, stream: stream)
+}
+
+/// Compute the eigenvalues of a square matrix.
+///
+/// This function differs from `numpy.linalg.eigvals` in that the
+/// return type is always complex even if the eigenvalues are all real.
+///
+/// This function supports arrays with at least 2 dimensions. When the
+/// input has more than two dimensions, the eigenvalues are computed for
+/// each matrix in the last two dimensions.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: the eigenvalues (not necessarily in order)
+public func eigvals(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    return MLXLinalg.eigvals(array, stream: stream)
+}
+
+/// Compute the eigenvalues and eigenvectors of a complex Hermitian or
+/// real symmetric matrix.
+///
+/// This function supports arrays with at least 2 dimensions. When the input
+/// has more than two dimensions, the eigenvalues and eigenvectors are
+/// computed for each matrix in the last two dimensions.
+///
+/// > The input matrix is assumed to be symmetric (or Hermitian). Only
+/// the selected triangle is used. No checks for symmetry are performed.
+///
+/// - Parameters:
+///   - array: input array. Must be a real symmetric or complex Hermitian matrix.
+///   - UPLO: whether to use the upper (`"U"`) or lower (`"L"`) triangle of the matrix.
+///         Default is `"L"`.
+///   - stream: stream or device to evaluate on
+/// - Returns: a tuple containing the eigenvalues in ascending order and
+///   the normalized eigenvectors. The column `v[0..., i]` is the eigenvector
+///   corresponding to the i-th eigenvalue.
+public func eigh(
+    _ array: MLXArray, UPLO: String = "L", stream: StreamOrDevice = .default
+) -> (MLXArray, MLXArray) {
+    return MLXLinalg.eigh(array, UPLO: UPLO, stream: stream)
+}
+
+/// Compute the eigenvalues of a complex Hermitian or real symmetric matrix.
+///
+/// This function supports arrays with at least 2 dimensions. When the
+/// input has more than two dimensions, the eigenvalues are computed for
+/// each matrix in the last two dimensions.
+///
+/// > The input matrix is assumed to be symmetric (or Hermitian). Only
+/// the selected triangle is used. No checks for symmetry are performed.
+///
+/// - Parameters:
+///   - array: input array. Must be a real symmetric or complex Hermitian matrix.
+///   - UPLO: whether to use the upper (`"U"`) or lower (`"L"`) triangle of the matrix.
+///         Default is `"L"`.
+///   - stream: stream or device to evaluate on
+/// - Returns: the eigenvalues in ascending order
+public func eigvalsh(
+    _ array: MLXArray, UPLO: String = "L", stream: StreamOrDevice = .default
+) -> MLXArray {
+    return MLXLinalg.eigvalsh(array, UPLO: UPLO, stream: stream)
+}
+
+/// Compute the (Moore-Penrose) pseudo-inverse of a matrix.
+///
+/// This function calculates a generalized inverse of a matrix using its
+/// singular-value decomposition. This function supports arrays with at least
+/// 2 dimensions. When the input has more than two dimensions, the inverse is
+/// computed for each matrix in the last two dimensions of `array`.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+/// - Returns: `aplus` such that `a @ aplus @ a = a`
+public func pinv(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    return MLXLinalg.pinv(array, stream: stream)
 }

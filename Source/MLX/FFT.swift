@@ -381,6 +381,47 @@ public enum MLXFFT {
         }
     }
 
+    /// Shift the zero-frequency component to the center of the spectrum.
+    ///
+    /// - Parameters:
+    ///   - array: input array
+    ///   - axes: axes over which to shift.  If `nil`, all axes are shifted.
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: the shifted array
+    ///
+    /// ### See Also
+    /// - <doc:MLXFFT>
+    public static func fftshift(
+        _ array: MLXArray, axes: [Int]? = nil, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+        let axes = axes ?? Array(0 ..< array.ndim)
+        mlx_fft_fftshift(&result, array.ctx, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
+    }
+
+    /// The inverse of ``fftshift(_:axes:stream:)``.
+    ///
+    /// While identical to ``fftshift(_:axes:stream:)`` for even-length axes,
+    /// the behavior differs for odd-length axes.
+    ///
+    /// - Parameters:
+    ///   - array: input array
+    ///   - axes: axes over which to shift.  If `nil`, all axes are shifted.
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: the shifted array
+    ///
+    /// ### See Also
+    /// - <doc:MLXFFT>
+    public static func ifftshift(
+        _ array: MLXArray, axes: [Int]? = nil, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+        let axes = axes ?? Array(0 ..< array.ndim)
+        mlx_fft_ifftshift(&result, array.ctx, axes.asInt32, axes.count, stream.ctx)
+        return MLXArray(result)
+    }
+
 }  // MLXFFT
 
 /// One dimensional discrete Fourier Transform.
@@ -630,4 +671,39 @@ public func irfftn(
     axes: (some Collection<Int>)? = [Int]?.none, stream: StreamOrDevice = .default
 ) -> MLXArray {
     MLXFFT.irfftn(array, s: s, axes: axes, stream: stream)
+}
+
+/// Shift the zero-frequency component to the center of the spectrum.
+///
+/// - Parameters:
+///   - array: input array
+///   - axes: axes over which to shift.  If `nil`, all axes are shifted.
+///   - stream: stream or device to evaluate on
+/// - Returns: the shifted array
+///
+/// ### See Also
+/// - <doc:MLXFFT>
+public func fftshift(
+    _ array: MLXArray, axes: [Int]? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXFFT.fftshift(array, axes: axes, stream: stream)
+}
+
+/// The inverse of ``fftshift(_:axes:stream:)``.
+///
+/// While identical to ``fftshift(_:axes:stream:)`` for even-length axes,
+/// the behavior differs for odd-length axes.
+///
+/// - Parameters:
+///   - array: input array
+///   - axes: axes over which to shift.  If `nil`, all axes are shifted.
+///   - stream: stream or device to evaluate on
+/// - Returns: the shifted array
+///
+/// ### See Also
+/// - <doc:MLXFFT>
+public func ifftshift(
+    _ array: MLXArray, axes: [Int]? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    MLXFFT.ifftshift(array, axes: axes, stream: stream)
 }
