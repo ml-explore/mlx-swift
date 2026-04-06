@@ -13,11 +13,7 @@ import XCTest
 /// Note: this is not meant to be complete coverage, merely a sanity
 /// check that the wrapping of the c++ core matches python (e.g. calls
 /// the same functions).
-class MLXIntegrationTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class MLXIntegrationTests: DeviceScopedTestCase {
 
     func testRandomSeed() {
         MLXRandom.seed(864)

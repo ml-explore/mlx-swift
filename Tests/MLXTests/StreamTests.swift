@@ -46,17 +46,17 @@ class StreamTests: XCTestCase {
     }
 
     func testSetUnsetDefaultDevice() {
-        // Issue #237 -- setting an unsetting the default device in a loop
-        // exhausts many resources
+        // Issue #237 -- repeatedly overriding and restoring the default device
+        // in a loop should not exhaust resources.
         for _ in 1 ..< 10000 {
             let defaultDevice = MLX.Device.defaultDevice()
-            MLX.Device.setDefault(device: .cpu)
-            defer {
-                MLX.Device.setDefault(device: defaultDevice)
+
+            Device.withDefaultDevice(.cpu) {
+                let x = MLXArray(1)
+                let _ = x * x
             }
 
-            let x = MLXArray(1)
-            let _ = x * x
+            XCTAssertEqual(defaultDevice, MLX.Device.defaultDevice())
         }
         print("here")
     }
