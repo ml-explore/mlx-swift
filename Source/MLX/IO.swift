@@ -287,7 +287,7 @@ public func saveToData(
     let writer = new_mlx_io_writer_dataIO()
     defer { mlx_io_writer_free(writer) }
 
-    _ = evalLock.withLock {
+    _ = try withError {
         _ = evalLock.withLock {
             mlx_save_safetensors_writer(writer, mlx_arrays, mlx_metadata)
         }

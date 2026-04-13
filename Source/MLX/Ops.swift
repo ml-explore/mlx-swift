@@ -1488,6 +1488,27 @@ public func gatherQuantizedMM(
     return MLXArray(result)
 }
 
+/// Perform a matrix multiplication but segment the inner dimension and
+/// save the result for each segment separately.
+///
+/// - Parameters:
+///   - a: array of shape `MxK`
+///   - b: array of shape `KxN`
+///   - segments: offsets into the inner dimension for each segment
+///   - stream: stream or device to evaluate on
+/// - Returns: result per segment of shape `MxN`
+/// ### See Also
+/// - <doc:arithmetic>
+public func segmentedMM(
+    _ a: MLXArray, _ b: MLXArray,
+    segments: MLXArray,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_segmented_mm(&result, a.ctx, b.ctx, segments.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Element-wise greater than.
 ///
 /// Greater than on two arrays with <doc:broadcasting>.
