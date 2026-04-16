@@ -4,11 +4,7 @@ import Foundation
 import MLX
 import XCTest
 
-class NestedTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class NestedTests: DeviceScopedTestCase {
 
     static let defaultValues = [10, 1, 2, 1, 2, 3, 10, 20, 30]
 

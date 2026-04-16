@@ -92,3 +92,7 @@ iOSInjectionProject/
 
 # VS Code
 .vscode/
+
+# AI agent working directories
+.factory/
+.claude/

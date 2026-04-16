@@ -4,11 +4,7 @@ import Foundation
 import MLX
 import XCTest
 
-class MLXRandomTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class MLXRandomTests: DeviceScopedTestCase {
 
     func testSplit() {
         let key = MLXRandom.key(0)

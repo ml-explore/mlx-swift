@@ -141,6 +141,34 @@ func processInBackground(_ data: [Float]) async -> [Float] {
 }
 ```
 
+## Random State in Concurrent Code
+
+`MLXRandom.RandomState` is thread-safe, but the `MLXArray` keys it produces are
+still subject to normal MLX array concurrency rules. Keep the random state and
+the arrays derived from it inside the same task or actor.
+
+```swift
+await withTaskGroup(of: Float.self) { group in
+    for seed in 0 ..< 4 {
+        group.addTask {
+            let state = MLXRandom.RandomState(seed: UInt64(seed))
+            return withRandomState(state) {
+                let sample = MLXRandom.uniform(0.0 ..< 1.0, [128, 128]).sum()
+                eval(sample)
+                return sample.item(Float.self)
+            }
+        }
+    }
+
+    for await value in group {
+        print(value)
+    }
+}
+```
+
+Use `withRandomState` when deeply nested calls need implicit RNG state or when
+each concurrent task should have its own reproducible random sequence.
+
 ## Actor Integration
 
 ### Creating an MLX Actor
