@@ -88,10 +88,18 @@ final class CompiledFunction: @unchecked (Sendable) {
         // but will be able to re-evaluate with fresh state if needed
         evalLock.lock()
         var compiled = mlx_closure_new()
-        mlx_detail_compile(&compiled, innerClosure, id, shapeless, [], 0)
+        let compileStatus = mlx_detail_compile(&compiled, innerClosure, id, shapeless, [], 0)
         defer {
             mlx_closure_free(compiled)
             evalLock.unlock()
+        }
+
+        // mlx_error was already dispatched on failure:
+        //   • outside withError — fatalError was called; we won't reach here
+        //   • inside withError  — error is stored in the ErrorBox; return [] so
+        //                         withError can throw instead of crashing downstream
+        guard compileStatus == 0 else {
+            return []
         }
 
         let innerInputs = arguments + stateInputs
@@ -101,8 +109,12 @@ final class CompiledFunction: @unchecked (Sendable) {
         // will compile the function (if needed) and evaluate the
         // compiled graph
         var resultVector = mlx_vector_array_new()
-        mlx_closure_apply(&resultVector, compiled, innerInputsVector)
+        let applyStatus = mlx_closure_apply(&resultVector, compiled, innerInputsVector)
         defer { mlx_vector_array_free(resultVector) }
+
+        guard applyStatus == 0 else {
+            return []
+        }
 
         let resultsPlusStateOutput = mlx_vector_array_values(resultVector)
 
@@ -164,7 +176,11 @@ public func compile(
     }
 
     return { a in
-        compileState.call([a])[0]
+        let r = compileState.call([a])
+        // r is empty only when an MLX error fired inside a withError scope — the
+        // error is already stored in the ErrorBox.  Return a placeholder so that
+        // withError can throw instead of crashing with "Index out of range".
+        return r.isEmpty ? MLXArray(0) : r[0]
     }
 }
 
@@ -185,7 +201,8 @@ public func compile(
     }
 
     return { a, b in
-        compileState.call([a, b])[0]
+        let r = compileState.call([a, b])
+        return r.isEmpty ? MLXArray(0) : r[0]
     }
 }
 
@@ -206,7 +223,8 @@ public func compile(
     }
 
     return { a, b, c in
-        compileState.call([a, b, c])[0]
+        let r = compileState.call([a, b, c])
+        return r.isEmpty ? MLXArray(0) : r[0]
     }
 }
 

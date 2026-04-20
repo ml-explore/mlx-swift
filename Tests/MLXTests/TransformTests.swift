@@ -412,4 +412,65 @@ class TransformTests: XCTestCase {
 
     // Note: OptimizerTests contains additional integration tests of compile()
 
+    func testCompileSingleArrayErrorPropagatesViaWithError() throws {
+        // A compiled function that produces a broadcast shape mismatch at evaluation time.
+        // The constant has shape [3]; passing an input with shape [2] triggers an MLX error
+        // inside mlx_closure_apply.
+        //
+        // Before fix: mlx_closure_apply's non-zero return value was silently ignored,
+        // causing innerCall to return [], and the single-array overload to crash with
+        // "Fatal error: Index out of range" — a Swift trap that bypasses withError.
+        //
+        // After fix: innerCall returns [] early on error, the overload returns a placeholder,
+        // and withError properly surfaces the MLXError.
+        let compiled = compile { (x: MLXArray) -> MLXArray in
+            let constant = MLXArray([Float](repeating: 1, count: 3))
+            return x + constant
+        }
+        let x = MLXArray([Float](repeating: 0, count: 2))
+
+        XCTAssertThrowsError(
+            try withError {
+                eval(compiled(x))
+            }
+        ) { error in
+            XCTAssertTrue(error is MLXError, "expected MLXError, got \(error)")
+        }
+    }
+
+    func testCompileMultiArrayErrorPropagatesViaWithError() throws {
+        // Same scenario with the [MLXArray] -> [MLXArray] overload.
+        let compiled = compile { (inputs: [MLXArray]) -> [MLXArray] in
+            let constant = MLXArray([Float](repeating: 1, count: 3))
+            return [inputs[0] + constant]
+        }
+        let x = MLXArray([Float](repeating: 0, count: 2))
+
+        XCTAssertThrowsError(
+            try withError {
+                eval(compiled([x]))
+            }
+        ) { error in
+            XCTAssertTrue(error is MLXError, "expected MLXError, got \(error)")
+        }
+    }
+
+    func testCompileTwoArrayErrorPropagatesViaWithError() throws {
+        // Same scenario with the (MLXArray, MLXArray) -> MLXArray overload.
+        let compiled = compile { (a: MLXArray, _: MLXArray) -> MLXArray in
+            let constant = MLXArray([Float](repeating: 1, count: 3))
+            return a + constant
+        }
+        let x = MLXArray([Float](repeating: 0, count: 2))
+        let y = MLXArray([Float](repeating: 0, count: 2))
+
+        XCTAssertThrowsError(
+            try withError {
+                eval(compiled(x, y))
+            }
+        ) { error in
+            XCTAssertTrue(error is MLXError, "expected MLXError, got \(error)")
+        }
+    }
+
 }
