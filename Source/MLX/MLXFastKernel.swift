@@ -16,6 +16,8 @@ extension Bool: KernelTemplateArg {}
 extension Int: KernelTemplateArg {}
 extension DType: KernelTemplateArg {}
 
+#if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
+
 extension MLXFast {
 
     /// Container for a kernel created by
@@ -183,3 +185,49 @@ extension MLXFast {
     }
 
 }  // MLXFast
+
+#else
+
+// Stub allowing compilation for platforms without Metal.
+
+extension MLXFast {
+
+    final public class MLXFastKernel: @unchecked Sendable {
+        public let outputNames: [String]
+
+        init(
+            name: String, inputNames: some Sequence<String>, outputNames: some Sequence<String>,
+            source: String, header: String = "",
+            ensureRowContiguous: Bool = true,
+            atomicOutputs: Bool = false
+        ) {
+            self.outputNames = []
+            fatalError("MLXFastKernel is not available without Metal")
+        }
+
+        public func callAsFunction(
+            _ inputs: [any ScalarOrArray],
+            template: [(String, any KernelTemplateArg)]? = nil,
+            grid: (Int, Int, Int),
+            threadGroup: (Int, Int, Int),
+            outputShapes: some Sequence<[Int]>,
+            outputDTypes: some Sequence<DType>,
+            initValue: Float? = nil,
+            verbose: Bool = false,
+            stream: StreamOrDevice = .default
+        ) -> [MLXArray] {
+            fatalError("MLXFastKernel is not available without Metal")
+        }
+    }
+
+    public static func metalKernel(
+        name: String, inputNames: some Sequence<String>, outputNames: some Sequence<String>,
+        source: String, header: String = "", ensureRowContiguous: Bool = true,
+        atomicOutputs: Bool = false
+    ) -> MLXFastKernel {
+        fatalError("MLXFastKernel is not available without Metal")
+    }
+
+}  // MLXFast
+
+#endif
