@@ -84,7 +84,7 @@ let noCudaCmlxExcludes = [
     let linkerSettings: [LinkerSetting]
     let mlxSwiftExcludes: [String]
 
-    if Context.environment["SPM_CUDA"] == "1" {
+    if Context.environment["SPM_CUDA"] != "0" {
         // Linux with CUDA
 
         platformExcludes = [

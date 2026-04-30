@@ -15,7 +15,7 @@ struct CudaBuild: BuildToolPlugin {
 
         print("CUDA Build Plugin")
 
-        guard ProcessInfo.processInfo.environment["SPM_CUDA"] == "1" else {
+        guard isCudaEnabled() else {
             print("CUDA is disabled")
             return []
         }
@@ -120,5 +120,13 @@ struct CudaBuild: BuildToolPlugin {
             return path.hasPrefix(prefix)
         }
         return settings.exclude.contains(relativePath) || settings.exclude.contains { isInFolder(path: relativePath, folderPath: $0) }
+    }
+
+    func isCudaEnabled() -> Bool {
+        #if os(Linux)
+            return ProcessInfo.processInfo.environment["SPM_CUDA"] != "0"
+        #else
+            return false
+        #endif
     }
 }
