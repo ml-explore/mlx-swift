@@ -80,7 +80,8 @@ Adaptive Moment Estimation:
 let optimizer = Adam(
     learningRate: 0.001,
     betas: (0.9, 0.999),    // (β1, β2) for moment estimates
-    eps: 1e-8               // Numerical stability
+    eps: 1e-8,              // Numerical stability
+    biasCorrection: false   // Optional bias correction
 )
 ```
 
@@ -101,7 +102,8 @@ let optimizer = AdamW(
     learningRate: 0.001,
     betas: (0.9, 0.999),
     eps: 1e-8,
-    weightDecay: 0.01       // Weight decay factor
+    weightDecay: 0.01,      // Weight decay factor
+    biasCorrection: false   // Optional bias correction
 )
 ```
 

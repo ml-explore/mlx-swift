@@ -107,6 +107,32 @@ public struct TupleState: Updatable {
     }
 }
 
+/// State container for Adam-style optimizers that need first and second moments
+/// plus an update step for optional bias correction.
+public struct AdamState: Updatable {
+    let values: (MLXArray, MLXArray)
+    var step: MLXArray
+
+    init(_ values: (MLXArray, MLXArray), step: MLXArray) {
+        self.values = values
+        self.step = step
+    }
+
+    init(_ a: MLXArray, _ b: MLXArray, step: MLXArray) {
+        self.values = (a, b)
+        self.step = step
+    }
+
+    init(zeros array: MLXArray) {
+        self.values = (MLXArray.zeros(like: array), MLXArray.zeros(like: array))
+        self.step = MLXArray(0)
+    }
+
+    public func innerState() -> [MLXArray] {
+        [values.0, values.1, step]
+    }
+}
+
 /// Stochastic gradient descent optimizer.
 ///
 /// ### See Also
@@ -302,14 +328,14 @@ open class AdaDelta: OptimizerBase<TupleState> {
 
 /// The Adam optimizer [1].
 ///
-/// Our Adam implementation follows the original paper and omits the bias
-/// correction in the first and second moment estimates. In detail,
+/// By default our Adam implementation omits bias correction in the first and
+/// second moment estimates. Set `biasCorrection` to `true` to apply it. In detail,
 ///
 /// [1]: Kingma, D.P. and Ba, J., 2015. Adam: A method for stochastic optimization. ICLR 2015.
 ///
 /// ### See Also
 /// - <doc:MLXOptimizers>
-open class Adam: OptimizerBase<TupleState> {
+open class Adam: OptimizerBase<AdamState> {
 
     /// The learning rate
     public var learningRate: Float
@@ -317,41 +343,60 @@ open class Adam: OptimizerBase<TupleState> {
     public var betas: (Float, Float) = (0.9, 0.999)
     /// The epsilon added to the denominator to improve numerical stability
     public var eps: Float = 1e-8
+    /// If `true`, apply bias correction to the first and second moments
+    public var biasCorrection = false
 
     /// Initialize the optimizer.
     /// - Parameters:
     ///   - learningRate: the learning rate
     ///   - betas: coefficients used for computing running averages of the gradient and its square
     ///   - eps: the epsilon added to the denominator to improve numerical stability
-    public init(learningRate: Float, betas: (Float, Float) = (0.9, 0.999), eps: Float = 1e-8) {
+    ///   - biasCorrection: if `true`, apply bias correction to the first and second moments
+    public init(
+        learningRate: Float, betas: (Float, Float) = (0.9, 0.999), eps: Float = 1e-8,
+        biasCorrection: Bool = false
+    ) {
         self.learningRate = learningRate
         self.betas = betas
         self.eps = eps
+        self.biasCorrection = biasCorrection
     }
 
-    override open func newState(parameter: MLXArray) -> TupleState {
-        TupleState(zeros: parameter)
+    override open func newState(parameter: MLXArray) -> AdamState {
+        AdamState(zeros: parameter)
     }
 
-    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
-        MLXArray, TupleState
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: AdamState) -> (
+        MLXArray, AdamState
     ) {
         let (b1, b2) = betas
 
+        var state = state
         var (m, v) = state.values
+        state.step = state.step + 1
 
         m = b1 * m + (1 - b1) * gradient
         v = b2 * v + (1 - b2) * square(gradient)
 
-        return (parameter - learningRate * m / (sqrt(v) + eps), TupleState(m, v))
+        let update: MLXArray
+        if biasCorrection {
+            let step = state.step
+            let c1 = learningRate / (1 - pow(b1, step))
+            let c2 = rsqrt(1 - pow(b2, step))
+            update = (c1 * m) / (sqrt(v) * c2 + eps)
+        } else {
+            update = learningRate * m / (sqrt(v) + eps)
+        }
+
+        return (parameter - update, AdamState(m, v, step: state.step))
     }
 }
 
 /// The AdamW optimizer [1].
 ///
-/// Following the above convention, in contrast with [1], we do not use bias
-/// correction in the first and second moments for AdamW. We update the weights
-/// with a `weightDecay` lambda value:
+/// By default AdamW omits bias correction in the first and second moments, to
+/// match the longstanding MLX Swift behavior. Set `biasCorrection` to `true`
+/// to apply it. We update the weights with a `weightDecay` lambda value:
 ///
 /// [1]: Loshchilov, I. and Hutter, F., 2019. Decoupled weight decay regularization. ICLR 2019.
 ///
@@ -368,16 +413,19 @@ open class AdamW: Adam {
     ///   - betas: coefficients used for computing running averages of the gradient and its square
     ///   - eps: the epsilon added to the denominator to improve numerical stability
     ///   - weightDecay:the weight decay
+    ///   - biasCorrection: if `true`, apply bias correction to the first and second moments
     public init(
         learningRate: Float, betas: (Float, Float) = (0.9, 0.999), eps: Float = 1e-8,
-        weightDecay: Float = 0.01
+        weightDecay: Float = 0.01, biasCorrection: Bool = false
     ) {
         self.weightDecay = weightDecay
-        super.init(learningRate: learningRate, betas: betas, eps: eps)
+        super.init(
+            learningRate: learningRate, betas: betas, eps: eps,
+            biasCorrection: biasCorrection)
     }
 
-    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
-        MLXArray, TupleState
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: AdamState) -> (
+        MLXArray, AdamState
     ) {
         return super.applySingle(
             gradient: gradient, parameter: parameter * (1 - learningRate * weightDecay),

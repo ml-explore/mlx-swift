@@ -151,10 +151,48 @@ class OptimizerTests: XCTestCase {
         checkTrain(optimizer: Adam(learningRate: 0.1), compile: true)
     }
 
+    func testAdamBiasCorrection() {
+        let parameter = MLXArray([1.0 as Float, -2.0, 3.0])
+        let gradient = MLXArray([0.5 as Float, -0.25, 2.0])
+        let optimizer = Adam(learningRate: 0.1 as Float, biasCorrection: true)
+
+        let result = optimizer.applySingle(
+            gradient: gradient, parameter: parameter,
+            state: optimizer.newState(parameter: parameter))
+
+        let step = MLXArray(1.0 as Float)
+        let c1 = Float(0.1) / (1 - pow(Float(0.9), step))
+        let c2 = rsqrt(1 - pow(Float(0.999), step))
+        let m = (1 - Float(0.9)) * gradient
+        let v = (1 - Float(0.999)) * square(gradient)
+        let expected = parameter - (c1 * m) / (sqrt(v) * c2 + Float(1e-8))
+        assertEqual(result.0, expected, atol: 1e-6)
+    }
+
     func testAdamW() {
         checkShape(optimizer: AdamW(learningRate: 0.1))
         checkTrain(optimizer: AdamW(learningRate: 0.1))
         checkTrain(optimizer: AdamW(learningRate: 0.1), compile: true)
+    }
+
+    func testAdamWBiasCorrection() {
+        let parameter = MLXArray([1.0 as Float, -2.0, 3.0])
+        let gradient = MLXArray([0.5 as Float, -0.25, 2.0])
+        let optimizer = AdamW(
+            learningRate: 0.1 as Float, weightDecay: 0.01 as Float, biasCorrection: true)
+
+        let result = optimizer.applySingle(
+            gradient: gradient, parameter: parameter,
+            state: optimizer.newState(parameter: parameter))
+
+        let decayed = parameter * (1 - Float(0.1) * Float(0.01))
+        let step = MLXArray(1.0 as Float)
+        let c1 = Float(0.1) / (1 - pow(Float(0.9), step))
+        let c2 = rsqrt(1 - pow(Float(0.999), step))
+        let m = (1 - Float(0.9)) * gradient
+        let v = (1 - Float(0.999)) * square(gradient)
+        let expected = decayed - (c1 * m) / (sqrt(v) * c2 + Float(1e-8))
+        assertEqual(result.0, expected, atol: 1e-6)
     }
 
     func testAdamax() {
