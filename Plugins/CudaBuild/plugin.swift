@@ -4,11 +4,29 @@ import PackagePlugin
 @main
 struct CudaBuild: BuildToolPlugin {
 
+    struct CodeGeneration: Codable {
+        var tool: String
+        var inputs: [String] = []
+        var outputs: [String] = []
+    }
+
     struct Settings: Codable {
         var headerSearchPaths: [String] = []
         var exclude: [String] = []
         var cppLanguageStandard: String? = nil
         var verbose: Bool = false
+        var codeGeneration: [CodeGeneration] = []
+
+        init() {}
+
+        init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            headerSearchPaths = try c.decodeIfPresent([String].self, forKey: .headerSearchPaths) ?? []
+            exclude = try c.decodeIfPresent([String].self, forKey: .exclude) ?? []
+            cppLanguageStandard = try c.decodeIfPresent(String.self, forKey: .cppLanguageStandard)
+            verbose = try c.decodeIfPresent(Bool.self, forKey: .verbose) ?? false
+            codeGeneration = try c.decodeIfPresent([CodeGeneration].self, forKey: .codeGeneration) ?? []
+        }
     }
 
     func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
@@ -30,6 +48,8 @@ struct CudaBuild: BuildToolPlugin {
 
         print("Source directory: \(sourceDir.path)")
 
+        // Read settings from CudaBuild.json if it exists
+
         let settingsFile = sourceDir.appendingPathComponent("CudaBuild.json")
         let settings: Settings
         if let data = try? Data(contentsOf: settingsFile) {
@@ -39,8 +59,10 @@ struct CudaBuild: BuildToolPlugin {
             settings = Settings()
         }
 
+        // Scan source directory for .cu files
+
         let sourceDirPath = sourceDir.path.hasSuffix("/") ? sourceDir.path : sourceDir.path + "/"
-        var inputFiles: [URL] = []
+        var sourceCuFiles: [URL] = []
         if let enumerator = FileManager.default.enumerator(at: sourceDir, includingPropertiesForKeys: nil) {
             while let inputUrl = enumerator.nextObject() as? URL {
                 if inputUrl.pathExtension == "cu" {
@@ -52,16 +74,40 @@ struct CudaBuild: BuildToolPlugin {
                         print("Excluding \(relateivePath)")
                         continue
                     }
-                    inputFiles.append(URL(string: relateivePath, relativeTo: sourceDir)!)
+                    sourceCuFiles.append(URL(string: relateivePath, relativeTo: sourceDir)!)
                 }
             }
         }
 
-        print("Input files: \(inputFiles.map { $0.relativePath })")
+        print("Source files: \(sourceCuFiles.map { $0.relativePath })")
 
         let outputDir = context.pluginWorkDirectoryURL
 
         var commands: [Command] = []
+
+        // Invoke code generation tools
+
+        var generatedCuFiles: [URL] = []
+
+        for (index, codeGen) in settings.codeGeneration.enumerated() {
+            let tool = try context.tool(named: codeGen.tool)
+            let codeGenOutputDir = outputDir.appendingPathComponent("gen\(index)-\(codeGen.tool)")
+            try FileManager.default.createDirectory(at: codeGenOutputDir, withIntermediateDirectories: true)
+            let inputUrls = codeGen.inputs.map { sourceDir.appendingPathComponent($0) }
+            let outputUrls = codeGen.outputs.map { codeGenOutputDir.appendingPathComponent($0) }
+            commands.append(
+                .buildCommand(
+                    displayName: "Running \(codeGen.tool)",
+                    executable: tool.url,
+                    arguments: inputUrls.map { $0.path } + outputUrls.flatMap { ["-o", $0.path] },
+                    inputFiles: inputUrls,
+                    outputFiles: outputUrls
+                )
+            )
+            generatedCuFiles += outputUrls.filter { $0.pathExtension == "cu" }
+        }
+
+        print("Generated source files: \(generatedCuFiles.map { $0.relativePath })")
 
         // Invoke `encuda compile` to compile each .cu file to .cpp
 
@@ -70,7 +116,7 @@ struct CudaBuild: BuildToolPlugin {
         let headerSearchPathArgs = settings.headerSearchPaths.flatMap { ["-I", sourceDirPath + $0] }
         let stdArgs = settings.cppLanguageStandard.map { ["--std", $0] } ?? []
 
-        for inputFile in inputFiles {
+        for inputFile in sourceCuFiles + generatedCuFiles {
             let outputCpp = URL(string: inputFile.relativePath, relativeTo: outputDir)!.deletingPathExtension().appendingPathExtension("cpp")
             commands.append(
                 .buildCommand(
@@ -91,7 +137,7 @@ struct CudaBuild: BuildToolPlugin {
 
         // Invoke `encuda link` with all .cpp files
 
-        let outputCpps = inputFiles.map { inputFile in
+        let outputCpps = (sourceCuFiles + generatedCuFiles).map { inputFile in
             URL(string: inputFile.relativePath, relativeTo: outputDir)!
                 .deletingPathExtension()
                 .appendingPathExtension("cpp")
