@@ -146,6 +146,7 @@ let cmlx = Target.target(
         "mlx/python",
         "mlx/setup.py",
         "mlx/tests",
+        "mlx/build",
 
         // special handling for cuda -- we need to keep one file:
         // mlx/mlx/backend/cuda/no_cuda.cpp
