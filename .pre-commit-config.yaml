@@ -13,3 +13,12 @@ repos:
   rev: v0.6.10
   hooks:
     - id: cmake-format
+
+- repo: https://github.com/lycheeverse/lychee.git
+  rev: lychee-v0.24.2
+  hooks:
+    - id: lychee
+      args:
+        - --no-progress
+        - --offline
+      types: [markdown]
