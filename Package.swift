@@ -203,10 +203,12 @@ let cmlx = Target.target(
     cSettings: [
         .headerSearchPath("mlx"),
         .headerSearchPath("mlx-c"),
+        .headerSearchPath("turbo-quant"),
     ],
     cxxSettings: cxxSettings + [
         .headerSearchPath("mlx"),
         .headerSearchPath("mlx-c"),
+        .headerSearchPath("turbo-quant"),
         .headerSearchPath("json/single_include/nlohmann"),
         .headerSearchPath("fmt/include"),
         .define("MLX_VERSION", to: "\"0.31.1\""),

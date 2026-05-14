@@ -259,6 +259,47 @@ public enum MLXFast {
         return MLXArray(result)
     }
 
+    // MARK: - TurboQuant KV Cache Compression
+
+    /// Compress K and V cache tensors using TurboQuant (3-bit PolarQuant + 1-bit QJL for keys).
+    ///
+    /// - Parameters:
+    ///   - keys: K tensor `[B, H, T, D]` where D is 128 or 256
+    ///   - values: V tensor `[B, H, T, D]` where D is 128 or 256
+    ///   - bits: Compression bits (default 3)
+    /// - Returns: `((polarK, residualK), (polarV, residualV))` packed uint8 arrays
+    public static func turboQuantEncode(
+        keys: MLXArray, values: MLXArray, bits: Int = 3, stream: StreamOrDevice = .default
+    ) -> ((MLXArray, MLXArray), (MLXArray, MLXArray)) {
+        var resPolarK = mlx_array_new()
+        var resPolarV = mlx_array_new()
+        var resResidualK = mlx_array_new()
+        var resResidualV = mlx_array_new()
+        mlx_fast_turbo_encode(
+            &resPolarK, &resPolarV, &resResidualK, &resResidualV,
+            keys.ctx, values.ctx, Int32(bits), stream.ctx)
+        return ((MLXArray(resPolarK), MLXArray(resResidualK)),
+                (MLXArray(resPolarV), MLXArray(resResidualV)))
+    }
+
+    /// Decode TurboKV compressed key history back to float32.
+    public static func turboDecodeK(
+        packed: MLXArray, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+        mlx_fast_turbo_decode_k(&result, packed.ctx, stream.ctx)
+        return MLXArray(result)
+    }
+
+    /// Decode TurboKV compressed value history back to float32.
+    public static func turboDecodeV(
+        packed: MLXArray, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+        mlx_fast_turbo_decode_v(&result, packed.ctx, stream.ctx)
+        return MLXArray(result)
+    }
+
 }
 
 /// Optimized implementation of `NN.RoPE`.
