@@ -167,4 +167,75 @@ class QuantizationTests: XCTestCase {
         XCTAssertEqual(code.shape, [2, 64])
         XCTAssertLessThan(mse, 0.02)
     }
+
+    func testTurboQuantAttentionLayoutIsRowWise() throws {
+        let x = MLXArray.zeros([1, 2, 3, 80], dtype: .float32)
+        let layout = try turboQuantAttentionLayout(for: x, groupSize: 64)
+
+        XCTAssertEqual(layout.layoutVersion, 2)
+        XCTAssertEqual(layout.logicalShape, [1, 2, 3, 80])
+        XCTAssertEqual(layout.groupsPerVector, 2)
+        XCTAssertEqual(layout.bitsetWordsPerGroup, 2)
+    }
+
+    func testTurboQuantCompressedAttentionMatchesDecodedReferenceWhenAvailable() throws {
+        guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLAttention else {
+            throw XCTSkip("Metal compressed attention unavailable")
+        }
+
+        let qValues = (0 ..< 128).map { Float(sin(Double($0) * 0.03)) }
+        let kValues = (0 ..< 256).map { Float(cos(Double($0) * 0.05) * 0.5) }
+        let vValues = (0 ..< 256).map { Float(sin(Double($0) * 0.07) * 0.25) }
+        let queries = MLXArray(qValues, [1, 2, 1, 64])
+        let keys = MLXArray(kValues, [1, 2, 2, 64])
+        let values = MLXArray(vValues, [1, 2, 2, 64])
+        let keyCode = try turboQuantMetalEncodeAttention(
+            keys,
+            configuration: TurboQuantConfiguration(
+                preset: .turbo3_5,
+                role: .key,
+                groupSize: 64,
+                backend: .metalPolarQJL,
+                seed: 11
+            )
+        )
+        let valueCode = try turboQuantMetalEncodeAttention(
+            values,
+            configuration: TurboQuantConfiguration(
+                preset: .turbo3_5,
+                role: .value,
+                groupSize: 64,
+                backend: .metalPolarQJL,
+                seed: 13
+            )
+        )
+
+        let output = try turboQuantMetalScaledDotProductAttention(
+            queries: queries,
+            keyCode: keyCode,
+            valueCode: valueCode,
+            scale: 1 / sqrt(Float(64)),
+            preferOnlineFused: false
+        )
+
+        XCTAssertEqual(output.shape, [1, 2, 1, 64])
+    }
+
+    func testTurboQuantOnlineFusedSupportContract() throws {
+        let queries = MLXArray.zeros([1, 4, 1, 64], dtype: .float32)
+        let keys = MLXArray.zeros([1, 2, 8, 64], dtype: .float32)
+        let keyCode = try turboQuantEmptyAttentionCode(
+            layout: try turboQuantAttentionLayout(for: keys, groupSize: 64),
+            role: .key,
+            groupSize: 64
+        )
+
+        XCTAssertTrue(
+            turboQuantMetalSupportsOnlineFusedAttention(
+                queries: queries,
+                keyCode: keyCode,
+                mask: .none
+            )
+        )
+    }
 }

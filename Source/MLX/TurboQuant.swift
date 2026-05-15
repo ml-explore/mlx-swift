@@ -88,22 +88,30 @@ public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
     public var supportsMLXPacked: Bool
     public var supportsPolarQJLReference: Bool
     public var supportsMetalPolarQJLCodec: Bool
+    public var supportsMetalPolarQJLAttention: Bool
     public var supportsMetalPolarQJL: Bool
 
     public init(
         supportsMLXPacked: Bool = true,
         supportsPolarQJLReference: Bool = true,
         supportsMetalPolarQJLCodec: Bool = false,
+        supportsMetalPolarQJLAttention: Bool = false,
         supportsMetalPolarQJL: Bool = false
     ) {
         self.supportsMLXPacked = supportsMLXPacked
         self.supportsPolarQJLReference = supportsPolarQJLReference
         self.supportsMetalPolarQJLCodec = supportsMetalPolarQJLCodec
+        self.supportsMetalPolarQJLAttention = supportsMetalPolarQJLAttention
         self.supportsMetalPolarQJL = supportsMetalPolarQJL
     }
 
     public static var current: TurboQuantKernelAvailability {
-        TurboQuantKernelAvailability(supportsMetalPolarQJLCodec: metalRuntimeAvailable())
+        let metalAvailable = metalRuntimeAvailable()
+        return TurboQuantKernelAvailability(
+            supportsMetalPolarQJLCodec: metalAvailable,
+            supportsMetalPolarQJLAttention: metalAvailable,
+            supportsMetalPolarQJL: metalAvailable
+        )
     }
 
     public func supports(_ backend: TurboQuantBackend) -> Bool {
@@ -377,6 +385,111 @@ public struct TurboQuantMetalCode {
     }
 }
 
+public enum TurboQuantAttentionPath: String, Codable, Sendable, CaseIterable {
+    case onlineFused
+    case twoStageCompressed
+    case mlxPackedFallback
+    case baseline
+}
+
+public struct TurboQuantAttentionLayout: Hashable, Codable, Sendable {
+    public static let currentVersion = 2
+
+    public var layoutVersion: Int
+    public var batchSize: Int
+    public var kvHeadCount: Int
+    public var capacity: Int
+    public var logicalLength: Int
+    public var ringOffset: Int
+    public var headDimension: Int
+    public var groupsPerVector: Int
+    public var magnitudeWordsPerGroup: Int
+    public var bitsetWordsPerGroup: Int
+
+    public init(
+        layoutVersion: Int = TurboQuantAttentionLayout.currentVersion,
+        batchSize: Int,
+        kvHeadCount: Int,
+        capacity: Int,
+        logicalLength: Int,
+        ringOffset: Int = 0,
+        headDimension: Int,
+        groupsPerVector: Int,
+        magnitudeWordsPerGroup: Int,
+        bitsetWordsPerGroup: Int
+    ) {
+        self.layoutVersion = layoutVersion
+        self.batchSize = batchSize
+        self.kvHeadCount = kvHeadCount
+        self.capacity = capacity
+        self.logicalLength = logicalLength
+        self.ringOffset = ringOffset
+        self.headDimension = headDimension
+        self.groupsPerVector = groupsPerVector
+        self.magnitudeWordsPerGroup = magnitudeWordsPerGroup
+        self.bitsetWordsPerGroup = bitsetWordsPerGroup
+    }
+
+    public var logicalShape: [Int] {
+        [batchSize, kvHeadCount, logicalLength, headDimension]
+    }
+
+    public var storageShape: [Int] {
+        [batchSize, kvHeadCount, capacity, headDimension]
+    }
+}
+
+public struct TurboQuantAttentionCode {
+    public var layout: TurboQuantAttentionLayout
+    public var preset: TurboQuantPreset
+    public var role: TurboQuantTensorRole
+    public var groupSize: Int
+    public var seed: UInt64
+    public var packedMagnitudes: MLXArray
+    public var signs: MLXArray
+    public var highPrecisionMask: MLXArray
+    public var residualSigns: MLXArray
+    public var scales: MLXArray
+
+    public init(
+        layout: TurboQuantAttentionLayout,
+        preset: TurboQuantPreset,
+        role: TurboQuantTensorRole,
+        groupSize: Int,
+        seed: UInt64,
+        packedMagnitudes: MLXArray,
+        signs: MLXArray,
+        highPrecisionMask: MLXArray,
+        residualSigns: MLXArray,
+        scales: MLXArray
+    ) {
+        self.layout = layout
+        self.preset = preset
+        self.role = role
+        self.groupSize = groupSize
+        self.seed = seed
+        self.packedMagnitudes = packedMagnitudes
+        self.signs = signs
+        self.highPrecisionMask = highPrecisionMask
+        self.residualSigns = residualSigns
+        self.scales = scales
+    }
+
+    public var storageByteCount: Int {
+        packedMagnitudes.nbytes
+            + signs.nbytes
+            + highPrecisionMask.nbytes
+            + residualSigns.nbytes
+            + scales.nbytes
+    }
+
+    public var approximateBitsPerValue: Double {
+        let values = layout.batchSize * layout.kvHeadCount
+            * Swift.max(layout.logicalLength, 1) * layout.headDimension
+        return Double(storageByteCount * 8) / Double(values)
+    }
+}
+
 public struct TurboQuantQualityThresholds: Hashable, Codable, Sendable {
     public var maxRelativeMSE: Float
     public var minCosineSimilarity: Float
@@ -606,12 +719,424 @@ public func turboQuantMetalDecode(
     return outputs[0]
 }
 
+public func turboQuantEmptyAttentionCode(
+    layout: TurboQuantAttentionLayout,
+    preset: TurboQuantPreset = .turbo3_5,
+    role: TurboQuantTensorRole,
+    groupSize: Int = 64,
+    seed: UInt64 = 0x9E37_79B9_7F4A_7C15
+) throws -> TurboQuantAttentionCode {
+    try validateAttentionLayout(layout, role: role, groupSize: groupSize)
+    return TurboQuantAttentionCode(
+        layout: layout,
+        preset: preset,
+        role: role,
+        groupSize: groupSize,
+        seed: seed,
+        packedMagnitudes: MLXArray.zeros(
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.magnitudeWordsPerGroup,
+            ],
+            dtype: .uint32
+        ),
+        signs: MLXArray.zeros(
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.bitsetWordsPerGroup,
+            ],
+            dtype: .uint32
+        ),
+        highPrecisionMask: MLXArray.zeros(
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.bitsetWordsPerGroup,
+            ],
+            dtype: .uint32
+        ),
+        residualSigns: MLXArray.zeros(
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.bitsetWordsPerGroup,
+            ],
+            dtype: .uint32
+        ),
+        scales: MLXArray.zeros(
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, 3,
+            ],
+            dtype: .float32
+        )
+    )
+}
+
+public func turboQuantAttentionLayout(
+    for array: MLXArray,
+    preset: TurboQuantPreset = .turbo3_5,
+    groupSize: Int = 64,
+    capacity: Int? = nil,
+    logicalLength: Int? = nil,
+    ringOffset: Int = 0
+) throws -> TurboQuantAttentionLayout {
+    try validateAttentionArray(array, groupSize: groupSize)
+    let headDimension = array.dim(3)
+    let groupsPerVector = (headDimension + groupSize - 1) / groupSize
+    let resolvedCapacity = capacity ?? array.dim(2)
+    let resolvedLogicalLength = logicalLength ?? array.dim(2)
+    let layout = TurboQuantAttentionLayout(
+        batchSize: array.dim(0),
+        kvHeadCount: array.dim(1),
+        capacity: resolvedCapacity,
+        logicalLength: resolvedLogicalLength,
+        ringOffset: ringOffset,
+        headDimension: headDimension,
+        groupsPerVector: groupsPerVector,
+        magnitudeWordsPerGroup: metalMagnitudeWordsPerGroup(groupSize: groupSize, preset: preset),
+        bitsetWordsPerGroup: (groupSize + 31) / 32
+    )
+    try validateAttentionLayout(layout, role: .key, groupSize: groupSize)
+    return layout
+}
+
+public func turboQuantMetalEncodeAttention(
+    _ array: MLXArray,
+    configuration: TurboQuantConfiguration = TurboQuantConfiguration(
+        role: .key,
+        backend: .metalPolarQJL
+    ),
+    capacity: Int? = nil,
+    logicalLength: Int? = nil,
+    ringOffset: Int = 0,
+    stream: StreamOrDevice = .default
+) throws -> TurboQuantAttentionCode {
+    try validateAttentionArray(array, groupSize: configuration.groupSize)
+    try requireTurboQuantMetalAttention()
+
+    let layout = try turboQuantAttentionLayout(
+        for: array,
+        preset: configuration.preset,
+        groupSize: configuration.groupSize,
+        capacity: capacity,
+        logicalLength: logicalLength,
+        ringOffset: ringOffset
+    )
+    guard layout.logicalLength <= layout.capacity else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "logical length cannot exceed compressed attention capacity"
+        )
+    }
+
+    let rowGroupCount = layout.batchSize * layout.kvHeadCount
+        * array.dim(2) * layout.groupsPerVector
+    let outputs = TurboQuantMetalKernels.encodeAttention(
+        [array],
+        template: attentionTemplate(
+            configuration: configuration,
+            layout: layout,
+            inputLength: array.dim(2),
+            outputLength: array.dim(2),
+            queryHeadCount: 0,
+            queryLength: 0,
+            outputDType: .float32,
+            causal: false
+        ),
+        grid: (rowGroupCount, 1, 1),
+        threadGroup: (Swift.max(1, Swift.min(rowGroupCount, 256)), 1, 1),
+        outputShapes: [
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.magnitudeWordsPerGroup,
+            ],
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.bitsetWordsPerGroup,
+            ],
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.bitsetWordsPerGroup,
+            ],
+            [
+                layout.batchSize, layout.kvHeadCount, layout.capacity,
+                layout.groupsPerVector, layout.bitsetWordsPerGroup,
+            ],
+            [layout.batchSize, layout.kvHeadCount, layout.capacity, layout.groupsPerVector, 3],
+        ],
+        outputDTypes: [.uint32, .uint32, .uint32, .uint32, .float32],
+        initValue: 0,
+        stream: stream
+    )
+
+    return TurboQuantAttentionCode(
+        layout: layout,
+        preset: configuration.preset,
+        role: configuration.role,
+        groupSize: configuration.groupSize,
+        seed: configuration.seed,
+        packedMagnitudes: outputs[0],
+        signs: outputs[1],
+        highPrecisionMask: outputs[2],
+        residualSigns: outputs[3],
+        scales: outputs[4]
+    )
+}
+
+public func turboQuantMetalQK(
+    queries: MLXArray,
+    keyCode: TurboQuantAttentionCode,
+    scale: Float,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode = .none,
+    stream: StreamOrDevice = .default
+) throws -> MLXArray {
+    try validateAttentionQuery(queries, code: keyCode)
+    try requireTurboQuantMetalAttention()
+    guard keyCode.role == .key else {
+        throw TurboQuantError.invalidMetalConfiguration("QK requires a key code")
+    }
+
+    let outputShape = [
+        queries.dim(0), queries.dim(1), queries.dim(2), keyCode.layout.logicalLength,
+    ]
+    let elementCount = outputShape.reduce(1, *)
+    var scores = TurboQuantMetalKernels.qk(
+        [
+            queries,
+            keyCode.packedMagnitudes,
+            keyCode.signs,
+            keyCode.highPrecisionMask,
+            keyCode.residualSigns,
+            keyCode.scales,
+        ],
+        template: attentionTemplate(
+            configuration: TurboQuantConfiguration(
+                preset: keyCode.preset,
+                role: keyCode.role,
+                groupSize: keyCode.groupSize,
+                backend: .metalPolarQJL,
+                seed: keyCode.seed
+            ),
+            layout: keyCode.layout,
+            inputLength: keyCode.layout.logicalLength,
+            outputLength: keyCode.layout.logicalLength,
+            queryHeadCount: queries.dim(1),
+            queryLength: queries.dim(2),
+            outputDType: .float32,
+            causal: false
+        ) + [("ATTENTION_SCALE_BITS", Int(scale.bitPattern))],
+        grid: (elementCount, 1, 1),
+        threadGroup: (Swift.max(1, Swift.min(elementCount, 256)), 1, 1),
+        outputShapes: [outputShape],
+        outputDTypes: [.float32],
+        stream: stream
+    )[0]
+
+    applyAttentionMask(&scores, mask: mask, stream: stream)
+    return scores
+}
+
+public func turboQuantMetalAV(
+    attentionWeights: MLXArray,
+    valueCode: TurboQuantAttentionCode,
+    outputDType: DType = .float32,
+    stream: StreamOrDevice = .default
+) throws -> MLXArray {
+    try requireTurboQuantMetalAttention()
+    guard valueCode.role == .value else {
+        throw TurboQuantError.invalidMetalConfiguration("AV requires a value code")
+    }
+    guard attentionWeights.ndim == 4 else {
+        throw TurboQuantError.invalidMetalConfiguration("attention weights must be [B, Hq, L, T]")
+    }
+    guard attentionWeights.dim(0) == valueCode.layout.batchSize,
+        attentionWeights.dim(3) == valueCode.layout.logicalLength
+    else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "attention weights do not match the compressed value layout"
+        )
+    }
+    guard attentionWeights.dim(1) % valueCode.layout.kvHeadCount == 0 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "query heads must be a multiple of KV heads"
+        )
+    }
+
+    let outputShape = [
+        attentionWeights.dim(0), attentionWeights.dim(1), attentionWeights.dim(2),
+        valueCode.layout.headDimension,
+    ]
+    let elementCount = outputShape.reduce(1, *)
+    return TurboQuantMetalKernels.av(
+        [
+            attentionWeights,
+            valueCode.packedMagnitudes,
+            valueCode.signs,
+            valueCode.highPrecisionMask,
+            valueCode.residualSigns,
+            valueCode.scales,
+        ],
+        template: attentionTemplate(
+            configuration: TurboQuantConfiguration(
+                preset: valueCode.preset,
+                role: valueCode.role,
+                groupSize: valueCode.groupSize,
+                backend: .metalPolarQJL,
+                seed: valueCode.seed
+            ),
+            layout: valueCode.layout,
+            inputLength: valueCode.layout.logicalLength,
+            outputLength: valueCode.layout.logicalLength,
+            queryHeadCount: attentionWeights.dim(1),
+            queryLength: attentionWeights.dim(2),
+            outputDType: outputDType,
+            causal: false
+        ),
+        grid: (elementCount, 1, 1),
+        threadGroup: (Swift.max(1, Swift.min(elementCount, 256)), 1, 1),
+        outputShapes: [outputShape],
+        outputDTypes: [outputDType],
+        stream: stream
+    )[0]
+}
+
+public func turboQuantMetalScaledDotProductAttention(
+    queries: MLXArray,
+    keyCode: TurboQuantAttentionCode,
+    valueCode: TurboQuantAttentionCode,
+    scale: Float,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode = .none,
+    preferOnlineFused: Bool = true,
+    stream: StreamOrDevice = .default
+) throws -> MLXArray {
+    try validateAttentionPair(keyCode: keyCode, valueCode: valueCode)
+    try validateAttentionQuery(queries, code: keyCode)
+    try requireTurboQuantMetalAttention()
+
+    if preferOnlineFused,
+        turboQuantMetalSupportsOnlineFusedAttention(queries: queries, keyCode: keyCode, mask: mask)
+    {
+        return try turboQuantMetalOnlineFusedAttention(
+            queries: queries,
+            keyCode: keyCode,
+            valueCode: valueCode,
+            scale: scale,
+            mask: mask,
+            outputDType: queries.dtype,
+            stream: stream
+        )
+    }
+
+    let scores = try turboQuantMetalQK(
+        queries: queries,
+        keyCode: keyCode,
+        scale: scale,
+        mask: mask,
+        stream: stream
+    )
+    let weights = softmax(scores.asType(.float32), axis: -1, stream: stream)
+    return try turboQuantMetalAV(
+        attentionWeights: weights,
+        valueCode: valueCode,
+        outputDType: queries.dtype,
+        stream: stream
+    )
+}
+
+public func turboQuantMetalSupportsOnlineFusedAttention(
+    queries: MLXArray,
+    keyCode: TurboQuantAttentionCode,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode = .none
+) -> Bool {
+    guard queries.ndim == 4 else { return false }
+    guard queries.dim(0) == 1, queries.dim(2) <= 8 else { return false }
+    guard [64, 80, 96, 128, 256].contains(queries.dim(3)) else { return false }
+    guard queries.dim(3) == keyCode.layout.headDimension else { return false }
+    switch mask {
+    case .none, .causal:
+        return true
+    case .array, .arrays:
+        return false
+    }
+}
+
+private func turboQuantMetalOnlineFusedAttention(
+    queries: MLXArray,
+    keyCode: TurboQuantAttentionCode,
+    valueCode: TurboQuantAttentionCode,
+    scale: Float,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode,
+    outputDType: DType,
+    stream: StreamOrDevice
+) throws -> MLXArray {
+    let outputShape = [queries.dim(0), queries.dim(1), queries.dim(2), queries.dim(3)]
+    let rowCount = queries.dim(0) * queries.dim(1) * queries.dim(2)
+    let causal: Bool
+    switch mask {
+    case .causal:
+        causal = true
+    case .none:
+        causal = false
+    case .array, .arrays:
+        throw TurboQuantError.invalidMetalConfiguration(
+            "online fused TurboQuant attention does not support materialized masks"
+        )
+    }
+
+    return TurboQuantMetalKernels.fusedAttention(
+        [
+            queries,
+            keyCode.packedMagnitudes,
+            keyCode.signs,
+            keyCode.highPrecisionMask,
+            keyCode.residualSigns,
+            keyCode.scales,
+            valueCode.packedMagnitudes,
+            valueCode.signs,
+            valueCode.highPrecisionMask,
+            valueCode.residualSigns,
+            valueCode.scales,
+        ],
+        template: attentionTemplate(
+            configuration: TurboQuantConfiguration(
+                preset: keyCode.preset,
+                role: .key,
+                groupSize: keyCode.groupSize,
+                backend: .metalPolarQJL,
+                seed: keyCode.seed
+            ),
+            layout: keyCode.layout,
+            inputLength: keyCode.layout.logicalLength,
+            outputLength: keyCode.layout.logicalLength,
+            queryHeadCount: queries.dim(1),
+            queryLength: queries.dim(2),
+            outputDType: outputDType,
+            causal: causal
+        ) + [
+            ("VALUE_SEED", Int(UInt32(truncatingIfNeeded: valueCode.seed))),
+            ("ATTENTION_SCALE_BITS", Int(scale.bitPattern)),
+        ],
+        grid: (rowCount, 1, 1),
+        threadGroup: (Swift.max(1, Swift.min(rowCount, 256)), 1, 1),
+        outputShapes: [outputShape],
+        outputDTypes: [outputDType],
+        stream: stream
+    )[0]
+}
+
 public func requireTurboQuantBackend(_ backend: TurboQuantBackend) throws {
     let availability = TurboQuantKernelAvailability.current
     guard availability.supports(backend) else {
         throw TurboQuantError.unsupportedBackend(
             backend,
             availability.fallbackReason(for: backend) ?? "Backend unavailable."
+        )
+    }
+}
+
+public func requireTurboQuantMetalAttention() throws {
+    guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLAttention else {
+        throw TurboQuantError.unsupportedBackend(
+            .metalPolarQJL,
+            "Metal runtime is unavailable for PolarQuant/QJL compressed attention."
         )
     }
 }
@@ -1057,6 +1582,188 @@ private func metalRoleValue(_ role: TurboQuantTensorRole) -> Int {
     }
 }
 
+private func validateAttentionArray(_ array: MLXArray, groupSize: Int) throws {
+    guard array.ndim == 4 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "attention tensors must have shape [B, H, T, D]"
+        )
+    }
+    guard array.size > 0 else {
+        throw TurboQuantError.invalidMetalConfiguration("empty attention tensors are not supported")
+    }
+    guard array.dtype.isFloatingPoint else {
+        throw TurboQuantError.invalidMetalConfiguration("attention tensor dtype must be floating point")
+    }
+    guard groupSize > 0 else {
+        throw TurboQuantError.invalidGroupSize(groupSize)
+    }
+    guard groupSize <= 128, groupSize % 32 == 0 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "group size must be 32, 64, 96, or 128 for compressed attention"
+        )
+    }
+    guard [64, 80, 96, 128, 256].contains(array.dim(3)) else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "head dimension \(array.dim(3)) is not supported by compressed attention"
+        )
+    }
+}
+
+private func validateAttentionLayout(
+    _ layout: TurboQuantAttentionLayout,
+    role: TurboQuantTensorRole,
+    groupSize: Int
+) throws {
+    guard role == .key || role == .value else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "compressed attention codes must be encoded as key or value"
+        )
+    }
+    guard layout.layoutVersion == TurboQuantAttentionLayout.currentVersion else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "unsupported compressed attention layout version \(layout.layoutVersion)"
+        )
+    }
+    guard layout.batchSize > 0, layout.kvHeadCount > 0, layout.capacity > 0,
+        layout.logicalLength >= 0, layout.logicalLength <= layout.capacity,
+        layout.headDimension > 0
+    else {
+        throw TurboQuantError.invalidMetalConfiguration("invalid compressed attention layout shape")
+    }
+    guard layout.ringOffset >= 0, layout.ringOffset < layout.capacity else {
+        throw TurboQuantError.invalidMetalConfiguration("ring offset is outside cache capacity")
+    }
+    guard layout.groupsPerVector == (layout.headDimension + groupSize - 1) / groupSize else {
+        throw TurboQuantError.invalidMetalConfiguration("groups per vector does not match layout")
+    }
+}
+
+private func validateAttentionQuery(
+    _ queries: MLXArray,
+    code: TurboQuantAttentionCode
+) throws {
+    try validateAttentionArray(queries, groupSize: code.groupSize)
+    guard queries.dim(0) == code.layout.batchSize else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "query batch size does not match compressed attention cache"
+        )
+    }
+    guard queries.dim(3) == code.layout.headDimension else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "query head dimension does not match compressed attention cache"
+        )
+    }
+    guard queries.dim(1) % code.layout.kvHeadCount == 0 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "query heads must be a multiple of KV heads"
+        )
+    }
+}
+
+private func validateAttentionPair(
+    keyCode: TurboQuantAttentionCode,
+    valueCode: TurboQuantAttentionCode
+) throws {
+    try validateAttentionLayout(keyCode.layout, role: keyCode.role, groupSize: keyCode.groupSize)
+    try validateAttentionLayout(valueCode.layout, role: valueCode.role, groupSize: valueCode.groupSize)
+    guard keyCode.role == .key, valueCode.role == .value else {
+        throw TurboQuantError.invalidMetalConfiguration("compressed attention requires key and value codes")
+    }
+    guard keyCode.layout == valueCode.layout else {
+        throw TurboQuantError.invalidMetalConfiguration("key and value compressed layouts differ")
+    }
+    guard keyCode.preset == valueCode.preset, keyCode.groupSize == valueCode.groupSize else {
+        throw TurboQuantError.invalidMetalConfiguration("key and value compressed presets differ")
+    }
+}
+
+private func applyAttentionMask(
+    _ scores: inout MLXArray,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode,
+    stream: StreamOrDevice
+) {
+    switch mask {
+    case .causal:
+        let (qL, kL) = (scores.dim(-2), scores.dim(-1))
+        let qIndices = MLXArray(0 ..< qL) + MLXArray(kL - qL)
+        let kIndices = MLXArray(0 ..< kL)
+        let causalMask = greaterEqual(
+            expandedDimensions(qIndices, axis: -1),
+            expandedDimensions(kIndices, axis: -2),
+            stream: stream
+        )
+        scores = `where`(
+            causalMask,
+            scores,
+            MLXArray(-Float.greatestFiniteMagnitude),
+            stream: stream
+        )
+
+    case .array(let maskArray):
+        if maskArray.dtype == .bool {
+            scores = `where`(
+                maskArray,
+                scores,
+                MLXArray(-Float.greatestFiniteMagnitude),
+                stream: stream
+            )
+        } else {
+            scores = scores + maskArray
+        }
+
+    case .arrays(let maskArrays):
+        if let maskArray = maskArrays.first {
+            if maskArray.dtype == .bool {
+                scores = `where`(
+                    maskArray,
+                    scores,
+                    MLXArray(-Float.greatestFiniteMagnitude),
+                    stream: stream
+                )
+            } else {
+                scores = scores + maskArray
+            }
+        }
+
+    case .none:
+        break
+    }
+}
+
+private func attentionTemplate(
+    configuration: TurboQuantConfiguration,
+    layout: TurboQuantAttentionLayout,
+    inputLength: Int,
+    outputLength: Int,
+    queryHeadCount: Int,
+    queryLength: Int,
+    outputDType: DType,
+    causal: Bool
+) -> [(String, any KernelTemplateArg)] {
+    [
+        ("BATCH_SIZE", layout.batchSize),
+        ("KV_HEADS", layout.kvHeadCount),
+        ("QUERY_HEADS", queryHeadCount),
+        ("INPUT_LENGTH", inputLength),
+        ("OUTPUT_LENGTH", outputLength),
+        ("CAPACITY", layout.capacity),
+        ("LOGICAL_LENGTH", layout.logicalLength),
+        ("RING_OFFSET", layout.ringOffset),
+        ("QUERY_LENGTH", queryLength),
+        ("HEAD_DIM", layout.headDimension),
+        ("GROUP_SIZE", configuration.groupSize),
+        ("GROUPS_PER_VECTOR", layout.groupsPerVector),
+        ("BASE_BITS", configuration.preset.baseMagnitudeBits),
+        ("HIGH_BITS", configuration.preset.highMagnitudeBits),
+        ("MAG_WORDS_PER_GROUP", layout.magnitudeWordsPerGroup),
+        ("BITSET_WORDS_PER_GROUP", layout.bitsetWordsPerGroup),
+        ("ROLE", metalRoleValue(configuration.role)),
+        ("SEED", Int(UInt32(truncatingIfNeeded: configuration.seed))),
+        ("OUTPUT_DTYPE", outputDType),
+        ("DO_CAUSAL", causal),
+    ]
+}
+
 private enum TurboQuantMetalKernels {
     static let encode = MLXFast.metalKernel(
         name: "turboquant_polar_qjl_encode",
@@ -1070,6 +1777,42 @@ private enum TurboQuantMetalKernels {
         inputNames: ["packed", "signs", "high_mask", "residual_signs", "scales"],
         outputNames: ["out"],
         source: decodeSource
+    )
+
+    static let encodeAttention = MLXFast.metalKernel(
+        name: "turboquant_attention_encode",
+        inputNames: ["x"],
+        outputNames: ["packed", "signs", "high_mask", "residual_signs", "scales"],
+        source: encodeAttentionSource,
+        header: attentionHeader
+    )
+
+    static let qk = MLXFast.metalKernel(
+        name: "turboquant_attention_qk",
+        inputNames: ["q", "k_packed", "k_signs", "k_high_mask", "k_residual_signs", "k_scales"],
+        outputNames: ["scores"],
+        source: qkSource,
+        header: attentionHeader
+    )
+
+    static let av = MLXFast.metalKernel(
+        name: "turboquant_attention_av",
+        inputNames: ["weights", "v_packed", "v_signs", "v_high_mask", "v_residual_signs", "v_scales"],
+        outputNames: ["out"],
+        source: avSource,
+        header: attentionHeader
+    )
+
+    static let fusedAttention = MLXFast.metalKernel(
+        name: "turboquant_attention_fused_decode",
+        inputNames: [
+            "q",
+            "k_packed", "k_signs", "k_high_mask", "k_residual_signs", "k_scales",
+            "v_packed", "v_signs", "v_high_mask", "v_residual_signs", "v_scales",
+        ],
+        outputNames: ["out"],
+        source: fusedAttentionSource,
+        header: attentionHeader
     )
 
     private static let encodeSource = """
@@ -1261,5 +2004,381 @@ private enum TurboQuantMetalKernels {
         }
 
         out[index] = value;
+        """
+
+    private static let attentionHeader = """
+        inline uint tq_mix(uint seed, uint index) {
+            uint mixed = seed + index * 0x9E3779B9u;
+            mixed ^= mixed >> 16;
+            mixed *= 0x7FEB352Du;
+            mixed ^= mixed >> 15;
+            mixed *= 0x846CA68Bu;
+            mixed ^= mixed >> 16;
+            return mixed;
+        }
+
+        inline bool tq_random_sign(uint seed, uint index) {
+            return (tq_mix(seed, index) & 1u) != 0u;
+        }
+
+        inline uint tq_bitset_offset(uint batch, uint head, uint token, uint group, uint word) {
+            return (((batch * uint(KV_HEADS) + head) * uint(CAPACITY) + token)
+                * uint(GROUPS_PER_VECTOR) + group) * uint(BITSET_WORDS_PER_GROUP) + word;
+        }
+
+        inline uint tq_packed_offset(uint batch, uint head, uint token, uint group, uint word) {
+            return (((batch * uint(KV_HEADS) + head) * uint(CAPACITY) + token)
+                * uint(GROUPS_PER_VECTOR) + group) * uint(MAG_WORDS_PER_GROUP) + word;
+        }
+
+        inline uint tq_scale_offset(uint batch, uint head, uint token, uint group, uint scale_index) {
+            return ((((batch * uint(KV_HEADS) + head) * uint(CAPACITY) + token)
+                * uint(GROUPS_PER_VECTOR) + group) * 3u) + scale_index;
+        }
+
+        inline uint tq_physical_token(uint logical_token) {
+            return (uint(RING_OFFSET) + logical_token) % uint(CAPACITY);
+        }
+
+        inline uint tq_read_magnitude(
+            device const uint* packed,
+            device const uint* high_mask,
+            uint batch,
+            uint head,
+            uint token,
+            uint group,
+            uint local
+        ) {
+            uint bitset_word = local >> 5;
+            uint bitset_bit = local & 31u;
+            bool high_precision =
+                (high_mask[tq_bitset_offset(batch, head, token, group, bitset_word)]
+                    & (1u << bitset_bit)) != 0u;
+            uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+
+            uint bit_offset = 0u;
+            for (uint prior = 0; prior < local; prior++) {
+                uint prior_word = prior >> 5;
+                uint prior_bit = prior & 31u;
+                bool prior_high =
+                    (high_mask[tq_bitset_offset(batch, head, token, group, prior_word)]
+                        & (1u << prior_bit)) != 0u;
+                bit_offset += prior_high ? uint(HIGH_BITS) : uint(BASE_BITS);
+            }
+
+            uint quantized = 0u;
+            for (uint bit = 0; bit < bits; bit++) {
+                uint global_bit = bit_offset + bit;
+                uint packed_word = global_bit >> 5;
+                uint packed_bit = global_bit & 31u;
+                if ((packed[tq_packed_offset(batch, head, token, group, packed_word)]
+                    & (1u << packed_bit)) != 0u) {
+                    quantized |= 1u << bit;
+                }
+            }
+            return quantized;
+        }
+
+        inline float tq_decode_attention_value(
+            device const uint* packed,
+            device const uint* signs,
+            device const uint* high_mask,
+            device const uint* residual_signs,
+            device const float* scales,
+            uint batch,
+            uint head,
+            uint token,
+            uint dimension,
+            uint seed,
+            uint role
+        ) {
+            uint group = dimension / uint(GROUP_SIZE);
+            uint local = dimension - group * uint(GROUP_SIZE);
+            uint bitset_word = local >> 5;
+            uint bitset_bit = local & 31u;
+            uint bit_mask = 1u << bitset_bit;
+            bool high_precision =
+                (high_mask[tq_bitset_offset(batch, head, token, group, bitset_word)] & bit_mask) != 0u;
+            float scale = high_precision
+                ? scales[tq_scale_offset(batch, head, token, group, 1u)]
+                : scales[tq_scale_offset(batch, head, token, group, 0u)];
+            uint quantized = tq_read_magnitude(packed, high_mask, batch, head, token, group, local);
+            float sign =
+                (signs[tq_bitset_offset(batch, head, token, group, bitset_word)] & bit_mask) != 0u
+                    ? -1.0f : 1.0f;
+            float value = sign * float(quantized) * scale;
+
+            if (role != 1u) {
+                float residual_sign =
+                    (residual_signs[tq_bitset_offset(batch, head, token, group, bitset_word)]
+                        & bit_mask) != 0u ? -1.0f : 1.0f;
+                value += residual_sign * scales[tq_scale_offset(batch, head, token, group, 2u)];
+            }
+
+            if (tq_random_sign(seed, dimension)) {
+                value = -value;
+            }
+            return value;
+        }
+        """
+
+    private static let encodeAttentionSource = """
+        uint row_group_id = thread_position_in_grid.x;
+        uint total = uint(BATCH_SIZE) * uint(KV_HEADS) * uint(INPUT_LENGTH) * uint(GROUPS_PER_VECTOR);
+        if (row_group_id >= total) {
+            return;
+        }
+
+        uint group = row_group_id % uint(GROUPS_PER_VECTOR);
+        uint token = (row_group_id / uint(GROUPS_PER_VECTOR)) % uint(INPUT_LENGTH);
+        uint head = (row_group_id / (uint(GROUPS_PER_VECTOR) * uint(INPUT_LENGTH))) % uint(KV_HEADS);
+        uint batch = row_group_id / (uint(GROUPS_PER_VECTOR) * uint(INPUT_LENGTH) * uint(KV_HEADS));
+        if (token >= uint(CAPACITY)) {
+            return;
+        }
+
+        uint group_start = group * uint(GROUP_SIZE);
+        uint count = min(uint(GROUP_SIZE), uint(HEAD_DIM) - group_start);
+        thread float values[GROUP_SIZE];
+        thread float magnitudes[GROUP_SIZE];
+        float max_abs = 0.0f;
+
+        for (uint local = 0; local < count; local++) {
+            uint dimension = group_start + local;
+            uint input_index =
+                (((batch * uint(KV_HEADS) + head) * uint(INPUT_LENGTH) + token)
+                    * uint(HEAD_DIM)) + dimension;
+            float value = float(x[input_index]);
+            if (tq_random_sign(uint(SEED), dimension)) {
+                value = -value;
+            }
+            values[local] = value;
+            float magnitude = fabs(value);
+            magnitudes[local] = magnitude;
+            max_abs = max(max_abs, magnitude);
+        }
+
+        float base_max = float((1 << BASE_BITS) - 1);
+        float high_max = float((1 << HIGH_BITS) - 1);
+        float safe_max = max(max_abs, 1.17549435e-38f);
+        float base_scale = safe_max / base_max;
+        float high_scale = safe_max / high_max;
+        scales[tq_scale_offset(batch, head, token, group, 0u)] = base_scale;
+        scales[tq_scale_offset(batch, head, token, group, 1u)] = high_scale;
+        scales[tq_scale_offset(batch, head, token, group, 2u)] = 0.0f;
+
+        for (uint word = 0; word < uint(BITSET_WORDS_PER_GROUP); word++) {
+            signs[tq_bitset_offset(batch, head, token, group, word)] = 0u;
+            high_mask[tq_bitset_offset(batch, head, token, group, word)] = 0u;
+            residual_signs[tq_bitset_offset(batch, head, token, group, word)] = 0u;
+        }
+        for (uint word = 0; word < uint(MAG_WORDS_PER_GROUP); word++) {
+            packed[tq_packed_offset(batch, head, token, group, word)] = 0u;
+        }
+
+        uint high_count = uint(round(float(count) * 0.5f));
+        float residual_sum = 0.0f;
+        for (uint local = 0; local < count; local++) {
+            float magnitude = magnitudes[local];
+            uint rank = 0u;
+            for (uint other = 0; other < count; other++) {
+                bool greater = magnitudes[other] > magnitude;
+                bool tied_before = magnitudes[other] == magnitude && other < local;
+                if (greater || tied_before) {
+                    rank += 1u;
+                }
+            }
+            bool high_precision = rank < high_count;
+            uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+            float scale = high_precision ? high_scale : base_scale;
+            uint level_max = (1u << bits) - 1u;
+            uint quantized = uint(clamp(round(magnitude / scale), 0.0f, float(level_max)));
+            if (ROLE != 1) {
+                float signed_decode = (values[local] < 0.0f ? -1.0f : 1.0f)
+                    * float(quantized) * scale;
+                residual_sum += fabs(values[local] - signed_decode);
+            }
+        }
+        if (ROLE != 1) {
+            scales[tq_scale_offset(batch, head, token, group, 2u)] = residual_sum / float(count);
+        }
+
+        uint bit_offset = 0u;
+        for (uint local = 0; local < count; local++) {
+            float magnitude = magnitudes[local];
+            uint rank = 0u;
+            for (uint other = 0; other < count; other++) {
+                bool greater = magnitudes[other] > magnitude;
+                bool tied_before = magnitudes[other] == magnitude && other < local;
+                if (greater || tied_before) {
+                    rank += 1u;
+                }
+            }
+            bool high_precision = rank < high_count;
+            uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+            float scale = high_precision ? high_scale : base_scale;
+            uint level_max = (1u << bits) - 1u;
+            uint quantized = uint(clamp(round(magnitude / scale), 0.0f, float(level_max)));
+
+            uint word = local >> 5;
+            uint bit = local & 31u;
+            uint mask = 1u << bit;
+            if (values[local] < 0.0f) {
+                signs[tq_bitset_offset(batch, head, token, group, word)] |= mask;
+            }
+            if (high_precision) {
+                high_mask[tq_bitset_offset(batch, head, token, group, word)] |= mask;
+            }
+            if (ROLE != 1) {
+                float signed_decode = (values[local] < 0.0f ? -1.0f : 1.0f)
+                    * float(quantized) * scale;
+                float residual = values[local] - signed_decode;
+                if (residual < 0.0f) {
+                    residual_signs[tq_bitset_offset(batch, head, token, group, word)] |= mask;
+                }
+            }
+
+            for (uint packed_bit = 0; packed_bit < bits; packed_bit++) {
+                if ((quantized & (1u << packed_bit)) != 0u) {
+                    uint global_bit = bit_offset + packed_bit;
+                    uint packed_word = global_bit >> 5;
+                    uint packed_word_bit = global_bit & 31u;
+                    packed[tq_packed_offset(batch, head, token, group, packed_word)] |=
+                        1u << packed_word_bit;
+                }
+            }
+            bit_offset += bits;
+        }
+        """
+
+    private static let qkSource = """
+        uint index = thread_position_in_grid.x;
+        uint total = uint(BATCH_SIZE) * uint(QUERY_HEADS) * uint(QUERY_LENGTH) * uint(LOGICAL_LENGTH);
+        if (index >= total) {
+            return;
+        }
+
+        float attention_scale = as_type<float>(uint(ATTENTION_SCALE_BITS));
+        uint logical_token = index % uint(LOGICAL_LENGTH);
+        uint q_token = (index / uint(LOGICAL_LENGTH)) % uint(QUERY_LENGTH);
+        uint q_head = (index / (uint(LOGICAL_LENGTH) * uint(QUERY_LENGTH))) % uint(QUERY_HEADS);
+        uint batch = index / (uint(LOGICAL_LENGTH) * uint(QUERY_LENGTH) * uint(QUERY_HEADS));
+        uint repeats = uint(QUERY_HEADS) / uint(KV_HEADS);
+        uint kv_head = q_head / repeats;
+        uint physical_token = tq_physical_token(logical_token);
+
+        float sum = 0.0f;
+        for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+            uint q_index =
+                (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                    * uint(HEAD_DIM)) + dimension;
+            float key_value = tq_decode_attention_value(
+                k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
+                batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+            sum += float(q[q_index]) * key_value;
+        }
+        scores[index] = sum * attention_scale;
+        """
+
+    private static let avSource = """
+        uint index = thread_position_in_grid.x;
+        uint total = uint(BATCH_SIZE) * uint(QUERY_HEADS) * uint(QUERY_LENGTH) * uint(HEAD_DIM);
+        if (index >= total) {
+            return;
+        }
+
+        uint dimension = index % uint(HEAD_DIM);
+        uint q_token = (index / uint(HEAD_DIM)) % uint(QUERY_LENGTH);
+        uint q_head = (index / (uint(HEAD_DIM) * uint(QUERY_LENGTH))) % uint(QUERY_HEADS);
+        uint batch = index / (uint(HEAD_DIM) * uint(QUERY_LENGTH) * uint(QUERY_HEADS));
+        uint repeats = uint(QUERY_HEADS) / uint(KV_HEADS);
+        uint kv_head = q_head / repeats;
+
+        float sum = 0.0f;
+        for (uint logical_token = 0; logical_token < uint(LOGICAL_LENGTH); logical_token++) {
+            uint physical_token = tq_physical_token(logical_token);
+            uint weight_index =
+                (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                    * uint(LOGICAL_LENGTH)) + logical_token;
+            float value = tq_decode_attention_value(
+                v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
+                batch, kv_head, physical_token, dimension, uint(SEED), 1u);
+            sum += float(weights[weight_index]) * value;
+        }
+        out[index] = sum;
+        """
+
+    private static let fusedAttentionSource = """
+        uint row = thread_position_in_grid.x;
+        uint total_rows = uint(BATCH_SIZE) * uint(QUERY_HEADS) * uint(QUERY_LENGTH);
+        if (row >= total_rows) {
+            return;
+        }
+
+        float attention_scale = as_type<float>(uint(ATTENTION_SCALE_BITS));
+        uint q_token = row % uint(QUERY_LENGTH);
+        uint q_head = (row / uint(QUERY_LENGTH)) % uint(QUERY_HEADS);
+        uint batch = row / (uint(QUERY_LENGTH) * uint(QUERY_HEADS));
+        uint repeats = uint(QUERY_HEADS) / uint(KV_HEADS);
+        uint kv_head = q_head / repeats;
+        uint causal_limit = uint(LOGICAL_LENGTH) - uint(QUERY_LENGTH) + q_token;
+
+        thread float accum[HEAD_DIM];
+        for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+            accum[dimension] = 0.0f;
+        }
+
+        float row_max = -INFINITY;
+        for (uint logical_token = 0; logical_token < uint(LOGICAL_LENGTH); logical_token++) {
+            if (DO_CAUSAL && logical_token > causal_limit) {
+                continue;
+            }
+            uint physical_token = tq_physical_token(logical_token);
+            float score = 0.0f;
+            for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+                uint q_index =
+                    (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                        * uint(HEAD_DIM)) + dimension;
+                float key_value = tq_decode_attention_value(
+                    k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
+                    batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                score += float(q[q_index]) * key_value;
+            }
+            row_max = max(row_max, score * attention_scale);
+        }
+
+        float row_sum = 0.0f;
+        for (uint logical_token = 0; logical_token < uint(LOGICAL_LENGTH); logical_token++) {
+            if (DO_CAUSAL && logical_token > causal_limit) {
+                continue;
+            }
+            uint physical_token = tq_physical_token(logical_token);
+            float score = 0.0f;
+            for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+                uint q_index =
+                    (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                        * uint(HEAD_DIM)) + dimension;
+                float key_value = tq_decode_attention_value(
+                    k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
+                    batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                score += float(q[q_index]) * key_value;
+            }
+            float weight = exp(score * attention_scale - row_max);
+            row_sum += weight;
+            for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+                float value = tq_decode_attention_value(
+                    v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
+                    batch, kv_head, physical_token, dimension, uint(VALUE_SEED), 1u);
+                accum[dimension] += weight * value;
+            }
+        }
+
+        float inv_sum = 1.0f / max(row_sum, 1.17549435e-38f);
+        for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+            uint out_index =
+                (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                    * uint(HEAD_DIM)) + dimension;
+            out[out_index] = accum[dimension] * inv_sum;
+        }
         """
 }
