@@ -53,7 +53,7 @@ struct Tutorial {
         print(x[1])
 
         // make an array of shape [2, 2] filled with ones
-        let y = MLXArray.ones([2, 2])
+        let y = MLXArray.ones([2, 2], dtype: .float32)
 
         // pointwise add x and y
         let z = x + y

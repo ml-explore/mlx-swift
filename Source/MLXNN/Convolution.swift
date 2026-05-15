@@ -56,7 +56,7 @@ open class Conv1d: Module, UnaryLayer {
                 kernelSize,
                 inputChannels / groups,
             ])
-        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.bias = bias ? MLXArray.zeros([outputChannels], dtype: .float32) : nil
         self.padding = padding
         self.dilation = dilation
         self.stride = stride
@@ -127,7 +127,7 @@ open class Conv2d: Module, UnaryLayer {
                 kernelSize.first, kernelSize.second,
                 inputChannels / groups,
             ])
-        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.bias = bias ? MLXArray.zeros([outputChannels], dtype: .float32) : nil
         self.padding = padding.values
         self.dilation = dilation.values
         self.stride = stride.values
@@ -199,7 +199,7 @@ open class Conv3d: Module, UnaryLayer {
                 kernelSize.first, kernelSize.second, kernelSize.third,
                 inputChannels / groups,
             ])
-        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.bias = bias ? MLXArray.zeros([outputChannels], dtype: .float32) : nil
         self.padding = padding.values
         self.dilation = dilation.values
         self.stride = stride.values

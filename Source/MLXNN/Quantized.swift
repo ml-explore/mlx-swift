@@ -269,7 +269,7 @@ open class QuantizedLinear: Linear, Quantized {
         let weight = MLXRandom.uniform(
             low: -scale, high: scale, [outputDimensions, inputDimensions])
 
-        let bias = bias ? MLXArray.zeros([outputDimensions]) : nil
+        let bias = bias ? MLXArray.zeros([outputDimensions], dtype: .float32) : nil
 
         self.init(weight: weight, bias: bias, groupSize: groupSize, bits: bits, mode: mode)
     }

@@ -57,7 +57,7 @@ open class ConvTransposed1d: Module, UnaryLayer {
                 kernelSize,
                 inputChannels / groups,
             ])
-        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.bias = bias ? MLXArray.zeros([outputChannels], dtype: .float32) : nil
         self.padding = padding
         self.dilation = dilation
         self.outputPadding = outputPadding
@@ -133,7 +133,7 @@ open class ConvTransposed2d: Module, UnaryLayer {
                 kernelSize.first, kernelSize.second,
                 inputChannels / groups,
             ])
-        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.bias = bias ? MLXArray.zeros([outputChannels], dtype: .float32) : nil
         self.padding = padding.values
         self.dilation = dilation.values
         self.outputPadding = outputPadding.values
@@ -210,7 +210,7 @@ open class ConvTransposed3d: Module, UnaryLayer {
                 kernelSize.first, kernelSize.second, kernelSize.third,
                 inputChannels / groups,
             ])
-        self.bias = bias ? MLXArray.zeros([outputChannels]) : nil
+        self.bias = bias ? MLXArray.zeros([outputChannels], dtype: .float32) : nil
         self.padding = padding.values
         self.dilation = dilation.values
         self.outputPadding = outputPadding.values

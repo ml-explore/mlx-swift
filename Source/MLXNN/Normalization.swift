@@ -34,8 +34,8 @@ open class InstanceNorm: Module, UnaryLayer {
         self.eps = eps
 
         if affine {
-            self.weight = MLXArray.ones([dimensions])
-            self.bias = MLXArray.zeros([dimensions])
+            self.weight = MLXArray.ones([dimensions], dtype: .float32)
+            self.bias = MLXArray.zeros([dimensions], dtype: .float32)
         } else {
             self.weight = nil
             self.bias = nil
@@ -95,8 +95,8 @@ open class LayerNorm: Module, UnaryLayer {
         self.eps = eps
 
         if affine {
-            self.weight = MLXArray.ones([dimensions])
-            self.bias = bias ? MLXArray.zeros([dimensions]) : nil
+            self.weight = MLXArray.ones([dimensions], dtype: .float32)
+            self.bias = bias ? MLXArray.zeros([dimensions], dtype: .float32) : nil
         } else {
             self.weight = nil
             self.bias = nil
@@ -130,7 +130,7 @@ open class RMSNorm: Module, UnaryLayer {
     public let eps: Float
 
     public init(dimensions: Int, eps: Float = 1e-5) {
-        self.weight = MLXArray.ones([dimensions])
+        self.weight = MLXArray.ones([dimensions], dtype: .float32)
         self.eps = eps
         super.init()
     }
@@ -189,8 +189,8 @@ open class GroupNorm: Module, UnaryLayer {
         self.pytorchCompatible = pytorchCompatible
 
         if affine {
-            self.weight = MLXArray.ones([dimensions])
-            self.bias = MLXArray.zeros([dimensions])
+            self.weight = MLXArray.ones([dimensions], dtype: .float32)
+            self.bias = MLXArray.zeros([dimensions], dtype: .float32)
         } else {
             self.weight = nil
             self.bias = nil
@@ -294,16 +294,16 @@ open class BatchNorm: Module, UnaryLayer {
         self.momentum = momentum
 
         if affine {
-            self.weight = MLXArray.ones([featureCount])
-            self.bias = MLXArray.zeros([featureCount])
+            self.weight = MLXArray.ones([featureCount], dtype: .float32)
+            self.bias = MLXArray.zeros([featureCount], dtype: .float32)
         } else {
             self.weight = nil
             self.bias = nil
         }
 
         if trackRunningStats {
-            self._runningMean.wrappedValue = MLXArray.zeros([featureCount])
-            self._runningVar.wrappedValue = MLXArray.ones([featureCount])
+            self._runningMean.wrappedValue = MLXArray.zeros([featureCount], dtype: .float32)
+            self._runningVar.wrappedValue = MLXArray.ones([featureCount], dtype: .float32)
         }
 
         super.init()
