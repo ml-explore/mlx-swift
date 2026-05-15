@@ -39,4 +39,24 @@ class QuantizationTests: XCTestCase {
         let quantized = QuantizedLinear(64, 64, groupSize: 32, bits: 4, mode: .mxfp4)
         XCTAssertNil(quantized.biases)
     }
+
+    func testTurboQuantPackedRoundTrip() {
+        let x = MLXArray.ones([1, 32], dtype: .float32)
+        let configuration = TurboQuantConfiguration(preset: .turbo3_5, groupSize: 32)
+        let packed = turboQuantized(x, configuration: configuration)
+        let decoded = turboDequantized(packed, configuration: configuration)
+
+        XCTAssertEqual(decoded.shape, x.shape)
+        XCTAssertTrue(allClose(decoded, x).item(Bool.self))
+    }
+
+    func testTurboQuantMatmulShape() {
+        let x = MLXArray.ones([2, 32], dtype: .float32)
+        let w = MLXArray.ones([4, 32], dtype: .float32)
+        let configuration = TurboQuantConfiguration(preset: .turbo2_5, groupSize: 32)
+        let packed = turboQuantized(w, configuration: configuration)
+        let output = turboQuantizedMM(x, packed, configuration: configuration)
+
+        XCTAssertEqual(output.shape, [2, 4])
+    }
 }
