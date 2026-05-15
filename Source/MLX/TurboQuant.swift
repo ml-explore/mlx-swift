@@ -142,6 +142,7 @@ public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
 public enum TurboQuantError: Error, Equatable, CustomStringConvertible {
     case invalidGroupSize(Int)
     case invalidMetalConfiguration(String)
+    case invalidQualityInput(String)
     case invalidReferenceCode(String)
     case unsupportedBackend(TurboQuantBackend, String)
 
@@ -151,6 +152,8 @@ public enum TurboQuantError: Error, Equatable, CustomStringConvertible {
             "TurboQuant group size must be positive, got \(groupSize)."
         case .invalidMetalConfiguration(let message):
             "Invalid TurboQuant Metal configuration: \(message)"
+        case .invalidQualityInput(let message):
+            "Invalid TurboQuant quality input: \(message)"
         case .invalidReferenceCode(let message):
             "Invalid TurboQuant reference code: \(message)"
         case .unsupportedBackend(let backend, let message):
@@ -228,10 +231,30 @@ public struct TurboQuantReferenceCode: Hashable, Codable, Sendable {
     public var valueCount: Int
     public var baseScales: [Float]
     public var highScales: [Float]
+    public var residualScales: [Float]
     public var signs: Data
     public var highPrecisionMask: Data
     public var residualSigns: Data
     public var packedMagnitudes: Data
+
+    private enum CodingKeys: String, CodingKey {
+        case shape
+        case preset
+        case role
+        case groupSize
+        case seed
+        case residualScale
+        case baseMagnitudeBits
+        case highMagnitudeBits
+        case valueCount
+        case baseScales
+        case highScales
+        case residualScales
+        case signs
+        case highPrecisionMask
+        case residualSigns
+        case packedMagnitudes
+    }
 
     public init(
         shape: [Int],
@@ -245,6 +268,7 @@ public struct TurboQuantReferenceCode: Hashable, Codable, Sendable {
         valueCount: Int,
         baseScales: [Float],
         highScales: [Float],
+        residualScales: [Float]? = nil,
         signs: Data,
         highPrecisionMask: Data,
         residualSigns: Data,
@@ -261,10 +285,51 @@ public struct TurboQuantReferenceCode: Hashable, Codable, Sendable {
         self.valueCount = valueCount
         self.baseScales = baseScales
         self.highScales = highScales
+        self.residualScales = residualScales ?? []
         self.signs = signs
         self.highPrecisionMask = highPrecisionMask
         self.residualSigns = residualSigns
         self.packedMagnitudes = packedMagnitudes
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        shape = try container.decode([Int].self, forKey: .shape)
+        preset = try container.decode(TurboQuantPreset.self, forKey: .preset)
+        role = try container.decode(TurboQuantTensorRole.self, forKey: .role)
+        groupSize = try container.decode(Int.self, forKey: .groupSize)
+        seed = try container.decode(UInt64.self, forKey: .seed)
+        residualScale = try container.decodeIfPresent(Float.self, forKey: .residualScale) ?? 0.5
+        baseMagnitudeBits = try container.decode(Int.self, forKey: .baseMagnitudeBits)
+        highMagnitudeBits = try container.decode(Int.self, forKey: .highMagnitudeBits)
+        valueCount = try container.decode(Int.self, forKey: .valueCount)
+        baseScales = try container.decode([Float].self, forKey: .baseScales)
+        highScales = try container.decode([Float].self, forKey: .highScales)
+        residualScales = try container.decodeIfPresent([Float].self, forKey: .residualScales) ?? []
+        signs = try container.decode(Data.self, forKey: .signs)
+        highPrecisionMask = try container.decode(Data.self, forKey: .highPrecisionMask)
+        residualSigns = try container.decode(Data.self, forKey: .residualSigns)
+        packedMagnitudes = try container.decode(Data.self, forKey: .packedMagnitudes)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(shape, forKey: .shape)
+        try container.encode(preset, forKey: .preset)
+        try container.encode(role, forKey: .role)
+        try container.encode(groupSize, forKey: .groupSize)
+        try container.encode(seed, forKey: .seed)
+        try container.encode(residualScale, forKey: .residualScale)
+        try container.encode(baseMagnitudeBits, forKey: .baseMagnitudeBits)
+        try container.encode(highMagnitudeBits, forKey: .highMagnitudeBits)
+        try container.encode(valueCount, forKey: .valueCount)
+        try container.encode(baseScales, forKey: .baseScales)
+        try container.encode(highScales, forKey: .highScales)
+        try container.encode(residualScales, forKey: .residualScales)
+        try container.encode(signs, forKey: .signs)
+        try container.encode(highPrecisionMask, forKey: .highPrecisionMask)
+        try container.encode(residualSigns, forKey: .residualSigns)
+        try container.encode(packedMagnitudes, forKey: .packedMagnitudes)
     }
 
     public var storageByteCount: Int {
@@ -272,7 +337,8 @@ public struct TurboQuantReferenceCode: Hashable, Codable, Sendable {
             + signs.count
             + highPrecisionMask.count
             + residualSigns.count
-            + (baseScales.count + highScales.count) * MemoryLayout<Float>.stride
+            + (baseScales.count + highScales.count + residualScales.count)
+                * MemoryLayout<Float>.stride
     }
 
     public var approximateBitsPerValue: Double {
@@ -308,6 +374,37 @@ public struct TurboQuantMetalCode {
     public var approximateBitsPerValue: Double {
         guard valueCount > 0 else { return 0 }
         return Double(storageByteCount * 8) / Double(valueCount)
+    }
+}
+
+public struct TurboQuantQualityThresholds: Hashable, Codable, Sendable {
+    public var maxRelativeMSE: Float
+    public var minCosineSimilarity: Float
+    public var maxInnerProductRelativeError: Float
+
+    public init(
+        maxRelativeMSE: Float = 0.02,
+        minCosineSimilarity: Float = 0.99,
+        maxInnerProductRelativeError: Float = 0.08
+    ) {
+        self.maxRelativeMSE = maxRelativeMSE
+        self.minCosineSimilarity = minCosineSimilarity
+        self.maxInnerProductRelativeError = maxInnerProductRelativeError
+    }
+}
+
+public struct TurboQuantQualityReport: Hashable, Codable, Sendable {
+    public var mse: Float
+    public var relativeMSE: Float
+    public var maxAbsoluteError: Float
+    public var cosineSimilarity: Float
+    public var innerProductRelativeError: Float
+    public var thresholds: TurboQuantQualityThresholds
+
+    public var passes: Bool {
+        relativeMSE <= thresholds.maxRelativeMSE
+            && cosineSimilarity >= thresholds.minCosineSimilarity
+            && innerProductRelativeError <= thresholds.maxInnerProductRelativeError
     }
 }
 
@@ -385,6 +482,24 @@ public func turboQuantReferenceDecode(
     return MLXArray(values, code.shape)
 }
 
+public func turboQuantReferenceQuality(
+    _ array: MLXArray,
+    configuration: TurboQuantConfiguration = TurboQuantConfiguration(
+        backend: .polarQJLReference
+    ),
+    thresholds: TurboQuantQualityThresholds = TurboQuantQualityThresholds()
+) throws -> TurboQuantQualityReport {
+    let original = array.asArray(Float.self)
+    let code = try turboQuantReferenceEncode(array, configuration: configuration)
+    let decoded = try turboQuantReferenceDecode(code).asArray(Float.self)
+    return try turboQuantQuality(
+        original: original,
+        decoded: decoded,
+        seed: configuration.seed,
+        thresholds: thresholds
+    )
+}
+
 public func turboQuantMetalEncode(
     _ array: MLXArray,
     configuration: TurboQuantConfiguration = TurboQuantConfiguration(backend: .metalPolarQJL),
@@ -418,7 +533,7 @@ public func turboQuantMetalEncode(
             [groupCount * bitsetWordsPerGroup],
             [groupCount * bitsetWordsPerGroup],
             [groupCount * bitsetWordsPerGroup],
-            [groupCount, 2],
+            [groupCount, 3],
         ],
         outputDTypes: [.uint32, .uint32, .uint32, .uint32, .float32],
         initValue: 0,
@@ -528,6 +643,7 @@ private func encodeTurboQuantReference(
     let groupCount = (values.count + groupSize - 1) / groupSize
     var baseScales = Array(repeating: Float(1), count: groupCount)
     var highScales = Array(repeating: Float(1), count: groupCount)
+    var residualScales = Array(repeating: Float(0), count: groupCount)
     var signs = [UInt8](repeating: 0, count: packedBitByteCount(values.count))
     var highPrecisionMask = [UInt8](repeating: 0, count: packedBitByteCount(values.count))
     var residualSigns = [UInt8](repeating: 0, count: packedBitByteCount(values.count))
@@ -578,8 +694,9 @@ private func encodeTurboQuantReference(
             highPrecisionIndices = Set(ranked.prefix(highPrecisionCount))
         }
 
+        var residuals = Array(repeating: Float(0), count: count)
+        var residualMagnitudeSum = Float(0)
         for localIndex in 0 ..< count {
-            let absoluteIndex = start + localIndex
             let value = transformed[localIndex]
             let highPrecision = highPrecisionIndices.contains(localIndex)
             let bits = highPrecision ? highBits : baseBits
@@ -591,11 +708,28 @@ private func encodeTurboQuantReference(
             )
             let signedDecoded = (value.sign == .minus ? -1 : 1) * Float(quantizedMagnitude) * scale
             let residual = value - signedDecoded
+            residuals[localIndex] = residual
+            residualMagnitudeSum += Swift.abs(residual)
+        }
+        if configuration.role != .value {
+            residualScales[groupIndex] = residualMagnitudeSum / Float(count)
+        }
 
+        for localIndex in 0 ..< count {
+            let absoluteIndex = start + localIndex
+            let value = transformed[localIndex]
+            let highPrecision = highPrecisionIndices.contains(localIndex)
+            let bits = highPrecision ? highBits : baseBits
+            let scale = highPrecision ? highScales[groupIndex] : baseScales[groupIndex]
+            let levelMax = Float((1 << bits) - 1)
+            let magnitude = Swift.abs(value)
+            let quantizedMagnitude = UInt8(
+                Swift.max(0, Swift.min(Int((magnitude / scale).rounded()), Int(levelMax)))
+            )
             setPackedBit(&signs, index: absoluteIndex, value: value.sign == .minus)
             setPackedBit(&highPrecisionMask, index: absoluteIndex, value: highPrecision)
             if configuration.role != .value {
-                setPackedBit(&residualSigns, index: absoluteIndex, value: residual.sign == .minus)
+                setPackedBit(&residualSigns, index: absoluteIndex, value: residuals[localIndex].sign == .minus)
             }
             appendPackedBits(
                 UInt32(quantizedMagnitude),
@@ -622,6 +756,7 @@ private func encodeTurboQuantReference(
         valueCount: values.count,
         baseScales: baseScales,
         highScales: highScales,
+        residualScales: residualScales,
         signs: Data(signs),
         highPrecisionMask: Data(highPrecisionMask),
         residualSigns: Data(residualSigns),
@@ -642,6 +777,9 @@ private func decodeTurboQuantReference(_ code: TurboQuantReferenceCode) throws -
     let groupCount = (code.valueCount + code.groupSize - 1) / code.groupSize
     guard code.baseScales.count == groupCount, code.highScales.count == groupCount else {
         throw TurboQuantError.invalidReferenceCode("scale table count does not match groups")
+    }
+    guard code.residualScales.isEmpty || code.residualScales.count == groupCount else {
+        throw TurboQuantError.invalidReferenceCode("residual scale table count does not match groups")
     }
     guard code.signs.count >= packedBitByteCount(code.valueCount),
         code.highPrecisionMask.count >= packedBitByteCount(code.valueCount)
@@ -675,7 +813,10 @@ private func decodeTurboQuantReference(_ code: TurboQuantReferenceCode) throws -
             if code.role != .value {
                 let residualSign: Float =
                     getPackedBit(code.residualSigns, index: absoluteIndex) ? -1 : 1
-                reconstructed += residualSign * code.residualScale * scale
+                let residualScale = code.residualScales.isEmpty
+                    ? code.residualScale * scale
+                    : code.residualScales[groupIndex]
+                reconstructed += residualSign * residualScale
             }
 
             values[absoluteIndex] = unpreconditionedValue(
@@ -687,6 +828,74 @@ private func decodeTurboQuantReference(_ code: TurboQuantReferenceCode) throws -
     }
 
     return values
+}
+
+private func turboQuantQuality(
+    original: [Float],
+    decoded: [Float],
+    seed: UInt64,
+    thresholds: TurboQuantQualityThresholds
+) throws -> TurboQuantQualityReport {
+    guard !original.isEmpty else {
+        throw TurboQuantError.invalidQualityInput("quality input must not be empty")
+    }
+    guard original.count == decoded.count else {
+        throw TurboQuantError.invalidQualityInput("original and decoded counts differ")
+    }
+
+    var squaredError = Float(0)
+    var squaredSignal = Float(0)
+    var maxAbsoluteError = Float(0)
+    var dot = Float(0)
+    var originalNormSquared = Float(0)
+    var decodedNormSquared = Float(0)
+    var probeOriginalDot = Float(0)
+    var probeDecodedDot = Float(0)
+
+    for index in original.indices {
+        let lhs = original[index]
+        let rhs = decoded[index]
+        let delta = lhs - rhs
+        squaredError += delta * delta
+        squaredSignal += lhs * lhs
+        maxAbsoluteError = Swift.max(maxAbsoluteError, Swift.abs(delta))
+        dot += lhs * rhs
+        originalNormSquared += lhs * lhs
+        decodedNormSquared += rhs * rhs
+
+        let probe = deterministicProbeValue(index: index, seed: seed)
+        probeOriginalDot += probe * lhs
+        probeDecodedDot += probe * rhs
+    }
+
+    let count = Float(original.count)
+    let mse = squaredError / count
+    let relativeMSE = squaredError / Swift.max(squaredSignal, Float.leastNonzeroMagnitude)
+    let cosineDenominator = sqrt(originalNormSquared) * sqrt(decodedNormSquared)
+    let cosineSimilarity = dot / Swift.max(cosineDenominator, Float.leastNonzeroMagnitude)
+    let innerProductRelativeError = Swift.abs(probeOriginalDot - probeDecodedDot)
+        / Swift.max(Swift.abs(probeOriginalDot), Float.leastNonzeroMagnitude)
+
+    return TurboQuantQualityReport(
+        mse: mse,
+        relativeMSE: relativeMSE,
+        maxAbsoluteError: maxAbsoluteError,
+        cosineSimilarity: cosineSimilarity,
+        innerProductRelativeError: innerProductRelativeError,
+        thresholds: thresholds
+    )
+}
+
+private func deterministicProbeValue(index: Int, seed: UInt64) -> Float {
+    var state = seed ^ 0xD1B5_4A32_D192_ED03
+    state &+= UInt64(index) &* 0x9E37_79B9_7F4A_7C15
+    state ^= state >> 30
+    state &*= 0xBF58_476D_1CE4_E5B9
+    state ^= state >> 27
+    state &*= 0x94D0_49BB_1331_11EB
+    state ^= state >> 31
+    let unit = Float(UInt32(truncatingIfNeeded: state)) / Float(UInt32.max)
+    return unit * 2 - 1
 }
 
 private func mixedPrecisionHighCount(
@@ -797,11 +1006,6 @@ private func validateMetalConfiguration(
             "group size must be 32, 64, 96, or 128 for the Metal codec"
         )
     }
-    guard configuration.qjlResidualScale == 0.5 else {
-        throw TurboQuantError.invalidMetalConfiguration(
-            "Metal codec currently supports qjlResidualScale == 0.5"
-        )
-    }
     try requireTurboQuantMetalCodec()
 }
 
@@ -908,8 +1112,10 @@ private enum TurboQuantMetalKernels {
         float safe_max = max(max_abs, 1.17549435e-38f);
         float base_scale = safe_max / base_max;
         float high_scale = safe_max / high_max;
-        scales[group_id * 2] = base_scale;
-        scales[group_id * 2 + 1] = high_scale;
+        uint scale_base = group_id * 3;
+        scales[scale_base] = base_scale;
+        scales[scale_base + 1] = high_scale;
+        scales[scale_base + 2] = 0.0f;
 
         uint bitset_base = group_id * BITSET_WORDS_PER_GROUP;
         for (uint word = 0; word < BITSET_WORDS_PER_GROUP; word++) {
@@ -924,6 +1130,33 @@ private enum TurboQuantMetalKernels {
         }
 
         uint high_count = uint(round(float(count * HIGH_NUMERATOR) / float(HIGH_DENOMINATOR)));
+        float residual_sum = 0.0f;
+        for (uint local = 0; local < count; local++) {
+            float magnitude = magnitudes[local];
+            uint rank = 0;
+            for (uint other = 0; other < count; other++) {
+                bool greater = magnitudes[other] > magnitude;
+                bool tied_before = magnitudes[other] == magnitude && other < local;
+                if (greater || tied_before) {
+                    rank += 1;
+                }
+            }
+
+            bool high_precision = rank < high_count;
+            uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+            float scale = high_precision ? high_scale : base_scale;
+            uint level_max = (1u << bits) - 1u;
+            uint quantized = uint(clamp(round(magnitude / scale), 0.0f, float(level_max)));
+            if (ROLE != 1) {
+                float signed_decode = (values[local] < 0.0f ? -1.0f : 1.0f)
+                    * float(quantized) * scale;
+                residual_sum += fabs(values[local] - signed_decode);
+            }
+        }
+        if (ROLE != 1) {
+            scales[scale_base + 2] = residual_sum / float(count);
+        }
+
         uint bit_offset = 0;
         for (uint local = 0; local < count; local++) {
             float magnitude = magnitudes[local];
@@ -987,7 +1220,8 @@ private enum TurboQuantMetalKernels {
         uint mask_bit = 1u << word_bit;
         bool high_precision = (high_mask[bitset_base + word_index] & mask_bit) != 0u;
         uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
-        float scale = high_precision ? scales[group_id * 2 + 1] : scales[group_id * 2];
+        uint scale_base = group_id * 3;
+        float scale = high_precision ? scales[scale_base + 1] : scales[scale_base];
 
         uint bit_offset = 0;
         for (uint prior = 0; prior < local; prior++) {
@@ -1013,7 +1247,7 @@ private enum TurboQuantMetalKernels {
         if (ROLE != 1) {
             float residual_sign =
                 (residual_signs[bitset_base + word_index] & mask_bit) != 0u ? -1.0f : 1.0f;
-            value += residual_sign * 0.5f * scale;
+            value += residual_sign * scales[scale_base + 2];
         }
 
         uint mixed = uint(SEED) + index * 0x9E3779B9u;

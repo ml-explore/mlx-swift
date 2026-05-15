@@ -79,6 +79,7 @@ class QuantizationTests: XCTestCase {
         XCTAssertEqual(first, second)
         XCTAssertEqual(first.shape, [2, 64])
         XCTAssertGreaterThan(first.storageByteCount, 0)
+        XCTAssertFalse(first.residualScales.isEmpty)
     }
 
     func testTurboQuantReferenceCodecDistortionThreshold() throws {
@@ -104,6 +105,27 @@ class QuantizationTests: XCTestCase {
             .reduce(Float(0), +) / Float(values.count)
 
         XCTAssertLessThan(mse, 0.01)
+    }
+
+    func testTurboQuantReferenceQualityGatePassesFixture() throws {
+        let values = (0 ..< 256).map { index in
+            Float(sin(Double(index) * 0.09) * 0.5 + cos(Double(index) * 0.13) * 0.25)
+        }
+        let x = MLXArray(values, [4, 64])
+        let configuration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .key,
+            groupSize: 64,
+            backend: .polarQJLReference,
+            seed: 99
+        )
+
+        let report = try turboQuantReferenceQuality(x, configuration: configuration)
+
+        XCTAssertTrue(report.passes)
+        XCTAssertLessThan(report.relativeMSE, 0.02)
+        XCTAssertGreaterThan(report.cosineSimilarity, 0.99)
+        XCTAssertLessThan(report.innerProductRelativeError, 0.08)
     }
 
     func testTurboQuantBackendAvailabilityContract() throws {
