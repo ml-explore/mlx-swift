@@ -1874,15 +1874,15 @@ private func selectTurboQuantKernelProfile(
     let architecture = architectureName.lowercased()
     let workingSet = recommendedWorkingSetBytes ?? 0
 
-    if supportedGPUFamilies["apple10"] == true
-        || workingSet >= 10_000_000_000
+    if workingSet >= 10_000_000_000
         || architecture.contains("a19pro")
         || architecture.contains("a19 pro")
     {
         return .sustainedA19Pro
     }
 
-    if supportedGPUFamilies["apple9"] == true
+    if supportedGPUFamilies["apple10"] == true
+        || supportedGPUFamilies["apple9"] == true
         || supportedGPUFamilies["apple8"] == true
         || workingSet >= 7_000_000_000
         || architecture.contains("a18")
