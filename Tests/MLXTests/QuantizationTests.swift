@@ -172,8 +172,9 @@ class QuantizationTests: XCTestCase {
         let x = MLXArray.zeros([1, 2, 3, 80], dtype: .float32)
         let layout = try turboQuantAttentionLayout(for: x, groupSize: 64)
 
-        XCTAssertEqual(layout.layoutVersion, 2)
+        XCTAssertEqual(layout.layoutVersion, 3)
         XCTAssertEqual(layout.logicalShape, [1, 2, 3, 80])
+        XCTAssertEqual(layout.pinnedPrefixLength, 0)
         XCTAssertEqual(layout.groupsPerVector, 2)
         XCTAssertEqual(layout.bitsetWordsPerGroup, 2)
     }
@@ -239,7 +240,7 @@ class QuantizationTests: XCTestCase {
         )
     }
 
-    func testTurboQuantOnlineFusedFallsBackForLargeContext() throws {
+    func testTurboQuantOnlineFusedSupportsLargeContextContract() throws {
         let queries = MLXArray.zeros([1, 4, 1, 64], dtype: .float32)
         let keys = MLXArray.zeros([1, 2, 513, 64], dtype: .float32)
         let keyCode = try turboQuantEmptyAttentionCode(
@@ -248,7 +249,7 @@ class QuantizationTests: XCTestCase {
             groupSize: 64
         )
 
-        XCTAssertFalse(
+        XCTAssertTrue(
             turboQuantMetalSupportsOnlineFusedAttention(
                 queries: queries,
                 keyCode: keyCode,
