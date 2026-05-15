@@ -115,4 +115,34 @@ class QuantizationTests: XCTestCase {
         XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
         XCTAssertNotNil(availability.fallbackReason(for: .metalPolarQJL))
     }
+
+    func testTurboQuantMetalCodecRoundTripWhenAvailable() throws {
+        guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec else {
+            throw XCTSkip("Metal runtime unavailable")
+        }
+
+        let values = (0 ..< 128).map { index in
+            Float(sin(Double(index) * 0.05))
+        }
+        let x = MLXArray(values, [2, 64])
+        let configuration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .key,
+            groupSize: 64,
+            backend: .metalPolarQJL,
+            seed: 23
+        )
+
+        let code = try turboQuantMetalEncode(x, configuration: configuration)
+        let decoded = try turboQuantMetalDecode(code).asArray(Float.self)
+        let mse = zip(values, decoded)
+            .map { lhs, rhs in
+                let delta = lhs - rhs
+                return delta * delta
+            }
+            .reduce(Float(0), +) / Float(values.count)
+
+        XCTAssertEqual(code.shape, [2, 64])
+        XCTAssertLessThan(mse, 0.02)
+    }
 }

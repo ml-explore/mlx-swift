@@ -1,5 +1,6 @@
 // Copyright © 2026 Schtack.
 
+import Cmlx
 import Foundation
 
 /// TurboQuant preset requested by higher-level runtime code.
@@ -86,20 +87,23 @@ public enum TurboQuantBackend: String, Codable, Sendable, CaseIterable {
 public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
     public var supportsMLXPacked: Bool
     public var supportsPolarQJLReference: Bool
+    public var supportsMetalPolarQJLCodec: Bool
     public var supportsMetalPolarQJL: Bool
 
     public init(
         supportsMLXPacked: Bool = true,
         supportsPolarQJLReference: Bool = true,
+        supportsMetalPolarQJLCodec: Bool = false,
         supportsMetalPolarQJL: Bool = false
     ) {
         self.supportsMLXPacked = supportsMLXPacked
         self.supportsPolarQJLReference = supportsPolarQJLReference
+        self.supportsMetalPolarQJLCodec = supportsMetalPolarQJLCodec
         self.supportsMetalPolarQJL = supportsMetalPolarQJL
     }
 
     public static var current: TurboQuantKernelAvailability {
-        TurboQuantKernelAvailability()
+        TurboQuantKernelAvailability(supportsMetalPolarQJLCodec: metalRuntimeAvailable())
     }
 
     public func supports(_ backend: TurboQuantBackend) -> Bool {
@@ -137,6 +141,7 @@ public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
 
 public enum TurboQuantError: Error, Equatable, CustomStringConvertible {
     case invalidGroupSize(Int)
+    case invalidMetalConfiguration(String)
     case invalidReferenceCode(String)
     case unsupportedBackend(TurboQuantBackend, String)
 
@@ -144,6 +149,8 @@ public enum TurboQuantError: Error, Equatable, CustomStringConvertible {
         switch self {
         case .invalidGroupSize(let groupSize):
             "TurboQuant group size must be positive, got \(groupSize)."
+        case .invalidMetalConfiguration(let message):
+            "Invalid TurboQuant Metal configuration: \(message)"
         case .invalidReferenceCode(let message):
             "Invalid TurboQuant reference code: \(message)"
         case .unsupportedBackend(let backend, let message):
@@ -274,6 +281,36 @@ public struct TurboQuantReferenceCode: Hashable, Codable, Sendable {
     }
 }
 
+public struct TurboQuantMetalCode {
+    public var shape: [Int]
+    public var preset: TurboQuantPreset
+    public var role: TurboQuantTensorRole
+    public var groupSize: Int
+    public var seed: UInt64
+    public var valueCount: Int
+    public var groupCount: Int
+    public var magnitudeWordsPerGroup: Int
+    public var bitsetWordsPerGroup: Int
+    public var packedMagnitudes: MLXArray
+    public var signs: MLXArray
+    public var highPrecisionMask: MLXArray
+    public var residualSigns: MLXArray
+    public var scales: MLXArray
+
+    public var storageByteCount: Int {
+        packedMagnitudes.nbytes
+            + signs.nbytes
+            + highPrecisionMask.nbytes
+            + residualSigns.nbytes
+            + scales.nbytes
+    }
+
+    public var approximateBitsPerValue: Double {
+        guard valueCount > 0 else { return 0 }
+        return Double(storageByteCount * 8) / Double(valueCount)
+    }
+}
+
 public func turboQuantized(
     _ array: MLXArray,
     configuration: TurboQuantConfiguration = TurboQuantConfiguration(),
@@ -348,12 +385,127 @@ public func turboQuantReferenceDecode(
     return MLXArray(values, code.shape)
 }
 
+public func turboQuantMetalEncode(
+    _ array: MLXArray,
+    configuration: TurboQuantConfiguration = TurboQuantConfiguration(backend: .metalPolarQJL),
+    stream: StreamOrDevice = .default
+) throws -> TurboQuantMetalCode {
+    try validateMetalConfiguration(array: array, configuration: configuration)
+
+    let valueCount = array.size
+    let groupSize = configuration.groupSize
+    let groupCount = (valueCount + groupSize - 1) / groupSize
+    let magnitudeWordsPerGroup = metalMagnitudeWordsPerGroup(
+        groupSize: groupSize,
+        preset: configuration.preset
+    )
+    let bitsetWordsPerGroup = (groupSize + 31) / 32
+    let threadGroupSize = Swift.max(1, Swift.min(groupCount, 64))
+
+    let outputs = TurboQuantMetalKernels.encode(
+        [array],
+        template: metalTemplate(
+            configuration: configuration,
+            valueCount: valueCount,
+            groupCount: groupCount,
+            magnitudeWordsPerGroup: magnitudeWordsPerGroup,
+            bitsetWordsPerGroup: bitsetWordsPerGroup
+        ),
+        grid: (groupCount, 1, 1),
+        threadGroup: (threadGroupSize, 1, 1),
+        outputShapes: [
+            [groupCount * magnitudeWordsPerGroup],
+            [groupCount * bitsetWordsPerGroup],
+            [groupCount * bitsetWordsPerGroup],
+            [groupCount * bitsetWordsPerGroup],
+            [groupCount, 2],
+        ],
+        outputDTypes: [.uint32, .uint32, .uint32, .uint32, .float32],
+        initValue: 0,
+        stream: stream
+    )
+
+    return TurboQuantMetalCode(
+        shape: array.shape,
+        preset: configuration.preset,
+        role: configuration.role,
+        groupSize: groupSize,
+        seed: configuration.seed,
+        valueCount: valueCount,
+        groupCount: groupCount,
+        magnitudeWordsPerGroup: magnitudeWordsPerGroup,
+        bitsetWordsPerGroup: bitsetWordsPerGroup,
+        packedMagnitudes: outputs[0],
+        signs: outputs[1],
+        highPrecisionMask: outputs[2],
+        residualSigns: outputs[3],
+        scales: outputs[4]
+    )
+}
+
+public func turboQuantMetalDecode(
+    _ code: TurboQuantMetalCode,
+    dtype: DType = .float32,
+    stream: StreamOrDevice = .default
+) throws -> MLXArray {
+    guard code.valueCount > 0 else {
+        throw TurboQuantError.invalidMetalConfiguration("empty arrays are not supported")
+    }
+    guard code.groupSize > 0, code.groupSize <= 128, code.groupSize % 32 == 0 else {
+        throw TurboQuantError.invalidGroupSize(code.groupSize)
+    }
+    guard dtype.isFloatingPoint else {
+        throw TurboQuantError.invalidMetalConfiguration("decode output dtype must be floating point")
+    }
+
+    let threadGroupSize = Swift.max(1, Swift.min(code.valueCount, 256))
+    let configuration = TurboQuantConfiguration(
+        preset: code.preset,
+        role: code.role,
+        groupSize: code.groupSize,
+        backend: .metalPolarQJL,
+        seed: code.seed
+    )
+    let outputs = TurboQuantMetalKernels.decode(
+        [
+            code.packedMagnitudes,
+            code.signs,
+            code.highPrecisionMask,
+            code.residualSigns,
+            code.scales,
+        ],
+        template: metalTemplate(
+            configuration: configuration,
+            valueCount: code.valueCount,
+            groupCount: code.groupCount,
+            magnitudeWordsPerGroup: code.magnitudeWordsPerGroup,
+            bitsetWordsPerGroup: code.bitsetWordsPerGroup
+        ),
+        grid: (code.valueCount, 1, 1),
+        threadGroup: (threadGroupSize, 1, 1),
+        outputShapes: [code.shape],
+        outputDTypes: [dtype],
+        stream: stream
+    )
+
+    return outputs[0]
+}
+
 public func requireTurboQuantBackend(_ backend: TurboQuantBackend) throws {
     let availability = TurboQuantKernelAvailability.current
     guard availability.supports(backend) else {
         throw TurboQuantError.unsupportedBackend(
             backend,
             availability.fallbackReason(for: backend) ?? "Backend unavailable."
+        )
+    }
+}
+
+public func requireTurboQuantMetalCodec() throws {
+    guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec else {
+        throw TurboQuantError.unsupportedBackend(
+            .metalPolarQJL,
+            "Metal runtime is unavailable for the PolarQuant/QJL codec."
         )
     }
 }
@@ -620,4 +772,260 @@ private func randomSign(index: Int, seed: UInt64) -> Bool {
     state &*= 0x94D0_49BB_1331_11EB
     state ^= state >> 31
     return (state & 1) == 1
+}
+
+private func metalRuntimeAvailable() -> Bool {
+    var result = false
+    return mlx_metal_is_available(&result) == 0 && result
+}
+
+private func validateMetalConfiguration(
+    array: MLXArray,
+    configuration: TurboQuantConfiguration
+) throws {
+    guard array.size > 0 else {
+        throw TurboQuantError.invalidMetalConfiguration("empty arrays are not supported")
+    }
+    guard array.dtype.isFloatingPoint else {
+        throw TurboQuantError.invalidMetalConfiguration("input dtype must be floating point")
+    }
+    guard configuration.groupSize > 0 else {
+        throw TurboQuantError.invalidGroupSize(configuration.groupSize)
+    }
+    guard configuration.groupSize <= 128, configuration.groupSize % 32 == 0 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "group size must be 32, 64, 96, or 128 for the Metal codec"
+        )
+    }
+    guard configuration.qjlResidualScale == 0.5 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "Metal codec currently supports qjlResidualScale == 0.5"
+        )
+    }
+    try requireTurboQuantMetalCodec()
+}
+
+private func metalMagnitudeWordsPerGroup(
+    groupSize: Int,
+    preset: TurboQuantPreset
+) -> Int {
+    let highCount = mixedPrecisionHighCount(
+        valueCount: groupSize,
+        baseBits: preset.baseMagnitudeBits,
+        highBits: preset.highMagnitudeBits,
+        targetBits: preset.targetMagnitudeBits
+    )
+    let bitCount = groupSize * preset.baseMagnitudeBits
+        + highCount * (preset.highMagnitudeBits - preset.baseMagnitudeBits)
+    return (bitCount + 31) / 32
+}
+
+private func metalTemplate(
+    configuration: TurboQuantConfiguration,
+    valueCount: Int,
+    groupCount: Int,
+    magnitudeWordsPerGroup: Int,
+    bitsetWordsPerGroup: Int
+) -> [(String, any KernelTemplateArg)] {
+    [
+        ("GROUP_SIZE", configuration.groupSize),
+        ("VALUE_COUNT", valueCount),
+        ("GROUP_COUNT", groupCount),
+        ("BASE_BITS", configuration.preset.baseMagnitudeBits),
+        ("HIGH_BITS", configuration.preset.highMagnitudeBits),
+        ("HIGH_NUMERATOR", 1),
+        ("HIGH_DENOMINATOR", 2),
+        ("MAG_WORDS_PER_GROUP", magnitudeWordsPerGroup),
+        ("BITSET_WORDS_PER_GROUP", bitsetWordsPerGroup),
+        ("ROLE", metalRoleValue(configuration.role)),
+        ("SEED", Int(UInt32(truncatingIfNeeded: configuration.seed))),
+    ]
+}
+
+private func metalRoleValue(_ role: TurboQuantTensorRole) -> Int {
+    switch role {
+    case .key:
+        0
+    case .value:
+        1
+    case .vector:
+        2
+    }
+}
+
+private enum TurboQuantMetalKernels {
+    static let encode = MLXFast.metalKernel(
+        name: "turboquant_polar_qjl_encode",
+        inputNames: ["x"],
+        outputNames: ["packed", "signs", "high_mask", "residual_signs", "scales"],
+        source: encodeSource
+    )
+
+    static let decode = MLXFast.metalKernel(
+        name: "turboquant_polar_qjl_decode",
+        inputNames: ["packed", "signs", "high_mask", "residual_signs", "scales"],
+        outputNames: ["out"],
+        source: decodeSource
+    )
+
+    private static let encodeSource = """
+        uint group_id = thread_position_in_grid.x;
+        if (group_id >= GROUP_COUNT) {
+            return;
+        }
+
+        uint start = group_id * GROUP_SIZE;
+        uint count = min(uint(GROUP_SIZE), uint(VALUE_COUNT) - start);
+        if (count == 0) {
+            return;
+        }
+
+        thread float values[GROUP_SIZE];
+        thread float magnitudes[GROUP_SIZE];
+        float max_abs = 0.0f;
+
+        for (uint local = 0; local < count; local++) {
+            uint index = start + local;
+            uint mixed = uint(SEED) + index * 0x9E3779B9u;
+            mixed ^= mixed >> 16;
+            mixed *= 0x7FEB352Du;
+            mixed ^= mixed >> 15;
+            mixed *= 0x846CA68Bu;
+            mixed ^= mixed >> 16;
+
+            float value = float(x[index]);
+            if ((mixed & 1u) != 0u) {
+                value = -value;
+            }
+            values[local] = value;
+            float magnitude = fabs(value);
+            magnitudes[local] = magnitude;
+            max_abs = max(max_abs, magnitude);
+        }
+
+        float base_max = float((1 << BASE_BITS) - 1);
+        float high_max = float((1 << HIGH_BITS) - 1);
+        float safe_max = max(max_abs, 1.17549435e-38f);
+        float base_scale = safe_max / base_max;
+        float high_scale = safe_max / high_max;
+        scales[group_id * 2] = base_scale;
+        scales[group_id * 2 + 1] = high_scale;
+
+        uint bitset_base = group_id * BITSET_WORDS_PER_GROUP;
+        for (uint word = 0; word < BITSET_WORDS_PER_GROUP; word++) {
+            signs[bitset_base + word] = 0u;
+            high_mask[bitset_base + word] = 0u;
+            residual_signs[bitset_base + word] = 0u;
+        }
+
+        uint packed_base = group_id * MAG_WORDS_PER_GROUP;
+        for (uint word = 0; word < MAG_WORDS_PER_GROUP; word++) {
+            packed[packed_base + word] = 0u;
+        }
+
+        uint high_count = uint(round(float(count * HIGH_NUMERATOR) / float(HIGH_DENOMINATOR)));
+        uint bit_offset = 0;
+        for (uint local = 0; local < count; local++) {
+            float magnitude = magnitudes[local];
+            uint rank = 0;
+            for (uint other = 0; other < count; other++) {
+                bool greater = magnitudes[other] > magnitude;
+                bool tied_before = magnitudes[other] == magnitude && other < local;
+                if (greater || tied_before) {
+                    rank += 1;
+                }
+            }
+
+            bool high_precision = rank < high_count;
+            uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+            float scale = high_precision ? high_scale : base_scale;
+            uint level_max = (1u << bits) - 1u;
+            uint quantized = uint(clamp(round(magnitude / scale), 0.0f, float(level_max)));
+
+            uint word_index = local >> 5;
+            uint word_bit = local & 31u;
+            uint mask_bit = 1u << word_bit;
+            if (values[local] < 0.0f) {
+                signs[bitset_base + word_index] |= mask_bit;
+            }
+            if (high_precision) {
+                high_mask[bitset_base + word_index] |= mask_bit;
+            }
+
+            if (ROLE != 1) {
+                float signed_decode = (values[local] < 0.0f ? -1.0f : 1.0f)
+                    * float(quantized) * scale;
+                float residual = values[local] - signed_decode;
+                if (residual < 0.0f) {
+                    residual_signs[bitset_base + word_index] |= mask_bit;
+                }
+            }
+
+            for (uint bit = 0; bit < bits; bit++) {
+                if ((quantized & (1u << bit)) != 0u) {
+                    uint global_bit = bit_offset + bit;
+                    uint packed_word = global_bit >> 5;
+                    uint packed_bit = global_bit & 31u;
+                    packed[packed_base + packed_word] |= 1u << packed_bit;
+                }
+            }
+            bit_offset += bits;
+        }
+        """
+
+    private static let decodeSource = """
+        uint index = thread_position_in_grid.x;
+        if (index >= VALUE_COUNT) {
+            return;
+        }
+
+        uint group_id = index / GROUP_SIZE;
+        uint local = index - group_id * GROUP_SIZE;
+        uint bitset_base = group_id * BITSET_WORDS_PER_GROUP;
+        uint word_index = local >> 5;
+        uint word_bit = local & 31u;
+        uint mask_bit = 1u << word_bit;
+        bool high_precision = (high_mask[bitset_base + word_index] & mask_bit) != 0u;
+        uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+        float scale = high_precision ? scales[group_id * 2 + 1] : scales[group_id * 2];
+
+        uint bit_offset = 0;
+        for (uint prior = 0; prior < local; prior++) {
+            uint prior_word = prior >> 5;
+            uint prior_bit = prior & 31u;
+            bool prior_high = (high_mask[bitset_base + prior_word] & (1u << prior_bit)) != 0u;
+            bit_offset += prior_high ? uint(HIGH_BITS) : uint(BASE_BITS);
+        }
+
+        uint packed_base = group_id * MAG_WORDS_PER_GROUP;
+        uint quantized = 0u;
+        for (uint bit = 0; bit < bits; bit++) {
+            uint global_bit = bit_offset + bit;
+            uint packed_word = global_bit >> 5;
+            uint packed_bit = global_bit & 31u;
+            if ((packed[packed_base + packed_word] & (1u << packed_bit)) != 0u) {
+                quantized |= 1u << bit;
+            }
+        }
+
+        float sign = (signs[bitset_base + word_index] & mask_bit) != 0u ? -1.0f : 1.0f;
+        float value = sign * float(quantized) * scale;
+        if (ROLE != 1) {
+            float residual_sign =
+                (residual_signs[bitset_base + word_index] & mask_bit) != 0u ? -1.0f : 1.0f;
+            value += residual_sign * 0.5f * scale;
+        }
+
+        uint mixed = uint(SEED) + index * 0x9E3779B9u;
+        mixed ^= mixed >> 16;
+        mixed *= 0x7FEB352Du;
+        mixed ^= mixed >> 15;
+        mixed *= 0x846CA68Bu;
+        mixed ^= mixed >> 16;
+        if ((mixed & 1u) != 0u) {
+            value = -value;
+        }
+
+        out[index] = value;
+        """
 }
