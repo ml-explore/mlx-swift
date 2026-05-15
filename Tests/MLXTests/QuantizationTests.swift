@@ -59,4 +59,60 @@ class QuantizationTests: XCTestCase {
 
         XCTAssertEqual(output.shape, [2, 4])
     }
+
+    func testTurboQuantReferenceCodecIsDeterministic() throws {
+        let values = (0 ..< 128).map { index in
+            Float(sin(Double(index) * 0.17) + cos(Double(index) * 0.03))
+        }
+        let x = MLXArray(values, [2, 64])
+        let configuration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .key,
+            groupSize: 32,
+            backend: .polarQJLReference,
+            seed: 42
+        )
+
+        let first = try turboQuantReferenceEncode(x, configuration: configuration)
+        let second = try turboQuantReferenceEncode(x, configuration: configuration)
+
+        XCTAssertEqual(first, second)
+        XCTAssertEqual(first.shape, [2, 64])
+        XCTAssertGreaterThan(first.storageByteCount, 0)
+    }
+
+    func testTurboQuantReferenceCodecDistortionThreshold() throws {
+        let values = (0 ..< 256).map { index in
+            Float(sin(Double(index) * 0.11) * 0.7 + cos(Double(index) * 0.07) * 0.3)
+        }
+        let x = MLXArray(values, [4, 64])
+        let configuration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .vector,
+            groupSize: 64,
+            backend: .polarQJLReference,
+            seed: 17
+        )
+
+        let code = try turboQuantReferenceEncode(x, configuration: configuration)
+        let decoded = try turboQuantReferenceDecode(code).asArray(Float.self)
+        let mse = zip(values, decoded)
+            .map { lhs, rhs in
+                let delta = lhs - rhs
+                return delta * delta
+            }
+            .reduce(Float(0), +) / Float(values.count)
+
+        XCTAssertLessThan(mse, 0.01)
+    }
+
+    func testTurboQuantBackendAvailabilityContract() throws {
+        XCTAssertNoThrow(try requireTurboQuantBackend(.mlxPacked))
+        XCTAssertNoThrow(try requireTurboQuantBackend(.polarQJLReference))
+        XCTAssertThrowsError(try requireTurboQuantBackend(.metalPolarQJL))
+
+        let availability = TurboQuantKernelAvailability.current
+        XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
+        XCTAssertNotNil(availability.fallbackReason(for: .metalPolarQJL))
+    }
 }
