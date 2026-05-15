@@ -107,10 +107,11 @@ public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
 
     public static var current: TurboQuantKernelAvailability {
         let metalAvailable = metalRuntimeAvailable()
+        let attentionAvailable = metalAvailable && TurboQuantMetalAttentionSelfTest.shared.isAvailable()
         return TurboQuantKernelAvailability(
             supportsMetalPolarQJLCodec: metalAvailable,
-            supportsMetalPolarQJLAttention: metalAvailable,
-            supportsMetalPolarQJL: metalAvailable
+            supportsMetalPolarQJLAttention: attentionAvailable,
+            supportsMetalPolarQJL: attentionAvailable
         )
     }
 
@@ -387,13 +388,14 @@ public struct TurboQuantMetalCode {
 
 public enum TurboQuantAttentionPath: String, Codable, Sendable, CaseIterable {
     case onlineFused
+    case tiledOnlineFused
     case twoStageCompressed
     case mlxPackedFallback
     case baseline
 }
 
 public struct TurboQuantAttentionLayout: Hashable, Codable, Sendable {
-    public static let currentVersion = 2
+    public static let currentVersion = 3
 
     public var layoutVersion: Int
     public var batchSize: Int
@@ -401,6 +403,7 @@ public struct TurboQuantAttentionLayout: Hashable, Codable, Sendable {
     public var capacity: Int
     public var logicalLength: Int
     public var ringOffset: Int
+    public var pinnedPrefixLength: Int
     public var headDimension: Int
     public var groupsPerVector: Int
     public var magnitudeWordsPerGroup: Int
@@ -413,6 +416,7 @@ public struct TurboQuantAttentionLayout: Hashable, Codable, Sendable {
         capacity: Int,
         logicalLength: Int,
         ringOffset: Int = 0,
+        pinnedPrefixLength: Int = 0,
         headDimension: Int,
         groupsPerVector: Int,
         magnitudeWordsPerGroup: Int,
@@ -424,6 +428,7 @@ public struct TurboQuantAttentionLayout: Hashable, Codable, Sendable {
         self.capacity = capacity
         self.logicalLength = logicalLength
         self.ringOffset = ringOffset
+        self.pinnedPrefixLength = pinnedPrefixLength
         self.headDimension = headDimension
         self.groupsPerVector = groupsPerVector
         self.magnitudeWordsPerGroup = magnitudeWordsPerGroup
@@ -777,7 +782,8 @@ public func turboQuantAttentionLayout(
     groupSize: Int = 64,
     capacity: Int? = nil,
     logicalLength: Int? = nil,
-    ringOffset: Int = 0
+    ringOffset: Int = 0,
+    pinnedPrefixLength: Int = 0
 ) throws -> TurboQuantAttentionLayout {
     try validateAttentionArray(array, groupSize: groupSize)
     let headDimension = array.dim(3)
@@ -790,6 +796,7 @@ public func turboQuantAttentionLayout(
         capacity: resolvedCapacity,
         logicalLength: resolvedLogicalLength,
         ringOffset: ringOffset,
+        pinnedPrefixLength: pinnedPrefixLength,
         headDimension: headDimension,
         groupsPerVector: groupsPerVector,
         magnitudeWordsPerGroup: metalMagnitudeWordsPerGroup(groupSize: groupSize, preset: preset),
@@ -808,6 +815,7 @@ public func turboQuantMetalEncodeAttention(
     capacity: Int? = nil,
     logicalLength: Int? = nil,
     ringOffset: Int = 0,
+    pinnedPrefixLength: Int = 0,
     stream: StreamOrDevice = .default
 ) throws -> TurboQuantAttentionCode {
     try validateAttentionArray(array, groupSize: configuration.groupSize)
@@ -819,7 +827,8 @@ public func turboQuantMetalEncodeAttention(
         groupSize: configuration.groupSize,
         capacity: capacity,
         logicalLength: logicalLength,
-        ringOffset: ringOffset
+        ringOffset: ringOffset,
+        pinnedPrefixLength: pinnedPrefixLength
     )
     guard layout.logicalLength <= layout.capacity else {
         throw TurboQuantError.invalidMetalConfiguration(
@@ -879,6 +888,48 @@ public func turboQuantMetalEncodeAttention(
         residualSigns: outputs[3],
         scales: outputs[4]
     )
+}
+
+public func turboQuantMetalDecodeAttention(
+    _ code: TurboQuantAttentionCode,
+    outputDType: DType = .float32,
+    stream: StreamOrDevice = .default
+) throws -> MLXArray {
+    try validateAttentionLayout(code.layout, role: code.role, groupSize: code.groupSize)
+    try requireTurboQuantMetalAttention()
+
+    let outputShape = code.layout.logicalShape
+    let elementCount = outputShape.reduce(1, *)
+    return TurboQuantMetalKernels.decodeAttention(
+        [
+            code.packedMagnitudes,
+            code.signs,
+            code.highPrecisionMask,
+            code.residualSigns,
+            code.scales,
+        ],
+        template: attentionTemplate(
+            configuration: TurboQuantConfiguration(
+                preset: code.preset,
+                role: code.role,
+                groupSize: code.groupSize,
+                backend: .metalPolarQJL,
+                seed: code.seed
+            ),
+            layout: code.layout,
+            inputLength: code.layout.logicalLength,
+            outputLength: code.layout.logicalLength,
+            queryHeadCount: 0,
+            queryLength: 0,
+            outputDType: outputDType,
+            causal: false
+        ),
+        grid: (elementCount, 1, 1),
+        threadGroup: (Swift.max(1, Swift.min(elementCount, 256)), 1, 1),
+        outputShapes: [outputShape],
+        outputDTypes: [outputDType],
+        stream: stream
+    )[0]
 }
 
 public func turboQuantMetalQK(
@@ -1048,12 +1099,6 @@ public func turboQuantMetalSupportsOnlineFusedAttention(
 ) -> Bool {
     guard queries.ndim == 4 else { return false }
     guard queries.dim(0) == 1, queries.dim(2) <= 8 else { return false }
-    // The current online fused kernel is a correctness-first decode path that
-    // assigns one thread to each query row and streams across T x D. It avoids
-    // materialized score tensors, but it is not yet the tiled long-context A16
-    // production kernel. Prefer the parallel two-stage compressed path once the
-    // cache is large enough for the serial row loop to dominate latency.
-    guard keyCode.layout.logicalLength <= 512 else { return false }
     guard [64, 80, 96, 128, 256].contains(queries.dim(3)) else { return false }
     guard queries.dim(3) == keyCode.layout.headDimension else { return false }
     switch mask {
@@ -1120,8 +1165,8 @@ private func turboQuantMetalOnlineFusedAttention(
             ("VALUE_SEED", Int(UInt32(truncatingIfNeeded: valueCode.seed))),
             ("ATTENTION_SCALE_BITS", Int(scale.bitPattern)),
         ],
-        grid: (rowCount, 1, 1),
-        threadGroup: (Swift.max(1, Swift.min(rowCount, 256)), 1, 1),
+        grid: (rowCount * 256, 1, 1),
+        threadGroup: (256, 1, 1),
         outputShapes: [outputShape],
         outputDTypes: [outputDType],
         stream: stream
@@ -1139,7 +1184,7 @@ public func requireTurboQuantBackend(_ backend: TurboQuantBackend) throws {
 }
 
 public func requireTurboQuantMetalAttention() throws {
-    guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLAttention else {
+    guard metalRuntimeAvailable() else {
         throw TurboQuantError.unsupportedBackend(
             .metalPolarQJL,
             "Metal runtime is unavailable for PolarQuant/QJL compressed attention."
@@ -1519,6 +1564,79 @@ private func metalRuntimeAvailable() -> Bool {
     return mlx_metal_is_available(&result) == 0 && result
 }
 
+private final class TurboQuantMetalAttentionSelfTest: @unchecked Sendable {
+    static let shared = TurboQuantMetalAttentionSelfTest()
+
+    private let lock = NSLock()
+    private var cachedResult: Bool?
+
+    func isAvailable() -> Bool {
+        lock.lock()
+        if let cachedResult {
+            lock.unlock()
+            return cachedResult
+        }
+        lock.unlock()
+
+        let result = run()
+
+        lock.lock()
+        cachedResult = result
+        lock.unlock()
+        return result
+    }
+
+    private func run() -> Bool {
+        do {
+            let queries = MLXArray.ones([1, 4, 1, 64], dtype: .float32)
+            let keys = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
+            let values = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
+            let keyCode = try turboQuantMetalEncodeAttention(
+                keys,
+                configuration: TurboQuantConfiguration(
+                    preset: .turbo3_5,
+                    role: .key,
+                    groupSize: 64,
+                    backend: .metalPolarQJL,
+                    seed: 0xA11C_E5E1
+                )
+            )
+            let valueCode = try turboQuantMetalEncodeAttention(
+                values,
+                configuration: TurboQuantConfiguration(
+                    preset: .turbo3_5,
+                    role: .value,
+                    groupSize: 64,
+                    backend: .metalPolarQJL,
+                    seed: 0xA11C_E5E2
+                )
+            )
+            let qk = try turboQuantMetalQK(
+                queries: queries,
+                keyCode: keyCode,
+                scale: 1 / sqrt(Float(64))
+            )
+            let weights = softmax(qk.asType(.float32), axis: -1)
+            let av = try turboQuantMetalAV(
+                attentionWeights: weights,
+                valueCode: valueCode,
+                outputDType: .float32
+            )
+            let fused = try turboQuantMetalScaledDotProductAttention(
+                queries: queries,
+                keyCode: keyCode,
+                valueCode: valueCode,
+                scale: 1 / sqrt(Float(64)),
+                preferOnlineFused: true
+            )
+            eval(av, fused)
+            return av.shape == fused.shape
+        } catch {
+            return false
+        }
+    }
+}
+
 private func validateMetalConfiguration(
     array: MLXArray,
     configuration: TurboQuantConfiguration
@@ -1639,6 +1757,19 @@ private func validateAttentionLayout(
     guard layout.ringOffset >= 0, layout.ringOffset < layout.capacity else {
         throw TurboQuantError.invalidMetalConfiguration("ring offset is outside cache capacity")
     }
+    guard layout.pinnedPrefixLength >= 0, layout.pinnedPrefixLength <= layout.capacity else {
+        throw TurboQuantError.invalidMetalConfiguration("pinned prefix is outside cache capacity")
+    }
+    let ringCapacity = layout.capacity - layout.pinnedPrefixLength
+    if ringCapacity == 0 {
+        guard layout.ringOffset == 0 else {
+            throw TurboQuantError.invalidMetalConfiguration("ring offset must be zero without ring capacity")
+        }
+    } else {
+        guard layout.ringOffset < ringCapacity else {
+            throw TurboQuantError.invalidMetalConfiguration("ring offset is outside rotating region")
+        }
+    }
     guard layout.groupsPerVector == (layout.headDimension + groupSize - 1) / groupSize else {
         throw TurboQuantError.invalidMetalConfiguration("groups per vector does not match layout")
     }
@@ -1755,6 +1886,7 @@ private func attentionTemplate(
         ("CAPACITY", layout.capacity),
         ("LOGICAL_LENGTH", layout.logicalLength),
         ("RING_OFFSET", layout.ringOffset),
+        ("PINNED_PREFIX_LENGTH", layout.pinnedPrefixLength),
         ("QUERY_LENGTH", queryLength),
         ("HEAD_DIM", layout.headDimension),
         ("GROUP_SIZE", configuration.groupSize),
@@ -1790,6 +1922,14 @@ private enum TurboQuantMetalKernels {
         inputNames: ["x"],
         outputNames: ["packed", "signs", "high_mask", "residual_signs", "scales"],
         source: encodeAttentionSource,
+        header: attentionHeader
+    )
+
+    static let decodeAttention = MLXFast.metalKernel(
+        name: "turboquant_attention_decode",
+        inputNames: ["packed", "signs", "high_mask", "residual_signs", "scales"],
+        outputNames: ["out"],
+        source: decodeAttentionSource,
         header: attentionHeader
     )
 
@@ -2043,7 +2183,16 @@ private enum TurboQuantMetalKernels {
         }
 
         inline uint tq_physical_token(uint logical_token) {
-            return (uint(RING_OFFSET) + logical_token) % uint(CAPACITY);
+            uint pinned = uint(PINNED_PREFIX_LENGTH);
+            if (logical_token < pinned) {
+                return logical_token;
+            }
+            uint ring_capacity = uint(CAPACITY) - pinned;
+            if (ring_capacity == 0u) {
+                return min(logical_token, uint(CAPACITY) - 1u);
+            }
+            uint ring_logical = logical_token - pinned;
+            return pinned + ((uint(RING_OFFSET) + ring_logical) % ring_capacity);
         }
 
         inline uint tq_read_magnitude(
@@ -2286,6 +2435,23 @@ private enum TurboQuantMetalKernels {
         scores[index] = sum * attention_scale;
         """
 
+    private static let decodeAttentionSource = """
+        uint index = thread_position_in_grid.x;
+        uint total = uint(BATCH_SIZE) * uint(KV_HEADS) * uint(LOGICAL_LENGTH) * uint(HEAD_DIM);
+        if (index >= total) {
+            return;
+        }
+
+        uint dimension = index % uint(HEAD_DIM);
+        uint logical_token = (index / uint(HEAD_DIM)) % uint(LOGICAL_LENGTH);
+        uint head = (index / (uint(HEAD_DIM) * uint(LOGICAL_LENGTH))) % uint(KV_HEADS);
+        uint batch = index / (uint(HEAD_DIM) * uint(LOGICAL_LENGTH) * uint(KV_HEADS));
+        uint physical_token = tq_physical_token(logical_token);
+        out[index] = tq_decode_attention_value(
+            packed, signs, high_mask, residual_signs, scales,
+            batch, head, physical_token, dimension, uint(SEED), uint(ROLE));
+        """
+
     private static let avSource = """
         uint index = thread_position_in_grid.x;
         uint total = uint(BATCH_SIZE) * uint(QUERY_HEADS) * uint(QUERY_LENGTH) * uint(HEAD_DIM);
@@ -2315,11 +2481,17 @@ private enum TurboQuantMetalKernels {
         """
 
     private static let fusedAttentionSource = """
-        uint row = thread_position_in_grid.x;
+        constexpr uint threads_per_row = 256u;
+        uint lane = thread_position_in_threadgroup.x;
+        uint row = threadgroup_position_in_grid.x;
         uint total_rows = uint(BATCH_SIZE) * uint(QUERY_HEADS) * uint(QUERY_LENGTH);
         if (row >= total_rows) {
             return;
         }
+
+        threadgroup float partial[256];
+        threadgroup float tile_weights[256];
+        threadgroup uint tile_physical_tokens[256];
 
         float attention_scale = as_type<float>(uint(ATTENTION_SCALE_BITS));
         uint q_token = row % uint(QUERY_LENGTH);
@@ -2329,13 +2501,8 @@ private enum TurboQuantMetalKernels {
         uint kv_head = q_head / repeats;
         uint causal_limit = uint(LOGICAL_LENGTH) - uint(QUERY_LENGTH) + q_token;
 
-        thread float accum[HEAD_DIM];
-        for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
-            accum[dimension] = 0.0f;
-        }
-
         float row_max = -INFINITY;
-        for (uint logical_token = 0; logical_token < uint(LOGICAL_LENGTH); logical_token++) {
+        for (uint logical_token = lane; logical_token < uint(LOGICAL_LENGTH); logical_token += threads_per_row) {
             if (DO_CAUSAL && logical_token > causal_limit) {
                 continue;
             }
@@ -2352,9 +2519,18 @@ private enum TurboQuantMetalKernels {
             }
             row_max = max(row_max, score * attention_scale);
         }
+        partial[lane] = row_max;
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+        for (uint stride = threads_per_row >> 1; stride > 0u; stride >>= 1) {
+            if (lane < stride) {
+                partial[lane] = max(partial[lane], partial[lane + stride]);
+            }
+            threadgroup_barrier(mem_flags::mem_threadgroup);
+        }
+        row_max = partial[0];
 
         float row_sum = 0.0f;
-        for (uint logical_token = 0; logical_token < uint(LOGICAL_LENGTH); logical_token++) {
+        for (uint logical_token = lane; logical_token < uint(LOGICAL_LENGTH); logical_token += threads_per_row) {
             if (DO_CAUSAL && logical_token > causal_limit) {
                 continue;
             }
@@ -2371,20 +2547,74 @@ private enum TurboQuantMetalKernels {
             }
             float weight = exp(score * attention_scale - row_max);
             row_sum += weight;
-            for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
-                float value = tq_decode_attention_value(
-                    v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
-                    batch, kv_head, physical_token, dimension, uint(VALUE_SEED), 1u);
-                accum[dimension] += weight * value;
-            }
         }
+        partial[lane] = row_sum;
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+        for (uint stride = threads_per_row >> 1; stride > 0u; stride >>= 1) {
+            if (lane < stride) {
+                partial[lane] += partial[lane + stride];
+            }
+            threadgroup_barrier(mem_flags::mem_threadgroup);
+        }
+        row_sum = partial[0];
 
         float inv_sum = 1.0f / max(row_sum, 1.17549435e-38f);
-        for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+        if (lane < uint(HEAD_DIM)) {
             uint out_index =
                 (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
-                    * uint(HEAD_DIM)) + dimension;
-            out[out_index] = accum[dimension] * inv_sum;
+                    * uint(HEAD_DIM)) + lane;
+            out[out_index] = 0.0f;
+        }
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        for (uint tile_start = 0u; tile_start < uint(LOGICAL_LENGTH); tile_start += threads_per_row) {
+            uint logical_token = tile_start + lane;
+            bool active = logical_token < uint(LOGICAL_LENGTH)
+                && (!DO_CAUSAL || logical_token <= causal_limit);
+            float weight = 0.0f;
+            uint physical_token = 0u;
+            if (active) {
+                physical_token = tq_physical_token(logical_token);
+                float score = 0.0f;
+                for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+                    uint q_index =
+                        (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                            * uint(HEAD_DIM)) + dimension;
+                    float key_value = tq_decode_attention_value(
+                        k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
+                        batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                    score += float(q[q_index]) * key_value;
+                }
+                weight = exp(score * attention_scale - row_max) * inv_sum;
+            }
+            tile_weights[lane] = weight;
+            tile_physical_tokens[lane] = physical_token;
+            threadgroup_barrier(mem_flags::mem_threadgroup);
+
+            for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
+                float contribution = 0.0f;
+                if (active) {
+                    float value = tq_decode_attention_value(
+                        v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
+                        batch, kv_head, tile_physical_tokens[lane], dimension, uint(VALUE_SEED), 1u);
+                    contribution = tile_weights[lane] * value;
+                }
+                partial[lane] = contribution;
+                threadgroup_barrier(mem_flags::mem_threadgroup);
+                for (uint stride = threads_per_row >> 1; stride > 0u; stride >>= 1) {
+                    if (lane < stride) {
+                        partial[lane] += partial[lane + stride];
+                    }
+                    threadgroup_barrier(mem_flags::mem_threadgroup);
+                }
+                if (lane == 0u) {
+                    uint out_index =
+                        (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
+                            * uint(HEAD_DIM)) + dimension;
+                    out[out_index] = float(out[out_index]) + partial[0];
+                }
+                threadgroup_barrier(mem_flags::mem_threadgroup);
+            }
         }
         """
 }
