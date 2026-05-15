@@ -153,11 +153,17 @@ class QuantizationTests: XCTestCase {
     func testTurboQuantBackendAvailabilityContract() throws {
         XCTAssertNoThrow(try requireTurboQuantBackend(.mlxPacked))
         XCTAssertNoThrow(try requireTurboQuantBackend(.polarQJLReference))
-        XCTAssertThrowsError(try requireTurboQuantBackend(.metalPolarQJL))
 
         let availability = TurboQuantKernelAvailability.current
-        XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
-        XCTAssertNotNil(availability.fallbackReason(for: .metalPolarQJL))
+        if availability.supportsMetalPolarQJL {
+            XCTAssertNoThrow(try requireTurboQuantBackend(.metalPolarQJL))
+            XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .metalPolarQJL)
+            XCTAssertNil(availability.fallbackReason(for: .metalPolarQJL))
+        } else {
+            XCTAssertThrowsError(try requireTurboQuantBackend(.metalPolarQJL))
+            XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
+            XCTAssertNotNil(availability.fallbackReason(for: .metalPolarQJL))
+        }
     }
 
     func testTurboQuantMetalCodecRoundTripWhenAvailable() throws {

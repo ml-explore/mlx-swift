@@ -1212,7 +1212,8 @@ private func turboQuantMetalOnlineFusedAttention(
             outputDType: outputDType,
             causal: causal
         ) + [
-            ("VALUE_SEED", Int(UInt32(truncatingIfNeeded: valueCode.seed))),
+            ("VALUE_SEED_HI", metalTemplateUInt16High(valueCode.seed)),
+            ("VALUE_SEED_LO", metalTemplateUInt16Low(valueCode.seed)),
             ("ATTENTION_SCALE_BITS", Int(scale.bitPattern)),
         ],
         grid: (rowCount * 256, 1, 1),
@@ -1609,6 +1610,14 @@ private func randomSign(index: Int, seed: UInt64) -> Bool {
     return (state & 1) == 1
 }
 
+private func metalTemplateUInt16High(_ value: UInt64) -> Int {
+    Int((UInt32(truncatingIfNeeded: value) >> 16) & 0xFFFF)
+}
+
+private func metalTemplateUInt16Low(_ value: UInt64) -> Int {
+    Int(UInt32(truncatingIfNeeded: value) & 0xFFFF)
+}
+
 private func metalRuntimeAvailable() -> Bool {
     #if canImport(Metal)
     guard MTLCreateSystemDefaultDevice() != nil else { return false }
@@ -1776,7 +1785,8 @@ private func metalTemplate(
         ("MAG_WORDS_PER_GROUP", magnitudeWordsPerGroup),
         ("BITSET_WORDS_PER_GROUP", bitsetWordsPerGroup),
         ("ROLE", metalRoleValue(configuration.role)),
-        ("SEED", Int(UInt32(truncatingIfNeeded: configuration.seed))),
+        ("SEED_HI", metalTemplateUInt16High(configuration.seed)),
+        ("SEED_LO", metalTemplateUInt16Low(configuration.seed)),
     ]
 }
 
@@ -1985,7 +1995,8 @@ private func attentionTemplate(
         ("MAG_WORDS_PER_GROUP", layout.magnitudeWordsPerGroup),
         ("BITSET_WORDS_PER_GROUP", layout.bitsetWordsPerGroup),
         ("ROLE", metalRoleValue(configuration.role)),
-        ("SEED", Int(UInt32(truncatingIfNeeded: configuration.seed))),
+        ("SEED_HI", metalTemplateUInt16High(configuration.seed)),
+        ("SEED_LO", metalTemplateUInt16Low(configuration.seed)),
         ("OUTPUT_DTYPE", outputDType),
         ("DO_CAUSAL", causal),
     ]
@@ -2065,10 +2076,11 @@ private enum TurboQuantMetalKernels {
         thread float values[GROUP_SIZE];
         thread float magnitudes[GROUP_SIZE];
         float max_abs = 0.0f;
+        uint seed = (uint(SEED_HI) << 16) | uint(SEED_LO);
 
         for (uint local = 0; local < count; local++) {
             uint index = start + local;
-            uint mixed = uint(SEED) + index * 0x9E3779B9u;
+            uint mixed = seed + index * 0x9E3779B9u;
             mixed ^= mixed >> 16;
             mixed *= 0x7FEB352Du;
             mixed ^= mixed >> 15;
@@ -2228,7 +2240,8 @@ private enum TurboQuantMetalKernels {
             value += residual_sign * scales[scale_base + 2];
         }
 
-        uint mixed = uint(SEED) + index * 0x9E3779B9u;
+        uint seed = (uint(SEED_HI) << 16) | uint(SEED_LO);
+        uint mixed = seed + index * 0x9E3779B9u;
         mixed ^= mixed >> 16;
         mixed *= 0x7FEB352Du;
         mixed ^= mixed >> 15;
@@ -2256,32 +2269,66 @@ private enum TurboQuantMetalKernels {
             return (tq_mix(seed, index) & 1u) != 0u;
         }
 
-        inline uint tq_bitset_offset(uint batch, uint head, uint token, uint group, uint word) {
-            return (((batch * uint(KV_HEADS) + head) * uint(CAPACITY) + token)
-                * uint(GROUPS_PER_VECTOR) + group) * uint(BITSET_WORDS_PER_GROUP) + word;
+        inline uint tq_bitset_offset(
+            uint batch,
+            uint head,
+            uint token,
+            uint group,
+            uint word,
+            uint kv_heads,
+            uint capacity,
+            uint groups_per_vector,
+            uint bitset_words_per_group
+        ) {
+            return (((batch * kv_heads + head) * capacity + token)
+                * groups_per_vector + group) * bitset_words_per_group + word;
         }
 
-        inline uint tq_packed_offset(uint batch, uint head, uint token, uint group, uint word) {
-            return (((batch * uint(KV_HEADS) + head) * uint(CAPACITY) + token)
-                * uint(GROUPS_PER_VECTOR) + group) * uint(MAG_WORDS_PER_GROUP) + word;
+        inline uint tq_packed_offset(
+            uint batch,
+            uint head,
+            uint token,
+            uint group,
+            uint word,
+            uint kv_heads,
+            uint capacity,
+            uint groups_per_vector,
+            uint mag_words_per_group
+        ) {
+            return (((batch * kv_heads + head) * capacity + token)
+                * groups_per_vector + group) * mag_words_per_group + word;
         }
 
-        inline uint tq_scale_offset(uint batch, uint head, uint token, uint group, uint scale_index) {
-            return ((((batch * uint(KV_HEADS) + head) * uint(CAPACITY) + token)
-                * uint(GROUPS_PER_VECTOR) + group) * 3u) + scale_index;
+        inline uint tq_scale_offset(
+            uint batch,
+            uint head,
+            uint token,
+            uint group,
+            uint scale_index,
+            uint kv_heads,
+            uint capacity,
+            uint groups_per_vector
+        ) {
+            return ((((batch * kv_heads + head) * capacity + token)
+                * groups_per_vector + group) * 3u) + scale_index;
         }
 
-        inline uint tq_physical_token(uint logical_token) {
-            uint pinned = uint(PINNED_PREFIX_LENGTH);
+        inline uint tq_physical_token(
+            uint logical_token,
+            uint capacity,
+            uint ring_offset,
+            uint pinned_prefix_length
+        ) {
+            uint pinned = pinned_prefix_length;
             if (logical_token < pinned) {
                 return logical_token;
             }
-            uint ring_capacity = uint(CAPACITY) - pinned;
+            uint ring_capacity = capacity - pinned;
             if (ring_capacity == 0u) {
-                return min(logical_token, uint(CAPACITY) - 1u);
+                return min(logical_token, capacity - 1u);
             }
             uint ring_logical = logical_token - pinned;
-            return pinned + ((uint(RING_OFFSET) + ring_logical) % ring_capacity);
+            return pinned + ((ring_offset + ring_logical) % ring_capacity);
         }
 
         inline uint tq_read_magnitude(
@@ -2291,23 +2338,34 @@ private enum TurboQuantMetalKernels {
             uint head,
             uint token,
             uint group,
-            uint local
+            uint local,
+            uint kv_heads,
+            uint capacity,
+            uint groups_per_vector,
+            uint mag_words_per_group,
+            uint bitset_words_per_group,
+            uint base_bits,
+            uint high_bits
         ) {
             uint bitset_word = local >> 5;
             uint bitset_bit = local & 31u;
             bool high_precision =
-                (high_mask[tq_bitset_offset(batch, head, token, group, bitset_word)]
+                (high_mask[tq_bitset_offset(
+                    batch, head, token, group, bitset_word,
+                    kv_heads, capacity, groups_per_vector, bitset_words_per_group)]
                     & (1u << bitset_bit)) != 0u;
-            uint bits = high_precision ? uint(HIGH_BITS) : uint(BASE_BITS);
+            uint bits = high_precision ? high_bits : base_bits;
 
             uint bit_offset = 0u;
             for (uint prior = 0; prior < local; prior++) {
                 uint prior_word = prior >> 5;
                 uint prior_bit = prior & 31u;
                 bool prior_high =
-                    (high_mask[tq_bitset_offset(batch, head, token, group, prior_word)]
+                    (high_mask[tq_bitset_offset(
+                        batch, head, token, group, prior_word,
+                        kv_heads, capacity, groups_per_vector, bitset_words_per_group)]
                         & (1u << prior_bit)) != 0u;
-                bit_offset += prior_high ? uint(HIGH_BITS) : uint(BASE_BITS);
+                bit_offset += prior_high ? high_bits : base_bits;
             }
 
             uint quantized = 0u;
@@ -2315,7 +2373,9 @@ private enum TurboQuantMetalKernels {
                 uint global_bit = bit_offset + bit;
                 uint packed_word = global_bit >> 5;
                 uint packed_bit = global_bit & 31u;
-                if ((packed[tq_packed_offset(batch, head, token, group, packed_word)]
+                if ((packed[tq_packed_offset(
+                    batch, head, token, group, packed_word,
+                    kv_heads, capacity, groups_per_vector, mag_words_per_group)]
                     & (1u << packed_bit)) != 0u) {
                     quantized |= 1u << bit;
                 }
@@ -2334,29 +2394,47 @@ private enum TurboQuantMetalKernels {
             uint token,
             uint dimension,
             uint seed,
-            uint role
+            uint role,
+            uint group_size,
+            uint kv_heads,
+            uint capacity,
+            uint groups_per_vector,
+            uint mag_words_per_group,
+            uint bitset_words_per_group,
+            uint base_bits,
+            uint high_bits
         ) {
-            uint group = dimension / uint(GROUP_SIZE);
-            uint local = dimension - group * uint(GROUP_SIZE);
+            uint group = dimension / group_size;
+            uint local = dimension - group * group_size;
             uint bitset_word = local >> 5;
             uint bitset_bit = local & 31u;
             uint bit_mask = 1u << bitset_bit;
             bool high_precision =
-                (high_mask[tq_bitset_offset(batch, head, token, group, bitset_word)] & bit_mask) != 0u;
+                (high_mask[tq_bitset_offset(
+                    batch, head, token, group, bitset_word,
+                    kv_heads, capacity, groups_per_vector, bitset_words_per_group)] & bit_mask) != 0u;
             float scale = high_precision
-                ? scales[tq_scale_offset(batch, head, token, group, 1u)]
-                : scales[tq_scale_offset(batch, head, token, group, 0u)];
-            uint quantized = tq_read_magnitude(packed, high_mask, batch, head, token, group, local);
+                ? scales[tq_scale_offset(batch, head, token, group, 1u, kv_heads, capacity, groups_per_vector)]
+                : scales[tq_scale_offset(batch, head, token, group, 0u, kv_heads, capacity, groups_per_vector)];
+            uint quantized = tq_read_magnitude(
+                packed, high_mask, batch, head, token, group, local,
+                kv_heads, capacity, groups_per_vector,
+                mag_words_per_group, bitset_words_per_group, base_bits, high_bits);
             float sign =
-                (signs[tq_bitset_offset(batch, head, token, group, bitset_word)] & bit_mask) != 0u
+                (signs[tq_bitset_offset(
+                    batch, head, token, group, bitset_word,
+                    kv_heads, capacity, groups_per_vector, bitset_words_per_group)] & bit_mask) != 0u
                     ? -1.0f : 1.0f;
             float value = sign * float(quantized) * scale;
 
             if (role != 1u) {
                 float residual_sign =
-                    (residual_signs[tq_bitset_offset(batch, head, token, group, bitset_word)]
+                    (residual_signs[tq_bitset_offset(
+                        batch, head, token, group, bitset_word,
+                        kv_heads, capacity, groups_per_vector, bitset_words_per_group)]
                         & bit_mask) != 0u ? -1.0f : 1.0f;
-                value += residual_sign * scales[tq_scale_offset(batch, head, token, group, 2u)];
+                value += residual_sign * scales[tq_scale_offset(
+                    batch, head, token, group, 2u, kv_heads, capacity, groups_per_vector)];
             }
 
             if (tq_random_sign(seed, dimension)) {
@@ -2368,16 +2446,21 @@ private enum TurboQuantMetalKernels {
 
     private static let encodeAttentionSource = """
         uint row_group_id = thread_position_in_grid.x;
-        uint total = uint(BATCH_SIZE) * uint(KV_HEADS) * uint(INPUT_LENGTH) * uint(GROUPS_PER_VECTOR);
+        uint kv_heads = uint(KV_HEADS);
+        uint capacity = uint(CAPACITY);
+        uint groups_per_vector = uint(GROUPS_PER_VECTOR);
+        uint mag_words_per_group = uint(MAG_WORDS_PER_GROUP);
+        uint bitset_words_per_group = uint(BITSET_WORDS_PER_GROUP);
+        uint total = uint(BATCH_SIZE) * kv_heads * uint(INPUT_LENGTH) * groups_per_vector;
         if (row_group_id >= total) {
             return;
         }
 
-        uint group = row_group_id % uint(GROUPS_PER_VECTOR);
-        uint token = (row_group_id / uint(GROUPS_PER_VECTOR)) % uint(INPUT_LENGTH);
-        uint head = (row_group_id / (uint(GROUPS_PER_VECTOR) * uint(INPUT_LENGTH))) % uint(KV_HEADS);
-        uint batch = row_group_id / (uint(GROUPS_PER_VECTOR) * uint(INPUT_LENGTH) * uint(KV_HEADS));
-        if (token >= uint(CAPACITY)) {
+        uint group = row_group_id % groups_per_vector;
+        uint token = (row_group_id / groups_per_vector) % uint(INPUT_LENGTH);
+        uint head = (row_group_id / (groups_per_vector * uint(INPUT_LENGTH))) % kv_heads;
+        uint batch = row_group_id / (groups_per_vector * uint(INPUT_LENGTH) * kv_heads);
+        if (token >= capacity) {
             return;
         }
 
@@ -2393,7 +2476,7 @@ private enum TurboQuantMetalKernels {
                 (((batch * uint(KV_HEADS) + head) * uint(INPUT_LENGTH) + token)
                     * uint(HEAD_DIM)) + dimension;
             float value = float(x[input_index]);
-            if (tq_random_sign(uint(SEED), dimension)) {
+            if (tq_random_sign((uint(SEED_HI) << 16) | uint(SEED_LO), dimension)) {
                 value = -value;
             }
             values[local] = value;
@@ -2407,17 +2490,17 @@ private enum TurboQuantMetalKernels {
         float safe_max = max(max_abs, 1.17549435e-38f);
         float base_scale = safe_max / base_max;
         float high_scale = safe_max / high_max;
-        scales[tq_scale_offset(batch, head, token, group, 0u)] = base_scale;
-        scales[tq_scale_offset(batch, head, token, group, 1u)] = high_scale;
-        scales[tq_scale_offset(batch, head, token, group, 2u)] = 0.0f;
+        scales[tq_scale_offset(batch, head, token, group, 0u, kv_heads, capacity, groups_per_vector)] = base_scale;
+        scales[tq_scale_offset(batch, head, token, group, 1u, kv_heads, capacity, groups_per_vector)] = high_scale;
+        scales[tq_scale_offset(batch, head, token, group, 2u, kv_heads, capacity, groups_per_vector)] = 0.0f;
 
-        for (uint word = 0; word < uint(BITSET_WORDS_PER_GROUP); word++) {
-            signs[tq_bitset_offset(batch, head, token, group, word)] = 0u;
-            high_mask[tq_bitset_offset(batch, head, token, group, word)] = 0u;
-            residual_signs[tq_bitset_offset(batch, head, token, group, word)] = 0u;
+        for (uint word = 0; word < bitset_words_per_group; word++) {
+            signs[tq_bitset_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, bitset_words_per_group)] = 0u;
+            high_mask[tq_bitset_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, bitset_words_per_group)] = 0u;
+            residual_signs[tq_bitset_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, bitset_words_per_group)] = 0u;
         }
-        for (uint word = 0; word < uint(MAG_WORDS_PER_GROUP); word++) {
-            packed[tq_packed_offset(batch, head, token, group, word)] = 0u;
+        for (uint word = 0; word < mag_words_per_group; word++) {
+            packed[tq_packed_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, mag_words_per_group)] = 0u;
         }
 
         uint high_count = uint(round(float(count) * 0.5f));
@@ -2444,7 +2527,7 @@ private enum TurboQuantMetalKernels {
             }
         }
         if (ROLE != 1) {
-            scales[tq_scale_offset(batch, head, token, group, 2u)] = residual_sum / float(count);
+            scales[tq_scale_offset(batch, head, token, group, 2u, kv_heads, capacity, groups_per_vector)] = residual_sum / float(count);
         }
 
         uint bit_offset = 0u;
@@ -2468,17 +2551,17 @@ private enum TurboQuantMetalKernels {
             uint bit = local & 31u;
             uint mask = 1u << bit;
             if (values[local] < 0.0f) {
-                signs[tq_bitset_offset(batch, head, token, group, word)] |= mask;
+                signs[tq_bitset_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, bitset_words_per_group)] |= mask;
             }
             if (high_precision) {
-                high_mask[tq_bitset_offset(batch, head, token, group, word)] |= mask;
+                high_mask[tq_bitset_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, bitset_words_per_group)] |= mask;
             }
             if (ROLE != 1) {
                 float signed_decode = (values[local] < 0.0f ? -1.0f : 1.0f)
                     * float(quantized) * scale;
                 float residual = values[local] - signed_decode;
                 if (residual < 0.0f) {
-                    residual_signs[tq_bitset_offset(batch, head, token, group, word)] |= mask;
+                    residual_signs[tq_bitset_offset(batch, head, token, group, word, kv_heads, capacity, groups_per_vector, bitset_words_per_group)] |= mask;
                 }
             }
 
@@ -2487,7 +2570,7 @@ private enum TurboQuantMetalKernels {
                     uint global_bit = bit_offset + packed_bit;
                     uint packed_word = global_bit >> 5;
                     uint packed_word_bit = global_bit & 31u;
-                    packed[tq_packed_offset(batch, head, token, group, packed_word)] |=
+                    packed[tq_packed_offset(batch, head, token, group, packed_word, kv_heads, capacity, groups_per_vector, mag_words_per_group)] |=
                         1u << packed_word_bit;
                 }
             }
@@ -2509,7 +2592,8 @@ private enum TurboQuantMetalKernels {
         uint batch = index / (uint(LOGICAL_LENGTH) * uint(QUERY_LENGTH) * uint(QUERY_HEADS));
         uint repeats = uint(QUERY_HEADS) / uint(KV_HEADS);
         uint kv_head = q_head / repeats;
-        uint physical_token = tq_physical_token(logical_token);
+        uint physical_token = tq_physical_token(
+            logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
 
         float sum = 0.0f;
         for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
@@ -2518,7 +2602,9 @@ private enum TurboQuantMetalKernels {
                     * uint(HEAD_DIM)) + dimension;
             float key_value = tq_decode_attention_value(
                 k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+                uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
             sum += float(q[q_index]) * key_value;
         }
         scores[index] = sum * attention_scale;
@@ -2535,10 +2621,13 @@ private enum TurboQuantMetalKernels {
         uint logical_token = (index / uint(HEAD_DIM)) % uint(LOGICAL_LENGTH);
         uint head = (index / (uint(HEAD_DIM) * uint(LOGICAL_LENGTH))) % uint(KV_HEADS);
         uint batch = index / (uint(HEAD_DIM) * uint(LOGICAL_LENGTH) * uint(KV_HEADS));
-        uint physical_token = tq_physical_token(logical_token);
+        uint physical_token = tq_physical_token(
+            logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
         out[index] = tq_decode_attention_value(
             packed, signs, high_mask, residual_signs, scales,
-            batch, head, physical_token, dimension, uint(SEED), uint(ROLE));
+            batch, head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), uint(ROLE),
+            uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+            uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
         """
 
     private static let avSource = """
@@ -2557,13 +2646,16 @@ private enum TurboQuantMetalKernels {
 
         float sum = 0.0f;
         for (uint logical_token = 0; logical_token < uint(LOGICAL_LENGTH); logical_token++) {
-            uint physical_token = tq_physical_token(logical_token);
+            uint physical_token = tq_physical_token(
+                logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
             uint weight_index =
                 (((batch * uint(QUERY_HEADS) + q_head) * uint(QUERY_LENGTH) + q_token)
                     * uint(LOGICAL_LENGTH)) + logical_token;
             float value = tq_decode_attention_value(
                 v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
-                batch, kv_head, physical_token, dimension, uint(SEED), 1u);
+                batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 1u,
+                uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+                uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
             sum += float(weights[weight_index]) * value;
         }
         out[index] = sum;
@@ -2595,7 +2687,8 @@ private enum TurboQuantMetalKernels {
             if (DO_CAUSAL && logical_token > causal_limit) {
                 continue;
             }
-            uint physical_token = tq_physical_token(logical_token);
+            uint physical_token = tq_physical_token(
+                logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
             float score = 0.0f;
             for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
                 uint q_index =
@@ -2603,7 +2696,9 @@ private enum TurboQuantMetalKernels {
                         * uint(HEAD_DIM)) + dimension;
                 float key_value = tq_decode_attention_value(
                     k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                    batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                    batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                    uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+                    uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                 score += float(q[q_index]) * key_value;
             }
             row_max = max(row_max, score * attention_scale);
@@ -2623,7 +2718,8 @@ private enum TurboQuantMetalKernels {
             if (DO_CAUSAL && logical_token > causal_limit) {
                 continue;
             }
-            uint physical_token = tq_physical_token(logical_token);
+            uint physical_token = tq_physical_token(
+                logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
             float score = 0.0f;
             for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
                 uint q_index =
@@ -2631,7 +2727,9 @@ private enum TurboQuantMetalKernels {
                         * uint(HEAD_DIM)) + dimension;
                 float key_value = tq_decode_attention_value(
                     k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                    batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                    batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                    uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+                    uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                 score += float(q[q_index]) * key_value;
             }
             float weight = exp(score * attention_scale - row_max);
@@ -2663,7 +2761,8 @@ private enum TurboQuantMetalKernels {
             float weight = 0.0f;
             uint physical_token = 0u;
             if (active) {
-                physical_token = tq_physical_token(logical_token);
+                physical_token = tq_physical_token(
+                    logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
                 float score = 0.0f;
                 for (uint dimension = 0; dimension < uint(HEAD_DIM); dimension++) {
                     uint q_index =
@@ -2671,7 +2770,9 @@ private enum TurboQuantMetalKernels {
                             * uint(HEAD_DIM)) + dimension;
                     float key_value = tq_decode_attention_value(
                         k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                        batch, kv_head, physical_token, dimension, uint(SEED), 0u);
+                        batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                        uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+                        uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                     score += float(q[q_index]) * key_value;
                 }
                 weight = exp(score * attention_scale - row_max) * inv_sum;
@@ -2685,7 +2786,10 @@ private enum TurboQuantMetalKernels {
                 if (active) {
                     float value = tq_decode_attention_value(
                         v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
-                        batch, kv_head, tile_physical_tokens[lane], dimension, uint(VALUE_SEED), 1u);
+                        batch, kv_head, tile_physical_tokens[lane], dimension,
+                        (uint(VALUE_SEED_HI) << 16) | uint(VALUE_SEED_LO), 1u,
+                        uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
+                        uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                     contribution = tile_weights[lane] * value;
                 }
                 partial[lane] = contribution;
