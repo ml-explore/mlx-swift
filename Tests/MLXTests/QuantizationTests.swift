@@ -6,6 +6,12 @@ import MLXNN
 import XCTest
 
 class QuantizationTests: XCTestCase {
+    private func requireMLXRuntime() throws {
+        guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec else {
+            throw XCTSkip("MLX runtime metallib unavailable in this package context")
+        }
+    }
+
     func testQuantizedLinearShapeDesc() {
         let linear1 = Linear(512, 1024)
         let quantized1 = linear1.toQuantized(groupSize: 64, bits: 4)
@@ -40,27 +46,33 @@ class QuantizationTests: XCTestCase {
         XCTAssertNil(quantized.biases)
     }
 
-    func testTurboQuantPackedRoundTrip() {
-        let x = MLXArray.ones([1, 32], dtype: .float32)
+    func testTurboQuantPackedRoundTrip() throws {
+        try requireMLXRuntime()
+
+        let x = MLXArray.ones([1, 32], dtype: .float32, stream: .device(.cpu))
         let configuration = TurboQuantConfiguration(preset: .turbo3_5, groupSize: 32)
-        let packed = turboQuantized(x, configuration: configuration)
-        let decoded = turboDequantized(packed, configuration: configuration)
+        let packed = turboQuantized(x, configuration: configuration, stream: .device(.cpu))
+        let decoded = turboDequantized(packed, configuration: configuration, stream: .device(.cpu))
 
         XCTAssertEqual(decoded.shape, x.shape)
         XCTAssertTrue(allClose(decoded, x).item(Bool.self))
     }
 
-    func testTurboQuantMatmulShape() {
-        let x = MLXArray.ones([2, 32], dtype: .float32)
-        let w = MLXArray.ones([4, 32], dtype: .float32)
+    func testTurboQuantMatmulShape() throws {
+        try requireMLXRuntime()
+
+        let x = MLXArray.ones([2, 32], dtype: .float32, stream: .device(.cpu))
+        let w = MLXArray.ones([4, 32], dtype: .float32, stream: .device(.cpu))
         let configuration = TurboQuantConfiguration(preset: .turbo2_5, groupSize: 32)
-        let packed = turboQuantized(w, configuration: configuration)
-        let output = turboQuantizedMM(x, packed, configuration: configuration)
+        let packed = turboQuantized(w, configuration: configuration, stream: .device(.cpu))
+        let output = turboQuantizedMM(x, packed, configuration: configuration, stream: .device(.cpu))
 
         XCTAssertEqual(output.shape, [2, 4])
     }
 
     func testTurboQuantReferenceCodecIsDeterministic() throws {
+        try requireMLXRuntime()
+
         let values = (0 ..< 128).map { index in
             Float(sin(Double(index) * 0.17) + cos(Double(index) * 0.03))
         }
@@ -83,8 +95,13 @@ class QuantizationTests: XCTestCase {
     }
 
     func testTurboQuantReferenceCodecDistortionThreshold() throws {
+        try requireMLXRuntime()
+
         let values = (0 ..< 256).map { index in
-            Float(sin(Double(index) * 0.11) * 0.7 + cos(Double(index) * 0.07) * 0.3)
+            let position = Double(index)
+            let sineTerm = sin(position * 0.11) * 0.7
+            let cosineTerm = cos(position * 0.07) * 0.3
+            return Float(sineTerm + cosineTerm)
         }
         let x = MLXArray(values, [4, 64])
         let configuration = TurboQuantConfiguration(
@@ -108,8 +125,13 @@ class QuantizationTests: XCTestCase {
     }
 
     func testTurboQuantReferenceQualityGatePassesFixture() throws {
+        try requireMLXRuntime()
+
         let values = (0 ..< 256).map { index in
-            Float(sin(Double(index) * 0.09) * 0.5 + cos(Double(index) * 0.13) * 0.25)
+            let position = Double(index)
+            let sineTerm = sin(position * 0.09) * 0.5
+            let cosineTerm = cos(position * 0.13) * 0.25
+            return Float(sineTerm + cosineTerm)
         }
         let x = MLXArray(values, [4, 64])
         let configuration = TurboQuantConfiguration(
@@ -169,8 +191,7 @@ class QuantizationTests: XCTestCase {
     }
 
     func testTurboQuantAttentionLayoutIsRowWise() throws {
-        let x = MLXArray.zeros([1, 2, 3, 80], dtype: .float32)
-        let layout = try turboQuantAttentionLayout(for: x, groupSize: 64)
+        let layout = try turboQuantAttentionLayout(shape: [1, 2, 3, 80], groupSize: 64)
 
         XCTAssertEqual(layout.layoutVersion, 3)
         XCTAssertEqual(layout.logicalShape, [1, 2, 3, 80])
@@ -223,36 +244,24 @@ class QuantizationTests: XCTestCase {
     }
 
     func testTurboQuantOnlineFusedSupportContract() throws {
-        let queries = MLXArray.zeros([1, 4, 1, 64], dtype: .float32)
-        let keys = MLXArray.zeros([1, 2, 8, 64], dtype: .float32)
-        let keyCode = try turboQuantEmptyAttentionCode(
-            layout: try turboQuantAttentionLayout(for: keys, groupSize: 64),
-            role: .key,
-            groupSize: 64
-        )
+        let keyLayout = try turboQuantAttentionLayout(shape: [1, 2, 8, 64], groupSize: 64)
 
         XCTAssertTrue(
             turboQuantMetalSupportsOnlineFusedAttention(
-                queries: queries,
-                keyCode: keyCode,
+                queryShape: [1, 4, 1, 64],
+                keyLayout: keyLayout,
                 mask: .none
             )
         )
     }
 
     func testTurboQuantOnlineFusedSupportsLargeContextContract() throws {
-        let queries = MLXArray.zeros([1, 4, 1, 64], dtype: .float32)
-        let keys = MLXArray.zeros([1, 2, 513, 64], dtype: .float32)
-        let keyCode = try turboQuantEmptyAttentionCode(
-            layout: try turboQuantAttentionLayout(for: keys, groupSize: 64),
-            role: .key,
-            groupSize: 64
-        )
+        let keyLayout = try turboQuantAttentionLayout(shape: [1, 2, 513, 64], groupSize: 64)
 
         XCTAssertTrue(
             turboQuantMetalSupportsOnlineFusedAttention(
-                queries: queries,
-                keyCode: keyCode,
+                queryShape: [1, 4, 1, 64],
+                keyLayout: keyLayout,
                 mask: .none
             )
         )

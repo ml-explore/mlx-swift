@@ -2,6 +2,9 @@
 
 import Cmlx
 import Foundation
+#if canImport(Metal)
+import Metal
+#endif
 
 /// TurboQuant preset requested by higher-level runtime code.
 ///
@@ -786,13 +789,36 @@ public func turboQuantAttentionLayout(
     pinnedPrefixLength: Int = 0
 ) throws -> TurboQuantAttentionLayout {
     try validateAttentionArray(array, groupSize: groupSize)
-    let headDimension = array.dim(3)
+    return try turboQuantAttentionLayout(
+        shape: array.shape,
+        dtype: array.dtype,
+        preset: preset,
+        groupSize: groupSize,
+        capacity: capacity,
+        logicalLength: logicalLength,
+        ringOffset: ringOffset,
+        pinnedPrefixLength: pinnedPrefixLength
+    )
+}
+
+public func turboQuantAttentionLayout(
+    shape: [Int],
+    dtype: DType = .float32,
+    preset: TurboQuantPreset = .turbo3_5,
+    groupSize: Int = 64,
+    capacity: Int? = nil,
+    logicalLength: Int? = nil,
+    ringOffset: Int = 0,
+    pinnedPrefixLength: Int = 0
+) throws -> TurboQuantAttentionLayout {
+    try validateAttentionShape(shape, dtype: dtype, groupSize: groupSize)
+    let headDimension = shape[3]
     let groupsPerVector = (headDimension + groupSize - 1) / groupSize
-    let resolvedCapacity = capacity ?? array.dim(2)
-    let resolvedLogicalLength = logicalLength ?? array.dim(2)
+    let resolvedCapacity = capacity ?? shape[2]
+    let resolvedLogicalLength = logicalLength ?? shape[2]
     let layout = TurboQuantAttentionLayout(
-        batchSize: array.dim(0),
-        kvHeadCount: array.dim(1),
+        batchSize: shape[0],
+        kvHeadCount: shape[1],
         capacity: resolvedCapacity,
         logicalLength: resolvedLogicalLength,
         ringOffset: ringOffset,
@@ -1097,10 +1123,34 @@ public func turboQuantMetalSupportsOnlineFusedAttention(
     keyCode: TurboQuantAttentionCode,
     mask: MLXFast.ScaledDotProductAttentionMaskMode = .none
 ) -> Bool {
-    guard queries.ndim == 4 else { return false }
-    guard queries.dim(0) == 1, queries.dim(2) <= 8 else { return false }
-    guard [64, 80, 96, 128, 256].contains(queries.dim(3)) else { return false }
-    guard queries.dim(3) == keyCode.layout.headDimension else { return false }
+    turboQuantMetalSupportsOnlineFusedAttention(
+        queryShape: queries.shape,
+        keyCode: keyCode,
+        mask: mask
+    )
+}
+
+public func turboQuantMetalSupportsOnlineFusedAttention(
+    queryShape: [Int],
+    keyCode: TurboQuantAttentionCode,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode = .none
+) -> Bool {
+    turboQuantMetalSupportsOnlineFusedAttention(
+        queryShape: queryShape,
+        keyLayout: keyCode.layout,
+        mask: mask
+    )
+}
+
+public func turboQuantMetalSupportsOnlineFusedAttention(
+    queryShape: [Int],
+    keyLayout: TurboQuantAttentionLayout,
+    mask: MLXFast.ScaledDotProductAttentionMaskMode = .none
+) -> Bool {
+    guard queryShape.count == 4 else { return false }
+    guard queryShape[0] == 1, queryShape[2] <= 8 else { return false }
+    guard [64, 80, 96, 128, 256].contains(queryShape[3]) else { return false }
+    guard queryShape[3] == keyLayout.headDimension else { return false }
     switch mask {
     case .none, .causal:
         return true
@@ -1560,8 +1610,43 @@ private func randomSign(index: Int, seed: UInt64) -> Bool {
 }
 
 private func metalRuntimeAvailable() -> Bool {
-    var result = false
-    return mlx_metal_is_available(&result) == 0 && result
+    #if canImport(Metal)
+    guard MTLCreateSystemDefaultDevice() != nil else { return false }
+    #endif
+    return metalLibraryResourceAvailable()
+}
+
+private func metalLibraryResourceAvailable() -> Bool {
+    let fileManager = FileManager.default
+    var candidates: [URL] = []
+
+    if let executablePath = CommandLine.arguments.first, !executablePath.isEmpty {
+        let executableDirectory = URL(fileURLWithPath: executablePath).deletingLastPathComponent()
+        candidates.append(executableDirectory.appendingPathComponent("mlx.metallib"))
+        candidates.append(executableDirectory.appendingPathComponent("default.metallib"))
+        candidates.append(executableDirectory.appendingPathComponent("Resources/mlx.metallib"))
+        candidates.append(executableDirectory.appendingPathComponent("Resources/default.metallib"))
+    }
+
+    let currentDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath)
+    candidates.append(currentDirectory.appendingPathComponent("mlx.metallib"))
+    candidates.append(currentDirectory.appendingPathComponent("default.metallib"))
+
+    for bundle in [Bundle.main] + Bundle.allBundles {
+        if bundle.url(forResource: "default", withExtension: "metallib") != nil ||
+            bundle.url(forResource: "mlx", withExtension: "metallib") != nil
+        {
+            return true
+        }
+        if let resourceURL = bundle.resourceURL {
+            candidates.append(resourceURL.appendingPathComponent("default.metallib"))
+            candidates.append(resourceURL.appendingPathComponent("mlx.metallib"))
+            candidates.append(resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/default.metallib"))
+            candidates.append(resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/mlx.metallib"))
+        }
+    }
+
+    return candidates.contains { fileManager.fileExists(atPath: $0.path) }
 }
 
 private final class TurboQuantMetalAttentionSelfTest: @unchecked Sendable {
@@ -1707,15 +1792,19 @@ private func metalRoleValue(_ role: TurboQuantTensorRole) -> Int {
 }
 
 private func validateAttentionArray(_ array: MLXArray, groupSize: Int) throws {
-    guard array.ndim == 4 else {
+    try validateAttentionShape(array.shape, dtype: array.dtype, groupSize: groupSize)
+}
+
+private func validateAttentionShape(_ shape: [Int], dtype: DType, groupSize: Int) throws {
+    guard shape.count == 4 else {
         throw TurboQuantError.invalidMetalConfiguration(
             "attention tensors must have shape [B, H, T, D]"
         )
     }
-    guard array.size > 0 else {
+    guard shape.reduce(1, *) > 0 else {
         throw TurboQuantError.invalidMetalConfiguration("empty attention tensors are not supported")
     }
-    guard array.dtype.isFloatingPoint else {
+    guard dtype.isFloatingPoint else {
         throw TurboQuantError.invalidMetalConfiguration("attention tensor dtype must be floating point")
     }
     guard groupSize > 0 else {
@@ -1726,9 +1815,9 @@ private func validateAttentionArray(_ array: MLXArray, groupSize: Int) throws {
             "group size must be 32, 64, 96, or 128 for compressed attention"
         )
     }
-    guard [64, 80, 96, 128, 256].contains(array.dim(3)) else {
+    guard [64, 80, 96, 128, 256].contains(shape[3]) else {
         throw TurboQuantError.invalidMetalConfiguration(
-            "head dimension \(array.dim(3)) is not supported by compressed attention"
+            "head dimension \(shape[3]) is not supported by compressed attention"
         )
     }
 }
