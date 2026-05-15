@@ -87,34 +87,174 @@ public enum TurboQuantBackend: String, Codable, Sendable, CaseIterable {
     case metalPolarQJL
 }
 
+public enum TurboQuantKernelProfile: String, Codable, Sendable, CaseIterable {
+    case portableA16A17
+    case wideA18A19
+    case sustainedA19Pro
+    case mlxPackedFallback
+
+    public var displayName: String {
+        switch self {
+        case .portableA16A17:
+            "Portable A16/A17"
+        case .wideA18A19:
+            "Wide A18/A19"
+        case .sustainedA19Pro:
+            "Sustained A19 Pro"
+        case .mlxPackedFallback:
+            "MLX packed fallback"
+        }
+    }
+
+    var fusedDecodeThreadgroupWidth: Int {
+        switch self {
+        case .portableA16A17:
+            128
+        case .wideA18A19, .sustainedA19Pro:
+            256
+        case .mlxPackedFallback:
+            128
+        }
+    }
+}
+
+public enum TurboQuantRuntimeSelfTestStatus: String, Codable, Sendable, CaseIterable {
+    case notRun
+    case passed
+    case failed
+}
+
+public struct TurboQuantRuntimeProbeResult: Equatable, Codable, Sendable {
+    public var status: TurboQuantRuntimeSelfTestStatus
+    public var metalRuntimeAvailable: Bool
+    public var encodeDecodePassed: Bool
+    public var qkPassed: Bool
+    public var avPassed: Bool
+    public var tiledFusedPassed: Bool
+    public var selectedKernelProfile: TurboQuantKernelProfile
+    public var failureReason: String?
+    public var encodeDecodeLatencySeconds: Double?
+    public var twoStageLatencySeconds: Double?
+    public var tiledFusedLatencySeconds: Double?
+
+    public init(
+        status: TurboQuantRuntimeSelfTestStatus = .notRun,
+        metalRuntimeAvailable: Bool = false,
+        encodeDecodePassed: Bool = false,
+        qkPassed: Bool = false,
+        avPassed: Bool = false,
+        tiledFusedPassed: Bool = false,
+        selectedKernelProfile: TurboQuantKernelProfile = .mlxPackedFallback,
+        failureReason: String? = nil,
+        encodeDecodeLatencySeconds: Double? = nil,
+        twoStageLatencySeconds: Double? = nil,
+        tiledFusedLatencySeconds: Double? = nil
+    ) {
+        self.status = status
+        self.metalRuntimeAvailable = metalRuntimeAvailable
+        self.encodeDecodePassed = encodeDecodePassed
+        self.qkPassed = qkPassed
+        self.avPassed = avPassed
+        self.tiledFusedPassed = tiledFusedPassed
+        self.selectedKernelProfile = selectedKernelProfile
+        self.failureReason = failureReason
+        self.encodeDecodeLatencySeconds = encodeDecodeLatencySeconds
+        self.twoStageLatencySeconds = twoStageLatencySeconds
+        self.tiledFusedLatencySeconds = tiledFusedLatencySeconds
+    }
+
+    public var passed: Bool {
+        status == .passed
+            && metalRuntimeAvailable
+            && encodeDecodePassed
+            && qkPassed
+            && avPassed
+            && tiledFusedPassed
+    }
+}
+
+public struct TurboQuantDeviceCapabilities: Equatable, Codable, Sendable {
+    public var metalAvailable: Bool
+    public var architectureName: String
+    public var supportedGPUFamilies: [String: Bool]
+    public var maxBufferBytes: Int
+    public var recommendedWorkingSetBytes: Int?
+    public var physicalMemoryBytes: Int?
+    public var maxThreadgroupWidth: Int?
+    public var runtimeProbe: TurboQuantRuntimeProbeResult
+
+    public init(
+        metalAvailable: Bool,
+        architectureName: String,
+        supportedGPUFamilies: [String: Bool] = [:],
+        maxBufferBytes: Int = 0,
+        recommendedWorkingSetBytes: Int? = nil,
+        physicalMemoryBytes: Int? = nil,
+        maxThreadgroupWidth: Int? = nil,
+        runtimeProbe: TurboQuantRuntimeProbeResult = TurboQuantRuntimeProbeResult()
+    ) {
+        self.metalAvailable = metalAvailable
+        self.architectureName = architectureName
+        self.supportedGPUFamilies = supportedGPUFamilies
+        self.maxBufferBytes = maxBufferBytes
+        self.recommendedWorkingSetBytes = recommendedWorkingSetBytes
+        self.physicalMemoryBytes = physicalMemoryBytes
+        self.maxThreadgroupWidth = maxThreadgroupWidth
+        self.runtimeProbe = runtimeProbe
+    }
+
+    public var selectedKernelProfile: TurboQuantKernelProfile {
+        runtimeProbe.selectedKernelProfile
+    }
+
+    public static var current: TurboQuantDeviceCapabilities {
+        var capabilities = detectedTurboQuantDeviceCapabilities()
+        capabilities.runtimeProbe = TurboQuantRuntimeProbe.shared.result()
+        return capabilities
+    }
+}
+
 public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
     public var supportsMLXPacked: Bool
     public var supportsPolarQJLReference: Bool
     public var supportsMetalPolarQJLCodec: Bool
     public var supportsMetalPolarQJLAttention: Bool
     public var supportsMetalPolarQJL: Bool
+    public var selectedKernelProfile: TurboQuantKernelProfile
+    public var selfTestStatus: TurboQuantRuntimeSelfTestStatus
+    public var selfTestFailureReason: String?
 
     public init(
         supportsMLXPacked: Bool = true,
         supportsPolarQJLReference: Bool = true,
         supportsMetalPolarQJLCodec: Bool = false,
         supportsMetalPolarQJLAttention: Bool = false,
-        supportsMetalPolarQJL: Bool = false
+        supportsMetalPolarQJL: Bool = false,
+        selectedKernelProfile: TurboQuantKernelProfile = .mlxPackedFallback,
+        selfTestStatus: TurboQuantRuntimeSelfTestStatus = .notRun,
+        selfTestFailureReason: String? = nil
     ) {
         self.supportsMLXPacked = supportsMLXPacked
         self.supportsPolarQJLReference = supportsPolarQJLReference
         self.supportsMetalPolarQJLCodec = supportsMetalPolarQJLCodec
         self.supportsMetalPolarQJLAttention = supportsMetalPolarQJLAttention
         self.supportsMetalPolarQJL = supportsMetalPolarQJL
+        self.selectedKernelProfile = selectedKernelProfile
+        self.selfTestStatus = selfTestStatus
+        self.selfTestFailureReason = selfTestFailureReason
     }
 
     public static var current: TurboQuantKernelAvailability {
         let metalAvailable = metalRuntimeAvailable()
-        let attentionAvailable = metalAvailable && TurboQuantMetalAttentionSelfTest.shared.isAvailable()
+        let probe = TurboQuantRuntimeProbe.shared.result()
+        let attentionAvailable = metalAvailable && probe.passed
         return TurboQuantKernelAvailability(
             supportsMetalPolarQJLCodec: metalAvailable,
             supportsMetalPolarQJLAttention: attentionAvailable,
-            supportsMetalPolarQJL: attentionAvailable
+            supportsMetalPolarQJL: attentionAvailable,
+            selectedKernelProfile: probe.selectedKernelProfile,
+            selfTestStatus: probe.status,
+            selfTestFailureReason: probe.failureReason
         )
     }
 
@@ -146,6 +286,9 @@ public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
         case .polarQJLReference:
             return "PolarQuant/QJL reference backend unavailable; using MLX packed TurboQuant lanes."
         case .metalPolarQJL:
+            if let selfTestFailureReason {
+                return "Paper-exact PolarQuant/QJL Metal self-test failed: \(selfTestFailureReason); using MLX packed TurboQuant lanes."
+            }
             return "Paper-exact PolarQuant/QJL Metal kernels unavailable; using MLX packed TurboQuant lanes."
         }
     }
@@ -1082,6 +1225,7 @@ public func turboQuantMetalScaledDotProductAttention(
     scale: Float,
     mask: MLXFast.ScaledDotProductAttentionMaskMode = .none,
     preferOnlineFused: Bool = true,
+    kernelProfile: TurboQuantKernelProfile? = nil,
     stream: StreamOrDevice = .default
 ) throws -> MLXArray {
     try validateAttentionPair(keyCode: keyCode, valueCode: valueCode)
@@ -1097,6 +1241,7 @@ public func turboQuantMetalScaledDotProductAttention(
             valueCode: valueCode,
             scale: scale,
             mask: mask,
+            kernelProfile: kernelProfile ?? TurboQuantRuntimeProbe.shared.selectedKernelProfileWithoutRunningProbe(),
             outputDType: queries.dtype,
             stream: stream
         )
@@ -1165,11 +1310,13 @@ private func turboQuantMetalOnlineFusedAttention(
     valueCode: TurboQuantAttentionCode,
     scale: Float,
     mask: MLXFast.ScaledDotProductAttentionMaskMode,
+    kernelProfile: TurboQuantKernelProfile,
     outputDType: DType,
     stream: StreamOrDevice
 ) throws -> MLXArray {
     let outputShape = [queries.dim(0), queries.dim(1), queries.dim(2), queries.dim(3)]
     let rowCount = queries.dim(0) * queries.dim(1) * queries.dim(2)
+    let threadgroupWidth = min(256, max(1, kernelProfile.fusedDecodeThreadgroupWidth))
     let causal: Bool
     switch mask {
     case .causal:
@@ -1215,9 +1362,10 @@ private func turboQuantMetalOnlineFusedAttention(
             ("VALUE_SEED_HI", metalTemplateUInt16High(valueCode.seed)),
             ("VALUE_SEED_LO", metalTemplateUInt16Low(valueCode.seed)),
             ("ATTENTION_SCALE_BITS", Int(scale.bitPattern)),
+            ("THREADS_PER_ROW", threadgroupWidth),
         ],
-        grid: (rowCount * 256, 1, 1),
-        threadGroup: (256, 1, 1),
+        grid: (rowCount * threadgroupWidth, 1, 1),
+        threadGroup: (threadgroupWidth, 1, 1),
         outputShapes: [outputShape],
         outputDTypes: [outputDType],
         stream: stream
@@ -1658,13 +1806,107 @@ private func metalLibraryResourceAvailable() -> Bool {
     return candidates.contains { fileManager.fileExists(atPath: $0.path) }
 }
 
-private final class TurboQuantMetalAttentionSelfTest: @unchecked Sendable {
-    static let shared = TurboQuantMetalAttentionSelfTest()
+private func detectedTurboQuantDeviceCapabilities() -> TurboQuantDeviceCapabilities {
+    let metalAvailable = metalRuntimeAvailable()
+    let physicalMemory = Int(ProcessInfo.processInfo.physicalMemory)
+
+    #if canImport(Metal)
+    if let device = MTLCreateSystemDefaultDevice() {
+        let architecture: String
+        if #available(macOS 14.0, iOS 17.0, tvOS 17.0, *) {
+            architecture = device.architecture.name
+        } else {
+            architecture = device.name
+        }
+
+        let recommendedWorkingSet: Int?
+        if device.recommendedMaxWorkingSetSize > UInt64(Int.max) {
+            recommendedWorkingSet = Int.max
+        } else if device.recommendedMaxWorkingSetSize > 0 {
+            recommendedWorkingSet = Int(device.recommendedMaxWorkingSetSize)
+        } else {
+            recommendedWorkingSet = nil
+        }
+
+        return TurboQuantDeviceCapabilities(
+            metalAvailable: metalAvailable,
+            architectureName: architecture,
+            supportedGPUFamilies: turboQuantSupportedGPUFamilies(device),
+            maxBufferBytes: device.maxBufferLength,
+            recommendedWorkingSetBytes: recommendedWorkingSet,
+            physicalMemoryBytes: physicalMemory,
+            maxThreadgroupWidth: device.maxThreadsPerThreadgroup.width
+        )
+    }
+    #endif
+
+    return TurboQuantDeviceCapabilities(
+        metalAvailable: metalAvailable,
+        architectureName: "Unknown",
+        physicalMemoryBytes: physicalMemory
+    )
+}
+
+#if canImport(Metal)
+private func turboQuantSupportedGPUFamilies(_ device: MTLDevice) -> [String: Bool] {
+    var families = [
+        "apple7": device.supportsFamily(.apple7),
+        "apple8": device.supportsFamily(.apple8),
+        "apple9": device.supportsFamily(.apple9),
+        "apple10": device.supportsFamily(.apple10),
+        "mac2": device.supportsFamily(.mac2),
+        "metal3": device.supportsFamily(.metal3),
+    ]
+    if #available(macOS 26.0, iOS 26.0, tvOS 26.0, visionOS 26.0, *) {
+        families["metal4"] = device.supportsFamily(.metal4)
+    } else {
+        families["metal4"] = false
+    }
+    return families
+}
+#endif
+
+private func selectTurboQuantKernelProfile(
+    architectureName: String,
+    supportedGPUFamilies: [String: Bool],
+    recommendedWorkingSetBytes: Int?
+) -> TurboQuantKernelProfile {
+    let architecture = architectureName.lowercased()
+    let workingSet = recommendedWorkingSetBytes ?? 0
+
+    if supportedGPUFamilies["apple10"] == true
+        || workingSet >= 10_000_000_000
+        || architecture.contains("a19pro")
+        || architecture.contains("a19 pro")
+    {
+        return .sustainedA19Pro
+    }
+
+    if supportedGPUFamilies["apple9"] == true
+        || supportedGPUFamilies["apple8"] == true
+        || workingSet >= 7_000_000_000
+        || architecture.contains("a18")
+        || architecture.contains("a19")
+    {
+        return .wideA18A19
+    }
+
+    return .portableA16A17
+}
+
+public final class TurboQuantRuntimeProbe: @unchecked Sendable {
+    public static let shared = TurboQuantRuntimeProbe()
 
     private let lock = NSLock()
-    private var cachedResult: Bool?
+    private var cachedResult: TurboQuantRuntimeProbeResult?
 
-    func isAvailable() -> Bool {
+    private init() {}
+
+    public static var current: TurboQuantRuntimeProbeResult {
+        shared.result()
+    }
+
+    public func result() -> TurboQuantRuntimeProbeResult {
         lock.lock()
         if let cachedResult {
             lock.unlock()
@@ -1672,7 +1914,7 @@ private final class TurboQuantMetalAttentionSelfTest: @unchecked Sendable {
         }
         lock.unlock()
 
-        let result = run()
+        let result = run(on: detectedTurboQuantDeviceCapabilities())
 
         lock.lock()
         cachedResult = result
@@ -1680,11 +1922,42 @@ private final class TurboQuantMetalAttentionSelfTest: @unchecked Sendable {
         return result
     }
 
-    private func run() -> Bool {
+    func selectedKernelProfileWithoutRunningProbe() -> TurboQuantKernelProfile {
+        lock.lock()
+        let cached = cachedResult?.selectedKernelProfile
+        lock.unlock()
+        if let cached { return cached }
+
+        let capabilities = detectedTurboQuantDeviceCapabilities()
+        guard capabilities.metalAvailable else { return .mlxPackedFallback }
+        return selectTurboQuantKernelProfile(
+            architectureName: capabilities.architectureName,
+            supportedGPUFamilies: capabilities.supportedGPUFamilies,
+            recommendedWorkingSetBytes: capabilities.recommendedWorkingSetBytes
+        )
+    }
+
+    private func run(on capabilities: TurboQuantDeviceCapabilities) -> TurboQuantRuntimeProbeResult {
+        guard capabilities.metalAvailable else {
+            return TurboQuantRuntimeProbeResult(
+                status: .failed,
+                metalRuntimeAvailable: false,
+                selectedKernelProfile: .mlxPackedFallback,
+                failureReason: "Metal runtime or bundled metallib is unavailable."
+            )
+        }
+
+        let selectedProfile = selectTurboQuantKernelProfile(
+            architectureName: capabilities.architectureName,
+            supportedGPUFamilies: capabilities.supportedGPUFamilies,
+            recommendedWorkingSetBytes: capabilities.recommendedWorkingSetBytes
+        )
+
         do {
             let queries = MLXArray.ones([1, 4, 1, 64], dtype: .float32)
             let keys = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
             let values = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
+            let encodeStart = Date.timeIntervalSinceReferenceDate
             let keyCode = try turboQuantMetalEncodeAttention(
                 keys,
                 configuration: TurboQuantConfiguration(
@@ -1705,28 +1978,69 @@ private final class TurboQuantMetalAttentionSelfTest: @unchecked Sendable {
                     seed: 0xA11C_E5E2
                 )
             )
+            let decodedKeys = try turboQuantMetalDecodeAttention(keyCode, outputDType: .float32)
+            eval(decodedKeys)
+            let encodeDecodeLatency = Date.timeIntervalSinceReferenceDate - encodeStart
+            let encodeDecodePassed = decodedKeys.shape == keys.shape
+
             let qk = try turboQuantMetalQK(
                 queries: queries,
                 keyCode: keyCode,
                 scale: 1 / sqrt(Float(64))
             )
+            eval(qk)
+            let qkPassed = qk.shape == [1, 4, 1, 4]
+
+            let twoStageStart = Date.timeIntervalSinceReferenceDate
             let weights = softmax(qk.asType(.float32), axis: -1)
             let av = try turboQuantMetalAV(
                 attentionWeights: weights,
                 valueCode: valueCode,
                 outputDType: .float32
             )
+            eval(av)
+            let twoStageLatency = Date.timeIntervalSinceReferenceDate - twoStageStart
+
+            let fusedStart = Date.timeIntervalSinceReferenceDate
             let fused = try turboQuantMetalScaledDotProductAttention(
                 queries: queries,
                 keyCode: keyCode,
                 valueCode: valueCode,
                 scale: 1 / sqrt(Float(64)),
-                preferOnlineFused: true
+                preferOnlineFused: true,
+                kernelProfile: selectedProfile
             )
             eval(av, fused)
-            return av.shape == fused.shape
+            let fusedLatency = Date.timeIntervalSinceReferenceDate - fusedStart
+            let avValues = av.asArray(Float.self)
+            let fusedValues = fused.asArray(Float.self)
+            let maxDelta = zip(avValues, fusedValues).reduce(Float(0)) { current, pair in
+                max(current, abs(pair.0 - pair.1))
+            }
+            let avPassed = av.shape == [1, 4, 1, 64]
+            let fusedPassed = av.shape == fused.shape && maxDelta < 1e-3
+            let passed = encodeDecodePassed && qkPassed && avPassed && fusedPassed
+
+            return TurboQuantRuntimeProbeResult(
+                status: passed ? .passed : .failed,
+                metalRuntimeAvailable: true,
+                encodeDecodePassed: encodeDecodePassed,
+                qkPassed: qkPassed,
+                avPassed: avPassed,
+                tiledFusedPassed: fusedPassed,
+                selectedKernelProfile: passed ? selectedProfile : .mlxPackedFallback,
+                failureReason: passed ? nil : "TurboQuant Metal tiny-shape self-test failed.",
+                encodeDecodeLatencySeconds: encodeDecodeLatency,
+                twoStageLatencySeconds: twoStageLatency,
+                tiledFusedLatencySeconds: fusedLatency
+            )
         } catch {
-            return false
+            return TurboQuantRuntimeProbeResult(
+                status: .failed,
+                metalRuntimeAvailable: true,
+                selectedKernelProfile: .mlxPackedFallback,
+                failureReason: String(describing: error)
+            )
         }
     }
 }
@@ -2662,7 +2976,7 @@ private enum TurboQuantMetalKernels {
         """
 
     private static let fusedAttentionSource = """
-        constexpr uint threads_per_row = 256u;
+        constexpr uint threads_per_row = uint(THREADS_PER_ROW);
         uint lane = thread_position_in_threadgroup.x;
         uint row = threadgroup_position_in_grid.x;
         uint total_rows = uint(BATCH_SIZE) * uint(QUERY_HEADS) * uint(QUERY_LENGTH);

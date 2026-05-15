@@ -166,6 +166,25 @@ class QuantizationTests: XCTestCase {
         }
     }
 
+    func testTurboQuantDeviceCapabilitiesAndProbeContract() throws {
+        let capabilities = TurboQuantDeviceCapabilities.current
+        let availability = TurboQuantKernelAvailability.current
+
+        XCTAssertFalse(capabilities.architectureName.isEmpty)
+        XCTAssertEqual(capabilities.runtimeProbe, TurboQuantRuntimeProbe.current)
+        XCTAssertEqual(availability.selfTestStatus, capabilities.runtimeProbe.status)
+        XCTAssertEqual(availability.selectedKernelProfile, capabilities.runtimeProbe.selectedKernelProfile)
+
+        if availability.supportsMetalPolarQJLAttention {
+            XCTAssertEqual(capabilities.runtimeProbe.status, .passed)
+            XCTAssertNotEqual(capabilities.runtimeProbe.selectedKernelProfile, .mlxPackedFallback)
+            XCTAssertNil(capabilities.runtimeProbe.failureReason)
+        } else {
+            XCTAssertNotEqual(capabilities.runtimeProbe.status, .notRun)
+            XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
+        }
+    }
+
     func testTurboQuantMetalCodecRoundTripWhenAvailable() throws {
         guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec else {
             throw XCTSkip("Metal runtime unavailable")
