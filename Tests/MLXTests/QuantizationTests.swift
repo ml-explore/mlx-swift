@@ -238,4 +238,22 @@ class QuantizationTests: XCTestCase {
             )
         )
     }
+
+    func testTurboQuantOnlineFusedFallsBackForLargeContext() throws {
+        let queries = MLXArray.zeros([1, 4, 1, 64], dtype: .float32)
+        let keys = MLXArray.zeros([1, 2, 513, 64], dtype: .float32)
+        let keyCode = try turboQuantEmptyAttentionCode(
+            layout: try turboQuantAttentionLayout(for: keys, groupSize: 64),
+            role: .key,
+            groupSize: 64
+        )
+
+        XCTAssertFalse(
+            turboQuantMetalSupportsOnlineFusedAttention(
+                queries: queries,
+                keyCode: keyCode,
+                mask: .none
+            )
+        )
+    }
 }

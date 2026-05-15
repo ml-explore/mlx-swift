@@ -1048,6 +1048,12 @@ public func turboQuantMetalSupportsOnlineFusedAttention(
 ) -> Bool {
     guard queries.ndim == 4 else { return false }
     guard queries.dim(0) == 1, queries.dim(2) <= 8 else { return false }
+    // The current online fused kernel is a correctness-first decode path that
+    // assigns one thread to each query row and streams across T x D. It avoids
+    // materialized score tensors, but it is not yet the tiled long-context A16
+    // production kernel. Prefer the parallel two-stage compressed path once the
+    // cache is large enough for the serial row loop to dominate latency.
+    guard keyCode.layout.logicalLength <= 512 else { return false }
     guard [64, 80, 96, 128, 256].contains(queries.dim(3)) else { return false }
     guard queries.dim(3) == keyCode.layout.headDimension else { return false }
     switch mask {
