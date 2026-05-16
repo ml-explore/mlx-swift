@@ -31,7 +31,7 @@ public let deprecationWarning: Void = ()
 /// -2    | smallest singular value      | as below
 /// other | --                           | sum(abs(x)**ord)**(1./ord)
 ///
-/// > Nuclear norm and norms based on singular values are not yet implemented.
+/// Nuclear norm and norms based on singular values are implemented by the linalg backend.
 ///
 /// The Frobenius norm is given by G. H. Golub and C. F. Van Loan, *Matrix Computations*,
 ///        Baltimore, MD, Johns Hopkins University Press, 1985, pg. 15
@@ -81,7 +81,7 @@ public func norm(
 /// -2    | smallest singular value      | as below
 /// other | --                           | sum(abs(x)**ord)**(1./ord)
 ///
-/// > Nuclear norm and norms based on singular values are not yet implemented.
+/// Nuclear norm and norms based on singular values are implemented by the linalg backend.
 ///
 /// The Frobenius norm is given by G. H. Golub and C. F. Van Loan, *Matrix Computations*,
 ///        Baltimore, MD, Johns Hopkins University Press, 1985, pg. 15
