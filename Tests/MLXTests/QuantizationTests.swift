@@ -94,6 +94,34 @@ class QuantizationTests: XCTestCase {
         XCTAssertFalse(first.residualScales.isEmpty)
     }
 
+    func testTurboQuantReferenceCodecUsesFullWidthSeed() throws {
+        try requireMLXRuntime()
+
+        let values = (0 ..< 128).map { index in
+            Float(sin(Double(index) * 0.11) + cos(Double(index) * 0.19))
+        }
+        let x = MLXArray(values, [2, 64])
+        let lowSeedConfiguration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .key,
+            groupSize: 64,
+            backend: .polarQJLReference,
+            seed: 0x0000_0000_0123_4567
+        )
+        let highSeedConfiguration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .key,
+            groupSize: 64,
+            backend: .polarQJLReference,
+            seed: 0xDEAD_BEEF_0123_4567
+        )
+
+        let lowSeed = try turboQuantReferenceEncode(x, configuration: lowSeedConfiguration)
+        let highSeed = try turboQuantReferenceEncode(x, configuration: highSeedConfiguration)
+
+        XCTAssertNotEqual(lowSeed.signs, highSeed.signs)
+    }
+
     func testTurboQuantReferenceCodecDistortionThreshold() throws {
         try requireMLXRuntime()
 
@@ -199,7 +227,7 @@ class QuantizationTests: XCTestCase {
             role: .key,
             groupSize: 64,
             backend: .metalPolarQJL,
-            seed: 23
+            seed: 0xDEAD_BEEF_0000_0017
         )
 
         let code = try turboQuantMetalEncode(x, configuration: configuration)

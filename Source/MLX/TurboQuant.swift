@@ -1359,8 +1359,8 @@ private func turboQuantMetalOnlineFusedAttention(
             outputDType: outputDType,
             causal: causal
         ) + [
-            ("VALUE_SEED_HI", metalTemplateUInt16High(valueCode.seed)),
-            ("VALUE_SEED_LO", metalTemplateUInt16Low(valueCode.seed)),
+            ("VALUE_SEED_HI", metalTemplateUInt32High(valueCode.seed)),
+            ("VALUE_SEED_LO", metalTemplateUInt32Low(valueCode.seed)),
             ("ATTENTION_SCALE_BITS", Int(scale.bitPattern)),
             ("THREADS_PER_ROW", threadgroupWidth),
         ],
@@ -1387,6 +1387,14 @@ public func requireTurboQuantMetalAttention() throws {
         throw TurboQuantError.unsupportedBackend(
             .metalPolarQJL,
             "Metal runtime is unavailable for PolarQuant/QJL compressed attention."
+        )
+    }
+    guard !TurboQuantRuntimeProbe.shared.isRunningSelfTest() else { return }
+    let probe = TurboQuantRuntimeProbe.shared.result()
+    guard probe.passed else {
+        throw TurboQuantError.unsupportedBackend(
+            .metalPolarQJL,
+            probe.failureReason ?? "PolarQuant/QJL compressed attention self-test has not passed."
         )
     }
 }
@@ -1758,12 +1766,12 @@ private func randomSign(index: Int, seed: UInt64) -> Bool {
     return (state & 1) == 1
 }
 
-private func metalTemplateUInt16High(_ value: UInt64) -> Int {
-    Int((UInt32(truncatingIfNeeded: value) >> 16) & 0xFFFF)
+private func metalTemplateUInt32High(_ value: UInt64) -> Int {
+    Int((value >> 32) & 0xFFFF_FFFF)
 }
 
-private func metalTemplateUInt16Low(_ value: UInt64) -> Int {
-    Int(UInt32(truncatingIfNeeded: value) & 0xFFFF)
+private func metalTemplateUInt32Low(_ value: UInt64) -> Int {
+    Int(value & 0xFFFF_FFFF)
 }
 
 private func metalRuntimeAvailable() -> Bool {
@@ -1899,6 +1907,7 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
 
     private let lock = NSLock()
     private var cachedResult: TurboQuantRuntimeProbeResult?
+    private var runningSelfTest = false
 
     private init() {}
 
@@ -1937,6 +1946,13 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
         )
     }
 
+    func isRunningSelfTest() -> Bool {
+        lock.lock()
+        let running = runningSelfTest
+        lock.unlock()
+        return running
+    }
+
     private func run(on capabilities: TurboQuantDeviceCapabilities) -> TurboQuantRuntimeProbeResult {
         guard capabilities.metalAvailable else {
             return TurboQuantRuntimeProbeResult(
@@ -1953,6 +1969,15 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
             recommendedWorkingSetBytes: capabilities.recommendedWorkingSetBytes
         )
 
+        lock.lock()
+        runningSelfTest = true
+        lock.unlock()
+        defer {
+            lock.lock()
+            runningSelfTest = false
+            lock.unlock()
+        }
+
         do {
             let queries = MLXArray.ones([1, 4, 1, 64], dtype: .float32)
             let keys = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
@@ -1965,7 +1990,7 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
                     role: .key,
                     groupSize: 64,
                     backend: .metalPolarQJL,
-                    seed: 0xA11C_E5E1
+                    seed: 0x5EED_A11C_0000_0001
                 )
             )
             let valueCode = try turboQuantMetalEncodeAttention(
@@ -1975,18 +2000,30 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
                     role: .value,
                     groupSize: 64,
                     backend: .metalPolarQJL,
-                    seed: 0xA11C_E5E2
+                    seed: 0x5EED_A11C_0000_0002
                 )
             )
             let decodedKeys = try turboQuantMetalDecodeAttention(keyCode, outputDType: .float32)
-            eval(decodedKeys)
+            let decodedValues = try turboQuantMetalDecodeAttention(valueCode, outputDType: .float32)
+            eval(decodedKeys, decodedValues)
             let encodeDecodeLatency = Date.timeIntervalSinceReferenceDate - encodeStart
             let encodeDecodePassed = decodedKeys.shape == keys.shape
+                && decodedValues.shape == values.shape
+
+            let scale = 1 / sqrt(Float(64))
+            let reference = MLXFast.scaledDotProductAttention(
+                queries: queries,
+                keys: decodedKeys,
+                values: decodedValues,
+                scale: scale,
+                mask: .none
+            )
+            eval(reference)
 
             let qk = try turboQuantMetalQK(
                 queries: queries,
                 keyCode: keyCode,
-                scale: 1 / sqrt(Float(64))
+                scale: scale
             )
             eval(qk)
             let qkPassed = qk.shape == [1, 4, 1, 4]
@@ -2006,19 +2043,27 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
                 queries: queries,
                 keyCode: keyCode,
                 valueCode: valueCode,
-                scale: 1 / sqrt(Float(64)),
+                scale: scale,
                 preferOnlineFused: true,
                 kernelProfile: selectedProfile
             )
             eval(av, fused)
+            let referenceValues = reference.asArray(Float.self)
             let fusedLatency = Date.timeIntervalSinceReferenceDate - fusedStart
             let avValues = av.asArray(Float.self)
             let fusedValues = fused.asArray(Float.self)
             let maxDelta = zip(avValues, fusedValues).reduce(Float(0)) { current, pair in
                 max(current, abs(pair.0 - pair.1))
             }
-            let avPassed = av.shape == [1, 4, 1, 64]
+            let avReferenceDelta = zip(avValues, referenceValues).reduce(Float(0)) { current, pair in
+                max(current, abs(pair.0 - pair.1))
+            }
+            let fusedReferenceDelta = zip(fusedValues, referenceValues).reduce(Float(0)) { current, pair in
+                max(current, abs(pair.0 - pair.1))
+            }
+            let avPassed = av.shape == [1, 4, 1, 64] && avReferenceDelta < 1e-3
             let fusedPassed = av.shape == fused.shape && maxDelta < 1e-3
+                && fusedReferenceDelta < 1e-3
             let passed = encodeDecodePassed && qkPassed && avPassed && fusedPassed
 
             return TurboQuantRuntimeProbeResult(
@@ -2099,8 +2144,8 @@ private func metalTemplate(
         ("MAG_WORDS_PER_GROUP", magnitudeWordsPerGroup),
         ("BITSET_WORDS_PER_GROUP", bitsetWordsPerGroup),
         ("ROLE", metalRoleValue(configuration.role)),
-        ("SEED_HI", metalTemplateUInt16High(configuration.seed)),
-        ("SEED_LO", metalTemplateUInt16Low(configuration.seed)),
+        ("SEED_HI", metalTemplateUInt32High(configuration.seed)),
+        ("SEED_LO", metalTemplateUInt32Low(configuration.seed)),
     ]
 }
 
@@ -2309,8 +2354,8 @@ private func attentionTemplate(
         ("MAG_WORDS_PER_GROUP", layout.magnitudeWordsPerGroup),
         ("BITSET_WORDS_PER_GROUP", layout.bitsetWordsPerGroup),
         ("ROLE", metalRoleValue(configuration.role)),
-        ("SEED_HI", metalTemplateUInt16High(configuration.seed)),
-        ("SEED_LO", metalTemplateUInt16Low(configuration.seed)),
+        ("SEED_HI", metalTemplateUInt32High(configuration.seed)),
+        ("SEED_LO", metalTemplateUInt32Low(configuration.seed)),
         ("OUTPUT_DTYPE", outputDType),
         ("DO_CAUSAL", causal),
     ]
@@ -2390,19 +2435,19 @@ private enum TurboQuantMetalKernels {
         thread float values[GROUP_SIZE];
         thread float magnitudes[GROUP_SIZE];
         float max_abs = 0.0f;
-        uint seed = (uint(SEED_HI) << 16) | uint(SEED_LO);
+        ulong seed = (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO));
 
         for (uint local = 0; local < count; local++) {
             uint index = start + local;
-            uint mixed = seed + index * 0x9E3779B9u;
-            mixed ^= mixed >> 16;
-            mixed *= 0x7FEB352Du;
-            mixed ^= mixed >> 15;
-            mixed *= 0x846CA68Bu;
-            mixed ^= mixed >> 16;
+            ulong mixed = seed + ulong(index) * 0x9E3779B97F4A7C15ul;
+            mixed ^= mixed >> 30;
+            mixed *= 0xBF58476D1CE4E5B9ul;
+            mixed ^= mixed >> 27;
+            mixed *= 0x94D049BB133111EBul;
+            mixed ^= mixed >> 31;
 
             float value = float(x[index]);
-            if ((mixed & 1u) != 0u) {
+            if ((mixed & 1ul) != 0ul) {
                 value = -value;
             }
             values[local] = value;
@@ -2554,14 +2599,14 @@ private enum TurboQuantMetalKernels {
             value += residual_sign * scales[scale_base + 2];
         }
 
-        uint seed = (uint(SEED_HI) << 16) | uint(SEED_LO);
-        uint mixed = seed + index * 0x9E3779B9u;
-        mixed ^= mixed >> 16;
-        mixed *= 0x7FEB352Du;
-        mixed ^= mixed >> 15;
-        mixed *= 0x846CA68Bu;
-        mixed ^= mixed >> 16;
-        if ((mixed & 1u) != 0u) {
+        ulong seed = (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO));
+        ulong mixed = seed + ulong(index) * 0x9E3779B97F4A7C15ul;
+        mixed ^= mixed >> 30;
+        mixed *= 0xBF58476D1CE4E5B9ul;
+        mixed ^= mixed >> 27;
+        mixed *= 0x94D049BB133111EBul;
+        mixed ^= mixed >> 31;
+        if ((mixed & 1ul) != 0ul) {
             value = -value;
         }
 
@@ -2569,18 +2614,18 @@ private enum TurboQuantMetalKernels {
         """
 
     private static let attentionHeader = """
-        inline uint tq_mix(uint seed, uint index) {
-            uint mixed = seed + index * 0x9E3779B9u;
-            mixed ^= mixed >> 16;
-            mixed *= 0x7FEB352Du;
-            mixed ^= mixed >> 15;
-            mixed *= 0x846CA68Bu;
-            mixed ^= mixed >> 16;
+        inline ulong tq_mix(ulong seed, uint index) {
+            ulong mixed = seed + ulong(index) * 0x9E3779B97F4A7C15ul;
+            mixed ^= mixed >> 30;
+            mixed *= 0xBF58476D1CE4E5B9ul;
+            mixed ^= mixed >> 27;
+            mixed *= 0x94D049BB133111EBul;
+            mixed ^= mixed >> 31;
             return mixed;
         }
 
-        inline bool tq_random_sign(uint seed, uint index) {
-            return (tq_mix(seed, index) & 1u) != 0u;
+        inline bool tq_random_sign(ulong seed, uint index) {
+            return (tq_mix(seed, index) & 1ul) != 0ul;
         }
 
         inline uint tq_bitset_offset(
@@ -2707,7 +2752,7 @@ private enum TurboQuantMetalKernels {
             uint head,
             uint token,
             uint dimension,
-            uint seed,
+            ulong seed,
             uint role,
             uint group_size,
             uint kv_heads,
@@ -2790,7 +2835,7 @@ private enum TurboQuantMetalKernels {
                 (((batch * uint(KV_HEADS) + head) * uint(INPUT_LENGTH) + token)
                     * uint(HEAD_DIM)) + dimension;
             float value = float(x[input_index]);
-            if (tq_random_sign((uint(SEED_HI) << 16) | uint(SEED_LO), dimension)) {
+            if (tq_random_sign((ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), dimension)) {
                 value = -value;
             }
             values[local] = value;
@@ -2916,7 +2961,8 @@ private enum TurboQuantMetalKernels {
                     * uint(HEAD_DIM)) + dimension;
             float key_value = tq_decode_attention_value(
                 k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                batch, kv_head, physical_token, dimension,
+                (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), 0u,
                 uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
                 uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
             sum += float(q[q_index]) * key_value;
@@ -2939,7 +2985,8 @@ private enum TurboQuantMetalKernels {
             logical_token, uint(CAPACITY), uint(RING_OFFSET), uint(PINNED_PREFIX_LENGTH));
         out[index] = tq_decode_attention_value(
             packed, signs, high_mask, residual_signs, scales,
-            batch, head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), uint(ROLE),
+            batch, head, physical_token, dimension,
+            (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), uint(ROLE),
             uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
             uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
         """
@@ -2967,7 +3014,8 @@ private enum TurboQuantMetalKernels {
                     * uint(LOGICAL_LENGTH)) + logical_token;
             float value = tq_decode_attention_value(
                 v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
-                batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 1u,
+                batch, kv_head, physical_token, dimension,
+                (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), 1u,
                 uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
                 uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
             sum += float(weights[weight_index]) * value;
@@ -3010,7 +3058,8 @@ private enum TurboQuantMetalKernels {
                         * uint(HEAD_DIM)) + dimension;
                 float key_value = tq_decode_attention_value(
                     k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                    batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                    batch, kv_head, physical_token, dimension,
+                    (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), 0u,
                     uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
                     uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                 score += float(q[q_index]) * key_value;
@@ -3041,7 +3090,8 @@ private enum TurboQuantMetalKernels {
                         * uint(HEAD_DIM)) + dimension;
                 float key_value = tq_decode_attention_value(
                     k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                    batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                    batch, kv_head, physical_token, dimension,
+                    (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), 0u,
                     uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
                     uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                 score += float(q[q_index]) * key_value;
@@ -3084,7 +3134,8 @@ private enum TurboQuantMetalKernels {
                             * uint(HEAD_DIM)) + dimension;
                     float key_value = tq_decode_attention_value(
                         k_packed, k_signs, k_high_mask, k_residual_signs, k_scales,
-                        batch, kv_head, physical_token, dimension, (uint(SEED_HI) << 16) | uint(SEED_LO), 0u,
+                        batch, kv_head, physical_token, dimension,
+                        (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO)), 0u,
                         uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
                         uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                     score += float(q[q_index]) * key_value;
@@ -3101,7 +3152,7 @@ private enum TurboQuantMetalKernels {
                     float value = tq_decode_attention_value(
                         v_packed, v_signs, v_high_mask, v_residual_signs, v_scales,
                         batch, kv_head, tile_physical_tokens[lane], dimension,
-                        (uint(VALUE_SEED_HI) << 16) | uint(VALUE_SEED_LO), 1u,
+                        (ulong(uint(VALUE_SEED_HI)) << 32) | ulong(uint(VALUE_SEED_LO)), 1u,
                         uint(GROUP_SIZE), uint(KV_HEADS), uint(CAPACITY), uint(GROUPS_PER_VECTOR),
                         uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP), uint(BASE_BITS), uint(HIGH_BITS));
                     contribution = tile_weights[lane] * value;
