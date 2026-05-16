@@ -1882,11 +1882,15 @@ private func turboQuantSupportedGPUFamilies(_ device: MTLDevice) -> [String: Boo
         "mac2": device.supportsFamily(.mac2),
         "metal3": device.supportsFamily(.metal3),
     ]
+    #if targetEnvironment(simulator)
+    families["metal4"] = false
+    #else
     if #available(macOS 26.0, iOS 26.0, tvOS 26.0, visionOS 26.0, *) {
         families["metal4"] = device.supportsFamily(.metal4)
     } else {
         families["metal4"] = false
     }
+    #endif
     return families
 }
 #endif
