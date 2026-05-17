@@ -71,6 +71,8 @@ import PackageDescription
         "MLXFast.swift",
         "MLXFastKernel.swift",
     ]
+
+    let cmlxPlugins: [Target.PluginUsage]? = nil
 #else
     let platformExcludes: [String] = [
         "mlx/mlx/backend/cpu/compiled.cpp",
@@ -102,6 +104,10 @@ import PackageDescription
     ]
 
     let mlxSwiftExcludes: [String] = []
+
+    let cmlxPlugins: [Target.PluginUsage]? = [
+        "BuildSwiftPMMetalLibrary"
+    ]
 #endif
 
 let cmlx = Target.target(
@@ -211,7 +217,8 @@ let cmlx = Target.target(
         .headerSearchPath("fmt/include"),
         .define("MLX_VERSION", to: "\"0.31.1\""),
     ],
-    linkerSettings: linkerSettings
+    linkerSettings: linkerSettings,
+    plugins: cmlxPlugins
 )
 
 let package = Package(
@@ -240,6 +247,10 @@ let package = Package(
     ],
     targets: [
         cmlx,
+        .plugin(
+            name: "BuildSwiftPMMetalLibrary",
+            capability: .buildTool()
+        ),
         .testTarget(
             name: "CmlxTests",
             dependencies: ["Cmlx"]

@@ -1,5 +1,3 @@
-// Copyright © 2026 Schtack.
-
 import Cmlx
 import Foundation
 #if canImport(Metal)
@@ -1791,6 +1789,11 @@ private func metalLibraryResourceAvailable() -> Bool {
         candidates.append(executableDirectory.appendingPathComponent("default.metallib"))
         candidates.append(executableDirectory.appendingPathComponent("Resources/mlx.metallib"))
         candidates.append(executableDirectory.appendingPathComponent("Resources/default.metallib"))
+        appendSwiftPMMetalBundleCandidates(from: executableDirectory, to: &candidates)
+    }
+
+    if let executableDirectory = Bundle.main.executableURL?.deletingLastPathComponent() {
+        appendSwiftPMMetalBundleCandidates(from: executableDirectory, to: &candidates)
     }
 
     let currentDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath)
@@ -1803,15 +1806,29 @@ private func metalLibraryResourceAvailable() -> Bool {
         {
             return true
         }
+        appendSwiftPMMetalBundleCandidates(from: bundle.bundleURL, to: &candidates)
         if let resourceURL = bundle.resourceURL {
             candidates.append(resourceURL.appendingPathComponent("default.metallib"))
             candidates.append(resourceURL.appendingPathComponent("mlx.metallib"))
             candidates.append(resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/default.metallib"))
             candidates.append(resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/mlx.metallib"))
+            appendSwiftPMMetalBundleCandidates(from: resourceURL, to: &candidates)
         }
     }
 
     return candidates.contains { fileManager.fileExists(atPath: $0.path) }
+}
+
+private func appendSwiftPMMetalBundleCandidates(from directory: URL, to candidates: inout [URL]) {
+    var root = directory
+    for _ in 0 ..< 5 {
+        candidates.append(root.appendingPathComponent("mlx-swift_Cmlx.bundle/default.metallib"))
+        candidates.append(root.appendingPathComponent("mlx-swift_Cmlx.bundle/mlx.metallib"))
+
+        let parent = root.deletingLastPathComponent()
+        guard parent.path != root.path else { break }
+        root = parent
+    }
 }
 
 private func detectedTurboQuantDeviceCapabilities() -> TurboQuantDeviceCapabilities {

@@ -75,6 +75,7 @@ make cpu_compiled_preamble
 
 cd ..
 
+# Remove stale copied Metal sources from the deleted embedded fallback path.
 rm -rf Source/Cmlx/mlx-generated/metal
 rm -f Source/Cmlx/mlx-generated/*
 cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
@@ -88,9 +89,6 @@ for x in Source/Cmlx/mlx-generated/*.cpp ; do \
     sed -i .tmp -e "s:`pwd`/::g" $x
 done;
 rm Source/Cmlx/mlx-generated/*.tmp
-
-# Update the headers
-./tools/fix-metal-includes.sh
 
 # prepare xcodeproj files
 ./tools/update-mlx-xcodeproj.sh

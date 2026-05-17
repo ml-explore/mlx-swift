@@ -126,13 +126,13 @@ git submodules to include the `mlx` and `mlx-c` repositories.
 When a new version of `mlx` and its equivalent `mlx-c` are to be used, there is a
 process to go through to update `mlx-swift`.
 
-Additionally, SwiftPM supports plugins that can produce derived source for
-building, but this can only produce new swift source. It is possible to use
-plugins to generate new source `.cpp` files and even compile them, but at
-best the `.o` is copied into the output as a resource, not linked.
-This is important because `mlx` has some build-time source generation
-(e.g. `make_compiled_preamble.sh`). This is handled in `mlx-swift` by
-pre-generating the source when updating the `mlx` version.
+Additionally, SwiftPM supports plugins that can produce derived source and
+resources for building. It is possible to use plugins to generate new source
+`.cpp` files and even compile them, but at best the `.o` is copied into the
+output as a resource, not linked. This is important because `mlx` has some
+build-time source generation (e.g. `make_compiled_preamble.sh`). This is
+handled in `mlx-swift` by pre-generating the source when updating the `mlx`
+version, while the SwiftPM Metal library is generated as a build resource.
 
 1. Update the `mlx` and `mlx-c` submodules via `git pull` or `git checkout ...`
    - `Source/Cmlx/mlx`
@@ -143,6 +143,9 @@ pre-generating the source when updating the `mlx` version.
     - this updates headers in Source/Cmlx/include
     - this updates headers in Source/Cmlx/include-framework
     - this generates various files in Source/Cmlx/mlx-generated
+    - SwiftPM builds generate `default.metallib` through the
+      `BuildSwiftPMMetalLibrary` plugin; do not check in copied Metal sources or
+      a concatenated embedded fallback.
 
 4. Fix any build issues with SwiftPM build (opening Package.swift)
 5. Fix any build issues with xcodeproj build (opening xcode/MLX.codeproj), see also [README.xcodeproj.md]
@@ -163,7 +166,9 @@ After updating the mlx/mlx-c version the xcodeproj needs to be brought up to dat
 - no other headers in the project should be included as resources (public/private/project)
     - the easiest way to adjust is look at Project -> Cmlx -> Build Phases and then look at the Headers task
 - similarly there should be _no_ Copy Bundle Resources from the same section
-- compilation issues in .metal files typically mean they are new to the project and need to be removed from Cmlx target membership
+- compilation issues in `.metal` files usually mean the SwiftPM Metal plugin's
+  kernel list or include dependencies need to be updated, or the files need to
+  remain excluded from normal Cmlx target membership
 
 ### Cmlx
 
@@ -181,4 +186,3 @@ Settings, including header search paths are in xcode/xcconfig.
 ### MLX, etc.
 
 These are just normal frameworks that link to Cmlx and others as needed.  The source files are all swift and there are no special settings needed.
-
