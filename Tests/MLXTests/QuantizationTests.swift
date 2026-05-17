@@ -245,6 +245,34 @@ class QuantizationTests: XCTestCase {
         }
     }
 
+    func testTurboQuantMetalCodecUsesGPUStreamWhenDefaultDeviceIsCPU() throws {
+        guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec else {
+            throw XCTSkip("Metal runtime unavailable")
+        }
+
+        let values = (0 ..< 128).map { index in
+            Float(sin(Double(index) * 0.07))
+        }
+        let x = MLXArray(values, [2, 64])
+        let configuration = TurboQuantConfiguration(
+            preset: .turbo3_5,
+            role: .key,
+            groupSize: 64,
+            backend: .metalPolarQJL,
+            seed: 0xDEAD_BEEF_0000_0017
+        )
+
+        try Device.withDefaultDevice(.cpu) {
+            XCTAssertTrue(StreamOrDevice.default.description.contains("cpu"))
+
+            let code = try turboQuantMetalEncode(x, configuration: configuration)
+            let decoded = try turboQuantMetalDecode(code).asArray(Float.self)
+
+            XCTAssertEqual(code.shape, [2, 64])
+            XCTAssertEqual(decoded.count, values.count)
+        }
+    }
+
     func testTurboQuantAttentionLayoutIsRowWise() throws {
         let layout = try turboQuantAttentionLayout(shape: [1, 2, 3, 80], groupSize: 64)
 
