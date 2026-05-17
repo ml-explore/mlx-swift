@@ -1,14 +1,15 @@
 import Cmlx
 import Foundation
+
 #if canImport(Metal)
-import Metal
+    import Metal
 #endif
 
 /// TurboQuant preset requested by higher-level runtime code.
 ///
 /// This additive Swift API gives callers one stable surface for the fast packed
-/// MLX path, a deterministic PolarQuant/QJL reference codec, and the future
-/// paper-exact Metal backend.
+/// MLX compatibility path, a deterministic PolarQuant/QJL reference codec, and
+/// the paper-exact mixed-bit Metal backend.
 public enum TurboQuantPreset: String, Codable, Sendable, CaseIterable {
     case turbo2_5
     case turbo3_5
@@ -22,11 +23,12 @@ public enum TurboQuantPreset: String, Codable, Sendable, CaseIterable {
         }
     }
 
-    /// Current native MLX packed-lane width used by this preset.
+    /// Current native MLX packed-lane width used by the compatibility path.
     ///
     /// MLX's public packed quantized matmul kernels accept integer lane widths.
-    /// The 3.5-bit preset therefore uses 4-bit packed lanes until the lower
-    /// level mixed 3/4-bit TurboQuant kernels are added to Cmlx/Metal.
+    /// The mixed-bit Metal path uses ``baseMagnitudeBits`` and
+    /// ``highMagnitudeBits`` directly; this value exists for MLX packed fallback
+    /// interoperability.
     public var effectiveBits: Int {
         switch self {
         case .turbo2_5:
@@ -81,7 +83,7 @@ public enum TurboQuantBackend: String, Codable, Sendable, CaseIterable {
     /// and exists to anchor fixtures while Metal kernels are implemented.
     case polarQJLReference
 
-    /// Reserved for paper-exact Cmlx/Metal kernels.
+    /// Paper-exact mixed-bit PolarQuant/QJL Metal kernels.
     case metalPolarQJL
 }
 
@@ -282,12 +284,15 @@ public struct TurboQuantKernelAvailability: Equatable, Codable, Sendable {
         case .mlxPacked:
             return nil
         case .polarQJLReference:
-            return "PolarQuant/QJL reference backend unavailable; using MLX packed TurboQuant lanes."
+            return
+                "PolarQuant/QJL reference backend unavailable; using MLX packed TurboQuant lanes."
         case .metalPolarQJL:
             if let selfTestFailureReason {
-                return "Paper-exact PolarQuant/QJL Metal self-test failed: \(selfTestFailureReason); using MLX packed TurboQuant lanes."
+                return
+                    "Paper-exact PolarQuant/QJL Metal self-test failed: \(selfTestFailureReason); using MLX packed TurboQuant lanes."
             }
-            return "Paper-exact PolarQuant/QJL Metal kernels unavailable; using MLX packed TurboQuant lanes."
+            return
+                "Paper-exact PolarQuant/QJL Metal kernels unavailable; using MLX packed TurboQuant lanes."
         }
     }
 }
@@ -491,7 +496,7 @@ public struct TurboQuantReferenceCode: Hashable, Codable, Sendable {
             + highPrecisionMask.count
             + residualSigns.count
             + (baseScales.count + highScales.count + residualScales.count)
-                * MemoryLayout<Float>.stride
+            * MemoryLayout<Float>.stride
     }
 
     public var approximateBitsPerValue: Double {
@@ -633,7 +638,8 @@ public struct TurboQuantAttentionCode {
     }
 
     public var approximateBitsPerValue: Double {
-        let values = layout.batchSize * layout.kvHeadCount
+        let values =
+            layout.batchSize * layout.kvHeadCount
             * Swift.max(layout.logicalLength, 1) * layout.headDimension
         return Double(storageByteCount * 8) / Double(values)
     }
@@ -723,6 +729,22 @@ public func turboQuantizedMM(
     )
 }
 
+public func turboQuantizedMM(
+    _ x: MLXArray,
+    _ code: TurboQuantMetalCode,
+    transpose: Bool = true,
+    outputDType: DType? = nil,
+    stream: StreamOrDevice = .gpu
+) throws -> MLXArray {
+    try turboQuantMetalMM(
+        x,
+        code,
+        transpose: transpose,
+        outputDType: outputDType,
+        stream: stream
+    )
+}
+
 public func turboQuantReferenceEncode(
     _ array: MLXArray,
     configuration: TurboQuantConfiguration = TurboQuantConfiguration(
@@ -734,7 +756,8 @@ public func turboQuantReferenceEncode(
     }
 
     let values = array.asArray(Float.self)
-    return try encodeTurboQuantReference(values: values, shape: array.shape, configuration: configuration)
+    return try encodeTurboQuantReference(
+        values: values, shape: array.shape, configuration: configuration)
 }
 
 public func turboQuantReferenceDecode(
@@ -832,7 +855,8 @@ public func turboQuantMetalDecode(
         throw TurboQuantError.invalidGroupSize(code.groupSize)
     }
     guard dtype.isFloatingPoint else {
-        throw TurboQuantError.invalidMetalConfiguration("decode output dtype must be floating point")
+        throw TurboQuantError.invalidMetalConfiguration(
+            "decode output dtype must be floating point")
     }
 
     let threadGroupSize = Swift.max(1, Swift.min(code.valueCount, 256))
@@ -866,6 +890,92 @@ public func turboQuantMetalDecode(
     )
 
     return outputs[0]
+}
+
+public func turboQuantMetalMM(
+    _ x: MLXArray,
+    _ code: TurboQuantMetalCode,
+    transpose: Bool = true,
+    outputDType: DType? = nil,
+    stream: StreamOrDevice = .gpu
+) throws -> MLXArray {
+    try requireTurboQuantMetalCodec()
+    guard x.ndim == 2 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "mixed-bit matmul input must have shape [M, K]"
+        )
+    }
+    guard code.shape.count == 2 else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "mixed-bit matmul weight code must have shape [N, K] or [K, N]"
+        )
+    }
+    guard x.dtype.isFloatingPoint else {
+        throw TurboQuantError.invalidMetalConfiguration("mixed-bit matmul input must be floating point")
+    }
+    guard (outputDType ?? x.dtype).isFloatingPoint else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "mixed-bit matmul output dtype must be floating point")
+    }
+
+    let xRows = x.dim(0)
+    let xColumns = x.dim(1)
+    let weightRows = code.shape[0]
+    let weightColumns = code.shape[1]
+    let outputColumns: Int
+    if transpose {
+        guard xColumns == weightColumns else {
+            throw TurboQuantError.invalidMetalConfiguration(
+                "transpose matmul expects x columns \(xColumns) to match encoded weight columns \(weightColumns)"
+            )
+        }
+        outputColumns = weightRows
+    } else {
+        guard xColumns == weightRows else {
+            throw TurboQuantError.invalidMetalConfiguration(
+                "matmul expects x columns \(xColumns) to match encoded weight rows \(weightRows)"
+            )
+        }
+        outputColumns = weightColumns
+    }
+
+    let outputShape = [xRows, outputColumns]
+    let elementCount = outputShape.reduce(1, *)
+    let configuration = TurboQuantConfiguration(
+        preset: code.preset,
+        role: code.role,
+        groupSize: code.groupSize,
+        backend: .metalPolarQJL,
+        seed: code.seed
+    )
+    return TurboQuantMetalKernels.matmul(
+        [
+            x,
+            code.packedMagnitudes,
+            code.signs,
+            code.highPrecisionMask,
+            code.residualSigns,
+            code.scales,
+        ],
+        template: metalTemplate(
+            configuration: configuration,
+            valueCount: code.valueCount,
+            groupCount: code.groupCount,
+            magnitudeWordsPerGroup: code.magnitudeWordsPerGroup,
+            bitsetWordsPerGroup: code.bitsetWordsPerGroup
+        ) + [
+            ("X_ROWS", xRows),
+            ("X_COLUMNS", xColumns),
+            ("WEIGHT_ROWS", weightRows),
+            ("WEIGHT_COLUMNS", weightColumns),
+            ("TRANSPOSE_WEIGHT", transpose),
+        ],
+        grid: (elementCount, 1, 1),
+        threadGroup: (Swift.max(1, Swift.min(elementCount, 256)), 1, 1),
+        outputShapes: [outputShape],
+        outputDTypes: [outputDType ?? x.dtype],
+        stream: stream
+    )[0]
 }
 
 public func turboQuantEmptyAttentionCode(
@@ -1003,7 +1113,8 @@ public func turboQuantMetalEncodeAttention(
         )
     }
 
-    let rowGroupCount = layout.batchSize * layout.kvHeadCount
+    let rowGroupCount =
+        layout.batchSize * layout.kvHeadCount
         * array.dim(2) * layout.groupsPerVector
     let outputs = TurboQuantMetalKernels.encodeAttention(
         [array],
@@ -1222,15 +1333,18 @@ public func turboQuantMetalScaledDotProductAttention(
     valueCode: TurboQuantAttentionCode,
     scale: Float,
     mask: MLXFast.ScaledDotProductAttentionMaskMode = .none,
+    sinks: MLXArray? = nil,
     preferOnlineFused: Bool = true,
     kernelProfile: TurboQuantKernelProfile? = nil,
     stream: StreamOrDevice = .gpu
 ) throws -> MLXArray {
     try validateAttentionPair(keyCode: keyCode, valueCode: valueCode)
     try validateAttentionQuery(queries, code: keyCode)
+    try validateAttentionSinks(sinks, queryHeadCount: queries.dim(1))
     try requireTurboQuantMetalAttention()
 
-    if preferOnlineFused,
+    if sinks == nil,
+        preferOnlineFused,
         turboQuantMetalSupportsOnlineFusedAttention(queries: queries, keyCode: keyCode, mask: mask)
     {
         return try turboQuantMetalOnlineFusedAttention(
@@ -1239,7 +1353,8 @@ public func turboQuantMetalScaledDotProductAttention(
             valueCode: valueCode,
             scale: scale,
             mask: mask,
-            kernelProfile: kernelProfile ?? TurboQuantRuntimeProbe.shared.selectedKernelProfileWithoutRunningProbe(),
+            kernelProfile: kernelProfile
+                ?? TurboQuantRuntimeProbe.shared.selectedKernelProfileWithoutRunningProbe(),
             outputDType: queries.dtype,
             stream: stream
         )
@@ -1252,7 +1367,17 @@ public func turboQuantMetalScaledDotProductAttention(
         mask: mask,
         stream: stream
     )
-    let weights = softmax(scores.asType(.float32), axis: -1, stream: stream)
+    var logits = scores.asType(.float32)
+    logits = try prependAttentionSinks(
+        logits,
+        sinks: sinks,
+        queryHeadCount: queries.dim(1),
+        stream: stream
+    )
+    var weights = softmax(logits, axis: -1, stream: stream)
+    if sinks != nil {
+        weights = weights[.ellipsis, 1...]
+    }
     return try turboQuantMetalAV(
         attentionWeights: weights,
         valueCode: valueCode,
@@ -1291,7 +1416,7 @@ public func turboQuantMetalSupportsOnlineFusedAttention(
     mask: MLXFast.ScaledDotProductAttentionMaskMode = .none
 ) -> Bool {
     guard queryShape.count == 4 else { return false }
-    guard queryShape[0] == 1, queryShape[2] <= 8 else { return false }
+    guard queryShape[0] == keyLayout.batchSize, queryShape[2] <= 8 else { return false }
     guard [64, 80, 96, 128, 256].contains(queryShape[3]) else { return false }
     guard queryShape[3] == keyLayout.headDimension else { return false }
     switch mask {
@@ -1510,7 +1635,9 @@ private func encodeTurboQuantReference(
             setPackedBit(&signs, index: absoluteIndex, value: value.sign == .minus)
             setPackedBit(&highPrecisionMask, index: absoluteIndex, value: highPrecision)
             if configuration.role != .value {
-                setPackedBit(&residualSigns, index: absoluteIndex, value: residuals[localIndex].sign == .minus)
+                setPackedBit(
+                    &residualSigns, index: absoluteIndex,
+                    value: residuals[localIndex].sign == .minus)
             }
             appendPackedBits(
                 UInt32(quantizedMagnitude),
@@ -1560,7 +1687,8 @@ private func decodeTurboQuantReference(_ code: TurboQuantReferenceCode) throws -
         throw TurboQuantError.invalidReferenceCode("scale table count does not match groups")
     }
     guard code.residualScales.isEmpty || code.residualScales.count == groupCount else {
-        throw TurboQuantError.invalidReferenceCode("residual scale table count does not match groups")
+        throw TurboQuantError.invalidReferenceCode(
+            "residual scale table count does not match groups")
     }
     guard code.signs.count >= packedBitByteCount(code.valueCount),
         code.highPrecisionMask.count >= packedBitByteCount(code.valueCount)
@@ -1594,7 +1722,8 @@ private func decodeTurboQuantReference(_ code: TurboQuantReferenceCode) throws -
             if code.role != .value {
                 let residualSign: Float =
                     getPackedBit(code.residualSigns, index: absoluteIndex) ? -1 : 1
-                let residualScale = code.residualScales.isEmpty
+                let residualScale =
+                    code.residualScales.isEmpty
                     ? code.residualScale * scale
                     : code.residualScales[groupIndex]
                 reconstructed += residualSign * residualScale
@@ -1654,7 +1783,8 @@ private func turboQuantQuality(
     let relativeMSE = squaredError / Swift.max(squaredSignal, Float.leastNonzeroMagnitude)
     let cosineDenominator = sqrt(originalNormSquared) * sqrt(decodedNormSquared)
     let cosineSimilarity = dot / Swift.max(cosineDenominator, Float.leastNonzeroMagnitude)
-    let innerProductRelativeError = Swift.abs(probeOriginalDot - probeDecodedDot)
+    let innerProductRelativeError =
+        Swift.abs(probeOriginalDot - probeDecodedDot)
         / Swift.max(Swift.abs(probeOriginalDot), Float.leastNonzeroMagnitude)
 
     return TurboQuantQualityReport(
@@ -1774,7 +1904,7 @@ private func metalTemplateUInt32Low(_ value: UInt64) -> UInt32 {
 
 private func metalRuntimeAvailable() -> Bool {
     #if canImport(Metal)
-    guard MTLCreateSystemDefaultDevice() != nil else { return false }
+        guard MTLCreateSystemDefaultDevice() != nil else { return false }
     #endif
     return metalLibraryResourceAvailable()
 }
@@ -1801,8 +1931,8 @@ private func metalLibraryResourceAvailable() -> Bool {
     candidates.append(currentDirectory.appendingPathComponent("default.metallib"))
 
     for bundle in [Bundle.main] + Bundle.allBundles {
-        if bundle.url(forResource: "default", withExtension: "metallib") != nil ||
-            bundle.url(forResource: "mlx", withExtension: "metallib") != nil
+        if bundle.url(forResource: "default", withExtension: "metallib") != nil
+            || bundle.url(forResource: "mlx", withExtension: "metallib") != nil
         {
             return true
         }
@@ -1810,8 +1940,10 @@ private func metalLibraryResourceAvailable() -> Bool {
         if let resourceURL = bundle.resourceURL {
             candidates.append(resourceURL.appendingPathComponent("default.metallib"))
             candidates.append(resourceURL.appendingPathComponent("mlx.metallib"))
-            candidates.append(resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/default.metallib"))
-            candidates.append(resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/mlx.metallib"))
+            candidates.append(
+                resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/default.metallib"))
+            candidates.append(
+                resourceURL.appendingPathComponent("mlx-swift_Cmlx.bundle/mlx.metallib"))
             appendSwiftPMMetalBundleCandidates(from: resourceURL, to: &candidates)
         }
     }
@@ -1836,33 +1968,33 @@ private func detectedTurboQuantDeviceCapabilities() -> TurboQuantDeviceCapabilit
     let physicalMemory = Int(ProcessInfo.processInfo.physicalMemory)
 
     #if canImport(Metal)
-    if let device = MTLCreateSystemDefaultDevice() {
-        let architecture: String
-        if #available(macOS 14.0, iOS 17.0, tvOS 17.0, *) {
-            architecture = device.architecture.name
-        } else {
-            architecture = device.name
-        }
+        if let device = MTLCreateSystemDefaultDevice() {
+            let architecture: String
+            if #available(macOS 14.0, iOS 17.0, tvOS 17.0, *) {
+                architecture = device.architecture.name
+            } else {
+                architecture = device.name
+            }
 
-        let recommendedWorkingSet: Int?
-        if device.recommendedMaxWorkingSetSize > UInt64(Int.max) {
-            recommendedWorkingSet = Int.max
-        } else if device.recommendedMaxWorkingSetSize > 0 {
-            recommendedWorkingSet = Int(device.recommendedMaxWorkingSetSize)
-        } else {
-            recommendedWorkingSet = nil
-        }
+            let recommendedWorkingSet: Int?
+            if device.recommendedMaxWorkingSetSize > UInt64(Int.max) {
+                recommendedWorkingSet = Int.max
+            } else if device.recommendedMaxWorkingSetSize > 0 {
+                recommendedWorkingSet = Int(device.recommendedMaxWorkingSetSize)
+            } else {
+                recommendedWorkingSet = nil
+            }
 
-        return TurboQuantDeviceCapabilities(
-            metalAvailable: metalAvailable,
-            architectureName: architecture,
-            supportedGPUFamilies: turboQuantSupportedGPUFamilies(device),
-            maxBufferBytes: device.maxBufferLength,
-            recommendedWorkingSetBytes: recommendedWorkingSet,
-            physicalMemoryBytes: physicalMemory,
-            maxThreadgroupWidth: device.maxThreadsPerThreadgroup.width
-        )
-    }
+            return TurboQuantDeviceCapabilities(
+                metalAvailable: metalAvailable,
+                architectureName: architecture,
+                supportedGPUFamilies: turboQuantSupportedGPUFamilies(device),
+                maxBufferBytes: device.maxBufferLength,
+                recommendedWorkingSetBytes: recommendedWorkingSet,
+                physicalMemoryBytes: physicalMemory,
+                maxThreadgroupWidth: device.maxThreadsPerThreadgroup.width
+            )
+        }
     #endif
 
     return TurboQuantDeviceCapabilities(
@@ -1873,26 +2005,26 @@ private func detectedTurboQuantDeviceCapabilities() -> TurboQuantDeviceCapabilit
 }
 
 #if canImport(Metal)
-private func turboQuantSupportedGPUFamilies(_ device: MTLDevice) -> [String: Bool] {
-    var families = [
-        "apple7": device.supportsFamily(.apple7),
-        "apple8": device.supportsFamily(.apple8),
-        "apple9": device.supportsFamily(.apple9),
-        "apple10": device.supportsFamily(.apple10),
-        "mac2": device.supportsFamily(.mac2),
-        "metal3": device.supportsFamily(.metal3),
-    ]
-    #if targetEnvironment(simulator)
-    families["metal4"] = false
-    #else
-    if #available(macOS 26.0, iOS 26.0, tvOS 26.0, visionOS 26.0, *) {
-        families["metal4"] = device.supportsFamily(.metal4)
-    } else {
-        families["metal4"] = false
+    private func turboQuantSupportedGPUFamilies(_ device: MTLDevice) -> [String: Bool] {
+        var families = [
+            "apple7": device.supportsFamily(.apple7),
+            "apple8": device.supportsFamily(.apple8),
+            "apple9": device.supportsFamily(.apple9),
+            "apple10": device.supportsFamily(.apple10),
+            "mac2": device.supportsFamily(.mac2),
+            "metal3": device.supportsFamily(.metal3),
+        ]
+        #if targetEnvironment(simulator)
+            families["metal4"] = false
+        #else
+            if #available(macOS 26.0, iOS 26.0, tvOS 26.0, visionOS 26.0, *) {
+                families["metal4"] = device.supportsFamily(.metal4)
+            } else {
+                families["metal4"] = false
+            }
+        #endif
+        return families
     }
-    #endif
-    return families
-}
 #endif
 
 private func selectTurboQuantKernelProfile(
@@ -1974,7 +2106,8 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
         return running
     }
 
-    private func run(on capabilities: TurboQuantDeviceCapabilities) -> TurboQuantRuntimeProbeResult {
+    private func run(on capabilities: TurboQuantDeviceCapabilities) -> TurboQuantRuntimeProbeResult
+    {
         guard capabilities.metalAvailable else {
             return TurboQuantRuntimeProbeResult(
                 status: .failed,
@@ -2000,9 +2133,21 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
         }
 
         do {
-            let queries = MLXArray.ones([1, 4, 1, 64], dtype: .float32)
-            let keys = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
-            let values = MLXArray.ones([1, 2, 4, 64], dtype: .float32)
+            let queryValues: [Float] = (0 ..< 512).map { index in
+                let position = Double(index)
+                return Float(sin(position * 0.07) + 0.25 * cos(position * 0.013))
+            }
+            let keyValues: [Float] = (0 ..< 640).map { index in
+                let position = Double(index)
+                return Float(0.5 * cos(position * 0.05) + 0.1 * sin(position * 0.19))
+            }
+            let valueValues: [Float] = (0 ..< 640).map { index in
+                let position = Double(index)
+                return Float(0.35 * sin(position * 0.09) - 0.15 * cos(position * 0.17))
+            }
+            let queries = MLXArray(queryValues, [1, 4, 2, 64])
+            let keys = MLXArray(keyValues, [1, 2, 5, 64])
+            let values = MLXArray(valueValues, [1, 2, 5, 64])
             let encodeStart = Date.timeIntervalSinceReferenceDate
             let keyCode = try turboQuantMetalEncodeAttention(
                 keys,
@@ -2028,7 +2173,8 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
             let decodedValues = try turboQuantMetalDecodeAttention(valueCode, outputDType: .float32)
             eval(decodedKeys, decodedValues)
             let encodeDecodeLatency = Date.timeIntervalSinceReferenceDate - encodeStart
-            let encodeDecodePassed = decodedKeys.shape == keys.shape
+            let encodeDecodePassed =
+                decodedKeys.shape == keys.shape
                 && decodedValues.shape == values.shape
 
             let scale = 1 / sqrt(Float(64))
@@ -2037,20 +2183,21 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
                 keys: decodedKeys,
                 values: decodedValues,
                 scale: scale,
-                mask: .none
+                mask: .causal
             )
             eval(reference)
 
             let qk = try turboQuantMetalQK(
                 queries: queries,
                 keyCode: keyCode,
-                scale: scale
+                scale: scale,
+                mask: .causal
             )
             eval(qk)
-            let qkPassed = qk.shape == [1, 4, 1, 4]
+            let qkPassed = qk.shape == [1, 4, 2, 5]
 
             let twoStageStart = Date.timeIntervalSinceReferenceDate
-            let weights = softmax(qk.asType(.float32), axis: -1)
+            let weights = softmax(qk.asType(DType.float32), axis: -1)
             let av = try turboQuantMetalAV(
                 attentionWeights: weights,
                 valueCode: valueCode,
@@ -2065,6 +2212,7 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
                 keyCode: keyCode,
                 valueCode: valueCode,
                 scale: scale,
+                mask: .causal,
                 preferOnlineFused: true,
                 kernelProfile: selectedProfile
             )
@@ -2074,16 +2222,19 @@ public final class TurboQuantRuntimeProbe: @unchecked Sendable {
             let avValues = av.asArray(Float.self)
             let fusedValues = fused.asArray(Float.self)
             let maxDelta = zip(avValues, fusedValues).reduce(Float(0)) { current, pair in
-                max(current, abs(pair.0 - pair.1))
+                Swift.max(current, Swift.abs(pair.0 - pair.1))
             }
-            let avReferenceDelta = zip(avValues, referenceValues).reduce(Float(0)) { current, pair in
-                max(current, abs(pair.0 - pair.1))
+            let avReferenceDelta = zip(avValues, referenceValues).reduce(Float(0)) {
+                current, pair in
+                Swift.max(current, Swift.abs(pair.0 - pair.1))
             }
-            let fusedReferenceDelta = zip(fusedValues, referenceValues).reduce(Float(0)) { current, pair in
-                max(current, abs(pair.0 - pair.1))
+            let fusedReferenceDelta = zip(fusedValues, referenceValues).reduce(Float(0)) {
+                current, pair in
+                Swift.max(current, Swift.abs(pair.0 - pair.1))
             }
-            let avPassed = av.shape == [1, 4, 1, 64] && avReferenceDelta < 1e-3
-            let fusedPassed = av.shape == fused.shape && maxDelta < 1e-3
+            let avPassed = av.shape == [1, 4, 2, 64] && avReferenceDelta < 1e-3
+            let fusedPassed =
+                av.shape == fused.shape && maxDelta < 1e-3
                 && fusedReferenceDelta < 1e-3
             let passed = encodeDecodePassed && qkPassed && avPassed && fusedPassed
 
@@ -2142,7 +2293,8 @@ private func metalMagnitudeWordsPerGroup(
         highBits: preset.highMagnitudeBits,
         targetBits: preset.targetMagnitudeBits
     )
-    let bitCount = groupSize * preset.baseMagnitudeBits
+    let bitCount =
+        groupSize * preset.baseMagnitudeBits
         + highCount * (preset.highMagnitudeBits - preset.baseMagnitudeBits)
     return (bitCount + 31) / 32
 }
@@ -2195,7 +2347,8 @@ private func validateAttentionShape(_ shape: [Int], dtype: DType, groupSize: Int
         throw TurboQuantError.invalidMetalConfiguration("empty attention tensors are not supported")
     }
     guard dtype.isFloatingPoint else {
-        throw TurboQuantError.invalidMetalConfiguration("attention tensor dtype must be floating point")
+        throw TurboQuantError.invalidMetalConfiguration(
+            "attention tensor dtype must be floating point")
     }
     guard groupSize > 0 else {
         throw TurboQuantError.invalidGroupSize(groupSize)
@@ -2242,11 +2395,13 @@ private func validateAttentionLayout(
     let ringCapacity = layout.capacity - layout.pinnedPrefixLength
     if ringCapacity == 0 {
         guard layout.ringOffset == 0 else {
-            throw TurboQuantError.invalidMetalConfiguration("ring offset must be zero without ring capacity")
+            throw TurboQuantError.invalidMetalConfiguration(
+                "ring offset must be zero without ring capacity")
         }
     } else {
         guard layout.ringOffset < ringCapacity else {
-            throw TurboQuantError.invalidMetalConfiguration("ring offset is outside rotating region")
+            throw TurboQuantError.invalidMetalConfiguration(
+                "ring offset is outside rotating region")
         }
     }
     guard layout.groupsPerVector == (layout.headDimension + groupSize - 1) / groupSize else {
@@ -2281,9 +2436,11 @@ private func validateAttentionPair(
     valueCode: TurboQuantAttentionCode
 ) throws {
     try validateAttentionLayout(keyCode.layout, role: keyCode.role, groupSize: keyCode.groupSize)
-    try validateAttentionLayout(valueCode.layout, role: valueCode.role, groupSize: valueCode.groupSize)
+    try validateAttentionLayout(
+        valueCode.layout, role: valueCode.role, groupSize: valueCode.groupSize)
     guard keyCode.role == .key, valueCode.role == .value else {
-        throw TurboQuantError.invalidMetalConfiguration("compressed attention requires key and value codes")
+        throw TurboQuantError.invalidMetalConfiguration(
+            "compressed attention requires key and value codes")
     }
     guard keyCode.layout == valueCode.layout else {
         throw TurboQuantError.invalidMetalConfiguration("key and value compressed layouts differ")
@@ -2291,6 +2448,34 @@ private func validateAttentionPair(
     guard keyCode.preset == valueCode.preset, keyCode.groupSize == valueCode.groupSize else {
         throw TurboQuantError.invalidMetalConfiguration("key and value compressed presets differ")
     }
+}
+
+private func validateAttentionSinks(_ sinks: MLXArray?, queryHeadCount: Int) throws {
+    guard let sinks else { return }
+    guard sinks.ndim == 1, sinks.dim(0) == queryHeadCount else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "attention sinks must have shape [query heads]"
+        )
+    }
+    guard sinks.dtype.isFloatingPoint else {
+        throw TurboQuantError.invalidMetalConfiguration("attention sinks must be floating point")
+    }
+}
+
+private func prependAttentionSinks(
+    _ scores: MLXArray,
+    sinks: MLXArray?,
+    queryHeadCount: Int,
+    stream: StreamOrDevice
+) throws -> MLXArray {
+    guard let sinks else { return scores }
+    try validateAttentionSinks(sinks, queryHeadCount: queryHeadCount)
+    let sinkScores = broadcast(
+        expandedDimensions(sinks.asType(.float32), axes: [0, 2, 3], stream: stream),
+        to: [scores.dim(0), scores.dim(1), scores.dim(2), 1],
+        stream: stream
+    )
+    return concatenated([sinkScores, scores], axis: -1, stream: stream)
 }
 
 private func applyAttentionMask(
@@ -2397,6 +2582,14 @@ private enum TurboQuantMetalKernels {
         source: decodeSource
     )
 
+    static let matmul = MLXFast.metalKernel(
+        name: "turboquant_polar_qjl_matmul",
+        inputNames: ["x", "packed", "signs", "high_mask", "residual_signs", "scales"],
+        outputNames: ["out"],
+        source: matmulSource,
+        header: vectorHeader
+    )
+
     static let encodeAttention = MLXFast.metalKernel(
         name: "turboquant_attention_encode",
         inputNames: ["x"],
@@ -2423,7 +2616,9 @@ private enum TurboQuantMetalKernels {
 
     static let av = MLXFast.metalKernel(
         name: "turboquant_attention_av",
-        inputNames: ["weights", "v_packed", "v_signs", "v_high_mask", "v_residual_signs", "v_scales"],
+        inputNames: [
+            "weights", "v_packed", "v_signs", "v_high_mask", "v_residual_signs", "v_scales",
+        ],
         outputNames: ["out"],
         source: avSource,
         header: attentionHeader
@@ -2440,6 +2635,79 @@ private enum TurboQuantMetalKernels {
         source: fusedAttentionSource,
         header: attentionHeader
     )
+
+    private static let vectorHeader = """
+        inline ulong tq_vector_mix(ulong seed, uint index) {
+            ulong mixed = seed + ulong(index) * 0x9E3779B97F4A7C15ul;
+            mixed ^= mixed >> 30;
+            mixed *= 0xBF58476D1CE4E5B9ul;
+            mixed ^= mixed >> 27;
+            mixed *= 0x94D049BB133111EBul;
+            mixed ^= mixed >> 31;
+            return mixed;
+        }
+
+        inline float tq_decode_flat_value(
+            device const uint* packed,
+            device const uint* signs,
+            device const uint* high_mask,
+            device const uint* residual_signs,
+            device const float* scales,
+            uint index,
+            ulong seed,
+            uint role,
+            uint group_size,
+            uint mag_words_per_group,
+            uint bitset_words_per_group,
+            uint base_bits,
+            uint high_bits
+        ) {
+            uint group_id = index / group_size;
+            uint local = index - group_id * group_size;
+            uint bitset_base = group_id * bitset_words_per_group;
+            uint word_index = local >> 5;
+            uint word_bit = local & 31u;
+            uint mask_bit = 1u << word_bit;
+            bool high_precision = (high_mask[bitset_base + word_index] & mask_bit) != 0u;
+            uint bits = high_precision ? high_bits : base_bits;
+            uint scale_base = group_id * 3u;
+            float scale = high_precision ? scales[scale_base + 1u] : scales[scale_base];
+
+            uint bit_offset = 0u;
+            for (uint prior = 0u; prior < local; prior++) {
+                uint prior_word = prior >> 5;
+                uint prior_bit = prior & 31u;
+                bool prior_high =
+                    (high_mask[bitset_base + prior_word] & (1u << prior_bit)) != 0u;
+                bit_offset += prior_high ? high_bits : base_bits;
+            }
+
+            uint packed_base = group_id * mag_words_per_group;
+            uint quantized = 0u;
+            for (uint bit = 0u; bit < bits; bit++) {
+                uint global_bit = bit_offset + bit;
+                uint packed_word = global_bit >> 5;
+                uint packed_bit = global_bit & 31u;
+                if ((packed[packed_base + packed_word] & (1u << packed_bit)) != 0u) {
+                    quantized |= 1u << bit;
+                }
+            }
+
+            float sign = (signs[bitset_base + word_index] & mask_bit) != 0u ? -1.0f : 1.0f;
+            float value = sign * float(quantized) * scale;
+            if (role != 1u) {
+                float residual_sign =
+                    (residual_signs[bitset_base + word_index] & mask_bit) != 0u
+                        ? -1.0f : 1.0f;
+                value += residual_sign * scales[scale_base + 2u];
+            }
+
+            if ((tq_vector_mix(seed, index) & 1ul) != 0ul) {
+                value = -value;
+            }
+            return value;
+        }
+        """
 
     private static let encodeSource = """
         uint group_id = thread_position_in_grid.x;
@@ -2632,6 +2900,35 @@ private enum TurboQuantMetalKernels {
         }
 
         out[index] = value;
+        """
+
+    private static let matmulSource = """
+        uint index = thread_position_in_grid.x;
+        uint total = uint(X_ROWS) * (TRANSPOSE_WEIGHT ? uint(WEIGHT_ROWS) : uint(WEIGHT_COLUMNS));
+        if (index >= total) {
+            return;
+        }
+
+        uint output_columns = TRANSPOSE_WEIGHT ? uint(WEIGHT_ROWS) : uint(WEIGHT_COLUMNS);
+        uint row = index / output_columns;
+        uint column = index - row * output_columns;
+        uint reduction = uint(X_COLUMNS);
+        ulong seed = (ulong(uint(SEED_HI)) << 32) | ulong(uint(SEED_LO));
+        float sum = 0.0f;
+
+        for (uint k = 0u; k < reduction; k++) {
+            uint x_index = row * uint(X_COLUMNS) + k;
+            uint weight_index = TRANSPOSE_WEIGHT
+                ? column * uint(WEIGHT_COLUMNS) + k
+                : k * uint(WEIGHT_COLUMNS) + column;
+            float weight = tq_decode_flat_value(
+                packed, signs, high_mask, residual_signs, scales,
+                weight_index, seed, uint(ROLE),
+                uint(GROUP_SIZE), uint(MAG_WORDS_PER_GROUP), uint(BITSET_WORDS_PER_GROUP),
+                uint(BASE_BITS), uint(HIGH_BITS));
+            sum += float(x[x_index]) * weight;
+        }
+        out[index] = sum;
         """
 
     private static let attentionHeader = """
