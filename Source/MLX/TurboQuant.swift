@@ -1140,7 +1140,7 @@ public func turboQuantMetalQK(
             queryLength: queries.dim(2),
             outputDType: .float32,
             causal: false
-        ) + [("ATTENTION_SCALE_BITS", Int(scale.bitPattern))],
+        ) + [("ATTENTION_SCALE_BITS", scale.bitPattern)],
         grid: (elementCount, 1, 1),
         threadGroup: (Swift.max(1, Swift.min(elementCount, 256)), 1, 1),
         outputShapes: [outputShape],
@@ -1359,7 +1359,7 @@ private func turboQuantMetalOnlineFusedAttention(
         ) + [
             ("VALUE_SEED_HI", metalTemplateUInt32High(valueCode.seed)),
             ("VALUE_SEED_LO", metalTemplateUInt32Low(valueCode.seed)),
-            ("ATTENTION_SCALE_BITS", Int(scale.bitPattern)),
+            ("ATTENTION_SCALE_BITS", scale.bitPattern),
             ("THREADS_PER_ROW", threadgroupWidth),
         ],
         grid: (rowCount * threadgroupWidth, 1, 1),
@@ -1764,12 +1764,12 @@ private func randomSign(index: Int, seed: UInt64) -> Bool {
     return (state & 1) == 1
 }
 
-private func metalTemplateUInt32High(_ value: UInt64) -> Int {
-    Int((value >> 32) & 0xFFFF_FFFF)
+private func metalTemplateUInt32High(_ value: UInt64) -> UInt32 {
+    UInt32((value >> 32) & 0xFFFF_FFFF)
 }
 
-private func metalTemplateUInt32Low(_ value: UInt64) -> Int {
-    Int(value & 0xFFFF_FFFF)
+private func metalTemplateUInt32Low(_ value: UInt64) -> UInt32 {
+    UInt32(value & 0xFFFF_FFFF)
 }
 
 private func metalRuntimeAvailable() -> Bool {

@@ -222,25 +222,27 @@ class QuantizationTests: XCTestCase {
             Float(sin(Double(index) * 0.05))
         }
         let x = MLXArray(values, [2, 64])
-        let configuration = TurboQuantConfiguration(
-            preset: .turbo3_5,
-            role: .key,
-            groupSize: 64,
-            backend: .metalPolarQJL,
-            seed: 0xDEAD_BEEF_0000_0017
-        )
+        for seed in [UInt64(0xDEAD_BEEF_0000_0017), UInt64(0x0000_0000_DEAD_BEEF)] {
+            let configuration = TurboQuantConfiguration(
+                preset: .turbo3_5,
+                role: .key,
+                groupSize: 64,
+                backend: .metalPolarQJL,
+                seed: seed
+            )
 
-        let code = try turboQuantMetalEncode(x, configuration: configuration)
-        let decoded = try turboQuantMetalDecode(code).asArray(Float.self)
-        let mse = zip(values, decoded)
-            .map { lhs, rhs in
-                let delta = lhs - rhs
-                return delta * delta
-            }
-            .reduce(Float(0), +) / Float(values.count)
+            let code = try turboQuantMetalEncode(x, configuration: configuration)
+            let decoded = try turboQuantMetalDecode(code).asArray(Float.self)
+            let mse = zip(values, decoded)
+                .map { lhs, rhs in
+                    let delta = lhs - rhs
+                    return delta * delta
+                }
+                .reduce(Float(0), +) / Float(values.count)
 
-        XCTAssertEqual(code.shape, [2, 64])
-        XCTAssertLessThan(mse, 0.02)
+            XCTAssertEqual(code.shape, [2, 64])
+            XCTAssertLessThan(mse, 0.02)
+        }
     }
 
     func testTurboQuantAttentionLayoutIsRowWise() throws {

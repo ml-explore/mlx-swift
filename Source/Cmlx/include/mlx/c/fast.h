@@ -63,6 +63,10 @@ int mlx_fast_cuda_kernel_config_add_template_arg_int(
     mlx_fast_cuda_kernel_config cls,
     const char* name,
     int value);
+int mlx_fast_cuda_kernel_config_add_template_arg_uint32(
+    mlx_fast_cuda_kernel_config cls,
+    const char* name,
+    uint32_t value);
 int mlx_fast_cuda_kernel_config_add_template_arg_bool(
     mlx_fast_cuda_kernel_config cls,
     const char* name,
@@ -133,6 +137,10 @@ int mlx_fast_metal_kernel_config_add_template_arg_int(
     mlx_fast_metal_kernel_config cls,
     const char* name,
     int value);
+int mlx_fast_metal_kernel_config_add_template_arg_uint32(
+    mlx_fast_metal_kernel_config cls,
+    const char* name,
+    uint32_t value);
 int mlx_fast_metal_kernel_config_add_template_arg_bool(
     mlx_fast_metal_kernel_config cls,
     const char* name,

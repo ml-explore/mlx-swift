@@ -6,6 +6,7 @@ import Cmlx
 ///
 /// Currently:
 /// - `Int`
+/// - `UInt32`
 /// - `Bool`
 /// - `DType`
 ///
@@ -14,6 +15,7 @@ public protocol KernelTemplateArg {}
 
 extension Bool: KernelTemplateArg {}
 extension Int: KernelTemplateArg {}
+extension UInt32: KernelTemplateArg {}
 extension DType: KernelTemplateArg {}
 
 extension MLXFast {
@@ -114,8 +116,16 @@ extension MLXFast {
                         mlx_fast_metal_kernel_config_add_template_arg_bool(config, name, value)
 
                     case let value as Int:
+                        guard let int32Value = Int32(exactly: value) else {
+                            fatalError(
+                                "KernelTemplateArg \(name) Int value \(value) is outside the Int32 range."
+                            )
+                        }
                         mlx_fast_metal_kernel_config_add_template_arg_int(
-                            config, name, Int32(value))
+                            config, name, int32Value)
+
+                    case let value as UInt32:
+                        mlx_fast_metal_kernel_config_add_template_arg_uint32(config, name, value)
 
                     case let value as DType:
                         mlx_fast_metal_kernel_config_add_template_arg_dtype(

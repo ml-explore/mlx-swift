@@ -72,6 +72,29 @@ class MLXFastKernelTests: XCTestCase {
         XCTAssertTrue(allClose(out[1], full([3, 2], values: -2)).all().item())
     }
 
+    func testCustomKernelUInt32TemplateArgPreservesHighBits() {
+        let kernel = MLXFast.metalKernel(
+            name: "uint32_template_arg_test",
+            inputNames: [],
+            outputNames: ["out"],
+            source: """
+                    uint elem = thread_position_in_grid.x;
+                    out[elem] = TOKEN == 0xDEADBEEFu ? 1.0f : 0.0f;
+                """)
+
+        let out = kernel(
+            [],
+            template: [
+                ("TOKEN", UInt32(0xDEAD_BEEF))
+            ],
+            grid: (1, 1, 1),
+            threadGroup: (1, 1, 1),
+            outputShapes: [[1]],
+            outputDTypes: [.float32])
+
+        XCTAssertEqual(out[0].item(Float.self), 1)
+    }
+
     func testFastSDPA() {
         // https://github.com/ml-explore/mlx-swift/issues/172
         // this will just make sure the MLXFast.scaled_dot_product_attention is
