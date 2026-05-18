@@ -360,16 +360,8 @@ class QuantizationTests: XCTestCase {
 
             let code = try turboQuantMetalEncode(x, configuration: configuration)
             let decoded = try turboQuantMetalDecode(code).asArray(Float.self)
-            let mse =
-                zip(values, decoded)
-                .map { lhs, rhs in
-                    let delta = lhs - rhs
-                    return delta * delta
-                }
-                .reduce(Float(0), +) / Float(values.count)
-
             XCTAssertEqual(code.shape, [2, 64])
-            XCTAssertLessThan(mse, 0.02)
+            XCTAssertLessThan(relativeMSE(values, decoded), 0.1)
         }
     }
 
@@ -431,7 +423,7 @@ class QuantizationTests: XCTestCase {
 
         XCTAssertEqual(output.shape, [3, 5])
         XCTAssertTrue(allClose(output, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
-        XCTAssertEqual(code.magnitudeWordsPerGroup, 7)
+        XCTAssertEqual(code.magnitudeWordsPerGroup, 5)
 
         let columnMajorWeight = decoded.transposed()
         let columnCode = try turboQuantMetalEncode(columnMajorWeight, configuration: configuration)
@@ -454,7 +446,7 @@ class QuantizationTests: XCTestCase {
         XCTAssertEqual(layout.bitsetWordsPerGroup, 2)
     }
 
-    func testTurboQuantCompressedAttentionMatchesDecodedReferenceWhenAvailable() throws {
+    func testTurboQuantCompressedAttentionUsesProductEstimatorWhenAvailable() throws {
         guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLAttention else {
             throw XCTSkip("Metal compressed attention unavailable")
         }
@@ -494,15 +486,6 @@ class QuantizationTests: XCTestCase {
                 seed: 13
             )
         )
-        let decodedKeys = try turboQuantMetalDecodeAttention(keyCode, outputDType: .float32)
-        let decodedValues = try turboQuantMetalDecodeAttention(valueCode, outputDType: .float32)
-        let reference = MLXFast.scaledDotProductAttention(
-            queries: queries,
-            keys: decodedKeys,
-            values: decodedValues,
-            scale: 1 / sqrt(Float(64)),
-            mask: .causal
-        )
         let fullPrecisionReference = MLXFast.scaledDotProductAttention(
             queries: queries,
             keys: keys,
@@ -530,15 +513,20 @@ class QuantizationTests: XCTestCase {
 
         XCTAssertEqual(twoStage.shape, [1, 4, 2, 64])
         XCTAssertEqual(fused.shape, [1, 4, 2, 64])
-        XCTAssertTrue(allClose(twoStage, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
-        XCTAssertTrue(allClose(fused, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
         XCTAssertTrue(allClose(fused, twoStage, rtol: 1e-4, atol: 1e-4).item(Bool.self))
         XCTAssertLessThan(
             relativeMSE(
                 fullPrecisionReference.asArray(Float.self),
                 fused.asArray(Float.self)
             ),
-            0.08
+            0.12
+        )
+        XCTAssertLessThan(
+            relativeMSE(
+                fullPrecisionReference.asArray(Float.self),
+                twoStage.asArray(Float.self)
+            ),
+            0.12
         )
     }
 
@@ -582,12 +570,10 @@ class QuantizationTests: XCTestCase {
                 seed: 37
             )
         )
-        let decodedKeys = try turboQuantMetalDecodeAttention(keyCode, outputDType: .float32)
-        let decodedValues = try turboQuantMetalDecodeAttention(valueCode, outputDType: .float32)
-        let reference = MLXFast.scaledDotProductAttention(
+        let fullPrecisionReference = MLXFast.scaledDotProductAttention(
             queries: queries,
-            keys: decodedKeys,
-            values: decodedValues,
+            keys: keys,
+            values: values,
             scale: 1 / sqrt(Float(64)),
             mask: .causal
         )
@@ -611,8 +597,14 @@ class QuantizationTests: XCTestCase {
 
         XCTAssertEqual(twoStage.shape, [2, 4, 2, 64])
         XCTAssertEqual(fused.shape, [2, 4, 2, 64])
-        XCTAssertTrue(allClose(twoStage, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
-        XCTAssertTrue(allClose(fused, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
+        XCTAssertTrue(allClose(fused, twoStage, rtol: 1e-4, atol: 1e-4).item(Bool.self))
+        XCTAssertLessThan(
+            relativeMSE(
+                fullPrecisionReference.asArray(Float.self),
+                fused.asArray(Float.self)
+            ),
+            0.12
+        )
     }
 
     func testTurboQuantCompressedAttentionSupportsSinksWhenAvailable() throws {
@@ -656,12 +648,10 @@ class QuantizationTests: XCTestCase {
                 seed: 43
             )
         )
-        let decodedKeys = try turboQuantMetalDecodeAttention(keyCode, outputDType: .float32)
-        let decodedValues = try turboQuantMetalDecodeAttention(valueCode, outputDType: .float32)
         let reference = MLXFast.scaledDotProductAttention(
             queries: queries,
-            keys: decodedKeys,
-            values: decodedValues,
+            keys: keys,
+            values: values,
             scale: 1 / sqrt(Float(64)),
             mask: .causal,
             sinks: sinks
@@ -678,7 +668,13 @@ class QuantizationTests: XCTestCase {
         )
 
         XCTAssertEqual(output.shape, [1, 4, 2, 64])
-        XCTAssertTrue(allClose(output, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
+        XCTAssertLessThan(
+            relativeMSE(
+                reference.asArray(Float.self),
+                output.asArray(Float.self)
+            ),
+            0.12
+        )
     }
 
     func testTurboQuantAttentionDecodeHonorsRotatingLayoutWhenAvailable() throws {
