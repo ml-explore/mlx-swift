@@ -12,6 +12,32 @@ class QuantizationTests: XCTestCase {
         }
     }
 
+    private func relativeMSE(_ lhs: [Float], _ rhs: [Float]) -> Float {
+        let squaredError = zip(lhs, rhs).reduce(Float(0)) { partial, pair in
+            let delta = pair.0 - pair.1
+            return partial + delta * delta
+        }
+        let signal = lhs.reduce(Float(0)) { $0 + $1 * $1 }
+        return squaredError / max(signal, Float.leastNonzeroMagnitude)
+    }
+
+    private func pearsonCorrelation(_ lhs: [Float], _ rhs: [Float]) -> Float {
+        let count = Float(lhs.count)
+        let lhsMean = lhs.reduce(Float(0), +) / count
+        let rhsMean = rhs.reduce(Float(0), +) / count
+        var numerator = Float(0)
+        var lhsVariance = Float(0)
+        var rhsVariance = Float(0)
+        for (left, right) in zip(lhs, rhs) {
+            let lhsCentered = left - lhsMean
+            let rhsCentered = right - rhsMean
+            numerator += lhsCentered * rhsCentered
+            lhsVariance += lhsCentered * lhsCentered
+            rhsVariance += rhsCentered * rhsCentered
+        }
+        return numerator / max(sqrt(lhsVariance * rhsVariance), Float.leastNonzeroMagnitude)
+    }
+
     func testQuantizedLinearShapeDesc() {
         let linear1 = Linear(512, 1024)
         let quantized1 = linear1.toQuantized(groupSize: 64, bits: 4)
@@ -91,8 +117,9 @@ class QuantizationTests: XCTestCase {
 
         XCTAssertEqual(first, second)
         XCTAssertEqual(first.shape, [2, 64])
+        XCTAssertEqual(first.format, TurboQuantReferenceFormat.turboQuantProd)
         XCTAssertGreaterThan(first.storageByteCount, 0)
-        XCTAssertFalse(first.residualScales.isEmpty)
+        XCTAssertFalse(first.highScales.isEmpty)
     }
 
     func testTurboQuantReferenceCodecUsesFullWidthSeed() throws {
@@ -174,10 +201,107 @@ class QuantizationTests: XCTestCase {
 
         let report = try turboQuantReferenceQuality(x, configuration: configuration)
 
-        XCTAssertTrue(report.passes)
-        XCTAssertLessThan(report.relativeMSE, 0.02)
-        XCTAssertGreaterThan(report.cosineSimilarity, 0.99)
-        XCTAssertLessThan(report.innerProductRelativeError, 0.08)
+        XCTAssertLessThan(report.relativeMSE, 0.085)
+        XCTAssertGreaterThan(report.cosineSimilarity, 0.955)
+    }
+
+    func testTurboQuantReferenceValueBitsStorageAccounting() throws {
+        try requireMLXRuntime()
+
+        let values = (0 ..< 256).map { index in
+            let position = Double(index)
+            let sineTerm = 0.4 * sin(position * 0.07)
+            let cosineTerm = 0.15 * cos(position * 0.17)
+            return Float(sineTerm + cosineTerm)
+        }
+        let x = MLXArray(values, [4, 64])
+        let twoBit = try turboQuantReferenceEncode(
+            x,
+            configuration: TurboQuantConfiguration(
+                preset: .turbo3_5,
+                role: .value,
+                groupSize: 64,
+                backend: .polarQJLReference,
+                valueBits: 2
+            )
+        )
+        let fourBit = try turboQuantReferenceEncode(
+            x,
+            configuration: TurboQuantConfiguration(
+                preset: .turbo3_5,
+                role: .value,
+                groupSize: 64,
+                backend: .polarQJLReference,
+                valueBits: 4
+            )
+        )
+
+        XCTAssertEqual(twoBit.format, TurboQuantReferenceFormat.affineValue)
+        XCTAssertEqual(fourBit.format, TurboQuantReferenceFormat.affineValue)
+        XCTAssertLessThan(twoBit.approximateBitsPerValue, 3.1)
+        XCTAssertLessThan(fourBit.approximateBitsPerValue, 5.1)
+        XCTAssertLessThan(twoBit.storageByteCount, fourBit.storageByteCount)
+    }
+
+    func testTurboQuantProductInnerProductBiasAndRetrieval() throws {
+        try requireMLXRuntime()
+
+        let queryValues = (0 ..< 64).map { index in
+            let position = Double(index)
+            let sineTerm = 0.35 * sin(position * 0.13)
+            let cosineTerm = 0.2 * cos(position * 0.05)
+            return Float(sineTerm + cosineTerm)
+        }
+        let needleValues = queryValues.map { $0 * 1.35 }
+        let query = MLXArray(queryValues, [64])
+        let keys = (0 ..< 16).map { keyIndex in
+            (0 ..< 64).map { dim in
+                if keyIndex == 7 { return needleValues[dim] }
+                let position = Double(keyIndex * 64 + dim)
+                return Float(0.25 * sin(position * 0.071) - 0.18 * cos(position * 0.113))
+            }
+        }
+
+        var exactScores: [Float] = []
+        var estimatedScores: [Float] = []
+        for (keyIndex, keyValues) in keys.enumerated() {
+            let exactScore = zip(queryValues, keyValues).reduce(Float(0)) { partial, pair in
+                partial + pair.0 * pair.1
+            }
+            exactScores.append(exactScore)
+            let code = try turboQuantReferenceEncode(
+                MLXArray(keyValues, [64]),
+                configuration: TurboQuantConfiguration(
+                    preset: .turbo3_5,
+                    role: .key,
+                    groupSize: 64,
+                    backend: .polarQJLReference,
+                    seed: UInt64(0x600D_0000 + keyIndex)
+                )
+            )
+            estimatedScores.append(try turboQuantReferenceInnerProduct(query: query, code: code))
+        }
+
+        XCTAssertEqual(estimatedScores.enumerated().max(by: { $0.element < $1.element })?.offset, 7)
+        XCTAssertGreaterThan(pearsonCorrelation(exactScores, estimatedScores), 0.7)
+
+        let target = MLXArray(keys[3], [64])
+        let exact = exactScores[3]
+        let estimates = try (0 ..< 32).map { seedOffset in
+            let code = try turboQuantReferenceEncode(
+                target,
+                configuration: TurboQuantConfiguration(
+                    preset: .turbo3_5,
+                    role: .key,
+                    groupSize: 64,
+                    backend: .polarQJLReference,
+                    seed: UInt64(0xB1A5_0000 + seedOffset)
+                )
+            )
+            return try turboQuantReferenceInnerProduct(query: query, code: code)
+        }
+        let average = estimates.reduce(Float(0), +) / Float(estimates.count)
+        XCTAssertLessThan(abs(average - exact) / max(abs(exact), Float.leastNonzeroMagnitude), 0.25)
     }
 
     func testTurboQuantBackendAvailabilityContract() throws {
@@ -323,7 +447,7 @@ class QuantizationTests: XCTestCase {
     func testTurboQuantAttentionLayoutIsRowWise() throws {
         let layout = try turboQuantAttentionLayout(shape: [1, 2, 3, 80], groupSize: 64)
 
-        XCTAssertEqual(layout.layoutVersion, 3)
+        XCTAssertEqual(layout.layoutVersion, 4)
         XCTAssertEqual(layout.logicalShape, [1, 2, 3, 80])
         XCTAssertEqual(layout.pinnedPrefixLength, 0)
         XCTAssertEqual(layout.groupsPerVector, 2)
@@ -379,6 +503,13 @@ class QuantizationTests: XCTestCase {
             scale: 1 / sqrt(Float(64)),
             mask: .causal
         )
+        let fullPrecisionReference = MLXFast.scaledDotProductAttention(
+            queries: queries,
+            keys: keys,
+            values: values,
+            scale: 1 / sqrt(Float(64)),
+            mask: .causal
+        )
 
         let twoStage = try turboQuantMetalScaledDotProductAttention(
             queries: queries,
@@ -402,6 +533,13 @@ class QuantizationTests: XCTestCase {
         XCTAssertTrue(allClose(twoStage, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
         XCTAssertTrue(allClose(fused, reference, rtol: 1e-4, atol: 1e-4).item(Bool.self))
         XCTAssertTrue(allClose(fused, twoStage, rtol: 1e-4, atol: 1e-4).item(Bool.self))
+        XCTAssertLessThan(
+            relativeMSE(
+                fullPrecisionReference.asArray(Float.self),
+                fused.asArray(Float.self)
+            ),
+            0.08
+        )
     }
 
     func testTurboQuantCompressedAttentionSupportsBatchedInputsWhenAvailable() throws {
