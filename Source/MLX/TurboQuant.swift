@@ -1436,6 +1436,8 @@ public func turboQuantMetalScaledDotProductAttention(
 
     if sinks == nil,
         preferOnlineFused,
+        keyCode.layout.headDimension == valueCode.layout.headDimension,
+        keyCode.layout.groupsPerVector == valueCode.layout.groupsPerVector,
         turboQuantMetalSupportsOnlineFusedAttention(queries: queries, keyCode: keyCode, mask: mask)
     {
         return try turboQuantMetalOnlineFusedAttention(
@@ -1508,7 +1510,7 @@ public func turboQuantMetalSupportsOnlineFusedAttention(
 ) -> Bool {
     guard queryShape.count == 4 else { return false }
     guard queryShape[0] == keyLayout.batchSize, queryShape[2] <= 8 else { return false }
-    guard [64, 80, 96, 128, 256].contains(queryShape[3]) else { return false }
+    guard [64, 80, 96, 128, 192, 256].contains(queryShape[3]) else { return false }
     guard queryShape[3] == keyLayout.headDimension else { return false }
     switch mask {
     case .none, .causal:
@@ -3073,7 +3075,7 @@ private func validateAttentionShape(_ shape: [Int], dtype: DType, groupSize: Int
             "group size must be 32, 64, 96, or 128 for compressed attention"
         )
     }
-    guard [64, 80, 96, 128, 256].contains(shape[3]) else {
+    guard shape[3] <= 512 else {
         throw TurboQuantError.invalidMetalConfiguration(
             "head dimension \(shape[3]) is not supported by compressed attention"
         )
@@ -3157,15 +3159,17 @@ private func validateAttentionPair(
         throw TurboQuantError.invalidMetalConfiguration(
             "compressed attention requires key and value codes")
     }
-    guard attentionLayoutsAreCompatible(keyCode.layout, valueCode.layout) else {
-        throw TurboQuantError.invalidMetalConfiguration("key and value compressed layouts differ")
+    guard attentionLayoutsShareSequence(keyCode.layout, valueCode.layout) else {
+        throw TurboQuantError.invalidMetalConfiguration(
+            "key and value compressed sequence layouts differ"
+        )
     }
     guard keyCode.preset == valueCode.preset, keyCode.groupSize == valueCode.groupSize else {
         throw TurboQuantError.invalidMetalConfiguration("key and value compressed presets differ")
     }
 }
 
-private func attentionLayoutsAreCompatible(
+private func attentionLayoutsShareSequence(
     _ keyLayout: TurboQuantAttentionLayout,
     _ valueLayout: TurboQuantAttentionLayout
 ) -> Bool {
@@ -3176,8 +3180,6 @@ private func attentionLayoutsAreCompatible(
         && keyLayout.logicalLength == valueLayout.logicalLength
         && keyLayout.ringOffset == valueLayout.ringOffset
         && keyLayout.pinnedPrefixLength == valueLayout.pinnedPrefixLength
-        && keyLayout.headDimension == valueLayout.headDimension
-        && keyLayout.groupsPerVector == valueLayout.groupsPerVector
 }
 
 private func validateAttentionSinks(_ sinks: MLXArray?, queryHeadCount: Int) throws {
