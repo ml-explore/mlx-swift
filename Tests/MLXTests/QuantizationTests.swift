@@ -5,6 +5,10 @@ import MLX
 import MLXNN
 import XCTest
 
+#if canImport(Metal)
+    import Metal
+#endif
+
 class QuantizationTests: XCTestCase {
     private func requireMLXRuntime() throws {
         guard TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec else {
@@ -338,6 +342,50 @@ class QuantizationTests: XCTestCase {
             XCTAssertNotEqual(capabilities.runtimeProbe.status, .notRun)
             XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
         }
+    }
+
+    func testTurboQuantRuntimeProbeAvailabilityIsActionable() throws {
+        let probe = TurboQuantRuntimeProbe.current
+        let availability = TurboQuantKernelAvailability.current
+
+        XCTAssertNotEqual(probe.status, .notRun)
+        XCTAssertEqual(availability.selfTestStatus, probe.status)
+        XCTAssertEqual(availability.selfTestFailureReason, probe.failureReason)
+
+        if probe.passed {
+            XCTAssertTrue(probe.metalRuntimeAvailable)
+            XCTAssertTrue(availability.supportsMetalPolarQJLCodec)
+            XCTAssertTrue(availability.supportsMetalPolarQJLAttention)
+            XCTAssertTrue(probe.encodeDecodePassed)
+            XCTAssertTrue(probe.qkPassed)
+            XCTAssertTrue(probe.avPassed)
+            XCTAssertTrue(probe.tiledFusedPassed)
+            XCTAssertNotNil(probe.encodeDecodeLatencySeconds)
+            XCTAssertNotNil(probe.twoStageLatencySeconds)
+            XCTAssertNotNil(probe.tiledFusedLatencySeconds)
+            XCTAssertNil(probe.failureReason)
+        } else {
+            XCTAssertFalse(availability.supportsMetalPolarQJLAttention)
+            XCTAssertEqual(availability.runtimeBackend(for: .metalPolarQJL), .mlxPacked)
+            XCTAssertNotNil(probe.failureReason)
+        }
+    }
+
+    func testTurboQuantSwiftPMMetalLibraryResourceIsLoadableWhenMetalDeviceExists() throws {
+        #if canImport(Metal)
+            guard MTLCreateSystemDefaultDevice() != nil else {
+                throw XCTSkip("No Metal device available")
+            }
+
+            let probe = TurboQuantRuntimeProbe.current
+            XCTAssertTrue(
+                probe.metalRuntimeAvailable,
+                probe.failureReason ?? "Expected SwiftPM-packaged default.metallib to be loadable"
+            )
+            XCTAssertTrue(TurboQuantKernelAvailability.current.supportsMetalPolarQJLCodec)
+        #else
+            throw XCTSkip("Metal framework unavailable")
+        #endif
     }
 
     func testTurboQuantMetalCodecRoundTripWhenAvailable() throws {
