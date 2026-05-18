@@ -7,7 +7,7 @@ import XCTest
 @testable import MLXMacrosPlugin
 
 private let testMacros: [String: Macro.Type] = [
-    "MLXArray": MLXLiteralMacro.self,
+    "MLXArray": MLXLiteralMacro.self
 ]
 
 final class MLXLiteralMacroTests: XCTestCase {
@@ -184,7 +184,8 @@ final class MLXLiteralMacroTests: XCTestCase {
             expandedSource: "MLXArray([])",
             diagnostics: [
                 DiagnosticSpec(
-                    message: "#MLXArray dtype .bool only supports true/false literals or integer 0/1.",
+                    message:
+                        "#MLXArray dtype .bool only supports true/false literals or integer 0/1.",
                     line: 1,
                     column: 32)
             ],
@@ -198,7 +199,8 @@ final class MLXLiteralMacroTests: XCTestCase {
             expandedSource: "MLXArray([])",
             diagnostics: [
                 DiagnosticSpec(
-                    message: "#MLXArray does not support ragged nested arrays.", line: 1, column: 11)
+                    message: "#MLXArray does not support ragged nested arrays.", line: 1, column: 11
+                )
             ],
             macros: testMacros
         )
