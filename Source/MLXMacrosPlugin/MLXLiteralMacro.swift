@@ -70,7 +70,8 @@ public struct MLXLiteralMacro: ExpressionMacro {
     ) throws -> ExprSyntax {
         let args = Array(node.arguments)
         guard let literalArg = args.first else {
-            diagnose("#MLXArray requires a nested numeric array literal.", at: Syntax(node), in: context)
+            diagnose(
+                "#MLXArray requires a nested numeric array literal.", at: Syntax(node), in: context)
             return "MLXArray([])"
         }
 
@@ -254,7 +255,8 @@ public struct MLXLiteralMacro: ExpressionMacro {
                 // MLXArray construction here assumes rectangular nested literals.
                 // Ragged arrays are rejected early with a macro diagnostic.
                 diagnose(
-                    "#MLXArray does not support ragged nested arrays.", at: Syntax(expr), in: context)
+                    "#MLXArray does not support ragged nested arrays.", at: Syntax(expr),
+                    in: context)
                 throw MacroError()
             }
 
@@ -289,7 +291,8 @@ public struct MLXLiteralMacro: ExpressionMacro {
         }
 
         diagnose(
-            "#MLXArray only supports boolean, integer, and floating-point literals.", at: Syntax(expr),
+            "#MLXArray only supports boolean, integer, and floating-point literals.",
+            at: Syntax(expr),
             in: context
         )
         throw MacroError()
