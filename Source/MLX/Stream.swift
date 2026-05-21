@@ -161,8 +161,10 @@ public final class Stream: @unchecked Sendable, Equatable {
 extension Stream: CustomStringConvertible {
     public var description: String {
         var s = mlx_string_new()
-        mlx_stream_tostring(&s, ctx)
         defer { mlx_string_free(s) }
+        _ = evalLock.withLock {
+            mlx_stream_tostring(&s, ctx)
+        }
         return String(cString: mlx_string_data(s), encoding: .utf8)!
     }
 }
