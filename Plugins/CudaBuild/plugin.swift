@@ -21,11 +21,13 @@ struct CudaBuild: BuildToolPlugin {
 
         init(from decoder: Decoder) throws {
             let c = try decoder.container(keyedBy: CodingKeys.self)
-            headerSearchPaths = try c.decodeIfPresent([String].self, forKey: .headerSearchPaths) ?? []
+            headerSearchPaths =
+                try c.decodeIfPresent([String].self, forKey: .headerSearchPaths) ?? []
             exclude = try c.decodeIfPresent([String].self, forKey: .exclude) ?? []
             cppLanguageStandard = try c.decodeIfPresent(String.self, forKey: .cppLanguageStandard)
             verbose = try c.decodeIfPresent(Bool.self, forKey: .verbose) ?? false
-            codeGeneration = try c.decodeIfPresent([CodeGeneration].self, forKey: .codeGeneration) ?? []
+            codeGeneration =
+                try c.decodeIfPresent([CodeGeneration].self, forKey: .codeGeneration) ?? []
         }
     }
 
@@ -63,11 +65,15 @@ struct CudaBuild: BuildToolPlugin {
 
         let sourceDirPath = sourceDir.path.hasSuffix("/") ? sourceDir.path : sourceDir.path + "/"
         var sourceCuFiles: [URL] = []
-        if let enumerator = FileManager.default.enumerator(at: sourceDir, includingPropertiesForKeys: nil) {
+        if let enumerator = FileManager.default.enumerator(
+            at: sourceDir, includingPropertiesForKeys: nil)
+        {
             while let inputUrl = enumerator.nextObject() as? URL {
                 if inputUrl.pathExtension == "cu" {
                     guard inputUrl.path.hasPrefix(sourceDirPath) else {
-                        fatalError("Input file \(inputUrl.path) is not under source directory \(sourceDirPath)")
+                        fatalError(
+                            "Input file \(inputUrl.path) is not under source directory \(sourceDirPath)"
+                        )
                     }
                     let relateivePath = String(inputUrl.path.dropFirst(sourceDirPath.count))
                     if isExcluded(settings: settings, relativePath: relateivePath) {
@@ -92,7 +98,8 @@ struct CudaBuild: BuildToolPlugin {
         for (index, codeGen) in settings.codeGeneration.enumerated() {
             let tool = try context.tool(named: codeGen.tool)
             let codeGenOutputDir = outputDir.appendingPathComponent("gen\(index)-\(codeGen.tool)")
-            try FileManager.default.createDirectory(at: codeGenOutputDir, withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(
+                at: codeGenOutputDir, withIntermediateDirectories: true)
             let inputUrls = codeGen.inputs.map { sourceDir.appendingPathComponent($0) }
             let outputUrls = codeGen.outputs.map { codeGenOutputDir.appendingPathComponent($0) }
             commands.append(
@@ -113,14 +120,18 @@ struct CudaBuild: BuildToolPlugin {
 
         let encuda = try context.tool(named: "encuda")
         let verboseFlag = settings.verbose ? ["-v"] : []
-        let headerSearchPathArgs = settings.headerSearchPaths.flatMap { ["-I", sourceDirPath + $0] }
+        let headerSearchPathArgs = settings.headerSearchPaths.flatMap {
+            ["-I", sourceDirPath + $0]
+        }
         let stdArgs = settings.cppLanguageStandard.map { ["--std", $0] } ?? []
 
         for inputFile in sourceCuFiles + generatedCuFiles {
-            let outputCpp = URL(string: inputFile.relativePath, relativeTo: outputDir)!.deletingPathExtension().appendingPathExtension("cpp")
+            let outputCpp = URL(string: inputFile.relativePath, relativeTo: outputDir)!
+                .deletingPathExtension().appendingPathExtension("cpp")
             commands.append(
                 .buildCommand(
-                    displayName: "Compiling \(inputFile.lastPathComponent) to \(outputCpp.lastPathComponent)",
+                    displayName:
+                        "Compiling \(inputFile.lastPathComponent) to \(outputCpp.lastPathComponent)",
                     executable: encuda.url,
                     arguments: ["compile"] + verboseFlag + stdArgs + [
                         "--clangpp", clangUrl.url.path,
@@ -165,7 +176,8 @@ struct CudaBuild: BuildToolPlugin {
             let prefix = folderPath.hasSuffix("/") ? folderPath : (folderPath + "/")
             return path.hasPrefix(prefix)
         }
-        return settings.exclude.contains(relativePath) || settings.exclude.contains { isInFolder(path: relativePath, folderPath: $0) }
+        return settings.exclude.contains(relativePath)
+            || settings.exclude.contains { isInFolder(path: relativePath, folderPath: $0) }
     }
 
     func isCudaEnabled() -> Bool {

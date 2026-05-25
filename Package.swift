@@ -87,32 +87,33 @@ let noCudaCmlxExcludes = [
     if Context.environment["SPM_CUDA"] != "0" {
         // Linux with CUDA
 
-        platformExcludes = [
-            "framework",
-            "include-framework",
-            "metal-cpp",
+        platformExcludes =
+            [
+                "framework",
+                "include-framework",
+                "metal-cpp",
 
-            "mlx/mlx/backend/no_gpu",
-            "mlx/mlx/backend/cuda/no_cuda.cpp",
-            "mlx/mlx/backend/cuda/quantized/no_qqmm_impl.cpp",
-            "mlx/mlx/backend/cuda/gemms/cublas_gemm_batched_12_0.cpp",
-            "mlx/mlx/backend/no_cpu",  // Exclude no_cpu backend on Linux, use cpu instead
-            "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
-            "mlx-conditional",
-            "mlx-c/mlx/c/metal.cpp",
+                "mlx/mlx/backend/no_gpu",
+                "mlx/mlx/backend/cuda/no_cuda.cpp",
+                "mlx/mlx/backend/cuda/quantized/no_qqmm_impl.cpp",
+                "mlx/mlx/backend/cuda/gemms/cublas_gemm_batched_12_0.cpp",
+                "mlx/mlx/backend/no_cpu",  // Exclude no_cpu backend on Linux, use cpu instead
+                "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
+                "mlx-conditional",
+                "mlx-c/mlx/c/metal.cpp",
 
-            "mlx/mlx/backend/cuda/delayload.cpp", // For Windows
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n16_m1.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmv.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n32_m1.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90.cuh",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n64_m2.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm.h",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n256_m2.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n128_m2.cu",
-            "mlx/mlx/backend/cuda/quantized/qmm/fp_qmv.cu",
-        ] + noMetalCmlxExcludes
+                "mlx/mlx/backend/cuda/delayload.cpp",  // For Windows
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n16_m1.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmv.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n32_m1.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90.cuh",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n64_m2.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm.h",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n256_m2.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n128_m2.cu",
+                "mlx/mlx/backend/cuda/quantized/qmm/fp_qmv.cu",
+            ] + noMetalCmlxExcludes
 
         cxxSettings = [
             .unsafeFlags(["-I/usr/local/cuda/include"]),
@@ -141,20 +142,21 @@ let noCudaCmlxExcludes = [
     } else {
         // Linux without CUDA (CPU only)
 
-        platformExcludes = [
-            "framework",
-            "include-framework",
-            "metal-cpp",
+        platformExcludes =
+            [
+                "framework",
+                "include-framework",
+                "metal-cpp",
 
-            "mlx/mlx/backend/gpu",  // Exclude GPU backend on Linux, use no_gpu instead
-            "mlx/mlx/backend/no_cpu",  // Exclude no_cpu backend on Linux, use cpu instead
-            "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
-            "mlx-conditional",
-            "mlx-c/mlx/c/metal.cpp",
+                "mlx/mlx/backend/gpu",  // Exclude GPU backend on Linux, use no_gpu instead
+                "mlx/mlx/backend/no_cpu",  // Exclude no_cpu backend on Linux, use cpu instead
+                "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
+                "mlx-conditional",
+                "mlx-c/mlx/c/metal.cpp",
 
-            "mlx-c/mlx/c/fast.cpp",  // Exclude on Linux - calls metal_kernel unconditionally
+                "mlx-c/mlx/c/fast.cpp",  // Exclude on Linux - calls metal_kernel unconditionally
 
-        ] + noMetalCmlxExcludes + noCudaCmlxExcludes
+            ] + noMetalCmlxExcludes + noCudaCmlxExcludes
 
         cxxSettings = []
 
@@ -176,18 +178,19 @@ let noCudaCmlxExcludes = [
 #else
     // Apple's platforms with Metal
 
-    let platformExcludes: [String] = [
-        "mlx/mlx/backend/cpu/compiled.cpp",
+    let platformExcludes: [String] =
+        [
+            "mlx/mlx/backend/cpu/compiled.cpp",
 
-        // opt-out of these backends (using metal)
-        "mlx/mlx/backend/no_gpu",
-        "mlx/mlx/backend/no_cpu",
-        "mlx/mlx/backend/metal/no_metal.cpp",
+            // opt-out of these backends (using metal)
+            "mlx/mlx/backend/no_gpu",
+            "mlx/mlx/backend/no_cpu",
+            "mlx/mlx/backend/metal/no_metal.cpp",
 
-        // bnns instead of simd (accelerate)
-        "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
-        "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
-    ] + noCudaCmlxExcludes
+            // bnns instead of simd (accelerate)
+            "mlx/mlx/backend/cpu/gemms/simd_fp16.cpp",
+            "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
+        ] + noCudaCmlxExcludes
 
     let cxxSettings: [CXXSetting] = [
         .headerSearchPath("metal-cpp"),
@@ -206,7 +209,7 @@ let noCudaCmlxExcludes = [
     ]
 
     let mlxSwiftExcludes: [String] = [
-        "GPU+CUDA.swift",
+        "GPU+CUDA.swift"
     ]
 #endif
 
@@ -413,14 +416,14 @@ let package = Package(
         .executableTarget(
             name: "encuda",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ],
         ),
         .plugin(
             name: "CudaBuild",
             capability: .buildTool(),
             dependencies: [
-                .target(name: "encuda"),
+                .target(name: "encuda")
             ],
         ),
     ],

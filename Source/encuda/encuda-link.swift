@@ -33,13 +33,16 @@ extension Encuda {
             }
 
             let stdArgs = std.map { ["-std=\($0)"] } ?? []
-            let archArgs = ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
+            let archArgs =
+                ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
 
             for input in inputFiles {
                 try clang(args: stdArgs + ["-c", input, "-o", input + ".cudalink.o"])
             }
 
-            try nvcc(args: ["--device-link"] + stdArgs + archArgs + inputFiles.map { $0 + ".cudalink.o" } + ["-o", output, "-Xcompiler", "-E"])
+            try nvcc(
+                args: ["--device-link"] + stdArgs + archArgs + inputFiles.map { $0 + ".cudalink.o" }
+                    + ["-o", output, "-Xcompiler", "-E"])
 
             for input in inputFiles {
                 try? FileManager.default.removeItem(atPath: input + ".cudalink.o")

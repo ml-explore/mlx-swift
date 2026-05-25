@@ -13,7 +13,9 @@ extension Encuda {
         @Option(name: .customLong("clangpp"), help: "Path to clang++")
         var clangppPath: String? = nil
 
-        @Option(name: .customShort("I"), parsing: .unconditionalSingleValue, help: "Include directories")
+        @Option(
+            name: .customShort("I"), parsing: .unconditionalSingleValue, help: "Include directories"
+        )
         var includeDirs: [String] = []
 
         @Option(name: .customShort("o"), help: "Output file path")
@@ -46,11 +48,14 @@ extension Encuda {
             let includeArgs = includeDirs.flatMap { ["-I", $0] }
             let ccbinArgs = clangppPath.map { ["-ccbin=\($0)"] } ?? []
             let stdArgs = std.map { ["-std=\($0)"] } ?? []
-            let archArgs = ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
+            let archArgs =
+                ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
 
             let process = Process()
             process.executableURL = URL(fileURLWithPath: resolvedNvcc)
-            process.arguments = ["-cuda", "-rdc=true", "--expt-relaxed-constexpr"] + stdArgs + ccbinArgs + archArgs + (verbose ? ["-v"] : []) + includeArgs + inputFiles + ["-o", output]
+            process.arguments =
+                ["-cuda", "-rdc=true", "--expt-relaxed-constexpr"] + stdArgs + ccbinArgs + archArgs
+                + (verbose ? ["-v"] : []) + includeArgs + inputFiles + ["-o", output]
             try process.run()
             process.waitUntilExitWorkaround()
             guard process.terminationStatus == 0 else {
