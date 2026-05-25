@@ -275,7 +275,7 @@ let cmlx = Target.target(
     cSettings: [
         .headerSearchPath("mlx"),
         .headerSearchPath("mlx-c"),
-        .headerSearchPath("mlx-extras/backend/cuda"),
+        .headerSearchPath("mlx-generated/cuda"),
     ],
     cxxSettings: cxxSettings + [
         .headerSearchPath("mlx"),
