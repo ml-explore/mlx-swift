@@ -118,6 +118,7 @@ let noCudaCmlxExcludes = [
         cxxSettings = [
             .unsafeFlags(["-I/usr/local/cuda/include"]),
             .unsafeFlags(["-I/usr/local/cuda/include/cccl"]),
+            .define("MLX_CCCL_DIR", to: "\"/usr/local/cuda/include/cccl\"")
         ]
 
         linkerSettings = [
