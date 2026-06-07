@@ -168,7 +168,7 @@ final public class ALiBi: Module {
         }
 
         let x1 = MLXArray(key.offset ..< key.qSequenceLength).expandedDimensions(axis: 1)
-        let x2 = MLXArray(0 ..< key.kSequenceLength).expandedDimensions(axis: 1)
+        let x2 = MLXArray(0 ..< key.kSequenceLength).expandedDimensions(axis: 0)
         let distanceMatrix = -abs(expandedDimensions((x1 - x2), axes: [0, 1]))
 
         let slope = alibiSlope(numHeads: key.numHeads)
