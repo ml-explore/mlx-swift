@@ -78,7 +78,9 @@ open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
         try self.base.materialize()
 
         // force caching of accessors (buildCaches)
-        _ = base.items()
+        _ = self.base.items()
+        super.init()
+        _ = self.items()
     }
 
     override func materialize() throws {
