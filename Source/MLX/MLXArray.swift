@@ -591,6 +591,19 @@ public class MLXArray: ExpressibleByArrayLiteral {
         }
     }
 
+    /// Force evaluation and return a ``MaterializedArray`` snapshot of `self`.
+    ///
+    /// The returned array is fully evaluated, immutable, and `Sendable` — see
+    /// ``MaterializedArray`` for the guarantees and trade-offs.  Use this when
+    /// you need to hand an array across task or actor boundaries, or when you
+    /// need a stable reference that cannot be mutated by other code holding
+    /// the original `MLXArray`.
+    ///
+    /// This is a thin convenience over ``materialize(_:)->MaterializedArray``.
+    ///
+    /// ### See Also
+    /// - ``MaterializedArray``
+    /// - ``materialize(_:)->MaterializedArray``
     public func materialized() -> MaterializedArray {
         MLX.materialize(self)
     }
