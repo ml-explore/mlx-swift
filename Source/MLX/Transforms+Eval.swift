@@ -8,6 +8,20 @@ import Foundation
 /// call back into eval.
 let evalLock = NSRecursiveLock()
 
+/// Evaluate `array` and return a ``MaterializedArray`` snapshot of its contents.
+///
+/// The returned array is fully evaluated, immutable, and `Sendable`, so it can
+/// be passed across task and actor boundaries.  See ``MaterializedArray`` for
+/// the full set of guarantees.
+///
+/// `array` itself is unaffected — it remains the same lazy ``MLXArray`` it was
+/// before the call — but because evaluation is forced, any pending graph work
+/// behind it has been realized as a side effect.
+///
+/// ### See Also
+/// - ``MaterializedArray``
+/// - ``MLXArray/materialized()``
+/// - ``materialize(_:)``
 public func materialize(_ array: MLXArray) -> MaterializedArray {
     eval(array)
     var m = mlx_array_new()
@@ -15,6 +29,16 @@ public func materialize(_ array: MLXArray) -> MaterializedArray {
     return MaterializedArray(materialized: m)
 }
 
+/// Evaluate `arrays` and return a ``MaterializedArray`` snapshot for each one.
+///
+/// Equivalent to calling ``materialize(_:)`` on each element, but evaluates the
+/// whole batch in a single ``eval(_:)-(Sequence<Any>)`` call so MLX can schedule the
+/// work together.  Prefer this overload when you need to materialize several
+/// arrays at once — for example, the parameters of a model.
+///
+/// ### See Also
+/// - ``MaterializedArray``
+/// - ``materialize(_:)``
 public func materialize(_ arrays: [MLXArray]) -> [MaterializedArray] {
     eval(arrays)
     return arrays.map {
