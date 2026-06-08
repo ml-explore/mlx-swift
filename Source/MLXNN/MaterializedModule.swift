@@ -51,7 +51,7 @@ import MLX
 /// ```swift
 /// extension MaterializedModule where LayerType: UnaryLayer {
 ///     public func callAsFunction(_ x: MLXArray) -> MLXArray {
-///         base(x)
+///         _base(x)
 ///     }
 /// }
 /// ```
@@ -71,14 +71,16 @@ import MLX
 /// concrete type that exposes the call you want, then forward to `base`.
 open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
 
-    let base: LayerType
+    /// Usable by extensions to implement `callAsFunction()` -- anyone else, DO NOT USE.
+    public let _base: LayerType
 
     public init(_ base: consuming LayerType) throws {
-        self.base = base
-        try self.base.materialize()
+        self._base = base
+        try self._base.materialize()
 
-        // force caching of accessors (buildCaches)
-        _ = self.base.items()
+        // force caching of accessors (buildCaches) as
+        // these are not thread safe
+        _ = self._base.items()
         super.init()
         _ = self.items()
     }
@@ -142,6 +144,6 @@ open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
 
 extension MaterializedModule where LayerType: UnaryLayer {
     public func callAsFunction(_ x: MLXArray) -> MLXArray {
-        base(x)
+        _base(x)
     }
 }
