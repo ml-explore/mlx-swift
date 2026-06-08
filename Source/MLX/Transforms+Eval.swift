@@ -115,6 +115,22 @@ func withEvalLock<R>(_ body: () throws -> R) rethrows -> R {
     return try body()
 }
 
+public func materialize(_ array: MLXArray) -> MaterializedArray {
+    eval(array)
+    var m = mlx_array_new()
+    mlx_array_set(&m, array.ctx)
+    return MaterializedArray(materialized: m)
+}
+
+public func materialize(_ arrays: [MLXArray]) -> [MaterializedArray] {
+    eval(arrays)
+    return arrays.map {
+        var m = mlx_array_new()
+        mlx_array_set(&m, $0.ctx)
+        return MaterializedArray(materialized: m)
+    }
+}
+
 /// Evaluate one or more `MLXArray`
 ///
 /// ### See Also

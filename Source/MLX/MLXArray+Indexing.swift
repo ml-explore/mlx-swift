@@ -388,8 +388,7 @@ extension MLXArray {
                 var result = mlx_array_new()
                 mlx_scatter(
                     &result, self.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
-                mlx_array_set(&self.ctx, result)
-                mlx_array_free(result)
+                self._updateInternal(MLXArray(result))
                 return
             } else {
                 self._updateInternal(update)
