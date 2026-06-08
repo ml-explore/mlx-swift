@@ -4,7 +4,7 @@ import Cmlx
 import Foundation
 import Numerics
 
-public final class MLXArray {
+public class MLXArray: ExpressibleByArrayLiteral {
 
     /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
     public internal(set) var ctx: mlx_array
@@ -17,6 +17,37 @@ public final class MLXArray {
         // paths will come through here -- make sure the error handler is installed.
         initError()
         self.ctx = ctx
+    }
+
+    // Note: MLXArray does not implement ExpressibleByFloatLiteral etc. because
+    // we want to create arrays in the context of the other arrays.  For example:
+    //
+    // let x = MLXArray(1.5, dtype: .float16)
+    // let r = x + 2.5
+    //
+    // We expect r to have a dtype of float16.  See ``ScalarOrArray``.
+
+    /// Initializer allowing creation of 1d `MLXArray` from an array literal.
+    ///
+    /// ```swift
+    /// let a: MLXArray = [1, 2, 3]
+    /// ```
+    ///
+    /// This is convenient for methods that have `MLXArray` parameters:
+    ///
+    /// ```swift
+    /// print(array.take([1, 2, 3], axis: 0))
+    /// ```
+    ///
+    /// ### See Also
+    /// - <doc:initialization>
+    required public convenience init(arrayLiteral elements: Int32...) {
+        let ctx = elements.withUnsafeBufferPointer { ptr in
+            let shape = [Int32(elements.count)]
+            return mlx_array_new_data(
+                ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)
+        }
+        self.init(ctx)
     }
 
     /// return the equivalent of a `.none` MLXArray (for the C API).
@@ -37,7 +68,7 @@ public final class MLXArray {
     }
 
     /// Number of bytes per element
-    public var itemSize: Int { mlx_array_itemsize(ctx) }
+    final public var itemSize: Int { mlx_array_itemsize(ctx) }
 
     /// Total number of elements in the array
     ///
@@ -46,7 +77,7 @@ public final class MLXArray {
     /// print(array.size)
     /// // 12
     /// ```
-    public var size: Int { mlx_array_size(ctx) }
+    final public var size: Int { mlx_array_size(ctx) }
 
     /// Number of elements in the 0th dimension.
     ///
@@ -62,10 +93,10 @@ public final class MLXArray {
     ///     ...
     /// }
     /// ```
-    public var count: Int { dim(0) }
+    final public var count: Int { dim(0) }
 
     /// Number of bytes in the array.
-    public var nbytes: Int { mlx_array_nbytes(ctx) }
+    final public var nbytes: Int { mlx_array_nbytes(ctx) }
 
     /// Number of dimensions in the array.
     ///
@@ -74,7 +105,7 @@ public final class MLXArray {
     /// print(array.ndim)
     /// // 2
     /// ```
-    public var ndim: Int { mlx_array_ndim(ctx) }
+    final public var ndim: Int { mlx_array_ndim(ctx) }
 
     /// Data type of the elements in the array.
     ///
@@ -83,7 +114,7 @@ public final class MLXArray {
     /// print(array.dtype)
     /// // .int64 (aka Int.dtype)
     /// ```
-    public var dtype: DType { DType(mlx_array_dtype(ctx)) }
+    final public var dtype: DType { DType(mlx_array_dtype(ctx)) }
 
     /// Dimensions of the array.
     ///
@@ -92,7 +123,7 @@ public final class MLXArray {
     /// print(array.shape)
     /// // [3, 4]
     /// ```
-    public var shape: [Int] {
+    final public var shape: [Int] {
         let ndim = mlx_array_ndim(ctx)
         guard ndim > 0 else { return [] }
         let cShape = mlx_array_shape(ctx)!
@@ -104,7 +135,7 @@ public final class MLXArray {
     /// ```swift
     /// let (w, h) = array.shape2
     /// ```
-    public var shape2: (Int, Int) {
+    final public var shape2: (Int, Int) {
         let ndim = mlx_array_ndim(ctx)
         precondition(ndim == 2)
         let cShape = mlx_array_shape(ctx)!
@@ -116,7 +147,7 @@ public final class MLXArray {
     /// ```swift
     /// let (w, h, c) = array.shape3
     /// ```
-    public var shape3: (Int, Int, Int) {
+    final public var shape3: (Int, Int, Int) {
         let ndim = mlx_array_ndim(ctx)
         precondition(ndim == 3)
         let cShape = mlx_array_shape(ctx)!
@@ -128,7 +159,7 @@ public final class MLXArray {
     /// ```swift
     /// let (b, w, h, c) = array.shape4
     /// ```
-    public var shape4: (Int, Int, Int, Int) {
+    final public var shape4: (Int, Int, Int, Int) {
         let ndim = mlx_array_ndim(ctx)
         precondition(ndim == 4)
         let cShape = mlx_array_shape(ctx)!
@@ -149,7 +180,7 @@ public final class MLXArray {
     /// Strides of the array backing.
     ///
     /// Note: this is only stable once the array is evaluated.
-    var internalStrides: [Int] {
+    final var internalStrides: [Int] {
         let ndim = mlx_array_ndim(ctx)
         guard ndim > 0 else { return [] }
         let strides = mlx_array_strides(ctx)!
@@ -167,7 +198,7 @@ public final class MLXArray {
     /// // 4.5
     /// let value: Float = array[1].item()
     /// ```
-    public func item<T: HasDType>() -> T {
+    final public func item<T: HasDType>() -> T {
         item(T.self)
     }
 
@@ -328,7 +359,7 @@ public final class MLXArray {
     /// // 4.5
     /// let value = array[1].item(Float.self)
     /// ```
-    public func item<T: HasDType>(_ type: T.Type) -> T {
+    final public func item<T: HasDType>(_ type: T.Type) -> T {
         precondition(self.size == 1)
         eval()
 
@@ -466,7 +497,7 @@ public final class MLXArray {
     /// print(array.dim(1))
     /// // 4
     /// ```
-    public func dim(_ dim: Int) -> Int {
+    final public func dim(_ dim: Int) -> Int {
         Int(mlx_array_dim(ctx, MLX.resolve(axis: dim, ndim: mlx_array_ndim(ctx)).int32))
     }
 
@@ -481,7 +512,7 @@ public final class MLXArray {
     /// print(array.dim(index))
     /// // 4
     /// ```
-    func dim(_ dim: Int32) -> Int32 {
+    final func dim(_ dim: Int32) -> Int32 {
         mlx_array_dim(ctx, MLX.resolve(axis: Int(dim), ndim: mlx_array_ndim(ctx)).int32)
     }
 
@@ -492,7 +523,7 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {
+    final public func asType(_ type: DType, stream: StreamOrDevice = .default) -> MLXArray {
         guard type != self.dtype else { return self }
         var result = mlx_array_new()
         mlx_astype(&result, ctx, type.cmlxDtype, stream.ctx)
@@ -506,8 +537,9 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    public func asType(_ type: (some HasDType).Type, stream: StreamOrDevice = .default) -> MLXArray
-    {
+    final public func asType(
+        _ type: (some HasDType).Type, stream: StreamOrDevice = .default
+    ) -> MLXArray {
         asType(type.dtype, stream: stream)
     }
 
@@ -524,7 +556,7 @@ public final class MLXArray {
     /// - ``realPart(stream:)``
     /// - ``imaginaryPart(stream:)``
     /// - <doc:conversion>
-    public func asImaginary(stream: StreamOrDevice = .default) -> MLXArray {
+    final public func asImaginary(stream: StreamOrDevice = .default) -> MLXArray {
         precondition(!dtype.isComplex)
         let i = MLXArray(real: 0, imaginary: 1)
         return self * i
@@ -534,7 +566,7 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    public func realPart(stream: StreamOrDevice = .default) -> MLXArray {
+    final public func realPart(stream: StreamOrDevice = .default) -> MLXArray {
         precondition(dtype.isComplex)
         return asType(Float.self)
     }
@@ -543,7 +575,7 @@ public final class MLXArray {
     ///
     /// ### See Also
     /// - <doc:conversion>
-    public func imaginaryPart(stream: StreamOrDevice = .default) -> MLXArray {
+    final public func imaginaryPart(stream: StreamOrDevice = .default) -> MLXArray {
         precondition(dtype.isComplex)
         let i = MLXArray(real: 0, imaginary: 1)
         return (self / i).asType(.float32)
@@ -557,6 +589,10 @@ public final class MLXArray {
         _ = evalLock.withLock {
             mlx_array_eval(ctx)
         }
+    }
+
+    public func materialized() -> MaterializedArray {
+        MLX.materialize(self)
     }
 
     /// Replace the contents with a reference to a new array (INTERNAL).

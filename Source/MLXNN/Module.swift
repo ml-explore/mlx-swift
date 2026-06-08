@@ -123,6 +123,8 @@ open class Module {
 
                 if let (_, _, setter) = isModuleInfo(c.value) {
                     setters[key] = setter
+                } else if let provider = c.value as? TypeErasedSetterProvider {
+                    setters[key] = provider.typeErasedSetter()
                 }
             }
 
@@ -449,7 +451,18 @@ open class Module {
         parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
     ) throws -> Self {
+        try update(parameters: parameters, verify: verify, path: path, modulePath: modulePath) {
+            m, k, a, v in
+            a._updateInternal(v)
+        }
+        return self
+    }
 
+    func update(
+        parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
+        modulePath: [String] = [],
+        mutate: (Module, String, MLXArray, MLXArray) -> Void
+    ) throws {
         let modulePath = modulePath + [describeType(self)]
 
         func apply(
@@ -471,7 +484,7 @@ open class Module {
                         path: path, modules: modulePath, expectedShape: p.shape,
                         actualShape: newArray.shape)
                 }
-                p._updateInternal(newArray)
+                mutate(self, key, p, newArray)
 
             case (.value(.parameters), .none):
                 if Self.parameterIsValid(key) {
@@ -517,12 +530,12 @@ open class Module {
             case (.value(.module(let module)), .dictionary(let values)):
                 try module.update(
                     parameters: NestedDictionary(values: values), verify: verify, path: path,
-                    modulePath: modulePath)
+                    modulePath: modulePath, mutate: mutate)
 
             case (.value(.module(let module)), .none):
                 try module.update(
                     parameters: NestedDictionary(), verify: verify, path: path,
-                    modulePath: modulePath)
+                    modulePath: modulePath, mutate: mutate)
 
             case (.none, .none), (.value(.none), .none), (.value(.other(_)), .none):
                 break
@@ -548,8 +561,34 @@ open class Module {
             throw UpdateError.unhandledKeys(
                 path: path, modules: modulePath, keys: processed.sorted())
         }
+    }
 
-        return self
+    func materialize() throws {
+        // bulk eval the parameters
+        eval(self.parameters())
+
+        // now convert to MaterializedArray (where possible)
+        let newParameters = filterMap(
+            filter: { _, _, _ in true },
+            map: Self.mapParameters(map: { $0.materialized() as MLXArray }))
+
+        try update(parameters: newParameters, verify: .none) { m, k, a, v in
+            if let setter = m._setters?[k] {
+                do {
+                    // use the setter to replace the array
+                    try setter.update(v)
+                } catch {
+                    a._updateInternal(v)
+                }
+            } else {
+                a._updateInternal(v)
+            }
+        }
+
+        // some of the properties were updated so rebuild the properties cache
+        visit { key, m in
+            m.buildCaches()
+        }
     }
 
     /// Called from ``update(parameters:verify:path:modulePath:)`` if a required parameter
@@ -797,7 +836,7 @@ open class Module {
 
         if let setter = _setters?[key] {
             do {
-                try setter.updateModule(value)
+                try setter.update(value)
             } catch {
                 throw UpdateError.needModuleInfo(
                     "Unable to set modules for \(describeType(self)).\(key) -- maybe type mismatch: \(describeType(value)), \(error)"
@@ -1400,7 +1439,7 @@ public enum ModuleValue {
 /// ### See Also
 /// - <doc:custom-layers>
 /// - ``ModuleInfo``
-@propertyWrapper public class ParameterInfo<T> {
+@propertyWrapper public class ParameterInfo<T>: TypeErasedSetterProvider {
     var value: T?
     let key: String?
 
@@ -1446,11 +1485,47 @@ public enum ModuleValue {
 
         // cannot check via unwapProperty -- see wrappedValue.set
     }
+
+    struct Setter: TypeErasedSetter {
+        unowned var info: ParameterInfo<T>
+
+        func update(_ value: Any) throws {
+            if let value = value as? T {
+                info.value = value
+            } else if let value = value as? [MLXArray] {
+                // try to recast as a tuple, e.g.
+                // @ParameterInfo var x: (MLXArray, MLXArray)
+
+                if value.count == 2, let values = (value[0], value[1]) as? T {
+                    info.value = values
+                } else if value.count == 3, let values = (value[0], value[1], value[2]) as? T {
+                    info.value = values
+                } else if value.count == 4,
+                    let values = (value[0], value[1], value[2], value[3]) as? T
+                {
+                    info.value = values
+                } else if value.count == 5,
+                    let values = (value[0], value[1], value[2], value[3], value[4]) as? T
+                {
+                    info.value = values
+                } else {
+                    throw UpdateError.unableToCast(String(describing: T.self))
+                }
+            } else {
+                throw UpdateError.unableToCast(String(describing: T.self))
+            }
+        }
+    }
+
+    fileprivate func typeErasedSetter() -> TypeErasedSetter {
+        Setter(info: self)
+    }
+
 }
 
 /// Helper protocol for writing back through ``ModuleInfo``, e.g. via ``Module/update(modules:)``
 private protocol TypeErasedSetter {
-    func updateModule(_ value: Any) throws
+    func update(_ value: Any) throws
 }
 
 private protocol TypeErasedSetterProvider {
@@ -1561,7 +1636,7 @@ private protocol TypeErasedSetterProvider {
     struct Setter: TypeErasedSetter {
         unowned var info: ModuleInfo<T>
 
-        func updateModule(_ value: Any) throws {
+        func update(_ value: Any) throws {
             if let value = value as? T {
                 info.module = value
             } else if let value = value as? [Module] {
@@ -1577,7 +1652,7 @@ private protocol TypeErasedSetterProvider {
                 {
                     info.module = values
                 } else if value.count == 5,
-                    let values = (value[0], value[1], value[2], value[4], value[5]) as? T
+                    let values = (value[0], value[1], value[2], value[3], value[4]) as? T
                 {
                     info.module = values
                 } else {
