@@ -5,10 +5,10 @@ import MLX
 /// A `Module` whose parameters have been materialized so that the whole
 /// module is safe to share across concurrency domains.
 ///
-/// A normal ``Module`` is not `Sendable`: its parameters are ``MLXArray``
+/// A normal ``Module`` is not `Sendable`: its parameters are `MLXArray`
 /// instances, which are lazy and may be mutated in place during evaluation
 /// or training.  `MaterializedModule` wraps a base module, evaluates every
-/// parameter, replaces each with a ``MaterializedArray``, and seals the
+/// parameter, replaces each with a `MaterializedArray`, and seals the
 /// mutation surface so the wrapped module cannot be modified through this
 /// reference.
 ///
