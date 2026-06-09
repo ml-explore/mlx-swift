@@ -563,7 +563,7 @@ open class Module {
         }
     }
 
-    func materialize() throws {
+    func materialize() {
         // bulk eval the parameters
         eval(self.parameters())
 
@@ -572,7 +572,9 @@ open class Module {
             filter: { _, _, _ in true },
             map: Self.mapParameters(map: { $0.materialized() as MLXArray }))
 
-        try update(parameters: newParameters, verify: .none) { m, k, a, v in
+        // not verifying and setting with same value -- any
+        // errors are programming errors
+        try! update(parameters: newParameters, verify: .none) { m, k, a, v in
             if let setter = m._setters?[k] {
                 do {
                     // use the setter to replace the array
