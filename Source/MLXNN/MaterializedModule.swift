@@ -74,9 +74,9 @@ open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
     /// Usable by extensions to implement `callAsFunction()` -- anyone else, DO NOT USE.
     public let _base: LayerType
 
-    public init(_ base: consuming LayerType) throws {
+    public init(_ base: consuming LayerType) {
         self._base = base
-        try self._base.materialize()
+        self._base.materialize()
 
         // force caching of accessors (buildCaches) as
         // these are not thread safe
@@ -85,7 +85,7 @@ open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
         _ = self.items()
     }
 
-    override func materialize() throws {
+    override func materialize() {
         // NOP
     }
 
