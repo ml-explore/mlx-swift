@@ -2,6 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // Copyright © 2024 Apple Inc.
 
+import CompilerPluginSupport
 import PackageDescription
 
 #if os(Linux)
@@ -236,7 +237,8 @@ let package = Package(
     ],
     dependencies: [
         // for Complex type
-        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
     ],
     targets: [
         cmlx,
@@ -250,10 +252,21 @@ let package = Package(
             dependencies: [
                 "Cmlx",
                 .product(name: "Numerics", package: "swift-numerics"),
+                "MLXMacrosPlugin",
             ],
             exclude: mlxSwiftExcludes,
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .macro(
+            name: "MLXMacrosPlugin",
+            dependencies: [
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftDiagnostics", package: "swift-syntax"),
             ]
         ),
         .target(
@@ -303,6 +316,13 @@ let package = Package(
             name: "MLXTests",
             dependencies: [
                 "MLX", "MLXNN", "MLXOptimizers",
+            ]
+        ),
+        .testTarget(
+            name: "MLXMacrosTests",
+            dependencies: [
+                "MLXMacrosPlugin",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
 

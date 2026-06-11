@@ -141,6 +141,43 @@ When creating using an array or sequence you can also control the shape:
 let v1 = MLXArray(0 ..< 12, [3, 4])
 ```
 
+### Macro Literals
+
+You can also create arrays from nested literals with the `#MLXArray` expression macro:
+
+```swift
+import MLX
+
+let a = #MLXArray([[1, 2], [3, 4]])
+let b = #MLXArray([[1, 2], [3, 4]], dtype: .int16)
+let c = #MLXArray([[[0.1, 0.2], [0.3, 0.4]]], dtype: .float16)
+let d = #MLXArray([[true, false], [false, true]])
+let e = #MLXArray([[0, 1], [1, 0]], dtype: .bool)
+```
+
+This is especially convenient for small constants in model code and tests.
+The macro requires rectangular nested arrays with boolean, integer, or floating-point literals.
+Mixing boolean and numeric literals in the same nested literal is not supported.
+Mixed numeric literals are promoted to floating-point behavior: if any element is a
+floating-point literal, the entire literal is treated as floating-point.
+
+When `dtype` is a known integer dtype (for example `.int16`, `.int64`, `.uint8`) or `.float32`,
+the expansion emits typed Swift literals directly and avoids a trailing `.asType(...)` cast.
+For dynamic dtype expressions, or dtypes that do not map cleanly to a Swift literal type
+(for example `.float16`, `.bfloat16`, `.complex64`), the macro emits a base array and applies
+`.asType(...)`.
+
+If `dtype` is an integer type and the literal contains floating-point values,
+the macro still allows expansion but emits a warning because conversion may truncate.
+
+```swift
+// promoted to floating-point because of 2.5
+let mixed = #MLXArray([[1, 2.5], [3, 4]])
+```
+
+Boolean literals are supported directly (`true` / `false`). For `dtype: .bool`,
+integer literals are accepted only when each element is `0` or `1`.
+
 ### Random Value Arrays
 
 See also `MLXRandom` for creating arrays with random data.
