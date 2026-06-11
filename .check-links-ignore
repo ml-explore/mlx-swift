@@ -1,0 +1,15 @@
+# Paths that tools/check_links.py should skip: markdown files matching
+# a pattern are not scanned, and link targets matching a pattern are not
+# flagged as broken. One fnmatch glob per line, relative to the repository
+# root. Lines starting with # are comments.
+
+# Third-party sources -- we don't build docs for these:
+Source/Cmlx/fmt/*
+Source/Cmlx/json/*
+Source/Cmlx/metal-cpp/*
+
+# DocC cross-doc-package links; these resolve in the built documentation
+# (https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx):
+Source/*/Documentation.docc/mlx
+Source/*/Documentation.docc/mlxnn
+Source/*/Documentation.docc/mlxoptimizers

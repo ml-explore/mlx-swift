@@ -1,4 +1,0 @@
-^file://.*/Source/Cmlx/fmt/.*
-^file://.*/Source/Cmlx/json/.*
-^file://.*/Source/Cmlx/metal-cpp/.*
-^file://.*/Source/(MLX|MLXNN|MLXOptimizers)/Documentation\.docc/(mlx|mlxnn|mlxoptimizers)$
