@@ -135,14 +135,15 @@ This is important because `mlx` has some build-time source generation
 pre-generating the source when updating the `mlx` version.
 
 1. Update the `mlx` and `mlx-c` submodules via `git pull` or `git checkout ...`
-   - `Source/Cmlx/mlx`
+   - `Source/Cxxmlx/mlx`
    - `Source/Cmlx/mlx-c`
 2. Add any vendored dependencies as needed in `/vendor`
 
 3. Regenerate any build-time source: `./tools/update-mlx.sh`
     - this updates headers in Source/Cmlx/include
     - this updates headers in Source/Cmlx/include-framework
-    - this generates various files in Source/Cmlx/mlx-generated
+    - this updates headers in Source/Cxxmlx/include
+    - this generates various files in Source/Cxxmlx/mlx-generated
 
 4. Fix any build issues with SwiftPM build (opening Package.swift)
 5. Fix any build issues with xcodeproj build (opening xcode/MLX.codeproj), see also [README.xcodeproj.md]
@@ -181,4 +182,3 @@ Settings, including header search paths are in xcode/xcconfig.
 ### MLX, etc.
 
 These are just normal frameworks that link to Cmlx and others as needed.  The source files are all swift and there are no special settings needed.
-

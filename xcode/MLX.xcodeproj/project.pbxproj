@@ -1441,37 +1441,42 @@
 		};
 		C3AE90232EAAA47E000BD280 /* json */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = json;
-			sourceTree = "<group>";
+			name = json;
+			path = ../Source/Cxxmlx/json;
+			sourceTree = SOURCE_ROOT;
 		};
 		C3AE908B2EAAA47E000BD280 /* metal-cpp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				C3AE939F2EAAAA5A000BD280 /* Exceptions for "metal-cpp" folder in "Cmlx" target */,
 			);
-			path = "metal-cpp";
-			sourceTree = "<group>";
+			name = "metal-cpp";
+			path = "../Source/Cxxmlx/metal-cpp";
+			sourceTree = SOURCE_ROOT;
 		};
 		C3AE97002EAAAAAD000BD280 /* mlx */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				C3AE9EA62EAAABFC000BD280 /* Exceptions for "mlx" folder in "Cmlx" target */,
 			);
-			path = mlx;
-			sourceTree = "<group>";
+			name = mlx;
+			path = ../Source/Cxxmlx/mlx;
+			sourceTree = SOURCE_ROOT;
 		};
 		C3AE97872EAAAAAD000BD280 /* mlx-conditional */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "mlx-conditional";
-			sourceTree = "<group>";
+			name = "mlx-conditional";
+			path = "../Source/Cxxmlx/mlx-conditional";
+			sourceTree = SOURCE_ROOT;
 		};
 		C3AE98112EAAAAAD000BD280 /* mlx-generated */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				C3CB32A92EB168CD0029A645 /* Exceptions for "mlx-generated" folder in "Cmlx" target */,
 			);
-			path = "mlx-generated";
-			sourceTree = "<group>";
+			name = "mlx-generated";
+			path = "../Source/Cxxmlx/mlx-generated";
+			sourceTree = SOURCE_ROOT;
 		};
 		C3AE9D992EAAAB29000BD280 /* mlx-c */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -1523,8 +1528,9 @@
 			exceptions = (
 				C3CBF3322EAC23D80029A645 /* Exceptions for "fmt" folder in "Cmlx" target */,
 			);
-			path = fmt;
-			sourceTree = "<group>";
+			name = fmt;
+			path = ../Source/Cxxmlx/fmt;
+			sourceTree = SOURCE_ROOT;
 		};
 		C3CBF3382EAC243B0029A645 /* tools */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;

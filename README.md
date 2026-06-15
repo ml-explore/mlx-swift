@@ -91,7 +91,7 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 
 **Update the submodules**
 
-The directories `Source/Cmlx/mlx` and `Source/Cmlx/mlx-c` are sourced as submodules. 
+The directories `Source/Cxxmlx/mlx` and `Source/Cmlx/mlx-c` are sourced as submodules.
 Before you attempt to build the project locally, pull down the updates for those submodules:
 
 ```shell

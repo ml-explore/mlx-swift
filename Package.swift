@@ -79,7 +79,8 @@ let noCudaCmlxExcludes = [
 ]
 
 #if os(Linux)
-    let platformExcludes: [String]
+    let cxxPlatformExcludes: [String]
+    let cmlxPlatformExcludes: [String]
     let cxxSettings: [CXXSetting]
     let linkerSettings: [LinkerSetting]
     let mlxSwiftExcludes: [String]
@@ -87,10 +88,8 @@ let noCudaCmlxExcludes = [
     if Context.environment["SPM_CUDA"] != "0" {
         // Linux with CUDA
 
-        platformExcludes =
+        cxxPlatformExcludes =
             [
-                "framework",
-                "include-framework",
                 "metal-cpp",
 
                 "mlx/mlx/backend/no_gpu",
@@ -100,7 +99,6 @@ let noCudaCmlxExcludes = [
                 "mlx/mlx/backend/no_cpu",  // Exclude no_cpu backend on Linux, use cpu instead
                 "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
                 "mlx-conditional",
-                "mlx-c/mlx/c/metal.cpp",
 
                 "mlx/mlx/backend/cuda/delayload.cpp",  // For Windows
                 "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n16_m1.cu",
@@ -114,6 +112,12 @@ let noCudaCmlxExcludes = [
                 "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n128_m2.cu",
                 "mlx/mlx/backend/cuda/quantized/qmm/fp_qmv.cu",
             ] + noMetalCmlxExcludes
+
+        cmlxPlatformExcludes = [
+            "framework",
+            "include-framework",
+            "mlx-c/mlx/c/metal.cpp",
+        ]
 
         cxxSettings = [
             .unsafeFlags(["-I/usr/local/cuda/include"]),
@@ -143,21 +147,23 @@ let noCudaCmlxExcludes = [
     } else {
         // Linux without CUDA (CPU only)
 
-        platformExcludes =
+        cxxPlatformExcludes =
             [
-                "framework",
-                "include-framework",
                 "metal-cpp",
 
                 "mlx/mlx/backend/gpu",  // Exclude GPU backend on Linux, use no_gpu instead
                 "mlx/mlx/backend/no_cpu",  // Exclude no_cpu backend on Linux, use cpu instead
                 "mlx/mlx/backend/cpu/gemms/bnns.cpp",  // macOS Accelerate version
                 "mlx-conditional",
-                "mlx-c/mlx/c/metal.cpp",
-
-                "mlx-c/mlx/c/fast.cpp",  // Exclude on Linux - calls metal_kernel unconditionally
 
             ] + noMetalCmlxExcludes + noCudaCmlxExcludes
+
+        cmlxPlatformExcludes = [
+            "framework",
+            "include-framework",
+            "mlx-c/mlx/c/metal.cpp",
+            "mlx-c/mlx/c/fast.cpp",  // Exclude on Linux - calls metal_kernel unconditionally
+        ]
 
         cxxSettings = []
 
@@ -179,7 +185,7 @@ let noCudaCmlxExcludes = [
 #else
     // Apple's platforms with Metal
 
-    let platformExcludes: [String] =
+    let cxxPlatformExcludes: [String] =
         [
             "mlx/mlx/backend/cpu/compiled.cpp",
 
@@ -193,13 +199,15 @@ let noCudaCmlxExcludes = [
             "mlx/mlx/backend/cpu/gemms/simd_bf16.cpp",
         ] + noCudaCmlxExcludes
 
+    let cmlxPlatformExcludes: [String] = []
+
     let cxxSettings: [CXXSetting] = [
         .headerSearchPath("metal-cpp"),
 
         .define("MLX_USE_ACCELERATE"),
         .define("ACCELERATE_NEW_LAPACK"),
         .define("_METAL_"),
-        .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
+        .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cxxmlx\""),
         .define("METAL_PATH", to: "\"default.metallib\""),
     ]
 
@@ -214,17 +222,12 @@ let noCudaCmlxExcludes = [
     ]
 #endif
 
-let cmlx = Target.target(
-    name: "Cmlx",
-    path: "Source/Cmlx",
-    exclude: platformExcludes + [
+let cxxmlx = Target.target(
+    name: "Cxxmlx",
+    path: "Source/Cxxmlx",
+    exclude: cxxPlatformExcludes + [
         // vendor docs
         "vendor-README.md",
-
-        // example code + mlx-c distributed
-        "mlx-c/examples",
-        "mlx-c/mlx/c/distributed.cpp",
-        "mlx-c/mlx/c/distributed_group.cpp",
 
         // vendored library, include header only
         "json",
@@ -276,14 +279,10 @@ let cmlx = Target.target(
         "mlx/mlx/distributed/jaccl/ring.cpp",
         "mlx/mlx/distributed/jaccl/utils.cpp",
     ],
-    cSettings: [
-        .headerSearchPath("mlx"),
-        .headerSearchPath("mlx-c"),
-        .headerSearchPath("mlx-generated/cuda"),
-    ],
+    publicHeadersPath: "include",
     cxxSettings: cxxSettings + [
         .headerSearchPath("mlx"),
-        .headerSearchPath("mlx-c"),
+        .headerSearchPath("mlx-generated/cuda"),
         .headerSearchPath("json/single_include/nlohmann"),
         .headerSearchPath("fmt/include"),
         .define("MLX_VERSION", to: "\"0.31.1\""),
@@ -292,6 +291,24 @@ let cmlx = Target.target(
     plugins: [
         .plugin(name: "CudaBuild")
     ],
+)
+
+let cmlx = Target.target(
+    name: "Cmlx",
+    dependencies: ["Cxxmlx"],
+    path: "Source/Cmlx",
+    exclude: cmlxPlatformExcludes + [
+        // example code + mlx-c distributed
+        "mlx-c/examples",
+        "mlx-c/mlx/c/distributed.cpp",
+        "mlx-c/mlx/c/distributed_group.cpp",
+    ],
+    cSettings: [
+        .headerSearchPath("mlx-c")
+    ],
+    cxxSettings: [
+        .headerSearchPath("mlx-c")
+    ]
 )
 
 let package = Package(
@@ -313,6 +330,7 @@ let package = Package(
         .library(name: "MLXFFT", targets: ["MLXFFT"]),
         .library(name: "MLXLinalg", targets: ["MLXLinalg"]),
         .library(name: "MLXFast", targets: ["MLXFast"]),
+        .library(name: "Cxxmlx", targets: ["Cxxmlx"]),
     ],
     dependencies: [
         // for Complex type
@@ -320,6 +338,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
     ],
     targets: [
+        cxxmlx,
         cmlx,
         .testTarget(
             name: "CmlxTests",

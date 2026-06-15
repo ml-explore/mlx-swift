@@ -14,11 +14,22 @@ fi
 rm -f Source/Cmlx/include/mlx/c/*
 cp Source/Cmlx/mlx-c/mlx/c/*.h Source/Cmlx/include/mlx/c
 
-# run the command to do the build-time code generation for Metal
+# copy mlx C++ public headers to build area
+rm -rf Source/Cxxmlx/include/mlx
+mkdir -p Source/Cxxmlx/include/mlx
+rsync -a \
+    --include='*/' \
+    --include='*.h' \
+    --include='*.hpp' \
+    --exclude='*' \
+    Source/Cxxmlx/mlx/mlx/ \
+    Source/Cxxmlx/include/mlx/
+
+# run the command to do the build-time code generation
 
 mkdir build
 cd build
-cmake ../Source/Cmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0
+cmake ../Source/Cxxmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0
 
 # run the cmake build to generate the source files
 cd mlx/backend/metal
@@ -75,28 +86,28 @@ make cpu_compiled_preamble
 
 # run the command to do the build-time code generation for CUDA
 cmake \
-  -DMLX_SOURCE_ROOT="../Source/Cmlx/mlx/mlx/backend/cuda" \
+  -DMLX_SOURCE_ROOT="../Source/Cxxmlx/mlx/mlx/backend/cuda" \
   -DMLX_JIT_SOURCES="device/atomic_ops.cuh:device/binary_ops.cuh:device/cast_op.cuh:device/complex.cuh:device/config.h:device/fp16_math.cuh:device/gather.cuh:device/gather_axis.cuh:device/hadamard.cuh:device/indexing.cuh:device/scatter.cuh:device/scatter_axis.cuh:device/scatter_ops.cuh:device/ternary_ops.cuh:device/unary_ops.cuh:device/utils.cuh" \
-  -P "../Source/Cmlx/mlx/mlx/backend/cuda/bin2h.cmake"
+  -P "../Source/Cxxmlx/mlx/mlx/backend/cuda/bin2h.cmake"
 
 cd ..
 
-rm -rf Source/Cmlx/mlx-generated/metal
-rm -rf Source/Cmlx/mlx-generated/cuda
-rm -f Source/Cmlx/mlx-generated/*
-mkdir -p Source/Cmlx/mlx-generated/cuda
-cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
-cp build/mlx/backend/cpu/compiled_preamble.cpp Source/Cmlx/mlx-generated
-cp build/gen/cuda_jit_sources.h Source/Cmlx/mlx-generated/cuda
+rm -rf Source/Cxxmlx/mlx-generated/metal
+rm -rf Source/Cxxmlx/mlx-generated/cuda
+rm -f Source/Cxxmlx/mlx-generated/*
+mkdir -p Source/Cxxmlx/mlx-generated/cuda
+cp build/mlx/backend/metal/jit/* Source/Cxxmlx/mlx-generated
+cp build/mlx/backend/cpu/compiled_preamble.cpp Source/Cxxmlx/mlx-generated
+cp build/gen/cuda_jit_sources.h Source/Cxxmlx/mlx-generated/cuda
 
 # we don't need the cmake build directory any more
 rm -rf build
 
 # remove any absolute paths and make them relative to the package root
-for x in Source/Cmlx/mlx-generated/*.cpp ; do \
+for x in Source/Cxxmlx/mlx-generated/*.cpp ; do \
     sed -i .tmp -e "s:`pwd`/::g" $x
 done;
-rm Source/Cmlx/mlx-generated/*.tmp
+rm Source/Cxxmlx/mlx-generated/*.tmp
 
 # Update the headers
 ./tools/fix-metal-includes.sh

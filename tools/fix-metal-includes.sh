@@ -7,18 +7,18 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT_DIR=$(realpath "${SCRIPT_DIR}/..")
 
 # Where the files end up
-OUTPUT_DIR="${ROOT_DIR}/Source/Cmlx/mlx-generated/metal"
+OUTPUT_DIR="${ROOT_DIR}/Source/Cxxmlx/mlx-generated/metal"
 
-# The Cmlx source dir
-CMLX_MLX_DIR="${ROOT_DIR}/Source/Cmlx/mlx"
+# The Cxxmlx source dir
+CXXMLX_MLX_DIR="${ROOT_DIR}/Source/Cxxmlx/mlx"
 
 # sub-directory of Cmlx source containing the kernels
 KERNELS_INCLUDE_PATH="mlx/backend/metal/kernels"
 
-KERNELS_DIR="${CMLX_MLX_DIR}/${KERNELS_INCLUDE_PATH}"
+KERNELS_DIR="${CXXMLX_MLX_DIR}/${KERNELS_INCLUDE_PATH}"
 
 # list of kernels files to process
-# see Source/Cmlx/mlx/mlx/backend/metal/kernels/CMakeLists.txt
+# see Source/Cxxmlx/mlx/mlx/backend/metal/kernels/CMakeLists.txt
 KERNEL_LIST=" \
 arg_reduce.metal \
 conv.metal \

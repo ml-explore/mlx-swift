@@ -1,0 +1,50 @@
+// Copyright © 2023-2024 Apple Inc.
+
+#pragma once
+
+#include "mlx/backend/common/utils.h"
+
+namespace mlx::core {
+
+enum class CopyType {
+  // Copy a raw scalar input into the full contiguous output
+  Scalar,
+
+  // Copy the raw input buffer contiguously into a raw output buffer of the same
+  // size
+  Vector,
+
+  // Copy the full virtual input to the full contiguous output
+  General,
+
+  // Copy the full virtual input to the full virtual output. We assume the
+  // input and output have the same shape.
+  GeneralGeneral
+};
+
+inline bool set_copy_output_data(
+    const array& in,
+    array& out,
+    CopyType ctype,
+    std::function<allocator::Buffer(size_t)> mallocfn = allocator::malloc) {
+  if (ctype == CopyType::Vector) {
+    // If the input is donateable, we are doing a vector copy and the types
+    // have the same size, then the input buffer can hold the output.
+    if (is_donatable(in, out)) {
+      out.copy_shared_buffer(in);
+      return true;
+    } else {
+      out.set_data(
+          mallocfn(in.data_size() * out.itemsize()),
+          in.data_size(),
+          in.strides(),
+          in.flags());
+      return false;
+    }
+  } else {
+    out.set_data(mallocfn(out.nbytes()));
+    return false;
+  }
+}
+
+} // namespace mlx::core

@@ -1,0 +1,5 @@
+module Cxxmlx {
+  requires cplusplus
+  header "Cxxmlx.h"
+  export *
+}

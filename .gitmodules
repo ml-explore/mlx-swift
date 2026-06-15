@@ -1,5 +1,5 @@
 [submodule "submodules/mlx"]
-	path = Source/Cmlx/mlx
+	path = Source/Cxxmlx/mlx
 	url = https://github.com/ml-explore/mlx
 [submodule "submodules/mlx-c"]
 	path = Source/Cmlx/mlx-c

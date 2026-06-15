@@ -1,0 +1,30 @@
+{
+    "headerSearchPaths": [
+        "mlx",
+        "mlx-generated/cuda",
+        "json/single_include/nlohmann",
+        "fmt/include"
+    ],
+    "exclude": [
+        "framework",
+        "include-framework",
+        "metal-cpp",
+        "mlx/mlx/backend/metal/kernels",
+        "mlx/mlx/backend/metal/jit",
+        "mlx/mlx/backend/no_cpu",
+        "mlx-conditional",
+        "json",
+        "fmt/test",
+        "fmt/doc",
+        "fmt/support",
+        "mlx/benchmarks",
+        "mlx/cmake",
+        "mlx/docs",
+        "mlx/examples",
+        "mlx/python",
+        "mlx/tests",
+        "mlx/mlx/backend/metal/kernels"
+    ],
+    "cppLanguageStandard": "c++20",
+    "verbose": false
+}
