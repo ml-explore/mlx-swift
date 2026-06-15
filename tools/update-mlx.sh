@@ -25,6 +25,15 @@ rsync -a \
     Source/Cxxmlx/mlx/mlx/ \
     Source/Cxxmlx/include/mlx/
 
+# copy metal-cpp headers used by public MLX Metal backend headers
+for header_dir in Foundation Metal MetalFX QuartzCore
+do
+    rm -rf "Source/Cxxmlx/include/${header_dir}"
+    rsync -a \
+        "Source/Cxxmlx/metal-cpp/${header_dir}" \
+        Source/Cxxmlx/include/
+done
+
 # run the command to do the build-time code generation
 
 mkdir build
