@@ -419,6 +419,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ],
+            path: "Source/Encuda",
         ),
         .plugin(
             name: "CudaBuild",
