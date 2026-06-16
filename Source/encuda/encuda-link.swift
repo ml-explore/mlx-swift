@@ -25,11 +25,21 @@ extension Encuda {
         @Flag(name: .customShort("v"), help: "Enable verbose output")
         var verbose: Bool = false
 
+        @Flag(name: .customLong("incremental"), help: "Skip link if output is up to date")
+        var incremental: Bool = false
+
         mutating func run() throws {
             if verbose {
                 print("CUDA Link")
                 print("Input files: \(inputFiles)")
                 print("Output file: \(output)")
+            }
+
+            if incremental && isUpToDate() {
+                if verbose {
+                    print("Output is up to date, skipping link")
+                }
+                return
             }
 
             let stdArgs = std.map { ["-std=\($0)"] } ?? []
@@ -89,6 +99,26 @@ extension Encuda {
             guard process.terminationStatus == 0 else {
                 throw EncudaError.clangFailed(process.terminationStatus)
             }
+        }
+
+        private func isUpToDate() -> Bool {
+            let fm = FileManager.default
+            let outputURL = URL(fileURLWithPath: output)
+            guard fm.fileExists(atPath: output),
+                let outputMod =
+                    (try? outputURL.resourceValues(forKeys: [.contentModificationDateKey]))?
+                    .contentModificationDate
+            else { return false }
+            for input in inputFiles {
+                guard fm.fileExists(atPath: input),
+                    let inputMod =
+                        (try? URL(fileURLWithPath: input).resourceValues(forKeys: [
+                            .contentModificationDateKey
+                        ]))?.contentModificationDate
+                else { return false }
+                if inputMod >= outputMod { return false }
+            }
+            return true
         }
     }
 }

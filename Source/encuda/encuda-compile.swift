@@ -30,10 +30,20 @@ extension Encuda {
         @Flag(name: .customShort("v"), help: "Enable verbose output")
         var verbose: Bool = false
 
+        @Flag(name: .customLong("incremental"), help: "Skip compilation if output is up to date")
+        var incremental: Bool = false
+
         mutating func run() throws {
 
             if verbose {
                 print("Running encuda compile")
+            }
+
+            if incremental && isUpToDate() {
+                if verbose {
+                    print("Output is up to date, skipping compilation")
+                }
+                return
             }
 
             let resolvedNvcc: String
@@ -61,6 +71,26 @@ extension Encuda {
             guard process.terminationStatus == 0 else {
                 throw EncudaError.nvccFailed(process.terminationStatus)
             }
+        }
+
+        private func isUpToDate() -> Bool {
+            let fm = FileManager.default
+            let outputURL = URL(fileURLWithPath: output)
+            guard fm.fileExists(atPath: output),
+                let outputMod =
+                    (try? outputURL.resourceValues(forKeys: [.contentModificationDateKey]))?
+                    .contentModificationDate
+            else { return false }
+            for input in inputFiles {
+                guard fm.fileExists(atPath: input),
+                    let inputMod =
+                        (try? URL(fileURLWithPath: input).resourceValues(forKeys: [
+                            .contentModificationDateKey
+                        ]))?.contentModificationDate
+                else { return false }
+                if inputMod >= outputMod { return false }
+            }
+            return true
         }
     }
 }

@@ -75,15 +75,17 @@ struct CudaBuild: BuildToolPlugin {
                             "Input file \(inputUrl.path) is not under source directory \(sourceDirPath)"
                         )
                     }
-                    let relateivePath = String(inputUrl.path.dropFirst(sourceDirPath.count))
-                    if isExcluded(settings: settings, relativePath: relateivePath) {
-                        print("Excluding \(relateivePath)")
+                    let relativePath = String(inputUrl.path.dropFirst(sourceDirPath.count))
+                    if isExcluded(settings: settings, relativePath: relativePath) {
+                        print("Excluding \(relativePath)")
                         continue
                     }
-                    sourceCuFiles.append(URL(string: relateivePath, relativeTo: sourceDir)!)
+                    sourceCuFiles.append(URL(string: relativePath, relativeTo: sourceDir)!)
                 }
             }
         }
+
+        sourceCuFiles.sort { $0.path < $1.path }  // make it deterministic
 
         print("Source files: \(sourceCuFiles.map { $0.relativePath })")
 
@@ -116,6 +118,11 @@ struct CudaBuild: BuildToolPlugin {
 
         print("Generated source files: \(generatedCuFiles.map { $0.relativePath })")
 
+        // Ask encuda to skip work if the output is already up to date.
+        // This should normally be handled by the build system, but apparently it is not.
+
+        let incrementalFlag = ["--incremental"]
+
         // Invoke `encuda compile` to compile each .cu file to .cpp
 
         let encuda = try context.tool(named: "encuda")
@@ -133,7 +140,7 @@ struct CudaBuild: BuildToolPlugin {
                     displayName:
                         "Compiling \(inputFile.lastPathComponent) to \(outputCpp.lastPathComponent)",
                     executable: encuda.url,
-                    arguments: ["compile"] + verboseFlag + stdArgs + [
+                    arguments: ["compile"] + verboseFlag + stdArgs + incrementalFlag + [
                         "--clangpp", clangUrl.url.path,
                         "-I", sourceDir.path,
                     ] + headerSearchPathArgs + [
@@ -160,7 +167,7 @@ struct CudaBuild: BuildToolPlugin {
             .buildCommand(
                 displayName: "Linking CUDA objects",
                 executable: encuda.url,
-                arguments: ["link"] + verboseFlag + stdArgs + [
+                arguments: ["link"] + verboseFlag + stdArgs + incrementalFlag + [
                     "--clangpp", clangUrl.url.path,
                 ] + outputCpps.map { $0.path } + ["-o", linkOutput.path],
                 inputFiles: outputCpps,
