@@ -14,7 +14,7 @@ fi
 rm -f Source/Cmlx/include/mlx/c/*
 cp Source/Cmlx/mlx-c/mlx/c/*.h Source/Cmlx/include/mlx/c
 
-# run the command to do the build-time code generation
+# run the command to do the build-time code generation for Metal
 
 mkdir build
 cd build
@@ -73,12 +73,21 @@ make \
 cd ../../..
 make cpu_compiled_preamble
 
+# run the command to do the build-time code generation for CUDA
+cmake \
+  -DMLX_SOURCE_ROOT="../Source/Cmlx/mlx/mlx/backend/cuda" \
+  -DMLX_JIT_SOURCES="device/atomic_ops.cuh:device/binary_ops.cuh:device/cast_op.cuh:device/complex.cuh:device/config.h:device/fp16_math.cuh:device/gather.cuh:device/gather_axis.cuh:device/hadamard.cuh:device/indexing.cuh:device/scatter.cuh:device/scatter_axis.cuh:device/scatter_ops.cuh:device/ternary_ops.cuh:device/unary_ops.cuh:device/utils.cuh" \
+  -P "../Source/Cmlx/mlx/mlx/backend/cuda/bin2h.cmake"
+
 cd ..
 
 rm -rf Source/Cmlx/mlx-generated/metal
+rm -rf Source/Cmlx/mlx-generated/cuda
 rm -f Source/Cmlx/mlx-generated/*
+mkdir -p Source/Cmlx/mlx-generated/cuda
 cp build/mlx/backend/metal/jit/* Source/Cmlx/mlx-generated
 cp build/mlx/backend/cpu/compiled_preamble.cpp Source/Cmlx/mlx-generated
+cp build/gen/cuda_jit_sources.h Source/Cmlx/mlx-generated/cuda
 
 # we don't need the cmake build directory any more
 rm -rf build

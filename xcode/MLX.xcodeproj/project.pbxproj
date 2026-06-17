@@ -102,6 +102,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Documentation.docc,
+				"GPU+CUDA.swift",
 			);
 			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
 		};
