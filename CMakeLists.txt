@@ -64,6 +64,10 @@ if(NOT MLX_BUILD_METAL)
        ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/MLXArray+Metal.swift)
 endif()
 
+if(NOT MLX_BUILD_CUDA)
+  list(REMOVE_ITEM MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/GPU+CUDA.swift)
+endif()
+
 add_library(MLX STATIC ${MLX-src})
 target_include_directories(MLX
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
