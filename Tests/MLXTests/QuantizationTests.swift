@@ -39,4 +39,62 @@ class QuantizationTests: XCTestCase {
         let quantized = QuantizedLinear(64, 64, groupSize: 32, bits: 4, mode: .mxfp4)
         XCTAssertNil(quantized.biases)
     }
+
+    func testQuantizedLinearStoresGlobalScale() {
+        let globalScale = MLXArray(1.0, dtype: .float32)
+        let quantized = QuantizedLinear(
+            weight: MLXArray.zeros([8, 4], dtype: .uint32),
+            bias: nil,
+            scales: MLXArray.ones([8, 4], dtype: .uint8),
+            biases: nil,
+            groupSize: 16,
+            bits: 4,
+            mode: .nvfp4,
+            globalScale: globalScale)
+
+        XCTAssertNotNil(quantized.globalScale)
+        XCTAssertEqual(quantized.globalScale?.dtype, .float32)
+        XCTAssertNotNil(quantized.parameters()["global_scale"])
+        XCTAssertNil(quantized.parameters()["globalScale"])
+    }
+
+    func testQuantizedEmbeddingStoresGlobalScale() {
+        let globalScale = MLXArray(1.0, dtype: .float32)
+        let quantized = QuantizedEmbedding(
+            weight: MLXArray.zeros([8, 2], dtype: .uint32),
+            scales: MLXArray.ones([8, 2], dtype: .uint8),
+            biases: nil,
+            groupSize: 16,
+            bits: 4,
+            mode: .nvfp4,
+            globalScale: globalScale)
+
+        XCTAssertNotNil(quantized.globalScale)
+        XCTAssertEqual(quantized.globalScale?.dtype, .float32)
+        XCTAssertNotNil(quantized.parameters()["global_scale"])
+        XCTAssertNil(quantized.parameters()["globalScale"])
+    }
+
+    func testQuantizedGlobalScaleIsOptionalParameter() {
+        let linear = QuantizedLinear(
+            weight: MLXArray.zeros([8, 4], dtype: .uint32),
+            bias: nil,
+            scales: MLXArray.ones([8, 4], dtype: .uint8),
+            biases: nil,
+            groupSize: 16,
+            bits: 4,
+            mode: .nvfp4)
+        let embedding = QuantizedEmbedding(
+            weight: MLXArray.zeros([8, 2], dtype: .uint32),
+            scales: MLXArray.ones([8, 2], dtype: .uint8),
+            biases: nil,
+            groupSize: 16,
+            bits: 4,
+            mode: .nvfp4)
+
+        XCTAssertNil(linear.globalScale)
+        XCTAssertNil(linear.parameters()["global_scale"])
+        XCTAssertNil(embedding.globalScale)
+        XCTAssertNil(embedding.parameters()["global_scale"])
+    }
 }

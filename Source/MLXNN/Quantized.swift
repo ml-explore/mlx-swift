@@ -159,6 +159,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
     public let mode: QuantizationMode
     public let scales: MLXArray
     public let biases: MLXArray?
+    @ParameterInfo(key: "global_scale") public private(set) var globalScale: MLXArray?
 
     open override var shape: (Int, Int) {
         let (embeddingCount, dimensions) = super.shape
@@ -184,14 +185,16 @@ open class QuantizedEmbedding: Embedding, Quantized {
 
     public init(
         weight: MLXArray, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine,
+        globalScale: MLXArray? = nil
     ) {
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
+        self._globalScale.wrappedValue = globalScale
 
         let (quantizedWeight, scales, biases) = MLX.quantized(
-            weight, groupSize: groupSize, bits: bits, mode: mode)
+            weight, groupSize: groupSize, bits: bits, mode: mode, globalScale: globalScale)
 
         self.scales = scales
         self.biases = biases
@@ -201,19 +204,45 @@ open class QuantizedEmbedding: Embedding, Quantized {
         self.freeze()
     }
 
+    /// Initializer meant for subclasses to provide arrays directly.
+    public init(
+        weight: MLXArray, scales: MLXArray, biases: MLXArray?,
+        groupSize: Int, bits: Int,
+        mode: QuantizationMode = .affine,
+        globalScale: MLXArray? = nil
+    ) {
+        self.groupSize = groupSize
+        self.bits = bits
+        self.mode = mode
+        self.scales = scales
+        self.biases = biases
+        self._globalScale.wrappedValue = globalScale
+        super.init(weight: weight)
+    }
+
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
         let s = x.shape
         let x = x.flattened()
         let out = dequantized(
             weight[x], scales: scales[x], biases: biases == nil ? nil : biases![x],
-            groupSize: groupSize, bits: bits, mode: mode)
+            groupSize: groupSize, bits: bits, mode: mode, globalScale: globalScale)
         return out.reshaped(s + [-1])
     }
 
     open override func asLinear(_ x: MLXArray) -> MLXArray {
-        quantizedMM(
+        if globalScale != nil {
+            return matmul(x, dequantizedWeight.T)
+        }
+
+        return quantizedMM(
             x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize,
             bits: bits, mode: mode)
+    }
+
+    private var dequantizedWeight: MLXArray {
+        dequantized(
+            weight, scales: scales, biases: biases, groupSize: groupSize, bits: bits, mode: mode,
+            globalScale: globalScale)
     }
 }
 
@@ -243,6 +272,7 @@ open class QuantizedLinear: Linear, Quantized {
     public let mode: QuantizationMode
     public let scales: MLXArray
     public let biases: MLXArray?
+    @ParameterInfo(key: "global_scale") public private(set) var globalScale: MLXArray?
 
     open override var shape: (Int, Int) {
         let shape = weight.shape2
@@ -292,14 +322,16 @@ open class QuantizedLinear: Linear, Quantized {
     /// Initialize a ``QuantizedLinear`` with non-quantized weights and bias.
     public init(
         weight: MLXArray, bias: MLXArray?, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine,
+        globalScale: MLXArray? = nil
     ) {
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
+        self._globalScale.wrappedValue = globalScale
 
         let (quantizedWeight, scales, biases) = MLX.quantized(
-            weight, groupSize: groupSize, bits: bits, mode: mode)
+            weight, groupSize: groupSize, bits: bits, mode: mode, globalScale: globalScale)
 
         self.scales = scales
         self.biases = biases
@@ -316,13 +348,15 @@ open class QuantizedLinear: Linear, Quantized {
     public init(
         weight: MLXArray, bias: MLXArray? = nil, scales: MLXArray, biases: MLXArray?,
         groupSize: Int, bits: Int,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine,
+        globalScale: MLXArray? = nil
     ) {
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
         self.scales = scales
         self.biases = biases
+        self._globalScale.wrappedValue = globalScale
         super.init(weight: weight, bias: bias)
     }
 
@@ -334,20 +368,31 @@ open class QuantizedLinear: Linear, Quantized {
     }
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var x = quantizedMM(
-            x,
-            weight,
-            scales: scales,
-            biases: biases,
-            transpose: true,
-            groupSize: groupSize,
-            bits: bits,
-            mode: mode
-        )
-        if let bias {
-            x = x + bias
+        var result: MLXArray
+        if globalScale != nil {
+            result = matmul(x, dequantizedWeight.T)
+        } else {
+            result = quantizedMM(
+                x,
+                weight,
+                scales: scales,
+                biases: biases,
+                transpose: true,
+                groupSize: groupSize,
+                bits: bits,
+                mode: mode
+            )
         }
-        return x
+        if let bias {
+            result = result + bias
+        }
+        return result
+    }
+
+    private var dequantizedWeight: MLXArray {
+        dequantized(
+            weight, scales: scales, biases: biases, groupSize: groupSize, bits: bits, mode: mode,
+            globalScale: globalScale)
     }
 
     /// Returns a QuantizedLinear layer that applies the same linear transformation up to the quantization error.
