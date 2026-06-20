@@ -119,7 +119,9 @@ operations as methods for convenience.
 
 - ``loadArray(url:stream:)``
 - ``loadArrays(url:stream:)``
+- ``loadArrays(url:stream:progressHandler:)``
 - ``loadArraysAndMetadata(url:stream:)``
+- ``loadArraysAndMetadata(url:stream:progressHandler:)``
 - ``save(array:url:stream:)``
 - ``save(arrays:metadata:url:stream:)``
 
