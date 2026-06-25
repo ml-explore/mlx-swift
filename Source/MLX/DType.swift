@@ -112,6 +112,14 @@ public enum DType: Hashable, Sendable, CaseIterable {
     public var size: Int {
         mlx_dtype_size(cmlxDtype)
     }
+    
+    /// Largest finite value of this float dtype (mirrors `Float.greatestFiniteMagnitude`).
+    public var greatestFiniteMagnitude: Double {
+        guard let info = finfo else {
+            fatalError("greatestFiniteMagnitude requires a floating-point dtype, got \(self)")
+        }
+        return info.max
+    }
 
     /// For floating point values return the floating point info, similar to `numpy.finfo`.
     public var finfo: FInfo? {
@@ -142,36 +150,20 @@ public enum DType: Hashable, Sendable, CaseIterable {
         }
 
         /// The smallest representable number
-        public var min: Double {
-            switch dtype {
-            #if !arch(x86_64)
-                case .float16: -Double(Float16.greatestFiniteMagnitude)
-            #else
-                case .float16: -65500.0
-            #endif
-            case .float32: -Double(Float.greatestFiniteMagnitude)
-            case .bfloat16: -3.3895313892515355e+38
-            case .complex64: -Double.greatestFiniteMagnitude
-            case .float64: -Double.greatestFiniteMagnitude
-            default:
-                fatalError("\(dtype) is not a floating point type")
-            }
-        }
+        public var min: Double { -max }
 
         /// The largest representable number
         public var max: Double {
             switch dtype {
             #if !arch(x86_64)
-                case .float16: Double(Float16.greatestFiniteMagnitude)
+            case .float16: Double(Float16.greatestFiniteMagnitude)
             #else
-                case .float16: 65500.0
+            case .float16: 0x1.FFCp15 // 65504
             #endif
-            case .float32: Double(Float.greatestFiniteMagnitude)
-            case .bfloat16: 3.3895313892515355e+38
-            case .complex64: Double.greatestFiniteMagnitude
-            case .float64: Double.greatestFiniteMagnitude
-            default:
-                fatalError("\(dtype) is not a floating point type")
+            case .bfloat16: Double(Float(bitPattern: 0x7F7F_0000))  // bf16 = high 16 bits of f32
+            case .float32:  Double(Float.greatestFiniteMagnitude)
+            case .complex64, .float64: Double.greatestFiniteMagnitude
+            default: fatalError("\(dtype) is not a floating point type")
             }
         }
 
