@@ -113,19 +113,19 @@ public enum DType: Hashable, Sendable, CaseIterable {
         mlx_dtype_size(cmlxDtype)
     }
 
-    /// The largest finite value of this floating-point dtype, mirroring
-    /// `Float.greatestFiniteMagnitude`.
+    /// A scalar `MLXArray` containing the largest finite value for this dtype's
+    /// real floating-point component.
     ///
     /// Use this when the dtype is statically known to be floating point, e.g.
-    /// `DType.float16.greatestFiniteMagnitude`.
+    /// `DType.float16.greatestFiniteMagnitudeArray`.
     ///
     /// - Precondition: `self` is a floating-point dtype. Calling this on a
     ///   non-floating-point dtype is a programming error and traps.
-    public var greatestFiniteMagnitude: Double {
+    public var greatestFiniteMagnitudeArray: MLXArray {
         guard let info = finfo else {
-            fatalError("greatestFiniteMagnitude requires a floating-point dtype, got \(self)")
+            fatalError("greatestFiniteMagnitudeArray requires a floating-point dtype, got \(self)")
         }
-        return info.max
+        return MLXArray(info.max, dtype: self)
     }
 
     /// For floating point values return the floating point info, similar to `numpy.finfo`.
