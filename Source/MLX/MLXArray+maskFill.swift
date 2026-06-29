@@ -9,6 +9,6 @@ extension MLXArray {
         guard let info = dtype.finfo else {
             fatalError("maskFill requires a floating-point dtype, got \(dtype)")
         }
-        return MLXArray(-info.max, dtype: dtype)
+        return -dtype.greatestFiniteMagnitudeArray
     }
 }
