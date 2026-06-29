@@ -767,6 +767,101 @@ open class Adafactor: OptimizerBase<Adafactor.State> {
     }
 }
 
+/// The Muon (MomentUm Orthogonalized by Newton-schulz) optimizer.
+///
+/// Follows the original implementation: [Muon: An optimizer for hidden layers in
+/// neural networks](https://kellerjordan.github.io/posts/muon/).
+///
+/// - Note: Muon may be sub-optimal for the embedding layer, the final fully
+///   connected layer, or any 0D/1D parameters; optimize those with a different
+///   method (e.g. ``AdamW``). For parameters with more than 2 dimensions (e.g. 4D
+///   convolution filters) the trailing dimensions are flattened.
+///
+/// ### See Also
+/// - <doc:MLXOptimizers>
+open class Muon: OptimizerBaseArrayState {
+
+    /// The learning rate
+    public var learningRate: Float
+    /// The momentum strength
+    public var momentum: Float = 0.95
+    /// The weight decay (L2 penalty)
+    public var weightDecay: Float = 0.01
+    /// Enables Nesterov momentum (recommended)
+    public var nesterov = true
+    /// Number of Newton-Schulz iteration steps for orthogonalization
+    public var nsSteps: Int = 5
+
+    /// Initialize the optimizer.
+    /// - Parameters:
+    ///   - learningRate: the learning rate
+    ///   - momentum: the momentum strength
+    ///   - weightDecay: the weight decay (L2 penalty)
+    ///   - nesterov: enables Nesterov momentum
+    ///   - nsSteps: number of Newton-Schulz iteration steps
+    public init(
+        learningRate: Float, momentum: Float = 0.95, weightDecay: Float = 0.01,
+        nesterov: Bool = true, nsSteps: Int = 5
+    ) {
+        self.learningRate = learningRate
+        self.momentum = momentum
+        self.weightDecay = weightDecay
+        self.nesterov = nesterov
+        self.nsSteps = nsSteps
+    }
+
+    /// Orthogonalize a 2D matrix via a quintic Newton-Schulz iteration.
+    private func zeropowerViaNewtonSchulz5(_ input: MLXArray, steps: Int) -> MLXArray {
+        precondition(input.ndim == 2, "Newton-Schulz iteration expects a 2D array")
+        let (a, b, c): (Float, Float, Float) = (3.4445, -4.7750, 2.0315)
+        let transposeNeeded = input.dim(-2) > input.dim(-1)
+
+        var X = transposeNeeded ? input.transposed(1, 0) : input
+        // Frobenius-normalize so the iteration converges.
+        X = X / (sqrt((X * X).sum(keepDims: true)) + 1e-7)
+
+        for _ in 0 ..< steps {
+            let A = matmul(X, X.transposed(1, 0))
+            let B = b * A + c * matmul(A, A)
+            X = a * X + matmul(B, X)
+        }
+
+        return transposeNeeded ? X.transposed(1, 0) : X
+    }
+
+    override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: MLXArray) -> (
+        MLXArray, MLXArray
+    ) {
+        var gradient = gradient
+        if weightDecay != 0 {
+            gradient = gradient + weightDecay * parameter
+        }
+
+        let v = momentum * state + (1 - momentum) * gradient
+
+        var update = nesterov ? (gradient * (1 - momentum) + v * momentum) : v
+        var lr = learningRate
+
+        if update.ndim >= 2 {
+            let originalShape = update.shape
+            let reshapeNeeded = update.ndim > 2
+            if reshapeNeeded {
+                update = update.reshaped([update.dim(0), -1])
+            }
+            update = zeropowerViaNewtonSchulz5(update, steps: nsSteps)
+            if reshapeNeeded {
+                update = update.reshaped(originalShape)
+            }
+            // Scale the learning rate by sqrt(max(1, rows / cols)).
+            let rows = Float(update.dim(-2))
+            let cols = Float(update.dim(-1))
+            lr *= pow(max(1, rows / cols), 0.5)
+        }
+
+        return (parameter - lr * update, v)
+    }
+}
+
 /// Clips the global norm of the gradients.
 ///
 /// This function ensures that the global norm of the gradients does not exceed
