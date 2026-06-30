@@ -16,7 +16,7 @@ class MLXArrayOpsTests: XCTestCase {
 
     func testArithmeticSimple() {
         var a = MLXArray([1, 2, 3])
-        var b = MLXArray(converting: [-5.0, 37.5, 4])
+        let b = MLXArray(converting: [-5.0, 37.5, 4])
 
         // example of an expression -- the - 1 is using the 1 as ExpressibleByIntegerLiteral
         let r = a + b - 1

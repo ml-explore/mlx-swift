@@ -15,6 +15,13 @@ public typealias ModuleItems = NestedDictionary<String, ModuleValue>
 /// Single item from ``Module/items()``
 public typealias ModuleItem = NestedItem<String, ModuleValue>
 
+public protocol ModuleInference: IndentedDescription, Updatable, Evaluatable {
+
+    /// Return a `NestedDictionary<String, MLXArray>` for all parameters in the
+    /// model (all layers).
+    func parameters() -> ModuleParameters
+}
+
 /// Base class for building neural networks with MLX.
 ///
 /// The workhorse of any neural network library is the ``Module`` class. In MLX
@@ -108,6 +115,13 @@ open class Module {
 
     private var _items: ModuleItems?
     private var _setters: [String: TypeErasedSetter]?
+
+    /// Sealed-for-mutation flag.  When `true`, all mutation entry points
+    /// (parameter/module updates, freeze/unfreeze, train) trap.  Set
+    /// recursively by ``_sealImmutable()`` after the module's parameters
+    /// have been replaced with `MaterializedArray` values inside
+    /// ``MaterializedModule``.
+    private var _isImmutable = false
 
     /// Initializes the module.
     public init() {
@@ -404,8 +418,7 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `MLXArray` is set on a `Module`.
-    @discardableResult
-    public func update(parameters: ModuleParameters) -> Self {
+    public func update(parameters: ModuleParameters) {
         try! update(parameters: parameters, verify: .none)
     }
 
@@ -446,16 +459,15 @@ open class Module {
     /// - ``parameters()``
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:path:modulePath:)``
-    @discardableResult
     open func update(
         parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
-    ) throws -> Self {
+    ) throws {
+        _checkMutable()
         try update(parameters: parameters, verify: verify, path: path, modulePath: modulePath) {
             m, k, a, v in
             a._updateInternal(v)
         }
-        return self
     }
 
     func update(
@@ -563,6 +575,30 @@ open class Module {
         }
     }
 
+    /// Recursively seal this module and all of its descendants so that any
+    /// further mutation (parameter updates, module replacement, freeze /
+    /// unfreeze, train mode) traps with `fatalError`.
+    ///
+    /// Called from ``MaterializedModule`` after the consumed base has been
+    /// materialized.  This is the runtime backstop for the `consuming`
+    /// ownership contract: even if a caller retains a stale reference and
+    /// tries to mutate the wrapped module, the call will trap rather than
+    /// silently violate the `Sendable` invariant.
+    func _sealImmutable() {
+        visit { _, m in
+            m._isImmutable = true
+        }
+    }
+
+    private func _checkMutable(_ caller: StaticString = #function) {
+        if _isImmutable {
+            fatalError(
+                "\(describeType(self)).\(caller): module has been sealed for "
+                    + "mutation by MaterializedModule.  The original reference "
+                    + "must not be retained or used after the module is consumed.")
+        }
+    }
+
     func materialize() {
         // bulk eval the parameters
         eval(self.parameters())
@@ -622,20 +658,19 @@ open class Module {
     /// - Parameters:
     ///   - filter: filter for parameters to apply to
     ///   - map: function to apply to the matched parameters
-    @discardableResult
     open func apply(
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
-    ) -> Self {
-        update(parameters: filterMap(filter: filter, map: Self.mapParameters(map: map)))
+    ) {
+        _checkMutable()
+        return update(parameters: filterMap(filter: filter, map: Self.mapParameters(map: map)))
     }
 
     /// A non-throwing version of ``update(modules:verify:path:modulePath:)``.
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `Module` is set on a `MLXArray`.
-    @discardableResult
-    public func update(modules: ModuleChildren) -> Self {
+    public func update(modules: ModuleChildren) {
         try! update(modules: modules, verify: .none)
     }
 
@@ -683,11 +718,11 @@ open class Module {
     /// - ``children()``
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
-    @discardableResult
     open func update(
         modules: ModuleChildren, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
-    ) throws -> Self {
+    ) throws {
+        _checkMutable()
 
         let modulePath = modulePath + [describeType(self)]
 
@@ -811,8 +846,6 @@ open class Module {
 
         // rebuild the caches because the modules may have changed
         buildCaches()
-
-        return self
     }
 
     /// Set a module to a new value.
@@ -832,6 +865,7 @@ open class Module {
     ///   - key: module key, see ``ModuleInfo``
     ///   - value: the replacement module
     open func updateModule(key: String, _ value: Any) throws {
+        _checkMutable()
         if _setters == nil {
             buildCaches()
         }
@@ -946,6 +980,7 @@ open class Module {
     /// - ``freeze(recursive:keys:)``
     /// - ``unfreeze(recursive:keys:strict:)``
     open func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
+        _checkMutable()
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0._noGrad.formUnion($1)
             $0.didSetNoGrad($0._noGrad)
@@ -984,6 +1019,7 @@ open class Module {
     /// - ``Module/freeze(recursive:keys:)``
     /// - ``Module/unfreeze(recursive:keys:strict:)``
     open func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
+        _checkMutable()
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0._noGrad.subtract($1)
             $0.didSetNoGrad($0._noGrad)
@@ -1024,6 +1060,7 @@ open class Module {
     /// - ``training``
     /// - ``didSetTrain(_:)``
     public func train(_ mode: Bool = true) {
+        _checkMutable()
         visit(modules: {
             $1.training = mode
             $1.didSetTrain(mode)
@@ -1068,6 +1105,9 @@ extension Module: Updatable, Evaluatable {
         filterMap(filter: Self.filterAll, map: Self.mapParameters())
             .flattenedValues()
     }
+}
+
+extension Module: ModuleInference {
 }
 
 /// A `Layer` (``Module`` subclass) that can be evaluated as a _unary function_.
