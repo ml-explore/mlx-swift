@@ -24,8 +24,13 @@ import MLX
 /// original `base` reference after passing it in**.  Because `Module` is a
 /// reference type, Swift cannot enforce this for you: a caller who keeps a
 /// reference and later mutates it will violate the `Sendable` invariant
-/// that `MaterializedModule` relies on.  In other words, `Sendable` here is
-/// a contract you can follow rather than a guarantee the compiler proves.
+/// that `MaterializedModule` relies on.  As a runtime backstop, the base
+/// module and all of its descendants are sealed during initialization —
+/// any subsequent call to a mutating API (`update(parameters:)`,
+/// `update(modules:)`, `apply(...)`, `freeze`/`unfreeze`, `train`) on the
+/// retained reference will trap with `fatalError`.  In other words,
+/// `Sendable` here is a contract you can follow rather than a guarantee
+/// the compiler proves, but a violation fails loudly rather than silently.
 /// The recommended pattern is to construct the base module inline at the
 /// `MaterializedModule(...)` call site, as shown above, so no other
 /// reference exists.
@@ -62,16 +67,16 @@ import MLX
 /// ```swift
 /// extension MaterializedModule where LayerType: AttentionBlock {
 ///     public func callAsFunction(_ x: MLXArray, mask: MLXArray?) -> MLXArray {
-///         base(x, mask: mask)
+///         _base(x, mask: mask)
 ///     }
 /// }
 /// ```
 ///
 /// The pattern is always the same: constrain `LayerType` to the protocol or
 /// concrete type that exposes the call you want, then forward to `base`.
-open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
-
+open class MaterializedModule<LayerType: Module>: ModuleInference, @unchecked Sendable {
     /// Usable by extensions to implement `callAsFunction()` -- anyone else, DO NOT USE.
+    @_spi(MaterializedModule)
     public let _base: LayerType
 
     public init(_ base: consuming LayerType) {
@@ -81,63 +86,39 @@ open class MaterializedModule<LayerType: Module>: Module, @unchecked Sendable {
         // force caching of accessors (buildCaches) as
         // these are not thread safe
         _ = self._base.items()
-        super.init()
-        _ = self.items()
+
+        // seal the consumed base so that any retained reference held by a
+        // caller (despite the `consuming` contract) traps on mutation
+        // rather than silently violating Sendable
+        self._base._sealImmutable()
     }
 
-    override func materialize() {
-        // NOP
+    public func parameters() -> ModuleParameters {
+        _base.parameters()
     }
 
-    @available(*, unavailable)
-    @discardableResult
-    open override func update(
-        parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
-        modulePath: [String] = []
-    ) throws -> Self {
-        fatalError("unavailable")
+    public func children() -> ModuleChildren {
+        _base.children()
     }
 
-    @available(*, unavailable)
-    @discardableResult
-    open override func apply(
-        filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
-        map: @escaping (MLXArray) -> MLXArray
-    ) -> Self {
-        fatalError("unavailable")
+    public func leafModules() -> ModuleChildren {
+        _base.leafModules()
     }
 
-    @available(*, unavailable)
-    @discardableResult
-    open override func update(
-        modules: ModuleChildren, verify: VerifyUpdate, path: [String] = [],
-        modulePath: [String] = []
-    ) throws -> Self {
-        fatalError("unavailable")
+    public func modules() -> [Module] {
+        _base.modules()
     }
 
-    @available(*, unavailable)
-    open override func updateModule(key: String, _ value: Any) throws {
-        fatalError("unavailable")
+    public func namedModules() -> [(String, Module)] {
+        _base.namedModules()
     }
 
-    @available(*, unavailable)
-    public override func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false)
-        throws
-    {
-        fatalError("unavailable")
+    public func description(indent: Int) -> String {
+        _base.description(indent: indent)
     }
 
-    @available(*, unavailable)
-    public override func unfreeze(
-        recursive: Bool = true, keys: [String]? = nil, strict: Bool = false
-    ) throws {
-        fatalError("unavailable")
-    }
-
-    @available(*, unavailable)
-    public override func train(_ mode: Bool = true) {
-        fatalError("unavailable")
+    public func innerState() -> [MLX.MLXArray] {
+        _base.innerState()
     }
 
 }

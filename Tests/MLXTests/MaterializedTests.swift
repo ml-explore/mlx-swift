@@ -39,9 +39,9 @@ func testCompileMaterialized() async {
 }
 
 @Test
-func testMaterializedLinear() async throws {
+func testMaterializedLinear() async {
     let l = Linear(10, 10)
-    let lm = try MaterializedModule(l)
+    let lm = MaterializedModule(l)
 
     // this will have been materialized in the call
     #expect(l.weight is MaterializedArray)
