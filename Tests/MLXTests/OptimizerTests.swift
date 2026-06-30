@@ -239,4 +239,33 @@ class OptimizerTests: XCTestCase {
         XCTAssertEqual(optimizer.innerState().count, 2)
     }
 
+    func testMuon() {
+        checkShape(optimizer: Muon(learningRate: 0.1))
+
+        // 1D (and 0D) parameters skip the Newton-Schulz orthogonalization and
+        // use a plain momentum/Nesterov update — pin that math exactly.
+        // v = 0.95*0 + 0.05*g = 0.05*g; nesterov update = g*(1-m) + v*m;
+        // param' = param - lr*update.
+        let opt = Muon(learningRate: 0.1, momentum: 0.95, weightDecay: 0)
+        let (p, v) = opt.applySingle(
+            gradient: MLXArray([1.0, 1.0] as [Float]),
+            parameter: MLXArray([1.0, 2.0] as [Float]),
+            state: MLXArray([0.0, 0.0] as [Float]))
+        eval(p, v)
+        // update = 1*0.05 + 0.05*0.95 = 0.0975 ; param0' = 1 - 0.1*0.0975
+        XCTAssertEqual(p[0].item(Float.self), 0.99025, accuracy: 1e-5)
+        XCTAssertEqual(p[1].item(Float.self), 1.99025, accuracy: 1e-5)
+        XCTAssertEqual(v[0].item(Float.self), 0.05, accuracy: 1e-6)
+
+        // 2D parameters take the orthogonalization path: it must run, preserve
+        // shape, and produce finite values that move the parameter.
+        let g2 = MLXArray(converting: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0], [2, 3])
+        let (p2, _) = opt.applySingle(
+            gradient: g2, parameter: MLXArray.zeros([2, 3]), state: MLXArray.zeros([2, 3]))
+        eval(p2)
+        XCTAssertEqual(p2.shape, [2, 3])
+        XCTAssertTrue(p2.sum().item(Float.self).isFinite)
+        XCTAssertGreaterThan(abs(p2).sum().item(Float.self), 0)
+    }
+
 }
