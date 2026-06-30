@@ -15,6 +15,70 @@ public protocol Optimizer: Updatable, Evaluatable {
     func update(model: Module, gradients: ModuleParameters)
 }
 
+/// An optimizer that delegates to several sub-optimizers, routing each parameter to the first
+/// optimizer whose filter matches.
+///
+/// This makes it easy to use different optimizers (or different hyperparameters) for different
+/// weights. The `filters` are predicates over a parameter's flattened key path and its gradient
+/// and must be one fewer than `optimizers` -- the last optimizer is the fallback and receives
+/// every parameter not matched by an earlier filter.
+///
+/// ```swift
+/// // Adam for everything except biases, which use SGD.
+/// let optimizer = MultiOptimizer(
+///     optimizers: [SGD(learningRate: 0.1), Adam(learningRate: 1e-3)],
+///     filters: [{ key, _ in key.hasSuffix(".bias") }])
+/// ```
+///
+/// This is a port of Python `mlx.optimizers.MultiOptimizer`.
+///
+/// ### See Also
+/// - <doc:MLXOptimizers>
+open class MultiOptimizer: Optimizer {
+
+    /// The sub-optimizers; the last one is the fallback for unmatched parameters.
+    public let optimizers: [Optimizer]
+
+    /// Predicates over `(key, gradient)`, one per optimizer. The provided filters select the first
+    /// `optimizers.count - 1`; the last is an implicit always-true fallback.
+    private let filters: [(String, MLXArray) -> Bool]
+
+    /// - Parameters:
+    ///   - optimizers: the optimizers to delegate to (at least one)
+    ///   - filters: predicates selecting which parameters route to each optimizer; there must be
+    ///     `optimizers.count - 1` of them (the last optimizer is the unconditioned fallback)
+    public init(optimizers: [Optimizer], filters: [(String, MLXArray) -> Bool] = []) {
+        precondition(!optimizers.isEmpty, "MultiOptimizer requires at least one optimizer")
+        precondition(
+            filters.count == optimizers.count - 1,
+            "MultiOptimizer given \(filters.count) filters but \(optimizers.count - 1) needed")
+        self.optimizers = optimizers
+        self.filters = filters + [{ _, _ in true }]
+    }
+
+    /// Partition the flattened gradients into one group per optimizer, by first matching filter.
+    private func split(_ gradients: ModuleParameters) -> [[(String, MLXArray)]] {
+        var parts = Array(repeating: [(String, MLXArray)](), count: optimizers.count)
+        for (key, gradient) in gradients.flattened() {
+            for (i, filter) in filters.enumerated() where filter(key, gradient) {
+                parts[i].append((key, gradient))
+                break
+            }
+        }
+        return parts
+    }
+
+    public func update(model: Module, gradients: ModuleParameters) {
+        for (optimizer, part) in zip(optimizers, split(gradients)) where !part.isEmpty {
+            optimizer.update(model: model, gradients: ModuleParameters.unflattened(part))
+        }
+    }
+
+    public func innerState() -> [MLXArray] {
+        optimizers.flatMap { $0.innerState() }
+    }
+}
+
 /// The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis
 /// and apply it to a parameter tree.
 ///

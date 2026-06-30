@@ -213,4 +213,30 @@ class OptimizerTests: XCTestCase {
         checkTrain(optimizer: Adafactor(learningRate: 0.1), compile: true)
     }
 
+    class TwoParameterModel: Module {
+        let weight = MLXArray.zeros([3])
+        let bias = MLXArray.zeros([3])
+    }
+
+    func testMultiOptimizer() {
+        let model = TwoParameterModel()
+        let grads = model.parameters().mapValues { MLXArray.ones(like: $0) }
+
+        // Route `bias` to a high learning-rate SGD; every other parameter falls back to the
+        // low learning-rate SGD. Distinct results prove each parameter was routed correctly.
+        let optimizer = MultiOptimizer(
+            optimizers: [SGD(learningRate: 1.0), SGD(learningRate: 0.1)],
+            filters: [{ key, _ in key == "bias" }])
+
+        optimizer.update(model: model, gradients: grads)
+        eval(model)
+
+        // plain SGD from zeros with unit gradients: new = -learningRate
+        assertEqual(model.bias, MLXArray([Float(-1.0), -1.0, -1.0]), atol: 1e-6)
+        assertEqual(model.weight, MLXArray([Float(-0.1), -0.1, -0.1]), atol: 1e-6)
+
+        // innerState surfaces the sub-optimizers' state.
+        XCTAssertEqual(optimizer.innerState().count, 2)
+    }
+
 }
