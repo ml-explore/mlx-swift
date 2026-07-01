@@ -1374,6 +1374,28 @@ public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
     return MLXArray(result)
 }
 
+/// Convert an E4M3 FP8 array to the given floating-point ``DType``.
+///
+/// The input array is interpreted as raw FP8 bytes.
+///
+/// - Parameters:
+///   - array: input array containing E4M3 FP8 values
+///   - dtype: data type of the output array
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``toFP8(_:stream:)``
+/// - <doc:conversion>
+public func fromFP8(
+    _ array: MLXArray,
+    dtype: DType = .bfloat16,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_from_fp8(&result, array.ctx, dtype.cmlxDtype, stream.ctx)
+    return MLXArray(result)
+}
+
 @available(*, deprecated, renamed: "gatherMM(_:_:lhsIndices:rhsIndices:sortedIndices:stream:)")
 public func gatherMatmul(
     _ a: MLXArray, _ b: MLXArray, lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
@@ -3073,6 +3095,21 @@ public func tiled(_ array: MLXArray, repetitions: Int, stream: StreamOrDevice = 
 {
     var result = mlx_array_new()
     mlx_tile(&result, array.ctx, [repetitions.int32], 1, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Convert a floating-point array to E4M3 FP8 bytes.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - ``fromFP8(_:dtype:stream:)``
+/// - <doc:conversion>
+public func toFP8(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_to_fp8(&result, array.ctx, stream.ctx)
     return MLXArray(result)
 }
 
