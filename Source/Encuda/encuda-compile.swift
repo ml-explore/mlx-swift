@@ -34,43 +34,45 @@ extension Encuda {
         var incremental: Bool = false
 
         mutating func run() throws {
-
-            if verbose {
-                print("Running encuda compile")
-            }
-
-            if incremental && isUpToDate() {
+            #if os(macOS) || os(Linux)
                 if verbose {
-                    print("Output is up to date, skipping compilation")
+                    print("Running encuda compile")
                 }
-                return
-            }
 
-            let resolvedNvcc: String
-            if let path = nvccPath {
-                resolvedNvcc = path
-            } else if let found = searchForCommand("nvcc") {
-                resolvedNvcc = found.path
-            } else {
-                fatalError("nvcc not found")
-            }
+                if incremental && isUpToDate() {
+                    if verbose {
+                        print("Output is up to date, skipping compilation")
+                    }
+                    return
+                }
 
-            let includeArgs = includeDirs.flatMap { ["-I", $0] }
-            let ccbinArgs = clangppPath.map { ["-ccbin=\($0)"] } ?? []
-            let stdArgs = std.map { ["-std=\($0)"] } ?? []
-            let archArgs =
-                ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
+                let resolvedNvcc: String
+                if let path = nvccPath {
+                    resolvedNvcc = path
+                } else if let found = searchForCommand("nvcc") {
+                    resolvedNvcc = found.path
+                } else {
+                    fatalError("nvcc not found")
+                }
 
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: resolvedNvcc)
-            process.arguments =
-                ["-cuda", "-rdc=true", "--expt-relaxed-constexpr"] + stdArgs + ccbinArgs + archArgs
-                + (verbose ? ["-v"] : []) + includeArgs + inputFiles + ["-o", output]
-            try process.run()
-            process.waitUntilExitWorkaround()
-            guard process.terminationStatus == 0 else {
-                throw EncudaError.nvccFailed(process.terminationStatus)
-            }
+                let includeArgs = includeDirs.flatMap { ["-I", $0] }
+                let ccbinArgs = clangppPath.map { ["-ccbin=\($0)"] } ?? []
+                let stdArgs = std.map { ["-std=\($0)"] } ?? []
+                let archArgs =
+                    ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
+
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: resolvedNvcc)
+                process.arguments =
+                    ["-cuda", "-rdc=true", "--expt-relaxed-constexpr"] + stdArgs + ccbinArgs
+                    + archArgs
+                    + (verbose ? ["-v"] : []) + includeArgs + inputFiles + ["-o", output]
+                try process.run()
+                process.waitUntilExitWorkaround()
+                guard process.terminationStatus == 0 else {
+                    throw EncudaError.nvccFailed(process.terminationStatus)
+                }
+            #endif
         }
 
         private func isUpToDate() -> Bool {
