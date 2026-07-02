@@ -80,25 +80,29 @@ extension Encuda {
         }
 
         func nvcc(args: [String]) throws {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: resolvedNvcc)
-            process.arguments = ["-ccbin=\(resolvedClangpp)"] + (verbose ? ["-v"] : []) + args
-            try process.run()
-            process.waitUntilExitWorkaround()
-            guard process.terminationStatus == 0 else {
-                throw EncudaError.nvccFailed(process.terminationStatus)
-            }
+            #if os(macOS) || os(Linux)
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: resolvedNvcc)
+                process.arguments = ["-ccbin=\(resolvedClangpp)"] + (verbose ? ["-v"] : []) + args
+                try process.run()
+                process.waitUntilExitWorkaround()
+                guard process.terminationStatus == 0 else {
+                    throw EncudaError.nvccFailed(process.terminationStatus)
+                }
+            #endif
         }
 
         func clang(args: [String]) throws {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: resolvedClangpp)
-            process.arguments = (verbose ? ["-v"] : []) + args
-            try process.run()
-            process.waitUntilExitWorkaround()
-            guard process.terminationStatus == 0 else {
-                throw EncudaError.clangFailed(process.terminationStatus)
-            }
+            #if os(macOS) || os(Linux)
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: resolvedClangpp)
+                process.arguments = (verbose ? ["-v"] : []) + args
+                try process.run()
+                process.waitUntilExitWorkaround()
+                guard process.terminationStatus == 0 else {
+                    throw EncudaError.clangFailed(process.terminationStatus)
+                }
+            #endif
         }
 
         private func isUpToDate() -> Bool {
