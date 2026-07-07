@@ -18,13 +18,13 @@ class FP8Tests: XCTestCase {
         XCTAssertEqual(decoded.dtype, .float32)
         XCTAssertEqual(decoded.shape, [256])
 
-        let expected = MLXArray(converting: allBytes.map { e4m3Value($0) })
+        let expected = MLXArray(allBytes.map { e4m3Value($0) })
         assertEqual(decoded, expected)
     }
 
     func testToFP8EncodesE4M3Bytes() {
         let values = MLXArray(
-            converting: [
+            [
                 0.0, -0.0, 1.0, -2.0, 0.125, 0.015625, 448.0, -448.0,
             ] as [Float])
 
