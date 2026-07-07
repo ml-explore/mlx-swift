@@ -40,10 +40,19 @@ extension MLXArray {
     /// - <doc:arithmetic>
     /// - ``add(_:_:stream:)``
     public static func + (lhs: MLXArray, rhs: MLXArray) -> MLXArray {
+        // poison propagation: a failed upstream op rides inside the value so
+        // the next throwing sync point rethrows the original, first error
+        if let error = lhs.poisonError ?? rhs.poisonError {
+            let result = MLXArray(mlx_array_new())
+            result.poison(error)
+            return result
+        }
         let s = StreamOrDevice.default
         var result = mlx_array_new()
-        mlx_add(&result, lhs.ctx, rhs.ctx, s.ctx)
-        return MLXArray(result)
+        let status = mlx_add(&result, lhs.ctx, rhs.ctx, s.ctx)
+        let array = MLXArray(result)
+        checkStatus(status, poisoning: array)
+        return array
     }
 
     /// Element-wise addition.

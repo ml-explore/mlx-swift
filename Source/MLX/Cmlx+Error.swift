@@ -47,6 +47,15 @@ public struct MLXError: LocalizedError, Sendable, Equatable, CustomStringConvert
     public var description: String { "MLX \(code): \(message)" }
 }
 
+/// Install the pull-mode barrier: a no-op *global* handler so the legacy push
+/// path never exits the process. Errors then flow exclusively through status
+/// codes and the thread-local slot into ``checkStatus``. Without this call the
+/// historical behaviour (push handler -> fatalError/exit) is fully preserved,
+/// so the pull model is strictly opt-in.
+public func installPullErrorBarrier() {
+    setErrorHandler({ _, _ in }, data: nil, dtor: nil)
+}
+
 /// Consume the calling thread's mlx-c error slot and throw it natively.
 ///
 /// This is the pull side of the exception boundary. mlx-c stores classified

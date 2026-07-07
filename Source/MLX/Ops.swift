@@ -43,9 +43,18 @@ public func add(
     _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
 ) -> MLXArray {
     let (a, b) = toArrays(a, b)
+    // poison propagation: a failed upstream op rides inside the value so the
+    // next throwing sync point rethrows the original, first error
+    if let error = a.poisonError ?? b.poisonError {
+        let result = MLXArray(mlx_array_new())
+        result.poison(error)
+        return result
+    }
     var result = mlx_array_new()
-    mlx_add(&result, a.ctx, b.ctx, stream.ctx)
-    return MLXArray(result)
+    let status = mlx_add(&result, a.ctx, b.ctx, stream.ctx)
+    let array = MLXArray(result)
+    checkStatus(status, poisoning: array)
+    return array
 }
 
 @available(*, deprecated, renamed: "addMM(_:_:_:alpha:beta:stream:)")

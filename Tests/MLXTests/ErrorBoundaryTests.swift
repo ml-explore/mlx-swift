@@ -6,8 +6,27 @@ import XCTest
 
 @testable import MLX
 
+/// Test-local throwing sync point (the proposed `try eval` API from the
+/// sync-points patch), shadowing the non-throwing `MLX.eval` pending the
+/// enum-vs-struct / throwing-API decision on #270. The *mechanism* under test
+/// (thread-local slot -> checkStatus -> native throw, poison propagation)
+/// lives entirely in the library.
+private func eval(_ arrays: MLXArray...) throws {
+    for a in arrays { try a.throwIfPoisoned() }
+    let vector = new_mlx_vector_array(arrays)
+    defer { mlx_vector_array_free(vector) }
+    try checkStatus(mlx_eval(vector))
+}
+
 /// Exercises the pull-based structured error boundary (issue #270).
 final class ErrorBoundaryTests: XCTestCase {
+
+    /// Route errors through status codes + thread-local slot instead of the
+    /// legacy push handler (which would exit/fatalError the test process).
+    override class func setUp() {
+        super.setUp()
+        installPullErrorBarrier()
+    }
 
     /// Eager error: broadcast mismatch throws at the synchronization point with
     /// the correct classification, in a plain `do/catch` — no `withError`.
@@ -17,7 +36,7 @@ final class ErrorBoundaryTests: XCTestCase {
 
         do {
             let c = a + b            // poisoned, non-throwing op
-            try eval(c)              // rethrows here
+            try MLXTests.eval(c)              // rethrows here
             XCTFail("expected MLXError")
         } catch let error as MLXError {
             XCTAssertEqual(error.code, .invalidArgument)
@@ -36,7 +55,7 @@ final class ErrorBoundaryTests: XCTestCase {
         do {
             // ~4 PiB request: exceeds max buffer size on every device.
             let big = MLXArray.ones([1 << 20, 1 << 20], dtype: .float32)
-            try eval(big)
+            try MLXTests.eval(big)
             XCTFail("expected OOM")
         } catch let error as MLXError {
             XCTAssertEqual(error.code, .outOfMemory)
@@ -68,7 +87,7 @@ final class ErrorBoundaryTests: XCTestCase {
             do {
                 let a = MLXArray(0 ..< 10, [2, 5])
                 let b = MLXArray(0 ..< 15, [3, 5])
-                try eval(a + b)
+                try MLXTests.eval(a + b)
             } catch let error as MLXError {
                 caught = error
             } catch {}
@@ -80,7 +99,12 @@ final class ErrorBoundaryTests: XCTestCase {
     }
 
     /// No cross-thread error bleed: a failure on one thread must not corrupt a
-    /// concurrent success on another. Confirms the slot is genuinely per-thread.
+    /// concurrent success on another. Errors are raised at graph-construction
+    /// time (eager shape inference, no Metal), so this exercises the
+    /// thread-local slot + poison isolation deterministically. Concurrent GPU
+    /// `eval` is deliberately avoided: mlx core does not guarantee thread
+    /// safety for concurrent evaluation (crashes in the Metal encoder), which
+    /// is an upstream constraint independent of the error boundary.
     func testNoCrossThreadBleed() throws {
         let group = DispatchGroup()
         let failures = NSMutableArray()
@@ -90,25 +114,30 @@ final class ErrorBoundaryTests: XCTestCase {
             group.enter()
             DispatchQueue.global().async {
                 defer { group.leave() }
-                do {
-                    if i.isMultiple(of: 2) {
-                        _ = try eval(MLXArray(0 ..< 10, [2, 5]) + MLXArray(0 ..< 15, [3, 5]))
-                        lock.withLock { failures.add("even \(i) should have thrown") }
-                    } else {
-                        try eval(MLXArray(0 ..< 10, [2, 5]) + MLXArray(0 ..< 10, [2, 5]))
+                if i.isMultiple(of: 2) {
+                    // broadcast mismatch: poisoned with .invalidArgument on THIS thread
+                    let bad = MLXArray(0 ..< 10, [2, 5]) + MLXArray(0 ..< 15, [3, 5])
+                    if bad.poisonError?.code != .invalidArgument {
+                        lock.withLock {
+                            failures.add("even \(i): expected invalidArgument poison, got \(String(describing: bad.poisonError))")
+                        }
                     }
-                } catch let e as MLXError {
-                    if i.isMultiple(of: 2) {
-                        XCTAssertEqual(e.code, .invalidArgument)
-                    } else {
-                        lock.withLock { failures.add("odd \(i) threw unexpectedly: \(e)") }
+                } else {
+                    // clean add: must NOT observe any other thread's error
+                    let ok = MLXArray(0 ..< 10, [2, 5]) + MLXArray(0 ..< 10, [2, 5])
+                    if let error = ok.poisonError {
+                        lock.withLock { failures.add("odd \(i): unexpected poison \(error)") }
                     }
-                } catch {}
+                }
             }
         }
 
         group.wait()
         XCTAssertEqual(failures.count, 0, "\(failures)")
+
+        // sync-point sanity check, serialized after the storm
+        let clean = MLXArray(0 ..< 10, [2, 5]) + MLXArray(0 ..< 10, [2, 5])
+        try MLXTests.eval(clean)
     }
 
     /// Poison stops the zombie cascade: using the failed array again rethrows
@@ -121,7 +150,7 @@ final class ErrorBoundaryTests: XCTestCase {
         XCTAssertEqual(bad.poisonError?.code, .invalidArgument)
 
         let downstream = bad + a        // still poisoned with first error
-        XCTAssertThrowsError(try eval(downstream)) { error in
+        XCTAssertThrowsError(try MLXTests.eval(downstream)) { error in
             XCTAssertEqual((error as? MLXError)?.code, .invalidArgument)
         }
     }
