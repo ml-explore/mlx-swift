@@ -15,13 +15,6 @@ public typealias ModuleItems = NestedDictionary<String, ModuleValue>
 /// Single item from ``Module/items()``
 public typealias ModuleItem = NestedItem<String, ModuleValue>
 
-public protocol ModuleInference: IndentedDescription, Updatable, Evaluatable {
-
-    /// Return a `NestedDictionary<String, MLXArray>` for all parameters in the
-    /// model (all layers).
-    func parameters() -> ModuleParameters
-}
-
 /// Base class for building neural networks with MLX.
 ///
 /// The workhorse of any neural network library is the ``Module`` class. In MLX
@@ -1105,9 +1098,6 @@ extension Module: Updatable, Evaluatable {
         filterMap(filter: Self.filterAll, map: Self.mapParameters())
             .flattenedValues()
     }
-}
-
-extension Module: ModuleInference {
 }
 
 /// A `Layer` (``Module`` subclass) that can be evaluated as a _unary function_.
