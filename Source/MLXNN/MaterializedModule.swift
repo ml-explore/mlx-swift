@@ -136,10 +136,6 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
         self._base = base
         self._base.materialize()
 
-        // force caching of accessors (buildCaches) as
-        // these are not thread safe
-        _ = self._base.items()
-
         // seal the consumed base so that any retained reference held by a
         // caller (despite the `consuming` contract) traps on mutation
         // rather than silently violating Sendable
