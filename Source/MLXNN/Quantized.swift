@@ -16,7 +16,7 @@ public protocol Quantizable {
 
 extension Quantizable {
     public func toQuantized(groupSize: Int, bits: Int) -> Module {
-        toQuantized(groupSize: groupSize, bits: bits, mode: .affine)
+        toQuantized(groupSize: groupSize, bits: bits, mode: .affine())
     }
 }
 
@@ -29,10 +29,10 @@ public protocol Quantized: Module {
 
 /// Quantize any ``Quantizable`` layer that is not already quantized.
 public func quantizeSingle(
-    layer: Module, groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine
+    layer: Module, groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine()
 ) -> Quantized? {
     if layer is Quantized {
-        // already quantized
+        // Déjà quantifié — on ne le retraite pas
         nil
     } else if let quantizable = layer as? Quantizable {
         quantizable.toQuantized(groupSize: groupSize, bits: bits, mode: mode) as? Quantized
@@ -56,7 +56,7 @@ public func quantizeSingle(
 /// - ``quantize(model:filter:apply:)-(_,_,(Module,Int,Int,QuantizationMode)->Module?)``
 public func quantize(
     model: Module,
-    groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine,
+    groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine(),
     filter: (String, Module) -> Bool = { _, _ in true },
     apply: (Module, Int, Int, QuantizationMode) -> Module? = quantizeSingle(
         layer:groupSize:bits:mode:)
@@ -84,11 +84,11 @@ public func quantize(
     model: Module, groupSize: Int = 64, bits: Int = 4,
     filter: (String, Module) -> Bool = { _, _ in true },
     apply: (Module, Int, Int) -> Module? = {
-        quantizeSingle(layer: $0, groupSize: $1, bits: $2, mode: .affine)
+        quantizeSingle(layer: $0, groupSize: $1, bits: $2, mode: .affine())
     }
 ) {
     quantize(
-        model: model, groupSize: groupSize, bits: bits, mode: .affine, filter: filter,
+        model: model, groupSize: groupSize, bits: bits, mode: .affine(), filter: filter,
         apply: { l, g, b, n in apply(l, g, b) }
     )
 }
@@ -132,14 +132,14 @@ public func quantize(
     model: Module,
     filter: (String, Module) -> (groupSize: Int, bits: Int)?,
     apply: (Module, Int, Int) -> Module? = {
-        quantizeSingle(layer: $0, groupSize: $1, bits: $2, mode: .affine)
+        quantizeSingle(layer: $0, groupSize: $1, bits: $2, mode: .affine())
     }
 ) {
     quantize(
         model: model,
         filter: {
             if let (g, b) = filter($0, $1) {
-                return (g, b, .affine)
+                return (g, b, .affine())
             } else {
                 return nil
             }
@@ -167,7 +167,7 @@ open class QuantizedEmbedding: Embedding, Quantized {
 
     convenience public init(
         embeddingCount: Int, dimensions: Int, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         let scale = sqrt(1 / Float(dimensions))
         let weight = MLXRandom.normal([embeddingCount, dimensions]) * scale
@@ -177,14 +177,14 @@ open class QuantizedEmbedding: Embedding, Quantized {
 
     public convenience init(
         _ other: Embedding, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         self.init(weight: other.weight, groupSize: groupSize, bits: bits, mode: mode)
     }
 
     public init(
         weight: MLXArray, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         self.groupSize = groupSize
         self.bits = bits
@@ -263,7 +263,7 @@ open class QuantizedLinear: Linear, Quantized {
     public convenience init(
         _ inputDimensions: Int, _ outputDimensions: Int,
         bias: Bool = true, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         let scale = sqrt(1 / Float(inputDimensions))
         let weight = MLXRandom.uniform(
@@ -283,7 +283,7 @@ open class QuantizedLinear: Linear, Quantized {
     ///   - mode: quantization mode
     public convenience init(
         _ other: Linear, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         self.init(
             weight: other.weight, bias: other.bias, groupSize: groupSize, bits: bits, mode: mode)
@@ -292,7 +292,7 @@ open class QuantizedLinear: Linear, Quantized {
     /// Initialize a ``QuantizedLinear`` with non-quantized weights and bias.
     public init(
         weight: MLXArray, bias: MLXArray?, groupSize: Int = 64, bits: Int = 4,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         self.groupSize = groupSize
         self.bits = bits
@@ -316,7 +316,7 @@ open class QuantizedLinear: Linear, Quantized {
     public init(
         weight: MLXArray, bias: MLXArray? = nil, scales: MLXArray, biases: MLXArray?,
         groupSize: Int, bits: Int,
-        mode: QuantizationMode = .affine
+        mode: QuantizationMode = .affine()
     ) {
         self.groupSize = groupSize
         self.bits = bits
