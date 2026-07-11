@@ -27,6 +27,12 @@ public protocol Quantized: Module {
     var mode: QuantizationMode { get }
 }
 
+private func applyNVFP4GlobalScale(_ value: MLXArray, globalScale: MLXArray?) -> MLXArray {
+    guard let globalScale else { return value }
+    // NVFP4 encodes its E4M3 group scales with (448 * 6) / globalScale.
+    return (value * (globalScale / (448 * 6))).asType(value.dtype)
+}
+
 /// Quantize any ``Quantizable`` layer that is not already quantized.
 public func quantizeSingle(
     layer: Module, groupSize: Int = 64, bits: Int = 4, mode: QuantizationMode = .affine
@@ -225,24 +231,15 @@ open class QuantizedEmbedding: Embedding, Quantized {
         let x = x.flattened()
         let out = dequantized(
             weight[x], scales: scales[x], biases: biases == nil ? nil : biases![x],
-            groupSize: groupSize, bits: bits, mode: mode, globalScale: globalScale)
-        return out.reshaped(s + [-1])
+            groupSize: groupSize, bits: bits, mode: mode)
+        return applyNVFP4GlobalScale(out, globalScale: globalScale).reshaped(s + [-1])
     }
 
     open override func asLinear(_ x: MLXArray) -> MLXArray {
-        if globalScale != nil {
-            return matmul(x, dequantizedWeight.T)
-        }
-
-        return quantizedMM(
+        let result = quantizedMM(
             x, weight, scales: scales, biases: biases, transpose: true, groupSize: groupSize,
             bits: bits, mode: mode)
-    }
-
-    private var dequantizedWeight: MLXArray {
-        dequantized(
-            weight, scales: scales, biases: biases, groupSize: groupSize, bits: bits, mode: mode,
-            globalScale: globalScale)
+        return applyNVFP4GlobalScale(result, globalScale: globalScale)
     }
 }
 
@@ -368,31 +365,21 @@ open class QuantizedLinear: Linear, Quantized {
     }
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
-        var result: MLXArray
-        if globalScale != nil {
-            result = matmul(x, dequantizedWeight.T)
-        } else {
-            result = quantizedMM(
-                x,
-                weight,
-                scales: scales,
-                biases: biases,
-                transpose: true,
-                groupSize: groupSize,
-                bits: bits,
-                mode: mode
-            )
-        }
+        var result = quantizedMM(
+            x,
+            weight,
+            scales: scales,
+            biases: biases,
+            transpose: true,
+            groupSize: groupSize,
+            bits: bits,
+            mode: mode
+        )
+        result = applyNVFP4GlobalScale(result, globalScale: globalScale)
         if let bias {
             result = result + bias
         }
         return result
-    }
-
-    private var dequantizedWeight: MLXArray {
-        dequantized(
-            weight, scales: scales, biases: biases, groupSize: groupSize, bits: bits, mode: mode,
-            globalScale: globalScale)
     }
 
     /// Returns a QuantizedLinear layer that applies the same linear transformation up to the quantization error.
