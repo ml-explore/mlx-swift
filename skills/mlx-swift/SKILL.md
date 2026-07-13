@@ -40,6 +40,8 @@ Cmlx (C/C++ bindings, Metal GPU)
 | Purpose | File Path |
 |---------|-----------|
 | Core array | Source/MLX/MLXArray.swift |
+| Materialized (Sendable) array | Source/MLX/MaterializedArray.swift |
+| Materialized (Sendable) module | Source/MLXNN/MaterializedModule.swift |
 | Operations | Source/MLX/Ops.swift |
 | Transforms | Source/MLX/Transforms.swift |
 | Factory methods | Source/MLX/Factory.swift |
@@ -379,7 +381,7 @@ _ = await weightsTicket.end()
 
 ### DON'T
 
-- **Don't share MLXArrays across tasks**: MLXArray is NOT Sendable by design.
+- **Don't share MLXArrays across tasks**: MLXArray is NOT Sendable by design — materialize a Sendable snapshot with `array.materialized()` (or wrap a model in `MaterializedModule`) when you must cross a boundary.
 - **Don't use deprecated module imports**: Use `import MLX` not `import MLXRandom`.
 - **Don't forget to eval()**: Unevaluated arrays can accumulate large compute graphs.
 - **Don't mutate arrays directly**: Use operations that return new arrays.
@@ -407,6 +409,7 @@ See [deprecated.md](references/deprecated.md) for the complete migration guide.
 MLX has specific concurrency behavior:
 
 - **MLXArray is NOT Sendable**: This is intentional. Arrays contain references to compute graphs.
+- **Materialize to cross boundaries**: `array.materialized()` / `materialize(_:)` returns a `Sendable` `MaterializedArray` snapshot; `MaterializedModule` does the same for a whole model.
 - **evalLock protects eval/stream creation**: The global lock serializes evaluation and stream operations.
 - **Lazy operations are NOT thread-safe**: Don't share arrays across tasks without proper synchronization.
 - **Use actors to encapsulate MLX state**: Create and use MLXArrays within the same actor.

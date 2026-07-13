@@ -593,39 +593,3 @@ extension MLXArray {
     }
 
 }
-
-// MARK: - Expressible by literals
-
-extension MLXArray: ExpressibleByArrayLiteral {
-
-    // Note: MLXArray does not implement ExpressibleByFloatLiteral etc. because
-    // we want to create arrays in the context of the other arrays.  For example:
-    //
-    // let x = MLXArray(1.5, dtype: .float16)
-    // let r = x + 2.5
-    //
-    // We expect r to have a dtype of float16.  See ``ScalarOrArray``.
-
-    /// Initializer allowing creation of 1d `MLXArray` from an array literal.
-    ///
-    /// ```swift
-    /// let a: MLXArray = [1, 2, 3]
-    /// ```
-    ///
-    /// This is convenient for methods that have `MLXArray` parameters:
-    ///
-    /// ```swift
-    /// print(array.take([1, 2, 3], axis: 0))
-    /// ```
-    ///
-    /// ### See Also
-    /// - <doc:initialization>
-    public convenience init(arrayLiteral elements: Int32...) {
-        let ctx = elements.withUnsafeBufferPointer { ptr in
-            let shape = [Int32(elements.count)]
-            return mlx_array_new_data(
-                ptr.baseAddress!, shape, Int32(shape.count), Int32.dtype.cmlxDtype)
-        }
-        self.init(ctx)
-    }
-}

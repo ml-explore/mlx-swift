@@ -218,6 +218,11 @@ operations as methods for convenience.
 - ``jvp(_:primals:tangents:)``
 - ``vjp(_:primals:cotangents:)``
 
+### Concurrency
+
+- ``materialize(_:)->MaterializedArray``
+- ``materialize(_:)->[MaterializedArray]``
+
 ### Device
 
 - ``using(device:fn:)``
