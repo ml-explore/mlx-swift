@@ -7,11 +7,7 @@ import XCTest
 
 @testable import MLXOptimizers
 
-class TransformTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class TransformTests: DeviceScopedTestCase {
 
     func testEval() {
         // eval various structures

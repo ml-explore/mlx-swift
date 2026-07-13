@@ -1,9 +1,13 @@
-# MLX Swift skill
+# MLX Swift Skills
 
-This repo ships an MLX Swift skill definition under `skills/mlx-swift/` (the `skill.md`
-file plus `references/`). The install folder name can be `mlx-swift`, as shown below.
-If your local copy lives at `skills/mlx-swift`, just swap the source path in the
-commands.
+This repo ships two skill definitions:
+
+- **`skills/mlx-swift/`** — Core MLX Swift framework (arrays, ops, NN, optimizers, transforms)
+- **`skills/mlx-distributed/`** — MLX Swift Distributed (multi-device communication, tensor parallelism, distributed NN layers)
+
+Each skill has a `SKILL.md` file plus a `references/` folder. The install folder
+names match the directory names shown below. If your local copy lives elsewhere,
+swap the source paths in the commands.
 
 ## Install globally (home directory)
 
@@ -14,6 +18,7 @@ Run these from the repo root, or replace `$(pwd)` with an absolute path.
 ```sh
 mkdir -p ~/.claude/skills
 ln -s "$(pwd)/skills/mlx-swift" ~/.claude/skills/mlx-swift
+ln -s "$(pwd)/skills/mlx-distributed" ~/.claude/skills/mlx-distributed
 ```
 
 ### Codex
@@ -21,6 +26,7 @@ ln -s "$(pwd)/skills/mlx-swift" ~/.claude/skills/mlx-swift
 ```sh
 mkdir -p ~/.codex/skills
 ln -s "$(pwd)/skills/mlx-swift" ~/.codex/skills/mlx-swift
+ln -s "$(pwd)/skills/mlx-distributed" ~/.codex/skills/mlx-distributed
 ```
 
 ### Droid
@@ -28,17 +34,19 @@ ln -s "$(pwd)/skills/mlx-swift" ~/.codex/skills/mlx-swift
 ```sh
 mkdir -p ~/.agents/skills
 ln -s "$(pwd)/skills/mlx-swift" ~/.agents/skills/mlx-swift
+ln -s "$(pwd)/skills/mlx-distributed" ~/.agents/skills/mlx-distributed
 ```
 
 ## Install per-project
 
-Create a local skills folder in the project and link the skill there.
+Create a local skills folder in the project and link the skills there.
 
 ### Claude Code
 
 ```sh
 mkdir -p .claude/skills
 ln -s "$(pwd)/skills/mlx-swift" .claude/skills/mlx-swift
+ln -s "$(pwd)/skills/mlx-distributed" .claude/skills/mlx-distributed
 ```
 
 ### Codex
@@ -46,6 +54,7 @@ ln -s "$(pwd)/skills/mlx-swift" .claude/skills/mlx-swift
 ```sh
 mkdir -p .codex/skills
 ln -s "$(pwd)/skills/mlx-swift" .codex/skills/mlx-swift
+ln -s "$(pwd)/skills/mlx-distributed" .codex/skills/mlx-distributed
 ```
 
 ### Droid
@@ -53,6 +62,7 @@ ln -s "$(pwd)/skills/mlx-swift" .codex/skills/mlx-swift
 ```sh
 mkdir -p .agents/skills
 ln -s "$(pwd)/skills/mlx-swift" .agents/skills/mlx-swift
+ln -s "$(pwd)/skills/mlx-distributed" .agents/skills/mlx-distributed
 ```
 
 ## Notes

@@ -1,0 +1,6 @@
+#include "common.xcconfig"
+
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path @loader_path @executable_path/../PackageFrameworks @loader_path/../PackageFrameworks
+PRODUCT_BUNDLE_IDENTIFIER = com.apple.mlx.DistributedWorker
+PRODUCT_NAME = $(TARGET_NAME)
+SWIFT_EMIT_LOC_STRINGS = NO

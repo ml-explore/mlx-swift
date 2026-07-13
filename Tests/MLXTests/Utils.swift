@@ -1,5 +1,6 @@
 // Copyright © 2024 Apple Inc.
 
+import Foundation
 import MLX
 import XCTest
 
@@ -34,6 +35,57 @@ func assertNotEqual(
         "contents same:\n\(array1)\n\(array2)")
 }
 
-func setDefaultDevice() {
-    MLX.Device.setDefault(device: .gpu)
+class DeviceScopedTestCase: XCTestCase {
+    class var testDevice: Device { .gpu }
+
+    override func invokeTest() {
+        Device.withDefaultDevice(type(of: self).testDevice) {
+            super.invokeTest()
+        }
+    }
+}
+
+class CPUDeviceScopedTestCase: DeviceScopedTestCase {
+    override class var testDevice: Device { .cpu }
+}
+
+func findBuiltExecutable(named name: String, for testCase: XCTestCase) -> URL? {
+    for directory in builtProductSearchDirectories(for: testCase) {
+        let candidate = directory.appendingPathComponent(name)
+        if FileManager.default.isExecutableFile(atPath: candidate.path) {
+            return candidate
+        }
+    }
+
+    return nil
+}
+
+func builtExecutableNotFoundMessage(named name: String, for testCase: XCTestCase) -> String {
+    let paths = builtProductSearchDirectories(for: testCase).map(\.path).joined(separator: ", ")
+    return "\(name) binary not found in build products. Searched: \(paths)"
+}
+
+private func builtProductSearchDirectories(for testCase: XCTestCase) -> [URL] {
+    var directories: [URL] = []
+
+    func appendUnique(_ url: URL?) {
+        guard let url else { return }
+        let normalized = url.standardizedFileURL
+        if !directories.contains(normalized) {
+            directories.append(normalized)
+        }
+    }
+
+    let bundleProducts = Bundle(for: type(of: testCase)).bundleURL.deletingLastPathComponent()
+    appendUnique(bundleProducts)
+
+    if let builtProductsDir = ProcessInfo.processInfo.environment["BUILT_PRODUCTS_DIR"] {
+        appendUnique(URL(fileURLWithPath: builtProductsDir, isDirectory: true))
+    }
+
+    let executableDirectory = URL(fileURLWithPath: CommandLine.arguments[0])
+        .deletingLastPathComponent()
+    appendUnique(executableDirectory)
+
+    return directories
 }

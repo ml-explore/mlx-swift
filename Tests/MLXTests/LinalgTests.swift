@@ -4,11 +4,7 @@ import Foundation
 import MLX
 import XCTest
 
-class LinalgTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class LinalgTests: DeviceScopedTestCase {
 
     func testNormNoAxes() {
         let a = MLXArray(0 ..< 9) - 4

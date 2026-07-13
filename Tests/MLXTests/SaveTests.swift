@@ -8,7 +8,7 @@
 import MLX
 import XCTest
 
-final class SaveTests: XCTestCase {
+final class SaveTests: DeviceScopedTestCase {
 
     let temporaryPath = FileManager.default.temporaryDirectory.appending(
         path: UUID().uuidString,
@@ -16,7 +16,6 @@ final class SaveTests: XCTestCase {
     )
 
     override func setUpWithError() throws {
-        setDefaultDevice()
         try FileManager.default.createDirectory(
             at: temporaryPath,
             withIntermediateDirectories: false

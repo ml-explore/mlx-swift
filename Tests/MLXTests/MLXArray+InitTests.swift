@@ -10,11 +10,7 @@ import XCTest
     import IOSurface
 #endif
 
-class MLXArrayInitTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class MLXArrayInitTests: DeviceScopedTestCase {
 
     // MARK: - Dtype
     func testDtypeSize() {
