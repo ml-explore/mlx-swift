@@ -357,8 +357,8 @@ class ModuleTests: XCTestCase {
             @ModuleInfo var d: Linear?
 
             override init() {
-                _a.wrappedValue = MLXArray.zeros([10])
-                _b.wrappedValue = MLXArray.zeros([10])
+                _a.wrappedValue = MLXArray.zeros([10], type: Float.self)
+                _b.wrappedValue = MLXArray.zeros([10], type: Float.self)
                 _c.wrappedValue = Linear(10, 10)
                 _d.wrappedValue = Linear(10, 10)
             }
@@ -836,7 +836,8 @@ class ModuleTests: XCTestCase {
                 let loraScale = 1 / sqrt(Float(inputDimensions))
                 self._loraA.wrappedValue = MLXRandom.uniform(
                     low: -loraScale, high: loraScale, [inputDimensions, rank])
-                self._loraB.wrappedValue = MLXArray.zeros([rank, outputDimensions])
+                self._loraB.wrappedValue = MLXArray.zeros(
+                    [rank, outputDimensions], type: Float.self)
 
                 super.init()
 

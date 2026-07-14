@@ -34,8 +34,8 @@ final class SaveTests: XCTestCase {
         )
 
         let arrays: [String: MLXArray] = [
-            "foo": MLX.ones([1, 2]),
-            "bar": MLX.zeros([2, 1]),
+            "foo": MLX.ones([1, 2], type: Float.self),
+            "bar": MLX.zeros([2, 1], type: Float.self),
         ]
 
         try MLX.save(arrays: arrays, url: safetensorsPath)
@@ -54,7 +54,7 @@ final class SaveTests: XCTestCase {
             directoryHint: .notDirectory
         )
 
-        let array = MLX.ones([2, 4])
+        let array = MLX.ones([2, 4], type: Float.self)
 
         try MLX.save(array: array, url: path)
 
@@ -65,8 +65,8 @@ final class SaveTests: XCTestCase {
 
     public func testSaveArraysData() throws {
         let arrays: [String: MLXArray] = [
-            "foo": MLX.ones([1, 2]),
-            "bar": MLX.zeros([2, 1]),
+            "foo": MLX.ones([1, 2], type: Float.self),
+            "bar": MLX.zeros([2, 1], type: Float.self),
         ]
 
         let data = try saveToData(arrays: arrays)
@@ -79,8 +79,8 @@ final class SaveTests: XCTestCase {
 
     public func testSaveArraysMetadataData() throws {
         let arrays: [String: MLXArray] = [
-            "foo": MLX.ones([1, 2]),
-            "bar": MLX.zeros([2, 1]),
+            "foo": MLX.ones([1, 2], type: Float.self),
+            "bar": MLX.zeros([2, 1], type: Float.self),
         ]
         let metadata = [
             "key": "value",

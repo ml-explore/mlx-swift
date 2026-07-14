@@ -136,7 +136,7 @@ class MLXRandomTests: XCTestCase {
     func testLogits() {
         let key = MLXRandom.key(0)
 
-        let logits = MLXArray.zeros([5, 20])
+        let logits = MLXArray.zeros([5, 20], type: Float.self)
         let result = MLXRandom.categorical(logits, key: key)
 
         XCTAssertEqual(result.shape, [5])
@@ -149,7 +149,7 @@ class MLXRandomTests: XCTestCase {
     func testLogitsCount() {
         let key = MLXRandom.key(0)
 
-        let logits = MLXArray.zeros([5, 20])
+        let logits = MLXArray.zeros([5, 20], type: Float.self)
         let result = MLXRandom.categorical(logits, count: 2, key: key)
 
         XCTAssertEqual(result.shape, [5, 2])
