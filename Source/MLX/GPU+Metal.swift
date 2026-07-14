@@ -171,6 +171,23 @@ public enum GPU {
         Memory.clearCache()
     }
 
+    /// Set a custom path to the mlx.metallib file.
+    ///
+    /// Must be called before any MLX operation (e.g., before `Pipeline.load()`).
+    /// Use this when running inside a plugin bundle where the default search paths
+    /// don't apply.
+    ///
+    /// The override is stored as process-global state inside a single MLX image. If
+    /// the process ends up with two copies of MLX linked in (see the "XCode (2)"
+    /// note in the README about diamond dependencies), this may set the path on a
+    /// different copy than the one that loads the device, and the override will be
+    /// silently ignored. Ensure there is exactly one MLX instance in the process.
+    ///
+    /// - Parameter path: Absolute path to `mlx.metallib`
+    public static func setMetallibPath(_ path: String) {
+        mlx_metal_set_metallib_path(path)
+    }
+
     /// Start capturing a metal trace into the given file.
     ///
     /// > There are several requirements for this to be used.
