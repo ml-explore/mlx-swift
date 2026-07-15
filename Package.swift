@@ -256,6 +256,7 @@ let cmlx = Target.target(
         "mlx/python",
         "mlx/setup.py",
         "mlx/tests",
+        "mlx/build",
 
         // build variants (we are opting _out_ of these)
         "mlx/mlx/io/no_safetensors.cpp",
