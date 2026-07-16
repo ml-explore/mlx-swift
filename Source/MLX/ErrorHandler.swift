@@ -215,16 +215,10 @@ public func withError<R>(_ body: () async throws -> R) async throws -> R {
     try await errorHandler.withError({ _ in try await body() })
 }
 
-/// Error type for caught errors during ``withError(_:)-6g4wn``.
-public enum MLXError: LocalizedError, Sendable, Equatable {
-    case caught(String)
-
-    public var errorDescription: String? {
-        switch self {
-        case .caught(let message): "MLX Error: \(message)"
-        }
-    }
-}
+// Note: `MLXError` is now the structured error type declared in
+// Cmlx+Error.swift, carrying a typed `code` classified by the mlx-c
+// exception boundary. The former `enum MLXError { case caught(String) }`
+// is superseded; `withError` below now surfaces the structured type.
 
 /// Boxed error type usable with ``withError(_:)-2wfiu``.
 ///
@@ -369,7 +363,7 @@ private final class ErrorHandler: @unchecked Sendable {
 
         @Sendable
         func errorHandler(_ message: String) {
-            errorBox.firstError = MLXError.caught(message)
+            errorBox.firstError = MLXError(code: .runtime, message: message)
         }
 
         return try withErrorHandler(errorHandler) {
@@ -384,7 +378,7 @@ private final class ErrorHandler: @unchecked Sendable {
 
         @Sendable
         func errorHandler(_ message: String) {
-            errorBox.firstError = MLXError.caught(message)
+            errorBox.firstError = MLXError(code: .runtime, message: message)
         }
 
         return try await withErrorHandler(errorHandler) {
