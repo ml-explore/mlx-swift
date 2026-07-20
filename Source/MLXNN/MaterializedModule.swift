@@ -145,7 +145,7 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
         self._base._sealImmutable()
 
         parameterNBytes = _base.parameters().reduce(0) { $0 + $1.nbytes }
-        parameterCount = _base.children().reduce(0) { $0 + $1.parameterCount }
+        parameterCount = _base.parameterCount
     }
 
     /// Return a `NestedDictionary<String, MaterializedArray>` for all parameters in the
