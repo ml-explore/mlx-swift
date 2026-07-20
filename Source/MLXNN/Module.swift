@@ -194,12 +194,14 @@ open class Module {
         }
     }
 
-    /// Count of the parameters directly attached to this Module
+    /// Count of the parameters at and beneath this Module
     open var parameterCount: Int {
         items().reduce(0) {
             switch $1 {
             case .parameters(let p):
                 $0 + p.size
+            case .module(let m):
+                $0 + m.parameterCount
             default:
                 $0
             }
