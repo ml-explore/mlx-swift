@@ -132,7 +132,7 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
     /// Sum of all the `nbytes` of the parameters in the encapsulated model.
     public let parameterNBytes: Int
 
-    /// Sum of all the `nbytes` of the parameters in the encapsulated model.
+    /// Sum of all the `parameterCount` of the modules in the encapsulated model.
     public let parameterCount: Int
 
     public init(_ base: consuming LayerType) {
