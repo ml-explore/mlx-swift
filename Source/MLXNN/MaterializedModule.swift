@@ -132,6 +132,9 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
     /// Sum of all the `nbytes` of the parameters in the encapsulated model.
     public let parameterNBytes: Int
 
+    /// Sum of all the `nbytes` of the parameters in the encapsulated model.
+    public let parameterCount: Int
+
     public init(_ base: consuming LayerType) {
         self._base = base
         self._base.materialize()
@@ -142,6 +145,7 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
         self._base._sealImmutable()
 
         parameterNBytes = _base.parameters().reduce(0) { $0 + $1.nbytes }
+        parameterCount = _base.children().reduce(0) { $0 + $1.parameterCount }
     }
 
     /// Return a `NestedDictionary<String, MaterializedArray>` for all parameters in the
