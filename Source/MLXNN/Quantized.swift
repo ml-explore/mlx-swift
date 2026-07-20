@@ -201,6 +201,10 @@ open class QuantizedEmbedding: Embedding, Quantized {
         self.freeze()
     }
 
+    open override var parameterCount: Int {
+        scales.size * groupSize
+    }
+
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
         let s = x.shape
         let x = x.flattened()
@@ -324,6 +328,10 @@ open class QuantizedLinear: Linear, Quantized {
         self.scales = scales
         self.biases = biases
         super.init(weight: weight, bias: bias)
+    }
+
+    open override var parameterCount: Int {
+        scales.size * groupSize
     }
 
     public override func unfreeze(
