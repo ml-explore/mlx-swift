@@ -83,6 +83,7 @@ let noCudaCmlxExcludes = [
     let cxxSettings: [CXXSetting]
     let linkerSettings: [LinkerSetting]
     let mlxSwiftExcludes: [String]
+    let cmlxPlugins: [Target.PluginUsage]
 
     if Context.environment["SPM_CUDA"] != "0" {
         // Linux with CUDA
@@ -140,6 +141,10 @@ let noCudaCmlxExcludes = [
             "GPU+Metal.swift",
             "MLXArray+Metal.swift",
         ]
+
+        cmlxPlugins = [
+            .plugin(name: "CudaBuild")
+        ]
     } else {
         // Linux without CUDA (CPU only)
 
@@ -174,6 +179,10 @@ let noCudaCmlxExcludes = [
             "MLXArray+Metal.swift",
             "MLXFast.swift",
             "MLXFastKernel.swift",
+        ]
+
+        cmlxPlugins = [
+            .plugin(name: "CudaBuild")
         ]
     }
 #else
@@ -211,6 +220,11 @@ let noCudaCmlxExcludes = [
 
     let mlxSwiftExcludes: [String] = [
         "GPU+CUDA.swift"
+    ]
+
+    let cmlxPlugins: [Target.PluginUsage] = [
+        .plugin(name: "CudaBuild"),
+        .plugin(name: "BuildSwiftPMMetalLibrary"),
     ]
 #endif
 
@@ -289,9 +303,7 @@ let cmlx = Target.target(
         .define("MLX_VERSION", to: "\"0.31.1\""),
     ],
     linkerSettings: linkerSettings,
-    plugins: [
-        .plugin(name: "CudaBuild")
-    ],
+    plugins: cmlxPlugins
 )
 
 let package = Package(
@@ -321,6 +333,10 @@ let package = Package(
     ],
     targets: [
         cmlx,
+        .plugin(
+            name: "BuildSwiftPMMetalLibrary",
+            capability: .buildTool()
+        ),
         .testTarget(
             name: "CmlxTests",
             dependencies: ["Cmlx"]
