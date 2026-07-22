@@ -113,6 +113,21 @@ public enum DType: Hashable, Sendable, CaseIterable {
         mlx_dtype_size(cmlxDtype)
     }
 
+    /// A scalar `MLXArray` containing the largest finite value for this dtype's
+    /// real floating-point component.
+    ///
+    /// Use this when the dtype is statically known to be floating point, e.g.
+    /// `DType.float16.greatestFiniteMagnitudeArray`.
+    ///
+    /// - Precondition: `self` is a floating-point dtype. Calling this on a
+    ///   non-floating-point dtype is a programming error and traps.
+    public var greatestFiniteMagnitudeArray: MLXArray {
+        guard let info = finfo else {
+            fatalError("greatestFiniteMagnitudeArray requires a floating-point dtype, got \(self)")
+        }
+        return MLXArray(info.max, dtype: self)
+    }
+
     /// For floating point values return the floating point info, similar to `numpy.finfo`.
     public var finfo: FInfo? {
         isFloatingPoint ? FInfo(dtype: self) : nil
@@ -130,33 +145,17 @@ public enum DType: Hashable, Sendable, CaseIterable {
             #if !arch(x86_64)
                 case .float16: Double(Float16.ulpOfOne)
             #else
-                case .float16: 0.000977
+                case .float16: 0x1p-10  // 2^-10
             #endif
-            case .float32: Double(Float.ulpOfOne)
-            case .bfloat16: 0.0078125
-            case .complex64: Double.ulpOfOne
+            case .float32, .complex64: Double(Float.ulpOfOne)
+            case .bfloat16: 0x1p-7  // 2^-7 (7 mantissa bits)
             case .float64: Double.ulpOfOne
-            default:
-                fatalError("\(dtype) is not a floating point type")
+            default: fatalError("\(dtype) is not a floating point type")
             }
         }
 
         /// The smallest representable number
-        public var min: Double {
-            switch dtype {
-            #if !arch(x86_64)
-                case .float16: -Double(Float16.greatestFiniteMagnitude)
-            #else
-                case .float16: -65500.0
-            #endif
-            case .float32: -Double(Float.greatestFiniteMagnitude)
-            case .bfloat16: -3.3895313892515355e+38
-            case .complex64: -Double.greatestFiniteMagnitude
-            case .float64: -Double.greatestFiniteMagnitude
-            default:
-                fatalError("\(dtype) is not a floating point type")
-            }
-        }
+        public var min: Double { -max }
 
         /// The largest representable number
         public var max: Double {
@@ -164,14 +163,12 @@ public enum DType: Hashable, Sendable, CaseIterable {
             #if !arch(x86_64)
                 case .float16: Double(Float16.greatestFiniteMagnitude)
             #else
-                case .float16: 65500.0
+                case .float16: 0x1.FFCp15  // 65504
             #endif
-            case .float32: Double(Float.greatestFiniteMagnitude)
-            case .bfloat16: 3.3895313892515355e+38
-            case .complex64: Double.greatestFiniteMagnitude
+            case .bfloat16: Double(Float(bitPattern: 0x7F7F_0000))  // bf16 = high 16 bits of f32
+            case .float32, .complex64: Double(Float.greatestFiniteMagnitude)
             case .float64: Double.greatestFiniteMagnitude
-            default:
-                fatalError("\(dtype) is not a floating point type")
+            default: fatalError("\(dtype) is not a floating point type")
             }
         }
 
@@ -181,14 +178,12 @@ public enum DType: Hashable, Sendable, CaseIterable {
             #if !arch(x86_64)
                 case .float16: Double(Float16.leastNormalMagnitude)
             #else
-                case .float16: 6.104e-05
+                case .float16: 0x1p-14  // 2^-14
             #endif
-            case .float32: Double(Float.leastNormalMagnitude)
-            case .bfloat16: 1.1754943508222875e-38
-            case .complex64: Double.leastNormalMagnitude
+            case .float32, .complex64: Double(Float.leastNormalMagnitude)
+            case .bfloat16: 0x1p-126  // 2^-126 (same exponent range as f32)
             case .float64: Double.leastNormalMagnitude
-            default:
-                fatalError("\(dtype) is not a floating point type")
+            default: fatalError("\(dtype) is not a floating point type")
             }
         }
 
@@ -198,14 +193,12 @@ public enum DType: Hashable, Sendable, CaseIterable {
             #if !arch(x86_64)
                 case .float16: Double(Float16.leastNonzeroMagnitude)
             #else
-                case .float16: 6e-08
+                case .float16: 0x1p-24  // 2^-24
             #endif
-            case .float32: Double(Float.leastNonzeroMagnitude)
-            case .bfloat16: 1.1754943508222875e-38
-            case .complex64: Double.leastNonzeroMagnitude
+            case .float32, .complex64: Double(Float.leastNonzeroMagnitude)
+            case .bfloat16: 0x1p-133  // 2^-133 = 2^-126 · 2^-7
             case .float64: Double.leastNonzeroMagnitude
-            default:
-                fatalError("\(dtype) is not a floating point type")
+            default: fatalError("\(dtype) is not a floating point type")
             }
         }
     }

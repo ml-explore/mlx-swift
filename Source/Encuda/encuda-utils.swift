@@ -11,15 +11,17 @@ func searchForCommand(_ name: String) -> URL? {
     return nil
 }
 
-extension Process {
-    /**
-     * When running on aarch64 Ubuntu 24 docker on Mac, it happens that
-     * the `waitUntilExit()` method never returns.
-     * We adopted this workaround.
-     */
-    func waitUntilExitWorkaround() {
-        while isRunning {
-            Thread.sleep(forTimeInterval: 0.05)
+#if os(macOS) || os(Linux)
+    extension Process {
+        /**
+         * When running on aarch64 Ubuntu 24 docker on Mac, it happens that
+         * the `waitUntilExit()` method never returns.
+         * We adopted this workaround.
+         */
+        func waitUntilExitWorkaround() {
+            while isRunning {
+                Thread.sleep(forTimeInterval: 0.05)
+            }
         }
     }
-}
+#endif
