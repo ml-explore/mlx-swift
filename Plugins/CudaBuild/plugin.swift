@@ -132,6 +132,22 @@ struct CudaBuild: BuildToolPlugin {
         }
         let stdArgs = settings.cppLanguageStandard.map { ["--std", $0] } ?? []
 
+        // Include roots that live outside the package: the CCCL copy to compile
+        // device code against, plus anything named in MLX_CUDA_INCLUDE_PATHS
+        // (cudnn-frontend, CUTLASS). Kept in step with Package.swift, which
+        // applies the same roots to the C++ sources.
+        let environment = ProcessInfo.processInfo.environment
+        var externalIncludeRoots: [String] = []
+        if let ccclDir = environment["MLX_CCCL_DIR"] {
+            externalIncludeRoots.append(ccclDir)
+        }
+        let extraRoots = environment["MLX_CUDA_INCLUDE_PATHS"] ?? ""
+        externalIncludeRoots += extraRoots.split(separator: ":").map(String.init)
+        let externalIncludeArgs: [String] =
+            externalIncludeRoots
+            .filter { !$0.isEmpty }
+            .flatMap { ["-I", $0] }
+
         for inputFile in sourceCuFiles + generatedCuFiles {
             let outputCpp = URL(string: inputFile.relativePath, relativeTo: outputDir)!
                 .deletingPathExtension().appendingPathExtension("cpp")
@@ -147,6 +163,7 @@ struct CudaBuild: BuildToolPlugin {
                         stdArgs: stdArgs,
                         incrementalFlag: incrementalFlag,
                         headerSearchPathArgs: headerSearchPathArgs,
+                        externalIncludeArgs: externalIncludeArgs,
                         input: inputFile.path,
                         output: outputCpp.path
                     ),
@@ -195,6 +212,7 @@ struct CudaBuild: BuildToolPlugin {
         stdArgs: [String],
         incrementalFlag: [String],
         headerSearchPathArgs: [String],
+        externalIncludeArgs: [String],
         input: String,
         output: String
     ) -> [String] {
@@ -205,6 +223,7 @@ struct CudaBuild: BuildToolPlugin {
         arguments += ["--clangpp", clangpp]
         arguments += ["-I", sourceDir]
         arguments += headerSearchPathArgs
+        arguments += externalIncludeArgs
         arguments += [input]
         arguments += ["-o", output]
         return arguments
