@@ -31,7 +31,16 @@ private class FinalizerCaptureState {
 func finalizerTrampoline(
     payload: UnsafeMutableRawPointer?
 ) {
-    let state = Unmanaged<FinalizerCaptureState>.fromOpaque(payload!).takeUnretainedValue()
+    // `takeRetainedValue` consumes the +1 from the `passRetained` in
+    // `init(rawPointer:_:dtype:finalizer:)`. mlx-c documents this dtor as
+    // "Callback for when the buffer is no longer needed" and invokes it exactly
+    // once, so consuming the reference here balances the retain exactly.
+    //
+    // Using `takeUnretainedValue` would read the box without consuming it,
+    // leaking the `FinalizerCaptureState` and permanently pinning everything the
+    // finalizer closure captured — the `IOSurface` in the initializer's own
+    // documented example, for instance.
+    let state = Unmanaged<FinalizerCaptureState>.fromOpaque(payload!).takeRetainedValue()
     state.f()
 }
 
@@ -80,10 +89,8 @@ extension MLXArray {
         _ shape: (some Collection<Int>)? = [Int]?.none, dtype: DType,
         finalizer: @escaping () -> Void
     ) {
-        func free(ptr: UnsafeMutableRawPointer?) {
-            Unmanaged<FinalizerCaptureState>.fromOpaque(ptr!).release()
-        }
-
+        // Balanced by the `takeRetainedValue` in `finalizerTrampoline`, which
+        // mlx-c invokes once when the buffer is no longer needed.
         let payload = Unmanaged.passRetained(FinalizerCaptureState(finalizer)).toOpaque()
 
         self.init(

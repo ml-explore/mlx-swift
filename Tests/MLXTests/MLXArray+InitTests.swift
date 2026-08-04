@@ -267,6 +267,73 @@ class MLXArrayInitTests: XCTestCase {
         XCTAssertEqual(e.dtype, .float64)
     }
 
+    /// The finalizer's captures must be released once mlx has called it.
+    ///
+    /// `init(rawPointer:_:dtype:finalizer:)` retains a box holding the closure and
+    /// hands it to mlx as an opaque payload; `finalizerTrampoline` is the only
+    /// thing that can release it. If the trampoline reads the box without
+    /// consuming the reference, the closure — and everything it captured — is
+    /// pinned for the lifetime of the process, once per adopted buffer.
+    ///
+    /// `testIOSurface` below documents the intended behaviour in a comment
+    /// ("implicitly releases it when it returns") but never asserts it, which is
+    /// what let this go unnoticed.
+    func testFinalizerCapturesAreReleasedAfterFinalizerRuns() {
+        // mlx may invoke the dtor from its own thread, so the counters cannot be
+        // plain locals read across that boundary.
+        final class Counter: @unchecked Sendable {
+            private let lock = NSLock()
+            private var value = 0
+            func increment() {
+                lock.lock()
+                value += 1
+                lock.unlock()
+            }
+            var current: Int {
+                lock.lock()
+                defer { lock.unlock() }
+                return value
+            }
+        }
+        final class Witness {
+            let onDeinit: () -> Void
+            init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+            deinit { onDeinit() }
+        }
+
+        let finalizerRuns = Counter()
+        let witnessReleases = Counter()
+
+        do {
+            let buffer = UnsafeMutableRawPointer.allocate(
+                byteCount: 4 * MemoryLayout<Float>.stride, alignment: 16)
+            buffer.initializeMemory(as: Float.self, repeating: 1, count: 4)
+
+            let witness = Witness { witnessReleases.increment() }
+            let array = MLXArray(rawPointer: buffer, [4], dtype: .float32) {
+                [witness] in
+                // Holds the witness exactly the way the IOSurface example holds
+                // its surface.
+                _ = witness
+                finalizerRuns.increment()
+                buffer.deallocate()
+            }
+            XCTAssertEqual(array.sum().item(Float.self), 4)
+        }
+
+        // mlx keeps freed buffers in its allocator cache, so the dtor has not
+        // necessarily run at scope exit.
+        Memory.clearCache()
+        let deadline = Date().addingTimeInterval(5)
+        while finalizerRuns.current == 0, Date() < deadline { usleep(1_000) }
+
+        XCTAssertEqual(finalizerRuns.current, 1, "mlx must call the finalizer exactly once")
+        XCTAssertEqual(
+            witnessReleases.current, 1,
+            "the finalizer's captures must be released along with it — otherwise every adopted "
+                + "buffer permanently pins whatever the closure held")
+    }
+
     #if canImport(IOSurface)
         func testIOSurface() {
             let height = 100
