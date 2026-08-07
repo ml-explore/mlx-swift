@@ -27,9 +27,15 @@
   uses Foundation for something else (e.g. `String(cString:encoding:)`,
   `DispatchTime`), confirmed per-file during planning.
 - Toolchain: swift-tools-version is already `6.3`. `Synchronization.Mutex`
-  needs only Swift 6.0+ stdlib — confirmed present locally (`swift --version`
-  reports `Apple Swift version 6.3-dev`) and on CI's oldest pinned toolchain
-  (Swift 6.2.3, the Linux+CUDA runner).
+  needs Swift 6.0+ stdlib for the language/toolchain side (confirmed present
+  locally and on CI's oldest pinned toolchain, Swift 6.2.3 on the Linux+CUDA
+  runner) -- **but on Apple platforms it additionally carries
+  `@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0,
+  *)`** (confirmed against the SDK's `Synchronization.swiftinterface`; this
+  is an OS-runtime-ABI gate, not a toolchain thing). `Package.swift`'s
+  deployment targets were below that floor and had to be raised -- see
+  Task 0, which must run and be committed before any other task. Linux/CUDA
+  builds are unaffected; this gate is Apple-platform-only.
 - All tests use `XCTest` (`class Foo: XCTestCase`), matching every existing
   file under `Tests/MLXTests/`. **Do not use `swift test`** -- it fails at
   runtime with "Failed to load the default metallib" because SwiftPM's CLI
@@ -41,6 +47,77 @@
   'platform=macOS'`. Plain `swift build` (not `swift test`) is fine for
   compile-only checks.
 - Branch: `modernize/concurrency` (already checked out). Commit after every task.
+
+---
+
+### Task 0: Raise minimum deployment targets for `Synchronization.Mutex`
+
+This task is a hard prerequisite for Tasks 1-8 (every task that adopts
+`Mutex`). It must be complete and committed before any of them start.
+`Synchronization.Mutex` is `@available(macOS 15.0, iOS 18.0, watchOS 11.0,
+tvOS 18.0, visionOS 2.0, *)` on Apple platforms (SDK-verified) --
+`Package.swift`'s prior targets (`macOS 14.0`, `iOS 17`, `tvOS 17`,
+`visionOS 1`) are below that floor. Raising them was an explicit decision by
+the human partner (a real breaking change for consumers on older OS
+versions, accepted in exchange for the simpler, unconditional `Mutex`
+adoption the rest of this plan assumes) -- do not revisit that decision in
+this task; just carry it out.
+
+**Files:**
+- Modify: `Package.swift`
+
+**Interfaces:**
+- Produces: raises `mlx-swift`'s minimum supported OS versions. Every
+  downstream consumer (mlx-swift-lm, mlx-swift-examples, and any app
+  depending on this package) now requires macOS 15 / iOS 18 / tvOS 18 /
+  visionOS 2 or newer. This is intentional and approved -- not a bug to
+  work around in a later task.
+
+- [ ] **Step 1: Raise the platform floors**
+
+In `Package.swift`, change:
+
+```swift
+    platforms: [
+        .macOS("14.0"),
+        .iOS(.v17),
+        .tvOS(.v17),
+        .visionOS(.v1),
+    ],
+```
+
+to:
+
+```swift
+    platforms: [
+        .macOS("15.0"),
+        .iOS(.v18),
+        .tvOS(.v18),
+        .visionOS(.v2),
+    ],
+```
+
+- [ ] **Step 2: Build**
+
+Run: `swift build`
+
+Expected: succeeds (this alone doesn't touch any Mutex-using code yet --
+it just confirms the package manifest and existing code still build against
+the raised targets).
+
+- [ ] **Step 3: Run the full test suite**
+
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'`
+
+Expected: PASS, same 533 tests as the pre-existing baseline (this task
+doesn't change any runtime behavior, only the declared minimum OS).
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add Package.swift
+git commit -m "Raise minimum deployment targets to unblock Synchronization.Mutex adoption"
+```
 
 ---
 

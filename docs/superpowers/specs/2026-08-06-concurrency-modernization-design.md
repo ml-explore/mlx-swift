@@ -153,6 +153,29 @@ call that mutates or reads the backend graph (stream creation, compile,
 custom function apply, eval) goes through `evalLock`. Wrap the
 config-build-and-apply sequence in `evalLock.withLock` to match.
 
+## Addendum (discovered during implementation, 2026-08-06)
+
+`Synchronization.Mutex` carries `@available(macOS 15.0, iOS 18.0, watchOS
+11.0, tvOS 18.0, visionOS 2.0, *)` in Apple's SDK (confirmed directly against
+the SDK's `Synchronization.swiftinterface`) — an OS-runtime-ABI gate,
+independent of the Swift language mode / toolchain version this design
+originally checked (which was correct as far as it went). `Package.swift`
+declared `.macOS("14.0"), .iOS(.v17), .tvOS(.v17), .visionOS(.v1)`, which is
+below that floor.
+
+Decision: raise the package's minimum deployment targets to `.macOS("15.0"),
+.iOS(.v18), .tvOS(.v18), .visionOS(.v2)` to unblock `Mutex` adoption. This is
+a real breaking change for consumers still targeting the older OS versions;
+approved explicitly by the human partner over the alternatives (dual-path
+`@available` gating per type, or dropping the `Mutex`-adoption goal
+entirely). Linux/CUDA targets are unaffected — Linux Swift has no
+OS-version-gated availability model for this API.
+
+This changes Goal 1 (implicitly) and the Testing section's toolchain-only
+availability claim in the original design above; both should be read
+together with this addendum. The plan document's Task 0 carries the actual
+`Package.swift` change.
+
 ## Risks
 
 - **Swift 6 language mode fallout is not fully predictable in advance.** If
