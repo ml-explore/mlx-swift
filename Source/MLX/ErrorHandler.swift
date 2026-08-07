@@ -343,24 +343,30 @@ private final class ErrorHandler: Sendable {
     }
 
     /// entry point when an error is encountered in the C++ MLX layer
+    ///
+    /// Note: the global handler is invoked while `global`'s lock is held (same as the
+    /// original `NSLock`-based implementation this replaced). This means a handler that
+    /// itself triggers another MLX error on the same thread will re-enter `dispatch` and
+    /// deadlock/trap on the recursive lock acquisition -- a pre-existing hazard, not
+    /// introduced by the Mutex swap. An earlier attempt to fix this by extracting the
+    /// handler and releasing the lock before calling it was reverted: it traded that
+    /// same-thread reentrancy hazard for a worse one -- `setGlobalHandler` synchronously
+    /// runs the old handler's `dtor` on replacement, so releasing the lock before invoking
+    /// a just-extracted handler opens a cross-thread use-after-free window if
+    /// `setGlobalHandler` replaces the handler in between. Fixing the reentrancy hazard
+    /// properly needs the replaced handler's `dtor` to be deferred until no in-flight
+    /// `dispatch` can still reference it -- left as a follow-up, not attempted here.
     func dispatch(_ message: String) {
         if let handler = Self.errorHandler.last {
             handler(message)
-            return
-        }
-
-        // Extract the handler and release the lock before calling it: `handler` is
-        // user-supplied and may itself trigger another MLX error, re-entering `dispatch`
-        // on the same thread. `Mutex` is not reentrant, so calling the handler while
-        // still holding the lock would trap on that recursive call.
-        let (handler, data) = global.withLock { state in
-            (state.handler, state.data)
-        }
-
-        if let handler {
-            handler(message, data)
         } else {
-            fatalError(message)
+            global.withLock { state in
+                if let handler = state.handler {
+                    handler(message, state.data)
+                } else {
+                    fatalError(message)
+                }
+            }
         }
     }
 
