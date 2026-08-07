@@ -38,14 +38,28 @@ extension MLXArray {
             ?? self.size
     }
 
-    func copy(from: UnsafeRawBufferPointer, toContiguous output: UnsafeMutableRawBufferPointer) {
+    /// Copy `self`'s (possibly non-contiguous) backing, starting at `base`, into a
+    /// contiguous `output` buffer.
+    ///
+    /// `base` is treated as a bare starting point, not a pre-sized region: for the
+    /// non-contiguous case the actual reachable byte range (which can extend *before*
+    /// `base` when strides are negative) is computed internally and bounds-checked via
+    /// `RawSpan`, rather than trusting unchecked pointer arithmetic to stay in bounds.
+    func copy(from base: UnsafeRawPointer, toContiguous output: UnsafeMutableRawBufferPointer) {
         let contiguousDimension = self.contiguousToDimension()
         let shape = self.shape
         let strides = self.internalStrides
 
         if contiguousDimension == 0 {
             // entire backing is contiguous
-            from.copyBytes(to: output)
+            let source = unsafe RawSpan(
+                _unsafeBytes: UnsafeRawBufferPointer(start: base, count: output.count))
+            var destination = unsafe MutableRawSpan(_unsafeBytes: output)
+            source.withUnsafeBytes { src in
+                destination.withUnsafeMutableBytes { dest in
+                    dest.copyMemory(from: src)
+                }
+            }
 
         } else {
             // only part of the backing is contiguous (possibly a single element)
@@ -66,28 +80,63 @@ extension MLXArray {
                 destItemSize = strides[contiguousDimension] * shape[contiguousDimension] * itemSize
             }
 
+            // Compute the true reachable range of sourceIndex (in elements). This can be
+            // negative when strides are negative, e.g.
+            // asStrided(a, [3, 3], strides: [-3, -1], offset: 8) -- the base pointer we
+            // have will have the offset already applied, and indices approaching the
+            // "backward" direction can land before `base`. A per-dimension index ranges
+            // 0...(shape-1), so each dimension's contribution to sourceIndex ranges from
+            // min(0, (shape-1)*stride) to max(0, (shape-1)*stride); summing these across
+            // dimensions gives the true min/max reachable sourceIndex for the whole loop.
+            var minSourceIndex = 0
+            var maxSourceIndex = 0
+            for dimension in 0 ..< ndim {
+                let contribution = (shape[dimension] - 1) * strides[dimension]
+                minSourceIndex += Swift.min(0, contribution)
+                maxSourceIndex += Swift.max(0, contribution)
+            }
+
+            // Bootstrap a RawSpan covering exactly the reachable byte range, anchored so
+            // that byte offset 0 corresponds to minSourceIndex -- this correctly extends
+            // "backward" from `base` when strides are negative, instead of assuming (as
+            // unchecked pointer arithmetic silently did before) that everything reachable
+            // lies forward of `base`.
+            let spanByteCount = (maxSourceIndex - minSourceIndex) * itemSize + destItemSize
+            let spanBase = base + minSourceIndex * itemSize
+            let source = unsafe RawSpan(
+                _unsafeBytes: UnsafeRawBufferPointer(start: spanBase, count: spanByteCount))
+            var destination = unsafe MutableRawSpan(_unsafeBytes: output)
+
             // the index of the current source item
             var index = Array.init(repeating: 0, count: ndim)
 
-            // output pointer
-            var dest = output.baseAddress!
+            // output byte offset
+            var destOffset = 0
 
             while true {
                 // compute the source index by multiplying the index by the
                 // stride for each dimension
-
-                // note: in the case where the array has negative strides / offset
-                // the base pointer we have will have the offset already applied,
-                // e.g. asStrided(a, [3, 3], strides: [-3, -1], offset: 8)
-
                 let sourceIndex = zip(index, strides).reduce(0) { $0 + ($1.0 * $1.1) }
 
-                // convert to byte pointer
-                let src = from.baseAddress! + sourceIndex * itemSize
-                dest.copyMemory(from: src, byteCount: destItemSize)
+                // offset relative to the span's own start -- always >= 0 by construction,
+                // since minSourceIndex is the true minimum reachable sourceIndex
+                let spanOffset = (sourceIndex - minSourceIndex) * itemSize
+                let chunk = source.extracting(spanOffset ..< (spanOffset + destItemSize))
 
-                // next output address
-                dest += destItemSize
+                chunk.withUnsafeBytes { src in
+                    // `_mutatingExtracting` (not `extracting`) is the current non-deprecated
+                    // spelling for MutableRawSpan's bounds-checked sub-range extraction in
+                    // this SDK -- the leading underscore signals this corner of the Span API
+                    // is still pre-stabilization and may be renamed again in a future SDK.
+                    var chunkDestination = destination._mutatingExtracting(
+                        destOffset ..< (destOffset + destItemSize))
+                    chunkDestination.withUnsafeMutableBytes { dest in
+                        dest.copyMemory(from: src)
+                    }
+                }
+
+                // next output offset
+                destOffset += destItemSize
 
                 // increment the index
                 for dimension in Swift.stride(from: ndim - 1, through: 0, by: -1) {
@@ -128,9 +177,9 @@ extension MLXArray {
         self.eval()
 
         return [T](unsafeUninitializedCapacity: self.size) { destination, initializedCount in
-            let source = UnsafeRawBufferPointer(
-                start: mlx_array_data_uint8(self.ctx), count: physicalSize * itemSize)
-            copy(from: source, toContiguous: UnsafeMutableRawBufferPointer(destination))
+            copy(
+                from: UnsafeRawPointer(mlx_array_data_uint8(self.ctx))!,
+                toContiguous: UnsafeMutableRawBufferPointer(destination))
             initializedCount = self.size
         }
     }
@@ -178,8 +227,7 @@ extension MLXArray {
     /// return a copy of the backing in contiguous layout
     internal func asDataCopy() -> MLXArrayData {
         // point into the possibly non-contiguous backing
-        let source = UnsafeRawBufferPointer(
-            start: mlx_array_data_uint8(self.ctx), count: physicalSize * itemSize)
+        let source = UnsafeRawPointer(mlx_array_data_uint8(self.ctx))!
 
         var data = Data(count: self.nbytes)
         data.withUnsafeMutableBytes { destination in
