@@ -95,3 +95,7 @@ iOSInjectionProject/
 
 # superpowers subagent-driven-development scratch workspace
 .superpowers/
+
+# code-coverage profiling artifacts (e.g. from running an instrumented
+# binary built by xcodebuild directly from the repo root)
+*.profraw
