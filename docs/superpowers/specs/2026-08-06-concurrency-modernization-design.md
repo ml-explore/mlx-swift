@@ -176,6 +176,50 @@ availability claim in the original design above; both should be read
 together with this addendum. The plan document's Task 0 carries the actual
 `Package.swift` change.
 
+## Addendum 2 (discovered during implementation, 2026-08-06): `MLXNN.Cache`
+
+The original design's `Sendable` audit table said `Cache` should drop
+`@unchecked Sendable` to checked `Sendable` once its state moves inside a
+`Mutex`, on the reasoning that `Element` is "an unconstrained generic, may
+be non-`Sendable`" -- but then contradicted itself by listing this as a
+reason to *stay* `@unchecked`. That contradiction was not caught before
+implementation. It turns out the "stay `@unchecked`" outcome is the correct
+one, for a sharper reason than the audit gave: `Mutex.withLock`'s closure
+takes `inout sending Value` and returns a `sending Result`. Swift's region
+isolation checker rejects returning or extracting a value of an
+*unconstrained generic* type (`Cache`'s `Entry`, which embeds `Element`)
+through that boundary -- confirmed by direct compilation
+(`error: 'inout sending' parameter cannot be task-isolated at end of
+function` / `returning a task-isolated value as a 'sending' result risks
+causing data races`). This is unrelated to whether `Element` is actually
+`Sendable` at any given instantiation (e.g. `ALiBi`'s `Cache<Key, MLXArray>`
+-- `MLXArray` is not `Sendable`, so a `Sendable`-constrained `Cache` isn't
+usable for its one real caller anyway). `RandomState` (Task 6) didn't hit
+this because its `Mutex<MLXArray>` has a *concrete* type argument, which
+region isolation can reason about directly.
+
+Decision: `Cache` keeps `@unchecked Sendable` (with a rationale comment),
+same posture as `CompiledFunction`/`_CustomFunctionState`/`RandomState`. It
+still becomes `final` (no subclassers, `internal`, no reason not to) and
+still gets the `Mutex` swap -- only the `Sendable` conformance line in the
+original design's audit table was wrong.
+
+**Correction (same day, verified by direct compilation):** marking `Cache`
+itself `@unchecked Sendable` was necessary but not sufficient. The region
+checker's `sending` boundary in `Mutex.withLock` independently inspects
+*every type nested inside* `Value` (here, `Cache.State`, which embeds
+`Cache.Entry`, which embeds `Element`) for `Sendable`-conformance --
+regardless of the enclosing class's own conformance annotation. Both
+`Cache.State` and `Cache.Entry` also need `@unchecked Sendable` for the
+build to actually pass; `Cache` alone left two `error: 'inout sending'
+parameter ... cannot be task-isolated` / `error: returning a task-isolated
+... value as a 'sending' result` diagnostics unresolved. Confirmed by
+iterative compilation: `Cache: @unchecked Sendable` alone still failed on
+the getter's `Entry`-derived return; adding `Entry: @unchecked Sendable`
+resolved that but the setter's `inout State` parameter still failed until
+`State: @unchecked Sendable` was added too. All three annotations together
+build clean and the new `PositionalEncodingTests.testALiBiCaching` passes.
+
 ## Risks
 
 - **Swift 6 language mode fallout is not fully predictable in advance.** If

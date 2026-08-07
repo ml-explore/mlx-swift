@@ -1077,7 +1077,7 @@ git commit -m "Use Synchronization.Mutex for MLXRandom.RandomState"
 
 ---
 
-### Task 7: `MLXNN.Cache` — Mutex swap, `final`, checked `Sendable` + new test coverage
+### Task 7: `MLXNN.Cache` — Mutex swap, `final`, keeps `@unchecked Sendable` + new test coverage
 
 `Cache` (used by `ALiBi`) has no direct or indirect test coverage today —
 `ALiBi` itself isn't exercised anywhere in `Tests/`. Add coverage as part of
@@ -1089,7 +1089,7 @@ validating this refactor.
 
 **Interfaces:**
 - Consumes: `ALiBi` (`Source/MLXNN/PositionalEncoding.swift:144-197`), specifically `public func callAsFunction(attentionScores: MLXArray, offset: Int = 0, mask: MLXArray? = nil) -> MLXArray`.
-- Produces: `Cache<Key, Element>` becomes `final class Cache<Key: Hashable, Element>: Sendable` (was `class Cache<Key: Hashable, Element>: @unchecked (Sendable)`). `Cache` is `internal`, not part of the public API, and has no subclasses anywhere in the repo (confirmed during planning), so this is safe.
+- Produces: `Cache<Key, Element>` becomes `final class Cache<Key: Hashable, Element>: @unchecked Sendable` (was `class Cache<Key: Hashable, Element>: @unchecked (Sendable)` -- gains `final`, keeps `@unchecked`). `Cache` is `internal`, not part of the public API, and has no subclasses anywhere in the repo (confirmed during planning). It cannot drop to checked `Sendable`: `Mutex.withLock`'s closure uses `inout sending Value`/`sending Result`, and Swift's region isolation checker independently inspects every type nested inside the `Mutex`'s `Value` for `Sendable` -- so the *inner* `Entry` and `State` types must ALSO be marked `@unchecked Sendable`, not just `Cache` itself. This holds regardless of whether a given instantiation's `Element` is itself `Sendable` (it is not, for `ALiBi`'s `Cache<Key, MLXArray>`) -- confirmed by direct, iterative compilation (see spec Addendum 2's correction). Same overall posture as `CompiledFunction`/`_CustomFunctionState`/`RandomState`.
 
 - [ ] **Step 1: Add the `Synchronization` import**
 
@@ -1172,14 +1172,20 @@ class Cache<Key: Hashable, Element>: @unchecked (Sendable) {
 to:
 
 ```swift
-final class Cache<Key: Hashable, Element>: Sendable {
+// `@unchecked Sendable`: state is fully Mutex-protected, but `Mutex.withLock`'s
+// `inout sending`/`sending` closure boundary independently checks every type
+// nested inside the Mutex's protected state -- `Entry` and `State` below need their
+// own `@unchecked Sendable` too, not just `Cache` itself. This holds regardless of
+// whether a given instantiation's `Element` is itself `Sendable` (see e.g. `ALiBi`'s
+// `Cache<Key, MLXArray>`, where it is not).
+final class Cache<Key: Hashable, Element>: @unchecked Sendable {
 
-    struct Entry {
+    struct Entry: @unchecked Sendable {
         let value: Element
         let serial: Int
     }
 
-    private struct State {
+    private struct State: @unchecked Sendable {
         var contents = [Key: Entry]()
         var serial = 0
     }
