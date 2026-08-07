@@ -341,14 +341,21 @@ private final class ErrorHandler: Sendable {
     func dispatch(_ message: String) {
         if let handler = Self.errorHandler.last {
             handler(message)
+            return
+        }
+
+        // Extract the handler and release the lock before calling it: `handler` is
+        // user-supplied and may itself trigger another MLX error, re-entering `dispatch`
+        // on the same thread. `Mutex` is not reentrant, so calling the handler while
+        // still holding the lock would trap on that recursive call.
+        let (handler, data) = global.withLock { state in
+            (state.handler, state.data)
+        }
+
+        if let handler {
+            handler(message, data)
         } else {
-            global.withLock { state in
-                if let handler = state.handler {
-                    handler(message, state.data)
-                } else {
-                    fatalError(message)
-                }
-            }
+            fatalError(message)
         }
     }
 
