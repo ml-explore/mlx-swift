@@ -92,3 +92,6 @@ iOSInjectionProject/
 
 # VS Code
 .vscode/
+
+# superpowers subagent-driven-development scratch workspace
+.superpowers/
