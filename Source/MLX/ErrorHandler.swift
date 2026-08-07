@@ -303,6 +303,11 @@ private final class ErrorHandler: Sendable {
     @TaskLocal static var errorHandler: [@Sendable (String) -> Void] = []
 
     /// the global handler state, if any -- this is used if there is no task local error handler
+    // `@unchecked Sendable`: `data` is a raw `UnsafeMutableRawPointer`, which the compiler
+    // can't verify as `Sendable` on its own. Unlike `Cache.Entry`'s `Element`, every field
+    // here is a concrete, non-generic C function-pointer/pointer type, so the `@unchecked`
+    // assertion is a simple, local judgment call rather than one that depends on some
+    // caller-supplied type argument's `Sendable`-ness.
     private struct GlobalHandler: @unchecked Sendable {
         var handler: (@convention(c) (UnsafePointer<CChar>?, UnsafeMutableRawPointer?) -> Void)?
         var data: UnsafeMutableRawPointer?
