@@ -12,4 +12,20 @@ class MemoryTests: XCTestCase {
             print(x * x)
         }
     }
+
+    func testCacheLimitRoundTrip() {
+        let original = Memory.cacheLimit
+        defer { Memory.cacheLimit = original }
+
+        Memory.cacheLimit = 4096
+        XCTAssertEqual(Memory.cacheLimit, 4096)
+    }
+
+    func testMemoryLimitRoundTrip() {
+        let original = Memory.memoryLimit
+        defer { Memory.memoryLimit = original }
+
+        Memory.memoryLimit = original + 1024
+        XCTAssertEqual(Memory.memoryLimit, original + 1024)
+    }
 }

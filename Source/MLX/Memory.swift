@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Synchronization
 
 /// Properties to control the the memory allocation and buffer reuse.
 ///
@@ -62,16 +63,9 @@ import Foundation
 /// - ``snapshot()``
 public enum Memory {
 
-    static let queue = DispatchQueue(label: "GPUEnum")
-
-    // note: these are guarded by the queue above
-    #if swift(>=5.10)
-        nonisolated(unsafe) static var _cacheLimit: Int?
-        nonisolated(unsafe) static var _memoryLimit: Int?
-    #else
-        static var _cacheLimit: Int?
-        static var _memoryLimit: Int?
-    #endif
+    /// Cached values for ``cacheLimit`` and ``memoryLimit``, owned by a `Mutex`
+    /// rather than a dispatch queue plus loosely-guarded statics.
+    static let limits = Mutex<(cacheLimit: Int?, memoryLimit: Int?)>((nil, nil))
 
     /// Snapshot of memory stats.
     ///
@@ -250,8 +244,8 @@ public enum Memory {
     /// - ``memoryLimit``
     public static var cacheLimit: Int {
         get {
-            queue.sync {
-                if let cacheLimit = _cacheLimit {
+            limits.withLock { state in
+                if let cacheLimit = state.cacheLimit {
                     return cacheLimit
                 }
 
@@ -262,13 +256,13 @@ public enum Memory {
                 mlx_set_cache_limit(&current, cacheMemory)
                 mlx_set_cache_limit(&discard, current)
 
-                _cacheLimit = current
+                state.cacheLimit = current
                 return current
             }
         }
         set {
-            queue.sync {
-                _cacheLimit = newValue
+            limits.withLock { state in
+                state.cacheLimit = newValue
                 var current: size_t = 0
                 mlx_set_cache_limit(&current, newValue)
             }
@@ -289,15 +283,15 @@ public enum Memory {
     /// - ``cacheLimit``
     public static var memoryLimit: Int {
         get {
-            queue.sync {
+            limits.withLock { _ in
                 var current: size_t = 0
                 mlx_get_memory_limit(&current)
                 return Int(current)
             }
         }
         set {
-            queue.sync {
-                _memoryLimit = newValue
+            limits.withLock { state in
+                state.memoryLimit = newValue
                 var current: size_t = 0
                 mlx_set_memory_limit(&current, newValue)
             }
