@@ -1,6 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
+import Synchronization
 
 /// Protocol for types that can be used as a provider of random keys, e.g. for ``MLXRandom``.
 public protocol RandomStateOrKey {
@@ -26,41 +27,40 @@ extension MLXRandom {
     /// ### See Also
     /// - ``globalState``
     /// - ``withRandomState(_:body:)-18ob4``
+    // `@unchecked Sendable`: `state` is an `MLXArray`, which is not `Sendable`; all access
+    // to it goes through `lock`. `RandomState` is a non-`final` public class, so a checked
+    // `Sendable` conformance isn't available even though wrapping the state in `Mutex`
+    // would otherwise permit it.
     public class RandomState: RandomStateOrKey, Updatable, Evaluatable, @unchecked (Sendable) {
-        private var state: MLXArray
-        private let lock = NSLock()
+        private let lock: Mutex<MLXArray>
 
         /// Initialize the RandomState with a seed based on the current time.
         public init() {
             let now = DispatchTime.now().uptimeNanoseconds
-            state = MLXRandom.key(now)
+            lock = Mutex(MLXRandom.key(now))
         }
 
         /// Initialize the RandomState with the given seed value.
         public init(seed: UInt64) {
-            state = MLXRandom.key(seed)
+            lock = Mutex(MLXRandom.key(seed))
         }
 
         public func innerState() -> [MLXArray] {
-            lock.withLock {
-                [state]
-            }
+            lock.withLock { [$0] }
         }
 
         /// Split the current state and return a new Key.
         public func next() -> MLXArray {
-            lock.withLock {
+            lock.withLock { state in
                 let (a, b) = MLXRandom.split(key: state)
-                self.state = a
+                state = a
                 return b
             }
         }
 
         /// Reset the random state.
         public func seed(_ seed: UInt64) {
-            lock.withLock {
-                state = MLXRandom.key(seed)
-            }
+            lock.withLock { $0 = MLXRandom.key(seed) }
         }
 
         public func asRandomKey() -> MLXArray {
