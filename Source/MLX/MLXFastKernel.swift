@@ -155,7 +155,7 @@ extension DType: KernelTemplateArg {}
                 defer { mlx_vector_array_free(inputs) }
 
                 var result = mlx_vector_array_new()
-                evalLock.withLock {
+                _ = evalLock.withLock {
                     mlx_fast_metal_kernel_apply(&result, kernel, inputs, config, stream.ctx)
                 }
                 defer { mlx_vector_array_free(result) }
