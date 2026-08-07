@@ -46,6 +46,10 @@ The ``MLX`` Swift package can be built and run from Xcode or SwiftPM. A CMake in
 
 More details are in the [documentation](https://swiftpackageindex.com/ml-explore/mlx-swift/main/documentation/mlx/install).
 
+### Requirements
+
+mlx-swift requires macOS 15, iOS 18, tvOS 18, or visionOS 2 (or later).
+
 ### Xcode (1)
 
 In Xcode you can add `https://github.com/ml-explore/mlx-swift.git` as a package
