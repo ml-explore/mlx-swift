@@ -113,7 +113,9 @@ final class _CustomFunctionState: @unchecked Sendable {
             var outVec = mlx_vector_array_new()
             defer { mlx_vector_array_free(outVec) }
 
-            let status = mlx_closure_apply(&outVec, combined, inVec)
+            let status = evalLock.withLock {
+                mlx_closure_apply(&outVec, combined, inVec)
+            }
             precondition(status == 0, "mlx_closure_apply failed (\(status))")
 
             result = mlx_vector_array_values(outVec)
