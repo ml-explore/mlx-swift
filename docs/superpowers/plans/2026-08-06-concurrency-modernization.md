@@ -31,8 +31,15 @@
   reports `Apple Swift version 6.3-dev`) and on CI's oldest pinned toolchain
   (Swift 6.2.3, the Linux+CUDA runner).
 - All tests use `XCTest` (`class Foo: XCTestCase`), matching every existing
-  file under `Tests/MLXTests/`. Scoped runs: `swift test --filter <ClassName>`.
-  Full suite: `swift test`.
+  file under `Tests/MLXTests/`. **Do not use `swift test`** -- it fails at
+  runtime with "Failed to load the default metallib" because SwiftPM's CLI
+  doesn't bundle the Metal resource the GPU backend needs (confirmed during
+  setup; this is also why CI uses `xcodebuild`, never `swift test`, for
+  macOS). Scoped runs: `xcodebuild test -scheme mlx-swift-Package
+  -destination 'platform=macOS' -only-testing:MLXTests/<ClassName>`. Full
+  suite: `xcodebuild test -scheme mlx-swift-Package -destination
+  'platform=macOS'`. Plain `swift build` (not `swift test`) is fine for
+  compile-only checks.
 - Branch: `modernize/concurrency` (already checked out). Commit after every task.
 
 ---
@@ -189,7 +196,7 @@ Expected: succeeds. **If this fails with an error that `Synchronization` or `Mut
 
 - [ ] **Step 6: Run the existing Device tests**
 
-Run: `swift test --filter StreamTests`
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/StreamTests`
 
 Expected: PASS (covers `testEquatableDevice`, `testDeviceType`, `testUsingDevice`, `testSetUnsetDefaultDevice`, `testWithDefaultDevice`).
 
@@ -387,7 +394,7 @@ In `Tests/MLXTests/MemoryTests.swift`, add these two test functions inside `clas
 
 - [ ] **Step 6: Run the tests**
 
-Run: `swift test --filter MemoryTests`
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/MemoryTests`
 
 Expected: PASS, including the two new tests.
 
@@ -607,7 +614,7 @@ Leave the rest of the file (`withErrorHandler`, `withError` methods below this p
 
 - [ ] **Step 4: Build and run the error-handling tests**
 
-Run: `swift build && swift test --filter ErrorTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/ErrorTests`
 
 Expected: PASS (`testErrorHandler`, `testWithErrorCheck`, `testWithErrorThrow`, `testWithErrorThrowAsync`, `testWithErrorThrowNested`).
 
@@ -698,7 +705,7 @@ to:
 
 - [ ] **Step 4: Build and run the compile tests**
 
-Run: `swift build && swift test --filter TransformTests && swift test --filter OptimizerTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/TransformTests -only-testing:MLXTests/OptimizerTests`
 
 Expected: PASS (`TransformTests.testCompile`, `testCompileWithCapturedState`, and the `compile()` usage inside `OptimizerTests`).
 
@@ -841,7 +848,7 @@ class CustomFunctionTests: XCTestCase {
 
 - [ ] **Step 5: Build and run the new tests**
 
-Run: `swift build && swift test --filter CustomFunctionTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/CustomFunctionTests`
 
 Expected: PASS, both tests. This is new coverage (there was none before), so
 also sanity-check it's exercising real behavior: temporarily change the `* 2`
@@ -980,7 +987,7 @@ to:
 
 - [ ] **Step 3: Build and run the random-state tests**
 
-Run: `swift build && swift test --filter MLXRandomTests && swift test --filter TransformTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/MLXRandomTests -only-testing:MLXTests/TransformTests`
 
 Expected: PASS (`MLXRandomTests.testRandomStateOrKeySame`, `testRandomStateOrKeyDifferent`, plus the `withRandomState` usage in `TransformTests`).
 
@@ -1174,7 +1181,7 @@ class PositionalEncodingTests: XCTestCase {
 
 - [ ] **Step 4: Build and run the tests**
 
-Run: `swift build && swift test --filter PositionalEncodingTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/PositionalEncodingTests`
 
 Expected: PASS.
 
@@ -1252,7 +1259,7 @@ to:
 
 - [ ] **Step 3: Build and run the wired-memory tests**
 
-Run: `swift build && swift test --filter WiredMemoryTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/WiredMemoryTests`
 
 Expected: PASS (skips are fine on non-GPU devices; the important thing is nothing errors or crashes).
 
@@ -1411,7 +1418,7 @@ let evalLock = NSRecursiveLock()
 
 - [ ] **Step 5: Build and run the affected tests**
 
-Run: `swift build && swift test --filter StreamTests && swift test --filter MLXFastKernelTests`
+Run: `swift build && xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -only-testing:MLXTests/StreamTests -only-testing:MLXTests/MLXFastKernelTests`
 
 Expected: PASS. `MLXFastKernelTests` in particular validates the `evalLock` fix didn't
 change kernel output (`testCustomKernelBasic`, `testCustomKernelArgs`, `testRoPEOutput`, etc.).
@@ -1488,7 +1495,7 @@ time. For each:
 
 - [ ] **Step 4: Run the full test suite**
 
-Run: `swift test`
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'`
 
 Expected: PASS, no regressions from any of Tasks 1-9's changes surfacing under
 the stricter mode.
@@ -1562,8 +1569,8 @@ In `Tests/MLXTests/MemoryTests.swift`, add inside `class MemoryTests: XCTestCase
 
 - [ ] **Step 3: Run under Thread Sanitizer**
 
-Run: `swift test --sanitize=thread --filter StreamTests`
-Run: `swift test --sanitize=thread --filter MemoryTests`
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -enableThreadSanitizer YES -only-testing:MLXTests/StreamTests`
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS' -enableThreadSanitizer YES -only-testing:MLXTests/MemoryTests`
 
 Expected: PASS with no TSan data-race reports. If TSan reports a race,
 **stop and report it** -- do not suppress or work around a TSan finding
@@ -1585,7 +1592,7 @@ git commit -m "Add concurrency stress tests for Device and Memory Mutex-backed s
 
 - [ ] **Step 1: Full test suite**
 
-Run: `swift test`
+Run: `xcodebuild test -scheme mlx-swift-Package -destination 'platform=macOS'`
 
 Expected: PASS, all files.
 
