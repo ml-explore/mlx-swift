@@ -79,6 +79,9 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
+// `@unchecked Sendable`: `ctx` (`mlx_stream`) is `let` and never mutated after `init` --
+// the imported C struct isn't recognized as `Sendable` by the compiler, but sharing an
+// immutable, already-constructed `Stream` across threads is safe.
 public final class Stream: @unchecked Sendable, Equatable {
 
     let ctx: mlx_stream

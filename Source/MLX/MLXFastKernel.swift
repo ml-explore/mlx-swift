@@ -42,6 +42,10 @@ extension DType: KernelTemplateArg {}
         ///
         /// let out = kernel([a])
         /// ```
+        // `@unchecked Sendable`: `kernel` (`mlx_fast_metal_kernel`) is `let` and never
+        // mutated after `init` -- the imported C struct isn't recognized as `Sendable` by
+        // the compiler, but sharing an immutable, already-constructed kernel across
+        // threads is safe.
         final public class MLXFastKernel: @unchecked Sendable {
             let kernel: mlx_fast_metal_kernel
             public let outputNames: [String]
@@ -151,7 +155,9 @@ extension DType: KernelTemplateArg {}
                 defer { mlx_vector_array_free(inputs) }
 
                 var result = mlx_vector_array_new()
-                mlx_fast_metal_kernel_apply(&result, kernel, inputs, config, stream.ctx)
+                evalLock.withLock {
+                    mlx_fast_metal_kernel_apply(&result, kernel, inputs, config, stream.ctx)
+                }
                 defer { mlx_vector_array_free(result) }
 
                 return mlx_vector_array_values(result)
@@ -193,6 +199,8 @@ extension DType: KernelTemplateArg {}
 
     extension MLXFast {
 
+        // `@unchecked Sendable`: stub type with no functional state; matches the
+        // Metal-backed `MLXFastKernel` above for API parity on platforms without Metal.
         final public class MLXFastKernel: @unchecked Sendable {
             public let outputNames: [String]
 

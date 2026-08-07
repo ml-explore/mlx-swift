@@ -5,7 +5,10 @@ import Foundation
 
 /// lock to be held while doing any eval or asyncEval.  This is
 /// a recursive lock to handle any cases where a closure might
-/// call back into eval.
+/// call back into eval -- e.g. `CompiledFunction.innerCall` invokes the user's function
+/// while control is inside `mlx_detail_compile`/`mlx_closure_apply`, and that user
+/// function may itself call `eval()`. Do not replace this with `Synchronization.Mutex`:
+/// `Mutex` is not reentrant, and swapping it in here would deadlock on that call path.
 let evalLock = NSRecursiveLock()
 
 /// Evaluate one or more `MLXArray`
