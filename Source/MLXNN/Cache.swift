@@ -5,7 +5,7 @@ import Synchronization
 
 /// Simple cache for holding prepared MLXArrays, etc.
 ///
-/// See ``RoPE``
+/// See ``ALiBi``
 // `@unchecked Sendable`: state is fully Mutex-protected, but `Mutex.withLock`'s
 // `inout sending`/`sending` closure boundary independently checks every type
 // nested inside the Mutex's protected state -- `Entry` and `State` below need their
