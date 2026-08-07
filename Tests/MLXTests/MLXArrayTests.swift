@@ -94,6 +94,20 @@ class MLXArrayTests: XCTestCase {
         XCTAssertEqual(s_arr, expected)
     }
 
+    func testAsArrayNegativeStride() {
+        // negative strides + a nonzero offset: this is the case that was
+        // previously untested and relied on raw pointer arithmetic outside
+        // any range the Swift-side code verified
+        let a = MLXArray(0 ..< 16, [4, 4])
+        let s = asStrided(a, [4, 4], strides: [-4, -1], offset: 15)
+
+        let expected: [Int32] = Array((0 ..< 16).reversed()).map { Int32($0) }
+        assertEqual(s, MLXArray(expected, [4, 4]))
+
+        let s_arr = s.asArray(Int32.self)
+        XCTAssertEqual(s_arr, expected)
+    }
+
     func testContiguousStrides() {
         XCTAssertEqual(contiguousStrides(shape: [1, 1, 1]), [1, 1, 1])
         XCTAssertEqual(contiguousStrides(shape: [4, 4]), [4, 1])
