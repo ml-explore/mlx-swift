@@ -298,10 +298,10 @@ let package = Package(
     name: "mlx-swift",
 
     platforms: [
-        .macOS("14.0"),
-        .iOS(.v17),
-        .tvOS(.v17),
-        .visionOS(.v1),
+        .macOS("15.0"),
+        .iOS(.v18),
+        .tvOS(.v18),
+        .visionOS(.v2),
     ],
 
     products: [
