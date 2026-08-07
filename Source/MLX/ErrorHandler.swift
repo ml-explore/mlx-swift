@@ -1,5 +1,6 @@
 import Cmlx
 import Foundation
+import Synchronization
 
 /// Sets the error handler. The default error handler will simply print out the error, then exit.
 /// - Parameters:
@@ -249,19 +250,18 @@ public enum MLXError: LocalizedError, Sendable, Equatable {
 ///
 /// In some cases it may be more convenient to use the ``withError(_:)-6g4wn`` form
 /// that doesn't expose this value -- any error will be thrown when the block exits.
-public final class ErrorBox: @unchecked Sendable {
-    private let lock = NSLock()
-    private var _firstError: Error?
+public final class ErrorBox: Sendable {
+    private let _firstError = Mutex<Error?>(nil)
 
     /// The first error encountered, if any.
     public var firstError: Error? {
         get {
-            lock.withLock { _firstError }
+            _firstError.withLock { $0 }
         }
         set {
-            lock.withLock {
-                if _firstError == nil {
-                    _firstError = newValue
+            _firstError.withLock { stored in
+                if stored == nil {
+                    stored = newValue
                 }
             }
         }
@@ -269,8 +269,8 @@ public final class ErrorBox: @unchecked Sendable {
 
     /// Throw the ``firstError`` if set, otherwise do nothing.
     public func check() throws {
-        if let _firstError {
-            throw _firstError
+        if let firstError {
+            throw firstError
         }
     }
 }
@@ -297,24 +297,28 @@ private func errorHandlerTrampoline(message: UnsafePointer<CChar>?, data: Unsafe
 }
 
 /// Thread safe and task local implementation of error handling.
-private final class ErrorHandler: @unchecked Sendable {
+private final class ErrorHandler: Sendable {
 
     /// task local error handler stack, if any
     @TaskLocal static var errorHandler: [@Sendable (String) -> Void] = []
 
-    /// the global handler, if any -- this is called if there is no task local error handler
-    let lock = NSLock()
-    var globalHandler: (@convention(c) (UnsafePointer<CChar>?, UnsafeMutableRawPointer?) -> Void)? =
-        nil
-    var globalData: UnsafeMutableRawPointer? = nil
-    var globalDtor: (@convention(c) (UnsafeMutableRawPointer?) -> Void)? = nil
+    /// the global handler state, if any -- this is used if there is no task local error handler
+    private struct GlobalHandler: @unchecked Sendable {
+        var handler: (@convention(c) (UnsafePointer<CChar>?, UnsafeMutableRawPointer?) -> Void)?
+        var data: UnsafeMutableRawPointer?
+        var dtor: (@convention(c) (UnsafeMutableRawPointer?) -> Void)?
+    }
+
+    private let global = Mutex(GlobalHandler(handler: nil, data: nil, dtor: nil))
 
     init() {
     }
 
     deinit {
-        if let globalData = self.globalData, let globalDtor = self.globalDtor {
-            globalDtor(globalData)
+        global.withLock { state in
+            if let data = state.data, let dtor = state.dtor {
+                dtor(data)
+            }
         }
     }
 
@@ -323,13 +327,13 @@ private final class ErrorHandler: @unchecked Sendable {
         data: UnsafeMutableRawPointer? = nil,
         dtor: (@convention(c) (UnsafeMutableRawPointer?) -> Void)? = nil
     ) {
-        lock.withLock {
-            if let globalData = self.globalData, let globalDtor = self.globalDtor {
-                globalDtor(globalData)
+        global.withLock { state in
+            if let oldData = state.data, let oldDtor = state.dtor {
+                oldDtor(oldData)
             }
-            globalHandler = handler
-            globalData = data
-            globalDtor = dtor
+            state.handler = handler
+            state.data = data
+            state.dtor = dtor
         }
     }
 
@@ -338,9 +342,9 @@ private final class ErrorHandler: @unchecked Sendable {
         if let handler = Self.errorHandler.last {
             handler(message)
         } else {
-            lock.withLock {
-                if let globalHandler {
-                    globalHandler(message, globalData)
+            global.withLock { state in
+                if let handler = state.handler {
+                    handler(message, state.data)
                 } else {
                     fatalError(message)
                 }
