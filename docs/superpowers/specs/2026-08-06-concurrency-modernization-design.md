@@ -220,6 +220,26 @@ resolved that but the setter's `inout State` parameter still failed until
 `State: @unchecked Sendable` was added too. All three annotations together
 build clean and the new `PositionalEncodingTests.testALiBiCaching` passes.
 
+## Addendum 3 (discovered during implementation, 2026-08-06): Task 10 was a no-op
+
+The "Swift 6 language mode fallout is not fully predictable in advance" risk
+called out below turned out not to apply. Verified empirically with a
+throwaway package: `swift-tools-version: 6.3` (which this repo already
+declared, unrelated to this plan) causes SwiftPM to pass `-swift-version 6`
+to every target *regardless* of whether `.enableExperimentalFeature
+("StrictConcurrency")` or `.swiftLanguageMode(.v6)` is present in that
+target's `swiftSettings` -- the tools-version alone already selects full
+Swift 6 language mode. So every first-party target was already compiling
+under full Swift 6 checking before Task 10 ran; swapping the feature flag
+for the explicit `.swiftLanguageMode(.v6)` setting changed nothing
+observable and surfaced zero new diagnostics (confirmed: clean build, full
+538-test suite passes, identical to the pre-Task-10 baseline). The edit is
+still worth keeping -- it pins the language mode explicitly so a future
+tools-version downgrade can't silently relax checking -- but it should not
+be read as validating Tasks 1-9's Sendable/concurrency work under a
+*newly*-stricter mode; that validation already happened implicitly, task by
+task, throughout Tasks 1-9's own build/test runs.
+
 ## Risks
 
 - **Swift 6 language mode fallout is not fully predictable in advance.** If
