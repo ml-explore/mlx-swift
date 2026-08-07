@@ -2,7 +2,6 @@
 
 import Cmlx
 import Foundation
-import Synchronization
 
 ///Type of device.
 ///
@@ -26,9 +25,6 @@ public enum DeviceType: String, Hashable, Sendable {
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
-// `@unchecked Sendable`: `ctx` (`mlx_device`) and `defaultStream` are `let` and never
-// mutated after `init` -- the imported C struct isn't recognized as `Sendable` by the
-// compiler, but sharing an immutable, already-constructed `Device` across threads is safe.
 public final class Device: @unchecked Sendable, Equatable {
 
     let ctx: mlx_device
@@ -95,14 +91,19 @@ public final class Device: @unchecked Sendable, Equatable {
     }
 
     // support for global default device
-    static let _defaultDevice = Mutex<Device?>(nil)
+    static let _lock = NSLock()
+    #if swift(>=5.10)
+        nonisolated(unsafe) static var _defaultDevice: Device?
+    #else
+        static var _defaultDevice: Device?
+    #endif
 
     @TaskLocal static var _tlDefaultDevice = _resolveGlobalDefaultDevice()
 
     private static func _resolveGlobalDefaultDevice() -> Device {
-        _defaultDevice.withLock { stored in
-            if let stored {
-                return stored
+        _lock.withLock {
+            if let device = _defaultDevice {
+                return device
             }
             // Ask the underlying MLX C++ core for its default device rather
             // than hard-coding `.gpu`. On Apple platforms with Metal this
@@ -112,9 +113,7 @@ public final class Device: @unchecked Sendable, Equatable {
             // returned an unavailable device on those hosts.
             var ctx = mlx_device_new()
             mlx_get_default_device(&ctx)
-            let resolved = Device(ctx)
-            stored = resolved
-            return resolved
+            return Device(ctx)
         }
     }
 
@@ -160,7 +159,7 @@ public final class Device: @unchecked Sendable, Equatable {
     /// - ``StreamOrDevice/default``
     @available(*, deprecated, message: "please use withDefaultDevice()")
     static public func setDefault(device: Device?) {
-        _defaultDevice.withLock { stored in
+        _lock.withLock {
             if let device {
                 // sets the mlx core default device -- only used
                 // by the deprecated init().  this isn't thread
@@ -168,7 +167,7 @@ public final class Device: @unchecked Sendable, Equatable {
                 // but is kept for backward compatibility
                 mlx_set_default_device(device.ctx)
             }
-            stored = device
+            _defaultDevice = device
         }
     }
 
