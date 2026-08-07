@@ -92,4 +92,21 @@ class StreamTests: XCTestCase {
         }
     }
 
+    func testDeviceDefaultConcurrentAccess() async {
+        // Regression test for the Device._defaultDevice Mutex refactor (see
+        // Source/MLX/Device.swift): hammer defaultDevice()/withDefaultDevice()
+        // from many concurrent tasks. XCTest fails the run on a crash; running
+        // under `--sanitize=thread` (Step 3) additionally catches data races.
+        await withTaskGroup(of: Void.self) { group in
+            for i in 0 ..< 100 {
+                group.addTask {
+                    let device: Device = i.isMultiple(of: 2) ? .cpu : .gpu
+                    Device.withDefaultDevice(device) {
+                        _ = Device.defaultDevice()
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -28,4 +28,21 @@ class MemoryTests: XCTestCase {
         Memory.memoryLimit = original + 1024
         XCTAssertEqual(Memory.memoryLimit, original + 1024)
     }
+
+    func testCacheLimitConcurrentAccess() async {
+        // Regression test for the Memory.limits Mutex refactor (see
+        // Source/MLX/Memory.swift): hammer cacheLimit get/set from many
+        // concurrent tasks.
+        let original = Memory.cacheLimit
+        defer { Memory.cacheLimit = original }
+
+        await withTaskGroup(of: Void.self) { group in
+            for i in 0 ..< 100 {
+                group.addTask {
+                    Memory.cacheLimit = 1024 * (i + 1)
+                    _ = Memory.cacheLimit
+                }
+            }
+        }
+    }
 }
