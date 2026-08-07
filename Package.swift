@@ -334,49 +334,49 @@ let package = Package(
             ],
             exclude: mlxSwiftExcludes,
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .target(
             name: "MLXRandom",
             dependencies: ["MLX"],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .target(
             name: "MLXFast",
             dependencies: ["MLX", "Cmlx"],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .target(
             name: "MLXNN",
             dependencies: ["MLX"],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .target(
             name: "MLXOptimizers",
             dependencies: ["MLX", "MLXNN"],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .target(
             name: "MLXFFT",
             dependencies: ["MLX"],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .target(
             name: "MLXLinalg",
             dependencies: ["MLX"],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
 
