@@ -2,14 +2,17 @@
 
 import Cmlx
 import Foundation
+import Synchronization
 
-// Note: this is all immutable state -- the `id` property is only set at init time
+// `@unchecked Sendable`: `f`, `inputs`, and `outputs` are plain (non-`@Sendable`) stored
+// values used directly outside of `lock` (during `init`), so the compiler can't verify
+// this structurally even though `call(_:)` fully serializes access via `lock`.
 final class CompiledFunction: @unchecked (Sendable) {
 
     /// unique (for the lifetime of the object) identifier for the compiled function
     private var id: UInt!
 
-    let lock = NSLock()
+    let lock = Mutex(())
 
     /// the function to compile
     let f: ([MLXArray]) -> [MLXArray]
@@ -37,9 +40,11 @@ final class CompiledFunction: @unchecked (Sendable) {
     }
 
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
-        lock.withLock {
-            innerCall(arguments)
+        var result: [MLXArray] = []
+        lock.withLock { _ in
+            result = innerCall(arguments)
         }
+        return result
     }
 
     func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
