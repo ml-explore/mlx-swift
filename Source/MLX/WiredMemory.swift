@@ -2,6 +2,7 @@
 
 import Cmlx
 import Foundation
+import Synchronization
 
 /// Low-level access to the process-wide wired memory limit.
 ///
@@ -293,17 +294,16 @@ public struct WiredMemoryTicket: Sendable, Identifiable {
 extension WiredMemoryTicket {
     /// Guards against calling `end()` more than once when task cancellation
     /// races with normal completion inside `withWiredLimit`.
-    private final class EndOnceGuard: @unchecked Sendable {
-        private var _ended = false
-        private let _lock = NSLock()
+    private final class EndOnceGuard: Sendable {
+        private let _ended = Mutex(false)
 
         /// Returns `true` exactly once; all subsequent calls return `false`.
         func tryMark() -> Bool {
-            _lock.lock()
-            defer { _lock.unlock() }
-            if _ended { return false }
-            _ended = true
-            return true
+            _ended.withLock { ended in
+                if ended { return false }
+                ended = true
+                return true
+            }
         }
     }
 
