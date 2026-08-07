@@ -217,6 +217,37 @@ class TransformTests: XCTestCase {
         XCTAssertEqual(state.o!.item(Float.self), -8)
     }
 
+    func testCompiledStateFreshAcrossRecompile() {
+        // Regression test for a caching optimization to CompiledFunction: the compiled
+        // closure is built once and reused across calls, but must still read the CURRENT
+        // call's captured state when the underlying graph actually retraces -- not a
+        // stale snapshot from whenever the closure happened to be built. Calling with a
+        // DIFFERENT shape forces a real retrace (unlike testCompiledStateReadOnly/
+        // testCompiledStateMutation, which only ever call with the same shape and so
+        // never exercise this path).
+        let state = CompileTestState()
+
+        func testState(_ x: [MLXArray]) -> [MLXArray] {
+            [x[0] + state.y]
+        }
+
+        let compiled = compile(inputs: [state], testState(_:))
+
+        // first call: shape [1], state.y = 2
+        let r1 = compiled([MLXArray(5)])
+        XCTAssertEqual(r1[0].item(Float.self), 7.0)
+
+        // change state AND force a retrace via a different shape
+        state.y = MLXArray(10)
+        let r2 = compiled([MLXArray([1, 2, 3])])
+        XCTAssertEqual(r2[0].asArray(Float.self), [11, 12, 13])
+
+        // change state again and go back to the original (cached) shape
+        state.y = MLXArray(100)
+        let r3 = compiled([MLXArray(5)])
+        XCTAssertEqual(r3[0].item(Float.self), 105.0)
+    }
+
     func testCompiledRandom() {
         func f(_ bias: MLXArray) -> MLXArray {
             MLXRandom.uniform(0 ..< 1, [4]) + bias
