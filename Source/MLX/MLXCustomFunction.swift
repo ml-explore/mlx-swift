@@ -1,5 +1,6 @@
 import Cmlx
 import Foundation
+import Synchronization
 
 public enum MLXCustomFunctionComponent {
     case forward(([MLXArray]) -> [MLXArray])
@@ -15,9 +16,12 @@ public func VJP(_ f: @escaping ([MLXArray], [MLXArray]) -> [MLXArray]) -> MLXCus
     .vjp(f)
 }
 
+// `@unchecked Sendable`: `forwardFn` and `vjpFn` are plain (non-`@Sendable`) stored
+// closures used directly during `buildClosures()` at init, so the compiler can't verify
+// this structurally even though `call(_:)` fully serializes access via `lock`.
 final class _CustomFunctionState: @unchecked Sendable {
 
-    private let lock = NSLock()
+    private let lock = Mutex(())
 
     private let forwardFn: ([MLXArray]) -> [MLXArray]
     private let vjpFn: (([MLXArray], [MLXArray]) -> [MLXArray])?
@@ -101,7 +105,8 @@ final class _CustomFunctionState: @unchecked Sendable {
     }
 
     func call(_ inputs: [MLXArray]) -> [MLXArray] {
-        lock.withLock {
+        var result: [MLXArray] = []
+        lock.withLock { _ in
             let inVec = new_mlx_vector_array(inputs)
             defer { mlx_vector_array_free(inVec) }
 
@@ -111,8 +116,9 @@ final class _CustomFunctionState: @unchecked Sendable {
             let status = mlx_closure_apply(&outVec, combined, inVec)
             precondition(status == 0, "mlx_closure_apply failed (\(status))")
 
-            return mlx_vector_array_values(outVec)
+            result = mlx_vector_array_values(outVec)
         }
+        return result
     }
 }
 
