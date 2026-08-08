@@ -275,15 +275,15 @@ there are specific initializers to request it:
 ### MLXArray Factory Free Methods
 
 - ``MLX/zeros(_:type:stream:)``
-- ``MLX/zeros(like:stream:)``
+- ``MLX/zeros(like:dtype:stream:)``
 - ``MLX/ones(_:type:stream:)``
-- ``MLX/ones(like:stream:)``
+- ``MLX/ones(like:dtype:stream:)``
 - ``MLX/eye(_:m:k:type:stream:)``
 - ``MLX/full(_:values:type:stream:)``
 - ``MLX/full(_:values:stream:)``
 - ``MLX/identity(_:type:stream:)``
-- ``MLX/linspace(_:_:count:stream:)-7vj0o``
-- ``MLX/linspace(_:_:count:stream:)-6w959``
+- ``MLX/linspace(_:_:count:endpoint:stream:)``
+- ``MLX/linspace(_:_:count:endpoint:stream:)-38sfd``
 - ``MLXArray/repeated(_:count:axis:stream:)``
 - ``MLXArray/repeated(_:count:stream:)``
 - ``MLX/repeat(_:count:axis:stream:)``

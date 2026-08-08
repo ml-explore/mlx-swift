@@ -42,14 +42,26 @@ struct Init<T, metal::enable_if_t<metal::is_floating_point_v<T>>> {
   static constexpr constant T v = metal::numeric_limits<T>::quiet_NaN();
 };
 
+template <>
+struct Init<complex64_t> {
+  static constexpr constant complex64_t v = complex64_t(
+      metal::numeric_limits<float>::quiet_NaN(),
+      metal::numeric_limits<float>::quiet_NaN());
+};
+
 template <typename T>
 struct LessThan {
   static constexpr constant T init = Init<T>::v;
-  METAL_FUNC bool operator()(T a, T b) const {
-    if constexpr (
-        metal::is_floating_point_v<T> || metal::is_same_v<T, complex64_t>) {
-      bool an = isnan(a);
-      bool bn = isnan(b);
+  METAL_FUNC bool operator()(T a, T b) const thread {
+    if constexpr (metal::is_floating_point_v<T>) {
+      bool an = metal::isnan(a);
+      bool bn = metal::isnan(b);
+      if (an | bn) {
+        return (!an) & bn;
+      }
+    } else if constexpr (metal::is_same_v<T, complex64_t>) {
+      bool an = metal::isnan(a.real) || metal::isnan(a.imag);
+      bool bn = metal::isnan(b.real) || metal::isnan(b.imag);
       if (an | bn) {
         return (!an) & bn;
       }
@@ -389,8 +401,11 @@ template <
   using ValT = typename sort_kernel::ValT;
   using IdxT = typename sort_kernel::IdxT;
 
-  auto in_block_idx = elem_to_loc(tid.y, nc_shape, in_nc_strides, nc_dim);
-  auto out_block_idx = elem_to_loc(tid.y, nc_shape, out_nc_strides, nc_dim);
+  // Signed offsets: a non-sorted axis may have a negative stride.
+  auto in_block_idx =
+      elem_to_loc<int64_t>(tid.y, nc_shape, in_nc_strides, nc_dim);
+  auto out_block_idx =
+      elem_to_loc<int64_t>(tid.y, nc_shape, out_nc_strides, nc_dim);
   inp += in_block_idx;
   out += out_block_idx;
 
@@ -533,7 +548,8 @@ template <
       BLOCK_THREADS,
       N_PER_THREAD>;
 
-  auto block_idx = elem_to_loc(tid.y, nc_shape, nc_strides, nc_dim);
+  // Signed offset: a non-sorted axis may have a negative stride.
+  auto block_idx = elem_to_loc<int64_t>(tid.y, nc_shape, nc_strides, nc_dim);
   inp += block_idx;
   out_vals += tid.y * size_sorted_axis;
   out_idxs += tid.y * size_sorted_axis;

@@ -832,11 +832,32 @@ func gatherND(
 
 // MARK: - index set (slice)
 
-func updateSlice(
+/// The result of translating index operations into `mlx_slice_update*` arguments.
+///
+/// See ``sliceUpdateArguments(src:operations:update:stream:)``.
+enum SliceUpdateArguments {
+    /// The update applies to the slice described by `starts`/`ends`/`strides`.
+    case slice(update: MLXArray, starts: [Int32], ends: [Int32], strides: [Int32])
+
+    /// The operations select the entire array -- the update has been broadcast to `src`'s shape.
+    case broadcast(MLXArray)
+}
+
+/// Translate index operations into arguments for the `mlx_slice_update*` family.
+///
+/// Returns `nil` if the operations cannot be expressed as a slice update, e.g. if any of them
+/// are arrays.  Callers should fall back to a scatter in that case.
+///
+/// - Parameters:
+///   - src: the input array
+///   - operations: array of index operations
+///   - update: the update value
+/// - Returns: the slice update arguments or `nil` if not applicable
+func sliceUpdateArguments(
     src: MLXArray, operations: [MLXArrayIndexOperation], update: MLXArray,
     stream: StreamOrDevice = .default
-) -> MLXArray? {
-    // See mlx_slice_update
+) -> SliceUpdateArguments? {
+    // See mlx_compute_slice_update_args
     let ndim = src.ndim
     if ndim == 0 || operations.count == 0 {
         return nil
@@ -855,19 +876,14 @@ func updateSlice(
     var ends = src.shape.asInt32
     var strides = [Int32](repeating: 1, count: ndim)
 
-    // If it's just a simple slice, just do a slice update and return
+    // If it's just a simple slice, the params are complete
     if operations.count == 1, case .slice(let slice) = operations[0] {
         let size = src.dim(0).int32
         starts[0] = slice.start(size)
         ends[0] = slice.end(size)
         strides[0] = slice.stride
 
-        var result = mlx_array_new()
-        mlx_slice_update(
-            &result,
-            src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
-            stream.ctx)
-        return MLXArray(result)
+        return .slice(update: update, starts: starts, ends: ends, strides: strides)
     }
 
     // Expand ellipses into a series of ':' (full slice) slices
@@ -876,7 +892,7 @@ func updateSlice(
     // If no non-None indices return the broadcasted update
     let nonNewAxisOperationCount = countNonNewAxisOperations(operations)
     if nonNewAxisOperationCount == 0 {
-        return broadcast(update, to: src.shape)
+        return .broadcast(broadcast(update, to: src.shape))
     }
 
     // Process entries
@@ -898,7 +914,7 @@ func updateSlice(
         switch item {
         case .ellipsis, .array:
             // these were replaced or rejected earlier
-            fatalError("unexpected item \(item) in updateSlice")
+            fatalError("unexpected item \(item) in sliceUpdateArguments")
 
         case .index(let index):
             let size = src.dim(axis).int32
@@ -930,12 +946,31 @@ func updateSlice(
 
     update = reshaped(update, updateReshape)
 
-    var result = mlx_array_new()
-    mlx_slice_update(
-        &result,
-        src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
-        stream.ctx)
-    return MLXArray(result)
+    return .slice(update: update, starts: starts, ends: ends, strides: strides)
+}
+
+func updateSlice(
+    src: MLXArray, operations: [MLXArrayIndexOperation], update: MLXArray,
+    stream: StreamOrDevice = .default
+) -> MLXArray? {
+    // See mlx_slice_update
+    switch sliceUpdateArguments(
+        src: src, operations: operations, update: update, stream: stream)
+    {
+    case nil:
+        return nil
+
+    case .broadcast(let update):
+        return update
+
+    case .slice(let update, let starts, let ends, let strides):
+        var result = mlx_array_new()
+        mlx_slice_update(
+            &result,
+            src.ctx, update.ctx, starts, starts.count, ends, ends.count, strides, strides.count,
+            stream.ctx)
+        return MLXArray(result)
+    }
 }
 
 // MARK: - index set (scatter)

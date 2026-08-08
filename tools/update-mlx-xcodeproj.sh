@@ -45,9 +45,11 @@ for x in \
     distributed/distributed.h \
     distributed/ops.h \
     einsum.h \
+	error.h \
     export.h \
     fast.h \
     fft.h \
+    graph_utils.h \
     io.h \
     linalg.h \
     memory.h \
@@ -71,6 +73,8 @@ for x in \
     scheduler.h \
     primitives.h \
     backend/metal/device.h \
+    backend/metal/resident.h \
+    backend/common/metal_kernel.h \
     backend/common/utils.h \
     backend/cpu/encoder.h \
     backend/gpu/eval.h

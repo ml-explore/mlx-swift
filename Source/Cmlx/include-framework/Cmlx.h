@@ -12,9 +12,11 @@
 #include <Cmlx/mlx-distributed-distributed.h>
 #include <Cmlx/mlx-distributed-ops.h>
 #include <Cmlx/mlx-einsum.h>
+#include <Cmlx/mlx-error.h>
 #include <Cmlx/mlx-export.h>
 #include <Cmlx/mlx-fast.h>
 #include <Cmlx/mlx-fft.h>
+#include <Cmlx/mlx-graph_utils.h>
 #include <Cmlx/mlx-io.h>
 #include <Cmlx/mlx-linalg.h>
 #include <Cmlx/mlx-memory.h>
@@ -38,6 +40,8 @@
 #include <Cmlx/mlx-scheduler.h>
 #include <Cmlx/mlx-primitives.h>
 #include <Cmlx/mlx-backend-metal-device.h>
+#include <Cmlx/mlx-backend-metal-resident.h>
+#include <Cmlx/mlx-backend-common-metal_kernel.h>
 #include <Cmlx/mlx-backend-common-utils.h>
 #include <Cmlx/mlx-backend-cpu-encoder.h>
 #include <Cmlx/mlx-backend-gpu-eval.h>

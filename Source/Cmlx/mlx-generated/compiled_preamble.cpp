@@ -1,4 +1,4 @@
-const char* get_kernel_preamble() {
+const char* get_prebuilt_preamble() {
 return R"preamble(
 #include <cmath>
 #include <complex>
@@ -76,6 +76,17 @@ inline float operator+(float16_t lhs, bfloat16_t rhs) { return static_cast<float
 inline float operator-(float16_t lhs, bfloat16_t rhs) { return static_cast<float>(lhs) - static_cast<float>(rhs); } inline float operator-(bfloat16_t lhs, float16_t rhs) { return static_cast<float>(lhs) - static_cast<float>(rhs); }
 inline float operator*(float16_t lhs, bfloat16_t rhs) { return static_cast<float>(lhs) * static_cast<float>(rhs); } inline float operator*(bfloat16_t lhs, float16_t rhs) { return static_cast<float>(lhs) * static_cast<float>(rhs); }
 inline float operator/(float16_t lhs, bfloat16_t rhs) { return static_cast<float>(lhs) / static_cast<float>(rhs); } inline float operator/(bfloat16_t lhs, float16_t rhs) { return static_cast<float>(lhs) / static_cast<float>(rhs); }
+template <typename, typename = void>
+constexpr bool is_complex = false;
+template <typename T>
+constexpr bool is_complex<T, std::void_t<decltype(std::declval<T>().real())>> =
+    true;
+template <typename T>
+constexpr bool is_signed_v = std::is_signed_v<T> ||
+    std::is_same_v<T, float16_t> || std::is_same_v<T, bfloat16_t>;
+template <typename T>
+constexpr bool is_floating_point_v = std::is_floating_point_v<T> ||
+    std::is_same_v<T, float16_t> || std::is_same_v<T, bfloat16_t>;
 }
 namespace mlx::core {
 struct complex64_t;
@@ -169,11 +180,6 @@ void store(T* dst, Simd<T, N> x) {
   }
   *(Simd<T, N>*)dst = x;
 }
-template <typename, typename = void>
-constexpr bool is_complex = false;
-template <typename T>
-constexpr bool is_complex<T, std::void_t<decltype(std::declval<T>().real())>> =
-    true;
 template <typename T>
 Simd<T, 1> rint(Simd<T, 1> in) {
   if constexpr (is_complex<T>) {
@@ -193,7 +199,6 @@ Simd<T, 1> recip(Simd<T, 1> in) {
 }
 template <typename T> Simd<T, 1> operator-(Simd<T, 1> in) { return std::negate{}(in.value); }
 template <typename T> Simd<T, 1> operator!(Simd<T, 1> in) { return std::logical_not{}(in.value); }
-template <typename T> Simd<T, 1> abs(Simd<T, 1> in) { return std::abs(in.value); }
 template <typename T> Simd<T, 1> acos(Simd<T, 1> in) { return std::acos(in.value); }
 template <typename T> Simd<T, 1> acosh(Simd<T, 1> in) { return std::acosh(in.value); }
 template <typename T> Simd<T, 1> asin(Simd<T, 1> in) { return std::asin(in.value); }
@@ -211,6 +216,14 @@ template <typename T> Simd<T, 1> sinh(Simd<T, 1> in) { return std::sinh(in.value
 template <typename T> Simd<T, 1> sqrt(Simd<T, 1> in) { return std::sqrt(in.value); }
 template <typename T> Simd<T, 1> tan(Simd<T, 1> in) { return std::tan(in.value); }
 template <typename T> Simd<T, 1> tanh(Simd<T, 1> in) { return std::tanh(in.value); }
+template <typename T>
+Simd<T, 1> abs(Simd<T, 1> in) {
+  if constexpr (std::is_unsigned_v<T>) {
+    return in;
+  } else {
+    return std::abs(in.value);
+  }
+}
 template <typename T>
 Simd<T, 1> log1p(Simd<T, 1> in) {
   if constexpr (is_complex<T>) {
@@ -283,7 +296,7 @@ Simd<T, 1> remainder(Simd<T, 1> a_, Simd<T, 1> b_) {
   } else {
     r = std::remainder(a, b);
   }
-  if constexpr (std::is_signed_v<T>) {
+  if constexpr (is_signed_v<T>) {
     if (r != 0 && (r < 0 != b < 0)) {
       r += b;
     }
@@ -320,6 +333,11 @@ Simd<T, 1> pow(Simd<T, 1> a, Simd<T, 1> b) {
     return std::pow(base, exp);
   } else {
     T res = 1;
+    if constexpr (std::is_signed_v<T>) {
+      if (exp < 0) {
+        return 0;
+      }
+    }
     while (exp) {
       if (exp & 1) {
         res *= base;
@@ -422,12 +440,25 @@ Simd<T, N> sincos(Simd<T, N> in) {
     return select(sign_mask_cos, yc, -yc);
   }
 }
+template <bool Sine, typename T, int N>
+Simd<T, N> sincos_checked(Simd<T, N> x) {
+  Simd<float, N> xf = x;
+  if (any(abs(xf) > Simd<float, N>(8388608.0f))) {
+    Simd<T, N> out;
+    for (int i = 0; i < N; ++i) {
+      float v = xf[i];
+      out[i] = static_cast<T>(Sine ? std::sin(v) : std::cos(v));
+    }
+    return out;
+  }
+  return sincos<Sine>(x);
+}
 template <typename T, int N>
 Simd<T, N> sin(Simd<T, N> x) {
   if constexpr (is_complex<T>) {
     return std::sin(x.value);
   } else {
-    return sincos<true>(x);
+    return sincos_checked<true>(x);
   }
 }
 template <typename T, int N>
@@ -435,7 +466,7 @@ Simd<T, N> cos(Simd<T, N> x) {
   if constexpr (is_complex<T>) {
     return std::cos(x.value);
   } else {
-    return sincos<false>(x);
+    return sincos_checked<false>(x);
   }
 }
 template <typename T, int N>
@@ -685,8 +716,6 @@ struct Select {
   }
 };
 }
-const char* get_kernel_preamble();
-using namespace mlx::core;
-using namespace mlx::core::detail;
+const char* get_prebuilt_preamble();
 )preamble";
 }

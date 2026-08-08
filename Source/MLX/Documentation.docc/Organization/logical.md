@@ -59,5 +59,6 @@ if (a < b).all().item() {
 - ``logicalAnd(_:_:stream:)``
 - ``logicalNot(_:stream:)``
 - ``logicalOr(_:_:stream:)``
+- ``logicalXor(_:_:stream:)``
 - ``notEqual(_:_:stream:)``
 - ``where(_:_:_:stream:)``

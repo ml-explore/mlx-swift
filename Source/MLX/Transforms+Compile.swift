@@ -88,16 +88,26 @@ final class CompiledFunction: @unchecked (Sendable) {
     deinit {
         let functionID = id!
         withEvalLock {
-            #if DEBUG
-                // Trivially true two lines below the acquisition -- it is here to
-                // catch a future change that moves the erase back out from under
-                // the lock, the same way `withInstanceLock` guards `call(_:)`.
-                EvalLockOwnership.requireHeldByCurrentThread(
-                    "the compiler cache was erased without holding evalLock; "
-                        + "see CompiledFunction.deinit")
-                EvalLockOwnership.recordCompileErase()
-            #endif
-            _ = mlx_detail_compile_erase(functionID)
+#if DEBUG
+            // Trivially true two lines below the acquisition -- it is here to
+            // catch a future change that moves the erase back out from under
+            // the lock, the same way `withInstanceLock` guards `call(_:)`.
+            EvalLockOwnership.requireHeldByCurrentThread(
+                "the compiler cache was erased without holding evalLock; "
+                + "see CompiledFunction.deinit")
+            EvalLockOwnership.recordCompileErase()
+#endif
+            // remove the compiled structure from the back end
+            var cache = mlx_compile_cache_new()
+            mlx_detail_compile_cache(&cache)
+            defer { mlx_compile_cache_free(cache) }
+            mlx_detail_compile_erase(cache, id)
+        }
+    }
+
+    func call(_ arguments: [MLXArray]) -> [MLXArray] {
+        lock.withLock {
+            innerCall(arguments)
         }
     }
 

@@ -12,8 +12,11 @@ const char* fp_quantized_nax() {
 
 #line 1 "mlx/backend/metal/kernels/fp4.h"
 
+constant constexpr float F8E4M3_MAX = 448.0f;
+constant constexpr float F4E2M1_MAX = 6.0f;
+
 struct fp4_e2m1 {
-  fp4_e2m1(float x) {
+  fp4_e2m1(float x) thread {
     if (metal::isnan(x)) {
       bits = 0x7;
       return;
@@ -42,17 +45,17 @@ struct fp4_e2m1 {
     bits |= sign_bit;
   }
 
-  operator float16_t() {
+  operator float16_t() thread {
     half converted = as_type<half>(ushort((bits & 7) << 9));
     converted *= 16384.0;
     return bits & 8 ? -converted : converted;
   }
 
-  operator float() {
+  operator float() thread {
     return static_cast<float>(this->operator float16_t());
   }
 
-  operator bfloat16_t() {
+  operator bfloat16_t() thread {
     return static_cast<bfloat16_t>(this->operator float16_t());
   }
 
@@ -67,7 +70,7 @@ struct fp4_e2m1 {
 
 struct fp8_e4m3 {
   template <typename T>
-  fp8_e4m3(T f) {
+  fp8_e4m3(T f) thread {
     // From PyTorch
     // https://github.com/pytorch/pytorch/blob/e3643e1e0e923f0fc063dfab6f45c956d568919d/c10/util/Float8_e4m3fn.h#L148
     uint32_t fp8_max = 543 << 21;
@@ -94,7 +97,7 @@ struct fp8_e4m3 {
     bits |= static_cast<uint8_t>(sign >> 24);
   }
 
-  operator float16_t() {
+  operator float16_t() thread {
     uint16_t v = (bits & 127) << 7;
     half converted = as_type<half>(v);
     converted *= 256.0;
@@ -102,11 +105,11 @@ struct fp8_e4m3 {
     return (sign ? -converted : converted);
   }
 
-  operator bfloat16_t() {
+  operator bfloat16_t() thread {
     return static_cast<bfloat16_t>(this->operator float16_t());
   }
 
-  operator float() {
+  operator float() thread {
     return static_cast<float>(this->operator float16_t());
   }
 
@@ -114,7 +117,7 @@ struct fp8_e4m3 {
 };
 
 struct fp8_e8m0 {
-  fp8_e8m0(float x) {
+  fp8_e8m0(float x) thread {
     if (!metal::isfinite(x)) {
       bits = 0xFF;
       return;
@@ -131,18 +134,29 @@ struct fp8_e8m0 {
     bits = static_cast<uint8_t>(n + 127);
   }
 
-  operator bfloat16_t() {
+  operator bfloat16_t() thread {
     uint16_t out = (bits == 0 ? 0x40 : (static_cast<uint16_t>(bits) << 7));
     return as_type<bfloat16_t>(out);
   }
 
-  operator float() {
+  operator float() thread {
     uint32_t out = (bits == 0 ? 0x400000 : (static_cast<uint16_t>(bits) << 23));
     return as_type<float>(out);
   }
 
   uint8_t bits;
 };
+
+// Smallest E8M0 >= x. Scales are amax/max_element, so rounding one down
+// leaves the block's largest elements outside the element range, where they
+// saturate. Matches the CUDA backend, which rounds up via cutlass ue8m0.
+inline float mx_scale_round_up(float x) {
+  fp8_e8m0 s(x);
+  if (s.bits < 0xFE && float(s) < x) {
+    s.bits += 1;
+  }
+  return float(s);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/fp_quantized_nax.h"
@@ -188,7 +202,7 @@ static inline T dequantize_scale(uint8_t s) {
 
 template <int bits>
 struct Quantize {
-  uint8_t operator()(float x) {
+  uint8_t operator()(float x) thread {
     if (bits == 8) {
       return fp8_e4m3(x).bits;
     } else {
@@ -199,7 +213,7 @@ struct Quantize {
 
 template <int bits, typename U = float>
 struct Dequantize {
-  U operator()(uint8_t x) {
+  U operator()(uint8_t x) thread {
     if constexpr (bits == 8) {
       return U(*(thread fp8_e4m3*)(&x));
     } else {
@@ -210,11 +224,12 @@ struct Dequantize {
 
 template <typename U, int bits>
 inline void dequantize(uint8_t w, U scale, threadgroup U* w_local) {
+  const float s = float(scale);
   if constexpr (bits == 4) {
-    w_local[0] = scale * Dequantize<4, U>{}(w);
-    w_local[1] = scale * Dequantize<4, U>{}(w >> 4);
+    w_local[0] = static_cast<U>(s * Dequantize<4, float>{}(w));
+    w_local[1] = static_cast<U>(s * Dequantize<4, float>{}(w >> 4));
   } else {
-    w_local[0] = scale * Dequantize<8, U>{}(w);
+    w_local[0] = static_cast<U>(s * Dequantize<8, float>{}(w));
   }
 }
 
@@ -261,14 +276,14 @@ struct QuantizedBlockLoader {
       const int src_ld_,
       threadgroup T* dst_,
       ushort simd_group_id [[simdgroup_index_in_threadgroup]],
-      ushort simd_lane_id [[thread_index_in_simdgroup]])
+      ushort simd_lane_id [[thread_index_in_simdgroup]]) thread
       : src_ld(src_ld_),
         tile_stride(
-            reduction_dim ? BCOLS_PACKED * bytes_per_pack
+            reduction_dim ? BCOLS_PACKED* bytes_per_pack
                           : BROWS * src_ld * bytes_per_pack / pack_factor),
-        group_stride(BROWS * src_ld / group_size),
+        group_stride(BROWS* src_ld / group_size),
         thread_idx(simd_group_id * 32 + simd_lane_id),
-        bi(n_reads * thread_idx / BCOLS_PACKED),
+        bi(n_reads* thread_idx / BCOLS_PACKED),
         bj((n_reads * thread_idx) % BCOLS_PACKED),
         group_id((bj * pack_factor) / group_size),
         dst(dst_ + bi * dst_ld + bj * pack_factor),
@@ -276,7 +291,7 @@ struct QuantizedBlockLoader {
             bj * bytes_per_pack),
         scales(scales_ + bi * src_ld / group_size + group_id) {}
 
-  void load_unsafe() const {
+  void load_unsafe() const thread {
     if (BCOLS_PACKED * BROWS < tgp_size && bi >= BROWS) {
       return;
     }
@@ -292,7 +307,7 @@ struct QuantizedBlockLoader {
     }
   }
 
-  void load_safe(short2 src_tile_dim) const {
+  void load_safe(short2 src_tile_dim) const thread {
     if (BCOLS_PACKED * BROWS < tgp_size && bi >= BROWS) {
       return;
     }
@@ -322,12 +337,12 @@ struct QuantizedBlockLoader {
     }
   }
 
-  void next() {
+  void next() thread {
     src += tile_stride;
     if (reduction_dim == 1) {
       scales += n_groups;
     } else {
-      scales += n_groups * group_stride;
+      scales += group_stride;
     }
   }
 };
@@ -395,16 +410,13 @@ METAL_FUNC void fp_qmm_t_impl(
   // Make the weight loader
   loader_w_t loader_w(wl, scales, K, Ws, simd_gid, simd_lid);
 
-  constexpr short UM = 16;
-  constexpr short UN = 32;
-  constexpr short UK = 16;
   constexpr short SM = BM / WM;
   constexpr short SN = BN / WN;
   constexpr short SK = 32;
 
-  constexpr short TM = SM / UM;
-  constexpr short TN = SN / UN;
-  constexpr short TK = SK / UK;
+  constexpr short TM = SM / 16;
+  constexpr short TN = SN / 16;
+  constexpr short TK = SK / 16;
 
   const short tm = SM * (simd_gid / WN);
   const short tn = SN * (simd_gid % WN);
@@ -412,22 +424,17 @@ METAL_FUNC void fp_qmm_t_impl(
   constexpr bool transpose_a = false;
   constexpr bool transpose_b = true;
 
-  const short sgp_sm = min(SM, short(M - (y_row + tm)));
+  const short sgp_sm = min(int(SM), M - (y_row + tm));
   const bool is_unaligned_sm = (sgp_sm != SM);
 
-  const short sgp_sn = aligned_N ? SN : min(SN, short(N - (y_col + tn)));
+  const short sgp_sn = aligned_N ? SN : min(int(SN), N - (y_col + tn));
 
   const short tgp_bn = aligned_N ? BN : min(BN, int(N - (y_col)));
   const bool is_unaligned_bn = aligned_N ? false : (tgp_bn != BN);
 
   using AccumType = float;
 
-  using ASubTile = NAXSubTile<T, UM, UK>;
-  using BSubTile = NAXSubTile<Wtype, UN, UK>;
-  using DSubTile = NAXSubTile<AccumType, UM, UN>;
-
-  NAXTile<AccumType, TM, TN, DSubTile> Dtile;
-
+  NAXTile<AccumType, TM, TN> Dtile;
   Dtile.clear();
 
   x += tm * K;
@@ -446,8 +453,8 @@ METAL_FUNC void fp_qmm_t_impl(
 
         STEEL_PRAGMA_NO_UNROLL
         for (int kk1 = 0; kk1 < BK; kk1 += SK) {
-          NAXTile<T, TM, TK, ASubTile> Atile;
-          NAXTile<Wtype, TN, TK, BSubTile> Btile;
+          NAXTile<T, TM, TK> Atile;
+          NAXTile<Wtype, TN, TK> Btile;
 
           volatile int compiler_barrier;
 
@@ -549,16 +556,13 @@ METAL_FUNC void fp_qmm_n_impl(
   // const short num_outs = min(BN, N - y_col);
   loader_w_t loader_w(wl, scales, K, Ws, simd_gid, simd_lid);
 
-  constexpr short UM = 16;
-  constexpr short UN = 32;
-  constexpr short UK = 16;
   constexpr short SM = BM / WM;
   constexpr short SN = BN / WN;
   constexpr short SK = 32;
 
-  constexpr short TM = SM / UM;
-  constexpr short TN = SN / UN;
-  constexpr short TK = SK / UK;
+  constexpr short TM = SM / 16;
+  constexpr short TN = SN / 16;
+  constexpr short TK = SK / 16;
 
   const short tm = SM * (simd_gid / WN);
   const short tn = SN * (simd_gid % WN);
@@ -570,12 +574,7 @@ METAL_FUNC void fp_qmm_n_impl(
 
   using AccumType = float;
 
-  using ASubTile = NAXSubTile<T, UM, UK>;
-  using BSubTile = NAXSubTile<T, UK, UN>;
-  using DSubTile = NAXSubTile<AccumType, UM, UN>;
-
-  NAXTile<AccumType, TM, TN, DSubTile> Dtile;
-
+  NAXTile<AccumType, TM, TN> Dtile;
   Dtile.clear();
 
   x += tm * K;
@@ -587,8 +586,8 @@ METAL_FUNC void fp_qmm_n_impl(
 
     STEEL_PRAGMA_NO_UNROLL
     for (int kk1 = 0; kk1 < BK; kk1 += SK) {
-      NAXTile<T, TM, TK, ASubTile> Atile;
-      NAXTile<Wtype, TK, TN, BSubTile> Btile;
+      NAXTile<T, TM, TK> Atile;
+      NAXTile<Wtype, TK, TN> Btile;
 
       volatile int compiler_barrier;
 
@@ -1018,24 +1017,19 @@ template <
   wl += transpose ? y_col_long * K_w : y_col * bytes_per_pack / pack_factor;
   scales += transpose ? y_col_long * K_g : y_col / group_size;
 
-  constexpr short UM = 16;
-  constexpr short UN = 32;
-  constexpr short UK = 16;
   constexpr short SM = BM / WM;
   constexpr short SN = BN / WN;
   constexpr short SK = 32;
 
-  constexpr short TM = SM / UM;
-  constexpr short TN = SN / UN;
-  constexpr short TK = SK / UK;
+  constexpr short TM = SM / 16;
+  constexpr short TN = SN / 16;
+  constexpr short TK = SK / 16;
 
   const short tm = SM * (simd_group_id / WN);
   const short tn = SN * (simd_group_id % WN);
 
-  const short sgp_sm =
-      align_M ? SM : min(SM, short(max(0, (M - (y_row + tm)))));
-  const short sgp_sn =
-      align_N ? SN : min(SN, short(max(0, (N - (y_col + tn)))));
+  const short sgp_sm = align_M ? SM : min(int(SM), max(0, (M - (y_row + tm))));
+  const short sgp_sn = align_N ? SN : min(int(SN), max(0, (N - (y_col + tn))));
 
   const bool is_unaligned_sm = align_M ? false : (sgp_sm != SM);
   const bool is_unaligned_bn = align_N ? false : (tgp_bn != BN);
@@ -1044,10 +1038,6 @@ template <
   constexpr short BC = transpose ? TK : TN;
 
   using AccumType = float;
-
-  using ASubTile = NAXSubTile<T, UM, UK>;
-  using BSubTile = NAXSubTile<Wtype, transpose ? UN : UK, transpose ? UK : UN>;
-  using DSubTile = NAXSubTile<AccumType, UM, UN>;
 
   // Do as many matmuls as necessary
   uint32_t index;
@@ -1070,8 +1060,11 @@ template <
     threadgroup_barrier(mem_flags::mem_none);
 
     // Prepare threadgroup mma operation
-    NAXTile<AccumType, TM, TN, DSubTile> Dtile;
+    const short m_lo_lim = min(int(sgp_sm), max(0, offset - tm));
+    const short m_hi_lim = min(int(sgp_sm), max(0, offset_next - tm));
+    const bool sg_active = m_hi_lim > m_lo_lim;
 
+    NAXTile<AccumType, TM, TN> Dtile;
     Dtile.clear();
 
     const device T* xn = x + tm * K;
@@ -1100,33 +1093,35 @@ template <
 
           STEEL_PRAGMA_NO_UNROLL
           for (int kk1 = 0; kk1 < BK; kk1 += SK) {
-            NAXTile<T, TM, TK, ASubTile> Atile;
-            NAXTile<Wtype, BR, BC, BSubTile> Btile;
+            if (sg_active) {
+              NAXTile<T, TM, TK> Atile;
+              NAXTile<Wtype, BR, BC> Btile;
 
-            volatile int compiler_barrier;
+              volatile int compiler_barrier;
 
-            if constexpr (kAlignedM.value) {
-              Atile.load(xn + kk1, K);
-            } else {
-              Atile.load_safe(xn + kk1, K, short2(SK, sgp_sm));
+              if constexpr (kAlignedM.value) {
+                Atile.load(xn + kk1, K);
+              } else {
+                Atile.load_safe(xn + kk1, K, short2(SK, sgp_sm));
+              }
+
+              if constexpr (transpose) {
+                Btile.template load<Wtype, BK_padded, 1>(
+                    Ws + tn * BK_padded + kk1);
+              } else {
+                Btile.template load<Wtype, BN_padded, 1>(
+                    Ws + tn + kk1 * BN_padded);
+              }
+
+              tile_matmad_nax(
+                  Dtile,
+                  Atile,
+                  metal::bool_constant<false>{},
+                  Btile,
+                  metal::bool_constant<transpose>{});
+
+              (void)compiler_barrier;
             }
-
-            if constexpr (transpose) {
-              Btile.template load<Wtype, BK_padded, 1>(
-                  Ws + tn * BK_padded + kk1);
-            } else {
-              Btile.template load<Wtype, BN_padded, 1>(
-                  Ws + tn + kk1 * BN_padded);
-            }
-
-            tile_matmad_nax(
-                Dtile,
-                Atile,
-                metal::bool_constant<false>{},
-                Btile,
-                metal::bool_constant<transpose>{});
-
-            (void)compiler_barrier;
           }
 
           xn += BK;
@@ -1140,37 +1135,36 @@ template <
 
           STEEL_PRAGMA_NO_UNROLL
           for (int kk1 = 0; kk1 < BK; kk1 += SK) {
-            NAXTile<T, TM, TK, ASubTile> Atile;
-            NAXTile<Wtype, BR, BC, BSubTile> Btile;
+            if (sg_active) {
+              NAXTile<T, TM, TK> Atile;
+              NAXTile<Wtype, BR, BC> Btile;
 
-            volatile int compiler_barrier;
+              volatile int compiler_barrier;
 
-            const short psk = min(int(SK), max(0, (BK - kk1)));
-            Atile.load_safe(xn + kk1, K, short2(psk, sgp_sm));
+              const short psk = min(int(SK), max(0, (BK - kk1)));
+              Atile.load_safe(xn + kk1, K, short2(psk, sgp_sm));
 
-            if constexpr (transpose) {
-              Btile.template load<Wtype, BK_padded, 1>(
-                  Ws + tn * BK_padded + kk1);
-            } else {
-              Btile.template load<Wtype, BN_padded, 1>(
-                  Ws + tn + kk1 * BN_padded);
+              if constexpr (transpose) {
+                Btile.template load<Wtype, BK_padded, 1>(
+                    Ws + tn * BK_padded + kk1);
+              } else {
+                Btile.template load<Wtype, BN_padded, 1>(
+                    Ws + tn + kk1 * BN_padded);
+              }
+
+              tile_matmad_nax(
+                  Dtile,
+                  Atile,
+                  metal::bool_constant<false>{},
+                  Btile,
+                  metal::bool_constant<transpose>{});
+
+              (void)compiler_barrier;
             }
-
-            tile_matmad_nax(
-                Dtile,
-                Atile,
-                metal::bool_constant<false>{},
-                Btile,
-                metal::bool_constant<transpose>{});
-
-            (void)compiler_barrier;
           }
         }
 
         threadgroup_barrier(mem_flags::mem_threadgroup);
-
-        const short m_lo_lim = min(int(sgp_sm), max(0, offset - tm));
-        const short m_hi_lim = min(int(sgp_sm), max(0, offset_next - tm));
 
         // Store results to device memory
         if constexpr (kAlignedN.value) {

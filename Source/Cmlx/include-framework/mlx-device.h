@@ -6,6 +6,7 @@
 #include <Cmlx/mlx-api.h>
 
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <variant>
 
@@ -24,14 +25,21 @@ struct MLX_API Device {
 
   DeviceType type;
   int index;
+
+  // TODO: Use default three-way comparison when it gets supported in XCode.
+  bool operator==(const Device&) const = default;
+  bool operator<(const Device& rhs) const {
+    return std::tie(type, index) < std::tie(rhs.type, rhs.index);
+  }
 };
+
+inline bool operator==(const Device& device, Device::DeviceType type) {
+  return device.type == type;
+}
 
 MLX_API const Device& default_device();
 
 MLX_API void set_default_device(const Device& d);
-
-MLX_API bool operator==(const Device& lhs, const Device& rhs);
-MLX_API bool operator!=(const Device& lhs, const Device& rhs);
 
 MLX_API bool is_available(const Device& d);
 
