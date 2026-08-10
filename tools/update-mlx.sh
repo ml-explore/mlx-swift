@@ -10,6 +10,8 @@ then
     exit 1
 fi
 
+mlx_source="$PWD/Source/Cmlx/mlx"
+
 # copy mlx-c headers to build area
 rm -f Source/Cmlx/include/mlx/c/*
 cp Source/Cmlx/mlx-c/mlx/c/*.h Source/Cmlx/include/mlx/c
@@ -22,62 +24,44 @@ cmake ../Source/Cmlx/mlx -DMLX_METAL_JIT=ON -DMACOS_VERSION=14.0
 
 # run the cmake build to generate the source files
 cd mlx/backend/metal
-make \
-    arange \
-    binary \
-    binary_ops \
-    binary_two \
-    conv \
-    copy \
-    fft \
-    fp_quantized \
-    fp_quantized_nax \
-    gather \
-    gather_axis \
-    gather_front \
-    gemm \
-    gemm_nax \
-    gemv_masked \
-    hadamard \
-    logsumexp \
-    masked_scatter \
-    quantized \
-    quantized_nax \
-    quantized_utils \
-    reduce \
-    reduce_utils \
-    scan \
-    scatter \
-    scatter_axis \
-    softmax \
-    sort \
-    steel_attention \
-    steel_attention_nax \
-    steel_conv \
-    steel_conv_3d \
-    steel_conv_general \
-    steel_gemm_fused \
-    steel_gemm_fused_nax \
-    steel_gemm_gather \
-    steel_gemm_gather_nax \
-    steel_gemm_masked \
-    steel_gemm_segmented \
-    steel_gemm_splitk \
-    steel_gemm_splitk_nax \
-    ternary \
-    ternary_ops \
-    unary \
-    unary_ops \
-    utils
+
+# one target per make_jit_source() in mlx/backend/metal/CMakeLists.txt, which is
+# where the set of Metal jit sources is declared
+metal_jit_targets=(${(f)"$(tr '\n' ' ' < "$mlx_source/mlx/backend/metal/CMakeLists.txt" \
+    | grep -oE 'make_jit_source\( *[a-zA-Z_0-9/]+' \
+    | sed -E 's/make_jit_source\( *//' \
+    | sed 's|.*/||' \
+    | sort -u)"})
+
+if (( ! $#metal_jit_targets ))
+then
+    echo "Found no make_jit_source() targets in mlx/backend/metal/CMakeLists.txt"
+    exit 1
+fi
+
+make $metal_jit_targets
 
 cd ../../..
 make cpu_compiled_preamble
 
 # run the command to do the build-time code generation for CUDA
+
+cuda_source="$mlx_source/mlx/backend/cuda"
+
+# the same set that the file(GLOB) in mlx/backend/cuda/CMakeLists.txt embeds
+cuda_jit_sources=(${cuda_source}/device/*.(h|cuh)(N))
+cuda_jit_sources=(${cuda_jit_sources#$cuda_source/})
+
+if (( ! $#cuda_jit_sources ))
+then
+    echo "Found no jit sources in mlx/backend/cuda/device"
+    exit 1
+fi
+
 cmake \
-  -DMLX_SOURCE_ROOT="../Source/Cmlx/mlx/mlx/backend/cuda" \
-  -DMLX_JIT_SOURCES="device/atomic_ops.cuh:device/binary_ops.cuh:device/cast_op.cuh:device/complex.cuh:device/config.h:device/fp16_math.cuh:device/gather.cuh:device/gather_axis.cuh:device/hadamard.cuh:device/indexing.cuh:device/scatter.cuh:device/scatter_axis.cuh:device/scatter_ops.cuh:device/ternary_ops.cuh:device/unary_ops.cuh:device/utils.cuh" \
-  -P "../Source/Cmlx/mlx/mlx/backend/cuda/bin2h.cmake"
+  -DMLX_SOURCE_ROOT="$cuda_source" \
+  -DMLX_JIT_SOURCES="${(j.:.)cuda_jit_sources}" \
+  -P "$cuda_source/bin2h.cmake"
 
 cd ..
 
