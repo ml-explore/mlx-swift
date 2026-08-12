@@ -66,12 +66,59 @@ func searchForCommand(_ name: String) -> URL? {
                 if reaped == -1 && errno == EINTR {
                     continue
                 }
-                // ECHILD means Foundation's own reaper won the race and has
-                // already collected the child, so its bookkeeping is complete
-                // and authoritative. Anything else is unexpected; fall back
-                // the same way rather than inventing a status.
-                return terminationStatus
+                // `waitpid` has nothing to reap. Overwhelmingly this is ECHILD:
+                // Foundation runs its own reaper thread over every `Process` it
+                // spawns, and on a parallel build it sometimes gets there
+                // first. Whatever the reason, the child is gone and Foundation's
+                // bookkeeping is now the only available source of truth.
+                return foundationTerminationStatus()
             }
         }
+
+        /// Foundation's view of the exit status, waited for rather than read
+        /// straight away.
+        ///
+        /// `terminationStatus` is not safe to read the instant `waitpid`
+        /// returns ECHILD. Foundation publishes the result in two steps, and
+        /// reading the status inside the window before `isRunning` goes false
+        /// **traps the process**:
+        ///
+        /// ```
+        /// *** Program crashed: System trap at 0x0000ffff90b6fb50 ***
+        /// Thread 0 "encuda-tool" crashed:
+        ///   0  Process.terminationStatus.getter + 80 in libFoundation.so
+        ///   1  Process.waitForExitStatus() + 107 in encuda-tool
+        /// ```
+        ///
+        /// Observed on aarch64 Linux with Swift 6.3.1 during an unconstrained
+        /// SwiftPM build of mlx's CUDA backend: one transpile in ~250 dies this
+        /// way, which kills `swift build` with exit code 1 and *no diagnostic*,
+        /// because the crash report goes to the transpiler's own output rather
+        /// than surfacing as a build error.
+        ///
+        /// So wait for the flag — but on a deadline. An unbounded wait here
+        /// would reintroduce exactly the hang this whole function exists to
+        /// avoid. If the deadline expires, report a non-zero status instead:
+        /// the caller turns that into a build failure, which is diagnosable,
+        /// whereas a hang and a trap are not.
+        private func foundationTerminationStatus() -> Int32 {
+            let deadline = Date().addingTimeInterval(reaperSettleTimeout)
+            while isRunning && Date() < deadline {
+                usleep(1000)
+            }
+            guard !isRunning else {
+                return reaperTimedOutStatus
+            }
+            return terminationStatus
+        }
+
+        /// How long to let Foundation finish publishing a child's exit status
+        /// before giving up on it. Generous, because exceeding it means a build
+        /// failure: the window being waited on is normally sub-millisecond.
+        private var reaperSettleTimeout: TimeInterval { 30 }
+
+        /// Reported when Foundation never publishes a status. Chosen from the
+        /// range no compiler returns, so it is recognisable in a build log.
+        private var reaperTimedOutStatus: Int32 { 254 }
     }
 #endif
