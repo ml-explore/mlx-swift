@@ -68,9 +68,9 @@ extension Encuda {
                     + archArgs
                     + (verbose ? ["-v"] : []) + includeArgs + inputFiles + ["-o", output]
                 try process.run()
-                process.waitUntilExitWorkaround()
-                guard process.terminationStatus == 0 else {
-                    throw EncudaError.nvccFailed(process.terminationStatus)
+                let status = process.waitForExitStatus()
+                guard status == 0 else {
+                    throw EncudaError.nvccFailed(status)
                 }
             #endif
         }
