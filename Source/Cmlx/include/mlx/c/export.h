@@ -66,6 +66,7 @@ int mlx_imported_function_apply_kwargs(
     const mlx_imported_function xfunc,
     const mlx_vector_array args,
     const mlx_map_string_to_array kwargs);
+int mlx_export_to_dot_file(const char* path, mlx_array output);
 /**@}*/
 
 #ifdef __cplusplus
