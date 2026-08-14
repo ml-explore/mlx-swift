@@ -87,7 +87,7 @@ class OpsTests: XCTestCase {
     }
 
     func testFlatten() {
-        let a = zeros([4, 5, 6, 7])
+        let a = zeros([4, 5, 6, 7], type: Float.self)
         let b = flatten(a, startAxis: 1, endAxis: 2)
         let c = unflatten(b, axis: 1, shape: [5, 6])
         assertEqual(a, c)

@@ -201,6 +201,32 @@ class MLXArrayInitTests: XCTestCase {
         XCTAssertEqual(c.shape, [0])
     }
 
+    func testArangeDTypeInference() {
+        // Generic integer overloads infer dtype from Swift type
+        XCTAssertEqual(arange(Int16(10)).dtype, .int16)
+        XCTAssertEqual(arange(UInt8(5)).dtype, .uint8)
+        XCTAssertEqual(arange(Int8(0), Int8(10), step: Int8(2)).dtype, .int8)
+        XCTAssertEqual(arange(Int64(10)).dtype, .int64)
+        XCTAssertEqual(arange(UInt32(8)).dtype, .uint32)
+
+        // Generic floating point overload
+        XCTAssertEqual(arange(Float(5.0)).dtype, .float32)
+
+        // Existing concrete overloads remain unchanged
+        XCTAssertEqual(arange(10).dtype, .int32)
+        XCTAssertEqual(arange(5.0).dtype, .float32)
+
+        // Static method versions
+        XCTAssertEqual(MLXArray.arange(Int16(10)).dtype, .int16)
+        XCTAssertEqual(MLXArray.arange(UInt8(5)).dtype, .uint8)
+
+        #if !arch(x86_64)
+            // Float16 test (not available on x86_64)
+            XCTAssertEqual(arange(Float16(5.0)).dtype, .float16)
+            XCTAssertEqual(MLXArray.arange(Float16(3.0)).dtype, .float16)
+        #endif
+    }
+
     func testData() {
         let data = Data([1, 2, 3, 4])
         let a = MLXArray(data, [2, 2], type: UInt8.self)
