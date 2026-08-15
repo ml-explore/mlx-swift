@@ -52,7 +52,7 @@ public struct StreamOrDevice: Sendable, CustomStringConvertible, Equatable {
     public static let gpu = device(.gpu)
 
     public static func stream(_ stream: Stream) -> StreamOrDevice {
-        StreamOrDevice(Device.defaultStream())
+        StreamOrDevice(stream)
     }
 
     /// Internal context -- used with Cmlx calls.

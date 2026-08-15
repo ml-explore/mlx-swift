@@ -9,6 +9,13 @@ import Foundation
 /// while control is inside `mlx_detail_compile`/`mlx_closure_apply`, and that user
 /// function may itself call `eval()`. Do not replace this with `Synchronization.Mutex`:
 /// `Mutex` is not reentrant, and swapping it in here would deadlock on that call path.
+/// Do not shard it by stream either: the vendored MLX core's transform tracing counters and
+/// compiler cache are process-global and are not internally synchronized. The lock is released
+/// after `asyncEval` has scheduled work, so callers that need overlapping device execution should
+/// schedule independent graphs asynchronously and synchronize their streams afterward.
+/// Synchronous `eval` cannot be split into async scheduling plus an unlocked wait: MLX deliberately
+/// rejects `async_eval` of tracer arrays, while synchronous evaluation during a transform is a
+/// supported reentrant path used to retain the traced graph.
 let evalLock = NSRecursiveLock()
 
 /// Evaluate one or more `MLXArray`
@@ -16,6 +23,7 @@ let evalLock = NSRecursiveLock()
 /// ### See Also
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: MLXArray...) {
+    guard !arrays.isEmpty else { return }
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_eval(vector_array)
@@ -28,6 +36,7 @@ public func eval(_ arrays: MLXArray...) {
 /// ### See Also
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: some Collection<MLXArray>) {
+    guard !arrays.isEmpty else { return }
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_eval(vector_array)
@@ -41,6 +50,7 @@ public func eval(_ arrays: some Collection<MLXArray>) {
 /// - <doc:lazy-evaluation>
 /// - ``asyncEval(_:)-(Collection<MLXArray>)``
 public func asyncEval(_ arrays: some Collection<MLXArray>) {
+    guard !arrays.isEmpty else { return }
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_async_eval(vector_array)
