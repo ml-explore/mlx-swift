@@ -361,6 +361,8 @@ let package = Package(
             exclude: mlxSwiftExcludes,
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6),
+                .enableExperimentalFeature("Lifetimes"),
             ]
         ),
         .target(
