@@ -87,3 +87,17 @@ public func valueAndGrad<T>(
 ) {
     buildValueAndGradient(f)
 }
+
+/// Returns a reusable value-and-gradient function for nested parameters and additional array
+/// inputs. Only the nested parameters are differentiated; `arrays` are ordinary transform inputs
+/// so their values may change without rebuilding the transform.
+///
+/// If the parameter topology changes, the returned function rebuilds its transform for the new
+/// topology. Changes to parameter values, shapes, or dtypes preserve the transform object.
+public func valueAndGrad(
+    _ f: @escaping (NestedDictionary<String, MLXArray>, [MLXArray]) -> [MLXArray]
+) -> (NestedDictionary<String, MLXArray>, [MLXArray]) -> (
+    [MLXArray], NestedDictionary<String, MLXArray>
+) {
+    buildValueAndGradient(f)
+}

@@ -67,6 +67,80 @@ class TransformTests: XCTestCase {
         XCTAssertEqual(grad[0].item(), Float(2 * 1.5))
     }
 
+    func testGradReusableAcrossValuesAndShapes() {
+        let gradient = grad { (x: MLXArray) in x.square().sum() }
+
+        XCTAssertEqual(gradient(MLXArray(2)).item(Float.self), 4)
+        XCTAssertEqual(gradient(MLXArray(-3)).item(Float.self), -6)
+        XCTAssertEqual(
+            gradient(MLXArray([Float(1), 2, 3])).asArray(Float.self), [2, 4, 6])
+    }
+
+    func testNestedValueAndGradUsesCurrentExtraArrays() {
+        var parameters = ModuleParameters()
+        parameters["weight"] = .value(MLXArray(Float(2)))
+
+        let transformed = valueAndGrad {
+            (parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] in
+            guard case .value(let weight)? = parameters["weight"] else {
+                XCTFail("missing weight")
+                return []
+            }
+            return [weight * arrays[0]]
+        }
+
+        let (firstValue, firstGradients) = transformed(parameters, [MLXArray(Float(3))])
+        XCTAssertEqual(firstValue[0].item(Float.self), 6)
+        guard case .value(let firstGradient)? = firstGradients["weight"] else {
+            return XCTFail("missing first gradient")
+        }
+        XCTAssertEqual(firstGradient.item(Float.self), 3)
+
+        let (secondValue, secondGradients) = transformed(parameters, [MLXArray(Float(7))])
+        XCTAssertEqual(secondValue[0].item(Float.self), 14)
+        guard case .value(let secondGradient)? = secondGradients["weight"] else {
+            return XCTFail("missing second gradient")
+        }
+        XCTAssertEqual(secondGradient.item(Float.self), 7)
+    }
+
+    func testNestedValueAndGradRebuildsForChangedParameterTopology() {
+        let transformed = valueAndGrad {
+            (parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] in
+            let weight: MLXArray
+            if case .value(let value)? = parameters["weight"] {
+                weight = value
+            } else if case .dictionary(let layer)? = parameters["layer"],
+                case .value(let value)? = layer["weight"]
+            {
+                weight = value
+            } else {
+                XCTFail("missing weight")
+                return []
+            }
+            return [weight * arrays[0]]
+        }
+
+        var flat = ModuleParameters()
+        flat["weight"] = .value(MLXArray(Float(2)))
+        let (_, flatGradients) = transformed(flat, [MLXArray(Float(3))])
+        guard case .value(let flatGradient)? = flatGradients["weight"] else {
+            return XCTFail("gradient did not preserve flat topology")
+        }
+        XCTAssertEqual(flatGradient.item(Float.self), 3)
+
+        var nested = ModuleParameters()
+        nested["layer"] = .dictionary(["weight": .value(MLXArray(Float(5)))])
+        let (nestedValue, nestedGradients) = transformed(nested, [MLXArray(Float(4))])
+        XCTAssertEqual(nestedValue[0].item(Float.self), 20)
+        guard case .dictionary(let layer)? = nestedGradients["layer"],
+            case .value(let nestedGradient)? = layer["weight"]
+        else {
+            return XCTFail("gradient did not preserve nested topology")
+        }
+        XCTAssertEqual(nestedGradient.item(Float.self), 4)
+    }
+
     func testValueAndGradNested() {
         // valueAndGrad on a nested structure, e.g. parameters.
         // this isn't a real model but can exercise the
@@ -110,6 +184,28 @@ class TransformTests: XCTestCase {
         } else {
             XCTFail("missing linear key")
         }
+    }
+
+    func testModelValueAndGradRestoresParametersBeforeEvaluation() {
+        final class ScaleModel: Module {
+            let weight = MLXArray(Float(2))
+        }
+
+        let model = ScaleModel()
+        let transformed = valueAndGrad(model: model) { model, arrays in
+            [(model.weight * arrays[0]).square()]
+        }
+
+        let (values, gradients) = transformed(model, [MLXArray(Float(3))])
+
+        // Model state must not retain the temporary VJP primals after the callback returns.
+        eval(model)
+        XCTAssertEqual(model.weight.item(Float.self), 2)
+        XCTAssertEqual(values[0].item(Float.self), 36)
+        guard case .value(let weightGradient)? = gradients["weight"] else {
+            return XCTFail("missing weight gradient")
+        }
+        XCTAssertEqual(weightGradient.item(Float.self), 36)
     }
 
     func testCompile() {
@@ -215,6 +311,68 @@ class TransformTests: XCTestCase {
         let r2 = compiled([MLXArray(-11)])
         XCTAssertEqual(r2[0].item(Float.self), 11)
         XCTAssertEqual(state.o!.item(Float.self), -8)
+    }
+
+    func testCompiledStateFreshAcrossRecompile() {
+        let state = CompileTestState()
+
+        let compiled = compile(inputs: [state]) { inputs in
+            [inputs[0] + state.y]
+        }
+
+        let first = compiled([MLXArray(Float(5))])
+        XCTAssertEqual(first[0].item(Float.self), 7)
+
+        state.y = MLXArray(Float(10))
+        let retraced = compiled([MLXArray([Float(1), 2, 3])])
+        XCTAssertEqual(retraced[0].asArray(Float.self), [11, 12, 13])
+
+        state.y = MLXArray(Float(100))
+        let originalShape = compiled([MLXArray(Float(5))])
+        XCTAssertEqual(originalShape[0].item(Float.self), 105)
+    }
+
+    func testCompiledClosureDoesNotRetainItself() {
+        final class LifetimeToken {}
+
+        weak var weakToken: LifetimeToken?
+        var compiledFunction: (@Sendable ([MLXArray]) -> [MLXArray])?
+
+        do {
+            let token = LifetimeToken()
+            weakToken = token
+            compiledFunction = compile { inputs in
+                _ = token
+                return [inputs[0] + 1]
+            }
+            XCTAssertEqual(compiledFunction?([MLXArray(Float(1))])[0].item(Float.self), 2)
+        }
+
+        XCTAssertNotNil(weakToken)
+        compiledFunction = nil
+        XCTAssertNil(weakToken)
+    }
+
+    func testCompiledClosureTracksCompileModeChanges() {
+        var traceCount = 0
+        let compiled = compile { (x: MLXArray) -> MLXArray in
+            traceCount += 1
+            return x + 1
+        }
+
+        _ = compiled(MLXArray(Float(1)))
+        _ = compiled(MLXArray(Float(2)))
+        XCTAssertEqual(traceCount, 1)
+
+        compile(enable: false)
+        defer { compile(enable: true) }
+        _ = compiled(MLXArray(Float(3)))
+        _ = compiled(MLXArray(Float(4)))
+        XCTAssertEqual(traceCount, 3)
+
+        compile(enable: true)
+        _ = compiled(MLXArray(Float(5)))
+        XCTAssertEqual(traceCount, 3)
     }
 
     func testCompiledRandom() {
@@ -371,13 +529,17 @@ class TransformTests: XCTestCase {
             }
         }
 
+        // Exercise concurrent calls to one cached wrapper, rather than constructing an
+        // independent compiled function in every task.
+        let compiledSwiglu = compileSwiglu()
+
         await withTaskGroup(of: Void.self) { group in
             for _ in 0 ..< 10 {
                 group.addTask {
                     withRandomState(.init()) {
                         let x = MLXRandom.normal([1024, 1024])
                         let y = MLXRandom.normal(x.shape)
-                        let _ = compileSwiglu()(x, y)
+                        let _ = compiledSwiglu(x, y)
                     }
                 }
             }

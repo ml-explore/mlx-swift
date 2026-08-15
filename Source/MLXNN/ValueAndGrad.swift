@@ -59,11 +59,16 @@ public func valueAndGrad<Model: Module>(
     // arrays we can capture the result of the valueAndGrad and use it
     // over and over
     func inner(parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] {
+        let savedParameters = _snapshotArrayContexts(model.trainableParameters())
         model.update(parameters: parameters)
+        defer { model.update(parameters: savedParameters) }
         return [f(model, arrays[0], arrays[1])]
     }
 
-    let vg = valueAndGrad(inner)
+    // Select MLX's array-specialized overload explicitly. It passes `a1`/`a2` as transform
+    // inputs and reuses the value-and-gradient transform while the parameter topology is stable.
+    let vg: (ModuleParameters, [MLXArray]) -> ([MLXArray], ModuleParameters) =
+        valueAndGrad(inner)
 
     // outer function
     func wrapped(model: Model, a1: MLXArray, a2: MLXArray) -> (MLXArray, ModuleParameters) {
@@ -102,11 +107,16 @@ public func valueAndGrad<Model: Module>(
 ) -> (Model, [MLXArray]) -> ([MLXArray], ModuleParameters) {
 
     func inner(parameters: ModuleParameters, arrays: [MLXArray]) -> [MLXArray] {
+        let savedParameters = _snapshotArrayContexts(model.trainableParameters())
         model.update(parameters: parameters)
+        defer { model.update(parameters: savedParameters) }
         return f(model, arrays)
     }
 
-    let vg = valueAndGrad(inner)
+    // Extra arrays are transform inputs rather than captured values, so changing a batch does
+    // not rebuild the value-and-gradient transform.
+    let vg: (ModuleParameters, [MLXArray]) -> ([MLXArray], ModuleParameters) =
+        valueAndGrad(inner)
 
     func wrapped(model: Model, arrays: [MLXArray]) -> ([MLXArray], ModuleParameters) {
         vg(model.trainableParameters(), arrays)
@@ -148,7 +158,9 @@ public func valueAndGrad<Model: Module, Arguments>(
     func wrapped(model: Model, arguments: Arguments) -> ([MLXArray], ModuleParameters) {
 
         func inner(parameters: ModuleParameters, _ extra: ()) -> [MLXArray] {
+            let savedParameters = _snapshotArrayContexts(model.trainableParameters())
             model.update(parameters: parameters)
+            defer { model.update(parameters: savedParameters) }
             return f(model, arguments)
         }
 

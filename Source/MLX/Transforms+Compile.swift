@@ -4,6 +4,49 @@ import Cmlx
 import Foundation
 import Synchronization
 
+private let compileConfigurationGeneration = Mutex(UInt64(0))
+
+/// Mutable values read by the persistent tracer closure. Keeping these in a separate object
+/// avoids a retain cycle between `CompiledFunction` and the C closure that it owns.
+private final class CompileTraceState: @unchecked Sendable {
+    let f: ([MLXArray]) -> [MLXArray]
+    let outputs: [any Updatable]
+
+    var argumentsCount = 0
+    var stateInputs: [MLXArray] = []
+
+    init(outputs: [any Updatable], _ f: @escaping ([MLXArray]) -> [MLXArray]) {
+        self.f = f
+        self.outputs = outputs
+    }
+
+    /// Called synchronously by MLX while `CompiledFunction.lock` is held.
+    func trace(_ tracers: [MLXArray]) -> [MLXArray] {
+        let tracerArguments = Array(tracers.prefix(argumentsCount))
+        let savedStateInputs = stateInputs.map { $0.copyContext() }
+
+        for (state, tracer) in zip(stateInputs, tracers.dropFirst(argumentsCount)) {
+            state._updateInternal(tracer)
+        }
+
+        // A trace temporarily installs tracer arrays in caller-owned state. Always restore the
+        // original arrays before returning, including when this function gains throwing work in
+        // the future.
+        defer {
+            for (state, saved) in zip(stateInputs, savedStateInputs) {
+                state._updateInternal(saved)
+            }
+        }
+
+        // The function may return one of the mutable state wrappers directly. Snapshot its MLX
+        // context before the defer below restores caller-owned state, otherwise the returned
+        // wrapper would be rewired to an uncaptured original compile input.
+        let result = f(tracerArguments).map { $0.copyContext() }
+        let stateOutputTracers = outputs.flatMap { $0.innerState() }.map { $0.copyContext() }
+        return result + stateOutputTracers
+    }
+}
+
 // `@unchecked Sendable`: `f`, `inputs`, and `outputs` are plain (non-`@Sendable`) stored
 // values used directly outside of `lock` (during `init`), so the compiler can't verify
 // this structurally even though `call(_:)` fully serializes access via `lock`.
@@ -23,6 +66,14 @@ final class CompiledFunction: @unchecked (Sendable) {
 
     let shapeless: Bool
 
+    private let traceState: CompileTraceState
+
+    /// Persistent wrapper returned by `mlx_detail_compile`. The actual compiled graphs remain
+    /// keyed by `id` in MLX's compiler cache; retaining this wrapper avoids rebuilding the Swift
+    /// trampoline and C++ `std::function` wrappers on every cache hit.
+    private var compiled: mlx_closure?
+    private var compiledGeneration: UInt64?
+
     init(
         inputs: [any Updatable], outputs: [any Updatable], shapeless: Bool,
         _ f: @escaping ([MLXArray]) -> [MLXArray]
@@ -31,12 +82,19 @@ final class CompiledFunction: @unchecked (Sendable) {
         self.inputs = inputs
         self.outputs = outputs
         self.shapeless = shapeless
+        self.traceState = CompileTraceState(outputs: outputs, f)
         self.id = UInt(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
 
     deinit {
-        // remove the compiled structure from the back end
-        mlx_detail_compile_erase(id)
+        // Serialize destruction with application of other MLX transform closures. The tracer
+        // closure only retains `traceState` (not `self`), so freeing it here cannot form a cycle.
+        evalLock.withLock {
+            if let compiled {
+                mlx_closure_free(compiled)
+            }
+            mlx_detail_compile_erase(id)
+        }
     }
 
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
@@ -47,92 +105,88 @@ final class CompiledFunction: @unchecked (Sendable) {
         return result
     }
 
-    func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
-        let stateInputs = inputs.flatMap { $0.innerState() }
-        let argumentsCount = arguments.count
-
-        // inner function to hande the compilation.  this is called
-        // once per compile (typically once overall, but can be called
-        // again if the conditions for recompile change)
-        func inner(tracers: [MLXArray]) -> [MLXArray] {
-
-            // put the tracers in their appropriate places:
-            // - arguments to the function
-            // - inner state
-
-            let tracerArguments = Array(tracers.prefix(argumentsCount))
-
-            // save a snapshot of the inner state
-            let savedStateInputs = stateInputs.map { $0.copyContext() }
-
-            // replace the inner state with the tracers
-            for (s, tracer) in zip(stateInputs, tracers[argumentsCount...]) {
-                s._updateInternal(tracer)
-            }
-
-            // call the function with the tracer arguments
-            // and the state holding tracers
-            let result = f(tracerArguments)
-
-            // recapture the state as it may have changed
-            let stateOutputTracers = outputs.flatMap { $0.innerState() }.map { $0.copyContext() }
-
-            // put the original values back in the state
-            for (s, saved) in zip(stateInputs, savedStateInputs) {
-                s._updateInternal(saved)
-            }
-
-            // return the result of the function and the state
-            return result + stateOutputTracers
+    private func buildCompiledClosure() -> mlx_closure? {
+        let traceState = traceState
+        let innerClosure = new_mlx_closure { tracers in
+            traceState.trace(tracers)
         }
-
-        let innerClosure = new_mlx_closure(inner(tracers:))
         defer { mlx_closure_free(innerClosure) }
 
-        // note: this will use the cached compile (via the id)
-        // but will be able to re-evaluate with fresh state if needed
-        evalLock.lock()
         var compiled = mlx_closure_new()
         let compileStatus = mlx_detail_compile(&compiled, innerClosure, id, shapeless, [], 0)
-        defer {
-            mlx_closure_free(compiled)
-            evalLock.unlock()
-        }
 
         // mlx_error was already dispatched on failure:
         //   • outside withError — fatalError was called; we won't reach here
-        //   • inside withError  — error is stored in the ErrorBox; return [] so
+        //   • inside withError  — error is stored in the ErrorBox; return nil so
         //                         withError can throw instead of crashing downstream
         guard compileStatus == 0 else {
-            return []
+            mlx_closure_free(compiled)
+            return nil
         }
 
-        let innerInputs = arguments + stateInputs
-        let innerInputsVector = new_mlx_vector_array(innerInputs)
-        defer { mlx_vector_array_free(innerInputsVector) }
+        return compiled
+    }
 
-        // will compile the function (if needed) and evaluate the
-        // compiled graph
-        var resultVector = mlx_vector_array_new()
-        let applyStatus = mlx_closure_apply(&resultVector, compiled, innerInputsVector)
-        defer { mlx_vector_array_free(resultVector) }
+    func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
+        traceState.stateInputs = inputs.flatMap { $0.innerState() }
+        traceState.argumentsCount = arguments.count
 
-        guard applyStatus == 0 else {
-            return []
+        return evalLock.withLock {
+            let generation = compileConfigurationGeneration.withLock { $0 }
+
+            // `mlx_detail_compile` observes whether compilation is enabled when it creates the
+            // wrapper. Rebuild only after the public mode setter is used so a cached wrapper does
+            // not permanently preserve an earlier enabled/disabled mode.
+            if compiledGeneration != generation {
+                if let compiled {
+                    mlx_closure_free(compiled)
+                    self.compiled = nil
+                }
+                compiledGeneration = generation
+            }
+
+            if compiled == nil {
+                guard let built = buildCompiledClosure() else {
+                    compiledGeneration = nil
+                    return []
+                }
+                compiled = built
+            }
+
+            guard let compiled else {
+                return []
+            }
+
+            let innerInputs = arguments + traceState.stateInputs
+            let innerInputsVector = new_mlx_vector_array(innerInputs)
+            defer { mlx_vector_array_free(innerInputsVector) }
+
+            // This compiles on a cache miss (including a new shape/dtype) and evaluates the graph.
+            var resultVector = mlx_vector_array_new()
+            let applyStatus = mlx_closure_apply(&resultVector, compiled, innerInputsVector)
+            defer { mlx_vector_array_free(resultVector) }
+
+            guard applyStatus == 0 else {
+                // MLX marks a cache entry non-empty before tracing it. If tracing fails, remove
+                // that potentially incomplete entry so a later call can retry cleanly.
+                mlx_detail_compile_erase(id)
+                return []
+            }
+
+            let resultsPlusStateOutput = mlx_vector_array_values(resultVector)
+
+            // push the stateOutput into the state
+            let stateOutput = outputs.flatMap { $0.innerState() }
+
+            for (state, newValues) in zip(
+                stateOutput, resultsPlusStateOutput.suffix(stateOutput.count))
+            {
+                state._updateInternal(newValues)
+            }
+
+            let resultLength = resultsPlusStateOutput.count - stateOutput.count
+            return Array(resultsPlusStateOutput.prefix(resultLength))
         }
-
-        let resultsPlusStateOutput = mlx_vector_array_values(resultVector)
-
-        // push the stateOutput into the state
-        let stateOutput = outputs.flatMap { $0.innerState() }
-
-        for (s, newValues) in zip(stateOutput, resultsPlusStateOutput.suffix(stateOutput.count)) {
-            s._updateInternal(newValues)
-        }
-
-        let resultLength = resultsPlusStateOutput.count - stateOutput.count
-        let results = Array(resultsPlusStateOutput.prefix(resultLength))
-        return results
     }
 }
 
@@ -237,9 +291,15 @@ public func compile(
 ///
 /// Default is enabled.
 public func compile(enable: Bool = true) {
-    if enable {
-        mlx_enable_compile()
-    } else {
-        mlx_disable_compile()
+    evalLock.withLock {
+        let status: Int32
+        if enable {
+            status = mlx_enable_compile()
+        } else {
+            status = mlx_disable_compile()
+        }
+        if status == 0 {
+            compileConfigurationGeneration.withLock { $0 &+= 1 }
+        }
     }
 }
