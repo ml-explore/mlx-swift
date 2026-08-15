@@ -122,6 +122,9 @@ open class OptimizerBase<State: Updatable>: Optimizer {
     final func apply(gradients: ModuleParameters, modelParameters: ModuleParameters)
         -> ModuleParameters
     {
+        prepareForUpdate()
+        defer { finishUpdate() }
+
         let (p, s) = gradients.mapValues(modelParameters, stateStorage) {
             gradient, parameter, state in
             // handle optionality of the visitor params
@@ -132,6 +135,15 @@ open class OptimizerBase<State: Updatable>: Optimizer {
         self.stateStorage = s
         return p
     }
+
+    /// Prepare optimizer-wide state used by all parameters in an update.
+    ///
+    /// Most optimizers do not need optimizer-wide state. Subclasses such as Adam use this hook
+    /// to construct shared scalar expressions once instead of once per parameter.
+    func prepareForUpdate() {}
+
+    /// Release any transient optimizer-wide state prepared by ``prepareForUpdate()``.
+    func finishUpdate() {}
 
     open func applySingle(gradient: MLXArray, parameter: MLXArray, state: State) -> (
         MLXArray, State
@@ -171,29 +183,27 @@ public struct TupleState: Updatable {
     }
 }
 
-/// State container for Adam-style optimizers that need first and second moments
-/// plus an update step for optional bias correction.
+/// State container for Adam-style optimizers that need first and second moments.
+///
+/// The update step is optimizer-wide rather than per-parameter, so models with many parameters do
+/// not create and retain an identical scalar graph for every parameter.
 public struct AdamState: Updatable {
     let values: (MLXArray, MLXArray)
-    var step: MLXArray
 
-    init(_ values: (MLXArray, MLXArray), step: MLXArray) {
+    init(_ values: (MLXArray, MLXArray)) {
         self.values = values
-        self.step = step
     }
 
-    init(_ a: MLXArray, _ b: MLXArray, step: MLXArray) {
+    init(_ a: MLXArray, _ b: MLXArray) {
         self.values = (a, b)
-        self.step = step
     }
 
     init(zeros array: MLXArray) {
         self.values = (MLXArray.zeros(like: array), MLXArray.zeros(like: array))
-        self.step = MLXArray(0)
     }
 
     public func innerState() -> [MLXArray] {
-        [values.0, values.1, step]
+        [values.0, values.1]
     }
 }
 
@@ -408,7 +418,22 @@ open class Adam: OptimizerBase<AdamState> {
     /// The epsilon added to the denominator to improve numerical stability
     public var eps: Float = 1e-8
     /// If `true`, apply bias correction to the first and second moments
-    public var biasCorrection = false
+    public var biasCorrection = false {
+        didSet {
+            // A disabled optimizer deliberately does not build a step graph. If correction is
+            // enabled later, begin its correction schedule with the next update.
+            if biasCorrection && !oldValue {
+                step = MLXArray(0)
+            }
+        }
+    }
+
+    /// A single step shared by every parameter. It is included in `innerState()` only when bias
+    /// correction needs it, avoiding unused scalar state and graph work in the default mode.
+    var step = MLXArray(0)
+
+    /// Bias-correction factors prepared once for all parameters in the current update.
+    private var preparedCorrection: (first: MLXArray, second: MLXArray)?
 
     /// Initialize the optimizer.
     /// - Parameters:
@@ -430,29 +455,57 @@ open class Adam: OptimizerBase<AdamState> {
         AdamState(zeros: parameter)
     }
 
+    override open func innerState() -> [MLXArray] {
+        let parameterState = super.innerState()
+        return biasCorrection ? parameterState + [step] : parameterState
+    }
+
+    override func prepareForUpdate() {
+        guard biasCorrection else { return }
+        step = step + 1
+        preparedCorrection = correctionFactors(step: step)
+    }
+
+    override func finishUpdate() {
+        preparedCorrection = nil
+    }
+
+    private func correctionFactors(step: MLXArray) -> (first: MLXArray, second: MLXArray) {
+        let (b1, b2) = betas
+        return (
+            learningRate / (1 - pow(b1, step)),
+            rsqrt(1 - pow(b2, step))
+        )
+    }
+
     override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: AdamState) -> (
         MLXArray, AdamState
     ) {
         let (b1, b2) = betas
 
-        var state = state
         var (m, v) = state.values
-        state.step = state.step + 1
 
         m = b1 * m + (1 - b1) * gradient
         v = b2 * v + (1 - b2) * square(gradient)
 
         let update: MLXArray
         if biasCorrection {
-            let step = state.step
-            let c1 = learningRate / (1 - pow(b1, step))
-            let c2 = rsqrt(1 - pow(b2, step))
+            // `apply(gradients:modelParameters:)` prepares these once per whole update. A direct
+            // `applySingle` call is itself one optimizer update, so advance the shared step here.
+            let correction: (first: MLXArray, second: MLXArray)
+            if let preparedCorrection {
+                correction = preparedCorrection
+            } else {
+                step = step + 1
+                correction = correctionFactors(step: step)
+            }
+            let (c1, c2) = correction
             update = (c1 * m) / (sqrt(v) * c2 + eps)
         } else {
             update = learningRate * m / (sqrt(v) + eps)
         }
 
-        return (parameter - update, AdamState(m, v, step: state.step))
+        return (parameter - update, AdamState(m, v))
     }
 }
 
@@ -874,11 +927,9 @@ open class Muon: OptimizerBaseArrayState {
 public func clipGradNorm(gradients: some Collection<MLXArray>, maxNorm: Float) -> (
     [MLXArray], MLXArray
 ) {
-    let normSquared = gradients.reduce(MLXArray(0)) { $0 + $1.square().sum() }
-    let totalNorm = sqrt(normSquared)
-    let normalizer = maxNorm / (totalNorm + 1e-6)
-
-    let clippedGradients = gradients.map { which(totalNorm .< maxNorm, $0, $0 * normalizer) }
+    let totalNorm = globalGradientNorm(gradients)
+    let scale = minimum(Float(1), maxNorm / (totalNorm + 1e-6))
+    let clippedGradients = gradients.map { $0 * scale }
 
     return (clippedGradients, totalNorm)
 }
@@ -895,11 +946,17 @@ public func clipGradNorm(gradients: some Collection<MLXArray>, maxNorm: Float) -
 public func clipGradNorm(gradients: ModuleParameters, maxNorm: Float) -> (
     ModuleParameters, MLXArray
 ) {
-    let normSquared = gradients.reduce(MLXArray(0)) { $0 + $1.square().sum() }
-    let totalNorm = sqrt(normSquared)
-    let normalizer = maxNorm / (totalNorm + 1e-6)
-
-    let clippedGradients = gradients.mapValues { which(totalNorm .< maxNorm, $0, $0 * normalizer) }
+    let totalNorm = globalGradientNorm(gradients.flattenedValues())
+    let scale = minimum(Float(1), maxNorm / (totalNorm + 1e-6))
+    let clippedGradients = gradients.mapValues { $0 * scale }
 
     return (clippedGradients, totalNorm)
+}
+
+/// Build a shallow reduction graph for the squared norms. Stacking the scalar reductions lets MLX
+/// perform one flat sum instead of constructing a left-deep chain of additions in Swift.
+private func globalGradientNorm(_ gradients: some Collection<MLXArray>) -> MLXArray {
+    let squaredNorms = gradients.map { square($0).sum() }
+    guard !squaredNorms.isEmpty else { return MLXArray(Float(0)) }
+    return sqrt(stacked(squaredNorms).sum())
 }
