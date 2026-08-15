@@ -437,6 +437,12 @@ let package = Package(
             sources: ["CustomFunctionExample.swift"]
         ),
         .executableTarget(
+            name: "Benchmarks",
+            dependencies: ["MLX", "MLXNN"],
+            path: "Source/Benchmarks",
+            sources: ["Benchmarks.swift"]
+        ),
+        .executableTarget(
             name: "CustomFunctionExampleSimple",
             dependencies: ["MLX"],
             path: "Source/Examples",

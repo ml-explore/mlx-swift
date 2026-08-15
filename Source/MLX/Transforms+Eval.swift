@@ -13,6 +13,7 @@ let evalLock = NSRecursiveLock()
 /// ### See Also
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: MLXArray...) {
+    guard !arrays.isEmpty else { return }
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_eval(vector_array)
@@ -25,6 +26,7 @@ public func eval(_ arrays: MLXArray...) {
 /// ### See Also
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: some Collection<MLXArray>) {
+    guard !arrays.isEmpty else { return }
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_eval(vector_array)
@@ -38,6 +40,7 @@ public func eval(_ arrays: some Collection<MLXArray>) {
 /// - <doc:lazy-evaluation>
 /// - ``asyncEval(_:)-(Collection<MLXArray>)``
 public func asyncEval(_ arrays: some Collection<MLXArray>) {
+    guard !arrays.isEmpty else { return }
     let vector_array = new_mlx_vector_array(arrays)
     _ = evalLock.withLock {
         mlx_async_eval(vector_array)
