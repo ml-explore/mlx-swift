@@ -334,7 +334,8 @@ let package = Package(
             ],
             exclude: mlxSwiftExcludes,
             swiftSettings: [
-                .swiftLanguageMode(.v6)
+                .swiftLanguageMode(.v6),
+                .enableExperimentalFeature("Lifetimes"),
             ]
         ),
         .target(
