@@ -81,6 +81,30 @@ class NestedTests: XCTestCase {
         XCTAssertEqual(n2, expected)
     }
 
+    func testReplacingValuesDoesNotDescribeValues() {
+        final class DescriptionProbe: CustomStringConvertible {
+            var wasDescribed = false
+
+            var description: String {
+                wasDescribed = true
+                return "probe"
+            }
+        }
+
+        let first = DescriptionProbe()
+        let second = DescriptionProbe()
+        var nested = NestedDictionary<String, DescriptionProbe>()
+        nested["b"] = .value(first)
+        nested["a"] = .value(second)
+
+        let replacements = [DescriptionProbe(), DescriptionProbe()]
+        _ = nested.replacingValues(with: replacements)
+
+        XCTAssertFalse(first.wasDescribed)
+        XCTAssertFalse(second.wasDescribed)
+        XCTAssertTrue(replacements.allSatisfy { !$0.wasDescribed })
+    }
+
     func testMap2() {
         // map 2 parallel structures
         var d1 = NestedDictionary<String, Int>()

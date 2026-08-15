@@ -581,7 +581,7 @@ public indirect enum NestedItem<Key: Hashable, Element>: IndentedDescription {
             var index = index
 
             let sorted = dictionary.sorted { lhs, rhs in
-                String(describing: lhs) < String(describing: rhs)
+                String(describing: lhs.0) < String(describing: rhs.0)
             }
 
             for (key, element) in sorted {
