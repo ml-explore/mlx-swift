@@ -2562,7 +2562,9 @@ extension MLXArray {
         -> MLXArray
     {
         var result = mlx_array_new()
-        mlx_reshape(&result, ctx, newShape.asInt32, newShape.count, stream.ctx)
+        newShape.withInt32Buffer { shape, count in
+            mlx_reshape(&result, ctx, shape, count, stream.ctx)
+        }
         return MLXArray(result)
     }
 
@@ -2584,7 +2586,9 @@ extension MLXArray {
     /// - ``reshaped(_:stream:)``
     public func reshaped(_ newShape: Int..., stream: StreamOrDevice = .default) -> MLXArray {
         var result = mlx_array_new()
-        mlx_reshape(&result, ctx, newShape.asInt32, newShape.count, stream.ctx)
+        newShape.withInt32Buffer { shape, count in
+            mlx_reshape(&result, ctx, shape, count, stream.ctx)
+        }
         return MLXArray(result)
     }
 

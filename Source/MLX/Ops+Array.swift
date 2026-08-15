@@ -1470,7 +1470,9 @@ public func reshaped(
     -> MLXArray
 {
     var result = mlx_array_new()
-    mlx_reshape(&result, array.ctx, newShape.asInt32, newShape.count, stream.ctx)
+    newShape.withInt32Buffer { shape, count in
+        mlx_reshape(&result, array.ctx, shape, count, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -1490,7 +1492,9 @@ public func reshaped(_ array: MLXArray, _ newShape: Int..., stream: StreamOrDevi
     -> MLXArray
 {
     var result = mlx_array_new()
-    mlx_reshape(&result, array.ctx, newShape.asInt32, newShape.count, stream.ctx)
+    newShape.withInt32Buffer { shape, count in
+        mlx_reshape(&result, array.ctx, shape, count, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -1735,7 +1739,9 @@ public func sum(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_sum_axes(&result, array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
+    axes.withInt32Buffer { axes, count in
+        mlx_sum_axes(&result, array.ctx, axes, count, keepDims, stream.ctx)
+    }
     return MLXArray(result)
 }
 

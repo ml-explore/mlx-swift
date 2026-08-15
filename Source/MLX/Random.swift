@@ -157,9 +157,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_uniform(
-            &result, lb.ctx, ub.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_uniform(
+                &result, lb.ctx, ub.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -182,9 +184,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_uniform(
-            &result, lb.ctx, ub.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_uniform(
+                &result, lb.ctx, ub.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -214,9 +218,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_uniform(
-            &result, low.ctx, high.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_uniform(
+                &result, low.ctx, high.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -245,10 +251,12 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_uniform(
-            &result, low.ctx, high.ctx, shape.asInt32, shape.count, dtype.cmlxDtype, key.ctx,
-            stream.ctx
-        )
+        shape.withInt32Buffer { shape, count in
+            mlx_random_uniform(
+                &result, low.ctx, high.ctx, shape, count, dtype.cmlxDtype, key.ctx,
+                stream.ctx
+            )
+        }
 
         return MLXArray(result)
     }
@@ -284,9 +292,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_normal(
-            &result, shape.asInt32, shape.count, type.dtype.cmlxDtype, loc, scale, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_normal(
+                &result, shape, count, type.dtype.cmlxDtype, loc, scale, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -320,8 +330,10 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_normal(
-            &result, shape.asInt32, shape.count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_normal(
+                &result, shape, count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -350,9 +362,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_multivariate_normal(
-            &result, mean.ctx, covariance.ctx, shape.asInt32, shape.count,
-            dtype.cmlxDtype, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_multivariate_normal(
+                &result, mean.ctx, covariance.ctx, shape, count,
+                dtype.cmlxDtype, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -419,9 +433,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_randint(
-            &result, lb.ctx, ub.ctx, shape.asInt32, shape.count, T.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_randint(
+                &result, lb.ctx, ub.ctx, shape, count, T.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -449,10 +465,12 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_randint(
-            &result, low.ctx, high.ctx, shape.asInt32, shape.count, low.dtype.cmlxDtype, key.ctx,
-            stream.ctx
-        )
+        shape.withInt32Buffer { shape, count in
+            mlx_random_randint(
+                &result, low.ctx, high.ctx, shape, count, low.dtype.cmlxDtype, key.ctx,
+                stream.ctx
+            )
+        }
         return MLXArray(result)
     }
 
@@ -480,9 +498,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_randint(
-            &result, low.ctx, high.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_randint(
+                &result, low.ctx, high.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -510,7 +530,9 @@ public enum MLXRandom {
         let p = MLXArray(0.5)
         let key = resolve(key: key)
         var result = mlx_array_new()
-        mlx_random_bernoulli(&result, p.ctx, shape.asInt32, shape.count, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_bernoulli(&result, p.ctx, shape, count, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -541,7 +563,9 @@ public enum MLXRandom {
         let shape = shape.map { Array($0) } ?? p.shape
         let key = resolve(key: key)
         var result = mlx_array_new()
-        mlx_random_bernoulli(&result, p.ctx, shape.asInt32, shape.count, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_bernoulli(&result, p.ctx, shape, count, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -574,9 +598,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_truncated_normal(
-            &result, lb.ctx, ub.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_truncated_normal(
+                &result, lb.ctx, ub.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -599,9 +625,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_truncated_normal(
-            &result, lb.ctx, ub.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_truncated_normal(
+                &result, lb.ctx, ub.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -630,9 +658,11 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_truncated_normal(
-            &result, low.ctx, high.ctx, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx,
-            stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_truncated_normal(
+                &result, low.ctx, high.ctx, shape, count, type.dtype.cmlxDtype, key.ctx,
+                stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -660,10 +690,12 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_truncated_normal(
-            &result, low.ctx, high.ctx, shape.asInt32, shape.count, dtype.cmlxDtype, key.ctx,
-            stream.ctx
-        )
+        shape.withInt32Buffer { shape, count in
+            mlx_random_truncated_normal(
+                &result, low.ctx, high.ctx, shape, count, dtype.cmlxDtype, key.ctx,
+                stream.ctx
+            )
+        }
 
         return MLXArray(result)
     }
@@ -690,8 +722,10 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_gumbel(
-            &result, shape.asInt32, shape.count, type.dtype.cmlxDtype, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_gumbel(
+                &result, shape, count, type.dtype.cmlxDtype, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -717,7 +751,9 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_gumbel(&result, shape.asInt32, shape.count, dtype.cmlxDtype, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_gumbel(&result, shape, count, dtype.cmlxDtype, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }
@@ -752,8 +788,10 @@ public enum MLXRandom {
         if let shape {
             var result = mlx_array_new()
 
-            mlx_random_categorical_shape(
-                &result, logits.ctx, axis.int32, shape.asInt32, shape.count, key.ctx, stream.ctx)
+            shape.withInt32Buffer { shape, count in
+                mlx_random_categorical_shape(
+                    &result, logits.ctx, axis.int32, shape, count, key.ctx, stream.ctx)
+            }
 
             return MLXArray(result)
         } else {
@@ -813,8 +851,10 @@ public enum MLXRandom {
         let key = resolve(key: key)
         var result = mlx_array_new()
 
-        mlx_random_laplace(
-            &result, shape.asInt32, shape.count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx)
+        shape.withInt32Buffer { shape, count in
+            mlx_random_laplace(
+                &result, shape, count, dtype.cmlxDtype, loc, scale, key.ctx, stream.ctx)
+        }
 
         return MLXArray(result)
     }

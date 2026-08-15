@@ -38,7 +38,16 @@ extension MLXArray {
             ?? self.size
     }
 
-    func copy(from: UnsafeRawBufferPointer, toContiguous output: UnsafeMutableRawBufferPointer) {
+    /// Copy `self`'s (possibly non-contiguous) backing, starting at `base`, into a
+    /// contiguous `output` buffer.
+    ///
+    /// `base` is treated as a bare starting point, not a pre-sized region: for the
+    /// non-contiguous case the actual reachable byte range (which can extend *before*
+    /// `base` when strides are negative) is computed internally and bounds-checked via
+    /// `RawSpan`, rather than trusting unchecked pointer arithmetic to stay in bounds.
+    func copy(from base: UnsafeRawPointer, toContiguous output: UnsafeMutableRawBufferPointer) {
+        guard !output.isEmpty else { return }
+
         let contiguousDimension = self.contiguousToDimension()
         let shape = self.shape
         let strides = self.internalStrides
@@ -69,22 +78,18 @@ extension MLXArray {
             // the index of the current source item
             var index = Array.init(repeating: 0, count: ndim)
 
-            // output pointer
-            var dest = output.baseAddress!
+            // Keep this in step with the odometer below. Recomputing it from every index and
+            // stride made traversal O(numberOfChunks * rank).
+            var sourceIndex = 0
+
+            // output byte offset
+            var destOffset = 0
 
             while true {
-                // compute the source index by multiplying the index by the
-                // stride for each dimension
-
-                // note: in the case where the array has negative strides / offset
-                // the base pointer we have will have the offset already applied,
-                // e.g. asStrided(a, [3, 3], strides: [-3, -1], offset: 8)
-
-                let sourceIndex = zip(index, strides).reduce(0) { $0 + ($1.0 * $1.1) }
-
-                // convert to byte pointer
-                let src = from.baseAddress! + sourceIndex * itemSize
-                dest.copyMemory(from: src, byteCount: destItemSize)
+                // offset relative to the span's own start -- always >= 0 by construction,
+                // since minSourceIndex is the true minimum reachable sourceIndex
+                let spanOffset = (sourceIndex - minSourceIndex) * itemSize
+                let chunk = source.extracting(spanOffset ..< (spanOffset + destItemSize))
 
                 // next output address
                 dest += destItemSize
@@ -99,9 +104,11 @@ extension MLXArray {
                         }
 
                         index[dimension] = 0
+                        sourceIndex -= (shape[dimension] - 1) * strides[dimension]
                     } else {
                         // just increment the dimension and we are done
                         index[dimension] += 1
+                        sourceIndex += strides[dimension]
                         break
                     }
                 }
