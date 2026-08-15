@@ -415,12 +415,6 @@ let package = Package(
             sources: ["CustomFunctionExampleSimple.swift"]
         ),
         .executableTarget(
-            name: "Benchmarks",
-            dependencies: ["MLX", "MLXNN"],
-            path: "Source/Benchmarks",
-            sources: ["Benchmarks.swift"]
-        ),
-        .executableTarget(
             name: "encuda",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
