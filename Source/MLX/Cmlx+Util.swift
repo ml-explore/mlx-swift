@@ -5,8 +5,34 @@ import Foundation
 
 // return a +1 mlx_vector_array containing the given arrays
 func new_mlx_vector_array(_ arrays: some Collection<MLXArray>) -> mlx_vector_array {
-    withExtendedLifetime(arrays) {
-        mlx_vector_array_new_data(arrays.map { $0.ctx }, arrays.count)
+    guard !arrays.isEmpty else {
+        return mlx_vector_array_new_data(nil, 0)
+    }
+
+    return withExtendedLifetime(arrays) {
+        if arrays.count <= mlxInteropStackBufferCapacity {
+            return withUnsafeTemporaryAllocation(of: mlx_array.self, capacity: arrays.count) {
+                buffer in
+                var index = buffer.startIndex
+                for array in arrays {
+                    buffer.initializeElement(at: index, to: array.ctx)
+                    buffer.formIndex(after: &index)
+                }
+                return mlx_vector_array_new_data(buffer.baseAddress, buffer.count)
+            }
+        }
+
+        let buffer = UnsafeMutableBufferPointer<mlx_array>.allocate(capacity: arrays.count)
+        var initializedCount = 0
+        defer {
+            buffer.baseAddress?.deinitialize(count: initializedCount)
+            buffer.deallocate()
+        }
+        for array in arrays {
+            buffer.initializeElement(at: initializedCount, to: array.ctx)
+            initializedCount += 1
+        }
+        return mlx_vector_array_new_data(buffer.baseAddress, buffer.count)
     }
 }
 

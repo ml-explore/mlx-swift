@@ -38,18 +38,20 @@ public struct MLXArrayOf<Scalar: HasDType>: ~Copyable {
     /// The backing: matches `Scalar`'s ``DType``, contiguous, and evaluated.
     public let values: MLXArray
 
+    /// Number of elements in the flattened view.
+    public let count: Int
+
     public init(_ array: MLXArray) {
         var values = array.asType(Scalar.self)
         values.eval()
         // reads index the backing directly, so it must be contiguous
         if values.contiguousToDimension() != 0 {
-            values = MLXArray(values.asArray(Scalar.self))
+            values = values.contiguous()
+            values.eval()
         }
         self.values = values
+        self.count = values.size
     }
-
-    /// Number of elements in the flattened view.
-    public var count: Int { values.size }
 
     /// A zero-copy `Span` over the contents. Prefer this over per-element subscripting in
     /// hot loops.
@@ -76,12 +78,14 @@ public struct MLXArrayOf<Scalar: HasDType>: ~Copyable {
         precondition(
             range.lowerBound >= 0 && range.upperBound <= count,
             "range \(range) out of bounds 0..<\(count)")
-        let span = self.span
-        return [Scalar](unsafeUninitializedCapacity: range.count) { buffer, initialized in
-            for (offset, source) in range.enumerated() {
-                buffer[offset] = span[source]
-            }
-            initialized = range.count
+        guard !range.isEmpty else { return [] }
+
+        return withExtendedLifetime(values) {
+            let base = unsafe UnsafeRawPointer(mlx_array_data_uint8(values.ctx)!)
+                .assumingMemoryBound(to: Scalar.self)
+                .advanced(by: range.lowerBound)
+            let source = unsafe UnsafeBufferPointer(start: base, count: range.count)
+            return Array(source)
         }
     }
 
