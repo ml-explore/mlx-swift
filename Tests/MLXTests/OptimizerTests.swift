@@ -167,6 +167,65 @@ class OptimizerTests: XCTestCase {
         let v = (1 - Float(0.999)) * square(gradient)
         let expected = parameter - (c1 * m) / (sqrt(v) * c2 + Float(1e-8))
         assertEqual(result.0, expected, atol: 1e-6)
+        XCTAssertEqual(optimizer.step.item(Int.self), 1)
+    }
+
+    func testAdamSharedStepState() {
+        let model = TwoParameterModel()
+        let gradients = model.parameters().mapValues { key, parameter in
+            key == "bias" ? MLXArray.ones(like: parameter) : 2 * MLXArray.ones(like: parameter)
+        }
+        let optimizer = Adam(learningRate: 0.1, biasCorrection: true)
+
+        optimizer.update(model: model, gradients: gradients)
+        optimizer.update(model: model, gradients: gradients)
+        eval(model, optimizer)
+
+        // Two moment arrays per parameter plus one optimizer-wide scalar step.
+        let state = optimizer.innerState()
+        XCTAssertEqual(state.count, 5)
+        XCTAssertEqual(state.filter { $0.ndim == 0 }.count, 1)
+        XCTAssertEqual(state.last?.item(Int.self), 2)
+
+        // With constant gradients, bias-corrected moments produce a 0.1 update on both steps,
+        // independent of each gradient's magnitude.
+        let expected = MLXArray([Float(-0.2), -0.2, -0.2])
+        assertEqual(model.bias, expected, atol: 1e-5)
+        assertEqual(model.weight, expected, atol: 1e-5)
+    }
+
+    func testCompiledAdamBiasCorrectionAdvancesSharedStep() {
+        let model = TwoParameterModel()
+        let optimizer = Adam(learningRate: 0.1, biasCorrection: true)
+
+        func step(_ gradient: MLXArray) -> MLXArray {
+            let gradients = model.parameters().mapValues { MLXArray.ones(like: $0) * gradient }
+            optimizer.update(model: model, gradients: gradients)
+            return model.weight
+        }
+
+        let compiledStep = MLX.compile(
+            inputs: [model, optimizer], outputs: [model, optimizer], step)
+        _ = compiledStep(MLXArray(1 as Float))
+        _ = compiledStep(MLXArray(1 as Float))
+        eval(optimizer)
+        XCTAssertEqual(optimizer.step.item(Int.self), 2)
+    }
+
+    func testAdamWithoutBiasCorrectionHasNoStepState() {
+        let model = TwoParameterModel()
+        let gradients = model.parameters().mapValues { MLXArray.ones(like: $0) }
+        let optimizer = Adam(learningRate: 0.1, biasCorrection: false)
+
+        optimizer.update(model: model, gradients: gradients)
+        optimizer.update(model: model, gradients: gradients)
+        eval(model, optimizer)
+
+        // Only first and second moments are state; no unused scalar step graph is retained.
+        let state = optimizer.innerState()
+        XCTAssertEqual(state.count, 4)
+        XCTAssertTrue(state.allSatisfy { $0.shape == [3] })
+        XCTAssertEqual(optimizer.step.item(Int.self), 0)
     }
 
     func testAdamW() {
@@ -193,6 +252,22 @@ class OptimizerTests: XCTestCase {
         let v = (1 - Float(0.999)) * square(gradient)
         let expected = decayed - (c1 * m) / (sqrt(v) * c2 + Float(1e-8))
         assertEqual(result.0, expected, atol: 1e-6)
+    }
+
+    func testAdamWUsesSharedStepState() {
+        let model = TwoParameterModel()
+        let gradients = model.parameters().mapValues { MLXArray.ones(like: $0) }
+        let optimizer = AdamW(
+            learningRate: 0.1, weightDecay: 0.01, biasCorrection: true)
+
+        optimizer.update(model: model, gradients: gradients)
+        optimizer.update(model: model, gradients: gradients)
+        eval(model, optimizer)
+
+        let state = optimizer.innerState()
+        XCTAssertEqual(state.count, 5)
+        XCTAssertEqual(state.filter { $0.ndim == 0 }.count, 1)
+        XCTAssertEqual(state.last?.item(Int.self), 2)
     }
 
     func testAdamax() {
@@ -266,6 +341,51 @@ class OptimizerTests: XCTestCase {
         XCTAssertEqual(p2.shape, [2, 3])
         XCTAssertTrue(p2.sum().item(Float.self).isFinite)
         XCTAssertGreaterThan(abs(p2).sum().item(Float.self), 0)
+    }
+
+    func testClipGradNormCollectionAboveAndBelowThreshold() {
+        let gradients = [MLXArray([3.0] as [Float]), MLXArray([4.0] as [Float])]
+
+        let (unchanged, normBelowThreshold) = clipGradNorm(
+            gradients: gradients, maxNorm: 10)
+        eval(unchanged, normBelowThreshold)
+        XCTAssertEqual(normBelowThreshold.item(Float.self), 5, accuracy: 1e-6)
+        assertEqual(unchanged, gradients)
+
+        let (clipped, normAboveThreshold) = clipGradNorm(gradients: gradients, maxNorm: 2)
+        eval(clipped, normAboveThreshold)
+        let scale = Float(2) / (Float(5) + Float(1e-6))
+        XCTAssertEqual(normAboveThreshold.item(Float.self), 5, accuracy: 1e-6)
+        assertEqual(clipped[0], MLXArray([3 * scale] as [Float]), atol: 1e-6)
+        assertEqual(clipped[1], MLXArray([4 * scale] as [Float]), atol: 1e-6)
+    }
+
+    func testClipGradNormModuleParametersAndEmptyCollections() {
+        let gradients = ModuleParameters(values: [
+            "first": .value(MLXArray([3.0] as [Float])),
+            "second": .value(MLXArray([4.0] as [Float])),
+        ])
+        let (clipped, norm) = clipGradNorm(gradients: gradients, maxNorm: 2)
+        eval(clipped, norm)
+
+        let scale = Float(2) / (Float(5) + Float(1e-6))
+        XCTAssertEqual(norm.item(Float.self), 5, accuracy: 1e-6)
+        assertEqual(
+            clipped[unwrapping: "first"]!, MLXArray([3 * scale] as [Float]), atol: 1e-6)
+        assertEqual(
+            clipped[unwrapping: "second"]!, MLXArray([4 * scale] as [Float]), atol: 1e-6)
+
+        let (emptyArrays, emptyArrayNorm) = clipGradNorm(
+            gradients: [MLXArray](), maxNorm: 1)
+        eval(emptyArrayNorm)
+        XCTAssertTrue(emptyArrays.isEmpty)
+        XCTAssertEqual(emptyArrayNorm.item(Float.self), 0)
+
+        let (emptyParameters, emptyParameterNorm) = clipGradNorm(
+            gradients: ModuleParameters(), maxNorm: 1)
+        eval(emptyParameterNorm)
+        XCTAssertTrue(emptyParameters.isEmpty)
+        XCTAssertEqual(emptyParameterNorm.item(Float.self), 0)
     }
 
 }
