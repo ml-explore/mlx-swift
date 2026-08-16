@@ -16,6 +16,23 @@ public enum GPU {
 
     public typealias Snapshot = Memory.Snapshot
 
+    /// Maximum leading matrix or attention query dimension that uses the same
+    /// Metal reduction order as token-by-token inference.
+    ///
+    /// This is useful for greedy speculative decoding and other workloads
+    /// that require batch-invariant outputs. Set to zero to disable. Increasing
+    /// the limit can reduce performance. The setting is process-wide.
+    public static var batchInvariantLimit: Int {
+        get {
+            var result: Int32 = 0
+            mlx_metal_get_batch_invariant_limit(&result)
+            return Int(result)
+        }
+        set {
+            mlx_metal_set_batch_invariant_limit(Int32(clamping: newValue))
+        }
+    }
+
     /// Get the actively used memory in bytes.
     ///
     /// Note, this will not always match memory use reported by the system because

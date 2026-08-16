@@ -29,6 +29,8 @@ extern "C" {
 /**@{*/
 
 int mlx_metal_is_available(bool* res);
+int mlx_metal_set_batch_invariant_limit(int limit);
+int mlx_metal_get_batch_invariant_limit(int* res);
 int mlx_metal_start_capture(const char* path);
 int mlx_metal_stop_capture(void);
 
