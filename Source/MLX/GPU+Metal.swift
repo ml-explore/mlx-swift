@@ -16,12 +16,14 @@ public enum GPU {
 
     public typealias Snapshot = Memory.Snapshot
 
-    /// Maximum leading matrix or attention query dimension that uses the same
-    /// Metal reduction order as token-by-token inference.
+    /// Maximum short-block dimension using canonical Metal reduction plans for
+    /// supported inference kernels.
     ///
-    /// This is useful for greedy speculative decoding and other workloads
-    /// that require batch-invariant outputs. Set to zero to disable. Increasing
-    /// the limit can reduce performance. The setting is process-wide.
+    /// This covers dense matmul, transposed-weight quantized matmul, and vector
+    /// SDPA queries up to length eight; it does not make every MLX operation
+    /// batch invariant. This is useful for greedy speculative decoding. Set to
+    /// zero to disable. Increasing the limit can reduce performance. The setting
+    /// is process-wide and should remain stable while concurrent work executes.
     public static var batchInvariantLimit: Int {
         get {
             var result: Int32 = 0
