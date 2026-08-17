@@ -40,8 +40,6 @@ public protocol NestedArrayElement {
 }
 
 extension NestedArrayElement where Self: HasDType {
-    public typealias Scalar = Self
-
     public static var nestedRank: Int { 0 }
 
     public var nestedShape: [Int] { [] }
