@@ -150,6 +150,12 @@ class MLXArrayInitTests: XCTestCase {
         // Int64 is a distinct type from Int and must not take the Int -> .int32 path
         XCTAssertEqual(MLXArray([[Int64(1), 2], [3, 4]]).dtype, .int64)
 
+        // casting the literal as a whole is a different inference path than casting the
+        // elements and must stay unambiguous
+        XCTAssertEqual(
+            MLXArray([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]] as [[Float32]]).dtype, .float32)
+        XCTAssertEqual(MLXArray([[[1.0, 2.0]]] as [[[Float32]]]).dtype, .float32)
+
         // as with `MLXArray([Double])` this produces .float64 rather than promoting
         let doubles: [[Double]] = [[1, 2], [3, 4]]
         XCTAssertEqual(MLXArray(doubles).dtype, .float64)
