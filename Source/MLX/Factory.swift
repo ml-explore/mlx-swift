@@ -875,7 +875,9 @@ public func full(
 ) -> MLXArray {
     var result = mlx_array_new()
     let values = values.asMLXArray(dtype: nil)
-    mlx_full(&result, shape.asInt32, shape.count, values.ctx, type.dtype.cmlxDtype, stream.ctx)
+    shape.withInt32Buffer { shape, count in
+        mlx_full(&result, shape, count, values.ctx, type.dtype.cmlxDtype, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -905,7 +907,9 @@ public func full(
     _ shape: some Collection<Int>, values: MLXArray, dtype: DType, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_full(&result, shape.asInt32, shape.count, values.ctx, dtype.cmlxDtype, stream.ctx)
+    shape.withInt32Buffer { shape, count in
+        mlx_full(&result, shape, count, values.ctx, dtype.cmlxDtype, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -935,7 +939,9 @@ public func full(
 ) -> MLXArray {
     var result = mlx_array_new()
     let values = values.asMLXArray(dtype: nil)
-    mlx_full(&result, shape.asInt32, shape.count, values.ctx, values.dtype.cmlxDtype, stream.ctx)
+    shape.withInt32Buffer { shape, count in
+        mlx_full(&result, shape, count, values.ctx, values.dtype.cmlxDtype, stream.ctx)
+    }
     return MLXArray(result)
 }
 

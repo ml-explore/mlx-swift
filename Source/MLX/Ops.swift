@@ -385,11 +385,13 @@ public func asStrided(
     }
 
     var result = mlx_array_new()
-    mlx_as_strided(
-        &result,
-        array.ctx, shape.asInt32, shape.count, resolvedStrides, resolvedStrides.count,
-        offset,
-        stream.ctx)
+    shape.withInt32Buffer { shape, shapeCount in
+        mlx_as_strided(
+            &result,
+            array.ctx, shape, shapeCount, resolvedStrides, resolvedStrides.count,
+            offset,
+            stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -486,7 +488,9 @@ public func broadcast(
     -> MLXArray
 {
     var result = mlx_array_new()
-    mlx_broadcast_to(&result, array.ctx, shape.asInt32, shape.count, stream.ctx)
+    shape.withInt32Buffer { shape, count in
+        mlx_broadcast_to(&result, array.ctx, shape, count, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -1335,7 +1339,9 @@ public func expandedDimensions(
     -> MLXArray
 {
     var result = mlx_array_new()
-    mlx_expand_dims_axes(&result, array.ctx, axes.asInt32, axes.count, stream.ctx)
+    axes.withInt32Buffer { axes, count in
+        mlx_expand_dims_axes(&result, array.ctx, axes, count, stream.ctx)
+    }
     return MLXArray(result)
 }
 

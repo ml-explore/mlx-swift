@@ -361,6 +361,8 @@ let package = Package(
             exclude: mlxSwiftExcludes,
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6),
+                .enableExperimentalFeature("Lifetimes"),
             ]
         ),
         .target(
@@ -433,6 +435,12 @@ let package = Package(
             dependencies: ["MLX"],
             path: "Source/Examples",
             sources: ["CustomFunctionExample.swift"]
+        ),
+        .executableTarget(
+            name: "Benchmarks",
+            dependencies: ["MLX", "MLXNN"],
+            path: "Source/Benchmarks",
+            sources: ["Benchmarks.swift"]
         ),
         .executableTarget(
             name: "CustomFunctionExampleSimple",

@@ -3,6 +3,7 @@
 import Foundation
 import XCTest
 
+import Cmlx
 @testable import MLX
 
 class MLXArrayTests: XCTestCase {
@@ -92,6 +93,75 @@ class MLXArrayTests: XCTestCase {
 
         let s_arr = s.asArray(Int32.self)
         XCTAssertEqual(s_arr, expected)
+    }
+
+    func testAsArrayNegativeStride() {
+        // negative strides + a nonzero offset: this is the case that was
+        // previously untested and relied on raw pointer arithmetic outside
+        // any range the Swift-side code verified
+        let a = MLXArray(0 ..< 16, [4, 4])
+        let s = asStrided(a, [4, 4], strides: [-4, -1], offset: 15)
+
+        let expected: [Int32] = Array((0 ..< 16).reversed()).map { Int32($0) }
+        assertEqual(s, MLXArray(expected, [4, 4]))
+
+        let s_arr = s.asArray(Int32.self)
+        XCTAssertEqual(s_arr, expected)
+    }
+
+    func testAsArrayMixedStrides() {
+        let a = MLXArray(0 ..< 12)
+        let s = asStrided(a, [3, 4], strides: [-1, 3], offset: 2)
+
+        let expected: [Int32] = [2, 5, 8, 11, 1, 4, 7, 10, 0, 3, 6, 9]
+        XCTAssertEqual(s.asArray(Int32.self), expected)
+    }
+
+    func testViewMakesNonContiguousArrayContiguousWithoutChangingShape() {
+        let a = MLXArray(0 ..< 12, [4, 3])
+        let transposed = asStrided(a, [3, 4], strides: [1, 3])
+        let view = transposed.view(Int32.self)
+
+        XCTAssertEqual(view.values.shape, [3, 4])
+        XCTAssertEqual(view.values.contiguousToDimension(), 0)
+        XCTAssertEqual(view.count, 12)
+        XCTAssertEqual(view[2 ..< 7], [6, 9, 1, 4, 7])
+        XCTAssertEqual(view.asArray(), [0, 3, 6, 9, 1, 4, 7, 10, 2, 5, 8, 11])
+
+        let empty = MLXArray([Int32]()).view(Int32.self)
+        XCTAssertEqual(empty.count, 0)
+        XCTAssertEqual(empty[0 ..< 0], [])
+    }
+
+    func testScopedInteropBuffersHandleEmptyAndPopulatedCollections() {
+        let empty = [Int]().withInt32Buffer { pointer, count in
+            XCTAssertNil(pointer)
+            return count
+        }
+        XCTAssertEqual(empty, 0)
+
+        Array(0 ..< 5)[1 ..< 4].withInt32Buffer { pointer, count in
+            XCTAssertEqual(count, 3)
+            XCTAssertEqual(Array(UnsafeBufferPointer(start: pointer, count: count)), [1, 2, 3])
+        }
+        Array(0 ... mlxInteropStackBufferCapacity).withInt32Buffer { pointer, count in
+            XCTAssertEqual(count, mlxInteropStackBufferCapacity + 1)
+            XCTAssertEqual(pointer?[count - 1], Int32(mlxInteropStackBufferCapacity))
+        }
+
+        let emptyVector = new_mlx_vector_array([MLXArray]())
+        defer { mlx_vector_array_free(emptyVector) }
+        XCTAssertEqual(mlx_vector_array_size(emptyVector), 0)
+
+        let arrays = [MLXArray(1), MLXArray(2)]
+        let vector = new_mlx_vector_array(arrays)
+        defer { mlx_vector_array_free(vector) }
+        XCTAssertEqual(mlx_vector_array_values(vector).map { $0.item(Int.self) }, [1, 2])
+
+        let manyArrays = (0 ... mlxInteropStackBufferCapacity).map { MLXArray($0) }
+        let largeVector = new_mlx_vector_array(manyArrays)
+        defer { mlx_vector_array_free(largeVector) }
+        XCTAssertEqual(mlx_vector_array_size(largeVector), mlxInteropStackBufferCapacity + 1)
     }
 
     func testContiguousStrides() {
