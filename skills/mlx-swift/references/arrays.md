@@ -22,6 +22,10 @@ let c = MLXArray(0 ..< 10)
 let d = MLXArray(0 ..< 12, [3, 4])  // 3 rows, 4 columns
 let e = MLXArray([1, 2, 3, 4, 5, 6], [2, 3])
 
+// Multi-dimensional from a nested array -- the nesting gives the shape
+let f = MLXArray([[1, 2, 3], [4, 5, 6]])            // shape [2, 3]
+let g = MLXArray([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])  // shape [2, 2, 2]
+
 // Complex numbers
 let complex = MLXArray(real: 1.0, imaginary: 2.0)
 ```

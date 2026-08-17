@@ -87,7 +87,7 @@ let a2 = MLXArray(int64: 500)
 XCTAssertEqual(a2.dtype, .int64)
 ```
 
-All of the `Int` initializers (e.g. `[Int]` and `Sequence<Int>`) work
+All of the `Int` initializers (e.g. `[Int]`, `Sequence<Int>` and nested arrays) work
 the same way and all have the `int64:` variant.
 
 ### Double
@@ -119,6 +119,20 @@ let v1 = MLXArray(0 ..< 12)
 // this works with various types of sequences
 let v2 = MLXArray(stride(from: Float(0.5), to: Float(1.5), by: Float(0.1)))
 ```
+
+Multiple dimensions can be given directly as a nested array, in which case, the
+shape is inferred from the nesting.
+
+```swift
+// create an array of Int32 with shape [2, 3]
+let v1 = MLXArray([[1, 2, 3],
+                   [4, 5, 6]])
+
+// any depth of nesting works -- shape [2, 2, 2]
+let v2 = MLXArray([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+```
+
+Nested arrays must be tensors: every element at a given level must have the same shape.
 
 If you have `Data` or a `UnsafePointer` (of various kinds) you can also create an `MLXArray`
 from that:
@@ -159,7 +173,7 @@ let identity = MLXArray.identity(5)
 
 ### Complex Values
 
-``MLXArray`` supports complex numbers, specifically a real and imaginary `Float32` 
+``MLXArray`` supports complex numbers, specifically a real and imaginary `Float32`
 as ``DType/complex64``.
 MLX uses [swift-numerics](https://github.com/apple/swift-numerics/tree/main)
 to represent the `Complex` type, though there are a few functions for manipulating
@@ -212,9 +226,11 @@ there are specific initializers to request it:
 
 - ``MLXArray/init(_:)-(Int)``
 - ``MLXArray/init(_:_:)-([Int],_)``
-- ``MLXArray/init(int64:)``
+- ``MLXArray/init(_:)-([[N]])``
+- ``MLXArray/init(int64:)-(Int)``
 - ``MLXArray/init(int64:_:)-([Int],_)``
 - ``MLXArray/init(int64:_:)-(Sequence<Int>,_)``
+- ``MLXArray/init(int64:)-([[N]])``
 
 ### MLXArray Array Initializers
 
@@ -224,6 +240,12 @@ there are specific initializers to request it:
 - ``MLXArray/init(converting:_:)``
 - ``MLXArray/init(_:_:type:)-(UnsafeRawBufferPointer,_,_)``
 - ``MLXArray/init(_:_:type:)-(Data,_,_)``
+
+### MLXArray Nested Array Initializers
+
+- ``MLXArray/init(_:)-([[N]])``
+- ``MLXArray/init(int64:)-([[N]])``
+- ``MLXArray/init(converting:)``
 
 ### MLXArray Complex Initializers
 

@@ -89,6 +89,111 @@ class MLXArrayInitTests: XCTestCase {
         XCTAssertEqual(a.ndim, 2)
     }
 
+    // MARK: - Nested (multi dimensional) arrays
+
+    func testArrayCreationNested2D() {
+        let a = MLXArray([
+            [1, 2, 3],
+            [4, 5, 6],
+        ])
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(a.shape, [2, 3])
+        XCTAssertEqual(a.ndim, 2)
+        XCTAssertEqual(a.size, 6)
+
+        // count is the size of dimension 0
+        XCTAssertEqual(a.count, 2)
+
+        assertEqual(a, MLXArray(1 ... 6, [2, 3]))
+    }
+
+    func testArrayCreationNested3D() {
+        // literal nesting and the flat + shape form must agree
+        let a = MLXArray([
+            [[0, 1], [2, 3], [4, 5]],
+            [[6, 7], [8, 9], [10, 11]],
+        ])
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(a.shape, [2, 3, 2])
+        assertEqual(a, MLXArray(0 ..< 12, [2, 3, 2]))
+
+        // also works with a computed (non literal) nested array
+        let nested = (0 ..< 2).map { i in
+            (0 ..< 3).map { j in
+                (0 ..< 4).map { k in i * 12 + j * 4 + k }
+            }
+        }
+        let b = MLXArray(nested)
+        XCTAssertEqual(b.shape, [2, 3, 4])
+        assertEqual(b, MLXArray(0 ..< 24, [2, 3, 4]))
+    }
+
+    func testArrayCreationNested4D() {
+        let a = MLXArray([
+            [[[0, 1], [2, 3]], [[4, 5], [6, 7]]],
+            [[[8, 9], [10, 11]], [[12, 13], [14, 15]]],
+        ])
+        XCTAssertEqual(a.shape, [2, 2, 2, 2])
+        XCTAssertEqual(a.ndim, 4)
+        assertEqual(a, MLXArray(0 ..< 16, [2, 2, 2, 2]))
+    }
+
+    func testArrayCreationNestedDTypes() {
+        // the dtype of a nested array matches the 1d initializers for the same leaf type
+        XCTAssertEqual(MLXArray([[1, 2], [3, 4]]).dtype, .int32)
+        XCTAssertEqual(MLXArray([[Int32(1), 2], [3, 4]]).dtype, .int32)
+        XCTAssertEqual(MLXArray([[Int16(1), 2], [3, 4]]).dtype, .int16)
+        XCTAssertEqual(MLXArray([[UInt8(1), 2], [3, 4]]).dtype, .uint8)
+        XCTAssertEqual(MLXArray([[Float(1), 2], [3, 4]]).dtype, .float32)
+        XCTAssertEqual(MLXArray([[true, false], [false, true]]).dtype, .bool)
+
+        // Int64 is a distinct type from Int and must not take the Int -> .int32 path
+        XCTAssertEqual(MLXArray([[Int64(1), 2], [3, 4]]).dtype, .int64)
+
+        // casting the literal as a whole is a different inference path than casting the
+        // elements and must stay unambiguous
+        XCTAssertEqual(
+            MLXArray([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]] as [[Float32]]).dtype, .float32)
+        XCTAssertEqual(MLXArray([[[1.0, 2.0]]] as [[[Float32]]]).dtype, .float32)
+
+        // as with `MLXArray([Double])` this produces .float64 rather than promoting
+        let doubles: [[Double]] = [[1, 2], [3, 4]]
+        XCTAssertEqual(MLXArray(doubles).dtype, .float64)
+
+        let complex: [[Complex<Float>]] = [[Complex(2, 7)], [Complex(3, 8)]]
+        let c = MLXArray(complex)
+        XCTAssertEqual(c.dtype, .complex64)
+        XCTAssertEqual(c.shape, [2, 1])
+        assertEqual(c, MLXArray([Complex<Float>(2, 7), Complex<Float>(3, 8)], [2, 1]))
+    }
+
+    func testArrayCreationNestedInt64() {
+        // a value that does not fit in an Int32 -- the whole point of the int64: variant
+        let big = Int(Int32.max) + 10
+        let a = MLXArray(int64: [[1, 2, 3], [4, 5, big]])
+        XCTAssertEqual(a.dtype, .int64)
+        XCTAssertEqual(a.shape, [2, 3])
+        assertEqual(a, MLXArray(int64: [1, 2, 3, 4, 5, big], [2, 3]))
+    }
+
+    func testArrayCreationNestedConverting() {
+        // non square so a transposed flattening could not pass
+        let a = MLXArray(converting: [[0.1, 0.5, 0.9], [1.3, 1.7, 2.1]])
+        XCTAssertEqual(a.dtype, .float32)
+        XCTAssertEqual(a.shape, [2, 3])
+        assertEqual(a, MLXArray(converting: [0.1, 0.5, 0.9, 1.3, 1.7, 2.1], [2, 3]))
+    }
+
+    func testArrayCreationNestedEmpty() {
+        let a = MLXArray([[Int](), [Int]()])
+        XCTAssertEqual(a.shape, [2, 0])
+        XCTAssertEqual(a.size, 0)
+
+        let b = MLXArray([[Int]]())
+        XCTAssertEqual(b.shape, [0, 0])
+        XCTAssertEqual(b.size, 0)
+    }
+
     func testArrayCreationClosedRange() {
         let a = MLXArray(Int16(3) ... Int16(6))
         XCTAssertEqual(a.dtype, .int16)

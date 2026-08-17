@@ -62,8 +62,12 @@ import MLX
 // Create arrays
 let a = MLXArray([1, 2, 3, 4])
 let b = MLXArray(0 ..< 12, [3, 4])  // Shape [3, 4]
-let c = MLXArray.zeros([2, 3])
-let d = MLXArray.ones([4, 4], dtype: .float32)
+
+// Nested arrays give the shape directly (any depth)
+let c = MLXArray([[1, 2, 3], [4, 5, 6]])  // Shape [2, 3]
+
+let d = MLXArray.zeros([2, 3])
+let e = MLXArray.ones([4, 4], dtype: .float32)
 
 // Random arrays (use MLXRandom namespace or free functions)
 let uniform = MLXRandom.uniform(0.0 ..< 1.0, [3, 3])
