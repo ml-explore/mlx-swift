@@ -109,6 +109,7 @@ See <doc:wired-memory> for configuration, best practices, and policy guidance.
 - ``DType``
 - ``HasDType``
 - ``ScalarOrArray``
+- ``NestedArrayElement``
 
 ### Parameter Types
 
