@@ -16,6 +16,7 @@ struct CudaBuild: BuildToolPlugin {
         var cppLanguageStandard: String? = nil
         var verbose: Bool = false
         var codeGeneration: [CodeGeneration] = []
+        var hostCompiler: String? = nil
 
         init() {}
 
@@ -28,7 +29,27 @@ struct CudaBuild: BuildToolPlugin {
             verbose = try c.decodeIfPresent(Bool.self, forKey: .verbose) ?? false
             codeGeneration =
                 try c.decodeIfPresent([CodeGeneration].self, forKey: .codeGeneration) ?? []
+            hostCompiler = try c.decodeIfPresent(String.self, forKey: .hostCompiler)
         }
+    }
+
+    /// Host compiler nvcc should use, in priority order: the
+    /// `MLX_CUDA_HOST_COMPILER` environment variable, the `hostCompiler` key in
+    /// CudaBuild.json, then the toolchain's own clang++.
+    ///
+    /// It must still be a clang: nvcc preprocesses with it and SwiftPM compiles
+    /// the generated `.cpp`, so a GCC-preprocessed translation unit will not build.
+    func resolveHostCompiler(context: PluginContext, settings: Settings) -> String {
+        if let env = ProcessInfo.processInfo.environment["MLX_CUDA_HOST_COMPILER"], !env.isEmpty {
+            return env
+        }
+        if let configured = settings.hostCompiler, !configured.isEmpty {
+            return configured
+        }
+        guard let clangUrl = try? context.tool(named: "clang++") else {
+            fatalError("clang++ not found")
+        }
+        return clangUrl.url.path
     }
 
     func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
@@ -39,12 +60,6 @@ struct CudaBuild: BuildToolPlugin {
             print("CUDA is disabled")
             return []
         }
-
-        guard let clangUrl = try? context.tool(named: "clang++") else {
-            fatalError("clang++ not found")
-        }
-
-        print("Use clang++ at: \(clangUrl.url.path)")
 
         let sourceDir = target.directoryURL
 
@@ -60,6 +75,10 @@ struct CudaBuild: BuildToolPlugin {
         } else {
             settings = Settings()
         }
+
+        let hostCompiler = resolveHostCompiler(context: context, settings: settings)
+
+        print("Use clang++ at: \(hostCompiler)")
 
         // Scan source directory for .cu files
 
@@ -141,7 +160,7 @@ struct CudaBuild: BuildToolPlugin {
                         "Compiling \(inputFile.lastPathComponent) to \(outputCpp.lastPathComponent)",
                     executable: encuda.url,
                     arguments: ["compile"] + verboseFlag + stdArgs + incrementalFlag + [
-                        "--clangpp", clangUrl.url.path,
+                        "--clangpp", hostCompiler,
                         "-I", sourceDir.path,
                     ] + headerSearchPathArgs + [
                         inputFile.path,
@@ -168,7 +187,7 @@ struct CudaBuild: BuildToolPlugin {
                 displayName: "Linking CUDA objects",
                 executable: encuda.url,
                 arguments: ["link"] + verboseFlag + stdArgs + incrementalFlag + [
-                    "--clangpp", clangUrl.url.path,
+                    "--clangpp", hostCompiler,
                 ] + outputCpps.map { $0.path } + ["-o", linkOutput.path],
                 inputFiles: outputCpps,
                 outputFiles: [linkOutput]

@@ -72,12 +72,37 @@ extension Encuda {
                 guard status == 0 else {
                     throw EncudaError.nvccFailed(status)
                 }
+                writeStamp()
             #endif
+        }
+
+        /// Inputs to the generated `.cpp` that are not themselves input *files*.
+        /// A modification-time comparison cannot see any of these change, so the
+        /// signature is stamped beside the output and compared on the next run.
+        private var configurationSignature: String {
+            [
+                "nvcc=\(nvccPath ?? "")",
+                "ccbin=\(clangppPath ?? "")",
+                "std=\(std ?? "")",
+                "arch=\(ProcessInfo.processInfo.environment["CUDA_ARCH"] ?? "")",
+                "include=\(includeDirs.joined(separator: ":"))",
+            ].joined(separator: "\n")
+        }
+
+        private var stampURL: URL {
+            URL(fileURLWithPath: output + ".encuda-stamp")
+        }
+
+        private func writeStamp() {
+            try? configurationSignature.write(to: stampURL, atomically: true, encoding: .utf8)
         }
 
         private func isUpToDate() -> Bool {
             let fm = FileManager.default
             let outputURL = URL(fileURLWithPath: output)
+            guard let stamp = try? String(contentsOf: stampURL, encoding: .utf8),
+                stamp == configurationSignature
+            else { return false }
             guard fm.fileExists(atPath: output),
                 let outputMod =
                     (try? outputURL.resourceValues(forKeys: [.contentModificationDateKey]))?
