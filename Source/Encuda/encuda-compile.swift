@@ -61,12 +61,22 @@ extension Encuda {
                 let archArgs =
                     ProcessInfo.processInfo.environment["CUDA_ARCH"].map { ["-arch", $0] } ?? []
 
+                let verboseArgs: [String] = verbose ? ["-v"] : []
+
+                // Built up in steps rather than as one `+` chain, which is expensive
+                // to type-check and gets more so with each argument added.
+                var arguments: [String] = ["-cuda", "-rdc=true", "--expt-relaxed-constexpr"]
+                arguments += stdArgs
+                arguments += ccbinArgs
+                arguments += archArgs
+                arguments += verboseArgs
+                arguments += includeArgs
+                arguments += inputFiles
+                arguments += ["-o", output]
+
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: resolvedNvcc)
-                process.arguments =
-                    ["-cuda", "-rdc=true", "--expt-relaxed-constexpr"] + stdArgs + ccbinArgs
-                    + archArgs
-                    + (verbose ? ["-v"] : []) + includeArgs + inputFiles + ["-o", output]
+                process.arguments = arguments
                 try process.run()
                 let status = process.waitForExitStatus()
                 guard status == 0 else {

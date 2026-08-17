@@ -140,13 +140,16 @@ struct CudaBuild: BuildToolPlugin {
                     displayName:
                         "Compiling \(inputFile.lastPathComponent) to \(outputCpp.lastPathComponent)",
                     executable: encuda.url,
-                    arguments: ["compile"] + verboseFlag + stdArgs + incrementalFlag + [
-                        "--clangpp", clangUrl.url.path,
-                        "-I", sourceDir.path,
-                    ] + headerSearchPathArgs + [
-                        inputFile.path,
-                        "-o", outputCpp.path,
-                    ],
+                    arguments: compileArguments(
+                        clangpp: clangUrl.url.path,
+                        sourceDir: sourceDir.path,
+                        verboseFlag: verboseFlag,
+                        stdArgs: stdArgs,
+                        incrementalFlag: incrementalFlag,
+                        headerSearchPathArgs: headerSearchPathArgs,
+                        input: inputFile.path,
+                        output: outputCpp.path
+                    ),
                     inputFiles: [inputFile],
                     outputFiles: [outputCpp]
                 )
@@ -167,15 +170,63 @@ struct CudaBuild: BuildToolPlugin {
             .buildCommand(
                 displayName: "Linking CUDA objects",
                 executable: encuda.url,
-                arguments: ["link"] + verboseFlag + stdArgs + incrementalFlag + [
-                    "--clangpp", clangUrl.url.path,
-                ] + outputCpps.map { $0.path } + ["-o", linkOutput.path],
+                arguments: linkArguments(
+                    clangpp: clangUrl.url.path,
+                    verboseFlag: verboseFlag,
+                    stdArgs: stdArgs,
+                    incrementalFlag: incrementalFlag,
+                    inputs: outputCpps.map { $0.path },
+                    output: linkOutput.path
+                ),
                 inputFiles: outputCpps,
                 outputFiles: [linkOutput]
             )
         )
 
         return commands
+    }
+
+    /// Assembled in steps rather than as one `+` chain, which is expensive to
+    /// type-check and gets more so with each argument added.
+    func compileArguments(
+        clangpp: String,
+        sourceDir: String,
+        verboseFlag: [String],
+        stdArgs: [String],
+        incrementalFlag: [String],
+        headerSearchPathArgs: [String],
+        input: String,
+        output: String
+    ) -> [String] {
+        var arguments: [String] = ["compile"]
+        arguments += verboseFlag
+        arguments += stdArgs
+        arguments += incrementalFlag
+        arguments += ["--clangpp", clangpp]
+        arguments += ["-I", sourceDir]
+        arguments += headerSearchPathArgs
+        arguments += [input]
+        arguments += ["-o", output]
+        return arguments
+    }
+
+    /// See `compileArguments` for why this is not a single expression.
+    func linkArguments(
+        clangpp: String,
+        verboseFlag: [String],
+        stdArgs: [String],
+        incrementalFlag: [String],
+        inputs: [String],
+        output: String
+    ) -> [String] {
+        var arguments: [String] = ["link"]
+        arguments += verboseFlag
+        arguments += stdArgs
+        arguments += incrementalFlag
+        arguments += ["--clangpp", clangpp]
+        arguments += inputs
+        arguments += ["-o", output]
+        return arguments
     }
 
     func isExcluded(settings: Settings, relativePath: String) -> Bool {
