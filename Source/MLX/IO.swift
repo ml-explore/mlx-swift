@@ -5,9 +5,14 @@ import Foundation
 
 /// Byte-level progress for loading arrays from disk.
 ///
-/// `completedUnitCount` and `totalUnitCount` are bytes. Progress callbacks for a
-/// single load are delivered in monotonically increasing order.
+/// `completedUnitCount` and `totalUnitCount` are bytes and describe a single file.
+/// Progress callbacks for a given file are delivered in monotonically increasing
+/// order, but callbacks for _different_ files may interleave -- use ``url`` to
+/// aggregate progress when loading a model made of several `safetensors` shards.
 public struct LoadProgress: Sendable, Equatable {
+    /// The file being read.
+    public let url: URL
+
     public let completedUnitCount: Int64
     public let totalUnitCount: Int64
 
@@ -16,9 +21,73 @@ public struct LoadProgress: Sendable, Equatable {
         return min(1, max(0, Double(completedUnitCount) / Double(totalUnitCount)))
     }
 
-    public init(completedUnitCount: Int64, totalUnitCount: Int64) {
+    public init(url: URL, completedUnitCount: Int64, totalUnitCount: Int64) {
+        self.url = url
         self.completedUnitCount = completedUnitCount
         self.totalUnitCount = totalUnitCount
+    }
+}
+
+/// Holder for the scoped ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` handler.
+enum LoadProgressHandler {
+
+    /// The stack of installed handlers -- the innermost scope wins.
+    @TaskLocal
+    static var handlers: [@Sendable (LoadProgress) -> Void] = []
+
+    static var current: (@Sendable (LoadProgress) -> Void)? {
+        handlers.last
+    }
+}
+
+/// Evaluate the block with a scoped byte-progress handler for file loads.
+///
+/// Any ``loadArrays(url:stream:)`` or ``loadArraysAndMetadata(url:stream:)`` performed
+/// inside `body` reports byte progress to `handler`, without the call site having to pass
+/// a progress handler explicitly. This makes it possible to drive a precise loading
+/// progress bar for code -- such as a model loading library -- that you do not control:
+///
+/// ```swift
+/// let tracker = LoadProgressTracker(totalBytes: totalBytesOfSafetensors(in: directory))
+/// let model = try withLoadProgressHandler({ tracker.update($0) }) {
+///     try loadModel(from: directory)
+/// }
+/// ```
+///
+/// Loading is lazy: progress is reported as the returned arrays are evaluated, so `body`
+/// should include the evaluation of the loaded arrays. Arrays that are never evaluated
+/// are never read, so the reported progress may legitimately stop short of the file size.
+///
+/// - Note: `handler` is called from MLX worker threads, potentially concurrently for
+/// different files, and is on the critical path of the read. It should be cheap and
+/// must not call back into MLX loading.
+///
+/// - Parameters:
+///   - handler: the scoped progress handler
+///   - body: the code where the handler is to be active
+///
+/// ### See Also
+/// - ``loadArrays(url:stream:progressHandler:)``
+public func withLoadProgressHandler<R>(
+    _ handler: @escaping @Sendable (LoadProgress) -> Void, _ body: () throws -> R
+) rethrows -> R {
+    try LoadProgressHandler.$handlers.withValue(LoadProgressHandler.handlers + [handler]) {
+        try body()
+    }
+}
+
+/// Evaluate the block with a scoped byte-progress handler for file loads (async).
+///
+/// See ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` for details.
+///
+/// - Parameters:
+///   - handler: the scoped progress handler
+///   - body: the code where the handler is to be active
+public func withLoadProgressHandler<R>(
+    _ handler: @escaping @Sendable (LoadProgress) -> Void, _ body: () async throws -> R
+) async rethrows -> R {
+    try await LoadProgressHandler.$handlers.withValue(LoadProgressHandler.handlers + [handler]) {
+        try await body()
     }
 }
 
@@ -136,6 +205,9 @@ public func loadArray(url: URL, stream: StreamOrDevice = .cpu) throws -> MLXArra
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///
+/// - Note: when a scoped progress handler is installed with
+/// ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` this reports byte progress to it.
+///
 /// ### See Also
 /// - ``loadArray(url:stream:)``
 /// - ``loadArraysAndMetadata(url:stream:)``
@@ -147,6 +219,10 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
 
     switch url.pathExtension {
     case "safetensors":
+        if let progressHandler = LoadProgressHandler.current {
+            return try loadArrays(url: url, stream: stream, progressHandler: progressHandler)
+        }
+
         var r0 = mlx_map_string_to_array_new()
         var r1 = mlx_map_string_to_string_new()
         defer { mlx_map_string_to_array_free(r0) }
@@ -189,6 +265,9 @@ public func loadArrays(
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///
+/// - Note: when a scoped progress handler is installed with
+/// ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` this reports byte progress to it.
+///
 /// ### See Also
 /// - ``loadArrays(url:stream:)``
 /// - ``loadArray(url:stream:)``
@@ -200,6 +279,11 @@ public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .cpu) throw
 
     switch url.pathExtension {
     case "safetensors":
+        if let progressHandler = LoadProgressHandler.current {
+            return try loadArraysAndMetadata(
+                url: url, stream: stream, progressHandler: progressHandler)
+        }
+
         var r0 = mlx_map_string_to_array_new()
         var r1 = mlx_map_string_to_string_new()
         defer { mlx_map_string_to_array_free(r0) }
@@ -276,6 +360,7 @@ private final class FileIOState {
     private var readError: String?
     private let progressHandler: @Sendable (LoadProgress) -> Void
     private let labelPointer: UnsafeMutablePointer<CChar>
+    private let url: URL
 
     let totalUnitCount: Int64
 
@@ -302,8 +387,10 @@ private final class FileIOState {
         self.totalUnitCount = max(0, Int64(statBuffer.st_size))
         self.progressHandler = progressHandler
         self.labelPointer = labelPointer
+        self.url = url
 
-        progressHandler(.init(completedUnitCount: 0, totalUnitCount: totalUnitCount))
+        progressHandler(
+            .init(url: url, completedUnitCount: 0, totalUnitCount: totalUnitCount))
     }
 
     deinit {
@@ -408,6 +495,7 @@ private final class FileIOState {
         progressLock.withLock {
             completedUnitCount = min(totalUnitCount, completedUnitCount + Int64(bytesRead))
             let progress = LoadProgress(
+                url: url,
                 completedUnitCount: completedUnitCount,
                 totalUnitCount: totalUnitCount)
             progressHandler(progress)
@@ -442,7 +530,7 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         case SEEK_CUR:
             state.offset += Int(offset)
         case SEEK_END:
-            state.offset = state.offset - Int(offset)
+            state.offset = state.data.count + Int(offset)
         default:
             break
         }
