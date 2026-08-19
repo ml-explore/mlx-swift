@@ -362,7 +362,11 @@ open class QuantizedLinear: Linear, Quantized {
     }
 
     open override var parameterCount: Int {
-        scales.size * groupSize
+        if biases != nil {
+            scales.size * groupSize * 2
+        } else {
+            scales.size * groupSize
+        }
     }
 
     public override func unfreeze(
