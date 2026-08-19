@@ -12,6 +12,8 @@ import MLX
 /// mutation surface so the wrapped module cannot be modified through this
 /// reference.
 ///
+/// This also sets ``Module/training`` to `false`.
+///
 /// Note: only parameters that can be be mutated, e.g. are wrapped with `@ParameterInfo`,
 /// will actually be updated to the `MaterializedArray` type.  All others will
 /// be evaluated and are materialized, even if they do not have the type
@@ -42,16 +44,19 @@ import MLX
 ///
 /// ## What is sealed
 ///
-/// The following `Module` operations are marked `@available(*, unavailable)`
-/// on `MaterializedModule` and will trap if called:
-///
-/// - `update(parameters:...)` and `update(modules:...)`
-/// - `updateModule(key:_:)`
-/// - `apply(filter:map:)`
-/// - `freeze(...)` / `unfreeze(...)`
-/// - `train(_:)`
+/// `MaterializedModule` is not a `Module` and does not provide access to the
+/// wrapped `Module`.  No access to bare `MLXArray` is provided, though
+/// for purposes of introspection the ``parameters()`` can give
+/// `MaterializedArray`.  There are also properties like ``parameterNBytes``
+/// and ``parameterCount`` for callers that just need size information.
 ///
 /// ## Calling the wrapped module
+///
+/// `MaterializedModule`is not a `Module` subclass and cannot conform
+/// to protocols that have `Module` requirements.  Users may want to split their
+/// protocols into requirements for performing inference (which
+/// `MaterializedModule` is meant for) and for doing training where `Module`
+/// is required and this type is not appropriate (immutable).
 ///
 /// `MaterializedModule` does not itself know how to invoke `base`; that is
 /// added per-layer-shape via an extension that constrains `LayerType`.
@@ -137,6 +142,8 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
 
     public init(_ base: consuming LayerType) {
         self._base = base
+
+        self._base.train(false)
         self._base.materialize()
 
         // seal the consumed base so that any retained reference held by a
