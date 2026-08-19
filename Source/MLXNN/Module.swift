@@ -1539,6 +1539,7 @@ public enum ModuleValue {
         // cannot check via unwapProperty -- see wrappedValue.set
     }
 
+    // See also ModuleInfo.Setter
     struct Setter: TypeErasedSetter {
         unowned var info: ParameterInfo<T>
 
@@ -1686,6 +1687,7 @@ private protocol TypeErasedSetterProvider {
         }
     }
 
+    // See also ParameterInfo.Setter
     struct Setter: TypeErasedSetter {
         unowned var info: ModuleInfo<T>
 

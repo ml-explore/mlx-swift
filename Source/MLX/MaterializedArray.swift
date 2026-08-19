@@ -19,7 +19,7 @@ import Numerics
 /// - You can only create an instance via ``MLXArray/materialized()``
 ///   or ``materialize(_:)->MaterializedArray``
 /// - Mutation methods are marked as unavailable and will `fatalError`
-///   if you somehow manage to call them.
+///   if you somehow manage to call them (e.g. through dynamic types)
 /// - It is declared `@unchecked Sendable` and may be passed freely between
 ///   tasks, actors, and other concurrency boundaries.
 ///
