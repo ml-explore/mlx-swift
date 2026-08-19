@@ -41,6 +41,44 @@ struct MaterializedTests {
     }
 
     @Test
+    func testCompileInputsOutputsMaterialized() {
+        // A MaterializedArray can never change, so it has nothing for
+        // compile(inputs:outputs:) to observe or update -- it is simply
+        // captured as a constant when the function is traced, the same as
+        // any other value reachable from the closure that isn't part of
+        // `inputs`/`outputs`.  This is the documented
+        // `compile(inputs: [state], outputs: [state], f)` pattern (see
+        // compilation.md).
+        let state = MLXRandom.normal([4, 4]).materialized()
+        let compiled = compile(inputs: [state], outputs: [state]) { (x: MLXArray) in
+            x + state
+        }
+
+        let x = MLXRandom.normal([4, 4])
+        let r1 = compiled(x)
+        let r2 = x + state
+        #expect(r1.allClose(r2).item(Bool.self))
+
+        // same for a `Module` whose parameters were materialized (e.g. via
+        // `MaterializedModule`) -- this is the documented
+        // `compile(inputs: [model], outputs: [model])` pattern.
+        //
+        // Note: capturing the interior module is documented as forbidden but
+        // used here to test.  Do not copy this pattern!
+        let l = Linear(4, 4)
+        _ = MaterializedModule(l)
+
+        let compiledModel = compile(inputs: [l], outputs: [l]) { (x: MLXArray) in
+            l(x)
+        }
+
+        let input = MLXRandom.normal([4, 4])
+        let modelResult = compiledModel(input)
+        let expected = l(input)
+        #expect(modelResult.allClose(expected).item(Bool.self))
+    }
+
+    @Test
     func testMaterializedLinear() async {
         let l = Linear(10, 10)
         let lm = MaterializedModule(l)
