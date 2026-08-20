@@ -362,7 +362,12 @@ open class QuantizedLinear: Linear, Quantized {
     }
 
     open override var parameterCount: Int {
-        if biases != nil {
+        // represent the count that the non-quantized Linear represents.
+        //
+        // the weight property is the quantized weights, so compute based
+        // off the scales and group size to reconstruct
+        if bias != nil {
+            // the bias is the same size as the weight
             scales.size * groupSize * 2
         } else {
             scales.size * groupSize

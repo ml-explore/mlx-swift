@@ -24,7 +24,7 @@ import MLX
 /// The initializer takes its base module as `consuming`:
 ///
 /// ```swift
-/// let lm = try MaterializedModule(Linear(10, 10))
+/// let lm = MaterializedModule(Linear(10, 10))
 /// ```
 ///
 /// `consuming` expresses intent — **the caller must not retain or use the
@@ -52,7 +52,7 @@ import MLX
 ///
 /// ## Calling the wrapped module
 ///
-/// `MaterializedModule`is not a `Module` subclass and cannot conform
+/// `MaterializedModule` is not a `Module` subclass and cannot conform
 /// to protocols that have `Module` requirements.  Users may want to split their
 /// protocols into requirements for performing inference (which
 /// `MaterializedModule` is meant for) and for doing training where `Module`
@@ -125,7 +125,7 @@ import MLX
 /// class MaterializedUnaryLayer: MaterializedModule<UnaryLayer> { ... }
 /// ```
 ///
-/// because `UnaryLayer` is not a `Module`.
+/// because `UnaryLayer` is not a concrete type, it is a protocol.
 ///
 /// The class is `open` so you could give it a try.
 open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecked Sendable {
