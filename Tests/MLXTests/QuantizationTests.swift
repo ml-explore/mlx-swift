@@ -6,6 +6,36 @@ import MLXNN
 import XCTest
 
 class QuantizationTests: XCTestCase {
+    func testQuantizedMMPreservesInputDTypeForMixed16BitParameters() {
+        let weight = MLXArray.zeros([8, 8], dtype: .uint32)
+
+        for (inputDType, parameterDType) in [
+            (DType.bfloat16, DType.float16),
+            (DType.float16, DType.bfloat16),
+        ] {
+            let input = MLXArray.zeros([1, 64], dtype: inputDType)
+            let scales = MLXArray.ones([8, 1], dtype: parameterDType)
+            let biases = MLXArray.zeros([8, 1], dtype: parameterDType)
+
+            let result = quantizedMM(
+                input, weight, scales: scales, biases: biases, groupSize: 64, bits: 4)
+
+            XCTAssertEqual(result.dtype, inputDType)
+        }
+    }
+
+    func testQuantizedMMRetainsFloat32ParameterPromotion() {
+        let input = MLXArray.zeros([1, 64], dtype: .bfloat16)
+        let weight = MLXArray.zeros([8, 8], dtype: .uint32)
+        let scales = MLXArray.ones([8, 1], dtype: .float32)
+        let biases = MLXArray.zeros([8, 1], dtype: .float32)
+
+        let result = quantizedMM(
+            input, weight, scales: scales, biases: biases, groupSize: 64, bits: 4)
+
+        XCTAssertEqual(result.dtype, .float32)
+    }
+
     func testQuantizedLinearAppliesNVFP4GlobalScaleOnMetal() {
         let (input, quantizedWeight, scales, biases, globalScale, bias, expected) =
             Device.withDefaultDevice(.cpu) {

@@ -2449,6 +2449,11 @@ public func quantizedMatmul(
 ///   - mode: The quantization mode. Default is `.affine`
 ///   - stream: Stream or device to evaluate on
 ///
+/// When `x` and affine quantization parameters use different 16-bit floating-point
+/// formats, the parameters are converted to the input type. This avoids promoting
+/// mixed `float16` and `bfloat16` inputs to `float32`. Parameters already stored in
+/// `float32` retain the usual type-promotion behavior.
+///
 /// ### See Also
 /// - ``dequantized(_:scales:biases:groupSize:bits:mode:globalScale:dtype:stream:)``
 /// - ``quantized(_:groupSize:bits:mode:globalScale:stream:)``
@@ -2460,6 +2465,8 @@ public func quantizedMM(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
+    let (scales, biases) = alignedQuantizedMMParameters(
+        scales: scales, biases: biases, with: x, mode: mode, stream: stream)
 
     let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
     let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
@@ -2472,6 +2479,22 @@ public func quantizedMM(
         stream.ctx
     )
     return MLXArray(result)
+}
+
+private func alignedQuantizedMMParameters(
+    scales: MLXArray, biases: MLXArray?, with input: MLXArray, mode: QuantizationMode,
+    stream: StreamOrDevice
+) -> (MLXArray, MLXArray?) {
+    guard mode == .affine, let biases else { return (scales, biases) }
+    let dtypes = [input.dtype, scales.dtype, biases.dtype]
+    guard dtypes.allSatisfy({ $0 == .float16 || $0 == .bfloat16 }) else {
+        return (scales, biases)
+    }
+
+    return (
+        scales.dtype == input.dtype ? scales : scales.asType(input.dtype, stream: stream),
+        biases.dtype == input.dtype ? biases : biases.asType(input.dtype, stream: stream)
+    )
 }
 
 /// Perform a matrix multiplication using a possibly quantized weight matrix
