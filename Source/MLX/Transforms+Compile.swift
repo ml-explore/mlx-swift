@@ -9,7 +9,14 @@ final class CompiledFunction: @unchecked (Sendable) {
     /// unique (for the lifetime of the object) identifier for the compiled function
     private var id: UInt!
 
-    let lock = NSLock()
+    /// guards the observed state (``inputs`` / ``outputs``) -- see #226
+    ///
+    /// This is always acquired *inside* `evalLock`; see ``call(_:)`` for the
+    /// ordering rule.  It is recursive because a compiled function's body can
+    /// legitimately re-enter that same compiled function on the same thread
+    /// while it is being traced (a nested call with tracer inputs bypasses the
+    /// cache and simply runs the body again).
+    let lock = NSRecursiveLock()
 
     /// the function to compile
     let f: ([MLXArray]) -> [MLXArray]
@@ -36,12 +43,48 @@ final class CompiledFunction: @unchecked (Sendable) {
         mlx_detail_compile_erase(id)
     }
 
+    /// Evaluate the compiled function.
+    ///
+    /// ### Lock ordering
+    ///
+    /// `evalLock` is acquired **outermost**, before the per-instance ``lock``.
+    /// That order is not a preference, it is forced:
+    ///
+    /// - Tracing mutates process-global state that has no synchronization of its
+    ///   own -- `mlx::core::detail::CompilerCache` is an unguarded singleton and
+    ///   `detail::InTracing::trace_stack()` is a plain function-local `static`,
+    ///   not `thread_local` -- so `evalLock` has to span the whole trace (#339).
+    /// - The trace calls back into Swift, and the traced body routinely calls
+    ///   *other* compiled functions: every `MLXNN` activation is a file-scope
+    ///   `CompiledFunction`, so e.g. `silu` inside a traced body enters
+    ///   `compiledSilu.call` and takes *its* per-instance lock.
+    ///
+    /// So `evalLock` → ``lock`` happens whether or not we ask for it.  Taking
+    /// ``lock`` first here would add the reverse order ``lock`` → `evalLock` for
+    /// any thread entering from the top, and two threads -- one nested inside a
+    /// trace, one not -- would deadlock on a cold compiler cache:
+    ///
+    ///     thread H:  L_cf(outer)  -> evalLock     -> wants L_cf(shared)
+    ///     thread W:  L_cf(shared) -> wants evalLock
+    ///
+    /// Acquiring `evalLock` here gives the process a single global order, which
+    /// makes the inversion impossible.  `Source/CompileLockRepro` reproduces the
+    /// deadlock deterministically without this.
+    ///
+    /// The cost is small: ``innerCall(_:)`` used to take `evalLock` itself and
+    /// hold it through `mlx_closure_apply` -- i.e. across the actual evaluation
+    /// -- so this only moves the acquisition earlier by the state gathering and
+    /// closure creation at the top of ``innerCall(_:)``.
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
-        lock.withLock {
-            innerCall(arguments)
+        evalLock.withLock {
+            lock.withLock {
+                innerCall(arguments)
+            }
         }
     }
 
+    /// - Precondition: `evalLock` and ``lock`` are held by the caller; see
+    ///   ``call(_:)``, which is the only caller.
     func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
         let stateInputs = inputs.flatMap { $0.innerState() }
         let argumentsCount = arguments.count
@@ -86,12 +129,13 @@ final class CompiledFunction: @unchecked (Sendable) {
 
         // note: this will use the cached compile (via the id)
         // but will be able to re-evaluate with fresh state if needed
-        evalLock.lock()
+        //
+        // evalLock is already held by call(_:) and covers everything through
+        // mlx_closure_apply below, which is where the trace runs.
         var compiled = mlx_closure_new()
         let compileStatus = mlx_detail_compile(&compiled, innerClosure, id, shapeless, [], 0)
         defer {
             mlx_closure_free(compiled)
-            evalLock.unlock()
         }
 
         // mlx_error was already dispatched on failure:
