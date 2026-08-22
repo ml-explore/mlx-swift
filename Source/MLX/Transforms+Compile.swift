@@ -77,14 +77,27 @@ final class CompiledFunction: @unchecked (Sendable) {
     /// closure creation at the top of ``innerCall(_:)``.
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
         evalLock.withLock {
-            lock.withLock {
+            // ``lock`` exists only to guard the observed state (#226): the
+            // `_updateInternal` swaps in `innerCall` are the sole mutation of
+            // anything reachable from `self` -- every other stored property is
+            // `let`, and `id` is written once at init.  With no state there is
+            // nothing to guard, and `evalLock` above already serializes the
+            // compiler cache and every other caller.
+            //
+            // This is the common case: every compiled function in `MLXNN` is
+            // stateless.
+            if inputs.isEmpty && outputs.isEmpty {
+                return innerCall(arguments)
+            }
+            return lock.withLock {
                 innerCall(arguments)
             }
         }
     }
 
-    /// - Precondition: `evalLock` and ``lock`` are held by the caller; see
-    ///   ``call(_:)``, which is the only caller.
+    /// - Precondition: `evalLock` is held by the caller, and ``lock`` is held
+    ///   too unless this function has no observed state; see ``call(_:)``,
+    ///   which is the only caller.
     func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
         let stateInputs = inputs.flatMap { $0.innerState() }
         let argumentsCount = arguments.count
