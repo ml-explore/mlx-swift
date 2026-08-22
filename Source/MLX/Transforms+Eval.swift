@@ -54,6 +54,7 @@ let evalLock = NSRecursiveLock()
         private static let counterLock = NSLock()
         nonisolated(unsafe) private static var checkCount = 0
         nonisolated(unsafe) private static var violationCount = 0
+        nonisolated(unsafe) private static var compileEraseCount = 0
 
         /// Records, and in debug builds asserts, that `evalLock` is held by the
         /// current thread at a point where an inner lock is about to be taken.
@@ -66,15 +67,28 @@ let evalLock = NSRecursiveLock()
             assert(held, message())
         }
 
+        /// Records a `CompiledFunction.deinit` erase of the compiler cache, so a
+        /// test can tell "the erase ran under the lock" from "the deinit never
+        /// fired".
+        static func recordCompileErase() {
+            counterLock.withLock { compileEraseCount += 1 }
+        }
+
         /// (checks, violations) since ``resetCounters()``.
         static var counters: (checks: Int, violations: Int) {
             counterLock.withLock { (checkCount, violationCount) }
+        }
+
+        /// Compiler-cache erases since ``resetCounters()``.
+        static var compileErases: Int {
+            counterLock.withLock { compileEraseCount }
         }
 
         static func resetCounters() {
             counterLock.withLock {
                 checkCount = 0
                 violationCount = 0
+                compileEraseCount = 0
             }
         }
     }

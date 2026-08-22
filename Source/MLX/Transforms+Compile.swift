@@ -38,9 +38,67 @@ final class CompiledFunction: @unchecked (Sendable) {
         self.id = UInt(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
 
+    /// Remove the compiled structure from the back end.
+    ///
+    /// ### Why this takes `evalLock`
+    ///
+    /// `mlx_detail_compile_erase` is `compiler_cache().erase(fun_id)`, i.e.
+    /// `std::unordered_map::erase` on the *same* process-global
+    /// `mlx::core::detail::CompilerCache` that ``innerCall(_:)`` reads and
+    /// inserts into via `CompilerCache::find` (`cache_[fun_id]`, which itself
+    /// can insert and rehash, followed by `entries.push_back`).  That cache has
+    /// no synchronization of its own, and `find` hands back a *reference* to an
+    /// entry that the caller then fills in and reads from across the whole
+    /// trace.  An unlocked erase can therefore rehash the map out from under a
+    /// concurrent `find`, or destroy the very entry another thread is compiling
+    /// into.
+    ///
+    /// Every other use of that cache happens under `evalLock`, so the erase has
+    /// to as well; otherwise the lock does not actually make the cache
+    /// single-threaded, it only makes most of it single-threaded.
+    ///
+    /// ### Why blocking here is safe
+    ///
+    /// `deinit` runs on whichever thread drops the last reference:
+    ///
+    /// - A thread that holds no MLX lock simply waits for the current eval or
+    ///   compiled call to finish.  Bounded, since `evalLock` is only ever held
+    ///   for the duration of one call.
+    /// - A thread already inside a compiled call or an `eval` -- for instance a
+    ///   traced body that drops the last reference to some other compiled
+    ///   function -- already holds `evalLock`, and it is an `NSRecursiveLock`,
+    ///   so re-entry is free.
+    /// - A thread holding some other ``CompiledFunction``'s ``lock`` also holds
+    ///   `evalLock` already (see ``call(_:)``), so that is the same case; no new
+    ///   edge is added to the lock graph.
+    ///
+    /// Within this library the only releases of a ``CompiledFunction`` are the
+    /// caller's own (the closure returned by ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
+    /// holds the sole strong reference) and the `mlx_closure_free` of the
+    /// closure built in ``innerCall(_:)``, which runs on the calling thread with
+    /// `evalLock` already held.  Nothing hands a reference to a back-end worker
+    /// thread, so the erase can never be the thing an `evalLock` holder is
+    /// waiting for.
+    ///
+    /// The erase stays synchronous rather than being deferred to a queue on
+    /// purpose: ``id`` is the object's own address, so once this object is
+    /// freed a new ``CompiledFunction`` can be allocated at the same address and
+    /// receive the same id.  A deferred erase could delete that new function's
+    /// cache entries.
     deinit {
-        // remove the compiled structure from the back end
-        mlx_detail_compile_erase(id)
+        let functionID = id!
+        withEvalLock {
+            #if DEBUG
+                // Trivially true two lines below the acquisition -- it is here to
+                // catch a future change that moves the erase back out from under
+                // the lock, the same way `withInstanceLock` guards `call(_:)`.
+                EvalLockOwnership.requireHeldByCurrentThread(
+                    "the compiler cache was erased without holding evalLock; "
+                        + "see CompiledFunction.deinit")
+                EvalLockOwnership.recordCompileErase()
+            #endif
+            _ = mlx_detail_compile_erase(functionID)
+        }
     }
 
     /// Evaluate the compiled function.
