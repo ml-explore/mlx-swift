@@ -76,7 +76,7 @@ final class CompiledFunction: @unchecked (Sendable) {
     /// -- so this only moves the acquisition earlier by the state gathering and
     /// closure creation at the top of ``innerCall(_:)``.
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
-        evalLock.withLock {
+        withEvalLock {
             // ``lock`` exists only to guard the observed state (#226): the
             // `_updateInternal` swaps in `innerCall` are the sole mutation of
             // anything reachable from `self` -- every other stored property is
@@ -89,10 +89,25 @@ final class CompiledFunction: @unchecked (Sendable) {
             if inputs.isEmpty && outputs.isEmpty {
                 return innerCall(arguments)
             }
-            return lock.withLock {
+            return withInstanceLock {
                 innerCall(arguments)
             }
         }
+    }
+
+    /// Acquire ``lock``, checking the ordering invariant first.
+    ///
+    /// The check is where the invariant actually lives, not in ``call(_:)``: a
+    /// change that moved the per-instance lock back outside `evalLock` -- the
+    /// shape that produced the deadlock -- trips this on the first compiled
+    /// call, deterministically and without needing to lose a race.
+    private func withInstanceLock<R>(_ body: () throws -> R) rethrows -> R {
+        #if DEBUG
+            EvalLockOwnership.requireHeldByCurrentThread(
+                "CompiledFunction.lock was acquired without holding evalLock; "
+                    + "that is the lock-order inversion, see CompiledFunction.call")
+        #endif
+        return try lock.withLock(body)
     }
 
     /// - Precondition: `evalLock` is held by the caller, and ``lock`` is held

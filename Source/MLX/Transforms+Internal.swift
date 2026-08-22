@@ -16,7 +16,7 @@ private func valueAndGradient(
     var r0 = mlx_vector_array_new()
     var r1 = mlx_vector_array_new()
 
-    _ = evalLock.withLock {
+    _ = withEvalLock {
         mlx_closure_value_and_grad_apply(&r0, &r1, valueAndGrad, input_vector)
     }
 

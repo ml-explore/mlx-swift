@@ -354,7 +354,7 @@ public enum Memory {
 
     /// Cause all cached buffers to be deallocated.
     public static func clearCache() {
-        _ = evalLock.withLock {
+        _ = withEvalLock {
             mlx_clear_cache()
         }
     }
