@@ -440,6 +440,18 @@ let package = Package(
             path: "Source/Examples",
             sources: ["CustomFunctionExampleSimple.swift"]
         ),
+        // Deterministic reproduction of the CompiledFunction/evalLock
+        // lock-order inversion.  A wedged run deadlocks its threads
+        // permanently, so it is deliberately kept out of the test bundle and
+        // built as its own executable.
+        .executableTarget(
+            name: "CompileLockRepro",
+            dependencies: ["MLX"],
+            path: "Source/CompileLockRepro",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
     ] + cudaTargets,
     cxxLanguageStandard: .gnucxx20
 )
