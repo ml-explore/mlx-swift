@@ -118,7 +118,7 @@ public final class Stream: @unchecked Sendable, Equatable {
 
     @available(*, deprecated, message: "use init(Device) -- index not supported")
     public init(index: Int32, _ device: Device) {
-        self.ctx = evalLock.withLock {
+        self.ctx = withEvalLock {
             mlx_stream_new_device(device.ctx)
         }
     }
@@ -127,20 +127,20 @@ public final class Stream: @unchecked Sendable, Equatable {
     ///
     /// See also ``withNewDefaultStream(device:_:)-5bwc3``
     public init(_ device: Device) {
-        self.ctx = evalLock.withLock {
+        self.ctx = withEvalLock {
             mlx_stream_new_device(device.ctx)
         }
     }
 
     deinit {
-        _ = evalLock.withLock {
+        _ = withEvalLock {
             mlx_stream_free(ctx)
         }
     }
 
     /// Synchronize with the given stream
     public func synchronize() {
-        _ = evalLock.withLock {
+        _ = withEvalLock {
             mlx_synchronize(ctx)
         }
     }
@@ -162,7 +162,7 @@ extension Stream: CustomStringConvertible {
     public var description: String {
         var s = mlx_string_new()
         defer { mlx_string_free(s) }
-        _ = evalLock.withLock {
+        _ = withEvalLock {
             mlx_stream_tostring(&s, ctx)
         }
         return String(cString: mlx_string_data(s), encoding: .utf8)!

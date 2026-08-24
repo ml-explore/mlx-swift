@@ -24,7 +24,7 @@ private enum WiredMemoryBackend {
         guard isSupported else { return false }
         guard limit >= 0 else { return false }
         var previous: size_t = 0
-        let result = evalLock.withLock {
+        let result = withEvalLock {
             mlx_set_wired_limit(&previous, size_t(limit))
         }
         return result == 0

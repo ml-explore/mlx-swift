@@ -28,7 +28,7 @@ public func jvp(
 
     let closure = new_mlx_closure(f)
 
-    _ = evalLock.withLock {
+    _ = withEvalLock {
         mlx_jvp(&r0, &r1, closure, primals_mlx, tangents_mlx)
     }
 
@@ -65,7 +65,7 @@ public func vjp(
 
     let closure = new_mlx_closure(f)
 
-    _ = evalLock.withLock {
+    _ = withEvalLock {
         mlx_vjp(&r0, &r1, closure, primals_mlx, cotangents_mlx)
     }
 

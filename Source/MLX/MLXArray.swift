@@ -554,7 +554,7 @@ public final class MLXArray {
     /// MLX is lazy and arrays are not fully realized until they are evaluated.  This method is typically
     /// not needed as all reads ensure the contents are evaluated.
     public func eval() {
-        _ = evalLock.withLock {
+        _ = withEvalLock {
             mlx_array_eval(ctx)
         }
     }
@@ -617,7 +617,7 @@ extension MLXArray: CustomStringConvertible {
     public var description: String {
         var s = mlx_string_new()
         defer { mlx_string_free(s) }
-        _ = evalLock.withLock {
+        _ = withEvalLock {
             mlx_array_tostring(&s, ctx)
         }
         return String(cString: mlx_string_data(s), encoding: .utf8)!
