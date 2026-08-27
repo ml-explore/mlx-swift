@@ -217,6 +217,65 @@ class TransformTests: XCTestCase {
         XCTAssertEqual(state.o!.item(Float.self), -8)
     }
 
+    // https://github.com/ml-explore/mlx-swift-lm/issues/586 --
+    // compile can capture Module parameters
+    class ScaleModule: Module, UnaryLayer {
+        var scale: MLXArray
+
+        init(_ value: Float) {
+            self.scale = MLXArray(value)
+        }
+
+        func callAsFunction(_ x: MLXArray) -> MLXArray {
+            x * scale
+        }
+    }
+
+    func testCompileCapturesModuleParameterWithoutState() {
+        // verify the capture path happens
+
+        let model = ScaleModule(2.0)
+
+        let compiled = compile { (x: MLXArray) -> MLXArray in
+            model(x)
+        }
+
+        let r1 = compiled(MLXArray(Float(3)))
+        XCTAssertEqual(r1.item(Float.self), 6)
+
+        // simulate a LoRA-style in place update of the module's weights
+        model.update(parameters: .unflattened([("scale", MLXArray(Float(10)))]))
+        eval(model)
+
+        // Verify capture of Module parameters -- it doesn't see the update
+        let r2 = compiled(MLXArray(Float(3)))
+        XCTAssertEqual(
+            r2.item(Float.self), 6,
+            "compiled function incorrectly ignored the updated module parameter")
+    }
+
+    func testCompileWithStateObservesModuleParameterUpdates() {
+        // verify inputs/outputs correctly handles updated
+        // Module parameters
+
+        let model = ScaleModule(2.0)
+
+        let compiled = compile(inputs: [model], outputs: [model]) { (x: MLXArray) -> MLXArray in
+            model(x)
+        }
+
+        let r1 = compiled(MLXArray(Float(3)))
+        XCTAssertEqual(r1.item(Float.self), 6)
+
+        // simulate a LoRA-style in place update of the module's weights
+        model.update(parameters: .unflattened([("scale", MLXArray(Float(10)))]))
+        eval(model)
+
+        // with state:, the compiled function observes the updated parameter
+        let r2 = compiled(MLXArray(Float(3)))
+        XCTAssertEqual(r2.item(Float.self), 30)
+    }
+
     func testCompiledRandom() {
         func f(_ bias: MLXArray) -> MLXArray {
             MLXRandom.uniform(0 ..< 1, [4]) + bias
