@@ -74,6 +74,16 @@ class StreamTests: XCTestCase {
         print("here")
     }
 
+    func testStreamOrDeviceStreamUsesGivenStream() {
+        // StreamOrDevice.stream(_:) used to ignore its argument and return
+        // the default stream instead
+        let stream = Stream(.cpu)
+        XCTAssertEqual(StreamOrDevice.stream(stream).stream, stream)
+
+        XCTAssertEqual(StreamOrDevice.stream(.cpu).stream, Stream.cpu)
+        XCTAssertEqual(StreamOrDevice.stream(.gpu).stream, Stream.gpu)
+    }
+
     func disabledTestCreateStream() {
         // see https://github.com/ml-explore/mlx/issues/2118
         for _ in 1 ..< 10000 {
