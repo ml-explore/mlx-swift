@@ -28,6 +28,16 @@ class StreamTests: XCTestCase {
         XCTAssertEqual(s3.deviceType, .cpu)
     }
 
+    func testStreamOrDevice() {
+        let cpuStream = Stream(.cpu)
+        let streamOrDevice = StreamOrDevice.stream(cpuStream)
+        XCTAssertEqual(streamOrDevice.stream, cpuStream)
+
+        let gpuStream = Stream(.gpu)
+        let gpuStreamOrDevice = StreamOrDevice.stream(gpuStream)
+        XCTAssertEqual(gpuStreamOrDevice.stream, gpuStream)
+    }
+
     func testUsingDevice() {
         let defaultDevice = Device.defaultDevice()
 
