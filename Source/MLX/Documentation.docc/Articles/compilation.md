@@ -246,7 +246,7 @@ its parameters count as implicit state, just like `MLXRandom.globalState` above.
 If you compile a function that reads a module's parameters without listing that
 module in `inputs:`/`outputs:`, the values are baked into the compiled graph the
 first time it traces and later updates to the module (for example swapping in
-new LoRA weights with ``Module/update(parameters:)``) will be silently ignored:
+new LoRA weights with `Module.update(parameters:)`) will be silently ignored:
 
 ```swift
 class ScaleModule: Module, UnaryLayer {

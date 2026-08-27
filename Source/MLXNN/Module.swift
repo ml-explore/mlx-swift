@@ -426,7 +426,7 @@ open class Module {
     /// The ``apply(filter:map:)`` can be used for similar purposes to apply changes
     /// in-place.
     ///
-    /// > If this module is used inside a compiled closure (see <doc:compilation>) that does not
+    /// > If this module is used inside a compiled closure (`compile()`) that does not
     /// list the module in `inputs:`, calling `update(parameters:)` after the first compiled call
     /// will not be observed by the compiled function -- `inputs:` is what makes `compile` re-read
     /// current parameter values on every call. `outputs:` is only needed in addition when the
