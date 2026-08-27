@@ -203,12 +203,13 @@ let compiledF = compile(f)
 let result = compiledF(a, b)
 ```
 
-### compile Limitations
+### compile Limitations and Module/Optimizer State
 
-**Important:** `compile()` only works with pure `MLXArray` functions. It does NOT support:
-- Model objects as parameters
-- Optimizer objects as parameters
-- Any non-MLXArray inputs
+`compile()` traces a function that takes/returns `MLXArray` values (or tuples/arrays
+of them) -- it can't take a `Module` or `Optimizer` as a parameter directly. But it
+CAN compile closures that capture and mutate a `Module`/`Optimizer`, as long as any
+mutable state they touch is declared via `inputs:`/`outputs:`. Both `Module` and
+`Optimizer` conform to `Updatable`, so they can be passed there directly:
 
 ```swift
 // CORRECT: compile with pure MLXArray functions
@@ -217,12 +218,35 @@ let compiledOp = compile { (a: MLXArray, b: MLXArray) -> MLXArray in
     return sum(x * x)
 }
 
-// For model training, call model methods directly without compile:
+// ALSO CORRECT: compile a full training step by capturing model/optimizer
+// and declaring them as inputs/outputs so compile observes their updates
 func loss(model: MyModel, x: MLXArray, y: MLXArray) -> MLXArray {
     mseLoss(predictions: model(x), targets: y, reduction: .mean)
 }
 let lossAndGradFn = valueAndGrad(model: model, loss)
-let (lossValue, grads) = lossAndGradFn(model, x, y)
+
+let step = compile(inputs: [model, optimizer], outputs: [model, optimizer]) { x, y in
+    let (loss, grads) = lossAndGradFn(model, x, y)
+    optimizer.update(model: model, gradients: grads)
+    return loss
+}
+
+// PITFALL: if you close over a Module but omit it from inputs/outputs,
+// compile() bakes in its parameter values at trace time. Later in-place
+// updates to the module (e.g. swapping LoRA weights) will be silently
+// ignored by the compiled function until it is recompiled for another
+// reason (e.g. a shape change).
+let compiled = compile { (x: MLXArray) -> MLXArray in model(x) }
+_ = compiled(x)
+model.update(parameters: newParameters)
+eval(model)
+_ = compiled(x) // still uses the OLD parameters
+
+// FIX: `inputs:` is what makes compile() re-read current state on every call;
+// `outputs:` is only needed when the compiled closure itself mutates the
+// state (as `optimizer.update(...)` does in the `step` example above) and
+// you need that mutation written back to the real arrays.
+let fixed = compile(inputs: [model]) { (x: MLXArray) -> MLXArray in model(x) }
 optimizer.update(model: model, gradients: grads)
 eval(model, optimizer)
 ```

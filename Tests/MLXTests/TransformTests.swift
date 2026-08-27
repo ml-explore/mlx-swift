@@ -255,12 +255,12 @@ class TransformTests: XCTestCase {
     }
 
     func testCompileWithStateObservesModuleParameterUpdates() {
-        // verify inputs/outputs correctly handles updated
+        // verify inputs correctly handles updated
         // Module parameters
 
         let model = ScaleModule(2.0)
 
-        let compiled = compile(inputs: [model], outputs: [model]) { (x: MLXArray) -> MLXArray in
+        let compiled = compile(inputs: [model]) { (x: MLXArray) -> MLXArray in
             model(x)
         }
 

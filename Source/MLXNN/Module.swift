@@ -426,6 +426,13 @@ open class Module {
     /// The ``apply(filter:map:)`` can be used for similar purposes to apply changes
     /// in-place.
     ///
+    /// > If this module is used inside a compiled closure (see <doc:compilation>) that does not
+    /// list the module in `inputs:`, calling `update(parameters:)` after the first compiled call
+    /// will not be observed by the compiled function -- `inputs:` is what makes `compile` re-read
+    /// current parameter values on every call. `outputs:` is only needed in addition when the
+    /// compiled closure itself mutates this module's parameters and the mutation should be
+    /// written back.
+    ///
     /// If a parameter is missing from the update and validation indicates `.allModelKeysSet` this
     /// will call ``updateMissing(parameter:verify:path:modulePath:)`` which will
     /// throw an error.  Subclasses can override this if needed.
