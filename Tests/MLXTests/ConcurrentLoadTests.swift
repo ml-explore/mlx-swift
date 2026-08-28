@@ -67,6 +67,20 @@ final class ConcurrentLoadTests: XCTestCase {
         }
     }
 
+    func testLoadArraysMaterializesBeforeReturning() throws {
+        let expected = MLXArray(Int32(0) ..< 4096).reshaped(64, 64)
+        let url = try write(arrays: ["a": expected], name: "materialized.safetensors")
+
+        let loaded = try loadArrays(urls: [url])
+        let handle = try FileHandle(forWritingTo: url)
+        try handle.truncate(atOffset: 0)
+        try handle.close()
+
+        // The synchronous API must have crossed its completion barrier before the file
+        // is truncated; accessing the returned array must not attempt any deferred I/O.
+        assertEqual(try XCTUnwrap(loaded["a"]), expected)
+    }
+
     func testLoadArraysEmpty() throws {
         let loaded = try loadArrays(urls: [])
         XCTAssertTrue(loaded.isEmpty)
@@ -163,9 +177,9 @@ final class ConcurrentLoadTests: XCTestCase {
         XCTAssertEqual(skewed.flatMap { Array($0) }, Array(0 ..< 8))
     }
 
-    func testConcurrentLoadWorkerCount() {
-        XCTAssertEqual(concurrentLoadWorkerCount(processorCount: 2), 4)
-        XCTAssertEqual(concurrentLoadWorkerCount(processorCount: 10), 10)
-        XCTAssertEqual(concurrentLoadWorkerCount(processorCount: 32), 16)
+    func testConcurrentLoadGroupCount() {
+        XCTAssertEqual(concurrentLoadGroupCount(processorCount: 2), 4)
+        XCTAssertEqual(concurrentLoadGroupCount(processorCount: 10), 10)
+        XCTAssertEqual(concurrentLoadGroupCount(processorCount: 32), 16)
     }
 }
