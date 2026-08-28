@@ -32,6 +32,18 @@ final class ConcurrentLoadTests: XCTestCase {
         return url
     }
 
+    private func writeRawSafetensor(
+        header: String, payload: Data = Data(), name: String
+    ) throws -> URL {
+        let url = temporaryPath.appending(path: name, directoryHint: .notDirectory)
+        var headerLength = UInt64(header.utf8.count).littleEndian
+        var data = withUnsafeBytes(of: &headerLength) { Data($0) }
+        data.append(contentsOf: header.utf8)
+        data.append(payload)
+        try data.write(to: url)
+        return url
+    }
+
     func testLoadArraysMatchesSerialLoads() throws {
         var urls = [URL]()
         var expected = [String: MLXArray]()
@@ -68,17 +80,24 @@ final class ConcurrentLoadTests: XCTestCase {
     }
 
     func testLoadArraysMaterializesBeforeReturning() throws {
-        let expected = MLXArray(Int32(0) ..< 4096).reshaped(64, 64)
-        let url = try write(arrays: ["a": expected], name: "materialized.safetensors")
+        let firstExpected = MLXArray(Int32(0) ..< 4096).reshaped(64, 64)
+        let secondExpected = MLXArray(Int32(4096) ..< 8192).reshaped(64, 64)
+        let firstURL = try write(
+            arrays: ["first": firstExpected], name: "first-materialized.safetensors")
+        let secondURL = try write(
+            arrays: ["second": secondExpected], name: "second-materialized.safetensors")
 
-        let loaded = try loadArrays(urls: [url])
-        let handle = try FileHandle(forWritingTo: url)
-        try handle.truncate(atOffset: 0)
-        try handle.close()
+        let loaded = try loadArrays(urls: [firstURL, secondURL])
+        for url in [firstURL, secondURL] {
+            let handle = try FileHandle(forWritingTo: url)
+            try handle.truncate(atOffset: 0)
+            try handle.close()
+        }
 
-        // The synchronous API must have crossed its completion barrier before the file
-        // is truncated; accessing the returned array must not attempt any deferred I/O.
-        assertEqual(try XCTUnwrap(loaded["a"]), expected)
+        // The first file is submitted with asyncEval and the second is the checkedEval
+        // barrier. Neither returned array may attempt deferred I/O after both are truncated.
+        assertEqual(try XCTUnwrap(loaded["first"]), firstExpected)
+        assertEqual(try XCTUnwrap(loaded["second"]), secondExpected)
     }
 
     func testLoadArraysEmpty() throws {
@@ -154,6 +173,49 @@ final class ConcurrentLoadTests: XCTestCase {
         XCTAssertThrowsError(try safetensorSpansInFileOrder(url: url))
     }
 
+    func testSafetensorSpansRejectsOverflowingOffsets() throws {
+        let url = try writeRawSafetensor(
+            header:
+                #"{"bad":{"dtype":"U8","shape":[1],"data_offsets":[-9223372036854775808,9223372036854775807]}}"#,
+            name: "overflow.safetensors")
+
+        XCTAssertThrowsError(try safetensorSpansInFileOrder(url: url))
+    }
+
+    func testSafetensorSpansRejectsNonintegerOffsets() throws {
+        for (name, offset) in [("fractional", "1.5"), ("boolean", "true")] {
+            let url = try writeRawSafetensor(
+                header:
+                    #"{"bad":{"dtype":"U8","shape":[1],"data_offsets":[0,"#
+                    + offset + #"]}}"#,
+                name: "\(name).safetensors")
+
+            XCTAssertThrowsError(try safetensorSpansInFileOrder(url: url))
+        }
+    }
+
+    func testSafetensorSpansRejectsNoncontiguousOffsets() throws {
+        let url = try writeRawSafetensor(
+            header:
+                #"{"a":{"dtype":"U8","shape":[1],"data_offsets":[0,1]},"b":{"dtype":"U8","shape":[1],"data_offsets":[2,3]}}"#,
+            payload: Data([0, 0, 0]),
+            name: "noncontiguous.safetensors")
+
+        XCTAssertThrowsError(try safetensorSpansInFileOrder(url: url))
+    }
+
+    func testSafetensorSpansOrdersEmptyTensorBeforeSharedOffset() throws {
+        let url = try writeRawSafetensor(
+            header:
+                #"{"value":{"dtype":"U8","shape":[1],"data_offsets":[0,1]},"empty":{"dtype":"U8","shape":[0],"data_offsets":[0,0]}}"#,
+            payload: Data([42]),
+            name: "empty.safetensors")
+
+        let spans = try safetensorSpansInFileOrder(url: url)
+        XCTAssertEqual(spans.map(\.name), ["empty", "value"])
+        XCTAssertEqual(spans.map(\.byteCount), [0, 1])
+    }
+
     func testContiguousLoadGroups() {
         // empty
         XCTAssertEqual(contiguousLoadGroups(byteCounts: [], groupCount: 4), [])
@@ -175,6 +237,11 @@ final class ConcurrentLoadTests: XCTestCase {
         let skewed = contiguousLoadGroups(
             byteCounts: [1000, 1, 1, 1, 1000, 1, 1, 1000], groupCount: 3)
         XCTAssertEqual(skewed.flatMap { Array($0) }, Array(0 ..< 8))
+
+        // Computing proportional boundaries must not overflow for very large files.
+        let huge = contiguousLoadGroups(
+            byteCounts: [.max - 1, 1], groupCount: 16)
+        XCTAssertEqual(huge.flatMap { Array($0) }, [0, 1])
     }
 
     func testConcurrentLoadGroupCount() {

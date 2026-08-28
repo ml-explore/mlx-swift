@@ -1,6 +1,7 @@
 // Copyright © 2026 Apple Inc.
 
 import Cmlx
+import CoreFoundation
 import Foundation
 
 // MARK: - Concurrent safetensors loading
@@ -30,6 +31,22 @@ struct SafetensorSpan {
     let byteCount: Int64
 }
 
+/// Match the limit enforced by MLX and the safetensors reference implementation.
+private let maximumSafetensorHeaderBytes: UInt64 = 100_000_000
+
+/// Decode a JSON integer without accepting booleans, floating-point values, or values
+/// outside the range used by the grouping arithmetic below.
+private func safetensorOffset(_ value: Any) -> Int64? {
+    guard let number = value as? NSNumber,
+        CFGetTypeID(number) != CFBooleanGetTypeID(),
+        !CFNumberIsFloatType(number)
+    else {
+        return nil
+    }
+    let offset = number.int64Value
+    return offset >= 0 ? offset : nil
+}
+
 /// The tensors of the safetensors file at `url`, ordered by their position in the file.
 ///
 /// Reads the 8-byte header length and the JSON header only. Throws when the file is not a
@@ -45,8 +62,9 @@ func safetensorSpansInFileOrder(url: URL) throws -> [SafetensorSpan] {
     }
     let headerLength = lengthData.withUnsafeBytes { $0.loadUnaligned(as: UInt64.self) }
         .littleEndian
-    // a header bigger than this is not a header
-    guard headerLength > 0, headerLength <= 512 * 1024 * 1024 else { throw Malformed() }
+    guard headerLength > 0, headerLength < maximumSafetensorHeaderBytes else {
+        throw Malformed()
+    }
     guard let headerData = try handle.read(upToCount: Int(headerLength)),
         headerData.count == headerLength,
         let header = try JSONSerialization.jsonObject(with: headerData) as? [String: Any]
@@ -54,21 +72,30 @@ func safetensorSpansInFileOrder(url: URL) throws -> [SafetensorSpan] {
         throw Malformed()
     }
 
-    var spans = [(name: String, begin: Int64, byteCount: Int64)]()
+    var spans = [(name: String, begin: Int64, end: Int64)]()
     for (name, value) in header {
         guard name != "__metadata__" else { continue }
         guard let entry = value as? [String: Any],
             let offsets = entry["data_offsets"] as? [Any], offsets.count == 2,
-            let begin = (offsets[0] as? NSNumber)?.int64Value,
-            let end = (offsets[1] as? NSNumber)?.int64Value,
+            let begin = safetensorOffset(offsets[0]),
+            let end = safetensorOffset(offsets[1]),
             end >= begin
         else {
             throw Malformed()
         }
-        spans.append((name, begin, end - begin))
+        spans.append((name, begin, end))
     }
-    spans.sort { $0.begin < $1.begin }
-    return spans.map { SafetensorSpan(name: $0.name, byteCount: $0.byteCount) }
+    // Safetensors requires the data buffer to be covered contiguously. Sorting by end as
+    // well handles zero-byte tensors that share the following tensor's begin offset.
+    spans.sort {
+        $0.begin == $1.begin ? $0.end < $1.end : $0.begin < $1.begin
+    }
+    var expectedBegin: Int64 = 0
+    for span in spans {
+        guard span.begin == expectedBegin else { throw Malformed() }
+        expectedBegin = span.end
+    }
+    return spans.map { SafetensorSpan(name: $0.name, byteCount: $0.end - $0.begin) }
 }
 
 /// Contiguous index ranges of `byteCounts` whose byte totals are balanced around
@@ -83,12 +110,21 @@ func contiguousLoadGroups(byteCounts: [Int64], groupCount: Int) -> [Range<Int>] 
     var start = 0
     var cumulative: Int64 = 0
     var boundary: Int64 = 1
+    var threshold = groups.dividingFullWidth(
+        total.multipliedFullWidth(by: boundary)
+    ).quotient
     for (index, byteCount) in byteCounts.enumerated() {
         cumulative += byteCount
-        if boundary < groups, cumulative >= total * boundary / groups {
+        if boundary < groups, cumulative >= threshold {
             ranges.append(start ..< index + 1)
             start = index + 1
             boundary += 1
+            if boundary < groups {
+                threshold =
+                    groups.dividingFullWidth(
+                        total.multipliedFullWidth(by: boundary)
+                    ).quotient
+            }
         }
     }
     if start < byteCounts.count {
@@ -215,7 +251,9 @@ public func loadArraysAndMetadata(urls: [URL], stream: StreamOrDevice = .cpu) th
     let perFileMetadata = prepared.metadata
     let spansPerFile = prepared.spans
     let totalBytes = spansPerFile.reduce(Int64(0)) { total, spans in
-        total + (spans?.reduce(0) { $0 + $1.byteCount } ?? 0)
+        let fileBytes = spans?.reduce(0) { $0 + $1.byteCount } ?? 0
+        let (sum, overflow) = total.addingReportingOverflow(fileBytes)
+        return overflow ? .max : sum
     }
     let groupBytes = max(
         minimumBytesPerLoadGroup,
@@ -228,13 +266,21 @@ public func loadArraysAndMetadata(urls: [URL], stream: StreamOrDevice = .cpu) th
     for file in urls.indices {
         let arrays = perFileArrays[file]
         if let spans = spansPerFile[file], !spans.isEmpty {
+            let orderedArrays = spans.compactMap { arrays[$0.name] }
+            guard orderedArrays.count == spans.count, spans.count == arrays.count else {
+                // The file changed between our planning read and MLX's header read (or the
+                // parsers disagreed). Evaluate everything as one group rather than return
+                // an array whose I/O was never included in the completion barrier.
+                if !arrays.isEmpty { groups.append(Array(arrays.values)) }
+                continue
+            }
             let bytes = spans.reduce(0) { $0 + $1.byteCount }
             let groupCount = max(1, Int(bytes / groupBytes))
             groups.append(
                 contentsOf: contiguousLoadGroups(
                     byteCounts: spans.map(\.byteCount), groupCount: groupCount
                 ).map { range in
-                    spans[range].compactMap { arrays[$0.name] }
+                    Array(orderedArrays[range])
                 })
         } else {
             // Header not parseable (or empty): the full loader above either produced
@@ -248,8 +294,9 @@ public func loadArraysAndMetadata(urls: [URL], stream: StreamOrDevice = .cpu) th
 
     // asyncEval takes the global evaluation lock only while submitting work. The last
     // group is evaluated synchronously on the same stream, so it is both the completion
-    // barrier for all preceding submissions and the checked path for scheduler/deferred
-    // I/O errors. This avoids walking every already-scheduled root a second time.
+    // barrier for all preceding submissions and the checked Swift error path. Cores that
+    // propagate scheduler exceptions also surface deferred I/O errors here. Evaluating
+    // only the final group avoids walking every already-scheduled root a second time.
     var submitted = [MLXArray]()
     for group in groups.dropLast() where !group.isEmpty {
         submitted.append(contentsOf: group)
