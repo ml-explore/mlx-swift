@@ -101,13 +101,7 @@ final class CompiledFunction: @unchecked (Sendable) {
             var cache = mlx_compile_cache_new()
             mlx_detail_compile_cache(&cache)
             defer { mlx_compile_cache_free(cache) }
-            mlx_detail_compile_erase(cache, id)
-        }
-    }
-
-    func call(_ arguments: [MLXArray]) -> [MLXArray] {
-        lock.withLock {
-            innerCall(arguments)
+            mlx_detail_compile_erase(cache, functionID)
         }
     }
 
