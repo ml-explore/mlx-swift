@@ -26,25 +26,11 @@ if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
 
-# mlx
-#
-# Declared before mlx-c so this declaration wins: mlx-c pins its own (older) mlx
-# tag, and FetchContent honors the first declaration of a name. This keeps the
-# cmake build on the same mlx version as the `Source/Cmlx/mlx` submodule used by
-# the swiftpm build.
-#
-# This can be dropped once mlx-c pins v0.32.0 itself. Until then, keep GIT_TAG
-# in sync with the submodule.
-FetchContent_Declare(
-  mlx
-  GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
-  GIT_TAG "v0.32.0")
-
 # mlx-c
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
-  GIT_TAG "fba4470b89073180056c9ea46c443051375f7399")
+  GIT_TAG "c74db5307cc8ce122f48d97ef951b30578674e7f")
 FetchContent_MakeAvailable(mlx-c)
 
 # swift-numerics
