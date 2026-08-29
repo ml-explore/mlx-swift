@@ -37,9 +37,13 @@ private let maximumSafetensorHeaderBytes: UInt64 = 100_000_000
 /// Decode a JSON integer without accepting booleans, floating-point values, or values
 /// outside the range used by the grouping arithmetic below.
 private func safetensorOffset(_ value: Any) -> Int64? {
-    guard let number = value as? NSNumber,
+    guard let number = value as? NSNumber else { return nil }
+    let numberType = String(cString: number.objCType)
+    guard
         CFGetTypeID(number) != CFBooleanGetTypeID(),
-        !CFNumberIsFloatType(number)
+        numberType != "f",
+        numberType != "d",
+        numberType != "D"
     else {
         return nil
     }
