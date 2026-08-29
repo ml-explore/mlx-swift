@@ -106,7 +106,8 @@ operations as methods for convenience.
 - ``MLX/full(_:values:type:stream:)``
 - ``MLX/full(_:values:stream:)``
 - ``MLX/identity(_:type:stream:)``
-- ``MLX/linspace(_:_:count:endpoint:stream:)``
+- ``linspace(_:_:count:endpoint:stream:)-47tc1``
+- ``linspace(_:_:count:endpoint:stream:)-38sfd``
 - ``MLX/repeated(_:count:axis:stream:)``
 - ``MLX/repeated(_:count:stream:)``
 - ``MLX/repeat(_:count:axis:stream:)``
