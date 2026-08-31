@@ -344,8 +344,12 @@ let compiledOp = compile { (a: MLXArray, b: MLXArray) -> MLXArray in
 // Use compiled version
 let output = compiledOp(arrayA, arrayB)
 
-// Note: compile() works best with pure MLXArray functions.
-// For models, call model methods directly (they can use internal compilation).
+// compile() also supports compiling a Module/Optimizer training step: pass
+// them via inputs:/outputs: (they conform to Updatable) so compile observes
+// in-place updates (e.g. optimizer.update(model:gradients:), LoRA weight swaps).
+// If a captured Module/Optimizer is left out of inputs:/outputs:, compile()
+// silently freezes its parameter values at trace time -- see
+// references/transforms.md for the full pitfall and example.
 ```
 
 ## Quaternary Workflow: Wired Memory Coordination
