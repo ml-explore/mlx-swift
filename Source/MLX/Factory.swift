@@ -337,7 +337,7 @@ extension MLXArray {
     ///
     /// ```swift
     /// // Create a 50 element 1-D array with values from 0 to 50
-    /// let r = MLXArray.linSpace(0, 50)
+    /// let r = MLXArray.linspace(0, 50)
     /// ```
     ///
     /// - Parameters:
@@ -361,7 +361,7 @@ extension MLXArray {
     ///
     /// ```swift
     /// // Create a 50 element 1-D array with values from 0 to 1
-    /// let r = MLXArray.linSpace(0.0, 1.0)
+    /// let r = MLXArray.linspace(0.0, 1.0)
     /// ```
     ///
     /// - Parameters:
@@ -1013,7 +1013,7 @@ public func identity(_ n: Int, dtype: DType, stream: StreamOrDevice = .default) 
 ///
 /// ```swift
 /// // Create a 50 element 1-D array with values from 0 to 50
-/// let r = MLXArray.linSpace(0, 50)
+/// let r = MLXArray.linspace(0, 50)
 /// ```
 ///
 /// - Parameters:
@@ -1043,7 +1043,7 @@ public func linspace<T: HasDType>(
 ///
 /// ```swift
 /// // Create a 50 element 1-D array with values from 0 to 1
-/// let r = MLXArray.linSpace(0.0, 1.0)
+/// let r = MLXArray.linspace(0.0, 1.0)
 /// ```
 ///
 /// - Parameters:

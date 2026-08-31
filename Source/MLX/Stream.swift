@@ -126,9 +126,9 @@ public final class Stream: @unchecked Sendable, Equatable {
     /// Default stream on the default device.
     public init() {
         let device = Device.defaultDevice()
-        var ctx = mlx_stream_new()
-        mlx_get_default_stream(&ctx, device.ctx)
-        self.ctx = ctx
+        self.ctx = evalLock.withLock {
+            mlx_stream_new_thread_unsafe(device.ctx)
+        }
     }
 
     @available(*, deprecated, message: "use init(Device) -- index not supported")

@@ -273,7 +273,7 @@ public enum MLXFast {
     /// - Parameters:
     ///   - logits: The unnormalized logits. The loss is computed over the last axis.
     ///   - targets: Class indices. The shape should match the shape of `logits` with the last axis removed.
-    ///     The indices must be in `[0, logits.dim(-1)]`.
+    ///     The indices must be in `0 ..< logits.dim(-1)`.
     ///   - stream: stream or device to evaluate on
     public static func crossEntropy(
         logits: MLXArray, targets: MLXArray,
