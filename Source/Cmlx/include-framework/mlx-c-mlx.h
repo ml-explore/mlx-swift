@@ -14,6 +14,7 @@
 #include <Cmlx/mlx-c-export.h>
 #include <Cmlx/mlx-c-fast.h>
 #include <Cmlx/mlx-c-fft.h>
+#include <Cmlx/mlx-c-graph_utils.h>
 #include <Cmlx/mlx-c-half.h>
 #include <Cmlx/mlx-c-io.h>
 #include <Cmlx/mlx-c-io_types.h>

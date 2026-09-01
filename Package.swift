@@ -85,8 +85,10 @@ let noCudaCmlxExcludes = [
     "mlx/mlx/backend/cuda/delayload.cpp",
     "mlx/mlx/backend/cuda/device_info.cpp",
     "mlx/mlx/backend/cuda/device.cpp",
+    "mlx/mlx/backend/cuda/dirs.cpp",
     "mlx/mlx/backend/cuda/eval.cpp",
     "mlx/mlx/backend/cuda/fence.cpp",
+    "mlx/mlx/backend/cuda/fft.cu",
     "mlx/mlx/backend/cuda/indexing.cpp",
     "mlx/mlx/backend/cuda/jit_module.cpp",
     "mlx/mlx/backend/cuda/load.cpp",
@@ -132,16 +134,9 @@ let noCudaCmlxExcludes = [
                 "mlx-c/mlx/c/metal.cpp",
 
                 "mlx/mlx/backend/cuda/delayload.cpp",  // For Windows
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n16_m1.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmv.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n32_m1.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90.cuh",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n64_m2.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm.h",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n256_m2.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/qmm_impl_sm90_m128_n128_m2.cu",
-                "mlx/mlx/backend/cuda/quantized/qmm/fp_qmv.cu",
+
+                // built by the CudaBuild plugin (nvcc), not by SwiftPM
+                "mlx/mlx/backend/cuda/quantized/qmm",
             ] + noMetalCmlxExcludes
 
         cxxSettings = [
@@ -210,7 +205,10 @@ let noCudaCmlxExcludes = [
 
     let platformExcludes: [String] =
         [
+            // selected conditionally by mlx-conditional -- these are #included by
+            // the wrappers there so they must not also be built directly
             "mlx/mlx/backend/cpu/compiled.cpp",
+            "mlx/mlx/backend/cpu/jit_compiler.cpp",
 
             // opt-out of these backends (using metal)
             "mlx/mlx/backend/no_gpu",
@@ -299,11 +297,8 @@ let cmlx = Target.target(
         "mlx/mlx/distributed/mpi/mpi.cpp",
         "mlx/mlx/distributed/ring/ring.cpp",
         "mlx/mlx/distributed/nccl/nccl.cpp",
-        "mlx/mlx/distributed/nccl/nccl_stub",
         "mlx/mlx/distributed/jaccl/jaccl.cpp",
-        "mlx/mlx/distributed/jaccl/mesh.cpp",
-        "mlx/mlx/distributed/jaccl/ring.cpp",
-        "mlx/mlx/distributed/jaccl/utils.cpp",
+        "mlx/mlx/distributed/jaccl/lib",
     ],
     cSettings: [
         .headerSearchPath("mlx"),
@@ -315,7 +310,7 @@ let cmlx = Target.target(
         .headerSearchPath("mlx-c"),
         .headerSearchPath("json/single_include/nlohmann"),
         .headerSearchPath("fmt/include"),
-        .define("MLX_VERSION", to: "\"0.31.1\""),
+        .define("MLX_VERSION", to: "\"0.32.0\""),
     ],
     linkerSettings: linkerSettings,
     plugins: cudaBuildPlugins,

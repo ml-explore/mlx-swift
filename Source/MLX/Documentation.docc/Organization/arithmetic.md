@@ -178,6 +178,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``logicalAnd(_:_:stream:)``
 - ``logicalNot(_:stream:)``
 - ``logicalOr(_:_:stream:)``
+- ``logicalXor(_:_:stream:)``
 - ``maximum(_:_:stream:)``
 - ``minimum(_:_:stream:)``
 - ``multiply(_:_:stream:)``

@@ -22,11 +22,12 @@ KERNELS_DIR="${CMLX_MLX_DIR}/${KERNELS_INCLUDE_PATH}"
 KERNEL_LIST=" \
 arg_reduce.metal \
 conv.metal \
-gemv.metal \
+dot.metal \
 layer_norm.metal \
 random.metal \
 rms_norm.metal \
 rope.metal \
+searchsorted.metal \
 scaled_dot_product_attention.metal \
 steel/attn/kernels/steel_attention.metal"
 

@@ -422,163 +422,285 @@ instantiate_metal_simd_reduction_funcs(bfloat16_t, bfloat16_t, float);
 
 #include <metal_stdlib>
 
+
 using namespace metal;
 
-struct complex64_t;
+template <typename T>
+struct complex_t;
 
 template <typename T>
-static constexpr constant bool can_convert_to_complex64 =
-    !is_same_v<T, complex64_t> && is_convertible_v<T, float>;
+static constexpr constant bool is_complex_v = false;
 
 template <typename T>
-static constexpr constant bool can_convert_from_complex64 =
-    !is_same_v<T, complex64_t> &&
-    (is_convertible_v<float, T> || is_convertible_v<bfloat16_t, T>);
+static constexpr constant bool is_complex_v<complex_t<T>> = true;
 
-struct complex64_t {
-  float real;
-  float imag;
+// Metal accepts explicit bfloat casts that is_convertible_v reports as false.
+template <typename From, typename To>
+static constexpr constant bool is_lane_convertible_v =
+    is_convertible_v<From, To> ||
+    (is_same_v<To, bfloat16_t> && is_convertible_v<From, float>) ||
+    (is_same_v<From, bfloat16_t> && is_convertible_v<float, To>);
+
+template <typename T>
+struct complex_t {
+  using value_type = T;
+
+  T real;
+  T imag;
 
   // Constructors
-  constexpr complex64_t(float real, float imag) : real(real), imag(imag) {};
-  constexpr complex64_t() : real(0), imag(0) {};
-  constexpr complex64_t() threadgroup : real(0), imag(0) {};
+  constexpr complex_t(T real, T imag) thread : real(real), imag(imag) {};
+  constexpr complex_t() thread : real(0), imag(0) {};
+  constexpr complex_t() threadgroup : real(0), imag(0) {};
 
-  // Conversions to complex64_t
+  // Conversions from scalar types
   template <
-      typename T,
-      typename = typename enable_if<can_convert_to_complex64<T>>::type>
-  constexpr complex64_t(T x) thread : real(x), imag(0) {}
-
-  template <
-      typename T,
-      typename = typename enable_if<can_convert_to_complex64<T>>::type>
-  constexpr complex64_t(T x) threadgroup : real(x), imag(0) {}
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(U x) thread : real(static_cast<T>(x)),
+                                    imag(static_cast<T>(0)) {}
 
   template <
-      typename T,
-      typename = typename enable_if<can_convert_to_complex64<T>>::type>
-  constexpr complex64_t(T x) device : real(x), imag(0) {}
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(U x) threadgroup : real(static_cast<T>(x)),
+                                         imag(static_cast<T>(0)) {}
 
   template <
-      typename T,
-      typename = typename enable_if<can_convert_to_complex64<T>>::type>
-  constexpr complex64_t(T x) constant : real(x), imag(0) {}
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(U x) device : real(static_cast<T>(x)),
+                                    imag(static_cast<T>(0)) {}
 
-  // Conversions from complex64_t
   template <
-      typename T,
-      typename = typename enable_if<can_convert_from_complex64<T>>::type>
-  constexpr operator T() const thread {
-    return static_cast<T>(real);
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(U x) constant : real(static_cast<T>(x)),
+                                      imag(static_cast<T>(0)) {}
+
+  // Conversions between complex types
+  template <
+      typename U,
+      typename = typename enable_if<
+          !is_same_v<U, T> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(complex_t<U> x) thread : real(static_cast<T>(x.real)),
+                                               imag(static_cast<T>(x.imag)) {}
+
+  template <
+      typename U,
+      typename = typename enable_if<
+          !is_same_v<U, T> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(complex_t<U> x) threadgroup
+      : real(static_cast<T>(x.real)),
+        imag(static_cast<T>(x.imag)) {}
+
+  template <
+      typename U,
+      typename = typename enable_if<
+          !is_same_v<U, T> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(complex_t<U> x) device : real(static_cast<T>(x.real)),
+                                               imag(static_cast<T>(x.imag)) {}
+
+  template <
+      typename U,
+      typename = typename enable_if<
+          !is_same_v<U, T> && is_lane_convertible_v<U, T>>::type>
+  constexpr complex_t(complex_t<U> x) constant : real(static_cast<T>(x.real)),
+                                                 imag(static_cast<T>(x.imag)) {}
+
+  // Conversions to and from two-lane vectors (the FFT lane representation)
+  constexpr complex_t(vec<T, 2> v) thread : real(v.x), imag(v.y) {};
+  constexpr complex_t(vec<T, 2> v) threadgroup : real(v.x), imag(v.y) {};
+  constexpr complex_t(vec<T, 2> v) device : real(v.x), imag(v.y) {};
+  constexpr complex_t(vec<T, 2> v) constant : real(v.x), imag(v.y) {};
+
+  constexpr operator vec<T, 2>() const thread {
+    return vec<T, 2>(real, imag);
+  }
+
+  constexpr operator vec<T, 2>() const threadgroup {
+    return vec<T, 2>(real, imag);
+  }
+
+  constexpr operator vec<T, 2>() const device {
+    return vec<T, 2>(real, imag);
+  }
+
+  constexpr operator vec<T, 2>() const constant {
+    return vec<T, 2>(real, imag);
+  }
+
+  // Conversions to scalar types
+  template <
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<T, U>>::type>
+  constexpr operator U() const thread {
+    return static_cast<U>(real);
   }
 
   template <
-      typename T,
-      typename = typename enable_if<can_convert_from_complex64<T>>::type>
-  constexpr operator T() const threadgroup {
-    return static_cast<T>(real);
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<T, U>>::type>
+  constexpr operator U() const threadgroup {
+    return static_cast<U>(real);
   }
 
   template <
-      typename T,
-      typename = typename enable_if<can_convert_from_complex64<T>>::type>
-  constexpr operator T() const device {
-    return static_cast<T>(real);
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<T, U>>::type>
+  constexpr operator U() const device {
+    return static_cast<U>(real);
   }
 
   template <
-      typename T,
-      typename = typename enable_if<can_convert_from_complex64<T>>::type>
-  constexpr operator T() const constant {
-    return static_cast<T>(real);
+      typename U,
+      typename = typename enable_if<
+          !is_complex_v<U> && is_lane_convertible_v<T, U>>::type>
+  constexpr operator U() const constant {
+    return static_cast<U>(real);
   }
 };
 
-constexpr complex64_t operator-(complex64_t x) {
+using complex32_t = complex_t<half>;
+using complex64_t = complex_t<float>;
+
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+
+template <typename T>
+constexpr complex_t<T> operator-(complex_t<T> x) {
   return {-x.real, -x.imag};
 }
 
-constexpr bool operator>=(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr bool operator>=(complex_t<T> a, complex_t<T> b) {
   return (a.real > b.real) || (a.real == b.real && a.imag >= b.imag);
 }
 
-constexpr bool operator>(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr bool operator>(complex_t<T> a, complex_t<T> b) {
   return (a.real > b.real) || (a.real == b.real && a.imag > b.imag);
 }
 
-constexpr bool operator<=(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr bool operator<=(complex_t<T> a, complex_t<T> b) {
   return operator>=(b, a);
 }
 
-constexpr bool operator<(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr bool operator<(complex_t<T> a, complex_t<T> b) {
   return operator>(b, a);
 }
 
-constexpr bool operator==(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr bool operator==(complex_t<T> a, complex_t<T> b) {
   return a.real == b.real && a.imag == b.imag;
 }
 
-constexpr complex64_t operator+(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr complex_t<T> operator+(complex_t<T> a, complex_t<T> b) {
   return {a.real + b.real, a.imag + b.imag};
 }
 
-constexpr thread complex64_t& operator+=(thread complex64_t& a, complex64_t b) {
+template <typename T>
+constexpr thread complex_t<T>& operator+=(
+    thread complex_t<T>& a,
+    complex_t<T> b) {
   a.real += b.real;
   a.imag += b.imag;
   return a;
 }
 
-constexpr threadgroup complex64_t& operator+=(
-    threadgroup complex64_t& a,
-    complex64_t b) {
+template <typename T>
+constexpr threadgroup complex_t<T>& operator+=(
+    threadgroup complex_t<T>& a,
+    complex_t<T> b) {
   a.real += b.real;
   a.imag += b.imag;
   return a;
 }
 
-constexpr device complex64_t& operator+=(device complex64_t& a, complex64_t b) {
+template <typename T>
+constexpr device complex_t<T>& operator+=(
+    device complex_t<T>& a,
+    complex_t<T> b) {
   a.real += b.real;
   a.imag += b.imag;
   return a;
 }
 
-constexpr complex64_t operator+(float a, complex64_t b) {
-  return {a + b.real, b.imag};
-}
-constexpr complex64_t operator+(complex64_t a, float b) {
-  return {a.real + b, a.imag};
+template <
+    typename T,
+    typename U,
+    enable_if_t<!is_complex_v<U> && is_lane_convertible_v<U, T>, bool> = true>
+constexpr complex_t<T> operator+(U a, complex_t<T> b) {
+  return {static_cast<T>(a) + b.real, b.imag};
 }
 
-constexpr complex64_t operator-(complex64_t a, complex64_t b) {
+template <
+    typename T,
+    typename U,
+    enable_if_t<!is_complex_v<U> && is_lane_convertible_v<U, T>, bool> = true>
+constexpr complex_t<T> operator+(complex_t<T> a, U b) {
+  return {a.real + static_cast<T>(b), a.imag};
+}
+
+template <typename T>
+constexpr complex_t<T> operator-(complex_t<T> a, complex_t<T> b) {
   return {a.real - b.real, a.imag - b.imag};
 }
-constexpr complex64_t operator-(float a, complex64_t b) {
-  return {a - b.real, -b.imag};
-}
-constexpr complex64_t operator-(complex64_t a, float b) {
-  return {a.real - b, a.imag};
+
+template <
+    typename T,
+    typename U,
+    enable_if_t<!is_complex_v<U> && is_lane_convertible_v<U, T>, bool> = true>
+constexpr complex_t<T> operator-(U a, complex_t<T> b) {
+  return {static_cast<T>(a) - b.real, -b.imag};
 }
 
-constexpr complex64_t operator*(complex64_t a, complex64_t b) {
+template <
+    typename T,
+    typename U,
+    enable_if_t<!is_complex_v<U> && is_lane_convertible_v<U, T>, bool> = true>
+constexpr complex_t<T> operator-(complex_t<T> a, U b) {
+  return {a.real - static_cast<T>(b), a.imag};
+}
+
+template <typename T>
+constexpr complex_t<T> operator*(complex_t<T> a, complex_t<T> b) {
   return {a.real * b.real - a.imag * b.imag, a.real * b.imag + a.imag * b.real};
 }
 
-constexpr complex64_t operator/(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr complex_t<T> operator/(complex_t<T> a, complex_t<T> b) {
   auto denom = b.real * b.real + b.imag * b.imag;
   auto x = a.real * b.real + a.imag * b.imag;
   auto y = a.imag * b.real - a.real * b.imag;
   return {x / denom, y / denom};
 }
 
-constexpr complex64_t operator/(float a, complex64_t b) {
+template <
+    typename T,
+    typename U,
+    enable_if_t<!is_complex_v<U> && is_lane_convertible_v<U, T>, bool> = true>
+constexpr complex_t<T> operator/(U a, complex_t<T> b) {
+  auto scalar = static_cast<T>(a);
   auto denom = b.real * b.real + b.imag * b.imag;
-  auto x = a * b.real;
-  auto y = -a * b.imag;
+  auto x = scalar * b.real;
+  auto y = -scalar * b.imag;
   return {x / denom, y / denom};
 }
 
-constexpr complex64_t operator%(complex64_t a, complex64_t b) {
+template <typename T>
+constexpr complex_t<T> operator%(complex_t<T> a, complex_t<T> b) {
   auto real = a.real - (b.real * static_cast<int64_t>(a.real / b.real));
   auto imag = a.imag - (b.imag * static_cast<int64_t>(a.imag / b.imag));
   if (real != 0 && (real < 0 != b.real < 0)) {
@@ -589,6 +711,13 @@ constexpr complex64_t operator%(complex64_t a, complex64_t b) {
   }
   return {real, imag};
 }
+
+static_assert(
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+static_assert(
+    (complex_t<bfloat16_t>{bfloat16_t(1.0f), bfloat16_t(2.0f)} *
+     complex_t<bfloat16_t>{bfloat16_t(3.0f), bfloat16_t(4.0f)})
+        .real == bfloat16_t(-5.0f));
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/defines.h"
@@ -641,7 +770,7 @@ struct os_log {
   constexpr os_log(constant char*, constant char*) constant {}
 
   template <typename... Args>
-  void log_debug(constant char*, Args...) const {}
+  void log_debug(constant char*, Args...) const thread {}
 
   template <typename... Args>
   void log_debug(constant char*, Args...) const constant {}
@@ -726,14 +855,14 @@ struct Limits<bool> {
   static constexpr constant bool min = false;
 };
 
-template <>
-struct Limits<complex64_t> {
-  static constexpr constant complex64_t max = complex64_t(
-      metal::numeric_limits<float>::infinity(),
-      metal::numeric_limits<float>::infinity());
-  static constexpr constant complex64_t min = complex64_t(
-      -metal::numeric_limits<float>::infinity(),
-      -metal::numeric_limits<float>::infinity());
+template <typename T>
+struct Limits<complex_t<T>> {
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+      metal::numeric_limits<T>::infinity(),
+      metal::numeric_limits<T>::infinity());
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+      -metal::numeric_limits<T>::infinity(),
+      -metal::numeric_limits<T>::infinity());
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -856,9 +985,9 @@ struct LoopedElemToLoc {
   OffsetT offset{0};
   int index{0};
 
-  LoopedElemToLoc(int dim) : dim(dim), inner_looper(dim - 1) {}
+  LoopedElemToLoc(int dim) thread : dim(dim), inner_looper(dim - 1) {}
 
-  void next(const constant int* shape, const constant int64_t* strides) {
+  void next(const constant int* shape, const constant int64_t* strides) thread {
     if (dim == 0) {
       return;
     }
@@ -871,7 +1000,8 @@ struct LoopedElemToLoc {
     }
   }
 
-  void next(int n, const constant int* shape, const constant int64_t* strides) {
+  void next(int n, const constant int* shape, const constant int64_t* strides)
+      thread {
     if (dim == 0) {
       return;
     }
@@ -894,7 +1024,7 @@ struct LoopedElemToLoc {
     }
   }
 
-  OffsetT location() {
+  OffsetT location() thread {
     return offset;
   }
 };
@@ -905,9 +1035,9 @@ struct LoopedElemToLoc<1, OffsetT, true> {
   OffsetT offset{0};
   uint index{0};
 
-  LoopedElemToLoc(int dim) : dim(dim) {}
+  LoopedElemToLoc(int dim) thread : dim(dim) {}
 
-  void next(const constant int* shape, const constant int64_t* strides) {
+  void next(const constant int* shape, const constant int64_t* strides) thread {
     index++;
     if (dim > 1) {
       offset = elem_to_loc<OffsetT>(index, shape, strides, dim);
@@ -916,7 +1046,8 @@ struct LoopedElemToLoc<1, OffsetT, true> {
     }
   }
 
-  void next(int n, const constant int* shape, const constant int64_t* strides) {
+  void next(int n, const constant int* shape, const constant int64_t* strides)
+      thread {
     index += n;
     if (dim > 1) {
       offset = elem_to_loc<OffsetT>(index, shape, strides, dim);
@@ -925,7 +1056,7 @@ struct LoopedElemToLoc<1, OffsetT, true> {
     }
   }
 
-  OffsetT location() {
+  OffsetT location() thread {
     return offset;
   }
 };
@@ -934,17 +1065,18 @@ template <typename OffsetT>
 struct LoopedElemToLoc<1, OffsetT, false> {
   OffsetT offset{0};
 
-  LoopedElemToLoc(int) {}
+  LoopedElemToLoc(int) thread {}
 
-  void next(const constant int*, const constant int64_t* strides) {
+  void next(const constant int*, const constant int64_t* strides) thread {
     offset += OffsetT(strides[0]);
   }
 
-  void next(int n, const constant int*, const constant int64_t* strides) {
+  void next(int n, const constant int*, const constant int64_t* strides)
+      thread {
     offset += n * OffsetT(strides[0]);
   }
 
-  OffsetT location() {
+  OffsetT location() thread {
     return offset;
   }
 };
@@ -1094,6 +1226,30 @@ template <typename T, typename U>
 struct ConditionalType<true, T, U> {
   using type = T;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Type casting utils
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename U, typename T>
+inline U cast_to(T val) {
+  return static_cast<U>(val);
+}
+
+template <>
+inline bool cast_to<bool, float>(float val) {
+  return (as_type<uint32_t>(val) & 0x7FFFFFFF) != 0;
+}
+
+template <>
+inline bool cast_to<bool, bfloat16_t>(bfloat16_t val) {
+  return (as_type<uint16_t>(val) & 0x7FFF) != 0;
+}
+
+template <>
+inline bool cast_to<bool, complex64_t>(complex64_t val) {
+  return cast_to<bool, float>(val.real) || cast_to<bool, float>(val.imag);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 )preamble";

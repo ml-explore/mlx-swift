@@ -97,7 +97,11 @@ final class CompiledFunction: @unchecked (Sendable) {
                         + "see CompiledFunction.deinit")
                 EvalLockOwnership.recordCompileErase()
             #endif
-            _ = mlx_detail_compile_erase(functionID)
+            // remove the compiled structure from the back end
+            var cache = mlx_compile_cache_new()
+            mlx_detail_compile_cache(&cache)
+            defer { mlx_compile_cache_free(cache) }
+            mlx_detail_compile_erase(cache, functionID)
         }
     }
 

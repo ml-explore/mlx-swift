@@ -20,7 +20,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``zeros(like:stream:)``
+    /// - ``zeros(like:dtype:stream:)``
     /// - ``ones(_:type:stream:)``
     static public func zeros(
         _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
@@ -44,7 +44,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``zeros(like:stream:)``
+    /// - ``zeros(like:dtype:stream:)``
     /// - ``ones(_:type:stream:)``
     static public func zeros(
         _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
@@ -63,14 +63,17 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - array: array to copy shape and dtype from
+    ///     - dtype: optional type to produce the result in, otherwise use array's dtype
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:initialization>
     /// - ``zeros(_:type:stream:)``
     /// - ``ones(_:type:stream:)``
-    static public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        MLX.zeros(like: array, stream: stream)
+    static public func zeros(
+        like array: MLXArray, dtype: DType? = nil, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.zeros(like: array, dtype: dtype, stream: stream)
     }
 
     /// Construct an array of ones.
@@ -88,7 +91,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``ones(like:stream:)``
+    /// - ``ones(like:dtype:stream:)``
     /// - ``zeros(_:type:stream:)``
     static public func ones(
         _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
@@ -112,7 +115,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``ones(like:stream:)``
+    /// - ``ones(like:dtype:stream:)``
     /// - ``zeros(_:type:stream:)``
     static public func ones(
         _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
@@ -131,14 +134,17 @@ extension MLXArray {
     ///
     /// - Parameters:
     ///     - array: array to copy shape and dtype from
+    ///     - dtype: optional type to produce the result in, otherwise use array's dtype
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:initialization>
     /// - ``ones(_:type:stream:)``
     /// - ``zeros(_:type:stream:)``
-    static public func ones(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
-        MLX.ones(like: array, stream: stream)
+    static public func ones(
+        like array: MLXArray, dtype: DType? = nil, stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        MLX.ones(like: array, dtype: dtype, stream: stream)
     }
 
     /// Create an identity matrix or a general diagonal matrix.
@@ -331,7 +337,7 @@ extension MLXArray {
     ///
     /// ```swift
     /// // Create a 50 element 1-D array with values from 0 to 50
-    /// let r = MLXArray.linSpace(0, 50)
+    /// let r = MLXArray.linspace(0, 50)
     /// ```
     ///
     /// - Parameters:
@@ -355,7 +361,7 @@ extension MLXArray {
     ///
     /// ```swift
     /// // Create a 50 element 1-D array with values from 0 to 1
-    /// let r = MLXArray.linSpace(0.0, 1.0)
+    /// let r = MLXArray.linspace(0.0, 1.0)
     /// ```
     ///
     /// - Parameters:
@@ -659,7 +665,7 @@ extension MLXArray {
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``zeros(like:stream:)``
+/// - ``zeros(like:dtype:stream:)``
 /// - ``ones(_:type:stream:)``
 public func zeros(
     _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
@@ -685,7 +691,7 @@ public func zeros(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``zeros(like:stream:)``
+/// - ``zeros(like:dtype:stream:)``
 /// - ``ones(_:type:stream:)``
 public func zeros(
     _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
@@ -706,15 +712,22 @@ public func zeros(
 ///
 /// - Parameters:
 ///     - array: array to copy shape and dtype from
+///     - dtype: optional type to produce the result in, otherwise use array's dtype
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:initialization>
 /// - ``zeros(_:type:stream:)``
 /// - ``ones(_:type:stream:)``
-public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+public func zeros(
+    like array: MLXArray, dtype: DType? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
     var result = mlx_array_new()
-    mlx_zeros_like(&result, array.ctx, stream.ctx)
+    if let dtype {
+        mlx_zeros_like_dtype(&result, array.ctx, dtype.cmlxDtype, stream.ctx)
+    } else {
+        mlx_zeros_like(&result, array.ctx, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -733,7 +746,7 @@ public func zeros(like array: MLXArray, stream: StreamOrDevice = .default) -> ML
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``ones(like:stream:)``
+/// - ``ones(like:dtype:stream:)``
 /// - ``zeros(_:type:stream:)``
 public func ones(
     _ shape: some Collection<Int>, type: (some HasDType).Type = Float.self,
@@ -759,7 +772,7 @@ public func ones(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``zeros(like:stream:)``
+/// - ``zeros(like:dtype:stream:)``
 /// - ``ones(_:type:stream:)``
 public func ones(
     _ shape: some Collection<Int>, dtype: DType, stream: StreamOrDevice = .default
@@ -780,15 +793,22 @@ public func ones(
 ///
 /// - Parameters:
 ///     - array: array to copy shape and dtype from
+///     - dtype: optional type to produce the result in, otherwise use array's dtype
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:initialization>
 /// - ``ones(_:type:stream:)``
 /// - ``zeros(_:type:stream:)``
-public func ones(like array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+public func ones(
+    like array: MLXArray, dtype: DType? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
     var result = mlx_array_new()
-    mlx_ones_like(&result, array.ctx, stream.ctx)
+    if let dtype {
+        mlx_ones_like_dtype(&result, array.ctx, dtype.cmlxDtype, stream.ctx)
+    } else {
+        mlx_ones_like(&result, array.ctx, stream.ctx)
+    }
     return MLXArray(result)
 }
 
@@ -993,23 +1013,27 @@ public func identity(_ n: Int, dtype: DType, stream: StreamOrDevice = .default) 
 ///
 /// ```swift
 /// // Create a 50 element 1-D array with values from 0 to 50
-/// let r = MLXArray.linSpace(0, 50)
+/// let r = MLXArray.linspace(0, 50)
 /// ```
 ///
 /// - Parameters:
 ///     - start: start value
 ///     - stop: stop value
 ///     - count: number of samples
+///     - endpoint: if `true` then the endpoint is the last sample, if `false` it is a half-open interval
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:stream:)-7vj0o``
+/// - ``linspace(_:_:count:endpoint:stream:)``
 public func linspace<T: HasDType>(
-    _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
+    _ start: T, _ stop: T, count: Int = 50,
+    endpoint: Bool = true,
+    stream: StreamOrDevice = .default
 ) -> MLXArray where T: BinaryInteger {
     var result = mlx_array_new()
-    mlx_linspace(&result, Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx)
+    mlx_linspace_endpoint(
+        &result, Double(start), Double(stop), count.int32, endpoint, T.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1019,23 +1043,27 @@ public func linspace<T: HasDType>(
 ///
 /// ```swift
 /// // Create a 50 element 1-D array with values from 0 to 1
-/// let r = MLXArray.linSpace(0.0, 1.0)
+/// let r = MLXArray.linspace(0.0, 1.0)
 /// ```
 ///
 /// - Parameters:
 ///     - start: start value
 ///     - stop: stop value
 ///     - count: number of samples
+///     - endpoint: if `true` then the endpoint is the last sample, if `false` it is a half-open interval
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:stream:)-6w959``
+/// - ``linspace(_:_:count:endpoint:stream:)``
 public func linspace<T: HasDType>(
-    _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
+    _ start: T, _ stop: T, count: Int = 50,
+    endpoint: Bool = true,
+    stream: StreamOrDevice = .default
 ) -> MLXArray where T: BinaryFloatingPoint {
     var result = mlx_array_new()
-    mlx_linspace(&result, Double(start), Double(stop), count.int32, T.dtype.cmlxDtype, stream.ctx)
+    mlx_linspace_endpoint(
+        &result, Double(start), Double(stop), count.int32, endpoint, T.dtype.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 

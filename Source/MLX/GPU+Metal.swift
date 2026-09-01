@@ -51,6 +51,27 @@ public enum GPU {
         Memory.peakMemory
     }
 
+    /// The metallib override path.  This can be set early in the process to override or provide
+    /// the metallib load path.
+    public static var metallib: URL? {
+        get {
+            var s = mlx_string_new()
+            defer { mlx_string_free(s) }
+
+            mlx_metal_get_metallib_path(&s)
+
+            if let path = String(cString: mlx_string_data(s), encoding: .utf8), !path.isEmpty {
+                return URL(fileURLWithPath: path)
+            } else {
+                return nil
+            }
+        }
+        set {
+            let path = newValue?.path(percentEncoded: false) ?? ""
+            mlx_metal_set_metallib_path(path.cString(using: .utf8))
+        }
+    }
+
     /// Return a snapshot of memory stats -- see ``Memory/Snapshot`` for more details.
     ///
     /// Get the current memory use.  This can be used to measure before/after and current memory use:

@@ -20,13 +20,9 @@ struct integral_constant {
   using value_type = T;
   using type = integral_constant;
 
-  METAL_FUNC constexpr operator value_type() const noexcept {
+  METAL_FUNC constexpr operator value_type() const thread noexcept {
     return value;
   }
-
-  // METAL_FUNC constexpr value_type operator()() const noexcept {
-  //   return value;
-  // }
 };
 
 template <bool B>
@@ -56,7 +52,8 @@ using Int = integral_constant<int, val>;
   METAL_FUNC constexpr auto __operator__(                   \
       integral_constant<T, tv>, integral_constant<U, uv>) { \
     constexpr auto res = tv __op__ uv;                      \
-    return integral_constant<decltype(res), res>{};         \
+    using res_t = metal::remove_addrspace_t<decltype(res)>; \
+    return integral_constant<res_t, res>{};                 \
   }
 
 integral_const_binop(+, operator+);

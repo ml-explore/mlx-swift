@@ -460,7 +460,7 @@ public func cummax(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_cummax(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
+    mlx_cummax_axis(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
     return MLXArray(result)
 }
 
@@ -481,9 +481,8 @@ public func cummax(
     _ array: MLXArray, reverse: Bool = false, inclusive: Bool = true,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let flat = array.reshaped([-1], stream: stream)
     var result = mlx_array_new()
-    mlx_cummax(&result, flat.ctx, 0, reverse, inclusive, stream.ctx)
+    mlx_cummax(&result, array.ctx, reverse, inclusive, stream.ctx)
     return MLXArray(result)
 }
 
@@ -505,7 +504,7 @@ public func cummin(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_cummin(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
+    mlx_cummin_axis(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
     return MLXArray(result)
 }
 
@@ -526,9 +525,8 @@ public func cummin(
     _ array: MLXArray, reverse: Bool = false, inclusive: Bool = true,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let flat = array.reshaped([-1], stream: stream)
     var result = mlx_array_new()
-    mlx_cummin(&result, flat.ctx, 0, reverse, inclusive, stream.ctx)
+    mlx_cummin(&result, array.ctx, reverse, inclusive, stream.ctx)
     return MLXArray(result)
 }
 
@@ -543,14 +541,16 @@ public func cummin(
 ///
 /// ### See Also
 /// - <doc:cumulative>
-/// - ``cumprod(_:reverse:inclusive:stream:)``
+/// - ``cumprod(_:reverse:inclusive:dtype:stream:)``
 /// - ``MLXArray/cumprod(axis:reverse:inclusive:stream:)``
 public func cumprod(
     _ array: MLXArray, axis: Int, reverse: Bool = false, inclusive: Bool = true,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_cumprod(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
+    let dtype = mlx_optional_dtype(dtype)
+    mlx_cumprod_axis(&result, array.ctx, axis.int32, reverse, inclusive, dtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -565,15 +565,16 @@ public func cumprod(
 ///
 /// ### See Also
 /// - <doc:cumulative>
-/// - ``cumprod(_:axis:reverse:inclusive:stream:)``
+/// - ``cumprod(_:axis:reverse:inclusive:dtype:stream:)``
 /// - ``MLXArray/cumprod(axis:reverse:inclusive:stream:)``
 public func cumprod(
     _ array: MLXArray, reverse: Bool = false, inclusive: Bool = true,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let flat = array.reshaped([-1], stream: stream)
     var result = mlx_array_new()
-    mlx_cumprod(&result, flat.ctx, 0, reverse, inclusive, stream.ctx)
+    let dtype = mlx_optional_dtype(dtype)
+    mlx_cumprod(&result, array.ctx, reverse, inclusive, dtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -588,14 +589,16 @@ public func cumprod(
 ///
 /// ### See Also
 /// - <doc:cumulative>
-/// - ``cumsum(_:reverse:inclusive:stream:)``
+/// - ``cumsum(_:reverse:inclusive:dtype:stream:)``
 /// - ``MLXArray/cumsum(axis:reverse:inclusive:stream:)``
 public func cumsum(
     _ array: MLXArray, axis: Int, reverse: Bool = false, inclusive: Bool = true,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_cumsum(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
+    let dtype = mlx_optional_dtype(dtype)
+    mlx_cumsum_axis(&result, array.ctx, axis.int32, reverse, inclusive, dtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -610,15 +613,16 @@ public func cumsum(
 ///
 /// ### See Also
 /// - <doc:cumulative>
-/// - ``cumsum(_:axis:reverse:inclusive:stream:)``
+/// - ``cumsum(_:axis:reverse:inclusive:dtype:stream:)``
 /// - ``MLXArray/cumsum(axis:reverse:inclusive:stream:)``
 public func cumsum(
     _ array: MLXArray, reverse: Bool = false, inclusive: Bool = true,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let flat = array.reshaped([-1], stream: stream)
     var result = mlx_array_new()
-    mlx_cumsum(&result, flat.ctx, 0, reverse, inclusive, stream.ctx)
+    let dtype = mlx_optional_dtype(dtype)
+    mlx_cumsum(&result, array.ctx, reverse, inclusive, dtype, stream.ctx)
     return MLXArray(result)
 }
 
@@ -844,7 +848,7 @@ public func logCumsumExp(
     axis: Int, reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_logcumsumexp(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
+    mlx_logcumsumexp_axis(&result, array.ctx, axis.int32, reverse, inclusive, stream.ctx)
     return MLXArray(result)
 }
 
@@ -862,9 +866,8 @@ public func logCumsumExp(
     _ array: MLXArray,
     reverse: Bool = false, inclusive: Bool = true, stream: StreamOrDevice = .default
 ) -> MLXArray {
-    let flat = array.reshaped([-1], stream: stream)
     var result = mlx_array_new()
-    mlx_logcumsumexp(&result, flat.ctx, 0, reverse, inclusive, stream.ctx)
+    mlx_logcumsumexp(&result, array.ctx, reverse, inclusive, stream.ctx)
     return MLXArray(result)
 }
 

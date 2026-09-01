@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include <Cmlx/mlx-error.h>
 #include <Cmlx/mlx-stream.h>
 
 namespace mlx::core {
@@ -26,6 +27,26 @@ class Event {
 
   // Check if the event has been signaled at its current value
   bool is_signaled() const;
+
+  // Associate an error to the event
+  void set_error(Error& err) {
+    error().store(&err);
+  }
+
+  // Get the error associated with the event
+  Error* load_error() const {
+    if (!valid()) {
+      return nullptr;
+    }
+    return error().load();
+  }
+
+  // Throw and clear the associated error
+  void check_error() {
+    if (auto* p = load_error(); p) {
+      p->check();
+    }
+  }
 
   // Check if the event is valid
   bool valid() const {
@@ -48,7 +69,18 @@ class Event {
     return stream_;
   }
 
+  template <typename T>
+  auto& cast() const {
+    return *static_cast<T*>(event_.get());
+  }
+
  private:
+  std::atomic<Error*>& error();
+
+  const std::atomic<Error*>& error() const {
+    return const_cast<Event*>(this)->error();
+  }
+
   // Default constructed stream should never be used
   // since the event is not yet valid
   Stream stream_{0, Device::cpu};

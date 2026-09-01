@@ -50,13 +50,13 @@ template <
 
   for (IdxT b = 0; b < blocks; b++) {
     for (int i = 0; i < N_READS; i++) {
-      total = op(static_cast<U>(in[i]), total);
+      total = op(cast_to<U>(in[i]), total);
     }
     in += lsize.x * N_READS;
   }
   if (extra > 0) {
     for (int i = 0; i < extra; i++) {
-      total = op(static_cast<U>(in[i]), total);
+      total = op(cast_to<U>(in[i]), total);
     }
   }
 
@@ -128,13 +128,13 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
     row = in + loop.location();
     if (safe) {
       for (int i = 0; i < n_reads; i++) {
-        totals[i] = op(static_cast<U>(row[i]), totals[i]);
+        totals[i] = op(cast_to<U>(row[i]), totals[i]);
       }
     } else {
       U vals[n_reads];
       for (int i = 0; i < n_reads; i++) {
         vals[i] =
-            (column + i < reduction_stride) ? static_cast<U>(row[i]) : op.init;
+            (column + i < reduction_stride) ? cast_to<U>(row[i]) : op.init;
       }
       for (int i = 0; i < n_reads; i++) {
         totals[i] = op(vals[i], totals[i]);
@@ -210,7 +210,7 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
   for (IdxT r = gid.z * lsize.y + lid.y; r < total_rows;
        r += lsize.y * gsize.z) {
     row = in + loop.location();
-    total = op(static_cast<U>(*row), total);
+    total = op(cast_to<U>(*row), total);
     loop.next(lsize.y * gsize.z, reduce_shape, reduce_strides);
   }
 
@@ -292,13 +292,13 @@ template <
 
     if (safe) {
       for (int i = 0; i < n_reads; i++) {
-        totals[i] = op(static_cast<U>(row[i]), totals[i]);
+        totals[i] = op(cast_to<U>(row[i]), totals[i]);
       }
     } else {
       U vals[n_reads];
       for (int i = 0; i < n_reads; i++) {
         vals[i] =
-            (column + i < reduction_stride) ? static_cast<U>(row[i]) : op.init;
+            (column + i < reduction_stride) ? cast_to<U>(row[i]) : op.init;
       }
       for (int i = 0; i < n_reads; i++) {
         totals[i] = op(vals[i], totals[i]);
@@ -437,13 +437,13 @@ template <
 
     if (safe) {
       for (int i = 0; i < n_reads; i++) {
-        totals[i] = op(static_cast<U>(row[i]), totals[i]);
+        totals[i] = op(cast_to<U>(row[i]), totals[i]);
       }
     } else {
       U vals[n_reads];
       for (int i = 0; i < n_reads; i++) {
         vals[i] =
-            (column + i < reduction_stride) ? static_cast<U>(row[i]) : op.init;
+            (column + i < reduction_stride) ? cast_to<U>(row[i]) : op.init;
       }
       for (int i = 0; i < n_reads; i++) {
         totals[i] = op(vals[i], totals[i]);
@@ -537,7 +537,7 @@ METAL_FUNC void per_thread_row_reduce(
   for (int i = 0; i < blocks; i++) {
     for (int j = 0; j < N_WRITES; j++) {
       for (int i = 0; i < N_READS; i++) {
-        totals[j] = op(static_cast<U>(inputs[j][i]), totals[j]);
+        totals[j] = op(cast_to<U>(inputs[j][i]), totals[j]);
       }
 
       inputs[j] += lsize_x * N_READS;
@@ -549,13 +549,13 @@ METAL_FUNC void per_thread_row_reduce(
   if (index + N_READS <= extra) {
     for (int j = 0; j < N_WRITES; j++) {
       for (int i = 0; i < N_READS; i++) {
-        totals[j] = op(static_cast<U>(inputs[j][i]), totals[j]);
+        totals[j] = op(cast_to<U>(inputs[j][i]), totals[j]);
       }
     }
   } else {
     for (int j = 0; j < N_WRITES; j++) {
       for (int i = 0; index + i < extra; i++) {
-        totals[j] = op(static_cast<U>(inputs[j][i]), totals[j]);
+        totals[j] = op(cast_to<U>(inputs[j][i]), totals[j]);
       }
     }
   }
@@ -840,7 +840,8 @@ template <
 
   // lid.x * N_READS breaks the per_thread_row_reduce interface a bit. Maybe it
   // needs a small refactor.
-  in += elem_to_loc<IdxT>(out_idx, shape, strides, ndim) + lid.x * N_READS;
+  in +=
+      elem_to_loc<IdxT>(out_idx, shape, strides, ndim) + IdxT(lid.x) * N_READS;
 
   LoopedElemToLoc<NDIMS, IdxT, (NDIMS > 2)> loop(reduce_ndim);
   const device T* row;

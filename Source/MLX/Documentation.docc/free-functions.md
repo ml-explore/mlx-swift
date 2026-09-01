@@ -74,10 +74,10 @@ operations as methods for convenience.
 - ``cummax(_:reverse:inclusive:stream:)``
 - ``cummin(_:axis:reverse:inclusive:stream:)``
 - ``cummin(_:reverse:inclusive:stream:)``
-- ``cumprod(_:axis:reverse:inclusive:stream:)``
-- ``cumprod(_:reverse:inclusive:stream:)``
-- ``cumsum(_:axis:reverse:inclusive:stream:)``
-- ``cumsum(_:reverse:inclusive:stream:)``
+- ``cumprod(_:axis:reverse:inclusive:dtype:stream:)``
+- ``cumprod(_:reverse:inclusive:dtype:stream:)``
+- ``cumsum(_:axis:reverse:inclusive:dtype:stream:)``
+- ``cumsum(_:reverse:inclusive:dtype:stream:)``
 
 ### Indexes
 
@@ -99,14 +99,15 @@ operations as methods for convenience.
 ### Factory
 
 - ``MLX/zeros(_:type:stream:)``
-- ``MLX/zeros(like:stream:)``
+- ``MLX/zeros(like:dtype:stream:)``
 - ``MLX/ones(_:type:stream:)``
-- ``MLX/ones(like:stream:)``
+- ``MLX/ones(like:dtype:stream:)``
 - ``MLX/eye(_:m:k:type:stream:)``
 - ``MLX/full(_:values:type:stream:)``
 - ``MLX/full(_:values:stream:)``
 - ``MLX/identity(_:type:stream:)``
-- ``MLX/linspace(_:_:count:stream:)-6w959``
+- ``linspace(_:_:count:endpoint:stream:)-47tc1``
+- ``linspace(_:_:count:endpoint:stream:)-38sfd``
 - ``MLX/repeated(_:count:axis:stream:)``
 - ``MLX/repeated(_:count:stream:)``
 - ``MLX/repeat(_:count:axis:stream:)``

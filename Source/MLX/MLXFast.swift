@@ -114,11 +114,15 @@ public enum MLXFast {
     ///   - mask: mask array
     ///   - sinks: optional array of attention sinks
     ///   - memoryEfficientThreshold: unused
+    ///   - forceFused: If `true` use a fused kernel regardless of the heuristic choice.  This
+    ///     can result in slower kernels in some case but can also reduce memory consumption
     ///   - stream: stream to evaluate on
     public static func scaledDotProductAttention(
         queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float, mask: MLXArray?,
         sinks: MLXArray? = nil,
-        memoryEfficientThreshold: Int? = nil, stream: StreamOrDevice = .default
+        memoryEfficientThreshold: Int? = nil,
+        forceFused: Bool = false,
+        stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
 
@@ -127,6 +131,7 @@ public enum MLXFast {
             queries.ctx, keys.ctx, values.ctx, scale,
             "", mask?.ctx ?? MLXArray.mlxNone.ctx,
             (sinks ?? .mlxNone).ctx,
+            forceFused,
             stream.ctx)
         return MLXArray(result)
     }
@@ -199,11 +204,14 @@ public enum MLXFast {
     ///   - scale: scale for queries, typically `1 / sqrt(q.dim(-1))`
     ///   - mask: a ``ScaledDotProductAttentionMaskMode``
     ///   - sinks: optional array of attention sinks
+    ///   - forceFused: If `true` use a fused kernel regardless of the heuristic choice.  This
+    ///     can result in slower kernels in some case but can also reduce memory consumption
     ///   - stream: stream to evaluate on
     public static func scaledDotProductAttention(
         queries: MLXArray, keys: MLXArray, values: MLXArray, scale: Float,
         mask: ScaledDotProductAttentionMaskMode,
         sinks: MLXArray? = nil,
+        forceFused: Bool = false,
         stream: StreamOrDevice = .default
     ) -> MLXArray {
         var result = mlx_array_new()
@@ -213,6 +221,7 @@ public enum MLXFast {
             queries.ctx, keys.ctx, values.ctx, scale,
             mask.mode, mask.mask?.ctx ?? MLXArray.mlxNone.ctx,
             (sinks ?? .mlxNone).ctx,
+            forceFused,
             stream.ctx)
         return MLXArray(result)
     }
@@ -259,6 +268,22 @@ public enum MLXFast {
         return MLXArray(result)
     }
 
+    /// Cross entropy loss with class indices as targets.
+    ///
+    /// - Parameters:
+    ///   - logits: The unnormalized logits. The loss is computed over the last axis.
+    ///   - targets: Class indices. The shape should match the shape of `logits` with the last axis removed.
+    ///     The indices must be in `0 ..< logits.dim(-1)`.
+    ///   - stream: stream or device to evaluate on
+    public static func crossEntropy(
+        logits: MLXArray, targets: MLXArray,
+        stream: StreamOrDevice = .default
+    ) -> MLXArray {
+        var result = mlx_array_new()
+        mlx_fast_cross_entropy(
+            &result, logits.ctx, targets.ctx, stream.ctx)
+        return MLXArray(result)
+    }
 }
 
 /// Optimized implementation of `NN.RoPE`.
@@ -367,3 +392,5 @@ public func layerNorm(
 ) -> MLXArray {
     return MLXFast.layerNorm(x, weight: weight, bias: bias, eps: eps, stream: stream)
 }
+
+// Note: crossEntropy() requires MLXFast.crossEntropy() to avoid collision with MLXNN

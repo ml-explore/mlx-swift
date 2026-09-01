@@ -17,6 +17,7 @@ mkdir -p build
 pushd build
 cmake -DMLX_BUILD_METAL=OFF -DMLX_BUILD_CUDA=ON -DMLX_C_BUILD_EXAMPLES=OFF .. -G Ninja
 ninja
-./example1 --device gpu
-./tutorial --device gpu
+# TODO dkoski -- disabled for now until clear_streams is available
+# ./example1 --device gpu
+# ./tutorial --device gpu
 popd

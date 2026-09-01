@@ -95,6 +95,19 @@ METAL_FUNC void mlx_atomic_fetch_mul_explicit(
   T expected = mlx_atomic_load_explicit(object, offset);
   while (!mlx_atomic_compare_exchange_weak_explicit(
       object, &expected, val * expected, offset)) {
+    // Workaround: Metal's atomic_compare_exchange_weak_explicit<float> does
+    // not perform bitwise comparison as required by the C++ atomics spec.
+    // The compiler lowers the success check to `fcmp fast ueq` under
+    // no-nans-fp-math, which evaluates to false when either operand is NaN -
+    // even when the bit patterns are identical. With NaN in memory the CAS
+    // can never succeed, so the loop spins. Bail out instead: memory is
+    // already NaN and that is the correct reduction result regardless of
+    // this thread's update.
+    if constexpr (metal::is_floating_point_v<T>) {
+      if (isnan(expected)) {
+        break;
+      }
+    }
   }
 }
 
@@ -159,7 +172,7 @@ union uint_or_packed {
 
 template <typename T, typename Op>
 struct mlx_atomic_update_helper {
-  uint operator()(uint_or_packed<T> init, T update, size_t elem_offset) {
+  uint operator()(uint_or_packed<T> init, T update, size_t elem_offset) thread {
     Op op;
     init.val[elem_offset] = op(update, init.val[elem_offset]);
     return init.bits;
@@ -196,7 +209,7 @@ struct __None {
     return true;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
 #pragma unused(b)
     return a;
   }
@@ -210,7 +223,7 @@ struct __Add {
     return true;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return a + b;
   }
 };
@@ -222,7 +235,7 @@ struct __Mul {
     return b != 0;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return a * b;
   }
 };
@@ -233,7 +246,7 @@ struct __Max {
     return a > b;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return max(a, b);
   }
 };
@@ -244,7 +257,7 @@ struct __Min {
     return a < b;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return min(a, b);
   }
 };
