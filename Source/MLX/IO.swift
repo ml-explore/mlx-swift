@@ -133,8 +133,8 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
         defer { mlx_map_string_to_array_free(r0) }
         defer { mlx_map_string_to_string_free(r1) }
 
-        _ = try withError {
-            mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx)
+        try withErrorHandler({ _ in /* suppress push path; pull below */ }) {
+            try checkStatus(mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx))
         }
 
         return mlx_map_array_values(r0)
