@@ -20,11 +20,7 @@ extension MLXArrayIndexOperation: Equatable {
     }
 }
 
-class MLXArrayIndexingTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class MLXArrayIndexingTests: DeviceScopedTestCase {
 
     // MARK: - Subscript (get)
 

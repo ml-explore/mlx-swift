@@ -5,10 +5,7 @@ import MLX
 import MLXNN
 import XCTest
 
-class LossTests: XCTestCase {
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class LossTests: DeviceScopedTestCase {
 
     func testCrossEntropy() {
         // This is just testing that crossEntropy supports both class indices and class

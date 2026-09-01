@@ -6,11 +6,7 @@ import XCTest
 
 @testable import MLX
 
-class MLXArrayOpsTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class MLXArrayOpsTests: DeviceScopedTestCase {
 
     // MARK: - Operators
 

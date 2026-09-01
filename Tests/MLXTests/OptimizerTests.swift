@@ -7,11 +7,7 @@ import XCTest
 
 @testable import MLXOptimizers
 
-class OptimizerTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class OptimizerTests: DeviceScopedTestCase {
 
     class ShapeModule: Module {
         let first = [MLXArray.zeros([10]), MLXArray.zeros([1])]

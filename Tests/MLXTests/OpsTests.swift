@@ -5,11 +5,7 @@ import XCTest
 
 @testable import MLX
 
-class OpsTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class OpsTests: DeviceScopedTestCase {
 
     func testAsStridedReshape() {
         // just changing the shape and using the default strides is the same as reshape

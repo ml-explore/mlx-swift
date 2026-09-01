@@ -6,11 +6,7 @@ import XCTest
 
 @testable import MLXNN
 
-class ModuleTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
+class ModuleTests: DeviceScopedTestCase {
 
     func newTestModule() -> Module {
         class ChildTestModule: Module {
