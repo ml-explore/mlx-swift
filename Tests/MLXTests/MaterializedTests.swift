@@ -236,4 +236,21 @@ struct MaterializedTests {
         let x = uniform(0 ..< 1, [10])
         let _ = mm(x)
     }
+
+    @Test func testMaterializedModuleTwice() {
+        let inner = Linear(10, 10)
+        let mm = MaterializedModule(inner)
+
+        // per contract with MaterializedModule, we can't retain the module
+        // after materializing it, but if we do, it should
+        let mm2 = MaterializedModule(inner)
+
+        #expect(mm.description.contains("Linear"))
+        #expect(mm.parameterNBytes == mm.parameters().reduce(0) { $0 + $1.nbytes })
+
+        // callable
+        let x = uniform(0 ..< 1, [10])
+        let _ = mm(x)
+        let _ = mm2(x)
+    }
 }
