@@ -363,15 +363,21 @@ open class QuantizedLinear: Linear, Quantized {
 
     open override var parameterCount: Int {
         // represent the count that the non-quantized Linear represents.
-        //
-        // the weight property is the quantized weights, so compute based
-        // off the scales and group size to reconstruct
+        let outputDimensions = scales.dim(0)
+        let inputDimensions = scales.dim(1) * groupSize
+
         if bias != nil {
-            // the bias is the same size as the weight
-            scales.size * groupSize * 2
+            return inputDimensions * outputDimensions + outputDimensions
         } else {
-            scales.size * groupSize
+            return inputDimensions * outputDimensions
         }
+    }
+
+    open override func describeExtra(_ indent: Int) -> String {
+        let outputDimensions = scales.dim(0)
+        let inputDimensions = scales.dim(1) * groupSize
+        return
+            "(inputDimensions=\(inputDimensions), outputDimensions=\(outputDimensions), bias=\(self.bias != nil))"
     }
 
     public override func unfreeze(
