@@ -143,13 +143,19 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
     public init(_ base: consuming LayerType) {
         self._base = base
 
-        self._base.train(false)
-        self._base.materialize()
+        if !base._isImmutable {
+            self._base.train(false)
+            self._base.materialize()
 
-        // seal the consumed base so that any retained reference held by a
-        // caller (despite the `consuming` contract) traps on mutation
-        // rather than silently violating Sendable
-        self._base._sealImmutable()
+            // seal the consumed base so that any retained reference held by a
+            // caller (despite the `consuming` contract) traps on mutation
+            // rather than silently violating Sendable
+            self._base._sealImmutable()
+        } else {
+            // it is already immutable.  could be a fatalError -- it suggests
+            // that the module was retained past encapsulation in a MaterializedModule,
+            // but is ultimately harmless.
+        }
 
         parameterNBytes = _base.parameters().reduce(0) { $0 + $1.nbytes }
         parameterCount = _base.parameterCount

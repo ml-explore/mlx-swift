@@ -114,7 +114,7 @@ open class Module {
     /// recursively by ``_sealImmutable()`` after the module's parameters
     /// have been replaced with `MaterializedArray` values inside
     /// ``MaterializedModule``.
-    private var _isImmutable = false
+    var _isImmutable = false
 
     /// Initializes the module.
     public init() {
