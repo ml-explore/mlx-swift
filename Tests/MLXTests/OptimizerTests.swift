@@ -61,6 +61,7 @@ class OptimizerTests: XCTestCase {
         // measure the distance from the prediction (model(x)) and the
         // ground truth (y).  this gives feedback on how close the
         // prediction is from matching the truth
+        @Sendable
         func loss(model: LinearFunctionModel, x: MLXArray, y: MLXArray) -> MLXArray {
             mseLoss(predictions: model(x), targets: y, reduction: .mean)
         }
