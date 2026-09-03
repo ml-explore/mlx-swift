@@ -4,8 +4,10 @@
 #pragma once
 
 #include <cstdlib>
+#include <vector>
 
 #include <Cmlx/mlx-api.h>
+#include <Cmlx/mlx-array.h>
 
 namespace mlx::core {
 
@@ -15,6 +17,14 @@ namespace mlx::core {
  * it does not include cached memory buffers.
  * */
 MLX_API size_t get_active_memory();
+
+/* Get the size of the buffers backing the given arrays in bytes.
+ *
+ * Each unique buffer is counted once. The full allocator size of each buffer
+ * is used, which can exceed the logical size of its arrays. The arrays must be
+ * evaluated before calling this function.
+ * */
+MLX_API size_t get_array_buffer_size(const std::vector<array>& arrays);
 
 /* Get the peak amount of used memory in bytes.
  *
