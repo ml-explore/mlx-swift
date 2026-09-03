@@ -14,9 +14,9 @@ final internal class UncheckedSendableBox<T>: @unchecked Sendable {
 
 /// Internal vmap implementation.  This takes a closure with sendability erased and produces
 /// a (declared) sendable closure.  Callers must declare their return sendability correctly.
-/// For example, ``vmap(_:inAxes:outAxes:)->(MLXArray)->MLXArray`` produces
+/// For example, ``vmap(_:inAxes:outAxes:)`` produces
 /// a non-Sendable closure from a non-Sendable input while
-/// ``vmapPure(_:inAxes:outAxes:)->(MLXArray)->MLXArray`` produces
+/// ``vmapPure(_:inAxes:outAxes:)`` produces
 /// Sendable from Sendable.
 private func vmapInternal(
     _ f: @escaping ([MLXArray]) -> [MLXArray],
@@ -84,7 +84,6 @@ private func vmapInternal(
 ///
 /// ### See Also
 /// - <doc:vmap>
-/// - ``vmapPure(_:inAxes:outAxes:)->(MLXArray)->MLXArray``
 public func vmap(
     _ f: @escaping ([MLXArray]) -> [MLXArray],
     inAxes: some Sequence<Int?> & Sendable = [0],
@@ -112,7 +111,6 @@ public func vmap(
 ///
 /// ### See Also
 /// - <doc:vmap>
-/// - ``vmap(_:inAxes:outAxes:)->(MLXArray)->MLXArray``
 public func vmapPure(
     _ f: @escaping @Sendable ([MLXArray]) -> [MLXArray],
     inAxes: some Sequence<Int?> & Sendable = [0],
@@ -136,12 +134,11 @@ public func vmap(
     return { a in inner([a])[0] }
 }
 
-/// Overload of ``vmapPure(_:inAxes:outAxes:)->([MLXArray])->[MLXArray]``
+/// Overload of ``vmapPure(_:inAxes:outAxes:)``
 /// for a single ``MLXArray`` input and output.
 ///
 /// ### See Also
 /// - <doc:vmap>
-/// - ``vmapPure(_:inAxes:outAxes:)->([MLXArray])->[MLXArray]``
 public func vmapPure(
     _ f: @escaping @Sendable (MLXArray) -> MLXArray,
     inAxes: Int? = 0,
@@ -166,12 +163,11 @@ public func vmap(
     return { a, b in inner([a, b])[0] }
 }
 
-/// Overload of ``vmapPure(_:inAxes:outAxes:)->([MLXArray])->[MLXArray]``
+/// Overload of ``vmapPure(_:inAxes:outAxes:)``
 /// for a two ``MLXArray`` inputs and a single output.
 ///
 /// ### See Also
 /// - <doc:vmap>
-/// - ``vmapPure(_:inAxes:outAxes:)->([MLXArray])->[MLXArray]``
 public func vmapPure(
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> MLXArray,
     inAxes: (Int?, Int?) = (0, 0),
