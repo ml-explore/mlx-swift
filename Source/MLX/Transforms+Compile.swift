@@ -3,7 +3,10 @@
 import Cmlx
 import Foundation
 
-// Note: this is all immutable state -- the `id` property is only set at init time
+// Note: this is all immutable state -- the `id` property is only set at init time.
+// Also: this is marked as Sendable even though it may capture non-Sendable state
+// in inputs/outputs.  The functions that create it will not return a Sendable
+// type in that case -- see compile(inputs:)
 final class CompiledFunction: @unchecked (Sendable) {
 
     /// unique (for the lifetime of the object) identifier for the compiled function
@@ -34,6 +37,17 @@ final class CompiledFunction: @unchecked (Sendable) {
         self.f = f
         self.inputs = inputs
         self.outputs = outputs
+        self.shapeless = shapeless
+        self.id = UInt(bitPattern: Unmanaged.passUnretained(self).toOpaque())
+    }
+
+    init(
+        shapeless: Bool,
+        _ f: @escaping @Sendable ([MLXArray]) -> [MLXArray]
+    ) {
+        self.f = f
+        self.inputs = []
+        self.outputs = []
         self.shapeless = shapeless
         self.id = UInt(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
@@ -285,10 +299,35 @@ final class CompiledFunction: @unchecked (Sendable) {
 /// ### See Also
 /// - <doc:compilation>
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping ([MLXArray]) -> [MLXArray]
-) -> @Sendable ([MLXArray]) -> [MLXArray] {
+) -> ([MLXArray]) -> [MLXArray] {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless, f)
+
+    return { arrays in
+        compileState.call(arrays)
+    }
+}
+
+/// Returns a compiled function that produces the same output as `f()`.
+///
+/// - Parameters:
+///   - shapeless: A function compiled with the `shapeless`
+///     option enabled will not be recompiled when the input shape changes. Not all
+///     functions can be compiled with `shapeless` enabled. Attempting to compile
+///     such functions with shapeless enabled will throw. Note, changing the number
+///     of dimensions or type of any input will result in a recompilation even with
+///     `shapeless` set to `true`
+///   - f: function to compile
+/// - Returns: a new function that produces the same output as `f()`
+///
+/// ### See Also
+/// - <doc:compilation>
+public func compile(
+    shapeless: Bool = false,
+    _ f: @escaping @Sendable ([MLXArray]) -> [MLXArray]
+) -> @Sendable ([MLXArray]) -> [MLXArray] {
+    let compileState = CompiledFunction(shapeless: shapeless, f)
 
     return { arrays in
         compileState.call(arrays)
@@ -302,10 +341,33 @@ public func compile(
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray) -> MLXArray
-) -> @Sendable (MLXArray) -> MLXArray {
+) -> (MLXArray) -> MLXArray {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
+        [f($0[0])]
+    }
+
+    return { a in
+        let r = compileState.call([a])
+        // r is empty only when an MLX error fired inside a withError scope — the
+        // error is already stored in the ErrorBox.  Return a placeholder so that
+        // withError can throw instead of crashing with "Index out of range".
+        return r.isEmpty ? MLXArray(0) : r[0]
+    }
+}
+
+/// Overload of ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])`` that takes a single ``MLXArray`` and
+/// produces a single ``MLXArray``.
+///
+/// ### See Also
+/// - <doc:compilation>
+/// - ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])``
+public func compile(
+    shapeless: Bool = false,
+    _ f: @escaping @Sendable (MLXArray) -> MLXArray
+) -> @Sendable (MLXArray) -> MLXArray {
+    let compileState = CompiledFunction(shapeless: shapeless) {
         [f($0[0])]
     }
 
@@ -325,12 +387,34 @@ public func compile(
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray) -> MLXArray
+)
+    -> (MLXArray, MLXArray) -> MLXArray
+{
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
+        [f($0[0], $0[1])]
+    }
+
+    return { a, b in
+        let r = compileState.call([a, b])
+        return r.isEmpty ? MLXArray(0) : r[0]
+    }
+}
+
+/// Overload of ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])`` that takes two ``MLXArray`` and
+/// produces a single ``MLXArray``.
+///
+/// ### See Also
+/// - <doc:compilation>
+/// - ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])``
+public func compile(
+    shapeless: Bool = false,
+    _ f: @escaping @Sendable (MLXArray, MLXArray) -> MLXArray
 )
     -> @Sendable (MLXArray, MLXArray) -> MLXArray
 {
-    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
+    let compileState = CompiledFunction(shapeless: shapeless) {
         [f($0[0], $0[1])]
     }
 
@@ -347,12 +431,34 @@ public func compile(
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
-    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
+    _ f: @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
+)
+    -> (MLXArray, MLXArray, MLXArray) -> MLXArray
+{
+    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
+        [f($0[0], $0[1], $0[2])]
+    }
+
+    return { a, b, c in
+        let r = compileState.call([a, b, c])
+        return r.isEmpty ? MLXArray(0) : r[0]
+    }
+}
+
+/// Overload of ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])`` that takes three ``MLXArray`` and
+/// produces a single ``MLXArray``.
+///
+/// ### See Also
+/// - <doc:compilation>
+/// - ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])``
+public func compile(
+    shapeless: Bool = false,
     _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
 )
     -> @Sendable (MLXArray, MLXArray, MLXArray) -> MLXArray
 {
-    let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
+    let compileState = CompiledFunction(shapeless: shapeless) {
         [f($0[0], $0[1], $0[2])]
     }
 
