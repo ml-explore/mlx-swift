@@ -143,7 +143,7 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
     public init(_ base: consuming LayerType) {
         self._base = base
 
-        if !base._isImmutable {
+        if !self._base._isImmutable {
             self._base.train(false)
             self._base.materialize()
 
@@ -157,8 +157,8 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
             // but is ultimately harmless.
         }
 
-        parameterNBytes = _base.parameters().reduce(0) { $0 + $1.nbytes }
-        parameterCount = _base.parameterCount
+        parameterNBytes = self._base.parameters().reduce(0) { $0 + $1.nbytes }
+        parameterCount = self._base.parameterCount
     }
 
     /// Return a `NestedDictionary<String, MaterializedArray>` for all parameters in the
