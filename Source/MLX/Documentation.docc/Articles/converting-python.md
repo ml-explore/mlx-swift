@@ -171,8 +171,8 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `cosh` | ``MLX/cosh(_:stream:)``
 `cummax` | ``MLX/cummax(_:axis:reverse:inclusive:stream:)``
 `cummin` | ``MLX/cummin(_:axis:reverse:inclusive:stream:)``
-`cumprod` | ``MLX/cumprod(_:axis:reverse:inclusive:stream:)``
-`cumsum` | ``MLX/cumsum(_:axis:reverse:inclusive:stream:)``
+`cumprod` | ``MLX/cumprod(_:axis:reverse:inclusive:dtype:stream:)``
+`cumsum` | ``MLX/cumsum(_:axis:reverse:inclusive:dtype:stream:)``
 `dequantize` | ``MLX/dequantized(_:scales:biases:groupSize:bits:mode:globalScale:dtype:stream:)``
 `divide` | ``MLX/divide(_:_:stream:)``
 `equal` | ``MLX/equal(_:_:stream:)``

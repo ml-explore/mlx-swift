@@ -214,7 +214,9 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         case SEEK_CUR:
             state.offset += Int(offset)
         case SEEK_END:
-            state.offset = state.offset - Int(offset)
+            // offset is relative to the end of the data, not the current position.
+            // mlx's load_safetensors uses seek(0, end) + tell() to size the input.
+            state.offset = state.data.count + Int(offset)
         default:
             break
         }

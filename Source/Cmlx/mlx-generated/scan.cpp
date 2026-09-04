@@ -21,33 +21,40 @@ constant mlx::os_log logger("mlx", "binary_ops");
 
 struct Add {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x + y;
   }
 };
 
 struct FloorDivide {
   template <typename T>
-  T operator()(T x, T y) {
+  metal::enable_if_t<metal::is_integral_v<T> & !metal::is_signed_v<T>, T>
+  operator()(T x, T y) thread {
     return x / y;
   }
-  template <>
-  float operator()(float x, float y) {
-    return trunc(x / y);
+  template <typename T>
+  metal::enable_if_t<metal::is_integral_v<T> & metal::is_signed_v<T>, T>
+  operator()(T x, T y) thread {
+    auto q = x / y;
+    if (x % y != 0 && (x < 0) != (y < 0)) {
+      q -= 1;
+    }
+    return q;
+  }
+  template <typename T>
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) thread {
+    return floor(x / y);
   }
   template <>
-  half operator()(half x, half y) {
-    return trunc(x / y);
-  }
-  template <>
-  bfloat16_t operator()(bfloat16_t x, bfloat16_t y) {
-    return trunc(x / y);
+  complex64_t operator()(complex64_t x, complex64_t y) thread {
+    // Complex is not supported, simply make compiler happy.
+    return x / y;
   }
 };
 
 struct Divide {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x / y;
   }
 };
@@ -55,12 +62,12 @@ struct Divide {
 struct Remainder {
   template <typename T>
   metal::enable_if_t<metal::is_integral_v<T> & !metal::is_signed_v<T>, T>
-  operator()(T x, T y) {
+  operator()(T x, T y) thread {
     return x % y;
   }
   template <typename T>
   metal::enable_if_t<metal::is_integral_v<T> & metal::is_signed_v<T>, T>
-  operator()(T x, T y) {
+  operator()(T x, T y) thread {
     auto r = x % y;
     if (r != 0 && (r < 0 != y < 0)) {
       r += y;
@@ -68,7 +75,7 @@ struct Remainder {
     return r;
   }
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) thread {
     T r = fmod(x, y);
     if (r != 0 && (r < 0 != y < 0)) {
       r += y;
@@ -76,25 +83,25 @@ struct Remainder {
     return r;
   }
   template <>
-  complex64_t operator()(complex64_t x, complex64_t y) {
+  complex64_t operator()(complex64_t x, complex64_t y) thread {
     return x % y;
   }
 };
 
 struct Equal {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x == y;
   }
 };
 
 struct NaNEqual {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x == y || (metal::isnan(x) && metal::isnan(y));
   }
   template <>
-  bool operator()(complex64_t x, complex64_t y) {
+  bool operator()(complex64_t x, complex64_t y) thread {
     return x == y ||
         (metal::isnan(x.real) && metal::isnan(y.real) && metal::isnan(x.imag) &&
          metal::isnan(y.imag)) ||
@@ -105,35 +112,35 @@ struct NaNEqual {
 
 struct Greater {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x > y;
   }
 };
 
 struct GreaterEqual {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x >= y;
   }
 };
 
 struct Less {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x < y;
   }
 };
 
 struct LessEqual {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x <= y;
   }
 };
 
 struct LogAddExp {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     if (metal::isnan(x) || metal::isnan(y)) {
       return metal::numeric_limits<T>::quiet_NaN();
     }
@@ -145,7 +152,7 @@ struct LogAddExp {
         : (maxval + log1p(metal::exp(minval - maxval)));
   };
 
-  complex64_t operator()(complex64_t x, complex64_t y) {
+  complex64_t operator()(complex64_t x, complex64_t y) thread {
     if (metal::isnan(x.real) || metal::isnan(x.imag) || metal::isnan(y.real) ||
         metal::isnan(y.imag)) {
       return metal::numeric_limits<float>::quiet_NaN();
@@ -166,12 +173,12 @@ struct LogAddExp {
 
 struct Maximum {
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T x, T y) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T x, T y) thread {
     return metal::max(x, y);
   }
 
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) thread {
     if (metal::isnan(x)) {
       return x;
     }
@@ -179,7 +186,7 @@ struct Maximum {
   }
 
   template <>
-  complex64_t operator()(complex64_t x, complex64_t y) {
+  complex64_t operator()(complex64_t x, complex64_t y) thread {
     if (metal::isnan(x.real) || metal::isnan(x.imag)) {
       return x;
     }
@@ -189,12 +196,12 @@ struct Maximum {
 
 struct Minimum {
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T x, T y) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T x, T y) thread {
     return metal::min(x, y);
   }
 
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T x, T y) thread {
     if (metal::isnan(x)) {
       return x;
     }
@@ -202,7 +209,7 @@ struct Minimum {
   }
 
   template <>
-  complex64_t operator()(complex64_t x, complex64_t y) {
+  complex64_t operator()(complex64_t x, complex64_t y) thread {
     if (metal::isnan(x.real) || metal::isnan(x.imag)) {
       return x;
     }
@@ -212,30 +219,32 @@ struct Minimum {
 
 struct Multiply {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x * y;
   }
 };
 
 struct NotEqual {
   template <typename T>
-  bool operator()(T x, T y) {
+  bool operator()(T x, T y) thread {
     return x != y;
   }
   template <>
-  bool operator()(complex64_t x, complex64_t y) {
+  bool operator()(complex64_t x, complex64_t y) thread {
     return x.real != y.real || x.imag != y.imag;
   }
 };
 
 struct Power {
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T base, T exp) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T base, T exp)
+      thread {
     return metal::pow(base, exp);
   }
 
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T base, T exp) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T base, T exp)
+      thread {
     T res = 1;
     // Undefined to raise integer to negative power
     if (exp < 0) {
@@ -255,7 +264,7 @@ struct Power {
   }
 
   template <>
-  complex64_t operator()(complex64_t x, complex64_t y) {
+  complex64_t operator()(complex64_t x, complex64_t y) thread {
     if (x.real == 0 && x.imag == 0) {
       if (metal::isnan(y.real) || metal::isnan(y.imag)) {
         auto nan = metal::numeric_limits<float>::quiet_NaN();
@@ -273,70 +282,70 @@ struct Power {
 
 struct Subtract {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x - y;
   }
 };
 
 struct LogicalAnd {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x && y;
   };
 };
 
 struct LogicalOr {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x || y;
   };
 };
 
 struct BitwiseAnd {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x & y;
   };
 };
 
 struct BitwiseOr {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x | y;
   };
 };
 
 struct BitwiseXor {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x ^ y;
   };
 };
 
 struct LeftShift {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x << y;
   };
 };
 
 struct RightShift {
   template <typename T>
-  T operator()(T x, T y) {
+  T operator()(T x, T y) thread {
     return x >> y;
   };
 };
 
 struct ArcTan2 {
   template <typename T>
-  T operator()(T y, T x) {
+  T operator()(T y, T x) thread {
     return metal::precise::atan2(y, x);
   }
 };
 
 struct DivMod {
   template <typename T>
-  metal::array<T, 2> operator()(T x, T y) {
+  metal::array<T, 2> operator()(T x, T y) thread {
     return {FloorDivide{}(x, y), Remainder{}(x, y)};
   };
 };
@@ -352,12 +361,12 @@ struct DivMod {
 
 #define DEFINE_SIMD_SCAN()                                               \
   template <typename T, metal::enable_if_t<sizeof(T) < 8, bool> = true>  \
-  T simd_scan(T val) {                                                   \
+  T simd_scan(T val) thread {                                            \
     return simd_scan_impl(val);                                          \
   }                                                                      \
                                                                          \
   template <typename T, metal::enable_if_t<sizeof(T) == 8, bool> = true> \
-  T simd_scan(T val) {                                                   \
+  T simd_scan(T val) thread {                                            \
     for (int i = 1; i <= 16; i *= 2) {                                   \
       val = operator()(val, simd_shuffle_and_fill_up(val, init, i));     \
     }                                                                    \
@@ -366,12 +375,12 @@ struct DivMod {
 
 #define DEFINE_SIMD_EXCLUSIVE_SCAN()                                     \
   template <typename T, metal::enable_if_t<sizeof(T) < 8, bool> = true>  \
-  T simd_exclusive_scan(T val) {                                         \
+  T simd_exclusive_scan(T val) thread {                                  \
     return simd_exclusive_scan_impl(val);                                \
   }                                                                      \
                                                                          \
   template <typename T, metal::enable_if_t<sizeof(T) == 8, bool> = true> \
-  T simd_exclusive_scan(T val) {                                         \
+  T simd_exclusive_scan(T val) thread {                                  \
     val = simd_scan(val);                                                \
     return simd_shuffle_and_fill_up(val, init, 1);                       \
   }
@@ -384,15 +393,15 @@ struct CumSum {
   static constexpr constant U init = static_cast<U>(0);
 
   template <typename T>
-  U operator()(U a, T b) {
+  U operator()(U a, T b) thread {
     return a + b;
   }
 
-  U simd_scan_impl(U x) {
+  U simd_scan_impl(U x) thread {
     return simd_prefix_inclusive_sum(x);
   }
 
-  U simd_exclusive_scan_impl(U x) {
+  U simd_exclusive_scan_impl(U x) thread {
     return simd_prefix_exclusive_sum(x);
   }
 };
@@ -405,15 +414,15 @@ struct CumProd {
   static constexpr constant U init = static_cast<U>(1.0f);
 
   template <typename T>
-  U operator()(U a, T b) {
+  U operator()(U a, T b) thread {
     return a * b;
   }
 
-  U simd_scan_impl(U x) {
+  U simd_scan_impl(U x) thread {
     return simd_prefix_inclusive_product(x);
   }
 
-  U simd_exclusive_scan_impl(U x) {
+  U simd_exclusive_scan_impl(U x) thread {
     return simd_prefix_exclusive_product(x);
   }
 };
@@ -423,11 +432,11 @@ struct CumProd<bool> {
   static constexpr constant bool init = true;
 
   template <typename T>
-  bool operator()(bool a, T b) {
+  bool operator()(bool a, T b) thread {
     return a & static_cast<bool>(b);
   }
 
-  bool simd_scan(bool x) {
+  bool simd_scan(bool x) thread {
     for (int i = 1; i <= 16; i *= 2) {
       bool other = simd_shuffle_and_fill_up(x, init, i);
       x &= other;
@@ -435,7 +444,7 @@ struct CumProd<bool> {
     return x;
   }
 
-  bool simd_exclusive_scan(bool x) {
+  bool simd_exclusive_scan(bool x) thread {
     x = simd_scan(x);
     return simd_shuffle_and_fill_up(x, init, 1);
   }
@@ -445,20 +454,29 @@ template <typename U>
 struct CumMax {
   static constexpr constant U init = Limits<U>::min;
 
-  template <typename T>
-  U operator()(U a, T b) {
+  static U combine(U a, U b) {
+    if constexpr (metal::is_floating_point_v<U>) {
+      if (metal::isnan(a) || metal::isnan(b)) {
+        return metal::numeric_limits<U>::quiet_NaN();
+      }
+    }
     return (a >= b) ? a : b;
   }
 
-  U simd_scan(U x) {
+  template <typename T>
+  U operator()(U a, T b) thread {
+    return combine(a, static_cast<U>(b));
+  }
+
+  U simd_scan(U x) thread {
     for (int i = 1; i <= 16; i *= 2) {
       U other = simd_shuffle_and_fill_up(x, init, i);
-      x = (x >= other) ? x : other;
+      x = combine(x, other);
     }
     return x;
   }
 
-  U simd_exclusive_scan(U x) {
+  U simd_exclusive_scan(U x) thread {
     x = simd_scan(x);
     return simd_shuffle_and_fill_up(x, init, 1);
   }
@@ -468,20 +486,29 @@ template <typename U>
 struct CumMin {
   static constexpr constant U init = Limits<U>::max;
 
-  template <typename T>
-  U operator()(U a, T b) {
+  static U combine(U a, U b) {
+    if constexpr (metal::is_floating_point_v<U>) {
+      if (metal::isnan(a) || metal::isnan(b)) {
+        return metal::numeric_limits<U>::quiet_NaN();
+      }
+    }
     return (a <= b) ? a : b;
   }
 
-  U simd_scan(U x) {
+  template <typename T>
+  U operator()(U a, T b) thread {
+    return combine(a, static_cast<U>(b));
+  }
+
+  U simd_scan(U x) thread {
     for (int i = 1; i <= 16; i *= 2) {
       U other = simd_shuffle_and_fill_up(x, init, i);
-      x = (x <= other) ? x : other;
+      x = combine(x, other);
     }
     return x;
   }
 
-  U simd_exclusive_scan(U x) {
+  U simd_exclusive_scan(U x) thread {
     x = simd_scan(x);
     return simd_shuffle_and_fill_up(x, init, 1);
   }
@@ -492,11 +519,11 @@ struct CumLogaddexp {
   static constexpr constant U init = Limits<U>::min;
 
   template <typename T>
-  U operator()(U a, T b) {
+  U operator()(U a, T b) thread {
     return LogAddExp{}(a, static_cast<U>(b));
   }
 
-  U simd_scan(U x) {
+  U simd_scan(U x) thread {
     for (int i = 1; i <= 16; i *= 2) {
       U other = simd_shuffle_and_fill_up(x, init, i);
       x = LogAddExp{}(x, other);
@@ -504,7 +531,7 @@ struct CumLogaddexp {
     return x;
   }
 
-  U simd_exclusive_scan(U x) {
+  U simd_exclusive_scan(U x) thread {
     x = simd_scan(x);
     return simd_shuffle_and_fill_up(x, init, 1);
   }

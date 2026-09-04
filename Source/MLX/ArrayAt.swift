@@ -91,6 +91,66 @@ public struct ArrayAtIndices {
     let indexOperations: [MLXArrayIndexOperation]
     let stream: StreamOrDevice
 
+    /// The `mlx_slice_update_*` functions all share this signature.
+    private typealias SliceUpdateReduce = (
+        UnsafeMutablePointer<mlx_array>?, mlx_array, mlx_array,
+        UnsafePointer<Int32>?, Int, UnsafePointer<Int32>?, Int, UnsafePointer<Int32>?, Int,
+        mlx_stream
+    ) -> Int32
+
+    /// Apply `values` to the indexed region, preferring a slice update over a scatter.
+    ///
+    /// Mirrors the structure of `mlx_add_item` and friends: if the indices describe a pure
+    /// slice, use the corresponding reducing slice update, otherwise fall back to a scatter.
+    ///
+    /// - Parameters:
+    ///   - values: the update value
+    ///   - sliceUpdate: the `mlx_slice_update_*` function for this reduction
+    ///   - scatter: the `mlx_scatter_*` function for this reduction
+    ///   - elementwise: the whole-array fallback when the indices select everything
+    private func update(
+        _ values: some ScalarOrArray,
+        sliceUpdate: SliceUpdateReduce,
+        scatter: (
+            UnsafeMutablePointer<mlx_array>?, mlx_array, mlx_vector_array, mlx_array,
+            UnsafePointer<Int32>?, Int, mlx_stream
+        ) -> Int32,
+        elementwise: (MLXArray, MLXArray) -> MLXArray
+    ) -> MLXArray {
+        let values = values.asMLXArray(dtype: array.dtype)
+
+        switch sliceUpdateArguments(
+            src: array, operations: indexOperations, update: values, stream: stream)
+        {
+        case .slice(let update, let starts, let ends, let strides):
+            var result = mlx_array_new()
+            _ = sliceUpdate(
+                &result, array.ctx, update.ctx, starts, starts.count, ends, ends.count, strides,
+                strides.count, stream.ctx)
+            return MLXArray(result)
+
+        case .broadcast(let update):
+            return elementwise(array, update)
+
+        case nil:
+            let (indices, update, axes) = scatterArguments(
+                src: array, operations: indexOperations, update: values, stream: stream)
+
+            if !indices.isEmpty {
+                let indices_vector = new_mlx_vector_array(indices)
+                defer { mlx_vector_array_free(indices_vector) }
+
+                var result = mlx_array_new()
+                _ = scatter(
+                    &result, array.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
+
+                return MLXArray(result)
+            } else {
+                return elementwise(array, update)
+            }
+        }
+    }
+
     /// Add values via `at[]` operator.
     ///
     /// ```swift
@@ -102,22 +162,9 @@ public struct ArrayAtIndices {
     /// ### See Also
     ///     - ``MLXArray/at``
     public func add(_ values: some ScalarOrArray) -> MLXArray {
-        let values = values.asMLXArray(dtype: array.dtype)
-        let (indices, update, axes) = scatterArguments(
-            src: array, operations: indexOperations, update: values, stream: stream)
-
-        if !indices.isEmpty {
-            let indices_vector = new_mlx_vector_array(indices)
-            defer { mlx_vector_array_free(indices_vector) }
-
-            var result = mlx_array_new()
-            mlx_scatter_add(
-                &result, array.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
-
-            return MLXArray(result)
-        } else {
-            return array + update
-        }
+        update(
+            values, sliceUpdate: mlx_slice_update_add, scatter: mlx_scatter_add,
+            elementwise: { $0 + $1 })
     }
 
     /// Subtract values via `at[]` operator.
@@ -145,22 +192,9 @@ public struct ArrayAtIndices {
     /// ### See Also
     ///     - ``MLXArray/at``
     public func multiply(_ values: some ScalarOrArray) -> MLXArray {
-        let values = values.asMLXArray(dtype: array.dtype)
-        let (indices, update, axes) = scatterArguments(
-            src: array, operations: indexOperations, update: values, stream: stream)
-
-        if !indices.isEmpty {
-            let indices_vector = new_mlx_vector_array(indices)
-            defer { mlx_vector_array_free(indices_vector) }
-
-            var result = mlx_array_new()
-            mlx_scatter_prod(
-                &result, array.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
-
-            return MLXArray(result)
-        } else {
-            return array * update
-        }
+        update(
+            values, sliceUpdate: mlx_slice_update_prod, scatter: mlx_scatter_prod,
+            elementwise: { $0 * $1 })
     }
 
     /// Divide values via `at[]` operator.
@@ -188,22 +222,9 @@ public struct ArrayAtIndices {
     /// ### See Also
     ///     - ``MLXArray/at``
     public func minimum(_ values: some ScalarOrArray) -> MLXArray {
-        let values = values.asMLXArray(dtype: array.dtype)
-        let (indices, update, axes) = scatterArguments(
-            src: array, operations: indexOperations, update: values, stream: stream)
-
-        if !indices.isEmpty {
-            let indices_vector = new_mlx_vector_array(indices)
-            defer { mlx_vector_array_free(indices_vector) }
-
-            var result = mlx_array_new()
-            mlx_scatter_min(
-                &result, array.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
-
-            return MLXArray(result)
-        } else {
-            return MLX.minimum(array, update)
-        }
+        update(
+            values, sliceUpdate: mlx_slice_update_min, scatter: mlx_scatter_min,
+            elementwise: { MLX.minimum($0, $1) })
     }
 
     /// Update to maximum values via `at[]` operator.
@@ -217,22 +238,9 @@ public struct ArrayAtIndices {
     /// ### See Also
     ///     - ``MLXArray/at``
     public func maximum(_ values: some ScalarOrArray) -> MLXArray {
-        let values = values.asMLXArray(dtype: array.dtype)
-        let (indices, update, axes) = scatterArguments(
-            src: array, operations: indexOperations, update: values, stream: stream)
-
-        if !indices.isEmpty {
-            let indices_vector = new_mlx_vector_array(indices)
-            defer { mlx_vector_array_free(indices_vector) }
-
-            var result = mlx_array_new()
-            mlx_scatter_max(
-                &result, array.ctx, indices_vector, update.ctx, axes, axes.count, stream.ctx)
-
-            return MLXArray(result)
-        } else {
-            return MLX.maximum(array, update)
-        }
+        update(
+            values, sliceUpdate: mlx_slice_update_max, scatter: mlx_scatter_max,
+            elementwise: { MLX.maximum($0, $1) })
     }
 
 }

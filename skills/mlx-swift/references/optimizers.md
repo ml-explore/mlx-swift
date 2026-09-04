@@ -304,7 +304,8 @@ import MLXOptimizers
 let model = MLP(inputDim: 784, hiddenDim: 256, outputDim: 10)
 let optimizer = AdamW(learningRate: 0.001, weightDecay: 0.01)
 
-// Training loop (compile only works with pure MLXArray functions, not models)
+// Training loop. compile() can compile the full step, but only if the
+// model/optimizer are declared via inputs:/outputs: -- see references/transforms.md.
 func loss(model: MLP, x: MLXArray, y: MLXArray) -> MLXArray {
     let logits = model(x)
     return crossEntropy(logits: logits, targets: y, reduction: .mean)

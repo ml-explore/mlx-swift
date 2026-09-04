@@ -107,6 +107,19 @@ METAL_FUNC void mlx_atomic_fetch_mul_explicit(
   T expected = mlx_atomic_load_explicit(object, offset);
   while (!mlx_atomic_compare_exchange_weak_explicit(
       object, &expected, val * expected, offset)) {
+    // Workaround: Metal's atomic_compare_exchange_weak_explicit<float> does
+    // not perform bitwise comparison as required by the C++ atomics spec.
+    // The compiler lowers the success check to `fcmp fast ueq` under
+    // no-nans-fp-math, which evaluates to false when either operand is NaN -
+    // even when the bit patterns are identical. With NaN in memory the CAS
+    // can never succeed, so the loop spins. Bail out instead: memory is
+    // already NaN and that is the correct reduction result regardless of
+    // this thread's update.
+    if constexpr (metal::is_floating_point_v<T>) {
+      if (isnan(expected)) {
+        break;
+      }
+    }
   }
 }
 
@@ -171,7 +184,7 @@ union uint_or_packed {
 
 template <typename T, typename Op>
 struct mlx_atomic_update_helper {
-  uint operator()(uint_or_packed<T> init, T update, size_t elem_offset) {
+  uint operator()(uint_or_packed<T> init, T update, size_t elem_offset) thread {
     Op op;
     init.val[elem_offset] = op(update, init.val[elem_offset]);
     return init.bits;
@@ -208,7 +221,7 @@ struct __None {
     return true;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
 #pragma unused(b)
     return a;
   }
@@ -222,7 +235,7 @@ struct __Add {
     return true;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return a + b;
   }
 };
@@ -234,7 +247,7 @@ struct __Mul {
     return b != 0;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return a * b;
   }
 };
@@ -245,7 +258,7 @@ struct __Max {
     return a > b;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return max(a, b);
   }
 };
@@ -256,7 +269,7 @@ struct __Min {
     return a < b;
   }
 
-  T operator()(T a, T b) {
+  T operator()(T a, T b) thread {
     return min(a, b);
   }
 };
@@ -369,12 +382,12 @@ METAL_FUNC bool mlx_atomic_compare_exchange_weak_explicit(
 
 #define DEFINE_SIMD_REDUCE()                                             \
   template <typename T, metal::enable_if_t<sizeof(T) < 8, bool> = true>  \
-  T simd_reduce(T val) {                                                 \
+  T simd_reduce(T val) thread {                                          \
     return simd_reduce_impl(val);                                        \
   }                                                                      \
                                                                          \
   template <typename T, metal::enable_if_t<sizeof(T) == 8, bool> = true> \
-  T simd_reduce(T val) {                                                 \
+  T simd_reduce(T val) thread {                                          \
     for (short i = simd_size / 2; i > 0; i /= 2) {                       \
       val = operator()(val, simd_shuffle_down(val, i));                  \
     }                                                                    \
@@ -390,7 +403,8 @@ union bool4_or_uint {
 
 struct None {
   template <typename T>
-  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0)
+      thread {
     mlx_atomic_store_explicit(out, val, offset);
   }
 };
@@ -399,7 +413,7 @@ template <typename U = bool>
 struct And {
   DEFINE_SIMD_REDUCE()
 
-  bool simd_reduce_impl(bool val) {
+  bool simd_reduce_impl(bool val) thread {
     return simd_all(val);
   }
 
@@ -409,7 +423,7 @@ struct And {
       device mlx_atomic<unsigned int>* out,
       bool val,
       int elem_idx,
-      size_t offset = 0) {
+      size_t offset = 0) thread {
     if (!val) {
       bool4_or_uint update;
       update.b = {true, true, true, true};
@@ -418,20 +432,20 @@ struct And {
     }
   }
 
-  void
-  atomic_update(device mlx_atomic<bool>* out, bool val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<bool>* out, bool val, size_t offset = 0)
+      thread {
     if (!val) {
       mlx_atomic_store_explicit(out, val, offset);
     }
   }
 
   // Non atomic update
-  void update(device bool* out, bool val) {
+  void update(device bool* out, bool val) thread {
     *out &= val;
   }
 
   // Operator
-  bool operator()(bool a, bool b) {
+  bool operator()(bool a, bool b) thread {
     return a && b;
   }
 };
@@ -440,7 +454,7 @@ template <typename U = bool>
 struct Or {
   DEFINE_SIMD_REDUCE()
 
-  bool simd_reduce_impl(bool val) {
+  bool simd_reduce_impl(bool val) thread {
     return simd_any(val);
   }
 
@@ -450,7 +464,7 @@ struct Or {
       device mlx_atomic<unsigned int>* out,
       bool val,
       int elem_idx,
-      size_t offset = 0) {
+      size_t offset = 0) thread {
     if (val) {
       bool4_or_uint update;
       update.b = {false, false, false, false};
@@ -459,20 +473,20 @@ struct Or {
     }
   }
 
-  void
-  atomic_update(device mlx_atomic<bool>* out, bool val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<bool>* out, bool val, size_t offset = 0)
+      thread {
     if (val) {
       mlx_atomic_store_explicit(out, val, offset);
     }
   }
 
   // Non atomic update
-  void update(device bool* out, bool val) {
+  void update(device bool* out, bool val) thread {
     *out |= val;
   }
 
   // Operator
-  bool operator()(bool a, bool b) {
+  bool operator()(bool a, bool b) thread {
     return a || b;
   }
 };
@@ -482,19 +496,29 @@ struct Sum {
   DEFINE_SIMD_REDUCE()
 
   template <typename T>
-  T simd_reduce_impl(T val) {
+  T simd_reduce_impl(T val) thread {
     return simd_sum(val);
   }
 
   static constexpr constant U init = U(0);
 
   template <typename T>
-  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0)
+      thread {
     mlx_atomic_fetch_add_explicit(out, val, offset);
   }
 
+  void atomic_update(
+      device mlx_atomic<complex64_t>* out,
+      complex64_t val,
+      size_t offset = 0) thread {
+    auto out_lanes = reinterpret_cast<device mlx_atomic<float>*>(out);
+    mlx_atomic_fetch_add_explicit(out_lanes, val.real, 2 * offset);
+    mlx_atomic_fetch_add_explicit(out_lanes, val.imag, 2 * offset + 1);
+  }
+
   // Operator
-  U operator()(U a, U b) {
+  U operator()(U a, U b) thread {
     return a + b;
   }
 };
@@ -504,19 +528,20 @@ struct Prod {
   DEFINE_SIMD_REDUCE()
 
   template <typename T>
-  T simd_reduce_impl(T val) {
+  T simd_reduce_impl(T val) thread {
     return simd_product(val);
   }
 
   static constexpr constant U init = U(1);
 
   template <typename T>
-  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0)
+      thread {
     mlx_atomic_fetch_mul_explicit(out, val, offset);
   }
 
   // Operator
-  U operator()(U a, U b) {
+  U operator()(U a, U b) thread {
     return a * b;
   }
 };
@@ -526,12 +551,14 @@ struct Min {
   DEFINE_SIMD_REDUCE()
 
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> simd_reduce_impl(T val) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> simd_reduce_impl(
+      T val) thread {
     return simd_min(val);
   }
 
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> simd_reduce_impl(T val) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> simd_reduce_impl(
+      T val) thread {
     if (simd_any(val != val)) {
       return static_cast<T>(NAN);
     }
@@ -541,18 +568,19 @@ struct Min {
   static constexpr constant U init = Limits<U>::max;
 
   template <typename T>
-  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0)
+      thread {
     mlx_atomic_fetch_min_explicit(out, val, offset);
   }
 
   // Operator
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T a, T b) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T a, T b) thread {
     return a < b ? a : b;
   }
 
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T a, T b) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T a, T b) thread {
     if (metal::isnan(a) || metal::isnan(b)) {
       return static_cast<T>(NAN);
     } else {
@@ -561,7 +589,7 @@ struct Min {
   }
 
   template <>
-  complex64_t operator()(complex64_t a, complex64_t b) {
+  complex64_t operator()(complex64_t a, complex64_t b) thread {
     bool real_is_nan = metal::isnan(a.real) || metal::isnan(b.real);
     bool imag_is_nan = metal::isnan(a.imag) || metal::isnan(b.imag);
 
@@ -583,12 +611,14 @@ struct Max {
   DEFINE_SIMD_REDUCE()
 
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> simd_reduce_impl(T val) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> simd_reduce_impl(
+      T val) thread {
     return simd_max(val);
   }
 
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> simd_reduce_impl(T val) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> simd_reduce_impl(
+      T val) thread {
     if (simd_any(val != val)) {
       return static_cast<T>(NAN);
     }
@@ -598,18 +628,19 @@ struct Max {
   static constexpr constant U init = Limits<U>::min;
 
   template <typename T>
-  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0) {
+  void atomic_update(device mlx_atomic<T>* out, T val, size_t offset = 0)
+      thread {
     mlx_atomic_fetch_max_explicit(out, val, offset);
   }
 
   // Operator
   template <typename T>
-  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T a, T b) {
+  metal::enable_if_t<metal::is_integral_v<T>, T> operator()(T a, T b) thread {
     return a > b ? a : b;
   }
 
   template <typename T>
-  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T a, T b) {
+  metal::enable_if_t<!metal::is_integral_v<T>, T> operator()(T a, T b) thread {
     if (metal::isnan(a) || metal::isnan(b)) {
       return static_cast<T>(NAN);
     } else {
@@ -618,7 +649,7 @@ struct Max {
   }
 
   template <>
-  complex64_t operator()(complex64_t a, complex64_t b) {
+  complex64_t operator()(complex64_t a, complex64_t b) thread {
     bool real_is_nan = metal::isnan(a.real) || metal::isnan(b.real);
     bool imag_is_nan = metal::isnan(a.imag) || metal::isnan(b.imag);
 

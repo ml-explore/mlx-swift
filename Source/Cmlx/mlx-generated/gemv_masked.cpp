@@ -69,7 +69,7 @@ using namespace metal;
 struct _NoMask {
   char x;
 
-  constexpr METAL_FUNC operator bool() {
+  constexpr METAL_FUNC operator bool() thread {
     return true;
   }
   constexpr METAL_FUNC operator bool() const threadgroup {
@@ -89,7 +89,7 @@ template <typename OutT, typename InT = OutT>
 struct ScaleOp {
   OutT scale;
 
-  METAL_FUNC OutT apply(InT x) const {
+  METAL_FUNC OutT apply(InT x) const thread {
     return static_cast<OutT>(x) * scale;
   }
 };

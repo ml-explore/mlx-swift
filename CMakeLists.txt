@@ -30,7 +30,7 @@ endif()
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
-  GIT_TAG "v0.6.0")
+  GIT_TAG "c74db5307cc8ce122f48d97ef951b30578674e7f")
 FetchContent_MakeAvailable(mlx-c)
 
 # swift-numerics

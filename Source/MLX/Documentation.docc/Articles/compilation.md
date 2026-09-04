@@ -240,6 +240,68 @@ let c2b = c2(bias)
 XCTAssertFalse(allClose(c2a, c2b).item())
 ```
 
+The same rule applies to a `Module` that is captured (closed over) rather than
+passed as an explicit function argument. `Module` conforms to ``Updatable``, so
+its parameters count as implicit state, just like `MLXRandom.globalState` above.
+If you compile a function that reads a module's parameters without listing that
+module in `inputs:`/`outputs:`, the values are baked into the compiled graph the
+first time it traces and later updates to the module (for example swapping in
+new LoRA weights with `Module.update(parameters:)`) will be silently ignored:
+
+```swift
+class ScaleModule: Module, UnaryLayer {
+    var scale: MLXArray
+
+    init(_ value: Float) {
+        self.scale = MLXArray(value)
+    }
+
+    func callAsFunction(_ x: MLXArray) -> MLXArray {
+        x * scale
+    }
+}
+
+let model = ScaleModule(2.0)
+
+// no inputs/outputs -- the module's parameters are captured as constants
+let compiled = compile { (x: MLXArray) -> MLXArray in
+    model(x)
+}
+
+print(compiled(MLXArray(Float(3))))  // 6
+
+// simulate a LoRA-style in place update of the module's weights
+model.update(parameters: .unflattened([("scale", MLXArray(Float(10)))]))
+eval(model)
+
+// still 6 -- the compiled function never sees the update!
+print(compiled(MLXArray(Float(3))))
+```
+
+To make the compiled function observe the update, pass the module via `inputs:`:
+
+```swift
+let compiled = compile(inputs: [model]) { (x: MLXArray) -> MLXArray in
+    model(x)
+}
+
+print(compiled(MLXArray(Float(3))))  // 6
+
+model.update(parameters: .unflattened([("scale", MLXArray(Float(10)))]))
+eval(model)
+
+print(compiled(MLXArray(Float(3))))  // 30 -- now it sees the update
+```
+
+`inputs:` is what makes the compiled function observe external updates: on every
+call the *current* values of the listed state are fed back into the compiled
+graph. `outputs:` is the reverse direction -- it writes values back out of the
+graph into the real arrays, and is only needed when the compiled closure itself
+*mutates* the captured state (for example a training step that calls
+`optimizer.update(model:gradients:)` inside the compiled function, as shown
+below). Since `model(x)` above only reads `scale`, `inputs: [model]` alone is
+enough; adding `outputs: [model]` would be harmless but unnecessary.
+
 ## Compiling Training Graphs 
 
 This section will step through how to use ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])`` 

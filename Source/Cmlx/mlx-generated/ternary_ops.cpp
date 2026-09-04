@@ -16,7 +16,7 @@ const char* ternary_ops() {
 
 struct Select {
   template <typename T>
-  T operator()(bool condition, T x, T y) {
+  T operator()(bool condition, T x, T y) thread {
     return condition ? x : y;
   }
 };

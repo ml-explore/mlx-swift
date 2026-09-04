@@ -406,7 +406,7 @@ public func bartlett(
     _ m: Int, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_bartlett(&result, Int32(m), stream.ctx)
+    mlx_bartlett(&result, m.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -423,7 +423,7 @@ public func blackman(
     _ m: Int, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_blackman(&result, Int32(m), stream.ctx)
+    mlx_blackman(&result, m.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1154,13 +1154,28 @@ public func dequantized(
     var result = mlx_array_new()
     let gs = mlx_optional_int(value: Int32(groupSize ?? 0), has_value: groupSize != nil)
     let bits = mlx_optional_int(value: Int32(bits ?? 0), has_value: bits != nil)
-    let dtype = mlx_optional_dtype(value: dtype?.cmlxDtype ?? MLX_FLOAT16, has_value: dtype != nil)
+    let dtype = mlx_optional_dtype(dtype)
     mlx_dequantize(
         &result, w.ctx,
         scales.ctx, (biases ?? .mlxNone).ctx, gs, bits, mode.rawValue,
         (globalScale ?? .mlxNone).ctx,
         dtype,
         stream.ctx)
+    return MLXArray(result)
+}
+
+/// The n-th discrete difference along the given axis.
+///
+/// - Parameters:
+///   - array: Input array
+///   - n: The number of times to difference
+///   - axis: The axis along which to difference
+///   - stream: Stream or device to evaluate on
+public func diff(
+    _ array: MLXArray, n: Int = 1, axis: Int = -1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_diff(&result, array.ctx, n.int32, axis.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1371,6 +1386,35 @@ public func expandedDimensions(_ array: MLXArray, axis: Int, stream: StreamOrDev
 public func expm1(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
     var result = mlx_array_new()
     mlx_expm1(&result, array.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Reverse the order of elements along the given axes.
+///
+/// - Parameters:
+///   - array: Input array
+///   - axes: The axes along which to flip or None for all
+///   - stream: Stream or device to evaluate on
+public func flipped(
+    _ array: MLXArray, axes: [Int]? = nil, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    let axes = axes ?? Array(0 ..< array.ndim)
+    mlx_flip_axes(&result, array.ctx, axes.asInt32, axes.count, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Reverse the order of elements along the given axis.
+///
+/// - Parameters:
+///   - array: Input array
+///   - axis: The axis along which to flip
+///   - stream: Stream or device to evaluate on
+public func flipped(
+    _ array: MLXArray, axis: Int, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_flip_axis(&result, array.ctx, axis.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1624,7 +1668,7 @@ public func hamming(
     _ m: Int, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_hamming(&result, Int32(m), stream.ctx)
+    mlx_hamming(&result, m.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1641,7 +1685,7 @@ public func hanning(
     _ m: Int, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_hanning(&result, Int32(m), stream.ctx)
+    mlx_hanning(&result, m.int32, stream.ctx)
     return MLXArray(result)
 }
 
@@ -1945,8 +1989,27 @@ public func logicalOr(
     return MLXArray(result)
 }
 
+/// Element-wise logical exclusive or.
+///
+/// - Parameters:
+///   - a: input array or scalar
+///   - b: input array or scalar
+///   - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:arithmetic>
+/// - <doc:logical>
+public func logicalXor(
+    _ a: some ScalarOrArray, _ b: some ScalarOrArray, stream: StreamOrDevice = .default
+) -> MLXArray {
+    let (a, b) = toArrays(a, b)
+    var result = mlx_array_new()
+    mlx_logical_xor(&result, a.ctx, b.ctx, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Indexing mode for ``meshGrid(_:sparse:indexing:stream:)``.
-public enum MeshGridIndexing: String, Sendable {
+public enum MeshGridIndexing: String, Sendable, Codable {
     /// cartesian indexing
     case xy
 
@@ -2014,7 +2077,7 @@ public func median(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_median(&result, a.ctx, [axis.int32], 1, keepDims, stream.ctx)
+    mlx_median_axis(&result, a.ctx, axis.int32, keepDims, stream.ctx)
     return MLXArray(result)
 }
 
@@ -2033,7 +2096,7 @@ public func median(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_median(&result, a.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
+    mlx_median_axes(&result, a.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
     return MLXArray(result)
 }
 
@@ -2051,7 +2114,7 @@ public func median(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_median(&result, a.ctx, nil, 0, keepDims, stream.ctx)
+    mlx_median(&result, a.ctx, keepDims, stream.ctx)
     return MLXArray(result)
 }
 
@@ -2322,6 +2385,17 @@ public func partitioned(_ array: MLXArray, kth: Int, stream: StreamOrDevice = .d
 {
     var result = mlx_array_new()
     mlx_partition(&result, array.ctx, kth.int32, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Element-wise unary plus. Returns a copy of the input.
+///
+/// - Parameters:
+///   - array: input array
+///   - stream: stream or device to evaluate on
+public func positive(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_positive(&result, array.ctx, stream.ctx)
     return MLXArray(result)
 }
 
@@ -2621,6 +2695,31 @@ public func roll(
     return MLXArray(result)
 }
 
+public enum SearchSortedSide: String, Sendable, Codable {
+    case left
+    case right
+}
+
+/// Find the indices that keep `sorted` sorted when inserting `values`.
+///
+/// - Parameters:
+///   - sorted: 1-D array in ascending order.
+///   - values: values to insert in any shape
+///   - side: if `.left` the first suitable index is returned, otherwise last
+///   - stream: stream or device to evaluate on
+/// - Returns: `.uint32` array in the same shape as `values`
+public func search(
+    sorted: MLXArray,
+    values: MLXArray,
+    side: SearchSortedSide = .left,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_searchsorted(
+        &result, sorted.ctx, values.ctx, side.rawValue.cString(using: .utf8), stream.ctx)
+    return MLXArray(result)
+}
+
 /// Element-wise logistic sigmoid.
 ///
 /// For details, please see
@@ -2882,6 +2981,21 @@ public func stacked(
     return MLXArray(result)
 }
 
+/// Split an array into a sequence of arrays along the given axis.
+///
+/// The inverse of ``stacked(_:axis:stream:)``. The given axis is removed from each of the returned arrays.
+///
+/// ### See Also
+/// - <doc:shapes>
+public func unstacked(
+    _ array: MLXArray, axis: Int = 0, stream: StreamOrDevice = .default
+) -> [MLXArray] {
+    var result = mlx_vector_array_new()
+    defer { mlx_vector_array_free(result) }
+    mlx_unstack_axis(&result, array.ctx, axis.int32, stream.ctx)
+    return mlx_vector_array_values(result)
+}
+
 /// Stop gradients from being computed.
 ///
 ///The operation is the identity but it prevents gradients from flowing
@@ -3058,6 +3172,21 @@ public func tensordot(
     return MLXArray(result)
 }
 
+/// Compute the vector dot product of two arrays along an axis.
+///
+/// - Parameters:
+///   - a: first array
+///   - b: second array
+///   - axis: axis over which to compute the dot product
+///   - stream: stream or device to evaluate on
+public func vecdot(
+    _ a: MLXArray, _ b: MLXArray, axis: Int = -1, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_vecdot(&result, a.ctx, b.ctx, axis.int32, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Construct array by repeating given array the number of times given by `repetitions`.
 ///
 /// - Parameters:
@@ -3170,7 +3299,7 @@ public func trace(
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_trace(
+    mlx_trace_axes(
         &result,
         array.ctx, offset.int32, axis1.int32, axis2.int32, (dtype ?? array.dtype).cmlxDtype,
         stream.ctx)
@@ -3204,6 +3333,17 @@ public func tril(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .defaul
 public func triu(_ array: MLXArray, k: Int = 0, stream: StreamOrDevice = .default) -> MLXArray {
     var result = mlx_array_new()
     mlx_triu(&result, array.ctx, k.int32, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Element-wise truncation towards zero.
+///
+/// - Parameters:
+///   - array: Input array
+///   - stream: stream or device to evaluate on
+public func trunc(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_trunc(&result, array.ctx, stream.ctx)
     return MLXArray(result)
 }
 
@@ -3302,7 +3442,7 @@ public func unflatten(
     _ a: MLXArray, axis: Int, shape: some Collection<Int>, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
-    mlx_unflatten(&result, a.ctx, axis.int32, shape.map { Int32($0) }, shape.count, stream.ctx)
+    mlx_unflatten(&result, a.ctx, axis.int32, shape.map { $0.int32 }, shape.count, stream.ctx)
     return MLXArray(result)
 }
 
