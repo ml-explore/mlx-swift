@@ -84,6 +84,11 @@ public final class Stream: @unchecked Sendable, Equatable {
     let ctx: mlx_stream
 
     private static func newStreamThreadUnsafe(_ deviceType: DeviceType) -> mlx_stream {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
+            if deviceType == .gpu {
+                SwiftPMMetallibResource.configureIfNeeded()
+            }
+        #endif
         var cDeviceType: mlx_device_type
         switch deviceType {
         case DeviceType.cpu:
@@ -126,6 +131,7 @@ public final class Stream: @unchecked Sendable, Equatable {
     /// Default stream on the default device.
     public init() {
         let device = Device.defaultDevice()
+        configureSwiftPMMetallibIfNeeded(for: device)
         self.ctx = evalLock.withLock {
             mlx_stream_new_thread_unsafe(device.ctx)
         }
@@ -133,6 +139,7 @@ public final class Stream: @unchecked Sendable, Equatable {
 
     @available(*, deprecated, message: "use init(Device) -- index not supported")
     public init(index: Int32, _ device: Device) {
+        configureSwiftPMMetallibIfNeeded(for: device)
         self.ctx = evalLock.withLock {
             mlx_stream_new_thread_unsafe(device.ctx)
         }
@@ -142,6 +149,7 @@ public final class Stream: @unchecked Sendable, Equatable {
     ///
     /// See also ``withNewDefaultStream(device:_:)-5bwc3``
     public init(_ device: Device) {
+        configureSwiftPMMetallibIfNeeded(for: device)
         self.ctx = evalLock.withLock {
             mlx_stream_new_thread_unsafe(device.ctx)
         }
@@ -171,6 +179,14 @@ public final class Stream: @unchecked Sendable, Equatable {
     public static func == (lhs: Stream, rhs: Stream) -> Bool {
         mlx_stream_equal(lhs.ctx, rhs.ctx)
     }
+}
+
+private func configureSwiftPMMetallibIfNeeded(for device: Device) {
+    #if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
+        if device.deviceType == .gpu {
+            SwiftPMMetallibResource.configureIfNeeded()
+        }
+    #endif
 }
 
 extension Stream: CustomStringConvertible {
