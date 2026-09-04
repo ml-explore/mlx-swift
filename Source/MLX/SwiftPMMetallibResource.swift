@@ -51,13 +51,30 @@ import Foundation
             return nil
         }
 
-        private static func metallibURL(near directory: URL) -> URL? {
-            let candidates = [
-                directory.appendingPathComponent(metallibName),
-                directory.appendingPathComponent(bundleName).appendingPathComponent(metallibName),
-                directory.appendingPathComponent("Resources").appendingPathComponent(bundleName)
-                    .appendingPathComponent(metallibName),
+        static func metallibURL(near directory: URL) -> URL? {
+            var bundles = [
+                directory.appendingPathComponent(bundleName),
+                directory.appendingPathComponent("Resources").appendingPathComponent(bundleName),
+                directory.appendingPathComponent("Contents/Resources").appendingPathComponent(
+                    bundleName),
             ]
+            if directory.lastPathComponent == bundleName {
+                bundles.insert(directory, at: 0)
+            } else if directory.lastPathComponent == "Resources",
+                directory.deletingLastPathComponent().lastPathComponent == "Contents",
+                directory.deletingLastPathComponent().deletingLastPathComponent().lastPathComponent
+                    == bundleName
+            {
+                bundles.insert(
+                    directory.deletingLastPathComponent().deletingLastPathComponent(), at: 0)
+            }
+            let candidates = bundles.flatMap { bundle in
+                [
+                    bundle.appendingPathComponent(metallibName),
+                    bundle.appendingPathComponent("Contents/Resources").appendingPathComponent(
+                        metallibName),
+                ]
+            }
 
             return candidates.first {
                 FileManager.default.isReadableFile(atPath: $0.path())
