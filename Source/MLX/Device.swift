@@ -9,60 +9,77 @@ import Foundation
 public enum DeviceType: String, Hashable, Sendable {
     case cpu
     case gpu
+
+    var cDeviceType: mlx_device_type {
+        switch self {
+        case .cpu: return MLX_CPU
+        case .gpu: return MLX_GPU
+        }
+    }
+
+    init(_ cDeviceType: mlx_device_type) {
+        switch cDeviceType {
+        case MLX_CPU: self = .cpu
+        case MLX_GPU: self = .gpu
+        default: fatalError("Unknown deviceType: \(cDeviceType)")
+        }
+    }
 }
 
 /// Representation of a Device in MLX.
 ///
-/// Typically this is used via the `stream: ` parameter on a method with a ``StreamOrDevice``:
+/// This is typically used with ``withDefaultDevice(_:_:)-17vjl`` or ``Stream/withNewDefaultStream(device:_:)-5bwc3``.
 ///
 /// ```swift
-/// let a: MLXArray ...
-/// let result = sqrt(a, stream: .gpu)
+/// Device.withDefaultDevice(.cpu) {
+///     // default device is cpu inside this scope/task
+/// }
+///
+/// Stream.withNewDefaultStream(device: .cpu) {
+///     // default device is cpu inside this scope/task AND there
+///     // is a new Stream scoped to the work
+/// }
 /// ```
 ///
-/// Read more at <doc:using-streams>.
+/// Implementation: ``Stream`` hold the current device as a Task local variable.
 ///
 /// ### See Also
 /// - <doc:using-streams>
 /// - ``StreamOrDevice``
-public final class Device: @unchecked Sendable, Equatable {
+/// - ``Stream``
+public final class Device: @unchecked Sendable, Hashable {
 
     let ctx: mlx_device
-    let defaultStream: Stream
 
     init(_ ctx: mlx_device) {
         self.ctx = ctx
-
-        var deviceType = MLX_GPU
-        mlx_device_get_type(&deviceType, ctx)
-        self.defaultStream =
-            switch deviceType {
-            case MLX_CPU: .cpu
-            case MLX_GPU: .gpu
-            default: .gpu
-            }
     }
 
+    /// Initialize a new `Device` with a type and optional index.
+    ///
+    /// If `deviceType` is ``DeviceType/cpu`` then index _must_ be 0.
     public init(_ deviceType: DeviceType, index: Int32 = 0) {
-        var cDeviceType: mlx_device_type
-        switch deviceType {
-        case DeviceType.cpu:
-            cDeviceType = MLX_CPU
-        case DeviceType.gpu:
-            cDeviceType = MLX_GPU
+        if deviceType == .cpu {
+            precondition(index == 0)
         }
+        let cDeviceType = deviceType.cDeviceType
         self.ctx = mlx_device_new_type(cDeviceType, index)
-        self.defaultStream =
-            switch deviceType {
-            case .cpu: .cpu
-            case .gpu: .gpu
-            }
     }
 
     @available(*, deprecated, message: "please use defaultDevice()")
     public convenience init() {
+        self.init(copying: Stream.defaultDevice)
+    }
+
+    convenience init(stream: mlx_stream) {
         var ctx = mlx_device_new()
-        mlx_get_default_device(&ctx)
+        mlx_stream_get_device(&ctx, stream)
+        self.init(ctx)
+    }
+
+    convenience init(copying device: Device) {
+        var ctx = mlx_device_new()
+        mlx_device_set(&ctx, device.ctx)
         self.init(ctx)
     }
 
@@ -70,114 +87,131 @@ public final class Device: @unchecked Sendable, Equatable {
         mlx_device_free(ctx)
     }
 
-    /// static CPU device
+    /// Current CPU device.
     ///
-    /// See ``withDefaultDevice(_:_:)-17vjl``
-    static public let cpu: Device = Device(.cpu)
-
-    /// static GPU device
+    /// Note: previously this returned a `static` CPU device.
     ///
-    /// See ``withDefaultDevice(_:_:)-17vjl``
-    static public let gpu: Device = Device(.gpu)
-
-    public var deviceType: DeviceType? {
-        var cDeviceType = MLX_CPU
-        mlx_device_get_type(&cDeviceType, ctx)
-        return switch cDeviceType {
-        case MLX_CPU: DeviceType.cpu
-        case MLX_GPU: DeviceType.gpu
-        default: nil
-        }
+    /// ### See Also
+    /// - ``gpu``
+    /// - ``Stream/cpu``
+    /// - ``withDefaultDevice(_:_:)-17vjl``
+    static public var cpu: Device {
+        Stream.cpu.device
     }
 
-    // support for global default device
-    static let _lock = NSLock()
-    #if swift(>=5.10)
-        nonisolated(unsafe) static var _defaultDevice: Device?
-    #else
-        static var _defaultDevice: Device?
-    #endif
+    /// Current GPU device.
+    ///
+    /// Note: previously this returned a `static` GPU device -- it would
+    /// always be index 0, even if there were multiple GPUs in the system.
+    ///
+    /// ### See Also
+    /// - ``cpu``
+    /// - ``Stream/gpu``
+    /// - ``withDefaultDevice(_:_:)-17vjl``
+    static public var gpu: Device {
+        Stream.gpu.device
+    }
 
-    @TaskLocal static var _tlDefaultDevice = _resolveGlobalDefaultDevice()
-
-    private static func _resolveGlobalDefaultDevice() -> Device {
-        _lock.withLock {
-            if let device = _defaultDevice {
-                return device
-            }
-            // Ask the underlying MLX C++ core for its default device rather
-            // than hard-coding `.gpu`. On Apple platforms with Metal this
-            // still resolves to GPU; on a CPU-only host (Linux without
-            // CUDA / no Metal) it correctly resolves to CPU. Hard-coding GPU
-            // here meant `defaultDevice()` / `StreamOrDevice.default`
-            // returned an unavailable device on those hosts.
-            var ctx = mlx_device_new()
-            mlx_get_default_device(&ctx)
-            return Device(ctx)
-        }
+    /// The ``DeviceType`` for the device.
+    ///
+    /// Note: previously this returned an Optional ``DeviceType``.  Now it is
+    /// not optional and it will be a `fatalError` if the DeviceType is unknown.
+    public var deviceType: DeviceType {
+        var cDeviceType = MLX_CPU
+        mlx_device_get_type(&cDeviceType, ctx)
+        return DeviceType(cDeviceType)
     }
 
     /// Return the current default device.
-    ///
-    /// This is used by ``StreamOrDevice/default`` -- the default stream parameter
-    /// to most functions.
     static public func defaultDevice() -> Device {
-        _tlDefaultDevice
+        Stream.defaultDevice
     }
 
-    /// Use a device scoped to a task.
+    /// Use a device scoped to a Task.
+    ///
+    /// This can be used to set the default device to e.g. the CPU:
+    ///
+    /// ```swift
+    /// Device.withDefaultDevice(.cpu) {
+    ///     // default device is cpu inside this scope/task
+    /// }
+    /// ```
+    ///
+    /// If a GPU device is given and it does not match the current GPU it will
+    /// override the default device and provide a new stream:
+    ///
+    /// ```swift
+    /// Device.withDefaultDevice(.init(.gpu, index: 3)) {
+    ///     // if the enclosing GPU was index 0, this will have
+    ///     // both a new default device and a new stream
+    /// }
+    /// ```
+    ///
+    /// See also ``Stream/withNewDefaultStream(device:_:)-5bwc3``.
     static public func withDefaultDevice<R>(
         _ device: Device, _ body: () throws -> R
     ) rethrows -> R {
-        try $_tlDefaultDevice.withValue(device, operation: body)
+        try Stream.withNewDefaultDevice(device: device, body)
     }
 
-    /// Use a device scoped to a task.
+    /// Use a device scoped to a Task.
+    ///
+    /// This can be used to set the default device to e.g. the CPU:
+    ///
+    /// ```swift
+    /// Device.withDefaultDevice(.cpu) {
+    ///     // default device is cpu inside this scope/task
+    /// }
+    /// ```
+    ///
+    /// If a GPU device is given and it does not match the current GPU it will
+    /// override the default device and provide a new stream:
+    ///
+    /// ```swift
+    /// Device.withDefaultDevice(.init(.gpu, index: 3)) {
+    ///     // if the enclosing GPU was index 0, this will have
+    ///     // both a new default device and a new stream
+    /// }
+    /// ```
+    ///
+    /// See also ``Stream/withNewDefaultStream(device:_:)-5bwc3``.
     static public func withDefaultDevice<R>(
         _ device: Device, _ body: () async throws -> R
     ) async rethrows -> R {
-        try await $_tlDefaultDevice.withValue(device, operation: body)
+        try await Stream.withNewDefaultDevice(device: device, body)
     }
 
-    /// Return the current default stream.
-    static func defaultStream() -> Stream {
-        _tlDefaultDevice.defaultStream
-    }
-
-    /// Set the default device globally.  Prefer the scoped version, ``withDefaultDevice(_:_:)-17vjl``.
+    /// Set the default device globally.  Use the scoped version, ``withDefaultDevice(_:_:)-17vjl``
+    /// -- this is only usable before any mlx resources are created.
     ///
-    /// For example:
+    /// Beware: using the static cpu and gpu values will render this unusable.  If required, call like this:
     ///
     /// ```swift
-    /// Device.setDefault(device: Device(.cpu, index: 1))
+    /// Device.setDefault(device: .init(.cpu))
     /// ```
-    ///
-    /// By default this is ``gpu``.
-    ///
-    /// ### See Also
-    /// - ``withDefaultDevice(_:_:)-17vjl``
-    /// - ``StreamOrDevice/default``
-    @available(*, deprecated, message: "please use withDefaultDevice()")
+    @available(
+        *, deprecated,
+        message: "use withDefaultDevice() -- this only works before any mlx resources are created"
+    )
     static public func setDefault(device: Device?) {
-        _lock.withLock {
-            if let device {
-                // sets the mlx core default device -- only used
-                // by the deprecated init().  this isn't thread
-                // safe or really usable across tasks/threads
-                // but is kept for backward compatibility
-                mlx_set_default_device(device.ctx)
-            }
-            _defaultDevice = device
+        if let ctx = device?.ctx {
+            mlx_set_default_device(ctx)
         }
     }
 
-    /// Compare two ``Device`` for equality -- this does not compare the index, just the device type.
+    /// Compare two ``Device`` for equality
     public static func == (lhs: Device, rhs: Device) -> Bool {
-        var lhs_type = MLX_CPU
-        var rhs_type = MLX_CPU
-        mlx_device_get_type(&lhs_type, lhs.ctx)
-        mlx_device_get_type(&rhs_type, rhs.ctx)
-        return lhs_type == rhs_type
+        mlx_device_equal(lhs.ctx, rhs.ctx)
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        var index: Int32 = 0
+        mlx_device_get_index(&index, ctx)
+        hasher.combine(index)
+
+        var type: mlx_device_type = MLX_CPU
+        mlx_device_get_type(&type, ctx)
+        hasher.combine(type)
     }
 }
 

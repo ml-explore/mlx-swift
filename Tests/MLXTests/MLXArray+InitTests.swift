@@ -13,7 +13,6 @@ import XCTest
 class MLXArrayInitTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     // MARK: - Dtype

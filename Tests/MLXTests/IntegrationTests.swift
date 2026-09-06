@@ -16,7 +16,6 @@ import XCTest
 class MLXIntegrationTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testRandomSeed() {
