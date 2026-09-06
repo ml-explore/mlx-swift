@@ -211,7 +211,7 @@ public final class Device: @unchecked Sendable, Hashable {
 
         var type: mlx_device_type = MLX_CPU
         mlx_device_get_type(&type, ctx)
-        hasher.combine(type)
+        hasher.combine(type.rawValue)
     }
 }
 
