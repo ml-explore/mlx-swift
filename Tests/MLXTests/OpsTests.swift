@@ -8,7 +8,6 @@ import XCTest
 class OpsTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testAsStridedReshape() {

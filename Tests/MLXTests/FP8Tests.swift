@@ -7,7 +7,6 @@ import XCTest
 class FP8Tests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testFromFP8DecodesE4M3Bytes() {

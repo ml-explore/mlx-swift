@@ -7,7 +7,6 @@ import XCTest
 
 class LossTests: XCTestCase {
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testCrossEntropy() {

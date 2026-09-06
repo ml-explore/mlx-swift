@@ -7,7 +7,6 @@ import XCTest
 class MLXRandomTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testSplit() {
