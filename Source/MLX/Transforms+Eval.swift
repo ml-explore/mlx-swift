@@ -115,6 +115,21 @@ func withEvalLock<R>(_ body: () throws -> R) rethrows -> R {
     return try body()
 }
 
+/// Is the array's data computed?
+///
+/// This is the observable difference between ``eval(_:)-(MLXArray...)`` and
+/// ``asyncEval(_:)-(Collection<MLXArray>)``, and the only direct way to check
+/// that `eval` is still synchronous now that it schedules with
+/// `mlx_async_eval` and waits with `mlx_eval`.
+///
+/// Internal: exists for the tests (`EvalTests`), which cannot reach `Cmlx`
+/// directly.  Call this only on the thread that owns `array`.
+func isEvaluated(_ array: MLXArray) -> Bool {
+    var available = false
+    _mlx_array_is_available(&available, array.ctx)
+    return available
+}
+
 /// Evaluate one or more `MLXArray`
 ///
 /// ### See Also
@@ -122,8 +137,9 @@ func withEvalLock<R>(_ body: () throws -> R) rethrows -> R {
 public func eval(_ arrays: MLXArray...) {
     let vector_array = new_mlx_vector_array(arrays)
     _ = withEvalLock {
-        mlx_eval(vector_array)
+        mlx_async_eval(vector_array)
     }
+    mlx_eval(vector_array)
     mlx_vector_array_free(vector_array)
 }
 
@@ -134,8 +150,9 @@ public func eval(_ arrays: MLXArray...) {
 public func eval(_ arrays: some Collection<MLXArray>) {
     let vector_array = new_mlx_vector_array(arrays)
     _ = withEvalLock {
-        mlx_eval(vector_array)
+        mlx_async_eval(vector_array)
     }
+    mlx_eval(vector_array)
     mlx_vector_array_free(vector_array)
 }
 
