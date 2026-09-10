@@ -220,26 +220,34 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         default:
             break
         }
+        return 0
     } read: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
         if n + state.offset <= state.data.count {
-            guard let data = data else { return }
+            guard let data = data else { return 0 }
             _ = state.data.withUnsafeBytes { buffer in
                 memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
             }
             state.offset += n
+
+            return n
+        } else {
+            return 0
         }
 
     } read_at_offset: { ptr, data, n, offset in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
         if n + offset <= state.data.count {
-            guard let data = data else { return }
+            guard let data = data else { return 0 }
             _ = state.data.withUnsafeBytes { buffer in
                 memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
             }
             state.offset = offset
+            return n
+        } else {
+            return 0
         }
 
     } write: { ptr, data, n in
@@ -248,6 +256,7 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         let buffer = UnsafeBufferPointer(start: data, count: n)
         state.data.append(buffer)
         state.offset += n
+        return n
 
     } label: { ptr in
         UnsafeRawPointer(label.utf8Start).assumingMemoryBound(to: Int8.self)
