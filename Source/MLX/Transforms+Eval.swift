@@ -136,10 +136,12 @@ func isEvaluated(_ array: MLXArray) -> Bool {
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: MLXArray...) {
     let vector_array = new_mlx_vector_array(arrays)
-    _ = withEvalLock {
+    let result = withEvalLock {
         mlx_async_eval(vector_array)
     }
-    mlx_eval(vector_array)
+    if result == 0 {
+        mlx_eval(vector_array)
+    }
     mlx_vector_array_free(vector_array)
 }
 
@@ -149,10 +151,12 @@ public func eval(_ arrays: MLXArray...) {
 /// - <doc:lazy-evaluation>
 public func eval(_ arrays: some Collection<MLXArray>) {
     let vector_array = new_mlx_vector_array(arrays)
-    _ = withEvalLock {
+    let result = withEvalLock {
         mlx_async_eval(vector_array)
     }
-    mlx_eval(vector_array)
+    if result == 0 {
+        mlx_eval(vector_array)
+    }
     mlx_vector_array_free(vector_array)
 }
 

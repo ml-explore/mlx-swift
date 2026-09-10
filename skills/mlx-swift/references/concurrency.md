@@ -64,6 +64,21 @@ This means:
 - Lazy array operations are NOT automatically thread-safe
 - Parallelism happens within Metal, not between MLX calls
 
+There is one exemption: a caller can evaluate using `mlx_async_eval()` under lock, which resolves all the protected mutation.  So eval can do this:
+
+```swift
+public func eval(_ arrays: MLXArray...) {
+    let vector_array = new_mlx_vector_array(arrays)
+    let result = withEvalLock {
+        mlx_async_eval(vector_array)
+    }
+    if result == 0 {
+        mlx_eval(vector_array)
+    }
+    mlx_vector_array_free(vector_array)
+}
+```
+
 ## @unchecked Sendable Types
 
 These types are marked `@unchecked Sendable` and are safe to share:
