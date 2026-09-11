@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		C3434FA12EABEF350010D6B8 /* Cmlx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */; };
+		C35E88D53054AACB00281871 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
+		C35EA5633054AC8E00281871 /* MLXNN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; };
+		C35EA5643054AC8E00281871 /* MLXNN.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C35EA5673054AC8E00281871 /* MLXOptimizers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */; };
+		C35EA5683054AC8E00281871 /* MLXOptimizers.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C3AE8ECE2EAAA15F000BD280 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
 		C3AEA0322EAAE79A000BD280 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0312EAAE79A000BD280 /* Accelerate.framework */; };
 		C3AEA0342EAAE7A0000BD280 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0332EAAE7A0000BD280 /* Metal.framework */; };
@@ -21,6 +26,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C35E88D63054AACB00281871 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3AE8EC32EAAA15F000BD280;
+			remoteInfo = MLX;
+		};
+		C35EA5653054AC8E00281871 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3CBE6B42EAC14DE0029A645;
+			remoteInfo = MLXNN;
+		};
+		C35EA5693054AC8E00281871 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3CBE6CE2EAC15310029A645;
+			remoteInfo = MLXOptimizers;
+		};
 		C3AE8ECF2EAAA15F000BD280 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
@@ -65,8 +91,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C35EA56B3054AC8E00281871 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C35EA5683054AC8E00281871 /* MLXOptimizers.framework in Embed Frameworks */,
+				C35EA5643054AC8E00281871 /* MLXNN.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		C319FC0A2F1564BE00620953 /* MLX.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MLX.xctestplan; sourceTree = "<group>"; };
+		C35E88D13054AACB00281871 /* MLXIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MLXIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AE8EC42EAAA15F000BD280 /* MLX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MLX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AE8ECD2EAAA15F000BD280 /* MLXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MLXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cmlx.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1531,6 +1573,11 @@
 			path = ../Source/MLX;
 			sourceTree = SOURCE_ROOT;
 		};
+		C35E88D23054AACB00281871 /* ../Tests/MLXIntegrationTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ../Tests/MLXIntegrationTests;
+			sourceTree = SOURCE_ROOT;
+		};
 		C3AE8EDE2EAAA21C000BD280 /* xcconfig */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = xcconfig;
@@ -1632,6 +1679,16 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C35E88CE3054AACB00281871 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C35EA5633054AC8E00281871 /* MLXNN.framework in Frameworks */,
+				C35E88D53054AACB00281871 /* MLX.framework in Frameworks */,
+				C35EA5673054AC8E00281871 /* MLXOptimizers.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3AE8EC12EAAA15F000BD280 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1696,6 +1753,7 @@
 				C3CBE6E92EAC15530029A645 /* MLXNN */,
 				C3CBE6FF2EAC15650029A645 /* MLXOptimizers */,
 				C3CBE6962EAC14BC0029A645 /* MLXTests */,
+				C35E88D23054AACB00281871 /* ../Tests/MLXIntegrationTests */,
 				C3AE8EC52EAAA15F000BD280 /* Products */,
 				C3CBF1842EAC22110029A645 /* README.md */,
 				C3CBF3382EAC243B0029A645 /* tools */,
@@ -1711,6 +1769,7 @@
 				C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */,
 				C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */,
 				C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */,
+				C35E88D13054AACB00281871 /* MLXIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1776,6 +1835,32 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		C35E88D03054AACB00281871 /* MLXIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C35E88DA3054AACB00281871 /* Build configuration list for PBXNativeTarget "MLXIntegrationTests" */;
+			buildPhases = (
+				C35E88CD3054AACB00281871 /* Sources */,
+				C35E88CE3054AACB00281871 /* Frameworks */,
+				C35E88CF3054AACB00281871 /* Resources */,
+				C35EA56B3054AC8E00281871 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C35E88D73054AACB00281871 /* PBXTargetDependency */,
+				C35EA5663054AC8E00281871 /* PBXTargetDependency */,
+				C35EA56A3054AC8E00281871 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C35E88D23054AACB00281871 /* ../Tests/MLXIntegrationTests */,
+			);
+			name = MLXIntegrationTests;
+			packageProductDependencies = (
+			);
+			productName = MLXIntegrationTests;
+			productReference = C35E88D13054AACB00281871 /* MLXIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C3AE8EC32EAAA15F000BD280 /* MLX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3AE8ED62EAAA15F000BD280 /* Build configuration list for PBXNativeTarget "MLX" */;
@@ -1911,10 +1996,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 1640;
 				ORGANIZATIONNAME = "Apple Inc.";
 				TargetAttributes = {
+					C35E88D03054AACB00281871 = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					C3AE8EC32EAAA15F000BD280 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -1950,15 +2038,23 @@
 			projectRoot = "";
 			targets = (
 				C3AE8EC32EAAA15F000BD280 /* MLX */,
-				C3AE8ECC2EAAA15F000BD280 /* MLXTests */,
 				C3AE8EE52EAAA3C5000BD280 /* Cmlx */,
 				C3CBE6B42EAC14DE0029A645 /* MLXNN */,
 				C3CBE6CE2EAC15310029A645 /* MLXOptimizers */,
+				C3AE8ECC2EAAA15F000BD280 /* MLXTests */,
+				C35E88D03054AACB00281871 /* MLXIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C35E88CF3054AACB00281871 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3AE8EC22EAAA15F000BD280 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1997,6 +2093,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C35E88CD3054AACB00281871 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3AE8EC02EAAA15F000BD280 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2035,6 +2138,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C35E88D73054AACB00281871 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+			targetProxy = C35E88D63054AACB00281871 /* PBXContainerItemProxy */;
+		};
+		C35EA5663054AC8E00281871 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3CBE6B42EAC14DE0029A645 /* MLXNN */;
+			targetProxy = C35EA5653054AC8E00281871 /* PBXContainerItemProxy */;
+		};
+		C35EA56A3054AC8E00281871 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3CBE6CE2EAC15310029A645 /* MLXOptimizers */;
+			targetProxy = C35EA5693054AC8E00281871 /* PBXContainerItemProxy */;
+		};
 		C3AE8ED02EAAA15F000BD280 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
@@ -2068,6 +2186,158 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		C35E88D83054AACB00281871 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.MLXIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				XROS_DEPLOYMENT_TARGET = 1.3;
+			};
+			name = Debug;
+		};
+		C35E88D93054AACB00281871 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.MLXIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				XROS_DEPLOYMENT_TARGET = 1.3;
+			};
+			name = Release;
+		};
 		C3AE8ED42EAAA15F000BD280 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
@@ -2167,6 +2437,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C35E88DA3054AACB00281871 /* Build configuration list for PBXNativeTarget "MLXIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C35E88D83054AACB00281871 /* Debug */,
+				C35E88D93054AACB00281871 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C3AE8EBE2EAAA15F000BD280 /* Build configuration list for PBXProject "MLX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
