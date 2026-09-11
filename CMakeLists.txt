@@ -29,13 +29,12 @@ endif()
 # mlx
 
 # local apply of https://github.com/ml-explore/mlx/pull/4480 for CUDA
-set(mlx_patch git apply
-                         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mlx.patch)
+set(mlx_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mlx.patch)
 
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
-  GIT_TAG "1f8e74e3f12f31365464a6867c6579f0e9b29d85")
+  GIT_TAG "1f8e74e3f12f31365464a6867c6579f0e9b29d85"
   PATCH_COMMAND ${mlx_patch} || true)
 FetchContent_MakeAvailable(mlx)
 
