@@ -25,9 +25,9 @@ These are available as both methods on `MLXArray` and free functions.  They each
 - ``MLXArray/cummax(reverse:inclusive:stream:)``
 - ``MLXArray/cummin(axis:reverse:inclusive:stream:)``
 - ``MLXArray/cummin(reverse:inclusive:stream:)``
-- ``MLXArray/cumprod(axis:reverse:inclusive:stream:)``
+- ``MLXArray/cumprod(axis:reverse:inclusive:dtype:stream:)``
 - ``MLXArray/cumprod(reverse:inclusive:stream:)``
-- ``MLXArray/cumsum(axis:reverse:inclusive:stream:)``
+- ``MLXArray/cumsum(axis:reverse:inclusive:dtype:stream:)``
 - ``MLXArray/cumsum(reverse:inclusive:stream:)``
 - ``MLXArray/logCumsumExp(axis:reverse:inclusive:stream:)``
 - ``MLXArray/logCumsumExp(reverse:inclusive:stream:)``

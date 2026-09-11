@@ -331,31 +331,34 @@ extension MLXArray {
         MLX.identity(n, dtype: dtype, stream: stream)
     }
 
-    /// Generate `num` evenly spaced numbers over interval `[start, stop]` for `BinaryInteger`.
+    /// Generate `count` evenly spaced numbers over interval `[start, stop]` for `BinaryInteger`.
     ///
-    /// Example:
+    /// The result is floating point (`float32` by default) even for integer
+    /// bounds -- see ``linspace(_:_:count:endpoint:dtype:stream:)``.
     ///
     /// ```swift
-    /// // Create a 50 element 1-D array with values from 0 to 50
-    /// let r = MLXArray.linspace(0, 50)
+    /// // [0, 0.5, 1] as float32
+    /// let r = MLXArray.linspace(0, 1, count: 3)
     /// ```
     ///
     /// - Parameters:
     ///     - start: start value
     ///     - stop: stop value
     ///     - count: number of samples
+    ///     - dtype: dtype of the result, `float32` if not specified
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``linspace(_:_:count:stream:)-92x6l``
+    /// - ``linspace(_:_:count:dtype:stream:)-92x6l``
     static public func linspace<T: HasDType>(
-        _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
+        _ start: T, _ stop: T, count: Int = 50, dtype: DType? = nil,
+        stream: StreamOrDevice = .default
     ) -> MLXArray where T: BinaryInteger {
-        MLX.linspace(start, stop, count: count, stream: stream)
+        MLX.linspace(start, stop, count: count, dtype: dtype, stream: stream)
     }
 
-    /// Generate `num` evenly spaced numbers over interval `[start, stop]` for `BinaryFloatingPoint`.
+    /// Generate `count` evenly spaced numbers over interval `[start, stop]` for `BinaryFloatingPoint`.
     ///
     /// Example:
     ///
@@ -368,15 +371,17 @@ extension MLXArray {
     ///     - start: start value
     ///     - stop: stop value
     ///     - count: number of samples
+    ///     - dtype: dtype of the result, derived from `T` if not specified
     ///     - stream: stream or device to evaluate on
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``linspace(_:_:count:stream:)-7m7eg``
+    /// - ``linspace(_:_:count:dtype:stream:)-7m7eg``
     static public func linspace<T: HasDType>(
-        _ start: T, _ stop: T, count: Int = 50, stream: StreamOrDevice = .default
+        _ start: T, _ stop: T, count: Int = 50, dtype: DType? = nil,
+        stream: StreamOrDevice = .default
     ) -> MLXArray where T: BinaryFloatingPoint {
-        MLX.linspace(start, stop, count: count, stream: stream)
+        MLX.linspace(start, stop, count: count, dtype: dtype, stream: stream)
     }
 
     /// Generate values in the half-open interval `[0, stop)`.
@@ -1007,13 +1012,18 @@ public func identity(_ n: Int, dtype: DType, stream: StreamOrDevice = .default) 
     return MLXArray(result)
 }
 
-/// Generate `num` evenly spaced numbers over interval `[start, stop]`.
+/// Generate `count` evenly spaced numbers over interval `[start, stop]`.
 ///
-/// Example:
+/// The result is floating point (`float32` by default), matching python's
+/// `mx.linspace`, even for integer bounds: evenly spaced values between two
+/// integers are generally not integers.  Pass `dtype:` for anything else:
 ///
 /// ```swift
-/// // Create a 50 element 1-D array with values from 0 to 50
-/// let r = MLXArray.linspace(0, 50)
+/// // [0, 0.5, 1] as float32 -- *not* [0, 0, 1] as int64
+/// let r = MLXArray.linspace(0, 1, count: 3)
+///
+/// // opt in to an integer (truncating) result
+/// let i = MLXArray.linspace(0, 10, count: 6, dtype: .int32)
 /// ```
 ///
 /// - Parameters:
@@ -1021,25 +1031,31 @@ public func identity(_ n: Int, dtype: DType, stream: StreamOrDevice = .default) 
 ///     - stop: stop value
 ///     - count: number of samples
 ///     - endpoint: if `true` then the endpoint is the last sample, if `false` it is a half-open interval
+///     - dtype: dtype of the result, `float32` if not specified
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:endpoint:stream:)``
+/// - ``linspace(_:_:count:endpoint:dtype:stream:)``
 public func linspace<T: HasDType>(
     _ start: T, _ stop: T, count: Int = 50,
     endpoint: Bool = true,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: BinaryInteger {
     var result = mlx_array_new()
     mlx_linspace_endpoint(
-        &result, Double(start), Double(stop), count.int32, endpoint, T.dtype.cmlxDtype, stream.ctx)
+        &result, Double(start), Double(stop), count.int32, endpoint,
+        (dtype ?? .float32).cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 
-/// Generate `num` evenly spaced numbers over interval `[start, stop]`.
+/// Generate `count` evenly spaced numbers over interval `[start, stop]`.
 ///
-/// Example:
+/// The result dtype follows the bounds (`Float` -> `float32`,
+/// `Float16` -> `float16`) except that `Double` produces `float32`, matching
+/// ``MLXArray/init(_:)`` and python's `mx.linspace` -- `float64` is not
+/// supported on the GPU.  Pass `dtype:` to be explicit.
 ///
 /// ```swift
 /// // Create a 50 element 1-D array with values from 0 to 1
@@ -1051,19 +1067,24 @@ public func linspace<T: HasDType>(
 ///     - stop: stop value
 ///     - count: number of samples
 ///     - endpoint: if `true` then the endpoint is the last sample, if `false` it is a half-open interval
+///     - dtype: dtype of the result, derived from `T` if not specified
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:endpoint:stream:)``
+/// - ``linspace(_:_:count:endpoint:dtype:stream:)``
 public func linspace<T: HasDType>(
     _ start: T, _ stop: T, count: Int = 50,
     endpoint: Bool = true,
+    dtype: DType? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray where T: BinaryFloatingPoint {
+    // Double.dtype is float64, but we do not automatically promote to float64
+    // (see HasDType conformances) and it is not available on the GPU
+    let resolved = dtype ?? (T.dtype == .float64 ? .float32 : T.dtype)
     var result = mlx_array_new()
     mlx_linspace_endpoint(
-        &result, Double(start), Double(stop), count.int32, endpoint, T.dtype.cmlxDtype, stream.ctx)
+        &result, Double(start), Double(stop), count.int32, endpoint, resolved.cmlxDtype, stream.ctx)
     return MLXArray(result)
 }
 

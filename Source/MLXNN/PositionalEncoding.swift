@@ -156,10 +156,30 @@ final public class ALiBi: Module {
     public override init() {
     }
 
+    /// The per-head slopes, matching python's `ALiBi.create_alibi_slope()`.
+    ///
+    /// For a power of two head count the slopes are `2^(-8i/n)` for `i` in
+    /// `1...n`.  Otherwise python uses the slopes of the next power of two *below*
+    /// `n` and pads them with every other slope of the next power of two *above*,
+    /// which is not the same as extending the geometric series.
     static func alibiSlope(numHeads: Int) -> MLXArray {
-        let x = pow(pow(2, 8), (1 / Float(numHeads)))
-        let out = pow(x, -MLXArray(1 ..< (numHeads + 1)))
-        return out.expandedDimensions(axes: [-1, -2])
+        func slopes(_ n: Int) -> [Float] {
+            let log2n = Foundation.log2(Double(n))
+            if log2n == log2n.rounded(.down) {
+                let start = Foundation.pow(2.0, -Foundation.pow(2.0, 3 - log2n))
+                return (1 ... n).map { Float(Foundation.pow(start, Double($0))) }
+            }
+
+            let closestPowerOf2 = Int(Foundation.pow(2.0, log2n.rounded(.down)))
+            let interleaved = slopes(2 * closestPowerOf2)
+                .enumerated()
+                .filter { $0.offset.isMultiple(of: 2) }
+                .map { $0.element }
+                .prefix(n - closestPowerOf2)
+            return slopes(closestPowerOf2) + interleaved
+        }
+
+        return MLXArray(slopes(numHeads)).expandedDimensions(axes: [-1, -2])
     }
 
     static func alibiMatrix(key: Key) -> MLXArray {
@@ -167,8 +187,10 @@ final public class ALiBi: Module {
             return value
         }
 
+        // x1 is a column and x2 a row so that the difference is the (q, k)
+        // distance matrix -- python: `x1[:, None] - x2[None, :]`
         let x1 = MLXArray(key.offset ..< key.qSequenceLength).expandedDimensions(axis: 1)
-        let x2 = MLXArray(0 ..< key.kSequenceLength).expandedDimensions(axis: 1)
+        let x2 = MLXArray(0 ..< key.kSequenceLength).expandedDimensions(axis: 0)
         let distanceMatrix = -abs(expandedDimensions((x1 - x2), axes: [0, 1]))
 
         let slope = alibiSlope(numHeads: key.numHeads)

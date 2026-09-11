@@ -439,6 +439,46 @@ class MLXArrayInitTests: XCTestCase {
                 + "buffer permanently pins whatever the closure held")
     }
 
+    // MARK: - linspace
+
+    func testLinspaceIntegerBoundsAreFloat() {
+        // matches python: mx.linspace(0, 1, 3) -> float32 [0, 0.5, 1].
+        // an integer result would truncate to [0, 0, 1]
+        let a = MLXArray.linspace(0, 1, count: 3)
+        XCTAssertEqual(a.dtype, .float32)
+        assertEqual(a, MLXArray(converting: [0.0, 0.5, 1.0]), atol: 1e-6)
+    }
+
+    func testLinspaceIntegerDType() {
+        // an integer (truncating) result is available, but has to be asked for
+        let a = MLXArray.linspace(0, 10, count: 6, dtype: .int32)
+        XCTAssertEqual(a.dtype, .int32)
+        XCTAssertEqual(a.asArray(Int32.self), [0, 2, 4, 6, 8, 10])
+    }
+
+    func testLinspaceDoubleBoundsAreFloat32() {
+        // Double.dtype is float64, but like MLXArray(1.0) we do not promote to
+        // float64 -- it is not available on the GPU
+        let a = MLXArray.linspace(0.0, 1.0, count: 5)
+        XCTAssertEqual(a.dtype, .float32)
+        assertEqual(a, MLXArray(converting: [0.0, 0.25, 0.5, 0.75, 1.0]), atol: 1e-6)
+    }
+
+    func testLinspaceFloatBoundsKeepTheirDType() {
+        XCTAssertEqual(MLXArray.linspace(Float(0), Float(1), count: 5).dtype, .float32)
+        #if !arch(x86_64)
+            XCTAssertEqual(MLXArray.linspace(Float16(0), Float16(1), count: 5).dtype, .float16)
+        #endif
+    }
+
+    func testLinspaceEndpoint() {
+        let inclusive = MLX.linspace(0, 1, count: 5)
+        assertEqual(inclusive, MLXArray(converting: [0, 0.25, 0.5, 0.75, 1.0]), atol: 1e-6)
+
+        let halfOpen = MLX.linspace(0, 1, count: 5, endpoint: false)
+        assertEqual(halfOpen, MLXArray(converting: [0, 0.2, 0.4, 0.6, 0.8]), atol: 1e-6)
+    }
+
     #if canImport(IOSurface)
         func testIOSurface() {
             let height = 100

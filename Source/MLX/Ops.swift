@@ -1002,8 +1002,11 @@ public func convolve(
         if weightSize % 2 == 1 {
             padding = weightSize / 2
         } else {
+            // even sized weights use asymmetric padding -- this must match
+            // python's `mx.convolve()` so that the result is the centered
+            // `input.size` window of the full convolution
             let padLeft = weightSize / 2
-            let padRight = max(0, padLeft / 2 - 1)
+            let padRight = max(0, padLeft - 1)
 
             input = padded(input, widths: [0, [padLeft, padRight], 0], stream: stream)
         }
@@ -2184,7 +2187,7 @@ public func multiply(
 /// - <doc:arithmetic>
 public func nanToNum(
     _ array: MLXArray,
-    nan: Float = 0, posInf: Float? = 0, negInf: Float? = 0,
+    nan: Float = 0, posInf: Float? = nil, negInf: Float? = nil,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
     let posInf = mlx_optional_float(value: posInf ?? 0, has_value: posInf != nil)
@@ -3110,7 +3113,7 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - Parameters:
 ///   - a: input array
 ///   - b: input array
-///   - axes: sum over the last `axes` dimensions
+///   - axes: sum over the last `axes` dimensions of `a` and the first `axes` of `b`
 ///   - stream: stream or device to evaluate on
 /// - Returns: tensor dot product
 ///
@@ -3118,7 +3121,7 @@ public func tanh(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXArr
 /// - <doc:arithmetic>
 /// - ``tensordot(_:_:axes:stream:)-(MLXArray,MLXArray,Int,StreamOrDevice)``
 public func tensordot(
-    _ a: MLXArray, _ b: MLXArray, axes: Int = 1, stream: StreamOrDevice = .default
+    _ a: MLXArray, _ b: MLXArray, axes: Int = 2, stream: StreamOrDevice = .default
 ) -> MLXArray {
     var result = mlx_array_new()
     mlx_tensordot_axis(&result, a.ctx, b.ctx, axes.int32, stream.ctx)
