@@ -18,11 +18,19 @@ from __future__ import annotations
 
 import argparse
 import collections
+import os
 import pathlib
 import shutil
 import subprocess
 import sys
 import tempfile
+
+# Must be set before mlx is imported: `MLX_ENABLE_TF32` is read once, and it
+# defaults to 1.  On hardware with neural accelerators (M5 and later) float32
+# matmuls otherwise run in TF32, so generated values would only be reproducible on
+# that same hardware -- CI on an M4 computes them in true float32 and disagrees by
+# ~1e-4.  See tools/integration_tests/README.md.
+os.environ.setdefault("MLX_ENABLE_TF32", "0")
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
@@ -45,7 +53,7 @@ except ImportError:  # pragma: no cover
 EXTRA_IMPORTS.update(MODULE_IMPORTS)
 EXTRA_IMPORTS.update(OPTIMIZER_IMPORTS)
 
-DEFAULT_OUTPUT = core.ROOT / "Tests/MLXTests/Integration/Generated"
+DEFAULT_OUTPUT = core.ROOT / "Tests/MLXIntegrationTests/Generated"
 
 
 def grouped() -> dict[str, list[core.Case | core.ModuleCase]]:
@@ -112,6 +120,12 @@ def main() -> int:
         "Swift expression parses (writes to a temp directory)",
     )
     parser.add_argument(
+        "--enable-tf32",
+        action="store_true",
+        help="generate with TF32 matmuls enabled (values will then only reproduce on "
+        "hardware with neural accelerators)",
+    )
+    parser.add_argument(
         "--no-check",
         action="store_true",
         help="skip the python API check that runs before generating",
@@ -122,6 +136,9 @@ def main() -> int:
         help="skip running swift-format on the output (CI lints with it)",
     )
     args = parser.parse_args()
+
+    if args.enable_tf32:
+        os.environ["MLX_ENABLE_TF32"] = "1"
 
     files = grouped()
     if args.only:

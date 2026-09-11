@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import dataclasses
 import math
+import os
 import pathlib
 import re
 import typing as t
@@ -466,7 +467,7 @@ def sample_indices(count: int, wanted: int = SAMPLE_COUNT) -> list[int]:
 def summarize(mx, array) -> Summary:
     """Compute the summary that the Swift side recomputes in `expectSummary`.
 
-    Definitions must match `Tests/MLXTests/Integration/IntegrationSupport.swift`
+    Definitions must match `Tests/MLXIntegrationTests/IntegrationSupport.swift`
     exactly:
 
         values = array.astype(float32).reshape(-1)
@@ -843,6 +844,24 @@ def emit_schedule_case(mx, case: ScheduleCase, evaluate: bool = True) -> str:
     )
 
 
+def matmul_precision() -> str:
+    """what `MLX_ENABLE_TF32` was set to when the values were produced
+
+    float32 matmuls run in TF32 on the neural accelerators of M5 and later unless
+    this is 0, and TF32 results differ from float32 by ~1e-4 relative -- enough to
+    make generated values hardware specific.
+    """
+    return os.environ.get("MLX_ENABLE_TF32", "1 (default)")
+
+
+def device_description(mx) -> str:
+    try:
+        info = mx.metal.device_info()
+        return f"{info.get('device_name', '?')} ({info.get('architecture', '?')})"
+    except Exception:  # noqa: BLE001 -- provenance only
+        return "unknown"
+
+
 def vendored_mlx_version() -> str:
     header = ROOT / "Source/Cmlx/mlx/mlx/version.h"
     if not header.exists():
@@ -882,6 +901,8 @@ def emit_file(
         f"// python mlx:              {python_version}\n"
         f"// vendored mlx (Cmlx):     {vendored_mlx_version()}\n"
         f"// generator revision:      {GENERATOR_REVISION}\n"
+        f"// MLX_ENABLE_TF32:         {matmul_precision() if evaluate else 'n/a'}\n"
+        f"// device:                  {device_description(mx) if evaluate else 'n/a'}\n"
         f"// cases:                   {len(cases)}\n"
         "\n"
         + "".join(
