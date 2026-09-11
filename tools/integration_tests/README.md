@@ -19,11 +19,11 @@ python3 tools/integration_tests/generate.py --syntax-only
 python3 tools/integration_tests/generate.py --self-test
 ```
 
-Output: `Tests/MLXTests/Integration/Generated/Generated<File>Tests.swift`
+Output: `Tests/MLXIntegrationTests/Generated/Generated<File>Tests.swift`
 (the `Generated` prefix matches the suite type name and avoids colliding with the
 hand written `FFTTests`/`LinalgTests`/`QuantizationTests`), formatted with
 `swift-format` (so the repo's `pre-commit` style check stays green).
-`Tests/MLXTests/Integration/IntegrationSupport.swift` is **hand written** and
+`Tests/MLXIntegrationTests/IntegrationSupport.swift` is **hand written** and
 holds all of the comparison policy.  It replaces the retired
 `tools/generate_integration_tests.py` / `Tests/MLXTests/IntegrationTests.swift`
 pair (`MAINTENANCE.md` step 10).
@@ -287,6 +287,41 @@ from `Source/Cmlx/mlx/mlx/version.h`, the generator revision and the case count.
 When a value drifts, that header says whether to suspect mlx or mlx-swift.  Bump
 `GENERATOR_REVISION` in `core.py` when the emitted code changes in a way that
 changes values.
+
+## Matmul precision (TF32) -- read this before regenerating
+
+`MLX_ENABLE_TF32` defaults to **1**, and on hardware with neural accelerators
+(M5 and later) that runs float32 matmuls on the accelerators in TF32.  TF32 results
+differ from float32 by ~1e-4 relative, so values generated on such a machine do not
+reproduce on one without it (an M4 CI runner computes true float32 and disagrees on
+every matmul-shaped case: `Linear`, `Conv*`, attention, `GRU`, `Muon`, quantized
+matmul, `einsum`, ...).
+
+mlx reads the variable **once**, at its first use, so it cannot be flipped from
+inside a test that already ran MLX work.  That is why these tests are their own
+target:
+
+- `Package.swift` declares **`MLXIntegrationTests`** (`Tests/MLXIntegrationTests`),
+  which is nothing but these tests.  A separate target means a separate process, and every generated case enters through
+  `withIntegrationState(seed:)`, so `IntegrationSupport.swift` can `setenv` the
+  variable before any MLX call -- no matter how the tests are launched (`swift test`,
+  Xcode, `xcrun xctest`).
+- `generate.py` sets `MLX_ENABLE_TF32=0` before importing mlx and records the value
+  plus the device in each generated file header.
+- The environment also sets it, as a belt: `xcode/MLX.xctestplan`,
+  `.github/scripts/run-xcode-tests.sh` and the SwiftPM CI step (which runs the new
+  bundle too).
+
+If the `setenv` somehow fails, every case fails with an explanatory message rather
+than looking like a numerical regression.
+
+Note `xcode/MLX.xcodeproj` needs its own `MLXIntegrationTests` target for these to
+run from Xcode (the `MLXTests` synchronized folder group no longer covers them, since
+they moved out of `Tests/MLXTests`).  Until then the test plan's environment variable
+is what protects the Xcode path.
+
+To test the TF32 path deliberately, regenerate with `--enable-tf32` on hardware that
+has it -- but then the values only reproduce there, so it is not what is checked in.
 
 ## The python API check
 

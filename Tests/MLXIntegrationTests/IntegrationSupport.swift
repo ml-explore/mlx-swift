@@ -12,6 +12,12 @@ import MLX
 import MLXNN
 import Testing
 
+#if canImport(Darwin)
+    import Darwin
+#elseif canImport(Glibc)
+    import Glibc
+#endif
+
 /// Statistics of an `MLXArray`, computed by python `mlx` in
 /// `tools/integration_tests/core.py` (`summarize`) and recomputed here.
 ///
@@ -57,6 +63,26 @@ struct Tolerance: Sendable {
     static let loose = Tolerance(relative: 1e-2, absolute: 1e-4)
 }
 
+/// Pin float32 matmuls (rather than TF32) for this process, before any MLX call.
+///
+/// `MLX_ENABLE_TF32` defaults to *enabled*, and on hardware with neural accelerators
+/// (M5 and later) that runs float32 matmuls on the accelerators in TF32.  TF32
+/// results differ from float32 by ~1e-4 relative -- far outside the tolerances here
+/// -- so every matmul-shaped case (`Linear`, `Conv*`, attention, `GRU`, `Muon`,
+/// quantized matmul, `einsum`, ...) would fail unless the machine running the tests
+/// matches the machine that generated the values.
+///
+/// mlx reads the variable **once**, at its first use, so it has to be set before any
+/// MLX work happens.  That is why these tests are their own target
+/// (`MLXIntegrationTests` in `Package.swift`): nothing else runs in this process, and
+/// every generated case enters through `withIntegrationState(seed:)`, so setting it
+/// here is enough no matter how the tests are launched.  The test plan and CI also
+/// set it in the environment; this covers everyone else.
+private let matmulPrecisionIsFloat32: Bool = {
+    setenv("MLX_ENABLE_TF32", "0", 1)
+    return ProcessInfo.processInfo.environment["MLX_ENABLE_TF32"] == "0"
+}()
+
 /// Run a generated case.
 ///
 /// - the default device is scoped to the block rather than set globally, so the
@@ -65,8 +91,20 @@ struct Tolerance: Sendable {
 ///   so a bad case fails its own test with the mlx message
 /// - the random state is task-local and equivalent to python's
 ///   `mx.random.seed(seed)`
-func withIntegrationState<R>(seed: UInt64, _ body: () throws -> R) throws -> R {
-    try Device.withDefaultDevice(.gpu) {
+/// - the matmul precision is checked, because the values assume float32 matmuls
+func withIntegrationState<R>(
+    seed: UInt64, sourceLocation: SourceLocation = #_sourceLocation, _ body: () throws -> R
+) throws -> R {
+    #expect(
+        matmulPrecisionIsFloat32,
+        """
+        could not set MLX_ENABLE_TF32=0: the generated values assume float32 \
+        matmuls, not TF32.  Set it in the environment, or regenerate with \
+        --enable-tf32 on this machine.
+        """,
+        sourceLocation: sourceLocation)
+
+    return try Device.withDefaultDevice(.gpu) {
         try withError {
             try withRandomState(MLXRandom.RandomState(seed: seed), body: body)
         }

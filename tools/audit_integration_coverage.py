@@ -10,7 +10,7 @@ This compares three things:
 2. the public Swift API in `Source/` (parsed, not compiled)
 3. the symbols covered by the generator's case tables
    (`tools/integration_tests/cases.py` and `modules.py`, which produce
-   `Tests/MLXTests/Integration/Generated/`) and the symbols referenced by the hand
+   `Tests/MLXIntegrationTests/Generated/`) and the symbols referenced by the hand
    written tests in `Tests/`
 
 and writes a markdown report: `tools/integration-coverage-report.md`.
@@ -47,8 +47,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SKIP_SOURCE = ("/Cmlx/", "/Examples/", "/Encuda/", "/CompileLockRepro/")
 
 # generated integration tests and the hand written support beside them
-GENERATED_DIRECTORY = "Tests/MLXTests/Integration/Generated"
-SUPPORT_FILE = "Tests/MLXTests/Integration/IntegrationSupport.swift"
+GENERATED_DIRECTORY = "Tests/MLXIntegrationTests/Generated"
+SUPPORT_FILE = "Tests/MLXIntegrationTests/IntegrationSupport.swift"
 
 # python name -> Swift name, for cases the automatic match cannot find.
 # (the automatic match handles snake_case -> camelCase and the table in
@@ -595,7 +595,7 @@ def write_report(rows: list[dict], out: pathlib.Path, mlx: pathlib.Path, depreca
     lines.append(
         "- `integration` = covered by a case in `tools/integration_tests/cases.py` "
         "or `modules.py`, i.e. it has a python-vs-swift value check in "
-        "`Tests/MLXTests/Integration/Generated/`; `unit-only` = referenced by a hand "
+        "`Tests/MLXIntegrationTests/Generated/`; `unit-only` = referenced by a hand "
         "written test "
         "file only; `none` = referenced by no test; `no-swift` = no Swift "
         "counterpart found (API gap, not a test gap)."
