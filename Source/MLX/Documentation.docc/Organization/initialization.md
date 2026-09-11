@@ -282,8 +282,8 @@ there are specific initializers to request it:
 - ``MLX/full(_:values:type:stream:)``
 - ``MLX/full(_:values:stream:)``
 - ``MLX/identity(_:type:stream:)``
-- ``linspace(_:_:count:endpoint:dtype:stream:)-(Int,Int,Int,Bool,DType?,StreamOrDevice)``
-- ``linspace(_:_:count:endpoint:dtype:stream:)-(Double,Double,Int,Bool,DType?,StreamOrDevice)``
+- ``linspace(_:_:count:endpoint:dtype:stream:)-2b6eu``
+- ``linspace(_:_:count:endpoint:dtype:stream:)-8k1d2``
 - ``MLXArray/repeated(_:count:axis:stream:)``
 - ``MLXArray/repeated(_:count:stream:)``
 - ``MLX/repeat(_:count:axis:stream:)``

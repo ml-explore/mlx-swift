@@ -334,7 +334,7 @@ extension MLXArray {
     /// Generate `count` evenly spaced numbers over interval `[start, stop]` for `BinaryInteger`.
     ///
     /// The result is floating point (`float32` by default) even for integer
-    /// bounds -- see ``linspace(_:_:count:endpoint:dtype:stream:)``.
+    /// bounds -- see ``linspace(_:_:count:endpoint:dtype:stream:)-2b6eu``.
     ///
     /// ```swift
     /// // [0, 0.5, 1] as float32
@@ -350,7 +350,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``linspace(_:_:count:dtype:stream:)-92x6l``
+    /// - ``linspace(_:_:count:dtype:stream:)-3fx01``
     static public func linspace<T: HasDType>(
         _ start: T, _ stop: T, count: Int = 50, dtype: DType? = nil,
         stream: StreamOrDevice = .default
@@ -376,7 +376,7 @@ extension MLXArray {
     ///
     /// ### See Also
     /// - <doc:initialization>
-    /// - ``linspace(_:_:count:dtype:stream:)-7m7eg``
+    /// - ``linspace(_:_:count:dtype:stream:)-9yqai``
     static public func linspace<T: HasDType>(
         _ start: T, _ stop: T, count: Int = 50, dtype: DType? = nil,
         stream: StreamOrDevice = .default
@@ -1036,7 +1036,7 @@ public func identity(_ n: Int, dtype: DType, stream: StreamOrDevice = .default) 
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:endpoint:dtype:stream:)``
+/// - ``linspace(_:_:count:endpoint:dtype:stream:)-2b6eu``
 public func linspace<T: HasDType>(
     _ start: T, _ stop: T, count: Int = 50,
     endpoint: Bool = true,
@@ -1072,7 +1072,7 @@ public func linspace<T: HasDType>(
 ///
 /// ### See Also
 /// - <doc:initialization>
-/// - ``linspace(_:_:count:endpoint:dtype:stream:)``
+/// - ``linspace(_:_:count:endpoint:dtype:stream:)-8k1d2``
 public func linspace<T: HasDType>(
     _ start: T, _ stop: T, count: Int = 50,
     endpoint: Bool = true,
