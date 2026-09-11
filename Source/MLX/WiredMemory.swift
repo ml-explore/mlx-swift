@@ -291,43 +291,23 @@ public struct WiredMemoryTicket: Sendable, Identifiable {
 }
 
 extension WiredMemoryTicket {
-    /// Guards against calling `end()` more than once when task cancellation
-    /// races with normal completion inside `withWiredLimit`.
-    private final class EndOnceGuard: @unchecked Sendable {
-        private var _ended = false
-        private let _lock = NSLock()
-
-        /// Returns `true` exactly once; all subsequent calls return `false`.
-        func tryMark() -> Bool {
-            _lock.lock()
-            defer { _lock.unlock() }
-            if _ended { return false }
-            _ended = true
-            return true
-        }
-    }
-
-    /// Convenience wrapper that guarantees start/end pairing and is safe under
-    /// cancellation. This is the recommended pattern for inference.
+    /// Keeps the ticket active until the body returns or throws, including during cancellation.
+    ///
+    /// If admission is cancelled, the body still runs in the cancelled task so it can
+    /// clean up. Check cancellation before starting work that requires admission.
+    /// Use a distinct ticket for each overlapping scope.
     public static func withWiredLimit<R>(
         _ ticket: WiredMemoryTicket,
         _ body: () async throws -> R
     ) async rethrows -> R {
         _ = await ticket.start()
-        let guard_ = EndOnceGuard()
-        return try await withTaskCancellationHandler {
-            do {
-                let result = try await body()
-                if guard_.tryMark() { _ = await ticket.end() }
-                return result
-            } catch {
-                if guard_.tryMark() { _ = await ticket.end() }
-                throw error
-            }
-        } onCancel: {
-            Task {
-                if guard_.tryMark() { _ = await ticket.end() }
-            }
+        do {
+            let result = try await body()
+            _ = await ticket.end()
+            return result
+        } catch {
+            _ = await ticket.end()
+            throw error
         }
     }
 
@@ -366,6 +346,11 @@ public actor WiredMemoryManager {
         let kind: WiredMemoryTicketKind
     }
 
+    private struct AdmissionWaiter {
+        let ticketID: UUID
+        let continuation: CheckedContinuation<Void, Never>
+    }
+
     /// Stable grouping key for policies.
     private enum PolicyKey: Hashable {
         case identifier(AnyHashable)
@@ -379,8 +364,8 @@ public actor WiredMemoryManager {
     private var policies: [PolicyKey: any WiredMemoryPolicy] = [:]
     /// Last limit applied by the manager.
     private var currentLimit: Int?
-    /// Admission waiters parked while capacity is unavailable.
-    private var waiters: [UUID: CheckedContinuation<Void, Never>] = [:]
+    /// Each wait has its own identity so late cancellation cannot affect a later wait.
+    private var waiters: [UUID: AdmissionWaiter] = [:]
     /// Timestamp used to enforce shrink cooldown.
     private var lastLimitChange: Date?
     /// Hysteresis configuration for shrink behavior.
@@ -458,9 +443,6 @@ public actor WiredMemoryManager {
 
         var baselineValue = resolveBaselineAndEmit(refresh: baseline == nil || !hasActiveWork())
         if tickets[id] != nil {
-            #if DEBUG
-                assertionFailure("Ticket already started: \(id)")
-            #endif
             emit(
                 kind: .ticketStartIgnored,
                 ticketID: id,
@@ -489,16 +471,23 @@ public actor WiredMemoryManager {
                 return currentLimit ?? baselineValue
             }
 
+            let waiterID = UUID()
             await withTaskCancellationHandler {
                 await withCheckedContinuation { continuation in
-                    waiters[id] = continuation
+                    waiters[waiterID] = AdmissionWaiter(ticketID: id, continuation: continuation)
                 }
-            } onCancel: { [id] in
-                Task { await self.cancelWaiter(id: id) }
+            } onCancel: {
+                Task { await self.cancelWaiter(id: waiterID) }
             }
 
             baselineValue = resolveBaselineAndEmit(refresh: baseline == nil || !hasActiveWork())
             if Task.isCancelled {
+                return currentLimit ?? baselineValue
+            }
+            if tickets[id] != nil {
+                emit(
+                    kind: .ticketStartIgnored, ticketID: id, size: normalizedSize,
+                    baseline: baselineValue)
                 return currentLimit ?? baselineValue
             }
         }
@@ -533,8 +522,9 @@ public actor WiredMemoryManager {
     /// If this was the last ticket, the manager restores the baseline and
     /// clears internal state.
     public func end(id: UUID, policy: any WiredMemoryPolicy) -> Int {
-        if let waiter = waiters.removeValue(forKey: id) {
-            waiter.resume()
+        for (waiterID, waiter) in waiters where waiter.ticketID == id {
+            waiters.removeValue(forKey: waiterID)
+            waiter.continuation.resume()
         }
 
         guard WiredMemoryBackend.isSupported || policyOnlyMode else {
@@ -545,9 +535,6 @@ public actor WiredMemoryManager {
         }
 
         guard let state = tickets.removeValue(forKey: id) else {
-            #if DEBUG
-                assertionFailure("Ticket not active: \(id)")
-            #endif
             emit(kind: .ticketEndIgnored, ticketID: id)
             return currentLimit ?? baseline ?? 0
         }
@@ -774,8 +761,8 @@ public actor WiredMemoryManager {
         guard !waiters.isEmpty else { return }
         let pending = waiters
         waiters.removeAll()
-        for (_, continuation) in pending {
-            continuation.resume()
+        for waiter in pending.values {
+            waiter.continuation.resume()
         }
     }
 
@@ -786,10 +773,9 @@ public actor WiredMemoryManager {
 
     /// Cancel an admission waiter and emit a debug event.
     private func cancelWaiter(id: UUID) {
-        if let waiter = waiters.removeValue(forKey: id) {
-            waiter.resume()
-        }
-        emit(kind: .admissionCancelled, ticketID: id)
+        guard let waiter = waiters.removeValue(forKey: id) else { return }
+        waiter.continuation.resume()
+        emit(kind: .admissionCancelled, ticketID: waiter.ticketID)
     }
 
     #if DEBUG
