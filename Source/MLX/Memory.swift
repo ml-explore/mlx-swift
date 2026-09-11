@@ -133,6 +133,14 @@ public enum Memory {
         /// See ``Memory/peakMemory``.
         public var peakMemory: Int
 
+        /// Create a snapshot -- typically produced by ``Memory/snapshot()`` but
+        /// this allows recorded or synthesized values to be used as well.
+        public init(activeMemory: Int, cacheMemory: Int, peakMemory: Int) {
+            self.activeMemory = activeMemory
+            self.cacheMemory = cacheMemory
+            self.peakMemory = peakMemory
+        }
+
         /// Compute the difference between two snapshots:
         ///
         /// ```swift
@@ -194,6 +202,53 @@ public enum Memory {
         var result: size_t = 0
         mlx_get_cache_memory(&result)
         return result
+    }
+
+    /// Get the size in bytes of the buffers backing the given arrays.
+    ///
+    /// Unlike ``activeMemory``, a process wide counter, this measures a
+    /// specific set of arrays and can be used to attribute memory to e.g. the
+    /// weights of one model:
+    ///
+    /// ```swift
+    /// let weights = model.parameters().flattened().map { $0.1 }
+    /// eval(weights)
+    /// let bytes = Memory.bufferSize(of: weights)
+    /// ```
+    ///
+    /// Each unique buffer is counted once, so arrays that share storage (views,
+    /// tied weights, slices) do not inflate the total. The full allocator size
+    /// of each buffer is reported, which can be slightly larger than the sum of
+    /// `MLXArray/nbytes` of its arrays.
+    ///
+    /// - Important: The arrays must be evaluated; see `eval(_:)`. Unevaluated
+    /// arrays have no buffer to measure and produce an MLX error, see
+    /// ``withError(_:)-6g4wn``.
+    ///
+    /// - Parameter arrays: evaluated arrays to measure
+    /// - Returns: the size in bytes of the unique buffers backing `arrays`
+    ///
+    /// ### See Also
+    /// - ``activeMemory``
+    /// - ``snapshot()``
+    public static func bufferSize(of arrays: some Collection<MLXArray>) -> Int {
+        let vector_array = new_mlx_vector_array(arrays)
+        defer { mlx_vector_array_free(vector_array) }
+
+        var result: size_t = 0
+        mlx_get_array_buffer_size(&result, vector_array)
+        return result
+    }
+
+    /// Get the size in bytes of the buffers backing the given arrays.
+    ///
+    /// A variadic convenience for the `Collection` variant:
+    ///
+    /// ```swift
+    /// let bytes = Memory.bufferSize(of: keys, values)
+    /// ```
+    public static func bufferSize(of arrays: MLXArray...) -> Int {
+        bufferSize(of: arrays)
     }
 
     /// Get the peak amount of active memory in bytes.
