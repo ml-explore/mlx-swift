@@ -113,4 +113,32 @@ class OpsTests: XCTestCase {
         XCTAssertNil(b2)
     }
 
+    func testConvolve() {
+        let a = MLXArray([1, 2, 3, 4, 5] as [Float])
+        let vEven = MLXArray([1, 2, 3, 4] as [Float])
+        let vOdd = MLXArray([1, 2, 3] as [Float])
+
+        // Even kernel size
+        let fullEven = convolve(a, vEven, mode: .full)
+        assertEqual(fullEven, MLXArray([1, 4, 10, 20, 30, 34, 31, 20] as [Float]))
+
+        let validEven = convolve(a, vEven, mode: .valid)
+        assertEqual(validEven, MLXArray([20, 30] as [Float]))
+
+        let sameEven = convolve(a, vEven, mode: .same)
+        XCTAssertEqual(sameEven.shape, [5])
+        assertEqual(sameEven, MLXArray([4, 10, 20, 30, 34] as [Float]))
+
+        // Odd kernel size
+        let fullOdd = convolve(a, vOdd, mode: .full)
+        assertEqual(fullOdd, MLXArray([1, 4, 10, 16, 22, 22, 15] as [Float]))
+
+        let validOdd = convolve(a, vOdd, mode: .valid)
+        assertEqual(validOdd, MLXArray([10, 16, 22] as [Float]))
+
+        let sameOdd = convolve(a, vOdd, mode: .same)
+        XCTAssertEqual(sameOdd.shape, [5])
+        assertEqual(sameOdd, MLXArray([4, 10, 16, 22, 22] as [Float]))
+    }
+
 }
