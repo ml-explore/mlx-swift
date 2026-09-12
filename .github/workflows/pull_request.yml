@@ -89,7 +89,7 @@ jobs:
       - name: Setup cmake
         shell: sh
         run: |
-          brew install cmake ninja
+          brew install cmake ninja git
 
       - name: Verify documentation
         run: scripts/verify-docs.sh
