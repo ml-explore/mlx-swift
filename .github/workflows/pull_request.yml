@@ -21,10 +21,15 @@ jobs:
         with:
           activate-environment: true
 
+      - name: Setup cmake
+        shell: sh
+        run: |
+          brew install cmake ninja git
+
       - name: Setup pre-commit
         shell: sh
         run: |
-          uv pip install pre-commit git
+          uv pip install pre-commit
 
       - name: Get swift-format tag
         id: swift-format
