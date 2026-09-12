@@ -1,15 +1,28 @@
 diff --git a/mlx/backend/cuda/device.cpp b/mlx/backend/cuda/device.cpp
-index 472b3d99..e7d8f262 100644
+index 472b3d99..b310b47a 100644
 --- a/mlx/backend/cuda/device.cpp
 +++ b/mlx/backend/cuda/device.cpp
-@@ -617,8 +617,10 @@ std::unordered_map<int, CommandEncoder>& get_command_encoders() {
+@@ -612,13 +612,21 @@ CommandEncoder& get_command_encoder(Stream s) {
+ }
+ 
+ std::unordered_map<int, CommandEncoder>& get_command_encoders() {
+-  static thread_local std::unordered_map<int, CommandEncoder> encoders;
+-  return encoders;
++  // encoders are leaked intentionally: destroying a CommandEncoder stops its
++  // cu::Worker, and the detached worker thread owns the last reference to
++  // itself, so ~Worker (and cudaEventDestroy) runs on that thread at an
++  // arbitrary point during process shutdown -- typically after the CUDA runtime
++  // has started unloading, which turns into a throw from a destructor and
++  // terminates the process
++  static thread_local auto* encoders =
++      new std::unordered_map<int, CommandEncoder>();
++  return *encoders;
  }
  
  std::unordered_map<int, CommandEncoder>& get_global_command_encoders() {
 -  static std::unordered_map<int, CommandEncoder> encoders;
 -  return encoders;
-+  // encoders are leaked intentionally as they would synchronize on process
-+  // shutdown
++  // leaked for the same reason as above
 +  static auto* encoders = new std::unordered_map<int, CommandEncoder>();
 +  return *encoders;
  }
