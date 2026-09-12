@@ -14,7 +14,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ----------------------------- Configuration -----------------------------
 # note: mirrors a subset of MLX options exactly (1:1 mapping)
 
-option(MLX_BUILD_EXAMPLES "Build examples for mlx" ON)
+# note: MLX_BUILD_EXAMPLES is owned by mlx itself (see below), so the Swift
+# examples use their own option name to avoid colliding with mlx's C++ examples
+option(MLX_SWIFT_BUILD_EXAMPLES "Build Swift examples for mlx-swift" ON)
 option(MLX_BUILD_METAL "Build metal backend" ON)
 option(MLX_BUILD_CUDA "Build cuda backend" OFF)
 
@@ -31,6 +33,15 @@ endif()
 # local apply of https://github.com/ml-explore/mlx/pull/4480 for CUDA
 set(mlx_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mlx.patch)
 
+# note: this must be declared (and named `mlx`) before mlx-c is made available
+# so that our pinned/patched version wins over the one mlx-c declares. Because
+# we now pull mlx in first, we are also responsible for the option defaults that
+# mlx-c would normally set for us.
+set(MLX_BUILD_TESTS OFF)
+set(MLX_BUILD_EXAMPLES OFF)
+set(MLX_BUILD_BENCHMARKS OFF)
+set(MLX_BUILD_PYTHON_BINDINGS OFF)
+
 FetchContent_Declare(
   mlx
   GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
@@ -39,6 +50,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(mlx)
 
 # mlx-c
+set(MLX_C_BUILD_EXAMPLES OFF)
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
@@ -119,7 +131,7 @@ add_library(MLXLinalg STATIC ${MLXLinalg-src})
 target_link_libraries(MLXLinalg PRIVATE MLX)
 
 # Examples
-if(MLX_BUILD_EXAMPLES)
+if(MLX_SWIFT_BUILD_EXAMPLES)
   add_executable(example1
                  ${CMAKE_CURRENT_LIST_DIR}/Source/Examples/Example1.swift)
   target_link_libraries(example1 PRIVATE MLX)
