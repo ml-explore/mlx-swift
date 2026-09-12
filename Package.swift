@@ -5,6 +5,12 @@
 import PackageDescription
 
 #if os(Linux)
+    let metalBuildPlugins: [Target.PluginUsage] = []
+#else
+    let metalBuildPlugins: [Target.PluginUsage] = [.plugin(name: "BuildSwiftPMMetalLibrary")]
+#endif
+
+#if os(Linux)
     let cudaBuildPlugins: [Target.PluginUsage] = [
         .plugin(name: "CudaBuild")
     ]
@@ -313,7 +319,7 @@ let cmlx = Target.target(
         .define("MLX_VERSION", to: "\"0.32.0\""),
     ],
     linkerSettings: linkerSettings,
-    plugins: cudaBuildPlugins,
+    plugins: cudaBuildPlugins + metalBuildPlugins,
 )
 
 let package = Package(
@@ -447,6 +453,7 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
+        .plugin(name: "BuildSwiftPMMetalLibrary", capability: .buildTool()),
     ] + cudaTargets,
     cxxLanguageStandard: .gnucxx20
 )
