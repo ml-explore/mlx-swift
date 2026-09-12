@@ -1,0 +1,126 @@
+diff --git a/mlx/backend/cuda/device.cpp b/mlx/backend/cuda/device.cpp
+index 472b3d99..5995e94b 100644
+--- a/mlx/backend/cuda/device.cpp
++++ b/mlx/backend/cuda/device.cpp
+@@ -7,11 +7,27 @@
+ 
+ #include <fmt/format.h>
+ #include <nvtx3/nvtx3.hpp>
++#include <cstdio>
+ #include <future>
++#include <thread>
+ #include <unordered_set>
+ 
+ namespace mlx::core::cu {
+ 
++// TEMP DEBUG (mlx-swift): trace CommandEncoder lifetime so we can tell whether
++// the thread-local or the global (thread-unsafe) encoder map is in use.
++void encoder_debug_log(const char* what, int stream_index, const void* encoder) {
++  fprintf(
++      stderr,
++      "[mlx-swift/encoders] %s stream=%d encoder=%p thread=%zu main=%d\n",
++      what,
++      stream_index,
++      encoder,
++      std::hash<std::thread::id>{}(std::this_thread::get_id()),
++      is_main_thread() ? 1 : 0);
++  fflush(stderr);
++}
++
+ namespace {
+ 
+ bool use_cuda_graphs() {
+@@ -210,9 +226,11 @@ CommandEncoder::CommandEncoder(Device& d)
+       graph_cache_("MLX_CUDA_GRAPH_CACHE_SIZE", /* default_capacity */ 400) {
+   std::tie(max_ops_per_graph_, max_mb_per_graph_) = get_graph_limits(d);
+   worker_->start();
++  encoder_debug_log("CommandEncoder()", -1, this);
+ }
+ 
+ CommandEncoder::~CommandEncoder() {
++  encoder_debug_log("~CommandEncoder", -1, this);
+   synchronize();
+   worker_->stop();
+ }
+@@ -601,6 +619,7 @@ CommandEncoder& get_command_encoder(Stream s) {
+   auto it = encoders.find(s.index);
+   if (it == encoders.end()) {
+     auto& global_encoders = get_global_command_encoders();
++    encoder_debug_log("lookup falls back to global map", s.index, nullptr);
+     it = global_encoders.find(s.index);
+     if (it == global_encoders.end()) {
+       throw std::runtime_error(
+@@ -612,13 +631,26 @@ CommandEncoder& get_command_encoder(Stream s) {
+ }
+ 
+ std::unordered_map<int, CommandEncoder>& get_command_encoders() {
+-  static thread_local std::unordered_map<int, CommandEncoder> encoders;
+-  return encoders;
++  // encoders are leaked intentionally: destroying a CommandEncoder stops its
++  // cu::Worker, and the detached worker thread owns the last reference to
++  // itself, so ~Worker (and cudaEventDestroy) runs on that thread at an
++  // arbitrary point during process shutdown -- typically after the CUDA runtime
++  // has started unloading, which turns into a throw from a destructor and
++  // terminates the process
++  static thread_local auto* encoders = []() {
++    encoder_debug_log("new thread_local encoder map", -1, nullptr);
++    return new std::unordered_map<int, CommandEncoder>();
++  }();
++  return *encoders;
+ }
+ 
+ std::unordered_map<int, CommandEncoder>& get_global_command_encoders() {
+-  static std::unordered_map<int, CommandEncoder> encoders;
+-  return encoders;
++  // leaked for the same reason as above
++  static auto* encoders = []() {
++    encoder_debug_log("new global encoder map", -1, nullptr);
++    return new std::unordered_map<int, CommandEncoder>();
++  }();
++  return *encoders;
+ }
+ 
+ } // namespace mlx::core::cu
+diff --git a/mlx/backend/cuda/device.h b/mlx/backend/cuda/device.h
+index 198f0b5a..2507202c 100644
+--- a/mlx/backend/cuda/device.h
++++ b/mlx/backend/cuda/device.h
+@@ -214,6 +214,9 @@ MLX_API Device& device(int cuda_device);
+ MLX_API Device& device(mlx::core::Device d);
+ MLX_API CommandEncoder& get_command_encoder(Stream s);
+ 
++// TEMP DEBUG (mlx-swift): see device.cpp
++void encoder_debug_log(const char* what, int stream_index, const void* encoder);
++
+ std::unordered_map<int, CommandEncoder>& get_command_encoders();
+ std::unordered_map<int, CommandEncoder>& get_global_command_encoders();
+ 
+diff --git a/mlx/backend/cuda/eval.cpp b/mlx/backend/cuda/eval.cpp
+index f8a71d71..0503d7c8 100644
+--- a/mlx/backend/cuda/eval.cpp
++++ b/mlx/backend/cuda/eval.cpp
+@@ -26,6 +26,7 @@ void init() {
+ 
+ void new_stream(Stream s) {
+   assert(s.device == Device::gpu);
++  cu::encoder_debug_log("new_stream (thread_local map)", s.index, nullptr);
+   auto& encoders = cu::get_command_encoders();
+   auto& d = cu::device(s.device);
+   encoders.try_emplace(s.index, d);
+@@ -33,6 +34,8 @@ void new_stream(Stream s) {
+ 
+ void new_thread_unsafe_stream(Stream s) {
+   assert(s.device == Device::gpu);
++  cu::encoder_debug_log(
++      "new_thread_unsafe_stream (global map)", s.index, nullptr);
+   auto& encoders = cu::get_global_command_encoders();
+   auto& d = cu::device(s.device);
+   encoders.try_emplace(s.index, d);
+@@ -87,6 +90,7 @@ void synchronize(Stream s) {
+ }
+ 
+ void clear_streams() {
++  cu::encoder_debug_log("clear_streams", -1, nullptr);
+   cu::get_command_encoders().clear();
+   if (is_main_thread()) {
+     cu::get_global_command_encoders().clear();
