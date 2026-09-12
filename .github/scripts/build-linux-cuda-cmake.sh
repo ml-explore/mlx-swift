@@ -17,9 +17,12 @@ mkdir -p build
 pushd build
 cmake -DMLX_BUILD_METAL=OFF -DMLX_BUILD_CUDA=ON -DMLX_C_BUILD_EXAMPLES=OFF .. -G Ninja
 
-cd _deps/mlx-src
-git diff
-cd ../..
+# Verify the local mlx patch is actually in place: without it the examples below
+# crash on exit, which is easy to misread as an unrelated CUDA failure.
+git -C _deps/mlx-src apply --reverse --check "$PWD/../cmake/mlx.patch" || {
+  echo "error: cmake/mlx.patch is not applied to _deps/mlx-src"
+  exit 1
+}
 
 ninja
 ./example1 --device gpu

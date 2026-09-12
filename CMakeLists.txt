@@ -30,8 +30,17 @@ endif()
 
 # mlx
 
+# note: patches are applied via cmake/apply-patch.cmake so that they are
+# idempotent (the patch step re-runs on every update step) while still failing
+# the build loudly if a patch does not apply -- a silently unpatched dependency
+# is very hard to diagnose (it typically shows up as a runtime failure).
+set(apply_patch ${CMAKE_COMMAND} -DREPO=<SOURCE_DIR>)
+set(apply_patch_script -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/apply-patch.cmake)
+
 # local apply of https://github.com/ml-explore/mlx/pull/4480 for CUDA
-set(mlx_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mlx.patch)
+set(mlx_patch
+    ${apply_patch} -DPATCH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/mlx.patch
+    ${apply_patch_script})
 
 # note: this must be declared (and named `mlx`) before mlx-c is made available
 # so that our pinned/patched version wins over the one mlx-c declares. Because
@@ -46,7 +55,7 @@ FetchContent_Declare(
   mlx
   GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
   GIT_TAG "1f8e74e3f12f31365464a6867c6579f0e9b29d85"
-  PATCH_COMMAND ${mlx_patch} || true)
+  PATCH_COMMAND ${mlx_patch})
 FetchContent_MakeAvailable(mlx)
 
 # mlx-c
@@ -58,13 +67,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(mlx-c)
 
 # swift-numerics
-set(swift_numerics_patch git apply
-                         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/swift-numerics.patch)
+set(swift_numerics_patch
+    ${apply_patch}
+    -DPATCH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/swift-numerics.patch
+    ${apply_patch_script})
 FetchContent_Declare(
   swift-numerics
   GIT_REPOSITORY "https://github.com/apple/swift-numerics.git"
   GIT_TAG "1.0.2"
-  PATCH_COMMAND ${swift_numerics_patch} || true)
+  PATCH_COMMAND ${swift_numerics_patch})
 FetchContent_MakeAvailable(swift-numerics)
 
 # MLX package
