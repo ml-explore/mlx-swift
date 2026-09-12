@@ -21,11 +21,6 @@ jobs:
         with:
           activate-environment: true
 
-      - name: Setup cmake
-        shell: sh
-        run: |
-          brew install cmake ninja git
-
       - name: Setup pre-commit
         shell: sh
         run: |
@@ -94,7 +89,7 @@ jobs:
       - name: Setup cmake
         shell: sh
         run: |
-          brew install cmake ninja git
+          brew install cmake ninja
 
       - name: Verify documentation
         run: scripts/verify-docs.sh
