@@ -35,7 +35,8 @@ if(NOT DEFINED GIT_EXECUTABLE OR GIT_EXECUTABLE STREQUAL "")
 endif()
 
 if(NOT GIT_EXECUTABLE)
-  message(FATAL_ERROR "apply-patch.cmake: git not found (pass -DGIT_EXECUTABLE=)")
+  message(
+    FATAL_ERROR "apply-patch.cmake: git not found (pass -DGIT_EXECUTABLE=)")
 endif()
 
 message(STATUS "apply-patch: repo=${REPO} patch=${PATCH} git=${GIT_EXECUTABLE}")
