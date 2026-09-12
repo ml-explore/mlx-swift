@@ -24,7 +24,7 @@ jobs:
       - name: Setup pre-commit
         shell: sh
         run: |
-          uv pip install pre-commit
+          uv pip install pre-commit git
 
       - name: Get swift-format tag
         id: swift-format
