@@ -16,11 +16,6 @@ rm -rf build
 mkdir -p build
 pushd build
 cmake -DMLX_BUILD_METAL=OFF -DMLX_BUILD_CUDA=ON -DMLX_C_BUILD_EXAMPLES=OFF .. -G Ninja
-
-cd _deps/mlx-src
-git diff
-cd ../..
-
 ninja
 ./example1 --device gpu
 ./tutorial --device gpu
