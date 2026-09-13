@@ -33,6 +33,9 @@ See also <doc:logical> and <doc:cumulative>
 
 ### MLXArray Aggregating Reduction Functions
 
+- ``MLXArray/countNonzero(keepDims:stream:)``
+- ``MLXArray/countNonzero(axis:keepDims:stream:)``
+- ``MLXArray/countNonzero(axes:keepDims:stream:)``
 - ``MLXArray/logSumExp(keepDims:stream:)``
 - ``MLXArray/logSumExp(axis:keepDims:stream:)``
 - ``MLXArray/logSumExp(axes:keepDims:stream:)``
@@ -66,6 +69,9 @@ See also <doc:logical> and <doc:cumulative>
 
 ### Aggregating Reduction Free Functions
 
+- ``countNonzero(_:keepDims:stream:)``
+- ``countNonzero(_:axis:keepDims:stream:)``
+- ``countNonzero(_:axes:keepDims:stream:)``
 - ``logSumExp(_:keepDims:stream:)``
 - ``logSumExp(_:axis:keepDims:stream:)``
 - ``logSumExp(_:axes:keepDims:stream:)``

@@ -442,6 +442,69 @@ public func conjugate(_ array: MLXArray, stream: StreamOrDevice = .default) -> M
     return MLXArray(result)
 }
 
+/// Count the number of non-zero elements in the array over the given axes.
+///
+/// - Parameters:
+///     - array: input array
+///     - axes: axes to reduce over
+///     - keepDims: if `true` keep the reduced axes as singleton dimensions
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+/// - ``countNonzero(_:axis:keepDims:stream:)``
+/// - ``countNonzero(_:keepDims:stream:)``
+/// - ``MLXArray/countNonzero(axes:keepDims:stream:)``
+public func countNonzero(
+    _ array: MLXArray, axes: some Collection<Int>, keepDims: Bool = false,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_count_nonzero_axes(&result, array.ctx, axes.asInt32, axes.count, keepDims, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Count the number of non-zero elements in the array over the given axis.
+///
+/// - Parameters:
+///     - array: input array
+///     - axis: axis to reduce over
+///     - keepDims: if `true` keep reduced axis as singleton dimension
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+/// - ``countNonzero(_:axes:keepDims:stream:)``
+/// - ``countNonzero(_:keepDims:stream:)``
+/// - ``MLXArray/countNonzero(axes:keepDims:stream:)``
+public func countNonzero(
+    _ array: MLXArray, axis: Int, keepDims: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_count_nonzero_axis(&result, array.ctx, axis.int32, keepDims, stream.ctx)
+    return MLXArray(result)
+}
+
+/// Count the number of non-zero elements in the array over all axes.
+///
+/// - Parameters:
+///     - array: input array
+///     - keepDims: if `true` keep the reduced axes as singleton dimensions
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:reduction>
+/// - ``countNonzero(_:axes:keepDims:stream:)``
+/// - ``countNonzero(_:axis:keepDims:stream:)``
+/// - ``MLXArray/countNonzero(axes:keepDims:stream:)``
+public func countNonzero(
+    _ array: MLXArray, keepDims: Bool = false, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_count_nonzero(&result, array.ctx, keepDims, stream.ctx)
+    return MLXArray(result)
+}
+
 /// Return the cumulative maximum of the elements along the given axis.
 ///
 /// ```swift
