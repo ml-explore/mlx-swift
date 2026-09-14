@@ -181,4 +181,19 @@ class MLXArrayOpsTests: XCTestCase {
         XCTAssertEqual(r2, [Complex(-4, 24)])
     }
 
+    func testCountNonzero() {
+        let a = MLXArray([0, 1, 2, 0, 3, 0], [2, 3])
+        let resAxes0 = a.countNonzero(axes: [0])
+        let resAxes1 = a.countNonzero(axes: [1])
+        let resAxis0 = a.countNonzero(axis: 0)
+        let resAxis1 = a.countNonzero(axis: 1)
+        let resAll = a.countNonzero()
+
+        assertEqual(resAxes0, [0, 2, 1])
+        assertEqual(resAxes0, resAxis0)
+        assertEqual(resAxes1, [2, 1])
+        assertEqual(resAxes1, resAxis1)
+        assertEqual(resAll, 3.asMLXArray(dtype: .int32))
+    }
+
 }
