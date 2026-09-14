@@ -137,14 +137,14 @@ import XCTest
         /// compiler-cache erase -- happen at a chosen instant on a chosen
         /// thread.
         private final class Victim: @unchecked Sendable {
-            private var compiled: (@Sendable (MLXArray) -> MLXArray)?
+            private var compiled: ((MLXArray) -> MLXArray)?
 
             init() {
                 // A fresh compile() per instance, so the erase has a populated
                 // cache entry to remove.  The unique constant keeps this from
                 // sharing an entry with anything else.
                 let bias = MLXArray(Float.random(in: 1 ... 2))
-                compiled = MLX.compile { (x: MLXArray) in x * 3 + bias }
+                compiled = MLX.compile(inputs: [bias]) { (x: MLXArray) in x * 3 + bias }
             }
 
             /// Populate the cache entry that `deinit` will erase.

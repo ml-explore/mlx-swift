@@ -113,6 +113,7 @@ class TransformTests: XCTestCase {
     }
 
     func testCompile() {
+        @Sendable
         func f(inputs: [MLXArray]) -> [MLXArray] {
             [square(inputs[0] * inputs[1])]
         }
@@ -232,11 +233,14 @@ class TransformTests: XCTestCase {
     }
 
     func testCompileCapturesModuleParameterWithoutState() {
-        // verify the capture path happens
+        // verify that compile captures all values used if not
+        // passed as inputs.
 
         let model = ScaleModule(2.0)
 
-        let compiled = compile { (x: MLXArray) -> MLXArray in
+        // lie about the inputs so that we can use a non-Sendable
+        // closure.  this is meant to demonstrate the failure
+        let compiled = compile(inputs: []) { (x: MLXArray) -> MLXArray in
             model(x)
         }
 
@@ -251,7 +255,7 @@ class TransformTests: XCTestCase {
         let r2 = compiled(MLXArray(Float(3)))
         XCTAssertEqual(
             r2.item(Float.self), 6,
-            "compiled function incorrectly ignored the updated module parameter")
+            "compiled function saw the update and it should not")
     }
 
     func testCompileWithStateObservesModuleParameterUpdates() {
@@ -277,6 +281,7 @@ class TransformTests: XCTestCase {
     }
 
     func testCompiledRandom() {
+        @Sendable
         func f(_ bias: MLXArray) -> MLXArray {
             MLXRandom.uniform(0 ..< 1, [4]) + bias
         }
@@ -336,7 +341,26 @@ class TransformTests: XCTestCase {
         assertEqual(vf(x), expected)
     }
 
+    func testVmapPureSimple() async {
+        @Sendable
+        func f(_ x: MLXArray) -> MLXArray { x * 2 }
+
+        let x = MLXArray(0 ..< 6, [3, 2])
+
+        // this result type is Sendable
+        let vf = vmapPure(f)
+
+        let t = Task {
+            let expected = stacked((0 ..< 3).map { f(x[$0]) }, axis: 0)
+
+            assertEqual(vf(x), expected)
+        }
+
+        _ = await t.value
+    }
+
     func testVmapTwoInputs() {
+        @Sendable
         func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
 
         let x = MLXArray(0 ..< 6, [3, 2])
@@ -349,6 +373,7 @@ class TransformTests: XCTestCase {
     }
 
     func testVmapAxisPermutations() {
+        @Sendable
         func f(_ x: MLXArray) -> MLXArray { x * 2 }
 
         let x = MLXArray(0 ..< 6, [2, 3])
@@ -367,6 +392,7 @@ class TransformTests: XCTestCase {
     }
 
     func testVmapTwoInputsAxisPermutations() {
+        @Sendable
         func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
 
         let x = MLXArray(0 ..< 6, [2, 3])
@@ -382,6 +408,7 @@ class TransformTests: XCTestCase {
     }
 
     func testVmapWithCompile() {
+        @Sendable
         func f(_ x: MLXArray) -> MLXArray { x.square() }
 
         let x = MLXRandom.normal([4, 2])
@@ -390,7 +417,9 @@ class TransformTests: XCTestCase {
         let mapCompile = vmap(compiled)
         assertEqual(mapCompile(x), vmap(f)(x))
 
-        let compiledMap = compile(vmap(f))
+        // use a non-Sendable version of compile because vmap doesn't produce
+        // a Sendable function
+        let compiledMap = compile(inputs: [], vmap(f))
         assertEqual(compiledMap(x), vmap(f)(x))
     }
 
@@ -409,6 +438,7 @@ class TransformTests: XCTestCase {
 
     func testCompileThreadSafety() async throws {
 
+        @Sendable
         func swiglu(_ xLinear: MLXArray, _ xGlu: MLXArray, alpha: Float = 1.702, limit: Float = 7.0)
             -> MLXArray
         {
