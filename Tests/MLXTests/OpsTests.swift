@@ -86,6 +86,21 @@ class OpsTests: XCTestCase {
         XCTAssertEqual(c.dtype, .float32)
     }
 
+    func testCountNonzero() {
+        let a = MLXArray([0, 1, 2, 0, 3, 0], [2, 3])
+        let resAxes0 = countNonzero(a, axes: [0])
+        let resAxes1 = countNonzero(a, axes: [1])
+        let resAxis0 = countNonzero(a, axis: 0)
+        let resAxis1 = countNonzero(a, axis: 1)
+        let resAll = countNonzero(a)
+
+        assertEqual(resAxes0, [0, 2, 1])
+        assertEqual(resAxes0, resAxis0)
+        assertEqual(resAxes1, [2, 1])
+        assertEqual(resAxes1, resAxis1)
+        assertEqual(resAll, 3.asMLXArray(dtype: .int32))
+    }
+
     func testFlatten() {
         let a = zeros([4, 5, 6, 7])
         let b = flatten(a, startAxis: 1, endAxis: 2)
