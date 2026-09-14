@@ -1003,7 +1003,7 @@ public func convolve(
             padding = weightSize / 2
         } else {
             let padLeft = weightSize / 2
-            let padRight = max(0, padLeft / 2 - 1)
+            let padRight = max(0, padLeft - 1)
 
             input = padded(input, widths: [0, [padLeft, padRight], 0], stream: stream)
         }
