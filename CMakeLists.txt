@@ -39,12 +39,12 @@ set(apply_patch_script -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/apply-patch.cmake)
 
 # two local patches for CUDA:
 #
-# - https://github.com/ml-explore/mlx/pull/4480: leak the global command encoder
+# * https://github.com/ml-explore/mlx/pull/4480: leak the global command encoder
 #   map rather than synchronizing on process shutdown
-# - make ~CudaHandle non-throwing: cu::Worker is detached and holds the last
-#   reference to itself, so ~Worker -> ~CudaEvent -> cudaEventDestroy runs on the
-#   worker thread at an arbitrary point during exit, racing the CUDA runtime's
-#   own teardown. A failing destroy there terminated the process.
+# * make ~CudaHandle non-throwing: cu::Worker is detached and holds the last
+#   reference to itself, so ~Worker -> ~CudaEvent -> cudaEventDestroy runs on
+#   the worker thread at an arbitrary point during exit, racing the CUDA
+#   runtime's own teardown. A failing destroy there terminated the process.
 set(mlx_patch
     ${apply_patch} -DPATCH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/mlx.patch
     ${apply_patch_script})
