@@ -1,8 +1,8 @@
 diff --git a/mlx/backend/cuda/cuda_utils.h b/mlx/backend/cuda/cuda_utils.h
-index f8a234ee..cc075f7b 100644
+index f8a234ee6..3b7a79f27 100644
 --- a/mlx/backend/cuda/cuda_utils.h
 +++ b/mlx/backend/cuda/cuda_utils.h
-@@ -30,6 +30,11 @@ class CudaHandle {
+@@ -30,7 +30,11 @@ class CudaHandle {
      if (cudaPeekAtLastError() != cudaSuccess) {
        return;
      }
@@ -16,7 +16,7 @@ index f8a234ee..cc075f7b 100644
  
    CudaHandle(const CudaHandle&) = delete;
 diff --git a/mlx/backend/cuda/device.cpp b/mlx/backend/cuda/device.cpp
-index 472b3d99..e7d8f262 100644
+index 472b3d99f..e7d8f2620 100644
 --- a/mlx/backend/cuda/device.cpp
 +++ b/mlx/backend/cuda/device.cpp
 @@ -617,8 +617,10 @@ std::unordered_map<int, CommandEncoder>& get_command_encoders() {
