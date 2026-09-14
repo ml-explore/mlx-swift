@@ -3356,8 +3356,8 @@ public func trunc(_ array: MLXArray, stream: StreamOrDevice = .default) -> MLXAr
 ///
 /// - Parameters:
 ///     - condition: condition array
-///     - a: input selected from where condiiton is non-zero or `true`
-///     - b: input selected from where condiiton is zero or `false`
+///     - a: input selected from where condition is non-zero or `true`
+///     - b: input selected from where condition is zero or `false`
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
@@ -3380,8 +3380,8 @@ public func `where`(
 ///
 /// - Parameters:
 ///     - condition: condition array
-///     - a: input selected from where condiiton is non-zero or `true`
-///     - b: input selected from where condiiton is zero or `false`
+///     - a: input selected from where condition is non-zero or `true`
+///     - b: input selected from where condition is zero or `false`
 ///     - stream: stream or device to evaluate on
 ///
 /// ### See Also
