@@ -2,7 +2,7 @@ diff --git a/mlx/backend/cuda/cuda_utils.h b/mlx/backend/cuda/cuda_utils.h
 index f8a234ee..cc075f7b 100644
 --- a/mlx/backend/cuda/cuda_utils.h
 +++ b/mlx/backend/cuda/cuda_utils.h
-@@ -30,7 +30,22 @@ class CudaHandle {
+@@ -30,6 +30,11 @@ class CudaHandle {
      if (cudaPeekAtLastError() != cudaSuccess) {
        return;
      }
