@@ -6,7 +6,7 @@ MLX Swift has specific concurrency characteristics for thread safety on Apple Si
 
 ### MLXArray is NOT Sendable
 
-`MLXArray` is intentionally **not** `Sendable`. This is by design:
+An ordinary `MLXArray` is intentionally **not** `Sendable`. This is by design:
 
 ```swift
 // WRONG: Will not compile in strict concurrency mode
@@ -19,6 +19,9 @@ Task {
 ```
 
 **Why?** MLXArray contains references to compute graphs that may be shared and mutated. Sending arrays across task boundaries could cause data races.
+
+The exception is a ``MaterializedArray`` (see below) — a fully-evaluated,
+immutable snapshot that *is* `Sendable`.
 
 ### Safe Patterns
 
@@ -39,6 +42,93 @@ let data = array.asArray(Int.self)  // [Int] is Sendable
 Task {
     let newArray = MLXArray(data)
     // Work with newArray
+}
+
+// Pattern 3: Materialize a Sendable snapshot (no round-trip through [Float])
+let array = MLXArray([1, 2, 3])
+let snapshot = array.materialized()   // MaterializedArray: evaluated + Sendable
+
+Task {
+    print(snapshot + 3)   // safe to use across the task boundary
+}
+```
+
+## MaterializedArray and MaterializedModule
+
+When you actually need to hand an array (or a whole model) across a task or
+actor boundary, use the materialize APIs instead of copying data out to
+`[Float]` and rebuilding.
+
+### MaterializedArray
+
+`MaterializedArray` is a subclass of `MLXArray` that is a fully-evaluated,
+immutable snapshot and is declared `@unchecked Sendable`:
+
+- Contents are evaluated at construction, so no graph work is pending.
+- Mutating APIs (`_updateInternal`, `+=`, `-=`, `*=`, `/=`) are marked
+  `@available(*, unavailable)` and trap if called.
+- It is still an `MLXArray`, so it can be used anywhere one is accepted.
+  Operations involving it still produce ordinary (lazy) `MLXArray` results —
+  only the snapshot itself is frozen.
+
+Construct one via `MLXArray.materialized()` or the free `materialize(_:)`
+functions (never directly):
+
+```swift
+let m1 = a.materialized()          // single array
+let m2 = materialize(a)            // equivalent free function
+let batch = materialize([w, b])    // [MLXArray] -> [MaterializedArray], one eval
+
+// safe to send across boundaries
+let t = Task { print(m1 + 3) }
+```
+
+Use the `[MLXArray]` overload when materializing several arrays at once (for
+example a model's parameters) so MLX can schedule the eval as a single batch.
+
+### MaterializedModule
+
+`MaterializedModule<LayerType>` wraps a `Module` whose parameters have all been
+materialized, so the whole module is safe to share. A normal `Module` is not
+`Sendable` because its parameters are lazy, mutable `MLXArray` values.
+
+```swift
+// construct the base module inline so no other reference exists
+let lm = MaterializedModule(Linear(10, 10))
+
+let t = Task {
+    let x = MLXRandom.normal([10, 10])
+    print(sum(lm(x)))    // UnaryLayer call forwarded to the wrapped module
+}
+```
+
+Key points:
+
+- The initializer takes `base` as `consuming` — **do not retain or use the
+  original reference after passing it in.** Because `Module` is a reference
+  type this cannot be enforced by the compiler, so as a backstop the base and
+  all descendants are *sealed*: any later mutation (`update(parameters:)`,
+  `update(modules:)`, `apply(...)`, `freeze`/`unfreeze`, `train`) traps with
+  `fatalError` rather than silently violating the `Sendable` invariant.
+- Only parameters that can be replaced (e.g. wrapped with `@ParameterInfo`) are
+  actually retyped to `MaterializedArray`; all others are still evaluated and
+  materialized, they just keep the `MLXArray` static type.
+- `parameters()` returns a `NestedDictionary<String, MaterializedArray>`, and
+  `parameterNBytes` gives the total size of all parameters.
+- Calling the wrapped module is added per layer shape via extensions.
+  `UnaryLayer` support ships in the package; other protocols (e.g. a
+  `LanguageModel` protocol in `mlx-swift-lm`) are wired up with an
+  `extension MaterializedModule: Proto where LayerType: Proto` that forwards to
+  `_base` (accessed via `@_spi(MaterializedModule) import MLXNN`).
+
+This is the recommended way to store a model in a `Sendable` type:
+
+```swift
+struct ModelContext: Sendable {
+    var model: any LanguageModel & Sendable
+    init(model: some LanguageModel) {
+        self.model = MaterializedModule(model)
+    }
 }
 ```
 
@@ -70,6 +160,8 @@ These types are marked `@unchecked Sendable` and are safe to share:
 
 | Type | Location | Notes |
 |------|----------|-------|
+| `MaterializedArray` | MaterializedArray.swift | Evaluated, immutable array snapshot |
+| `MaterializedModule` | MaterializedModule.swift | Wraps a Module with materialized params |
 | `Stream` | Stream.swift | Immutable after creation |
 | `Device` | Device.swift | Immutable after creation |
 | `MLXFastKernel` | MLXFastKernel.swift | Kernel definition is immutable |
@@ -261,14 +353,17 @@ Why this is better:
 
 - Create MLXArrays within the task/actor that uses them
 - Use `eval()` before extracting values to send across boundaries
+- Use `materialized()` / `materialize(_:)` to get a `Sendable` snapshot when you must share an array
+- Wrap models in `MaterializedModule` to share them across concurrency domains
 - Use actors to encapsulate MLX state
-- Pass Sendable types (`[Float]`, `Int`, etc.) between tasks
+- Pass Sendable types (`[Float]`, `Int`, `MaterializedArray`, etc.) between tasks
 - Use explicit stream parameters for device/stream control
 - Use `WiredMemoryTicket.withWiredLimit` for concurrent GPU workloads
 
 ### DON'T
 
-- Share MLXArray instances across tasks
+- Share ordinary (lazy) MLXArray instances across tasks — materialize them first
+- Retain the original reference after passing a module to `MaterializedModule` (it is sealed and will trap on mutation)
 - Assume lazy operations are thread-safe
 - Create arrays in one task and use in another
 - Ignore the evalLock when doing custom threading

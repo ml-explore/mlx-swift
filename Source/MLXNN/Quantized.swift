@@ -226,6 +226,10 @@ open class QuantizedEmbedding: Embedding, Quantized {
         super.init(weight: weight)
     }
 
+    open override var parameterCount: Int {
+        scales.size * groupSize
+    }
+
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
         let s = x.shape
         let x = x.flattened()
@@ -355,6 +359,25 @@ open class QuantizedLinear: Linear, Quantized {
         self.biases = biases
         self._globalScale.wrappedValue = globalScale
         super.init(weight: weight, bias: bias)
+    }
+
+    open override var parameterCount: Int {
+        // represent the count that the non-quantized Linear represents.
+        let outputDimensions = scales.dim(0)
+        let inputDimensions = scales.dim(1) * groupSize
+
+        if bias != nil {
+            return inputDimensions * outputDimensions + outputDimensions
+        } else {
+            return inputDimensions * outputDimensions
+        }
+    }
+
+    open override func describeExtra(_ indent: Int) -> String {
+        let outputDimensions = scales.dim(0)
+        let inputDimensions = scales.dim(1) * groupSize
+        return
+            "(inputDimensions=\(inputDimensions), outputDimensions=\(outputDimensions), bias=\(self.bias != nil))"
     }
 
     public override func unfreeze(

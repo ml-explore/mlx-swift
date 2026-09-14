@@ -41,6 +41,18 @@ respect to these trainable parameters.
 
 See <doc:training>
 
+### Concurrency
+
+A ``Module`` is not `Sendable` because its parameters are lazy, mutable
+`MLXArray` values.  To share a model across task or actor boundaries, wrap it
+in a ``MaterializedModule``, which evaluates every parameter, replaces the
+mutable ones with `MaterializedArray` snapshots, and seals the module against
+further mutation.
+
+```swift
+let model = MaterializedModule(Linear(10, 10))
+```
+
 ## Other MLX Packages
 
 - [MLX](mlx)
@@ -58,6 +70,7 @@ See <doc:training>
 ### Base Classes and Interfaces
 
 - ``Module``
+- ``MaterializedModule``
 - ``UnaryLayer``
 - ``Quantizable``
 
