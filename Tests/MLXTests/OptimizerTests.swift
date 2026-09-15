@@ -10,7 +10,6 @@ import XCTest
 class OptimizerTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     class ShapeModule: Module {

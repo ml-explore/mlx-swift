@@ -33,7 +33,3 @@ func assertNotEqual(
         array1.allClose(array2, rtol: rtol, atol: atol).item(Bool.self),
         "contents same:\n\(array1)\n\(array2)")
 }
-
-func setDefaultDevice() {
-    MLX.Device.setDefault(device: .gpu)
-}

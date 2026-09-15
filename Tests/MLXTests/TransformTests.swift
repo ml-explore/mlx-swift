@@ -10,7 +10,6 @@ import XCTest
 class TransformTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testEval() {

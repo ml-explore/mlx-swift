@@ -7,7 +7,6 @@ import XCTest
 class GraphUtilsTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testExportToDot() {
