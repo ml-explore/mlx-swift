@@ -23,6 +23,10 @@ import Foundation
 ///     try checkedEval(sum)
 /// }
 /// ```
+///
+/// Every operation evaluates on the CPU stream by default, which is where the
+/// ring, JACCL and MPI backends communicate.  NCCL, available only in a CUDA
+/// build, communicates on the GPU, so pass `stream: .gpu` for an NCCL group.
 public enum MLXDistributed {
 
     /// A communication backend.
@@ -146,7 +150,8 @@ public enum MLXDistributed {
     // (Group::communication_stream) is unreachable from Swift.  Python passes
     // stream=None and lets ring/mpi/jaccl pick the CPU and nccl pick the GPU.
     // The ring and JACCL backends both want the CPU, and the collectives have
-    // no GPU implementation, so the CPU stream is the default here.
+    // no GPU implementation, so the CPU stream is the default here.  A CUDA
+    // build with nccl has to pass .gpu, which MLXDistributed documents.
 
     /// All reduce sum.
     ///
