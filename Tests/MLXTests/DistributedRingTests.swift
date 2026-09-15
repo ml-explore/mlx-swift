@@ -10,35 +10,44 @@ import XCTest
 
 /// Multi process tests for the ring backend.
 ///
-/// These are skipped unless `MLX_TEST_DISTRIBUTED=1` is set, matching how the
-/// Python distributed tests are excluded from CI:
+/// These start additional processes and open loopback sockets, so they are
+/// skipped unless `MLX_TEST_DISTRIBUTED=1` is set:
 ///
 /// ```
-/// MLX_TEST_DISTRIBUTED=1 swift test --filter DistributedRingTests
+/// MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedRingTests \
+///     .../MLXTests.xctest
 /// ```
 ///
-/// The test process is itself a rank.  The first process picks two free ports
-/// on the loopback interface, writes a temporary hostfile, re-executes the
-/// test bundle as rank 1 and then runs as rank 0.  Both ranks execute the
-/// same body, so no separate worker executable is needed.
+/// The test process is itself rank 0.  It reserves a loopback port for every
+/// rank, writes a temporary hostfile, re-executes the test bundle once for each
+/// of the other ranks and then runs the same body.  There are three ranks so
+/// that the left and right neighbors of a rank are different processes.
 ///
 /// There is deliberately a single test method: MLX caches the group per
-/// process, so a second method would find the parent reusing the first ring
-/// while a freshly spawned child built a new one.  A single method also
-/// guarantees both ranks issue the same collectives in the same order, which
-/// the ring backend requires.
+/// process, so a second method would find rank 0 reusing the first ring while
+/// freshly spawned ranks built a new one.  A single method also guarantees
+/// every rank issues the same operations in the same order, which the ring
+/// backend requires.
 class DistributedRingTests: XCTestCase {
 
     static let testName = "DistributedRingTests/testRingCollectives"
+    static let rankCount = 3
+
+    /// How long the spawned ranks may run before the test process gives up.
+    static let timeout: TimeInterval = 120
+
+    /// Set in the environment of the ranks this test spawns.
+    static let spawnedRankVariable = "MLX_TEST_DISTRIBUTED_SPAWNED_RANK"
 
     func testRingCollectives() throws {
-        if ProcessInfo.processInfo.environment["MLX_RANK"] != nil {
-            // spawned as a rank -- the hostfile and rank are already set
+        let environment = ProcessInfo.processInfo.environment
+        if environment[Self.spawnedRankVariable] == "1" {
+            // spawned by rank 0 -- the hostfile and rank are already set
             try runRank()
             return
         }
 
-        guard ProcessInfo.processInfo.environment["MLX_TEST_DISTRIBUTED"] == "1" else {
+        guard environment["MLX_TEST_DISTRIBUTED"] == "1" else {
             throw XCTSkip(
                 "Set MLX_TEST_DISTRIBUTED=1 to run the multi process ring tests.")
         }
@@ -47,18 +56,25 @@ class DistributedRingTests: XCTestCase {
             throw XCTSkip("Could not locate the test bundle to re-execute as a rank.")
         }
 
-        guard let ports = reserveFreePorts(count: 2) else {
-            throw XCTSkip("Could not reserve two loopback ports.")
+        guard let ports = reserveFreePorts(count: Self.rankCount) else {
+            throw XCTSkip("Could not reserve \(Self.rankCount) loopback ports.")
         }
 
         let hostfile = try Self.writeHostfile(ports: ports)
         defer { try? FileManager.default.removeItem(at: hostfile) }
 
-        let child = try Self.spawnRank(1, runner: runner, hostfile: hostfile)
+        let spawned = (1 ..< Self.rankCount).map {
+            Self.makeRank($0, runner: runner, hostfile: hostfile)
+        }
+        let watchdog = Watchdog(spawned: spawned, timeout: Self.timeout)
         defer {
-            if child.isRunning {
-                child.terminate()
+            watchdog.disarm()
+            for process in spawned where process.isRunning {
+                process.terminate()
             }
+        }
+        for process in spawned {
+            try process.run()
         }
 
         setenv("MLX_HOSTFILE", hostfile.path, 1)
@@ -70,8 +86,12 @@ class DistributedRingTests: XCTestCase {
 
         try runRank()
 
-        child.waitUntilExit()
-        XCTAssertEqual(child.terminationStatus, 0, "rank 1 failed -- see its output above")
+        for (index, process) in spawned.enumerated() {
+            process.waitUntilExit()
+            XCTAssertEqual(
+                process.terminationStatus, 0,
+                "rank \(index + 1) failed -- see its output above")
+        }
     }
 
     /// The body every rank runs.
@@ -93,43 +113,79 @@ class DistributedRingTests: XCTestCase {
     }
 
     private func runRankBody(_ group: MLXDistributed.Group) throws {
-        print("[rank \(group.rank)] joined a group of size \(group.size)")
-        XCTAssertEqual(group.size, 2)
-        XCTAssertTrue(group.rank == 0 || group.rank == 1)
-
         let rank = group.rank
-        let other = 1 - rank
+        let size = group.size
+        print("[rank \(rank)] joined a group of size \(size)")
+        XCTAssertEqual(size, Self.rankCount)
+        XCTAssertTrue(rank >= 0 && rank < size)
 
-        // allSum: [1,2,3] * (rank + 1) summed is [3,6,9]
-        let x = MLXArray([1, 2, 3]).asType(.float32) * Float(rank + 1)
+        try reductions(group)
+
+        // every rank contributes base * (rank + 1)
+        let base = MLXArray([1, 2, 3]).asType(.float32)
+        let x = base * Float(rank + 1)
+
+        // allGather concatenates along the first axis in rank order
         assertEqual(
-            MLXDistributed.allSum(x, group: group),
-            MLXArray([3, 6, 9]).asType(.float32))
+            MLXDistributed.allGather(x, group: group),
+            concatenated((0 ..< size).map { base * Float($0 + 1) }))
 
-        // allMax picks the rank 1 contribution, allMin the rank 0 one
-        assertEqual(
-            MLXDistributed.allMax(x, group: group),
-            MLXArray([2, 4, 6]).asType(.float32))
-        assertEqual(
-            MLXDistributed.allMin(x, group: group),
-            MLXArray([1, 2, 3]).asType(.float32))
+        // send to both neighbors, one pair at a time so that every rank issues
+        // the same operations in the same order.  The ring backend connects
+        // only neighbors, and with three ranks the left and right ones differ.
+        for sender in 0 ..< size {
+            for receiver in [(sender + 1) % size, (sender + size - 1) % size] {
+                if rank == sender {
+                    try checkedEval(MLXDistributed.send(x, to: receiver, group: group))
+                } else if rank == receiver {
+                    let received = MLXDistributed.recvLike(x, from: sender, group: group)
+                    try checkedEval(received)
+                    assertEqual(received, base * Float(sender + 1))
+                }
+            }
+        }
+    }
 
-        // allGather concatenates along the first axis
-        let gathered = MLXDistributed.allGather(x, group: group)
-        XCTAssertEqual(gathered.shape, [6])
-        assertEqual(gathered, MLXArray([1, 2, 3, 2, 4, 6]).asType(.float32))
+    /// allSum, allMax and allMin across types and sizes, as in the Python
+    /// distributed tests.  The large sizes exercise the ring's chunked
+    /// transfers, which a handful of elements never reach.
+    private func reductions(_ group: MLXDistributed.Group) throws {
+        let rank = group.rank
+        let size = group.size
 
-        // send/recv: rank 0 sends, rank 1 receives, then the reverse
-        for sender in 0 ..< 2 {
-            if rank == sender {
-                let sent = MLXDistributed.send(x, to: other, group: group)
-                try checkedEval(sent)
-            } else {
-                let received = MLXDistributed.recvLike(x, from: other, group: group)
-                try checkedEval(received)
-                assertEqual(
-                    received,
-                    MLXArray([1, 2, 3]).asType(.float32) * Float(sender + 1))
+        let dtypes: [(DType, Float)] = [
+            (.int8, 0), (.uint8, 0), (.int32, 0), (.uint32, 0),
+            (.float32, 1e-6), (.float16, 5e-3), (.bfloat16, 1e-1),
+        ]
+        let shapes = [[7], [10], [1024], [1024, 1024]]
+        let key = MLXRandom.key(0)
+
+        for (dtype, rtol) in dtypes {
+            for shape in shapes {
+                // every rank generates the same array and contributes its row
+                let x = (MLXRandom.uniform(0 ..< 1, [size] + shape, key: key) * 10)
+                    .asType(dtype)
+                let name = "\(dtype) \(shape)"
+
+                let sum = MLXDistributed.allSum(x[rank], group: group)
+                let expected = x.sum(axis: 0)
+                var error = abs(sum - expected)
+                if rtol > 0 {
+                    error = error / abs(expected)
+                }
+                try checkedEval(error)
+                XCTAssertLessThanOrEqual(
+                    error.max().asType(.float32).item(Float.self), rtol, "allSum \(name)")
+
+                let maximum = MLXDistributed.allMax(x[rank], group: group)
+                try checkedEval(maximum)
+                XCTAssertTrue(
+                    (maximum .== x.max(axis: 0)).all().item(Bool.self), "allMax \(name)")
+
+                let minimum = MLXDistributed.allMin(x[rank], group: group)
+                try checkedEval(minimum)
+                XCTAssertTrue(
+                    (minimum .== x.min(axis: 0)).all().item(Bool.self), "allMin \(name)")
             }
         }
     }
@@ -159,38 +215,96 @@ class DistributedRingTests: XCTestCase {
         return url
     }
 
-    /// Re-execute the test bundle as the given rank.
-    private static func spawnRank(
+    /// Prepare the test bundle to be re-executed as the given rank.
+    ///
+    /// The environment is inherited without XCTest's own session variables.
+    /// Under `xcodebuild test` those make the spawned `xctest` wait for Xcode
+    /// instead of running the test named on its command line.
+    private static func makeRank(
         _ rank: Int, runner: (executable: URL, bundle: URL), hostfile: URL
-    ) throws -> Process {
+    ) -> Process {
         let process = Process()
         process.executableURL = runner.executable
         process.arguments = ["-XCTest", testName, runner.bundle.path]
 
-        var environment = ProcessInfo.processInfo.environment
+        var environment = ProcessInfo.processInfo.environment.filter { key, value in
+            !key.hasPrefix("XCTest") && !key.hasPrefix("XCInject")
+                && !(key == "DYLD_INSERT_LIBRARIES" && value.contains("XCTest"))
+        }
         environment["MLX_RANK"] = "\(rank)"
         environment["MLX_HOSTFILE"] = hostfile.path
-        environment["MLX_TEST_DISTRIBUTED"] = "1"
+        environment[spawnedRankVariable] = "1"
         process.environment = environment
-
-        try process.run()
 
         return process
     }
 }
 
-/// Reserve loopback ports by binding and immediately closing them.
+/// Ends the test process when a spawned rank fails or the ranks take too long.
+///
+/// Forming the ring blocks in `accept()` until every rank has connected, and
+/// MLX has no timeout, so a rank that dies on startup would leave rank 0
+/// waiting forever.  Nothing can interrupt that thread, so the watchdog
+/// terminates the spawned ranks and exits: a failure rather than a hang.
+private final class Watchdog: @unchecked Sendable {
+
+    private let lock = NSLock()
+    private var armed = true
+    private let spawned: [Process]
+
+    init(spawned: [Process], timeout: TimeInterval) {
+        self.spawned = spawned
+
+        for (index, process) in spawned.enumerated() {
+            process.terminationHandler = { [weak self] terminated in
+                let status = terminated.terminationStatus
+                guard status != 0 else { return }
+
+                // rank 0 may still report the failure itself, e.g. as an error
+                // from a collective, so give it a moment first
+                DispatchQueue.global().asyncAfter(deadline: .now() + 10) {
+                    self?.fire("rank \(index + 1) exited with status \(status)")
+                }
+            }
+        }
+
+        DispatchQueue.global().asyncAfter(deadline: .now() + timeout) { [weak self] in
+            self?.fire("the ranks did not finish within \(Int(timeout)) seconds")
+        }
+    }
+
+    func disarm() {
+        lock.withLock { armed = false }
+    }
+
+    private func fire(_ reason: String) {
+        guard lock.withLock({ armed }) else { return }
+
+        for process in spawned where process.isRunning {
+            process.terminate()
+        }
+        FileHandle.standardError.write(Data("DistributedRingTests: \(reason), exiting\n".utf8))
+        exit(1)
+    }
+}
+
+/// Reserve loopback ports by binding them and closing them again.
+///
+/// Every socket stays open until all ports are picked, so the same port is
+/// not handed out twice.
 ///
 /// This lives at file scope on purpose: inside an `XCTestCase` the name
 /// `bind` resolves to `NSObject.bind(_:to:withKeyPath:options:)` rather than
 /// the socket call.
 private func reserveFreePorts(count: Int) -> [Int]? {
     var ports = [Int]()
+    var sockets = [Int32]()
+    defer { sockets.forEach { close($0) } }
 
     for _ in 0 ..< count {
         let fd = socket(AF_INET, SOCK_STREAM, 0)
         guard fd >= 0 else { return nil }
-        defer { close(fd) }
+        sockets.append(fd)
 
         var reuse: Int32 = 1
         setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, socklen_t(MemoryLayout<Int32>.size))
