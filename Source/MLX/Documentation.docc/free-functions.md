@@ -125,8 +125,8 @@ operations as methods for convenience.
 - ``loadArraysAndMetadata(url:stream:progressHandler:)``
 - ``save(array:url:stream:)``
 - ``save(arrays:metadata:url:stream:)``
-- ``withLoadProgressHandler(_:_:)-(_,()throws->R)``
-- ``withLoadProgressHandler(_:_:)-(_,()async throws->R)``
+- ``withLoadProgressHandler(_:_:)-3ghip``
+- ``withLoadProgressHandler(_:_:)-8cm31``
 
 ### Logical
 
