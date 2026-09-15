@@ -137,24 +137,62 @@ final class SaveTests: XCTestCase {
 
             // A truncated file has to be reported either eagerly, while the header is
             // parsed (mlx >= 0.32.1 validates the tensor data offsets against the size of
-            // the file), or lazily, when the arrays are evaluated and the read fails
-            // (ml-explore/mlx#3742 + ml-explore/mlx-c#126).
-            var thrownError: Error?
+            // the file), or lazily, when the arrays are evaluated and the short read is
+            // turned into an error (ml-explore/mlx-c#130).
             do {
                 let loadedArrays = try MLX.loadArrays(url: safetensorsPath) { _ in }
                 try checkedEval(Array(loadedArrays.values) as [Any])
+                XCTFail("a truncated safetensors file must not load successfully")
             } catch {
-                thrownError = error
+                // expected
+            }
+        }
+    }
+
+    /// mlx validates the tensor data offsets against the size of the file while it parses
+    /// the header, so a file that is _already_ truncated fails eagerly. A file that is
+    /// truncated after the header is parsed can only be caught when the lazy arrays are
+    /// evaluated and the read comes up short -- `mlx_io_reader` turns that into an error
+    /// rather than leaving the destination buffer uninitialized (ml-explore/mlx-c#130).
+    public func testLoadFailsWhenFileIsTruncatedBeforeEvaluation() throws {
+        try MLX.Device.withDefaultDevice(.cpu) {
+            let safetensorsPath = temporaryPath.appending(
+                path: "truncated-late.safetensors",
+                directoryHint: .notDirectory
+            )
+
+            let arrays: [String: MLXArray] = [
+                "foo": MLX.ones([128, 128]),
+                "bar": MLX.zeros([64, 256]),
+            ]
+            try MLX.save(arrays: arrays, url: safetensorsPath)
+
+            // the header is parsed and validated against the size of the file here, but
+            // the tensor data is only read once the lazy arrays are evaluated
+            let recorder = ProgressRecorder()
+            let loadedArrays = try MLX.loadArrays(url: safetensorsPath) {
+                @Sendable in recorder.record($0)
+            }
+            let size = try XCTUnwrap(recorder.reported.first?.totalUnitCount)
+
+            // ... so truncate the file out from under them. `truncate()` shortens the
+            // inode the reader already has open, unlike a rewrite which may replace it.
+            XCTAssertEqual(
+                truncate(safetensorsPath.path(percentEncoded: false), off_t(size - 32)), 0)
+
+            do {
+                try checkedEval(Array(loadedArrays.values) as [Any])
+                XCTFail("evaluating arrays read from a truncated file must fail")
+            } catch {
+                // expected
             }
 
-            if thrownError == nil {
-                throw XCTSkip(
-                    """
-                    the vendored mlx/mlx-c silently ignores a failed read from a custom \
-                    io reader -- requires mlx >= 0.32.1 (ml-explore/mlx#3742) and \
-                    ml-explore/mlx-c#126
-                    """)
-            }
+            // the bytes that were read are still accounted for, monotonically, and the
+            // aggregate stops short of the original size of the file
+            let fractions = recorder.values
+            XCTAssertEqual(fractions, fractions.sorted())
+            XCTAssertEqual(fractions.first, 0)
+            XCTAssertLessThan(try XCTUnwrap(fractions.last), 1)
         }
     }
 
@@ -310,6 +348,29 @@ final class SaveTests: XCTestCase {
 
         let loaded = try loadArrays(data: data)
         assertEqual(try XCTUnwrap(loaded["big"]), try XCTUnwrap(arrays["big"]))
+    }
+
+    /// A truncated in-memory buffer must be reported as an error. The in-memory reader
+    /// reports a read that runs past the end of the buffer as zero bytes so that
+    /// `mlx_io_reader` throws instead of leaving the destination uninitialized
+    /// (ml-explore/mlx-c#130).
+    public func testLoadFromTruncatedDataFails() throws {
+        try MLX.Device.withDefaultDevice(.cpu) {
+            let arrays: [String: MLXArray] = [
+                "big": MLX.ones([64, 64])
+            ]
+
+            var data = try saveToData(arrays: arrays)
+            data.removeLast(32)
+
+            do {
+                let loaded = try loadArrays(data: data)
+                try checkedEval(Array(loaded.values) as [Any])
+                XCTFail("a truncated safetensors buffer must not load successfully")
+            } catch {
+                // expected
+            }
+        }
     }
 
 }

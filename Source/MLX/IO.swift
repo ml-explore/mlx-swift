@@ -9,11 +9,25 @@ import Foundation
 /// Progress callbacks for a given file are delivered in monotonically increasing
 /// order, but callbacks for _different_ files may interleave -- use ``url`` to
 /// aggregate progress when loading a model made of several `safetensors` shards.
+///
+/// Loading `safetensors` is lazy, which makes the reported progress approximate:
+///
+/// - It may stop short of `totalUnitCount`. Only arrays that are actually evaluated are
+///   read, so weights that are dropped before evaluation -- the ones a model's
+///   `sanitize(weights:metadata:)` discards, for example -- are never read at all. Treat
+///   the load returning as completion rather than waiting for ``fractionCompleted`` to
+///   reach `1`.
+/// - It counts bytes read rather than bytes of the file covered, so a region that happens
+///   to be read more than once is counted more than once. ``completedUnitCount`` is
+///   clamped to `totalUnitCount`, so ``fractionCompleted`` never exceeds `1`.
 public struct LoadProgress: Sendable, Equatable {
     /// The file being read.
     public let url: URL
 
+    /// Bytes read so far, clamped to ``totalUnitCount``.
     public let completedUnitCount: Int64
+
+    /// Size of the file in bytes.
     public let totalUnitCount: Int64
 
     public var fractionCompleted: Double {
@@ -28,7 +42,7 @@ public struct LoadProgress: Sendable, Equatable {
     }
 }
 
-/// Holder for the scoped ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` handler.
+/// Holder for the scoped ``withLoadProgressHandler(_:_:)-3ghip`` handler.
 enum LoadProgressHandler {
 
     /// The stack of installed handlers -- the innermost scope wins.
@@ -78,7 +92,7 @@ public func withLoadProgressHandler<R>(
 
 /// Evaluate the block with a scoped byte-progress handler for file loads (async).
 ///
-/// See ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` for details.
+/// See ``withLoadProgressHandler(_:_:)-3ghip`` for details.
 ///
 /// - Parameters:
 ///   - handler: the scoped progress handler
@@ -206,7 +220,7 @@ public func loadArray(url: URL, stream: StreamOrDevice = .cpu) throws -> MLXArra
 ///     - stream: stream or device to evaluate on
 ///
 /// - Note: when a scoped progress handler is installed with
-/// ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` this reports byte progress to it.
+/// ``withLoadProgressHandler(_:_:)-3ghip`` this reports byte progress to it.
 ///
 /// ### See Also
 /// - ``loadArray(url:stream:)``
@@ -245,11 +259,8 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///     - progressHandler: progress callback. This may be called from MLX worker threads.
-///       Progress is reported in byte chunks while the returned lazy arrays are evaluated.
-///
-/// ### See Also
-/// - ``loadArrays(url:stream:)``
-/// - ``loadArraysAndMetadata(url:stream:progressHandler:)``
+///       Progress is reported in byte chunks while the returned lazy arrays are evaluated,
+///       so it may stop short of the size of the file -- see ``LoadProgress``.
 public func loadArrays(
     url: URL, stream: StreamOrDevice = .cpu,
     progressHandler: @Sendable @escaping (LoadProgress) -> Void
@@ -266,7 +277,7 @@ public func loadArrays(
 ///     - stream: stream or device to evaluate on
 ///
 /// - Note: when a scoped progress handler is installed with
-/// ``withLoadProgressHandler(_:_:)-(_,()throws->R)`` this reports byte progress to it.
+/// ``withLoadProgressHandler(_:_:)-3ghip`` this reports byte progress to it.
 ///
 /// ### See Also
 /// - ``loadArrays(url:stream:)``
@@ -306,7 +317,8 @@ public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .cpu) throw
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///     - progressHandler: progress callback. This may be called from MLX worker threads.
-///       Progress is reported in byte chunks while the returned lazy arrays are evaluated.
+///       Progress is reported in byte chunks while the returned lazy arrays are evaluated,
+///       so it may stop short of the size of the file -- see ``LoadProgress``.
 ///
 /// ### See Also
 /// - ``loadArraysAndMetadata(url:stream:)``
@@ -418,44 +430,65 @@ private final class FileIOState {
         }
     }
 
-    func seek(offset newOffset: Int64, whence: Int32) {
-        lock.withLock {
+    /// Move the read position.
+    ///
+    /// Returns `0` on success and `-1` on failure; `CReader` turns a negative result into
+    /// a thrown error (ml-explore/mlx-c#130).
+    @discardableResult
+    func seek(offset newOffset: Int64, whence: Int32) -> Int32 {
+        lock.withLock { () -> Int32 in
+            let updated: Int64
             switch whence {
             case SEEK_SET:
-                offset = newOffset
+                updated = newOffset
             case SEEK_CUR:
-                offset += newOffset
+                updated = offset + newOffset
             case SEEK_END:
-                offset = totalUnitCount + newOffset
+                // offset is relative to the end of the file, not the current position.
+                updated = totalUnitCount + newOffset
             default:
-                break
+                return -1
             }
+            guard updated >= 0 else { return -1 }
+            offset = updated
+            return 0
         }
     }
 
-    func read(to data: UnsafeMutablePointer<CChar>?, count: Int) {
-        guard let data else { return }
+    /// Read `count` bytes at the current position and advance it.
+    ///
+    /// Returns the number of bytes actually read -- a short read makes `CReader` throw.
+    @discardableResult
+    func read(to data: UnsafeMutablePointer<CChar>?, count: Int) -> Int {
+        guard let data else { return 0 }
 
         let readOffset = lock.withLock {
             offset
         }
-        let bytesRead = read(to: data, count: count, offset: readOffset)
+        let bytesRead = readBytes(to: data, count: count, offset: readOffset)
 
         lock.withLock {
             offset += Int64(bytesRead)
         }
+
+        return bytesRead
     }
 
-    func read(to data: UnsafeMutablePointer<CChar>?, count: Int, offset readOffset: Int64) {
-        guard let data else { return }
-
-        _ = read(to: data, count: count, offset: readOffset)
-    }
-
+    /// Read `count` bytes at an absolute `offset`, leaving the current position alone.
+    ///
+    /// Returns the number of bytes actually read -- a short read makes `CReader` throw.
+    /// This is the path used to materialize lazily loaded arrays, so it is called from
+    /// MLX worker threads.
     @discardableResult
-    private func read(to data: UnsafeMutablePointer<CChar>, count: Int, offset readOffset: Int64)
-        -> Int
-    {
+    func read(to data: UnsafeMutablePointer<CChar>?, count: Int, offset readOffset: Int64) -> Int {
+        guard let data else { return 0 }
+
+        return readBytes(to: data, count: count, offset: readOffset)
+    }
+
+    private func readBytes(
+        to data: UnsafeMutablePointer<CChar>, count: Int, offset readOffset: Int64
+    ) -> Int {
         var totalRead = 0
         while totalRead < count {
             let chunkSize = min(count - totalRead, Self.maximumReadChunkSize)
@@ -524,39 +557,44 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
     } seek: { ptr, offset, whence in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
+        let updated: Int
         switch whence {
         case SEEK_SET:
-            state.offset = Int(offset)
+            updated = Int(offset)
         case SEEK_CUR:
-            state.offset += Int(offset)
+            updated = state.offset + Int(offset)
         case SEEK_END:
             // offset is relative to the end of the data, not the current position.
             // mlx's load_safetensors uses seek(0, end) + tell() to size the input.
-            state.offset = state.data.count + Int(offset)
+            updated = state.data.count + Int(offset)
         default:
-            break
+            return -1
         }
+        guard updated >= 0 else { return -1 }
+        state.offset = updated
+        return 0
+
     } read: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
-        if n + state.offset <= state.data.count {
-            guard let data = data else { return }
-            _ = state.data.withUnsafeBytes { buffer in
-                memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
-            }
-            state.offset += n
+        // report a short read as 0 bytes so that CReader throws rather than
+        // silently leaving the destination buffer uninitialized
+        guard let data, n > 0, n + state.offset <= state.data.count else { return 0 }
+        _ = state.data.withUnsafeBytes { buffer in
+            memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
         }
+        state.offset += n
+        return n
 
     } read_at_offset: { ptr, data, n, offset in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
-        if n + offset <= state.data.count {
-            guard let data = data else { return }
-            _ = state.data.withUnsafeBytes { buffer in
-                memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
-            }
-            state.offset = offset
+        guard let data, n > 0, n + offset <= state.data.count else { return 0 }
+        _ = state.data.withUnsafeBytes { buffer in
+            memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
         }
+        state.offset = offset
+        return n
 
     } write: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
@@ -564,6 +602,7 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         let buffer = UnsafeBufferPointer(start: data, count: n)
         state.data.append(buffer)
         state.offset += n
+        return n
 
     } label: { ptr in
         UnsafeRawPointer(label.utf8Start).assumingMemoryBound(to: Int8.self)
@@ -592,17 +631,19 @@ private func new_mlx_io_vtable_fileIO() -> mlx_io_vtable {
 
     } seek: { ptr, offset, whence in
         let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
-        state.seek(offset: Int64(offset), whence: whence)
+        return state.seek(offset: Int64(offset), whence: whence)
 
     } read: { ptr, data, n in
         let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
-        state.read(to: data, count: n)
+        return state.read(to: data, count: n)
 
     } read_at_offset: { ptr, data, n, offset in
         let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
-        state.read(to: data, count: n, offset: Int64(offset))
+        return state.read(to: data, count: n, offset: Int64(offset))
 
     } write: { _, _, _ in
+        // read only -- reporting 0 bytes written makes CWriter throw
+        return 0
 
     } label: { ptr in
         let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
