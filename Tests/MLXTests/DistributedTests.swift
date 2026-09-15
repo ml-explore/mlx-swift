@@ -19,6 +19,14 @@ class DistributedTests: XCTestCase {
         setDefaultDevice()
     }
 
+    /// The assertions here describe a group of size one, so they are not valid
+    /// in a multi process run -- see ``DistributedRingTests``.
+    override func setUpWithError() throws {
+        try XCTSkipIf(
+            ProcessInfo.processInfo.environment["MLX_TEST_DISTRIBUTED"] == "1",
+            "Single process assertions; skipped during a multi process run.")
+    }
+
     // MARK: - Availability
 
     func testIsAvailableLinks() {
