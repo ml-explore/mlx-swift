@@ -2,6 +2,7 @@
 
 import Foundation
 import MLX
+import MLXNN
 import XCTest
 
 #if canImport(Darwin)
@@ -131,6 +132,47 @@ class DistributedRingTests: XCTestCase {
                     received,
                     MLXArray([1, 2, 3]).asType(.float32) * Float(sender + 1))
             }
+        }
+
+        try shardedLayers(group: group, rank: rank)
+    }
+
+    /// Tensor parallelism: a sharded layer must reproduce the result of the
+    /// `Linear` it was built from.
+    ///
+    /// Every rank seeds identically so that the layer being sharded -- and the
+    /// expected result -- are the same everywhere.
+    private func shardedLayers(group: MLXDistributed.Group, rank: Int) throws {
+        try XCTContext.runActivity(named: "sharded linear layers") { _ in
+            MLXRandom.seed(42)
+            let linear = Linear(4, 8)
+            let x = MLXArray(0 ..< 12, [3, 4]).asType(.float32)
+
+            let expected = linear(x)
+            try checkedEval(expected)
+
+            // all-to-sharded: each rank holds half of the output dimensions and
+            // computes that slice of the result
+            let allToSharded = AllToShardedLinear(linear, group: group)
+            XCTAssertEqual(allToSharded.weight.shape, [4, 4])
+
+            let partial = allToSharded(x)
+            XCTAssertEqual(partial.shape, [3, 4])
+
+            // allGather concatenates along the first axis, so gather the
+            // transpose to reassemble the output columns in rank order
+            let reassembled = MLXDistributed.allGather(partial.T, group: group).T
+            try checkedEval(reassembled)
+            assertEqual(reassembled, expected)
+
+            // sharded-to-all: each rank holds half of the input dimensions and
+            // is fed the matching slice; the layer sums the partial products
+            let shardedToAll = ShardedToAllLinear(linear, group: group)
+            XCTAssertEqual(shardedToAll.weight.shape, [8, 2])
+
+            let combined = shardedToAll(x.split(parts: 2, axis: 1)[rank])
+            try checkedEval(combined)
+            assertEqual(combined, expected)
         }
     }
 
