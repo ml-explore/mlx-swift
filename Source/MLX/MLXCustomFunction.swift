@@ -1,17 +1,24 @@
 import Cmlx
 import Foundation
 
-public enum MLXCustomFunctionComponent {
-    case forward(([MLXArray]) -> [MLXArray])
-    case vjp(([MLXArray], [MLXArray]) -> [MLXArray])
+public enum MLXCustomFunctionComponent: Sendable {
+    case forward(@Sendable ([MLXArray]) -> [MLXArray])
+    case vjp(@Sendable ([MLXArray], [MLXArray], [MLXArray]) -> [MLXArray])
 }
 
-public func Forward(_ f: @escaping ([MLXArray]) -> [MLXArray]) -> MLXCustomFunctionComponent {
+public func Forward(_ f: @escaping @Sendable ([MLXArray]) -> [MLXArray]) -> MLXCustomFunctionComponent {
     .forward(f)
 }
 
-public func VJP(_ f: @escaping ([MLXArray], [MLXArray]) -> [MLXArray]) -> MLXCustomFunctionComponent
-{
+public func VJP(_ f: @escaping @Sendable (_ primals: [MLXArray], _ cotangents: [MLXArray]) -> [MLXArray]) -> MLXCustomFunctionComponent {
+    .vjp { primals, cotangents, _ in
+        f(primals, cotangents)
+    }
+}
+
+public func VJP(
+    _ f: @escaping @Sendable (_ primals: [MLXArray], _ cotangents: [MLXArray], _ outputs: [MLXArray]) -> [MLXArray]
+) -> MLXCustomFunctionComponent {
     .vjp(f)
 }
 
@@ -19,8 +26,8 @@ final class _CustomFunctionState: @unchecked Sendable {
 
     private let lock = NSLock()
 
-    private let forwardFn: ([MLXArray]) -> [MLXArray]
-    private let vjpFn: (([MLXArray], [MLXArray]) -> [MLXArray])?
+    private let forwardFn: @Sendable ([MLXArray]) -> [MLXArray]
+    private let vjpFn: (@Sendable ([MLXArray], [MLXArray], [MLXArray]) -> [MLXArray])?
 
     private var forwardClosure: mlx_closure!
     private var vjpClosure: mlx_closure_custom!
@@ -29,8 +36,8 @@ final class _CustomFunctionState: @unchecked Sendable {
     private var combined: mlx_closure!
 
     init(
-        forward: @escaping ([MLXArray]) -> [MLXArray],
-        vjp: (([MLXArray], [MLXArray]) -> [MLXArray])?
+        forward: @escaping @Sendable ([MLXArray]) -> [MLXArray],
+        vjp: (@Sendable ([MLXArray], [MLXArray], [MLXArray]) -> [MLXArray])?
     ) {
         self.forwardFn = forward
         self.vjpFn = vjp
@@ -53,7 +60,7 @@ final class _CustomFunctionState: @unchecked Sendable {
                     Unmanaged<AnyObject>
                     .fromOpaque(payload!)
                     .takeUnretainedValue()
-                    as! ([MLXArray]) -> [MLXArray]
+                    as! @Sendable ([MLXArray]) -> [MLXArray]
 
                 let inp = mlx_vector_array_values(inputs)
                 let result = swiftFn(inp)
@@ -67,16 +74,17 @@ final class _CustomFunctionState: @unchecked Sendable {
 
         if let vjpFn = vjpFn {
             vjpClosure = mlx_closure_custom_new_func_payload(
-                { out, primals, cotangents, _, payload in
+                { out, primals, cotangents, outputs, payload in
                     let fn =
                         Unmanaged<AnyObject>
                         .fromOpaque(payload!)
                         .takeUnretainedValue()
-                        as! ([MLXArray], [MLXArray]) -> [MLXArray]
+                        as! @Sendable ([MLXArray], [MLXArray], [MLXArray]) -> [MLXArray]
 
                     let p = mlx_vector_array_values(primals)
                     let c = mlx_vector_array_values(cotangents)
-                    out!.pointee = new_mlx_vector_array(fn(p, c))
+                    let o = mlx_vector_array_values(outputs)
+                    out!.pointee = new_mlx_vector_array(fn(p, c, o))
                     return 0
                 },
                 Unmanaged.passRetained(vjpFn as AnyObject).toOpaque()
@@ -122,10 +130,10 @@ public enum MLXCustomFunctionBuilder {
 
         public static func buildBlock(
             _ components: MLXCustomFunctionComponent...
-        ) -> ([MLXArray]) -> [MLXArray] {
+        ) -> @Sendable ([MLXArray]) -> [MLXArray] {
 
-            var forwardFn: (([MLXArray]) -> [MLXArray])?
-            var vjpFn: (([MLXArray], [MLXArray]) -> [MLXArray])?
+            var forwardFn: (@Sendable ([MLXArray]) -> [MLXArray])?
+            var vjpFn: (@Sendable ([MLXArray], [MLXArray], [MLXArray]) -> [MLXArray])?
 
             for c in components {
                 switch c {
@@ -146,7 +154,7 @@ public enum MLXCustomFunctionBuilder {
 }
 
 public func CustomFunction(
-    @MLXCustomFunctionBuilder.Builder _ build: () -> ([MLXArray]) -> [MLXArray]
-) -> ([MLXArray]) -> [MLXArray] {
+    @MLXCustomFunctionBuilder.Builder _ build: () -> @Sendable ([MLXArray]) -> [MLXArray]
+) -> @Sendable ([MLXArray]) -> [MLXArray] {
     build()
 }
