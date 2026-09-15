@@ -214,70 +214,64 @@ METAL_FUNC constexpr auto sum(T x, Us... us) {
 #pragma METAL internals : disable
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsBase.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsBase.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsBase.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsBase.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.42.0.n257DK/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.883/include/metal/__exec/units.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTraits.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.42.0.n257DK/Metal.xctoolchain/usr/metal/32023/lib/clang/32023.883/include/metal/__exec/units.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTraits.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTraits.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTypes.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTraits.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTypes.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTypes.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsUtility.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsTypes.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsUtility.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsUtility.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsConvolution2dImpl.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsUtility.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsConvolution2dImpl.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsConvolution2dImpl.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsConvolution2d.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsConvolution2dImpl.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsConvolution2d.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsConvolution2d.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsAvailability.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsConvolution2d.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsAvailability.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsAvailability.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsMatMul2dImpl.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsAvailability.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsMatMul2dImpl.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsMatMul2dImpl.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsMatMul2d.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/__impl/MPPTensorOpsMatMul2dImpl.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsMatMul2d.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsMatMul2d.h"
+// Contents from "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MetalPerformancePrimitives.h"
 ///////////////////////////////////////////////////////////////////////////////
 
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MPPTensorOpsMatMul2d.h"
-
-///////////////////////////////////////////////////////////////////////////////
-// Contents from "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MetalPerformancePrimitives.h"
-///////////////////////////////////////////////////////////////////////////////
-
-#line 1 "/Applications/XcodeWonderF.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MetalPerformancePrimitives.h"
+#line 1 "/Applications/XcodeMeadow.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/MetalPerformancePrimitives.framework/Headers/MetalPerformancePrimitives.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contents from "mlx/backend/metal/kernels/steel/attn/nax.h"
