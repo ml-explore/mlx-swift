@@ -116,6 +116,11 @@ jobs:
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
+      - name: Run Distributed Tests SwiftPM (Xcode, macOS)
+        shell: sh
+        run: |
+          MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedRingTests ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
+
       - name: Build xcodeproj (Xcode, macOS)
         shell: sh
         run: |
