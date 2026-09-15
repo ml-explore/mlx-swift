@@ -6,6 +6,8 @@ import XCTest
 
 #if canImport(Darwin)
     import Darwin
+#elseif canImport(Glibc)
+    import Glibc
 #endif
 
 /// Multi process tests for the ring backend.
@@ -302,7 +304,15 @@ private func reserveFreePorts(count: Int) -> [Int]? {
     defer { sockets.forEach { close($0) } }
 
     for _ in 0 ..< count {
-        let fd = socket(AF_INET, SOCK_STREAM, 0)
+        // Glibc types SOCK_STREAM as an enum rather than the Int32 that
+        // socket() takes.
+        #if canImport(Darwin)
+            let socketType = SOCK_STREAM
+        #else
+            let socketType = Int32(SOCK_STREAM.rawValue)
+        #endif
+
+        let fd = socket(AF_INET, socketType, 0)
         guard fd >= 0 else { return nil }
         sockets.append(fd)
 
