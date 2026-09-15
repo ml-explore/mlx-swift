@@ -61,7 +61,7 @@ set(MLX_BUILD_PYTHON_BINDINGS OFF)
 FetchContent_Declare(
   mlx
   GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
-  GIT_TAG "1f8e74e3f12f31365464a6867c6579f0e9b29d85"
+  GIT_TAG "v0.32.2"
   PATCH_COMMAND ${mlx_patch})
 FetchContent_MakeAvailable(mlx)
 

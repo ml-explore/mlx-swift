@@ -25,25 +25,6 @@ git -C _deps/mlx-src apply --reverse --check "$PWD/../cmake/mlx.patch" || {
 }
 
 ninja
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
-./example1 --device gpu
-echo ===================
 ./example1 --device gpu
 ./tutorial --device gpu
 popd
