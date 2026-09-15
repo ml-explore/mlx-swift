@@ -103,6 +103,14 @@ public enum MLXDistributed {
 
     // MARK: - Collectives
 
+    // Note: mlx-c has no representation for an "unspecified" stream --
+    // mlx_stream_get_() rejects a null handle -- so the backend's own default
+    // (Group::communication_stream) is unreachable from Swift.  Python passes
+    // stream=None and lets ring/mpi/jaccl pick the CPU and nccl pick the GPU.
+    // The ring and JACCL backends both want the CPU, and the collectives have
+    // no GPU implementation, so the CPU stream is the default here.
+
+
     /// All reduce sum.
     ///
     /// Sum `x` across all processes in the group.
@@ -112,7 +120,7 @@ public enum MLXDistributed {
     ///   - group: the group, or `nil` to use the global group
     ///   - stream: stream to evaluate on
     public static func allSum(
-        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_all_sum(&result, x.ctx, group.groupCtx, stream.ctx)
@@ -126,7 +134,7 @@ public enum MLXDistributed {
     ///   - group: the group, or `nil` to use the global group
     ///   - stream: stream to evaluate on
     public static func allMax(
-        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_all_max(&result, x.ctx, group.groupCtx, stream.ctx)
@@ -140,7 +148,7 @@ public enum MLXDistributed {
     ///   - group: the group, or `nil` to use the global group
     ///   - stream: stream to evaluate on
     public static func allMin(
-        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_all_min(&result, x.ctx, group.groupCtx, stream.ctx)
@@ -154,7 +162,7 @@ public enum MLXDistributed {
     ///   - group: the group, or `nil` to use the global group
     ///   - stream: stream to evaluate on
     public static func allGather(
-        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_all_gather(&result, x.ctx, group.groupCtx, stream.ctx)
@@ -174,7 +182,7 @@ public enum MLXDistributed {
     ///   - group: the group, or `nil` to use the global group
     ///   - stream: stream to evaluate on
     public static func sumScatter(
-        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_sum_scatter(&result, x.ctx, group.groupCtx, stream.ctx)
@@ -192,7 +200,7 @@ public enum MLXDistributed {
     ///   - stream: stream to evaluate on
     /// - Returns: an array identical to `x` which, when evaluated, performs the send
     public static func send(
-        _ x: MLXArray, to dst: Int, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, to dst: Int, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_send(&result, x.ctx, Int32(dst), group.groupCtx, stream.ctx)
@@ -209,7 +217,7 @@ public enum MLXDistributed {
     ///   - stream: stream to evaluate on
     public static func recv(
         _ shape: [Int], dtype: DType, from src: Int, group: Group? = nil,
-        stream: StreamOrDevice = .default
+        stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         let shape = shape.asInt32
@@ -226,7 +234,7 @@ public enum MLXDistributed {
     ///   - group: the group, or `nil` to use the global group
     ///   - stream: stream to evaluate on
     public static func recvLike(
-        _ x: MLXArray, from src: Int, group: Group? = nil, stream: StreamOrDevice = .default
+        _ x: MLXArray, from src: Int, group: Group? = nil, stream: StreamOrDevice = .cpu
     ) -> MLXArray {
         var result = mlx_array_new()
         mlx_distributed_recv_like(&result, x.ctx, Int32(src), group.groupCtx, stream.ctx)

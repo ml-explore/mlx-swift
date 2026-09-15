@@ -279,7 +279,7 @@ open class ShardedToAllLinear: Module, UnaryLayer {
 ///   - stream: stream to evaluate on
 public func averageGradients(
     _ gradients: ModuleParameters, group: MLXDistributed.Group? = nil,
-    allReduceSize: Int = 32 * 1024 * 1024, stream: StreamOrDevice = .default
+    allReduceSize: Int = 32 * 1024 * 1024, stream: StreamOrDevice = .cpu
 ) -> ModuleParameters {
     let group = group ?? MLXDistributed.initialize()
     let size = group.size
