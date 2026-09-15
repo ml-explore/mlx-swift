@@ -57,40 +57,43 @@ class DistributedTests: XCTestCase {
     // MARK: - Group
 
     func testDefaultGroupIsSingleton() throws {
-        let group = try XCTUnwrap(MLXDistributed.initialize())
+        let group = try MLXDistributed.initialize()
         XCTAssertEqual(group.rank, 0)
         XCTAssertEqual(group.size, 1)
     }
 
-    /// A strict init returns nil rather than a group with a null handle whose
-    /// rank and size would silently read as zero.
-    func testStrictInitializeReturnsNil() {
-        var group: MLXDistributed.Group?
-        XCTAssertThrowsError(
-            try withError {
-                group = MLXDistributed.initialize(backend: .any, strict: true)
-            })
-        XCTAssertNil(group)
-    }
-
-    /// A strict init reports an error when no backend can form a group.
+    /// A strict init throws when no backend can form a group.
     ///
     /// Note this uses `.any`: MLX caches successfully registered groups per
     /// backend name, but never caches under "any" when initialization fails,
     /// so this is independent of the order the tests run in.
-    func testStrictInitializeReportsError() {
-        XCTAssertThrowsError(
-            try withError {
-                MLXDistributed.initialize(backend: .any, strict: true)
-            })
+    func testStrictInitializeThrows() {
+        XCTAssertThrowsError(try MLXDistributed.initialize(backend: .any, strict: true))
     }
 
-    func testSplitSingletonGroupReportsError() throws {
-        let group = try XCTUnwrap(MLXDistributed.initialize())
-        XCTAssertThrowsError(
-            try withError {
-                group.split(color: 0)
-            })
+    /// A backend that is configured but cannot form its group throws even when
+    /// the init is not strict -- here the ring backend with a missing hostfile.
+    func testInitializeThrowsWhenConfiguredBackendFails() throws {
+        let environment = ProcessInfo.processInfo.environment
+        try XCTSkipIf(
+            environment["MLX_HOSTFILE"] != nil || environment["MLX_RANK"] != nil,
+            "MLX_HOSTFILE or MLX_RANK is already set")
+
+        let hostfile = FileManager.default.temporaryDirectory
+            .appendingPathComponent("missing-hostfile-\(UUID().uuidString).json")
+        setenv("MLX_HOSTFILE", hostfile.path, 1)
+        setenv("MLX_RANK", "0", 1)
+        defer {
+            unsetenv("MLX_HOSTFILE")
+            unsetenv("MLX_RANK")
+        }
+
+        XCTAssertThrowsError(try MLXDistributed.initialize(backend: .any))
+    }
+
+    func testSplitSingletonGroupThrows() throws {
+        let group = try MLXDistributed.initialize()
+        XCTAssertThrowsError(try group.split(color: 0))
     }
 
     // MARK: - Collectives

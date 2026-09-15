@@ -7,17 +7,22 @@ import Foundation
 ///
 /// This mirrors `mlx.core.distributed` in the Python API.
 ///
-/// Like the rest of the MLX Swift API these functions do not `throw`.  Errors
-/// raised by MLX -- e.g. sending in a group of size one -- are reported through
-/// the standard error handling machinery:
+/// Forming a group can fail as soon as it is attempted, so
+/// ``initialize(backend:strict:)`` and ``Group/split(color:key:)`` throw.
+///
+/// The collectives and the point to point operations are lazy like every
+/// other MLX operation.  Invalid arguments -- e.g. sending in a group of size
+/// one -- are reported when the operation is created, and communication
+/// failures when its result is evaluated.  Use ``withError(_:)-2wfiu`` and
+/// ``checkedEval(_:)-(Any...)`` to receive either as a Swift error:
 ///
 /// ```swift
-/// let group = try withError { MLXDistributed.initialize(strict: true) }
+/// let group = try MLXDistributed.initialize(strict: true)
+/// try withError {
+///     let sum = MLXDistributed.allSum(x, group: group)
+///     try checkedEval(sum)
+/// }
 /// ```
-///
-/// ### See Also
-/// - ``withError(_:)-2wfiu``
-/// - ``checkedEval(_:)-(Any...)``
 public enum MLXDistributed {
 
     /// A communication backend.
@@ -75,49 +80,63 @@ public enum MLXDistributed {
         /// the smaller the rank.  If the key is negative the rank in the
         /// current group is used.
         ///
+        /// Throws if the group cannot be split.  The ring and JACCL backends do
+        /// not support splitting, and neither does a group of size one.
+        ///
         /// - Parameters:
         ///   - color: a value to group processes into subgroups
         ///   - key: a key to optionally change the rank ordering of the processes
-        /// Returns `nil` if the group cannot be split -- an empty group, for
-        /// example, cannot be split further.
-        public func split(color: Int, key: Int = -1) -> Group? {
+        /// - Returns: the subgroup this process belongs to
+        public func split(color: Int, key: Int = -1) throws -> Group {
             var result = mlx_distributed_group_new()
-            mlx_distributed_group_split(&result, ctx, Int32(color), Int32(key))
-            guard result.ctx != nil else { return nil }
+            do {
+                try withError {
+                    _ = mlx_distributed_group_split(&result, ctx, Int32(color), Int32(key))
+                }
+            } catch {
+                mlx_distributed_group_free(result)
+                throw error
+            }
             return Group(result)
         }
     }
 
     /// Initialize the distributed backend and return the global group.
     ///
-    /// Repeated calls return the same group for a given backend.  If no
-    /// backend can be initialized and `strict` is `false` this returns an
-    /// empty group with `rank == 0` and `size == 1`.
+    /// If no backend is configured and `strict` is `false` this returns a
+    /// group of size one, in which the collectives return their input
+    /// unchanged, so the same code also runs as a single process.  Forming a
+    /// real group waits for the other processes to connect.
+    ///
+    /// Throws if the backend cannot be initialized: when `strict` is `true` and
+    /// no backend is configured, and -- even when `strict` is `false` -- when a
+    /// backend is configured but cannot form its group, e.g. the ring backend
+    /// with a malformed `MLX_HOSTFILE`.
+    ///
+    /// MLX caches the group for each backend for the life of the process,
+    /// including the group of size one that a non-strict call falls back to,
+    /// and a later strict call for that backend returns the cached group
+    /// instead of throwing.  A non-strict ``Backend/any`` that finds no backend
+    /// caches its fallback under ``Backend/jaccl``.  Initialize strictly
+    /// before anything else initializes the backend.
     ///
     /// - Parameters:
     ///   - backend: the backend to use, defaulting to ``Backend/any``
-    ///   - strict: if `true` report an error when no backend can be initialized
-    /// Returns `nil` if the backend could not be initialized, which happens
-    /// when `strict` is `true` and no backend can form a group.  A non-strict
-    /// initialize yields an empty group of size one rather than `nil`.
+    ///   - strict: if `true`, throw rather than fall back to a group of size one
+    ///     when no backend can be initialized
+    /// - Returns: the global group
     @discardableResult
-    public static func initialize(backend: Backend = .any, strict: Bool = false) -> Group? {
+    public static func initialize(backend: Backend = .any, strict: Bool = false) throws -> Group {
         var result = mlx_distributed_group_new()
-        mlx_distributed_init(&result, strict, backend.rawValue)
-        guard result.ctx != nil else { return nil }
-        return Group(result)
-    }
-
-    /// The global group.
-    ///
-    /// Equivalent to ``initialize(backend:strict:)`` without `strict`, which
-    /// yields an empty group of size one when no backend is available.  Traps
-    /// in the event MLX cannot produce a group at all.
-    public static var globalGroup: Group {
-        guard let group = initialize() else {
-            preconditionFailure("MLX could not create a distributed group")
+        do {
+            try withError {
+                _ = mlx_distributed_init(&result, strict, backend.rawValue)
+            }
+        } catch {
+            mlx_distributed_group_free(result)
+            throw error
         }
-        return group
+        return Group(result)
     }
 
     // MARK: - Collectives

@@ -81,13 +81,9 @@ class DistributedRingTests: XCTestCase {
     /// calls `fatalError()` and the message never reaches XCTest.
     private func runRank() throws {
         do {
-            // a failed init returns nil rather than a group whose rank and
-            // size silently read as zero
-            let group = try withError {
-                MLXDistributed.initialize(backend: .ring, strict: true)
-            }
+            let group = try MLXDistributed.initialize(backend: .ring, strict: true)
             try withError {
-                try runRankBody(XCTUnwrap(group))
+                try runRankBody(group)
             }
         } catch {
             let rank = ProcessInfo.processInfo.environment["MLX_RANK"] ?? "?"
