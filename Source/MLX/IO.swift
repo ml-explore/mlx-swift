@@ -3,6 +3,108 @@
 import Cmlx
 import Foundation
 
+/// Byte-level progress for loading arrays from disk.
+///
+/// `completedUnitCount` and `totalUnitCount` are bytes and describe a single file.
+/// Progress callbacks for a given file are delivered in monotonically increasing
+/// order, but callbacks for _different_ files may interleave -- use ``url`` to
+/// aggregate progress when loading a model made of several `safetensors` shards.
+///
+/// Loading `safetensors` is lazy, which makes the reported progress approximate:
+///
+/// - It may stop short of `totalUnitCount`. Only arrays that are actually evaluated are
+///   read, so weights that are dropped before evaluation -- the ones a model's
+///   `sanitize(weights:metadata:)` discards, for example -- are never read at all. Treat
+///   the load returning as completion rather than waiting for ``fractionCompleted`` to
+///   reach `1`.
+/// - It counts bytes read rather than bytes of the file covered, so a region that happens
+///   to be read more than once is counted more than once. ``completedUnitCount`` is
+///   clamped to `totalUnitCount`, so ``fractionCompleted`` never exceeds `1`.
+public struct LoadProgress: Sendable, Equatable {
+    /// The file being read.
+    public let url: URL
+
+    /// Bytes read so far, clamped to ``totalUnitCount``.
+    public let completedUnitCount: Int64
+
+    /// Size of the file in bytes.
+    public let totalUnitCount: Int64
+
+    public var fractionCompleted: Double {
+        guard totalUnitCount > 0 else { return 0 }
+        return min(1, max(0, Double(completedUnitCount) / Double(totalUnitCount)))
+    }
+
+    public init(url: URL, completedUnitCount: Int64, totalUnitCount: Int64) {
+        self.url = url
+        self.completedUnitCount = completedUnitCount
+        self.totalUnitCount = totalUnitCount
+    }
+}
+
+/// Holder for the scoped ``withLoadProgressHandler(_:_:)-3ghip`` handler.
+enum LoadProgressHandler {
+
+    /// The stack of installed handlers -- the innermost scope wins.
+    @TaskLocal
+    static var handlers: [@Sendable (LoadProgress) -> Void] = []
+
+    static var current: (@Sendable (LoadProgress) -> Void)? {
+        handlers.last
+    }
+}
+
+/// Evaluate the block with a scoped byte-progress handler for file loads.
+///
+/// Any ``loadArrays(url:stream:)`` or ``loadArraysAndMetadata(url:stream:)`` performed
+/// inside `body` reports byte progress to `handler`, without the call site having to pass
+/// a progress handler explicitly. This makes it possible to drive a precise loading
+/// progress bar for code -- such as a model loading library -- that you do not control:
+///
+/// ```swift
+/// let tracker = LoadProgressTracker(totalBytes: totalBytesOfSafetensors(in: directory))
+/// let model = try withLoadProgressHandler({ tracker.update($0) }) {
+///     try loadModel(from: directory)
+/// }
+/// ```
+///
+/// Loading is lazy: progress is reported as the returned arrays are evaluated, so `body`
+/// should include the evaluation of the loaded arrays. Arrays that are never evaluated
+/// are never read, so the reported progress may legitimately stop short of the file size.
+///
+/// - Note: `handler` is called from MLX worker threads, potentially concurrently for
+/// different files, and is on the critical path of the read. It should be cheap and
+/// must not call back into MLX loading.
+///
+/// - Parameters:
+///   - handler: the scoped progress handler
+///   - body: the code where the handler is to be active
+///
+/// ### See Also
+/// - ``loadArrays(url:stream:progressHandler:)``
+public func withLoadProgressHandler<R>(
+    _ handler: @escaping @Sendable (LoadProgress) -> Void, _ body: () throws -> R
+) rethrows -> R {
+    try LoadProgressHandler.$handlers.withValue(LoadProgressHandler.handlers + [handler]) {
+        try body()
+    }
+}
+
+/// Evaluate the block with a scoped byte-progress handler for file loads (async).
+///
+/// See ``withLoadProgressHandler(_:_:)-3ghip`` for details.
+///
+/// - Parameters:
+///   - handler: the scoped progress handler
+///   - body: the code where the handler is to be active
+public func withLoadProgressHandler<R>(
+    _ handler: @escaping @Sendable (LoadProgress) -> Void, _ body: () async throws -> R
+) async rethrows -> R {
+    try await LoadProgressHandler.$handlers.withValue(LoadProgressHandler.handlers + [handler]) {
+        try await body()
+    }
+}
+
 public enum LoadSaveError: Error {
     case unableToOpen(URL, String)
     case unknownExtension(String)
@@ -117,6 +219,9 @@ public func loadArray(url: URL, stream: StreamOrDevice = .cpu) throws -> MLXArra
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
 ///
+/// - Note: when a scoped progress handler is installed with
+/// ``withLoadProgressHandler(_:_:)-3ghip`` this reports byte progress to it.
+///
 /// ### See Also
 /// - ``loadArray(url:stream:)``
 /// - ``loadArraysAndMetadata(url:stream:)``
@@ -128,6 +233,10 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
 
     switch url.pathExtension {
     case "safetensors":
+        if let progressHandler = LoadProgressHandler.current {
+            return try loadArrays(url: url, stream: stream, progressHandler: progressHandler)
+        }
+
         var r0 = mlx_map_string_to_array_new()
         var r1 = mlx_map_string_to_string_new()
         defer { mlx_map_string_to_array_free(r0) }
@@ -143,11 +252,32 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
     }
 }
 
+/// Load dictionary of ``MLXArray`` from a `safetensors` file, reporting byte progress as
+/// lazy arrays are evaluated.
+///
+/// - Parameters:
+///     - url: URL of file to load
+///     - stream: stream or device to evaluate on
+///     - progressHandler: progress callback. This may be called from MLX worker threads.
+///       Progress is reported in byte chunks while the returned lazy arrays are evaluated,
+///       so it may stop short of the size of the file -- see ``LoadProgress``.
+public func loadArrays(
+    url: URL, stream: StreamOrDevice = .cpu,
+    progressHandler: @Sendable @escaping (LoadProgress) -> Void
+) throws -> [String: MLXArray] {
+    let (arrays, _) = try loadArraysAndMetadata(
+        url: url, stream: stream, progressHandler: progressHandler)
+    return arrays
+}
+
 /// Load dictionary of ``MLXArray`` and metadata `[String:String]` from a `safetensors` file.
 ///
 /// - Parameters:
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
+///
+/// - Note: when a scoped progress handler is installed with
+/// ``withLoadProgressHandler(_:_:)-3ghip`` this reports byte progress to it.
 ///
 /// ### See Also
 /// - ``loadArrays(url:stream:)``
@@ -160,6 +290,11 @@ public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .cpu) throw
 
     switch url.pathExtension {
     case "safetensors":
+        if let progressHandler = LoadProgressHandler.current {
+            return try loadArraysAndMetadata(
+                url: url, stream: stream, progressHandler: progressHandler)
+        }
+
         var r0 = mlx_map_string_to_array_new()
         var r1 = mlx_map_string_to_string_new()
         defer { mlx_map_string_to_array_free(r0) }
@@ -167,6 +302,45 @@ public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .cpu) throw
 
         _ = try withError {
             mlx_load_safetensors(&r0, &r1, path.cString(using: .utf8), stream.ctx)
+        }
+
+        return (mlx_map_array_values(r0), mlx_map_string_values(r1))
+    default:
+        throw LoadSaveError.unknownExtension(url.pathExtension)
+    }
+}
+
+/// Load dictionary of ``MLXArray`` and metadata from a `safetensors` file, reporting byte
+/// progress as lazy arrays are evaluated.
+///
+/// - Parameters:
+///     - url: URL of file to load
+///     - stream: stream or device to evaluate on
+///     - progressHandler: progress callback. This may be called from MLX worker threads.
+///       Progress is reported in byte chunks while the returned lazy arrays are evaluated,
+///       so it may stop short of the size of the file -- see ``LoadProgress``.
+///
+/// ### See Also
+/// - ``loadArraysAndMetadata(url:stream:)``
+/// - ``loadArrays(url:stream:progressHandler:)``
+public func loadArraysAndMetadata(
+    url: URL, stream: StreamOrDevice = .cpu,
+    progressHandler: @Sendable @escaping (LoadProgress) -> Void
+) throws -> ([String: MLXArray], [String: String]) {
+    precondition(url.isFileURL)
+
+    switch url.pathExtension {
+    case "safetensors":
+        var r0 = mlx_map_string_to_array_new()
+        var r1 = mlx_map_string_to_string_new()
+        defer { mlx_map_string_to_array_free(r0) }
+        defer { mlx_map_string_to_string_free(r1) }
+
+        let reader = try new_mlx_io_reader_fileIO(url, progressHandler: progressHandler)
+        defer { mlx_io_reader_free(reader) }
+
+        _ = try withError {
+            mlx_load_safetensors_reader(&r0, &r1, reader, stream.ctx)
         }
 
         return (mlx_map_array_values(r0), mlx_map_string_values(r1))
@@ -184,6 +358,181 @@ private class IOState {
     internal init(offset: Int = 0, data: Data = Data()) {
         self.offset = offset
         self.data = data
+    }
+}
+
+private final class FileIOState {
+    private static let maximumReadChunkSize = 4 * 1024 * 1024
+
+    private let descriptor: CInt
+    private let lock = NSLock()
+    private let progressLock = NSLock()
+    private var offset: Int64 = 0
+    private var completedUnitCount: Int64 = 0
+    private var readError: String?
+    private let progressHandler: @Sendable (LoadProgress) -> Void
+    private let labelPointer: UnsafeMutablePointer<CChar>
+    private let url: URL
+
+    let totalUnitCount: Int64
+
+    init(url: URL, progressHandler: @Sendable @escaping (LoadProgress) -> Void) throws {
+        let path = url.path(percentEncoded: false)
+        let descriptor = path.withCString { open($0, O_RDONLY) }
+        guard descriptor >= 0 else {
+            throw LoadSaveError.unableToOpen(url, String(cString: strerror(errno)))
+        }
+
+        var statBuffer = stat()
+        guard fstat(descriptor, &statBuffer) == 0 else {
+            let message = String(cString: strerror(errno))
+            close(descriptor)
+            throw LoadSaveError.unableToOpen(url, message)
+        }
+
+        guard let labelPointer = strdup("file \(path)") else {
+            close(descriptor)
+            throw LoadSaveError.unableToOpen(url, String(cString: strerror(errno)))
+        }
+
+        self.descriptor = descriptor
+        self.totalUnitCount = max(0, Int64(statBuffer.st_size))
+        self.progressHandler = progressHandler
+        self.labelPointer = labelPointer
+        self.url = url
+
+        progressHandler(
+            .init(url: url, completedUnitCount: 0, totalUnitCount: totalUnitCount))
+    }
+
+    deinit {
+        close(descriptor)
+        free(labelPointer)
+    }
+
+    var isOpen: Bool {
+        descriptor >= 0
+    }
+
+    var good: Bool {
+        lock.withLock {
+            readError == nil
+        }
+    }
+
+    var label: UnsafePointer<CChar> {
+        UnsafePointer(labelPointer)
+    }
+
+    func tell() -> Int {
+        lock.withLock {
+            Int(offset)
+        }
+    }
+
+    /// Move the read position.
+    ///
+    /// Returns `0` on success and `-1` on failure; `CReader` turns a negative result into
+    /// a thrown error (ml-explore/mlx-c#130).
+    @discardableResult
+    func seek(offset newOffset: Int64, whence: Int32) -> Int32 {
+        lock.withLock { () -> Int32 in
+            let updated: Int64
+            switch whence {
+            case SEEK_SET:
+                updated = newOffset
+            case SEEK_CUR:
+                updated = offset + newOffset
+            case SEEK_END:
+                // offset is relative to the end of the file, not the current position.
+                updated = totalUnitCount + newOffset
+            default:
+                return -1
+            }
+            guard updated >= 0 else { return -1 }
+            offset = updated
+            return 0
+        }
+    }
+
+    /// Read `count` bytes at the current position and advance it.
+    ///
+    /// Returns the number of bytes actually read -- a short read makes `CReader` throw.
+    @discardableResult
+    func read(to data: UnsafeMutablePointer<CChar>?, count: Int) -> Int {
+        guard let data else { return 0 }
+
+        let readOffset = lock.withLock {
+            offset
+        }
+        let bytesRead = readBytes(to: data, count: count, offset: readOffset)
+
+        lock.withLock {
+            offset += Int64(bytesRead)
+        }
+
+        return bytesRead
+    }
+
+    /// Read `count` bytes at an absolute `offset`, leaving the current position alone.
+    ///
+    /// Returns the number of bytes actually read -- a short read makes `CReader` throw.
+    /// This is the path used to materialize lazily loaded arrays, so it is called from
+    /// MLX worker threads.
+    @discardableResult
+    func read(to data: UnsafeMutablePointer<CChar>?, count: Int, offset readOffset: Int64) -> Int {
+        guard let data else { return 0 }
+
+        return readBytes(to: data, count: count, offset: readOffset)
+    }
+
+    private func readBytes(
+        to data: UnsafeMutablePointer<CChar>, count: Int, offset readOffset: Int64
+    ) -> Int {
+        var totalRead = 0
+        while totalRead < count {
+            let chunkSize = min(count - totalRead, Self.maximumReadChunkSize)
+            let bytesRead = pread(
+                descriptor,
+                UnsafeMutableRawPointer(data.advanced(by: totalRead)),
+                chunkSize,
+                off_t(readOffset + Int64(totalRead)))
+            guard bytesRead > 0 else {
+                recordReadError(bytesRead: bytesRead, requestedCount: count - totalRead)
+                break
+            }
+            totalRead += bytesRead
+            reportProgress(bytesRead: bytesRead)
+        }
+
+        return totalRead
+    }
+
+    private func recordReadError(bytesRead: Int, requestedCount: Int) {
+        let message: String
+        if bytesRead < 0 {
+            message = String(cString: strerror(errno))
+        } else {
+            message = "unexpected end of file while reading \(requestedCount) bytes"
+        }
+        lock.withLock {
+            if readError == nil {
+                readError = message
+            }
+        }
+    }
+
+    private func reportProgress(bytesRead: Int) {
+        guard bytesRead > 0 else { return }
+
+        progressLock.withLock {
+            completedUnitCount = min(totalUnitCount, completedUnitCount + Int64(bytesRead))
+            let progress = LoadProgress(
+                url: url,
+                completedUnitCount: completedUnitCount,
+                totalUnitCount: totalUnitCount)
+            progressHandler(progress)
+        }
     }
 }
 
@@ -208,39 +557,44 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
     } seek: { ptr, offset, whence in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
+        let updated: Int
         switch whence {
         case SEEK_SET:
-            state.offset = Int(offset)
+            updated = Int(offset)
         case SEEK_CUR:
-            state.offset += Int(offset)
+            updated = state.offset + Int(offset)
         case SEEK_END:
             // offset is relative to the end of the data, not the current position.
             // mlx's load_safetensors uses seek(0, end) + tell() to size the input.
-            state.offset = state.data.count + Int(offset)
+            updated = state.data.count + Int(offset)
         default:
-            break
+            return -1
         }
+        guard updated >= 0 else { return -1 }
+        state.offset = updated
+        return 0
+
     } read: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
-        if n + state.offset <= state.data.count {
-            guard let data = data else { return }
-            _ = state.data.withUnsafeBytes { buffer in
-                memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
-            }
-            state.offset += n
+        // report a short read as 0 bytes so that CReader throws rather than
+        // silently leaving the destination buffer uninitialized
+        guard let data, n > 0, n + state.offset <= state.data.count else { return 0 }
+        _ = state.data.withUnsafeBytes { buffer in
+            memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
         }
+        state.offset += n
+        return n
 
     } read_at_offset: { ptr, data, n, offset in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
-        if n + offset <= state.data.count {
-            guard let data = data else { return }
-            _ = state.data.withUnsafeBytes { buffer in
-                memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
-            }
-            state.offset = offset
+        guard let data, n > 0, n + offset <= state.data.count else { return 0 }
+        _ = state.data.withUnsafeBytes { buffer in
+            memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
         }
+        state.offset = offset
+        return n
 
     } write: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
@@ -248,6 +602,7 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         let buffer = UnsafeBufferPointer(start: data, count: n)
         state.data.append(buffer)
         state.offset += n
+        return n
 
     } label: { ptr in
         UnsafeRawPointer(label.utf8Start).assumingMemoryBound(to: Int8.self)
@@ -260,6 +615,51 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
 private func new_mlx_io_reader_dataIO(_ data: Data) -> mlx_io_reader {
     let ptr = Unmanaged.passRetained(IOState(data: data)).toOpaque()
     return mlx_io_reader_new(ptr, new_mlx_io_vtable_dataIO())
+}
+
+private func new_mlx_io_vtable_fileIO() -> mlx_io_vtable {
+    mlx_io_vtable { ptr in
+        guard let ptr else { return false }
+        return Unmanaged<FileIOState>.fromOpaque(ptr).takeUnretainedValue().isOpen
+    } good: { ptr in
+        guard let ptr else { return false }
+        let state = Unmanaged<FileIOState>.fromOpaque(ptr).takeUnretainedValue()
+        return state.isOpen && state.good
+    } tell: { ptr in
+        let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
+        return state.tell()
+
+    } seek: { ptr, offset, whence in
+        let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
+        return state.seek(offset: Int64(offset), whence: whence)
+
+    } read: { ptr, data, n in
+        let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
+        return state.read(to: data, count: n)
+
+    } read_at_offset: { ptr, data, n, offset in
+        let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
+        return state.read(to: data, count: n, offset: Int64(offset))
+
+    } write: { _, _, _ in
+        // read only -- reporting 0 bytes written makes CWriter throw
+        return 0
+
+    } label: { ptr in
+        let state = Unmanaged<FileIOState>.fromOpaque(ptr!).takeUnretainedValue()
+        return state.label
+
+    } free: { ptr in
+        Unmanaged<FileIOState>.fromOpaque(ptr!).release()
+    }
+}
+
+private func new_mlx_io_reader_fileIO(
+    _ url: URL, progressHandler: @Sendable @escaping (LoadProgress) -> Void
+) throws -> mlx_io_reader {
+    let ptr = Unmanaged.passRetained(try FileIOState(url: url, progressHandler: progressHandler))
+        .toOpaque()
+    return mlx_io_reader_new(ptr, new_mlx_io_vtable_fileIO())
 }
 
 private func new_mlx_io_writer_dataIO() -> mlx_io_writer {
