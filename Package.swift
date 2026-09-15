@@ -291,9 +291,9 @@ let cmlx = Target.target(
         "mlx/mlx/backend/metal/kernels",
         "mlx/mlx/backend/metal/nojit_kernels.cpp",
 
-        // do not build distributed support (yet)
+        // distributed backends: enable ring, disable MPI + NCCL + JACCL
         "mlx/mlx/distributed/mpi/mpi.cpp",
-        "mlx/mlx/distributed/ring/ring.cpp",
+        "mlx/mlx/distributed/ring/no_ring.cpp",
         "mlx/mlx/distributed/nccl/nccl.cpp",
         "mlx/mlx/distributed/jaccl/jaccl.cpp",
         "mlx/mlx/distributed/jaccl/lib",
