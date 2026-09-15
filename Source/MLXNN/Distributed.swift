@@ -178,7 +178,8 @@ open class AllToShardedLinear: Module, UnaryLayer {
             "Cannot shard the output of size \(outputDimensions) across \(size) devices.")
 
         let scale = sqrt(1.0 / Float(inputDimensions))
-        self.weight = MLXRandom.uniform(-scale ..< scale, [outputDimensions / size, inputDimensions])
+        self.weight = MLXRandom.uniform(
+            -scale ..< scale, [outputDimensions / size, inputDimensions])
         self.bias = bias ? MLXRandom.uniform(-scale ..< scale, [outputDimensions / size]) : nil
         self.group = group
         self.aggregateGradients = sumGradients(group: group)
@@ -236,7 +237,8 @@ open class ShardedToAllLinear: Module, UnaryLayer {
             "The input of size \(inputDimensions) cannot be sharded across \(size) devices.")
 
         let scale = sqrt(1.0 / Float(inputDimensions))
-        self.weight = MLXRandom.uniform(-scale ..< scale, [outputDimensions, inputDimensions / size])
+        self.weight = MLXRandom.uniform(
+            -scale ..< scale, [outputDimensions, inputDimensions / size])
         self.bias = bias ? MLXRandom.uniform(-scale ..< scale, [outputDimensions]) : nil
         self.group = group
     }

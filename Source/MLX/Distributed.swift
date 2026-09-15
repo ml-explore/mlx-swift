@@ -110,7 +110,6 @@ public enum MLXDistributed {
     // The ring and JACCL backends both want the CPU, and the collectives have
     // no GPU implementation, so the CPU stream is the default here.
 
-
     /// All reduce sum.
     ///
     /// Sum `x` across all processes in the group.
