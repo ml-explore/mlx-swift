@@ -44,7 +44,7 @@ public enum Segments: Sendable {
 ///
 /// - Parameter group: the group, or `nil` to use the global group
 public func sumGradients(group: MLXDistributed.Group? = nil) -> (MLXArray) -> MLXArray {
-    let group = group ?? MLXDistributed.initialize()
+    let group = group ?? MLXDistributed.globalGroup
     if group.size == 1 {
         return { $0 }
     }
@@ -121,7 +121,7 @@ public func shardInPlace(
     _ module: Module, sharding: ShardingType, segments: Segments = .count(1),
     group: MLXDistributed.Group? = nil
 ) {
-    let group = group ?? MLXDistributed.initialize()
+    let group = group ?? MLXDistributed.globalGroup
     _ = module.update(
         parameters: shard(
             module.parameters(), group: group, predicate(for: sharding, segments: segments)))
@@ -171,7 +171,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
         _ inputDimensions: Int, _ outputDimensions: Int, bias: Bool = true,
         group: MLXDistributed.Group? = nil
     ) {
-        let group = group ?? MLXDistributed.initialize()
+        let group = group ?? MLXDistributed.globalGroup
         let size = group.size
         precondition(
             outputDimensions % size == 0,
@@ -189,7 +189,7 @@ open class AllToShardedLinear: Module, UnaryLayer {
     public convenience init(
         _ other: Linear, segments: Segments = .count(1), group: MLXDistributed.Group? = nil
     ) {
-        let group = group ?? MLXDistributed.initialize()
+        let group = group ?? MLXDistributed.globalGroup
         let (outputDimensions, inputDimensions) = other.shape
 
         self.init(inputDimensions, outputDimensions, bias: other.bias != nil, group: group)
@@ -230,7 +230,7 @@ open class ShardedToAllLinear: Module, UnaryLayer {
         _ inputDimensions: Int, _ outputDimensions: Int, bias: Bool = true,
         group: MLXDistributed.Group? = nil
     ) {
-        let group = group ?? MLXDistributed.initialize()
+        let group = group ?? MLXDistributed.globalGroup
         let size = group.size
         precondition(
             inputDimensions % size == 0,
@@ -247,7 +247,7 @@ open class ShardedToAllLinear: Module, UnaryLayer {
     public convenience init(
         _ other: Linear, segments: Segments = .count(1), group: MLXDistributed.Group? = nil
     ) {
-        let group = group ?? MLXDistributed.initialize()
+        let group = group ?? MLXDistributed.globalGroup
         let (outputDimensions, inputDimensions) = other.shape
 
         self.init(inputDimensions, outputDimensions, bias: other.bias != nil, group: group)
@@ -283,7 +283,7 @@ public func averageGradients(
     _ gradients: ModuleParameters, group: MLXDistributed.Group? = nil,
     allReduceSize: Int = 32 * 1024 * 1024, stream: StreamOrDevice = .cpu
 ) -> ModuleParameters {
-    let group = group ?? MLXDistributed.initialize()
+    let group = group ?? MLXDistributed.globalGroup
     let size = group.size
     if size == 1 {
         return gradients

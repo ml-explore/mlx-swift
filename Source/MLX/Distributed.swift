@@ -78,9 +78,12 @@ public enum MLXDistributed {
         /// - Parameters:
         ///   - color: a value to group processes into subgroups
         ///   - key: a key to optionally change the rank ordering of the processes
-        public func split(color: Int, key: Int = -1) -> Group {
+        /// Returns `nil` if the group cannot be split -- an empty group, for
+        /// example, cannot be split further.
+        public func split(color: Int, key: Int = -1) -> Group? {
             var result = mlx_distributed_group_new()
             mlx_distributed_group_split(&result, ctx, Int32(color), Int32(key))
+            guard result.ctx != nil else { return nil }
             return Group(result)
         }
     }
@@ -94,11 +97,27 @@ public enum MLXDistributed {
     /// - Parameters:
     ///   - backend: the backend to use, defaulting to ``Backend/any``
     ///   - strict: if `true` report an error when no backend can be initialized
+    /// Returns `nil` if the backend could not be initialized, which happens
+    /// when `strict` is `true` and no backend can form a group.  A non-strict
+    /// initialize yields an empty group of size one rather than `nil`.
     @discardableResult
-    public static func initialize(backend: Backend = .any, strict: Bool = false) -> Group {
+    public static func initialize(backend: Backend = .any, strict: Bool = false) -> Group? {
         var result = mlx_distributed_group_new()
         mlx_distributed_init(&result, strict, backend.rawValue)
+        guard result.ctx != nil else { return nil }
         return Group(result)
+    }
+
+    /// The global group.
+    ///
+    /// Equivalent to ``initialize(backend:strict:)`` without `strict`, which
+    /// yields an empty group of size one when no backend is available.  Traps
+    /// in the event MLX cannot produce a group at all.
+    public static var globalGroup: Group {
+        guard let group = initialize() else {
+            preconditionFailure("MLX could not create a distributed group")
+        }
+        return group
     }
 
     // MARK: - Collectives

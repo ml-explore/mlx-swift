@@ -56,10 +56,21 @@ class DistributedTests: XCTestCase {
 
     // MARK: - Group
 
-    func testDefaultGroupIsSingleton() {
-        let group = MLXDistributed.initialize()
+    func testDefaultGroupIsSingleton() throws {
+        let group = try XCTUnwrap(MLXDistributed.initialize())
         XCTAssertEqual(group.rank, 0)
         XCTAssertEqual(group.size, 1)
+    }
+
+    /// A strict init returns nil rather than a group with a null handle whose
+    /// rank and size would silently read as zero.
+    func testStrictInitializeReturnsNil() {
+        var group: MLXDistributed.Group?
+        XCTAssertThrowsError(
+            try withError {
+                group = MLXDistributed.initialize(backend: .any, strict: true)
+            })
+        XCTAssertNil(group)
     }
 
     /// A strict init reports an error when no backend can form a group.
@@ -74,8 +85,8 @@ class DistributedTests: XCTestCase {
             })
     }
 
-    func testSplitSingletonGroupReportsError() {
-        let group = MLXDistributed.initialize()
+    func testSplitSingletonGroupReportsError() throws {
+        let group = try XCTUnwrap(MLXDistributed.initialize())
         XCTAssertThrowsError(
             try withError {
                 group.split(color: 0)
