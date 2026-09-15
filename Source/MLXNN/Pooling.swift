@@ -41,9 +41,10 @@ open class Pool: Module, UnaryLayer {
 
         // Apply padding if any padding value is greater than 0
         if padding.contains(where: { $0 > 0 }) {
-            // batch and channel dimension get no padding
-            let padWidths: [IntOrPair] =
-                [0, 0] + padding.map { .init($0) } + [0, 0]
+            // one width per dimension: batch and channel get no padding, each
+            // spatial dimension is padded symmetrically (`IntOrPair` is already
+            // the (before, after) pair for a single dimension)
+            let padWidths: [IntOrPair] = [0] + padding.map { IntOrPair($0) } + [0]
             let paddingValue = paddingValue.asMLXArray(dtype: input.dtype)
             input = padded(input, widths: padWidths, mode: .constant, value: paddingValue)
         }

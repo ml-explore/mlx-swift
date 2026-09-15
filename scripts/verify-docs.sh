@@ -5,15 +5,19 @@ cd "$(dirname "$0")/.."
 
 export MLX_SWIFT_BUILD_DOC=1
 
+# Targets to exclude from documentation verification
+SKIP_TARGETS="Cmlx"
+
 # Discover library product targets from Package.swift, skipping test/macro/executable targets
-TARGETS=$(swift package dump-package | python3 -c "
-import json, sys
+TARGETS=$(SKIP_TARGETS="$SKIP_TARGETS" swift package dump-package | python3 -c "
+import json, os, sys
 pkg = json.load(sys.stdin)
+skip = set(os.environ.get('SKIP_TARGETS', '').split())
 targets = set()
 for p in pkg['products']:
     if p['type'].get('library') is not None:
         targets.update(p['targets'])
-for t in sorted(targets):
+for t in sorted(targets - skip):
     print(t)
 ")
 

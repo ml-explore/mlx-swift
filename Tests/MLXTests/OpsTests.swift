@@ -54,6 +54,85 @@ class OpsTests: XCTestCase {
         assertEqual(c, expected)
     }
 
+    func testTensordotDefaultAxes() {
+        // axes defaults to 2 (as in numpy and python mlx): sum over the last two
+        // dimensions of a and the first two of b
+        let a = MLXArray(0 ..< 24, [2, 3, 4]).asType(.float32)
+        let b = MLXArray(0 ..< 60, [3, 4, 5]).asType(.float32)
+
+        assertEqual(tensordot(a, b), tensordot(a, b, axes: 2))
+        XCTAssertEqual(tensordot(a, b).shape, [2, 5])
+    }
+
+    func testNanToNumDefaults() {
+        // by default infinities become the largest finite value for the dtype
+        // (matching python mlx) and NaN becomes 0
+        let a = MLXArray(
+            [1.5, Float.nan, Float.infinity, -Float.infinity] as [Float])
+
+        let result = nanToNum(a)
+        XCTAssertEqual(result.dtype, .float32)
+        assertEqual(
+            result,
+            MLXArray(
+                [
+                    1.5, 0, Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude,
+                ] as [Float]))
+
+        // and they can be replaced explicitly
+        assertEqual(
+            nanToNum(a, nan: -1, posInf: 100, negInf: -100),
+            MLXArray([1.5, -1, 100, -100] as [Float]))
+    }
+
+    func testNanToNumDefaultsFloat16() {
+        // the replacement follows the dtype
+        let a = MLXArray([Float.infinity, -Float.infinity] as [Float]).asType(.float16)
+        let limit = Float(DType.float16.finfo!.max)
+
+        let result = nanToNum(a)
+        XCTAssertEqual(result.dtype, .float16)
+        XCTAssertEqual(result[0].item(Float.self), limit)
+        XCTAssertEqual(result[1].item(Float.self), -limit)
+    }
+
+    func testConvolveModeShapes() {
+        // matches numpy/python mlx: full is M + K - 1, same is M, valid is M - K + 1
+        let a = MLXArray(0 ..< 20).asType(.float32)
+
+        for kernelSize in [3, 4, 5, 6] {
+            let v = MLXArray(1 ..< (kernelSize + 1)).asType(.float32)
+
+            XCTAssertEqual(
+                convolve(a, v, mode: .full).shape, [a.size + kernelSize - 1],
+                "full, kernel \(kernelSize)")
+            XCTAssertEqual(
+                convolve(a, v, mode: .same).shape, [a.size], "same, kernel \(kernelSize)")
+            XCTAssertEqual(
+                convolve(a, v, mode: .valid).shape, [a.size - kernelSize + 1],
+                "valid, kernel \(kernelSize)")
+        }
+    }
+
+    func testConvolveSameAndValidAreWindowsOfFull() {
+        // `same` is the centered `a.size` window of the full convolution and
+        // `valid` is the window with no zero padding at all -- true for both odd
+        // and even sized weights (even sizes need asymmetric padding)
+        let a = MLXArray(0 ..< 20).asType(.float32)
+
+        for kernelSize in [3, 4, 5, 6] {
+            let v = MLXArray(1 ..< (kernelSize + 1)).asType(.float32)
+            let full = convolve(a, v, mode: .full)
+
+            let sameStart = (kernelSize - 1) / 2
+            assertEqual(
+                convolve(a, v, mode: .same), full[sameStart ..< (sameStart + a.size)])
+
+            assertEqual(
+                convolve(a, v, mode: .valid), full[(kernelSize - 1) ..< a.size])
+        }
+    }
+
     func testConvertScalarInt() {
         let a = MLXArray(0 ..< 10)
         let b = a .< (a + 1)

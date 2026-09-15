@@ -14,17 +14,24 @@ class OptimizerTests: XCTestCase {
     }
 
     class ShapeModule: Module {
+        // ranks 1 through 3: some optimizers (Adafactor, Muon) treat them differently
         let first = [MLXArray.zeros([10]), MLXArray.zeros([1])]
         let second = MLXArray.zeros([1])
+        let matrix = MLXArray.zeros([3, 5])
+        let tensor = MLXArray.zeros([2, 3, 4])
     }
 
-    func checkShape<T>(optimizer: OptimizerBase<T>) {
+    func checkShape<T>(optimizer: OptimizerBase<T>, steps: Int = 2) {
         let model = ShapeModule()
         let params = model.parameters()
         let grads = params.mapValues { MLXArray.ones(like: $0) }
 
-        let optimizer = SGD(learningRate: 0.1)
-        let update = optimizer.apply(gradients: grads, modelParameters: model.parameters())
+        // note: more than one step, and using the optimizer that was passed in --
+        // this used to build its own SGD, so every caller was really testing SGD
+        var update = params
+        for _ in 0 ..< steps {
+            update = optimizer.apply(gradients: grads, modelParameters: update)
+        }
         eval(update)
 
         let shapesEqual = params.mapValues(update) { (e1, e2) -> Bool in
@@ -211,6 +218,167 @@ class OptimizerTests: XCTestCase {
         checkShape(optimizer: Adafactor(learningRate: 0.1))
         checkTrain(optimizer: Adafactor(learningRate: 0.1))
         checkTrain(optimizer: Adafactor(learningRate: 0.1), compile: true)
+    }
+
+    // MARK: - Muon
+
+    func testMuonUpdateIsConditioned() {
+        // the Newton-Schulz iteration used by Muon is a *crude* polar approximation:
+        // it pulls the singular values of the update into a band around 1 (it does
+        // not converge to an exactly orthogonal matrix).  With no momentum and
+        // nesterov off the update direction is the orthogonalized gradient, so the
+        // singular values of the update should be far better conditioned than the
+        // gradient's.
+        let optimizer = Muon(
+            learningRate: 1.0, momentum: 0.0, weightDecay: 0.0, nesterov: false, nsSteps: 5)
+
+        // full rank and deterministic: `arange` reshaped is rank 2, which the
+        // iteration cannot orthogonalize
+        let values = (0 ..< 24).map { Float(sin(Double($0) * 1.7) + 0.1 * Double($0 % 5)) }
+        let parameter = MLXArray(values, [6, 4])
+        let parameters = ModuleParameters.unflattened([("w", parameter)])
+
+        let updated = optimizer.apply(gradients: parameters, modelParameters: parameters)
+
+        // parameter - learningRate * scale * update, with scale = sqrt(max(1, 6/4))
+        let scale = Float((6.0 / 4.0).squareRoot())
+        let update = (parameter - updated[unwrapping: "w"]!) / scale
+
+        // singular values via the gram matrix, which avoids picking between the svd
+        // overloads: eigvalsh returns them ascending
+        func singularValues(_ array: MLXArray) -> MLXArray {
+            MLX.sqrt(
+                MLX.maximum(0, MLX.eigvalsh(matmul(array.T, array), stream: .cpu)))
+        }
+
+        let inputSingular = singularValues(parameter)
+        let updateSingular = singularValues(update)
+
+        let inputCondition =
+            inputSingular.max().item(Float.self) / inputSingular.min().item(Float.self)
+        let updateCondition =
+            updateSingular.max().item(Float.self) / updateSingular.min().item(Float.self)
+
+        XCTAssertGreaterThan(inputCondition, 10)
+        XCTAssertLessThan(updateCondition, 2)
+        // and the values are pulled toward 1 rather than being rescaled arbitrarily
+        XCTAssertGreaterThan(updateSingular.min().item(Float.self), 0.5)
+        XCTAssertLessThan(updateSingular.max().item(Float.self), 1.5)
+    }
+
+    func testMuonLeavesLowRankParametersAlone() {
+        // rank 0/1 parameters skip the orthogonalization: the update is the plain
+        // momentum direction, so a single step moves by learningRate * gradient
+        let optimizer = Muon(
+            learningRate: 0.1, momentum: 0.0, weightDecay: 0.0, nesterov: false, nsSteps: 5)
+
+        let parameter = MLXArray(converting: [1.0, 2.0, 3.0])
+        let gradients = ModuleParameters.unflattened([("b", MLXArray.ones([3]))])
+        let updated = optimizer.apply(
+            gradients: gradients,
+            modelParameters: ModuleParameters.unflattened([("b", parameter)]))
+
+        assertEqual(
+            updated[unwrapping: "b"]!, MLXArray(converting: [0.9, 1.9, 2.9]), atol: 1e-6)
+    }
+
+    // MARK: - defaults
+    //
+    // these have to match python: `tools/audit_defaults.py` compares them
+    // automatically, and this is the regression test for the one that was wrong
+
+    func testLionDefaults() {
+        let lion = Lion(learningRate: 0.1)
+        XCTAssertEqual(lion.betas.0, 0.9)
+        // python's Lion uses 0.99 here -- Adam is the one with 0.999
+        XCTAssertEqual(lion.betas.1, 0.99)
+        XCTAssertEqual(lion.weightDecay, 0)
+    }
+
+    func testAdamAndAdamWDefaults() {
+        XCTAssertEqual(Adam(learningRate: 0.1).betas.1, 0.999)
+        XCTAssertEqual(AdamW(learningRate: 0.1).betas.1, 0.999)
+        XCTAssertEqual(AdamW(learningRate: 0.1).weightDecay, 0.01)
+    }
+
+    func testMuonDefaults() {
+        let muon = Muon(learningRate: 0.1)
+        XCTAssertEqual(muon.momentum, 0.95)
+        XCTAssertEqual(muon.weightDecay, 0.01)
+        XCTAssertTrue(muon.nesterov)
+        XCTAssertEqual(muon.nsSteps, 5)
+    }
+
+    // MARK: - Adafactor
+    //
+    // Adafactor keeps *factored* state for parameters of rank 2 and above and
+    // unfactored state below that, so its state and its update path have to agree
+    // about the rank -- rank 3+ was broken (an outer product via matmul, which only
+    // works for rank 2) and the mismatch then crashed on a nil state.
+
+    func testAdafactorRanks() throws {
+        let optimizer = Adafactor(learningRate: 0.1, relativeStep: false)
+
+        var parameters = ModuleParameters.unflattened([
+            ("vector", MLXArray.ones([7])),
+            ("matrix", MLXArray.ones([3, 5])),
+            ("tensor", MLXArray.ones([2, 3, 4])),
+            ("big", MLXArray.ones([2, 3, 4, 5])),
+        ])
+
+        for _ in 0 ..< 3 {
+            let gradients = parameters.mapValues { 0.5 * $0 }
+            parameters = optimizer.apply(gradients: gradients, modelParameters: parameters)
+            eval(parameters)
+        }
+
+        for (key, shape) in [
+            ("vector", [7]), ("matrix", [3, 5]), ("tensor", [2, 3, 4]), ("big", [2, 3, 4, 5]),
+        ] {
+            let value = parameters[unwrapping: key]!
+            XCTAssertEqual(value.shape, shape, key)
+            XCTAssertTrue(isFinite(value).all().item(Bool.self), "\(key) is not finite")
+            // the update should have moved the parameter off its starting value
+            XCTAssertFalse(
+                value.allClose(MLXArray.ones(like: value), rtol: 1e-6).item(Bool.self),
+                "\(key) did not change")
+        }
+    }
+
+    func testAdafactorFactoredUpdateIsBatched() {
+        // the row/column factors combine per leading index: slice `i` of a rank 3
+        // update must equal the rank 2 update of slice `i` of the factors
+        let optimizer = Adafactor(learningRate: 0.1, relativeStep: false)
+
+        let row = MLXArray(converting: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0], [2, 3])
+        let column = MLXArray(converting: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0], [2, 4])
+
+        let combined = optimizer.approvateExpMovingAverage(
+            expAvgSqRow: row, expAvgSqCol: column)
+        XCTAssertEqual(combined.shape, [2, 3, 4])
+
+        for i in 0 ..< 2 {
+            let slice = optimizer.approvateExpMovingAverage(
+                expAvgSqRow: row[i], expAvgSqCol: column[i])
+            assertEqual(combined[i], slice, atol: 1e-6)
+        }
+    }
+
+    func testAdafactorRankChangeDoesNotCrash() {
+        // the state is created for the rank seen on the first step; a later call with
+        // a different rank for the same key used to hit a nil state
+        let optimizer = Adafactor(learningRate: 0.1, relativeStep: false)
+
+        var matrix = ModuleParameters.unflattened([("w", MLXArray.ones([3, 4]))])
+        matrix = optimizer.apply(
+            gradients: matrix.mapValues { 0.5 * $0 }, modelParameters: matrix)
+
+        var vector = ModuleParameters.unflattened([("w", MLXArray.ones([5]))])
+        vector = optimizer.apply(
+            gradients: vector.mapValues { 0.5 * $0 }, modelParameters: vector)
+        eval(vector)
+
+        XCTAssertEqual(vector[unwrapping: "w"]!.shape, [5])
     }
 
     class TwoParameterModel: Module {

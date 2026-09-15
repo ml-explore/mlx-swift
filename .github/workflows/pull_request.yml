@@ -115,6 +115,7 @@ jobs:
         run: |
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
           xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
+          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXIntegrationTests.xctest
 
       - name: Build xcodeproj (Xcode, macOS)
         shell: sh
