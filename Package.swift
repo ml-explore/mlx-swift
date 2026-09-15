@@ -248,10 +248,8 @@ let cmlx = Target.target(
         // vendor docs
         "vendor-README.md",
 
-        // example code + mlx-c distributed
+        // example code
         "mlx-c/examples",
-        "mlx-c/mlx/c/distributed.cpp",
-        "mlx-c/mlx/c/distributed_group.cpp",
 
         // vendored library, include header only
         "json",
