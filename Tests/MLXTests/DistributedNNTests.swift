@@ -164,6 +164,95 @@ func shardPredicateBody(world: MLXDistributed.Group) throws {
         "a predicate sharded model must reproduce the unsharded output")
 }
 
+/// Port of `test_average_gradients`.
+///
+/// Python counts the `all_sum` calls by replacing `mx.distributed.all_sum`,
+/// which Swift cannot do.  This checks what the counting was there to protect
+/// instead: every batching threshold has to produce the same average, and the
+/// average has to include every rank.
+func averageGradientsBody(world: MLXDistributed.Group) throws {
+    // each rank contributes its own rank + 1, so the average is (size + 1) / 2
+    let expected = MLXArray.ones([10]) * (Float(world.size + 1) / 2)
+    let gradients = ModuleParameters.unflattened(
+        (0 ..< 10).map { ("g\($0)", MLXArray.ones([10]) * Float(world.rank + 1)) })
+
+    // 32MiB puts them in one batch, 4 * 50 splits them, 0 disables batching
+    for allReduceSize in [32 * 1024 * 1024, 4 * 50, 0] {
+        let averaged = try averageGradients(
+            gradients, group: world, allReduceSize: allReduceSize)
+        let flat = averaged.flattened()
+        try checkedEval(flat.map { $0.1 })
+
+        XCTAssertEqual(flat.count, 10, "allReduceSize \(allReduceSize)")
+        for (key, value) in flat {
+            XCTAssertTrue(
+                value.allClose(expected).item(Bool.self),
+                "\(key) with allReduceSize \(allReduceSize)")
+        }
+    }
+
+    // arrays of different types cannot be concatenated, so they fall back to
+    // one reduction per array and keep their dtype
+    let mixed = try averageGradients(
+        ModuleParameters.unflattened([
+            ("wide", MLXArray.ones([4]) * Float(world.rank + 1)),
+            ("narrow", (MLXArray.ones([4]) * Float(world.rank + 1)).asType(.float16)),
+        ]), group: world)
+    // evaluate in the flattened order, which is sorted by key: a Dictionary
+    // iterates in a per process order, and evaluating the collectives in
+    // different orders makes the ranks exchange mismatched buffers
+    let flat = mixed.flattened()
+    try checkedEval(flat.map { $0.1 })
+
+    let flatMixed = Dictionary(uniqueKeysWithValues: flat)
+    XCTAssertEqual(flatMixed["narrow"]?.dtype, .float16, "the dtype must survive")
+    for key in ["wide", "narrow"] {
+        let averaged = try XCTUnwrap(flatMixed[key])
+        XCTAssertTrue(
+            averaged.asType(.float32)
+                .allClose(MLXArray.ones([4]) * (Float(world.size + 1) / 2), rtol: 1e-2)
+                .item(Bool.self), key)
+    }
+}
+
+/// Port of `test_clip_grad_norm_sharded`.
+func clipGradNormShardedBody(world: MLXDistributed.Group) throws {
+    let value: Float = 3
+    let gradients = ModuleParameters.unflattened([
+        ("a", MLXArray.ones([4, 3]) * value),
+        ("b", MLXArray.ones([5]) * value),
+    ])
+
+    // every rank holds the same number of elements, so the global norm counts
+    // all of them
+    let localCount = 4 * 3 + 5
+    let expectedNorm = (Float(world.size * localCount)).squareRoot() * value
+
+    // a limit far above the norm leaves the shard alone
+    let (unclipped, norm) = try clipGradNormSharded(
+        gradients: gradients, maxNorm: 1e9, group: world)
+    try checkedEval(norm, unclipped.flattened().map { $0.1 })
+
+    XCTAssertEqual(norm.item(Float.self), expectedNorm, accuracy: expectedNorm * 1e-4)
+    for (key, clipped) in unclipped.flattened() {
+        XCTAssertTrue(
+            clipped.allClose(MLXArray.ones(clipped.shape) * value).item(Bool.self), key)
+    }
+
+    // below it every gradient is scaled by maxNorm / norm
+    let maxNorm: Float = 1
+    let (clipped, _) = try clipGradNormSharded(
+        gradients: gradients, maxNorm: maxNorm, group: world)
+    try checkedEval(clipped.flattened().map { $0.1 })
+
+    let scale = maxNorm / (expectedNorm + 1e-6)
+    for (key, scaled) in clipped.flattened() {
+        XCTAssertTrue(
+            scaled.allClose(MLXArray.ones(scaled.shape) * value * scale, rtol: 1e-4)
+                .item(Bool.self), key)
+    }
+}
+
 /// A convolution that can sum its output across the group, so that a layer fed
 /// sharded input channels produces the whole result.
 private class AggregatingConv: Module, UnaryLayer {
@@ -238,6 +327,14 @@ class DistributedNNTests: XCTestCase {
     func testShardPredicate() throws {
         try shardPredicateBody(world: try MLXDistributed.initialize())
     }
+
+    func testAverageGradients() throws {
+        try averageGradientsBody(world: try MLXDistributed.initialize())
+    }
+
+    func testClipGradNormSharded() throws {
+        try clipGradNormShardedBody(world: try MLXDistributed.initialize())
+    }
 }
 
 /// The multi process half, where every rank holds a different slice.
@@ -268,6 +365,8 @@ class DistributedNNRingTests: XCTestCase {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
             try shardLinearBody(world: group)
             try shardPredicateBody(world: group)
+            try averageGradientsBody(world: group)
+            try clipGradNormShardedBody(world: group)
         }
     }
 }

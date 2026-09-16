@@ -27,6 +27,13 @@ import Foundation
 /// Every operation evaluates on the CPU stream by default, which is where the
 /// ring, JACCL and MPI backends communicate.  NCCL, available only in a CUDA
 /// build, communicates on the GPU, so pass `stream: .gpu` for an NCCL group.
+///
+/// Every process must create *and evaluate* these operations in the same
+/// order.  They are lazy, so the communication happens where the result is
+/// evaluated: evaluating two collectives in one order in one process and in
+/// the other order in another makes the processes exchange mismatched buffers
+/// rather than report an error.  Beware of iterating a `Dictionary`, whose
+/// order differs from process to process.
 public enum MLXDistributed {
 
     /// A communication backend.

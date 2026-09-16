@@ -621,3 +621,29 @@ public func averageGradients(
 
     return ModuleParameters.unflattened(result)
 }
+
+/// Clip the global norm of gradients that are sharded across a group.
+///
+/// This is the sharded counterpart of `clipGradNorm` in MLXOptimizers: no
+/// process holds the whole gradient, so the local squared norms are summed
+/// across the group before anything is rescaled.
+///
+/// - Parameters:
+///   - gradients: this process' shard of the gradients
+///   - maxNorm: the maximum allowed global norm
+///   - group: the group the gradients are sharded across, or `nil` to use the
+///     global group
+///   - stream: stream to evaluate on
+/// - Returns: the rescaled shard and the global gradient norm
+public func clipGradNormSharded(
+    gradients: ModuleParameters, maxNorm: Float, group: MLXDistributed.Group? = nil,
+    stream: StreamOrDevice = .cpu
+) throws -> (ModuleParameters, MLXArray) {
+    let group = try group ?? MLXDistributed.initialize()
+
+    let localNormSquared = gradients.reduce(MLXArray(0)) { $0 + $1.square().sum() }
+    let totalNorm = sqrt(MLXDistributed.allSum(localNormSquared, group: group, stream: stream))
+    let normalizer = minimum(maxNorm / (totalNorm + 1e-6), 1)
+
+    return (gradients.mapValues { $0 * normalizer }, totalNorm)
+}
