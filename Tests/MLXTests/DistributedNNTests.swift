@@ -34,10 +34,10 @@ func shardLinearBody(world: MLXDistributed.Group) throws {
     try checkedEval(y, y1, y2)
 
     XCTAssertTrue(
-        y.allClose(y2, rtol: 1e-2, atol: 1e-2).item(Bool.self),
+        y.allClose(y2, rtol: 1e-4, atol: 1e-6).item(Bool.self),
         "sharded-to-all must reproduce the unsharded output")
     XCTAssertTrue(
-        y[lower ..< upper, axis: 1].allClose(y1, rtol: 1e-2, atol: 1e-2).item(Bool.self),
+        y[lower ..< upper, axis: 1].allClose(y1, rtol: 1e-4, atol: 1e-6).item(Bool.self),
         "all-to-sharded must reproduce this rank's slice of the output")
 
     // MARK: - quantized
@@ -58,11 +58,40 @@ func shardLinearBody(world: MLXDistributed.Group) throws {
     try checkedEval(qy, qy1, qy2)
 
     XCTAssertTrue(
-        qy.allClose(qy2, rtol: 1e-2, atol: 1e-2).item(Bool.self),
+        qy.allClose(qy2, rtol: 1e-4, atol: 1e-6).item(Bool.self),
         "quantized sharded-to-all must reproduce the unsharded output")
     XCTAssertTrue(
-        qy[lower ..< upper, axis: 1].allClose(qy1, rtol: 1e-2, atol: 1e-2).item(Bool.self),
+        qy[lower ..< upper, axis: 1].allClose(qy1, rtol: 1e-5, atol: 1e-8).item(Bool.self),
         "quantized all-to-sharded must reproduce this rank's slice")
+
+    // MARK: - a non affine mode, which carries no quantization biases
+
+    // Python: lin.to_quantized(group_size=32, bits=8, mode="mxfp8")
+    let mxfp8 = QuantizedLinear(linear, groupSize: 32, bits: 8, mode: .mxfp8)
+    XCTAssertEqual(mxfp8.mode, .mxfp8)
+    XCTAssertNil(mxfp8.biases, "mxfp8 quantization has no biases")
+
+    let mxSharded1 = try XCTUnwrap(
+        try shardLinear(mxfp8, sharding: .allToSharded, group: world) as? QuantizedLinear)
+    let mxSharded2 = try XCTUnwrap(
+        try shardLinear(mxfp8, sharding: .shardedToAll, group: world) as? QuantizedLinear)
+
+    XCTAssertEqual(mxSharded1.mode, .mxfp8, "the mode must survive sharding")
+    XCTAssertEqual(mxSharded2.mode, .mxfp8, "the mode must survive sharding")
+    XCTAssertNil(mxSharded1.biases)
+    XCTAssertNil(mxSharded2.biases)
+
+    let my = mxfp8(x)
+    let my1 = mxSharded1(x)
+    let my2 = mxSharded2(x[lower ..< upper, axis: 1])
+    try checkedEval(my, my1, my2)
+
+    XCTAssertTrue(
+        my.allClose(my2, rtol: 1e-4, atol: 1e-6).item(Bool.self),
+        "mxfp8 sharded-to-all must reproduce the unsharded output")
+    XCTAssertTrue(
+        my[lower ..< upper, axis: 1].allClose(my1, rtol: 1e-5, atol: 1e-8).item(Bool.self),
+        "mxfp8 all-to-sharded must reproduce this rank's slice")
 
     // MARK: - quantizing a sharded layer keeps it sharded
 
@@ -164,6 +193,36 @@ func shardPredicateBody(world: MLXDistributed.Group) throws {
         "a predicate sharded model must reproduce the unsharded output")
 }
 
+/// Port of `test_quantized_sharded_linear_construction` from the Python nn
+/// tests.
+///
+/// Every bit width packs a different number of values into each `uint32`, so
+/// the sharded layers have to come out with the shapes the layer they were
+/// built from would have, divided along the sharded axis.
+func quantizedShardedConstructionBody(world: MLXDistributed.Group) throws {
+    for bits in [2, 3, 4, 5, 6, 8] {
+        let quantized = QuantizedLinear(Linear(1536, 1024), groupSize: 64, bits: bits)
+        let allToSharded = try QuantizedAllToShardedLinear(quantized, group: world)
+        let shardedToAll = try QuantizedShardedToAllLinear(quantized, group: world)
+
+        // rows are outputs, columns are the packed inputs
+        XCTAssertEqual(
+            allToSharded.weight.dim(0), quantized.weight.dim(0) / world.size, "bits \(bits)")
+        XCTAssertEqual(allToSharded.weight.dim(1), quantized.weight.dim(1), "bits \(bits)")
+
+        XCTAssertEqual(shardedToAll.weight.dim(0), quantized.weight.dim(0), "bits \(bits)")
+        XCTAssertEqual(
+            shardedToAll.weight.dim(1), quantized.weight.dim(1) / world.size, "bits \(bits)")
+
+        // and the scales have to cover exactly the inputs the weight holds
+        for layer in [allToSharded, shardedToAll] {
+            XCTAssertEqual(
+                layer.weight.dim(1) * 32 / bits, layer.scales.dim(1) * layer.groupSize,
+                "bits \(bits)")
+        }
+    }
+}
+
 /// Cases the Python tests do not cover, each one a bug this port had.
 func shardingEdgeCasesBody(world: MLXDistributed.Group) throws {
     // A sharded-to-all layer adds its bias after the reduction, so every
@@ -216,10 +275,19 @@ func shardingEdgeCasesBody(world: MLXDistributed.Group) throws {
 /// instead: every batching threshold has to produce the same average, and the
 /// average has to include every rank.
 func averageGradientsBody(world: MLXDistributed.Group) throws {
-    // each rank contributes its own rank + 1, so the average is (size + 1) / 2
-    let expected = MLXArray.ones([10]) * (Float(world.size + 1) / 2)
+    // Each rank contributes its own rank + 1, so the average is (size + 1) / 2
+    // times the gradient's own factor.  The shapes and values differ per
+    // gradient on purpose: batching concatenates them, reduces once and splits
+    // the result again, and identical arrays would hide a bad split.
+    let mean = Float(world.size + 1) / 2
     let gradients = ModuleParameters.unflattened(
-        (0 ..< 10).map { ("g\($0)", MLXArray.ones([10]) * Float(world.rank + 1)) })
+        (0 ..< 10).map {
+            ("g\($0)", MLXArray.ones([$0 + 1]) * Float(($0 + 1) * (world.rank + 1)))
+        })
+    let expected = Dictionary(
+        uniqueKeysWithValues: (0 ..< 10).map {
+            ("g\($0)", MLXArray.ones([$0 + 1]) * (Float($0 + 1) * mean))
+        })
 
     // 32MiB puts them in one batch, 4 * 50 splits them, 0 disables batching
     for allReduceSize in [32 * 1024 * 1024, 4 * 50, 0] {
@@ -230,8 +298,10 @@ func averageGradientsBody(world: MLXDistributed.Group) throws {
 
         XCTAssertEqual(flat.count, 10, "allReduceSize \(allReduceSize)")
         for (key, value) in flat {
+            let want = try XCTUnwrap(expected[key])
+            XCTAssertEqual(value.shape, want.shape, "\(key) with allReduceSize \(allReduceSize)")
             XCTAssertTrue(
-                value.allClose(expected).item(Bool.self),
+                value.allClose(want).item(Bool.self),
                 "\(key) with allReduceSize \(allReduceSize)")
         }
     }
@@ -373,6 +443,10 @@ class DistributedNNTests: XCTestCase {
         try shardPredicateBody(world: try MLXDistributed.initialize())
     }
 
+    func testQuantizedShardedConstruction() throws {
+        try quantizedShardedConstructionBody(world: try MLXDistributed.initialize())
+    }
+
     func testShardingEdgeCases() throws {
         try shardingEdgeCasesBody(world: try MLXDistributed.initialize())
     }
@@ -414,6 +488,7 @@ class DistributedNNRingTests: XCTestCase {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
             try shardLinearBody(world: group)
             try shardPredicateBody(world: group)
+            try quantizedShardedConstructionBody(world: group)
             try shardingEdgeCasesBody(world: group)
             try averageGradientsBody(world: group)
             try clipGradNormShardedBody(world: group)
