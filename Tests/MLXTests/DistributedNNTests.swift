@@ -2,8 +2,9 @@
 
 import Foundation
 import MLX
-import MLXNN
 import XCTest
+
+@testable import MLXNN
 
 // Ports of the layer tests from the Python distributed tests
 // (`python/tests/mlx_distributed_tests.py`).  Python runs them for every group
@@ -292,46 +293,104 @@ func shardingEdgeCasesBody(world: MLXDistributed.Group) throws {
                 Linear(8 * world.size, 8), sharding: .shardedToAll,
                 segments: .indices([3]), group: world)
         ) { error in
-            XCTAssertTrue(error is ShardingError, "unexpected error: \(error)")
+            XCTAssertEqual(
+                error as? ShardingError,
+                .indivisible(dimension: "segment of weight", of: 3, across: world.size))
         }
     }
 
-    // A quantized layer packs its inputs in the weight and groups them in the
-    // scales, so a logical segment index means a different position in each.
-    let quantized = QuantizedLinear(Linear(1024, 64, bias: true))
-    let segmented = try QuantizedShardedToAllLinear(
-        quantized, segments: .indices([512]), group: world)
+    // Segments that cannot split a dimension at all are reported too, in a
+    // group of one as well.  split(parts:) would call fatalError.
+    XCTAssertThrowsError(
+        try shardLinear(
+            Linear(8 * world.size, 8), sharding: .shardedToAll, segments: .count(3),
+            group: world)
+    ) { error in
+        XCTAssertEqual(
+            error as? ShardingError, .invalidSegments(.count(3), dimension: 8 * world.size))
+    }
 
-    XCTAssertEqual(
-        segmented.weight.dim(1) * 32 / segmented.bits,
-        segmented.scales.dim(1) * segmented.groupSize,
-        "the packed weight and the scales must cover the same inputs")
-    XCTAssertEqual(segmented.weight.dim(1) * 32 / segmented.bits, 1024 / world.size)
+    // A QuantizedLinear is a Linear, so the float layers accept one as far as
+    // the compiler is concerned, but they would keep its packed weight as a
+    // float weight and drop its scales.
+    let quantized = QuantizedLinear(Linear(64, 64))
+    XCTAssertThrowsError(try AllToShardedLinear(quantized, group: world)) { error in
+        XCTAssertEqual(error as? ShardingError, .quantizedLayer)
+    }
+    XCTAssertThrowsError(try ShardedToAllLinear(quantized, group: world)) { error in
+        XCTAssertEqual(error as? ShardingError, .quantizedLayer)
+    }
+
+    // A quantized layer packs its inputs in the weight and groups them in the
+    // scales, so a boundary between segments lands at a different position in
+    // each.  Scaled through a Double, 3840 of 5632 inputs came to
+    // 479.99999999999994 packed words and 59.99999999999999 groups, which
+    // truncate to the wrong positions.  The shard has to reproduce the layer.
+    MLXRandom.seed(0xF0F0_F0F0)
+    let inputs = 5632
+    let boundary = 3840
+    let wide = QuantizedLinear(Linear(inputs, 8))
+    let segmented = try QuantizedShardedToAllLinear(
+        wide, segments: .indices([boundary]), group: world)
+
+    // this rank's part of each segment
+    let (rank, size) = (world.rank, world.size)
+    let first = (rank * boundary / size) ..< ((rank + 1) * boundary / size)
+    let second =
+        (boundary + rank * (inputs - boundary) / size)
+        ..< (boundary + (rank + 1) * (inputs - boundary) / size)
+
+    let x = MLXRandom.normal([2, inputs])
+    let y = wide(x)
+    let ySharded = segmented(concatenated([x[first, axis: 1], x[second, axis: 1]], axis: 1))
+    try checkedEval(y, ySharded)
+
+    XCTAssertTrue(
+        y.allClose(ySharded, rtol: 1e-4, atol: 1e-6).item(Bool.self),
+        "a segmented quantized shard must reproduce the unsharded output")
+
+    // a boundary inside a quantization group cannot be sharded at all
+    XCTAssertThrowsError(
+        try QuantizedShardedToAllLinear(wide, segments: .indices([272]), group: world)
+    ) { error in
+        XCTAssertEqual(
+            error as? ShardingError,
+            .quantizationGroup(inputDimensions: 272, groupSize: 64, across: world.size))
+    }
 }
 
 /// Port of `test_average_gradients`.
 ///
 /// Python counts the `all_sum` calls by replacing `mx.distributed.all_sum`,
-/// which Swift cannot do.  This checks what the counting was there to protect
-/// instead: every batching threshold has to produce the same average, and the
-/// average has to include every rank.
+/// which Swift cannot do, so this counts the batches `averageGradients` forms
+/// instead.  Every batching has to produce the same average, and the average
+/// has to include every rank.
 func averageGradientsBody(world: MLXDistributed.Group) throws {
-    // Each rank contributes its own rank + 1, so the average is (size + 1) / 2
-    // times the gradient's own factor.  The shapes and values differ per
-    // gradient on purpose: batching concatenates them, reduces once and splits
-    // the result again, and identical arrays would hide a bad split.
+    // Ten gradients of ten float32 values, 40 bytes each as in Python, so the
+    // limits below form different batches.  Each rank contributes its own
+    // rank + 1, so the average is (size + 1) / 2 times the gradient's own
+    // factor.  The values differ per gradient and half are matrices on
+    // purpose: batching concatenates them, reduces once and splits the result
+    // again, and identical or flat arrays would hide a bad split.
     let mean = Float(world.size + 1) / 2
+    let shapes = (0 ..< 10).map { $0.isMultiple(of: 2) ? [10] : [2, 5] }
     let gradients = ModuleParameters.unflattened(
         (0 ..< 10).map {
-            ("g\($0)", MLXArray.ones([$0 + 1]) * Float(($0 + 1) * (world.rank + 1)))
+            ("g\($0)", MLXArray.ones(shapes[$0]) * Float(($0 + 1) * (world.rank + 1)))
         })
     let expected = Dictionary(
         uniqueKeysWithValues: (0 ..< 10).map {
-            ("g\($0)", MLXArray.ones([$0 + 1]) * (Float($0 + 1) * mean))
+            ("g\($0)", MLXArray.ones(shapes[$0]) * (Float($0 + 1) * mean))
         })
 
-    // 32MiB puts them in one batch, 4 * 50 splits them, 0 disables batching
-    for allReduceSize in [32 * 1024 * 1024, 4 * 50, 0] {
+    // Python makes one all_sum call for 32MiB, two for 4 * 50 bytes and ten
+    // without batching.  A limit of one byte batches every gradient alone.
+    let bytes = gradients.flattened().map { $0.1.nbytes }
+    XCTAssertEqual(groupBySize(bytes, limit: 32 * 1024 * 1024), [Array(0 ..< 10)])
+    XCTAssertEqual(groupBySize(bytes, limit: 4 * 50), [Array(0 ..< 5), Array(5 ..< 10)])
+    XCTAssertEqual(groupBySize(bytes, limit: 1), (0 ..< 10).map { [$0] })
+
+    for allReduceSize in [32 * 1024 * 1024, 4 * 50, 1, 0] {
         let averaged = try averageGradients(
             gradients, group: world, allReduceSize: allReduceSize)
         let flat = averaged.flattened()

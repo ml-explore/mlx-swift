@@ -16,7 +16,7 @@ public enum ShardingType: Sendable {
 ///
 /// A fused QKV matrix, for example, is three segments stacked together and
 /// each has to be sharded separately.
-public enum Segments: Sendable {
+public enum Segments: Sendable, Equatable {
     /// The weight is `count` equally sized segments.
     case count(Int)
 
@@ -26,41 +26,40 @@ public enum Segments: Sendable {
     /// The weight is split at these fractions of the axis.
     case fractions([Double])
 
-    /// The same segments expressed as fractions of `dimension`.
+    /// The positions that separate the segments of an axis of length `dimension`.
     ///
-    /// A quantized layer holds its input dimension packed in the weight and
-    /// grouped in the scales, so one logical index lands at a different
-    /// position in each of them.  Fractions apply to whatever length the
-    /// parameter being split actually has.
-    func relative(to dimension: Int) -> Segments {
-        switch self {
-        case .count, .fractions:
-            self
-        case .indices(let indices):
-            .fractions(indices.map { Double($0) / Double(dimension) })
-        }
-    }
-
-    func split(_ weight: MLXArray, axis: Int) -> [MLXArray] {
+    /// Throws if `count` equally sized segments do not fit, which
+    /// `split(parts:)` would report with a `fatalError`.
+    func boundaries(of dimension: Int) throws -> [Int] {
         switch self {
         case .count(let count):
-            count <= 1 ? [weight] : weight.split(parts: count, axis: axis)
+            guard count >= 1, dimension % count == 0 else {
+                throw ShardingError.invalidSegments(self, dimension: dimension)
+            }
+            return (1 ..< count).map { $0 * dimension / count }
         case .indices(let indices):
-            weight.split(indices: indices, axis: axis)
+            return indices
         case .fractions(let fractions):
-            weight.split(
-                indices: fractions.map { Int($0 * Double(weight.dim(axis))) }, axis: axis)
+            return fractions.map { Int($0 * Double(dimension)) }
         }
     }
 }
 
 /// A layer cannot be sharded across a group.
-public enum ShardingError: Error, CustomStringConvertible {
+public enum ShardingError: Error, CustomStringConvertible, Equatable {
     /// A dimension is not divisible by the size of the group.
     case indivisible(dimension: String, of: Int, across: Int)
 
     /// A shard would not hold whole quantization groups.
     case quantizationGroup(inputDimensions: Int, groupSize: Int, across: Int)
+
+    /// The segments cannot split a dimension, e.g. `.count(3)` of 8.
+    case invalidSegments(Segments, dimension: Int)
+
+    /// A ``QuantizedLinear`` was given to a float sharded layer.
+    ///
+    /// ``shardLinear(_:sharding:segments:group:)`` returns the quantized flavor.
+    case quantizedLayer
 
     /// The layer being sharded is missing a parameter.
     case missingParameter(String)
@@ -71,8 +70,16 @@ public enum ShardingError: Error, CustomStringConvertible {
             "Cannot shard the \(dimension) of size \(value) across \(size) processes."
         case .quantizationGroup(let inputDimensions, let groupSize, let size):
             """
-            Sharding \(inputDimensions) inputs across \(size) processes splits a quantization \
-            group of \(groupSize).
+            Sharding \(inputDimensions) inputs across \
+            \(size == 1 ? "1 process" : "\(size) processes") splits a quantization group of \
+            \(groupSize).
+            """
+        case .invalidSegments(let segments, let dimension):
+            "The segments \(segments) do not fit a dimension of size \(dimension)."
+        case .quantizedLayer:
+            """
+            A quantized layer cannot be sharded as a float layer.  Use shardLinear, \
+            QuantizedAllToShardedLinear or QuantizedShardedToAllLinear.
             """
         case .missingParameter(let name):
             "The layer being sharded has no \(name)."
@@ -134,14 +141,15 @@ private func predicate(for sharding: ShardingType, segments: Segments) -> Shardi
 }
 
 /// Returns a new parameter tree holding this process' shard of the weights.
+///
+/// The segments are checked in a group of one as well, where nothing is split,
+/// so that segments that cannot work are reported before the model runs on
+/// several processes.
 private func shard(
     _ parameters: ModuleParameters, group: MLXDistributed.Group,
     _ sharding: ShardingPredicate
 ) throws -> ModuleParameters {
     let size = group.size
-    if size == 1 {
-        return parameters
-    }
     let rank = group.rank
 
     let sharded = try parameters.flattened().map { path, weight -> (String, MLXArray) in
@@ -151,7 +159,14 @@ private func shard(
             return (path, weight)
         }
 
-        let parts = try segments.split(weight, axis: axis).map { part -> MLXArray in
+        let boundaries = try segments.boundaries(of: weight.dim(axis))
+        guard size > 1 else {
+            return (path, weight)
+        }
+
+        let segmented =
+            boundaries.isEmpty ? [weight] : weight.split(indices: boundaries, axis: axis)
+        let parts = try segmented.map { part -> MLXArray in
             // split(parts:) needs equal sections and calls fatalError rather
             // than reporting, so check before asking.  A dimension can divide
             // by the group size while one of its segments does not.
@@ -165,7 +180,41 @@ private func shard(
         return (path, concatenated(parts, axis: axis).contiguous())
     }
 
-    return ModuleParameters.unflattened(sharded)
+    // in a group of one every parameter stays whole
+    return size == 1 ? parameters : ModuleParameters.unflattened(sharded)
+}
+
+/// Shard the input dimensions of a quantized layer.
+///
+/// The packed weight, the scales and the biases hold the inputs at different
+/// resolutions, so a boundary between two segments lands at a different
+/// position in each.  Every segment has to hold whole quantization groups on
+/// every process.  Then every boundary lies on a group edge and scales to each
+/// parameter exactly in integer arithmetic, because every supported mode packs
+/// a group into whole `uint32` words.  Scaling through a `Double` could
+/// truncate to the position before.
+private func quantizedShardedToAllPredicate(
+    _ segments: Segments, inputDimensions: Int, groupSize: Int, size: Int
+) throws -> ShardingPredicate {
+    let boundaries = try segments.boundaries(of: inputDimensions)
+    guard boundaries == boundaries.sorted(),
+        boundaries.allSatisfy({ (0 ... inputDimensions).contains($0) })
+    else {
+        throw ShardingError.invalidSegments(segments, dimension: inputDimensions)
+    }
+
+    let edges = [0] + boundaries + [inputDimensions]
+    for (start, end) in zip(edges, edges.dropFirst()) {
+        guard (end - start) % (groupSize * size) == 0 else {
+            throw ShardingError.quantizationGroup(
+                inputDimensions: end - start, groupSize: groupSize, across: size)
+        }
+    }
+
+    return { path, weight in
+        path.hasSuffix("bias")
+            ? nil : (-1, .indices(boundaries.map { $0 * weight.dim(-1) / inputDimensions }))
+    }
 }
 
 /// Shard a module in place by replacing its parameters with sharded ones.
@@ -288,9 +337,17 @@ open class AllToShardedLinear: Linear {
     }
 
     /// Create a sharded layer from an existing ``Linear``.
+    ///
+    /// Throws for a ``QuantizedLinear``: shard it with
+    /// ``shardLinear(_:sharding:segments:group:)`` or ``QuantizedAllToShardedLinear``.
     public convenience init(
         _ other: Linear, segments: Segments = .count(1), group: MLXDistributed.Group? = nil
     ) throws {
+        // a QuantizedLinear is a Linear, but its packed weight is not a float one
+        guard !(other is QuantizedLinear) else {
+            throw ShardingError.quantizedLayer
+        }
+
         let group = try group ?? MLXDistributed.initialize()
         let (outputDimensions, _) = other.shape
         guard outputDimensions % group.size == 0 else {
@@ -322,7 +379,7 @@ open class AllToShardedLinear: Linear {
 
     /// Quantizing keeps the layer sharded.
     ///
-    /// Without this a quantized model built by ``quantize(model:groupSize:bits:predicate:)``
+    /// Without this a quantized model built by ``quantize(model:groupSize:bits:mode:filter:apply:)``
     /// would hold plain ``QuantizedLinear`` layers that no longer communicate.
     public override func toQuantized(groupSize: Int, bits: Int, mode: QuantizationMode) -> Module {
         QuantizedAllToShardedLinear(
@@ -379,9 +436,17 @@ open class ShardedToAllLinear: Linear {
     }
 
     /// Create a sharded layer from an existing ``Linear``.
+    ///
+    /// Throws for a ``QuantizedLinear``: shard it with
+    /// ``shardLinear(_:sharding:segments:group:)`` or ``QuantizedShardedToAllLinear``.
     public convenience init(
         _ other: Linear, segments: Segments = .count(1), group: MLXDistributed.Group? = nil
     ) throws {
+        // a QuantizedLinear is a Linear, but its packed weight is not a float one
+        guard !(other is QuantizedLinear) else {
+            throw ShardingError.quantizedLayer
+        }
+
         let group = try group ?? MLXDistributed.initialize()
         let (_, inputDimensions) = other.shape
         guard inputDimensions % group.size == 0 else {
@@ -525,8 +590,8 @@ open class QuantizedShardedToAllLinear: QuantizedLinear {
 
     /// Create a sharded layer from an existing ``QuantizedLinear``.
     ///
-    /// This shards the input dimension, which is the packed one, so a shard has
-    /// to hold whole quantization groups.
+    /// This shards the input dimension, which is the packed one, so every
+    /// segment has to hold whole quantization groups on every process.
     public convenience init(
         _ other: QuantizedLinear, segments: Segments = .count(1),
         group: MLXDistributed.Group? = nil
@@ -537,18 +602,13 @@ open class QuantizedShardedToAllLinear: QuantizedLinear {
             throw ShardingError.indivisible(
                 dimension: "input", of: inputDimensions, across: group.size)
         }
-        guard (inputDimensions / group.size) % other.groupSize == 0 else {
-            throw ShardingError.quantizationGroup(
-                inputDimensions: inputDimensions, groupSize: other.groupSize, across: group.size)
-        }
 
-        // the packed weight, the scales and the biases have different
-        // lengths along the input axis, so a logical index cannot be applied
-        // to all three -- express the segments relative to the dimension
         let parameters = try Dictionary(
             uniqueKeysWithValues: shard(
                 other.parameters(), group: group,
-                shardedToAllPredicate(segments.relative(to: inputDimensions))
+                quantizedShardedToAllPredicate(
+                    segments, inputDimensions: inputDimensions, groupSize: other.groupSize,
+                    size: group.size)
             ).flattened())
         guard let weight = parameters["weight"] else {
             throw ShardingError.missingParameter("weight")
@@ -622,21 +682,7 @@ public func averageGradients(
     }
 
     // gather the gradients into groups that are at least allReduceSize bytes
-    var batches = [[Int]]()
-    var batch = [Int]()
-    var batchBytes = 0
-    for (i, (_, gradient)) in flat.enumerated() {
-        batch.append(i)
-        batchBytes += gradient.nbytes
-        if batchBytes >= allReduceSize {
-            batches.append(batch)
-            batch = []
-            batchBytes = 0
-        }
-    }
-    if !batch.isEmpty {
-        batches.append(batch)
-    }
+    let batches = groupBySize(flat.map { $0.1.nbytes }, limit: allReduceSize)
 
     // concatenate, reduce, split
     var result = [(String, MLXArray)]()
@@ -654,6 +700,31 @@ public func averageGradients(
     }
 
     return ModuleParameters.unflattened(result)
+}
+
+/// Group consecutive arrays, given their sizes in bytes, into batches of at
+/// least `limit` bytes.  The last batch holds whatever remains.
+///
+/// This is `_group_by_size` from Python's `mlx.nn.utils`.  It is a function of
+/// its own so that the tests can count the batches `averageGradients` forms,
+/// the way the Python tests count its `all_sum` calls.
+func groupBySize(_ sizes: [Int], limit: Int) -> [[Int]] {
+    var batches = [[Int]]()
+    var batch = [Int]()
+    var batchBytes = 0
+    for (i, size) in sizes.enumerated() {
+        batch.append(i)
+        batchBytes += size
+        if batchBytes >= limit {
+            batches.append(batch)
+            batch = []
+            batchBytes = 0
+        }
+    }
+    if !batch.isEmpty {
+        batches.append(batch)
+    }
+    return batches
 }
 
 /// Clip the global norm of gradients that are sharded across a group.
