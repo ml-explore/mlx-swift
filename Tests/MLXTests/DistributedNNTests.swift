@@ -164,6 +164,51 @@ func shardPredicateBody(world: MLXDistributed.Group) throws {
         "a predicate sharded model must reproduce the unsharded output")
 }
 
+/// Cases the Python tests do not cover, each one a bug this port had.
+func shardingEdgeCasesBody(world: MLXDistributed.Group) throws {
+    // A sharded-to-all layer adds its bias after the reduction, so every
+    // process has to hold the same bias.  Seed the processes differently:
+    // nothing keeps their generators in step -- they may have done different
+    // work before this -- and the bias must not depend on that.
+    MLXRandom.seed(UInt64(world.rank + 1))
+    let layer = try ShardedToAllLinear(8 * world.size, 4, group: world)
+    let bias = try XCTUnwrap(layer.bias)
+    let gathered = MLXDistributed.allGather(bias, group: world)
+    try checkedEval(gathered)
+
+    let width = bias.dim(0)
+    for rank in 1 ..< world.size {
+        XCTAssertTrue(
+            gathered[0 ..< width].allClose(gathered[rank * width ..< (rank + 1) * width])
+                .item(Bool.self),
+            "rank \(rank) holds a different bias than rank 0")
+    }
+
+    // A dimension can divide by the group size while one of its segments does
+    // not.  That has to be reported rather than trap inside split(parts:).
+    if world.size > 1 {
+        XCTAssertThrowsError(
+            try shardLinear(
+                Linear(8 * world.size, 8), sharding: .shardedToAll,
+                segments: .indices([3]), group: world)
+        ) { error in
+            XCTAssertTrue(error is ShardingError, "unexpected error: \(error)")
+        }
+    }
+
+    // A quantized layer packs its inputs in the weight and groups them in the
+    // scales, so a logical segment index means a different position in each.
+    let quantized = QuantizedLinear(Linear(1024, 64, bias: true))
+    let segmented = try QuantizedShardedToAllLinear(
+        quantized, segments: .indices([512]), group: world)
+
+    XCTAssertEqual(
+        segmented.weight.dim(1) * 32 / segmented.bits,
+        segmented.scales.dim(1) * segmented.groupSize,
+        "the packed weight and the scales must cover the same inputs")
+    XCTAssertEqual(segmented.weight.dim(1) * 32 / segmented.bits, 1024 / world.size)
+}
+
 /// Port of `test_average_gradients`.
 ///
 /// Python counts the `all_sum` calls by replacing `mx.distributed.all_sum`,
@@ -328,6 +373,10 @@ class DistributedNNTests: XCTestCase {
         try shardPredicateBody(world: try MLXDistributed.initialize())
     }
 
+    func testShardingEdgeCases() throws {
+        try shardingEdgeCasesBody(world: try MLXDistributed.initialize())
+    }
+
     func testAverageGradients() throws {
         try averageGradientsBody(world: try MLXDistributed.initialize())
     }
@@ -365,6 +414,7 @@ class DistributedNNRingTests: XCTestCase {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
             try shardLinearBody(world: group)
             try shardPredicateBody(world: group)
+            try shardingEdgeCasesBody(world: group)
             try averageGradientsBody(world: group)
             try clipGradNormShardedBody(world: group)
         }

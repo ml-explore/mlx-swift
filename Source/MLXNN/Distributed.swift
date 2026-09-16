@@ -26,6 +26,21 @@ public enum Segments: Sendable {
     /// The weight is split at these fractions of the axis.
     case fractions([Double])
 
+    /// The same segments expressed as fractions of `dimension`.
+    ///
+    /// A quantized layer holds its input dimension packed in the weight and
+    /// grouped in the scales, so one logical index lands at a different
+    /// position in each of them.  Fractions apply to whatever length the
+    /// parameter being split actually has.
+    func relative(to dimension: Int) -> Segments {
+        switch self {
+        case .count, .fractions:
+            self
+        case .indices(let indices):
+            .fractions(indices.map { Double($0) / Double(dimension) })
+        }
+    }
+
     func split(_ weight: MLXArray, axis: Int) -> [MLXArray] {
         switch self {
         case .count(let count):
@@ -122,22 +137,31 @@ private func predicate(for sharding: ShardingType, segments: Segments) -> Shardi
 private func shard(
     _ parameters: ModuleParameters, group: MLXDistributed.Group,
     _ sharding: ShardingPredicate
-) -> ModuleParameters {
+) throws -> ModuleParameters {
     let size = group.size
     if size == 1 {
         return parameters
     }
     let rank = group.rank
 
-    let sharded = parameters.flattened().map { path, weight -> (String, MLXArray) in
+    let sharded = try parameters.flattened().map { path, weight -> (String, MLXArray) in
         // a scalar -- the NVFP4 global scale, for example -- is the same in
         // every process
         guard weight.ndim > 0, let (axis, segments) = sharding(path, weight) else {
             return (path, weight)
         }
-        let parts = segments.split(weight, axis: axis).map {
-            $0.split(parts: size, axis: axis)[rank]
+
+        let parts = try segments.split(weight, axis: axis).map { part -> MLXArray in
+            // split(parts:) needs equal sections and calls fatalError rather
+            // than reporting, so check before asking.  A dimension can divide
+            // by the group size while one of its segments does not.
+            guard part.dim(axis) % size == 0 else {
+                throw ShardingError.indivisible(
+                    dimension: "segment of \(path)", of: part.dim(axis), across: size)
+            }
+            return part.split(parts: size, axis: axis)[rank]
         }
+
         return (path, concatenated(parts, axis: axis).contiguous())
     }
 
@@ -180,7 +204,7 @@ public func shardInPlace(
     _ module: Module, predicate: ShardingPredicate, group: MLXDistributed.Group? = nil
 ) throws {
     let group = try group ?? MLXDistributed.initialize()
-    _ = module.update(parameters: shard(module.parameters(), group: group, predicate))
+    _ = try module.update(parameters: shard(module.parameters(), group: group, predicate))
 }
 
 /// Create a new linear layer with sharded parameters that also performs the
@@ -274,7 +298,7 @@ open class AllToShardedLinear: Linear {
                 dimension: "output", of: outputDimensions, across: group.size)
         }
 
-        let parameters = Dictionary(
+        let parameters = try Dictionary(
             uniqueKeysWithValues: shard(
                 other.parameters(), group: group, allToShardedPredicate(segments)
             ).flattened())
@@ -335,11 +359,17 @@ open class ShardedToAllLinear: Linear {
 
         self.group = group
 
+        // Each process holds its own slice of the weight, but the bias is
+        // added after the reduction, so every process has to hold the same
+        // one.  Random values would differ from process to process -- their
+        // generators are seeded independently -- and the layer would quietly
+        // produce a different result in each.  Python's quantized flavor uses
+        // zeros for this reason; its float one does not, and diverges.
         let scale = sqrt(1.0 / Float(inputDimensions))
         super.init(
             weight: MLXRandom.uniform(
                 -scale ..< scale, [outputDimensions, inputDimensions / group.size]),
-            bias: bias ? MLXRandom.uniform(-scale ..< scale, [outputDimensions]) : nil)
+            bias: bias ? MLXArray.zeros([outputDimensions]) : nil)
     }
 
     /// Hold parameters that are already this process' shard.
@@ -359,7 +389,7 @@ open class ShardedToAllLinear: Linear {
                 dimension: "input", of: inputDimensions, across: group.size)
         }
 
-        let parameters = Dictionary(
+        let parameters = try Dictionary(
             uniqueKeysWithValues: shard(
                 other.parameters(), group: group, shardedToAllPredicate(segments)
             ).flattened())
@@ -439,7 +469,7 @@ open class QuantizedAllToShardedLinear: QuantizedLinear {
                 dimension: "output", of: outputDimensions, across: group.size)
         }
 
-        let parameters = Dictionary(
+        let parameters = try Dictionary(
             uniqueKeysWithValues: shard(
                 other.parameters(), group: group, allToShardedPredicate(segments)
             ).flattened())
@@ -512,9 +542,13 @@ open class QuantizedShardedToAllLinear: QuantizedLinear {
                 inputDimensions: inputDimensions, groupSize: other.groupSize, across: group.size)
         }
 
-        let parameters = Dictionary(
+        // the packed weight, the scales and the biases have different
+        // lengths along the input axis, so a logical index cannot be applied
+        // to all three -- express the segments relative to the dimension
+        let parameters = try Dictionary(
             uniqueKeysWithValues: shard(
-                other.parameters(), group: group, shardedToAllPredicate(segments)
+                other.parameters(), group: group,
+                shardedToAllPredicate(segments.relative(to: inputDimensions))
             ).flattened())
         guard let weight = parameters["weight"] else {
             throw ShardingError.missingParameter("weight")
