@@ -193,6 +193,47 @@ func shardPredicateBody(world: MLXDistributed.Group) throws {
         "a predicate sharded model must reproduce the unsharded output")
 }
 
+/// Port of `test_donation`.
+///
+/// A collective donates its result to the operation that consumes it, so
+/// summing and then scaling must not cost more memory than summing alone.
+///
+/// This one has no single process half: in a group of one MLX returns the
+/// input unchanged, so there is no buffer to donate and the input is still
+/// live.  Python only ever runs it under a launcher for the same reason.
+func donationBody(world: MLXDistributed.Group) throws {
+    let cpu = Stream.defaultStream(.cpu)
+
+    let x = MLXRandom.normal([1024])
+    try checkedEval(x)
+    cpu.synchronize()
+    GPU.resetPeakMemory()
+
+    let scale = MLXArray(2.0)
+
+    // Python rebinds one name, so the first result is released before the
+    // second is evaluated.  Holding on to it here would add its buffer to the
+    // peak and make the comparison below fail for the wrong reason.
+    let allSumOnly: Int
+    do {
+        let sum = MLXDistributed.allSum(x, group: world)
+        try checkedEval(sum)
+        cpu.synchronize()
+        allSumOnly = Memory.peakMemory
+    }
+
+    let scaled = MLXDistributed.allSum(x, group: world) * scale
+    try checkedEval(scaled)
+    cpu.synchronize()
+    let allSumWithBinary = Memory.peakMemory
+
+    // the instrument has to move at all, or the comparison proves nothing
+    XCTAssertGreaterThan(allSumOnly, 0, "peak memory is not tracked for this stream")
+    XCTAssertEqual(
+        allSumOnly, allSumWithBinary,
+        "the multiply must donate the buffer the all sum produced")
+}
+
 /// Port of `test_quantized_sharded_linear_construction` from the Python nn
 /// tests.
 ///
@@ -488,6 +529,7 @@ class DistributedNNRingTests: XCTestCase {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
             try shardLinearBody(world: group)
             try shardPredicateBody(world: group)
+            try donationBody(world: group)
             try quantizedShardedConstructionBody(world: group)
             try shardingEdgeCasesBody(world: group)
             try averageGradientsBody(world: group)
