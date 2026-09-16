@@ -100,7 +100,8 @@ public final class MLXLogger: @unchecked (Sendable) {
     }
 
     private func _backing() -> MLXLogHandler {
-        if let backing = lock.withLock({ backing }) {
+        let result: (any MLXLogHandler)? = lock.withLock { backing }
+        if let backing = result {
             return backing
         }
 
