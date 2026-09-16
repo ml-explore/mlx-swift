@@ -299,7 +299,7 @@ final class CompiledFunction: @unchecked (Sendable) {
 /// ### See Also
 /// - <doc:compilation>
 public func compile(
-    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping ([MLXArray]) -> [MLXArray]
 ) -> ([MLXArray]) -> [MLXArray] {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless, f)
@@ -323,7 +323,7 @@ public func compile(
 ///
 /// ### See Also
 /// - <doc:compilation>
-public func compile(
+public func compileSendable(
     shapeless: Bool = false,
     _ f: @escaping @Sendable ([MLXArray]) -> [MLXArray]
 ) -> @Sendable ([MLXArray]) -> [MLXArray] {
@@ -341,7 +341,7 @@ public func compile(
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
-    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray) -> MLXArray
 ) -> (MLXArray) -> MLXArray {
     let compileState = CompiledFunction(inputs: inputs, outputs: outputs, shapeless: shapeless) {
@@ -357,13 +357,13 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])`` that takes a single ``MLXArray`` and
+/// Overload of ``compileSendable(shapeless:_:)-1i6ud`` that takes a single ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])``
-public func compile(
+/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+public func compileSendable(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray) -> MLXArray
 ) -> @Sendable (MLXArray) -> MLXArray {
@@ -387,7 +387,7 @@ public func compile(
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
-    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray) -> MLXArray
 )
     -> (MLXArray, MLXArray) -> MLXArray
@@ -402,13 +402,13 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])`` that takes two ``MLXArray`` and
+/// Overload of ``compileSendable(shapeless:_:)-1i6ud`` that takes two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])``
-public func compile(
+/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+public func compileSendable(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> MLXArray
 )
@@ -431,7 +431,7 @@ public func compile(
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
 public func compile(
-    inputs: [any Updatable], outputs: [any Updatable] = [], shapeless: Bool = false,
+    inputs: [any Updatable] = [], outputs: [any Updatable] = [], shapeless: Bool = false,
     _ f: @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
 )
     -> (MLXArray, MLXArray, MLXArray) -> MLXArray
@@ -446,13 +446,13 @@ public func compile(
     }
 }
 
-/// Overload of ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])`` that takes three ``MLXArray`` and
+/// Overload of ``compileSendable(shapeless:_:)-1i6ud`` that takes three ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
-/// - ``compile(shapeless:_:)-(Bool,([MLXArray])->[MLXArray])``
-public func compile(
+/// - ``compile(inputs:outputs:shapeless:_:)-7korq``
+public func compileSendable(
     shapeless: Bool = false,
     _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
 )

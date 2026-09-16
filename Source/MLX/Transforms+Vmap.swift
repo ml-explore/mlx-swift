@@ -16,7 +16,7 @@ final internal class UncheckedSendableBox<T>: @unchecked Sendable {
 /// a (declared) sendable closure.  Callers must declare their return sendability correctly.
 /// For example, ``vmap(_:inAxes:outAxes:)`` produces
 /// a non-Sendable closure from a non-Sendable input while
-/// ``vmapPure(_:inAxes:outAxes:)`` produces
+/// ``vmapSendable(_:inAxes:outAxes:)`` produces
 /// Sendable from Sendable.
 private func vmapInternal(
     _ f: @escaping ([MLXArray]) -> [MLXArray],
@@ -100,7 +100,7 @@ public func vmap(
 /// ```swift
 /// @Sendable
 /// func add(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
-/// let vf = vmapPure(add, inAxes: (0, nil))
+/// let vf = vmapSendable(add, inAxes: (0, nil))
 /// ```
 ///
 /// - Parameters:
@@ -111,7 +111,7 @@ public func vmap(
 ///
 /// ### See Also
 /// - <doc:vmap>
-public func vmapPure(
+public func vmapSendable(
     _ f: @escaping @Sendable ([MLXArray]) -> [MLXArray],
     inAxes: some Sequence<Int?> & Sendable = [0],
     outAxes: some Sequence<Int?> & Sendable = [0]
@@ -134,17 +134,17 @@ public func vmap(
     return { a in inner([a])[0] }
 }
 
-/// Overload of ``vmapPure(_:inAxes:outAxes:)``
+/// Overload of ``vmapSendable(_:inAxes:outAxes:)``
 /// for a single ``MLXArray`` input and output.
 ///
 /// ### See Also
 /// - <doc:vmap>
-public func vmapPure(
+public func vmapSendable(
     _ f: @escaping @Sendable (MLXArray) -> MLXArray,
     inAxes: Int? = 0,
     outAxes: Int? = 0
 ) -> @Sendable (MLXArray) -> MLXArray {
-    let inner = vmapPure({ [f($0[0])] }, inAxes: [inAxes], outAxes: [outAxes])
+    let inner = vmapSendable({ [f($0[0])] }, inAxes: [inAxes], outAxes: [outAxes])
     return { a in inner([a])[0] }
 }
 
@@ -163,16 +163,17 @@ public func vmap(
     return { a, b in inner([a, b])[0] }
 }
 
-/// Overload of ``vmapPure(_:inAxes:outAxes:)``
+/// Overload of ``vmapSendable(_:inAxes:outAxes:)``
 /// for a two ``MLXArray`` inputs and a single output.
 ///
 /// ### See Also
 /// - <doc:vmap>
-public func vmapPure(
+public func vmapSendable(
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> MLXArray,
     inAxes: (Int?, Int?) = (0, 0),
     outAxes: Int? = 0
 ) -> @Sendable (MLXArray, MLXArray) -> MLXArray {
-    let inner = vmapPure({ [f($0[0], $0[1])] }, inAxes: [inAxes.0, inAxes.1], outAxes: [outAxes])
+    let inner = vmapSendable(
+        { [f($0[0], $0[1])] }, inAxes: [inAxes.0, inAxes.1], outAxes: [outAxes])
     return { a, b in inner([a, b])[0] }
 }
