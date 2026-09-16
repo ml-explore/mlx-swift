@@ -46,7 +46,7 @@ enum DistributedHarness {
 
         if environment[spawnedRankVariable] == "1" {
             // spawned by rank 0 -- the hostfile and rank are already set
-            try runRank(body)
+            try runRank(ranks: ranks, body)
             return
         }
 
@@ -94,7 +94,7 @@ enum DistributedHarness {
             unsetenv("MLX_RANK")
         }
 
-        try runRank(body)
+        try runRank(ranks: ranks, body)
 
         for (index, process) in spawned.enumerated() {
             process.waitUntilExit()
@@ -109,9 +109,17 @@ enum DistributedHarness {
     /// The body is wrapped in `withError` so that an MLX error becomes a test
     /// failure naming the rank.  Without an active scope the global handler
     /// calls `fatalError()` and the message never reaches XCTest.
-    private static func runRank(_ body: (MLXDistributed.Group) throws -> Void) throws {
+    private static func runRank(
+        ranks: Int, _ body: (MLXDistributed.Group) throws -> Void
+    ) throws {
         do {
             let group = try MLXDistributed.initialize(backend: .ring, strict: true)
+
+            // a group of one makes every assertion about sharding pass without
+            // proving anything, so the size is part of the contract
+            print("[rank \(group.rank)] joined a group of size \(group.size)")
+            XCTAssertEqual(group.size, ranks, "joined a group of the wrong size")
+
             try withError {
                 try body(group)
             }
