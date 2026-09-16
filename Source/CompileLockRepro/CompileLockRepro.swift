@@ -150,10 +150,10 @@ struct CompileLockRepro {
 
         // Fresh instances: a cold compiler cache is what makes `compile_trace`
         // — and therefore the re-entry into Swift under `evalLock` — happen.
-        let shared: @Sendable (MLXArray) -> MLXArray = compile(shapeless: true) { x in
+        let shared: @Sendable (MLXArray) -> MLXArray = compileSendable(shapeless: true) { x in
             x * 2 + 1
         }
-        let outer: @Sendable (MLXArray) -> MLXArray = compile(shapeless: true) { x in
+        let outer: @Sendable (MLXArray) -> MLXArray = compileSendable(shapeless: true) { x in
             // This body runs on thread H, on the C++ side of
             // `mlx_closure_apply`, inside `compile_trace`, with `evalLock` held.
             traced.set()
