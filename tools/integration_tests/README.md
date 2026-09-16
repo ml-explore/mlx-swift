@@ -28,7 +28,6 @@ holds all of the comparison policy.  It replaces the retired
 `tools/generate_integration_tests.py` / `Tests/MLXTests/IntegrationTests.swift`
 pair (`MAINTENANCE.md` step 10).
 
-The tables are 605 cases in 26 files (514 function + 91 module):
 
 | file | what |
 | --- | --- |
