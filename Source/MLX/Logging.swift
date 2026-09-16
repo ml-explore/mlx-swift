@@ -88,10 +88,14 @@ public final class MLXLogger: @unchecked (Sendable) {
 
     public static var factory: MLXLogHandlerFactory {
         get {
-            factoryLock.withLock { handlerFactory }
+            factoryLock.lock()
+            defer { factoryLock.unlock() }
+            return handlerFactory
         }
         set {
-            factoryLock.withLock { handlerFactory = newValue }
+            factoryLock.lock()
+            defer { factoryLock.unlock() }
+            handlerFactory = newValue
         }
     }
 
@@ -99,14 +103,28 @@ public final class MLXLogger: @unchecked (Sendable) {
         self.label = label
     }
 
+    // note: this avoids `lock.withLock { ... }` returning an existential --
+    // that pattern crashes the Swift 6.3 compiler on Linux (SIL
+    // ClosureLifetimeFixup pass)
+    private func _existingBacking() -> MLXLogHandler? {
+        lock.lock()
+        defer { lock.unlock() }
+        return backing
+    }
+
+    private func _setBacking(_ handler: MLXLogHandler) {
+        lock.lock()
+        defer { lock.unlock() }
+        self.backing = handler
+    }
+
     private func _backing() -> MLXLogHandler {
-        let result: (any MLXLogHandler)? = lock.withLock { backing }
-        if let backing = result {
+        if let backing = _existingBacking() {
             return backing
         }
 
         let backing = Self.factory(label)
-        lock.withLock { self.backing = backing }
+        _setBacking(backing)
         return backing
     }
 
