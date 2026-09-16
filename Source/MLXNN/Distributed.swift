@@ -87,7 +87,9 @@ public func sumGradients(group: MLXDistributed.Group) -> (MLXArray) -> MLXArray 
 }
 
 /// The sharding axis and segments for a parameter, or `nil` to leave it alone.
-private typealias ShardingPredicate = (String, MLXArray) -> (axis: Int, segments: Segments)?
+///
+/// The path is the parameter's path in the module, e.g. `layers.0.conv.weight`.
+public typealias ShardingPredicate = (String, MLXArray) -> (axis: Int, segments: Segments)?
 
 /// Shard the rows -- the output dimensions -- of every parameter.
 ///
@@ -156,10 +158,29 @@ public func shardInPlace(
     _ module: Module, sharding: ShardingType, segments: Segments = .count(1),
     group: MLXDistributed.Group? = nil
 ) throws {
+    try shardInPlace(
+        module, predicate: predicate(for: sharding, segments: segments), group: group)
+}
+
+/// Shard a module in place, choosing how each parameter is split.
+///
+/// This is the general form of ``shardInPlace(_:sharding:segments:group:)``, and
+/// matches what Python's `shard_inplace` accepts.  The predicate receives a
+/// parameter and its path and returns the axis to shard it along, with the
+/// segments that make it up, or `nil` to leave the parameter whole.
+///
+/// The module itself is unchanged, so distributed communication only happens
+/// if the module supports it natively.
+///
+/// - Parameters:
+///   - module: the module whose parameters are sharded in place
+///   - predicate: chooses how each parameter is sharded
+///   - group: the group to shard across, or `nil` to use the global group
+public func shardInPlace(
+    _ module: Module, predicate: ShardingPredicate, group: MLXDistributed.Group? = nil
+) throws {
     let group = try group ?? MLXDistributed.initialize()
-    _ = module.update(
-        parameters: shard(
-            module.parameters(), group: group, predicate(for: sharding, segments: segments)))
+    _ = module.update(parameters: shard(module.parameters(), group: group, predicate))
 }
 
 /// Create a new linear layer with sharded parameters that also performs the

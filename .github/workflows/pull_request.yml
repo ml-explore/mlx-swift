@@ -120,7 +120,7 @@ jobs:
         shell: sh
         run: |
           MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedRingTests ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
-          MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedShardLinearRingTests ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
+          MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedNNRingTests ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
       - name: Build xcodeproj (Xcode, macOS)
         shell: sh

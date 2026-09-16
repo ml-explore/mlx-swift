@@ -5,13 +5,13 @@ import MLX
 import MLXNN
 import XCTest
 
-/// Port of `test_shard_linear` from the Python distributed tests
-/// (`python/tests/mlx_distributed_tests.py`).
-///
-/// Python runs it for every group size under a launcher.  This runs the same
-/// body twice: once in a single process, where the sharding degenerates but
-/// construction and the forward pass are still exercised, and once across real
-/// ranks, where the slices actually differ.
+// Ports of the layer tests from the Python distributed tests
+// (`python/tests/mlx_distributed_tests.py`).  Python runs them for every group
+// size under a launcher; each body here runs twice, once in a single process
+// where the sharding degenerates but the layers are still built and run, and
+// once across real ranks where every rank holds a different slice.
+
+/// Port of `test_shard_linear`.
 ///
 /// - Parameter world: the group to shard across
 func shardLinearBody(world: MLXDistributed.Group) throws {
@@ -122,6 +122,73 @@ private func shardLinearBackward(world: MLXDistributed.Group) throws {
     }
 }
 
+/// Port of `test_shard_predicate`.
+///
+/// A module that is not a ``Linear`` is sharded by handing ``shardInPlace`` a
+/// predicate.  The module aggregates where the sharding requires it, which the
+/// predicate cannot do on its own.
+func shardPredicateBody(world: MLXDistributed.Group) throws {
+    MLXRandom.seed(0xF0F0_F0F0)
+
+    // even layers shard their output channels; odd layers shard their input
+    // channels and keep the bias, which applies to the summed result
+    let sharding: ShardingPredicate = { path, _ in
+        let parts = path.split(separator: ".")
+        guard parts.count > 1, let layer = Int(parts[1]) else { return nil }
+
+        if layer % 2 == 0 {
+            return (0, .count(1))
+        }
+        return parts.last == "bias" ? nil : (-1, .count(1))
+    }
+
+    let model = Sequential(
+        layers: AggregatingConv(3, 128), AggregatingConv(128, 128),
+        AggregatingConv(128, 128), AggregatingConv(128, 3))
+    let sharded = Sequential(
+        layers: AggregatingConv(3, 128),
+        AggregatingConv(128, 128, aggregate: world),
+        AggregatingConv(128, 128),
+        AggregatingConv(128, 3, aggregate: world))
+
+    _ = sharded.update(parameters: model.parameters())
+    try shardInPlace(sharded, predicate: sharding, group: world)
+
+    let x = MLXRandom.normal([4, 16, 16, 3])
+    let y1 = model(x)
+    let y2 = sharded(x)
+    try checkedEval(y1, y2)
+
+    XCTAssertTrue(
+        y1.allClose(y2, rtol: 1e-4, atol: 1e-6).item(Bool.self),
+        "a predicate sharded model must reproduce the unsharded output")
+}
+
+/// A convolution that can sum its output across the group, so that a layer fed
+/// sharded input channels produces the whole result.
+private class AggregatingConv: Module, UnaryLayer {
+
+    @ModuleInfo(key: "conv") var conv: Conv2d
+
+    let aggregate: MLXDistributed.Group?
+
+    init(
+        _ inputChannels: Int, _ outputChannels: Int, kernelSize: Int = 3,
+        aggregate: MLXDistributed.Group? = nil
+    ) {
+        self._conv.wrappedValue = Conv2d(
+            inputChannels: inputChannels, outputChannels: outputChannels,
+            kernelSize: IntOrPair(kernelSize))
+        self.aggregate = aggregate
+    }
+
+    func callAsFunction(_ x: MLXArray) -> MLXArray {
+        let y = conv(x)
+        guard let aggregate else { return y }
+        return MLXDistributed.allSum(y, group: aggregate)
+    }
+}
+
 private func assertGradientShard(
     _ full: [String: MLXArray], _ shard: [String: MLXArray], _ key: String,
     _ range: Range<Int>, axis: Int, file: StaticString = #filePath, line: UInt = #line
@@ -152,18 +219,24 @@ private func assertGradientWhole(
 /// That is enough to catch a layer that mishandles its input -- a
 /// ``QuantizedLinear`` sharded as if it were a float layer, for example --
 /// which is why this runs in CI without a launcher.
-class DistributedShardLinearTests: XCTestCase {
+class DistributedNNTests: XCTestCase {
 
     override class func setUp() {
         setDefaultDevice()
     }
 
-    func testShardLinear() throws {
+    override func setUpWithError() throws {
         try XCTSkipIf(
             ProcessInfo.processInfo.environment["MLX_TEST_DISTRIBUTED"] == "1",
-            "The multi process run covers this; see DistributedShardLinearRingTests.")
+            "The multi process run covers this; see DistributedNNRingTests.")
+    }
 
+    func testShardLinear() throws {
         try shardLinearBody(world: try MLXDistributed.initialize())
+    }
+
+    func testShardPredicate() throws {
+        try shardPredicateBody(world: try MLXDistributed.initialize())
     }
 }
 
@@ -172,14 +245,18 @@ class DistributedShardLinearTests: XCTestCase {
 /// Skipped unless `MLX_TEST_DISTRIBUTED=1`:
 ///
 /// ```
-/// MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedShardLinearRingTests \
+/// MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedNNRingTests \
 ///     .../MLXTests.xctest
 /// ```
-class DistributedShardLinearRingTests: XCTestCase {
+///
+/// Like ``DistributedRingTests`` this has a single test method, since a
+/// process can only join one ring.  It runs every ported body in turn, the way
+/// the Python tests all share the group their launcher formed.
+class DistributedNNRingTests: XCTestCase {
 
-    static let testName = "DistributedShardLinearRingTests/testShardLinear"
+    static let testName = "DistributedNNRingTests/testShardedLayers"
 
-    /// Four ranks: the dimensions the Python test uses, 1024 and 128, divide by
+    /// Four ranks: the dimensions the Python tests use, 1024 and 128, divide by
     /// four, and a shard of 1024 inputs still holds whole quantization groups.
     static let rankCount = 4
 
@@ -187,9 +264,10 @@ class DistributedShardLinearRingTests: XCTestCase {
         setDefaultDevice()
     }
 
-    func testShardLinear() throws {
+    func testShardedLayers() throws {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
             try shardLinearBody(world: group)
+            try shardPredicateBody(world: group)
         }
     }
 }
