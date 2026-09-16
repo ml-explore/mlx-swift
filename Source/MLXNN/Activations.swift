@@ -1011,116 +1011,116 @@ open class SELU: Module, UnaryLayer {
 // MARK: - Compiled Activation Functions
 
 private let compiledLeakyRelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, negativeSlope in
+    compileSendable(shapeless: true) { x, negativeSlope in
         maximum(negativeSlope * x, x)
     }
 }()
 
 private let compiledElu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, alpha in
+    compileSendable(shapeless: true) { x, alpha in
         which(x .> 0, x, alpha * (MLX.exp(x) - 1))
     }
 }()
 
 private let compiledRelu6: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         minimum(maximum(x, 0), 6)
     }
 }()
 
 private let compiledSoftsign: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         x / (1 + abs(x))
     }
 }()
 
 private let compiledSoftshrink: @Sendable (MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, lambda in
+    compileSendable(shapeless: true) { x, lambda in
         which(abs(x) .> lambda, x - sign(x) * lambda, 0)
     }
 }()
 
 private let compiledCelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, alpha in
+    compileSendable(shapeless: true) { x, alpha in
         maximum(x, 0.0) + alpha * (exp(minimum(x, 0.0) / alpha) - 1)
     }
 }()
 
 private let compiledSilu: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         x * sigmoid(x)
     }
 }()
 
 private let compiledLogSigmoid: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         -softplus(-x)
     }
 }()
 
 private let compiledGelu: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         x * (1 + erf(x / sqrt(2))) / 2
     }
 }()
 
 private let compiledGeluApproximate: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         0.5 * x * (1 + tanh(sqrt(2 / Float.pi) * (x + 0.044715 * x ** 3)))
     }
 }()
 
 private let compiledGeluFastApproximate: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         x * sigmoid(1.702 * x)
     }
 }()
 
 private let compiledSelu: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         elu(x, alpha: 1.67326) * 1.0507
     }
 }()
 
 private let compiledPrelu: @Sendable (MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, alpha in
+    compileSendable(shapeless: true) { x, alpha in
         maximum(0, x) + alpha * minimum(0, x)
     }
 }()
 
 private let compiledMish: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         x * tanh(softplus(x))
     }
 }()
 
 private let compiledHardSwish: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         let maxXPlus3 = maximum(x + 3, 0)
         return x * minimum(maxXPlus3, 6) / 6
     }
 }()
 
 private let compiledHardTanh: @Sendable (MLXArray, MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, min, max in
+    compileSendable(shapeless: true) { x, min, max in
         minimum(maximum(x, min), max)
     }
 }()
 
 private let compiledHardShrink: @Sendable (MLXArray, MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x, lambda in
+    compileSendable(shapeless: true) { x, lambda in
         which(abs(x) .> lambda, x, 0)
     }
 }()
 
 private let compiledRelu: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         maximum(x, 0)
     }
 }()
 
 private let compiledReluSquared: @Sendable (MLXArray) -> MLXArray = {
-    compile(shapeless: true) { x in
+    compileSendable(shapeless: true) { x in
         return relu(x).square()
     }
 }()

@@ -48,11 +48,11 @@ Each nested `vmap` introduces another batch dimension in the result.
 
 If the function being transformed is `Sendable` (typically meaning it
 does not capture any MLXArray values, it only uses its inputs) you can use
-``vmapPure(_:inAxes:outAxes:)->(MLXArray)->MLXArray`` (and variants) to
+``vmapSendable(_:inAxes:outAxes:)-3tm2r`` (and variants) to
 produce a `Sendable` result closure:
 
 ```swift
 @Sendable
 func add(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
-let vf = vmapPure(add, inAxes: (0, nil))
+let vf = vmapSendable(add, inAxes: (0, nil))
 ```
