@@ -19,6 +19,13 @@
         "identifier" : "C3AE8ECC2EAAA15F000BD280",
         "name" : "MLXTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:MLX.xcodeproj",
+        "identifier" : "C35E88D03054AACB00281871",
+        "name" : "MLXIntegrationTests"
+      }
     }
   ],
   "version" : 1

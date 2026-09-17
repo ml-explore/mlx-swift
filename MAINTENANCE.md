@@ -91,12 +91,7 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
                .product(name: "MLXOptimizers", package: "mlx-swift")]
 ```
 
-10. Update `tools/generate_integration_tests.py` as needed
-
-```
-import MLXNN
-@testable import MLXOptimizers
-```
+10. Update `tools/integration_tests/cases.py` as needed, regenerate tests if needed
 
 11. Update tests as needed
 

@@ -15,10 +15,6 @@ import XCTest
 /// program with a hostfile, matching how the Python tests are run.
 class DistributedTests: XCTestCase {
 
-    override class func setUp() {
-        setDefaultDevice()
-    }
-
     /// The assertions here describe a group of size one, so they are not valid
     /// in a multi process run -- see ``DistributedRingTests``.
     override func setUpWithError() throws {

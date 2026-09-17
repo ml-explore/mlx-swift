@@ -405,6 +405,12 @@ let package = Package(
                 "MLX", "MLXNN", "MLXOptimizers",
             ]
         ),
+        .testTarget(
+            name: "MLXIntegrationTests",
+            dependencies: [
+                "MLX", "MLXNN", "MLXOptimizers",
+            ]
+        ),
 
         // ------
         // Example programs

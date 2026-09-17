@@ -160,8 +160,12 @@ open class GRU: Module {
             var n = x_n[.ellipsis, index, 0...]
 
             if hidden != nil {
-                // Note: xProj_n was computed earlier
+                // Note: hProj_n was computed earlier and already includes bhn
                 n = n + r * hProj_n
+            } else if let bhn {
+                // matches python: without an incoming hidden state the hidden
+                // bias is still applied, gated by r
+                n = n + r * bhn
             }
             n = tanh(n)
 
