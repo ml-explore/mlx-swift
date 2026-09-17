@@ -29,10 +29,12 @@ private func onThreads(
     let ready = DispatchGroup()
     let finished = DispatchGroup()
 
-    for i in 0 ..< count {
+    for _ in 0 ..< count {
         ready.enter()
         finished.enter()
+    }
 
+    for i in 0 ..< count {
         let thread = Thread {
             ready.leave()
             // bounded, so a thread that never starts cannot wedge the others

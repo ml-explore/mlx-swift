@@ -52,6 +52,7 @@ let evalLock = NSRecursiveLock()
 
 // Used in eval():
 func eval(_ arrays: MLXArray...) {
+    // conceptually, but see below
     _ = evalLock.withLock {
         mlx_eval(...)
     }
@@ -60,11 +61,12 @@ func eval(_ arrays: MLXArray...) {
 
 This means:
 - `eval()` calls and stream creation are serialized across threads
+    - partially true for eval, see below -- there is synchronization but not over the entire operation
 - **Important**: evalLock only protects eval/stream operations, NOT all GPU ops
 - Lazy array operations are NOT automatically thread-safe
 - Parallelism happens within Metal, not between MLX calls
 
-There is one exemption: a caller can evaluate using `mlx_async_eval()` under lock, which resolves all the protected mutation.  So eval can do this:
+Important for MLX implmentation, there is one exemption: a caller can evaluate using `mlx_async_eval()` under lock, which resolves all the protected mutation.  So eval can do this:
 
 ```swift
 public func eval(_ arrays: MLXArray...) {
