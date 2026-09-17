@@ -6,18 +6,24 @@ public enum MLXCustomFunctionComponent: Sendable {
     case vjp(@Sendable ([MLXArray], [MLXArray], [MLXArray]) -> [MLXArray])
 }
 
-public func Forward(_ f: @escaping @Sendable ([MLXArray]) -> [MLXArray]) -> MLXCustomFunctionComponent {
+public func Forward(_ f: @escaping @Sendable ([MLXArray]) -> [MLXArray])
+    -> MLXCustomFunctionComponent
+{
     .forward(f)
 }
 
-public func VJP(_ f: @escaping @Sendable (_ primals: [MLXArray], _ cotangents: [MLXArray]) -> [MLXArray]) -> MLXCustomFunctionComponent {
+public func VJP(
+    _ f: @escaping @Sendable (_ primals: [MLXArray], _ cotangents: [MLXArray]) -> [MLXArray]
+) -> MLXCustomFunctionComponent {
     .vjp { primals, cotangents, _ in
         f(primals, cotangents)
     }
 }
 
 public func VJP(
-    _ f: @escaping @Sendable (_ primals: [MLXArray], _ cotangents: [MLXArray], _ outputs: [MLXArray]) -> [MLXArray]
+    _ f:
+        @escaping @Sendable (_ primals: [MLXArray], _ cotangents: [MLXArray], _ outputs: [MLXArray])
+        -> [MLXArray]
 ) -> MLXCustomFunctionComponent {
     .vjp(f)
 }
