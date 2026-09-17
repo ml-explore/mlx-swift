@@ -10,10 +10,6 @@ import XCTest
 /// the parts that a shape check would not catch.
 class PositionalEncodingTests: XCTestCase {
 
-    override class func setUp() {
-        setDefaultDevice()
-    }
-
     // MARK: - ALiBi
 
     func testALiBiSlopesPowerOfTwo() {
@@ -85,10 +81,6 @@ class PositionalEncodingTests: XCTestCase {
 /// Recurrent layers: the formulas have branches that only run for some argument
 /// combinations, which is where they drift from python.
 class RecurrentTests: XCTestCase {
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
 
     private func parameters(_ module: Module) -> ModuleParameters {
         // deterministic values so the tests do not depend on the random init
