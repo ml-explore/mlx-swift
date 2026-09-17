@@ -42,6 +42,11 @@ let c = a + b
 may be large unresolved graphs) and the `addition` operator that combines them.  It is not safe
 to create `c` in one thread and consume/evaluate it in another.
 
+If you need to share an array across a task or actor boundary, take a
+``MaterializedArray`` snapshot via ``MLXArray/materialized()`` (or
+``materialize(_:)->MaterializedArray``).  A `MaterializedArray` is fully
+evaluated, immutable, and `Sendable`.
+
 ## Memory Safety
 
 > `MLXArray` is not memory safe.
@@ -91,3 +96,10 @@ and ``shape`` of the dimensions without changing the number of elements or conte
 ### Conversion and Data Types
 
 - <doc:conversion>
+
+### Concurrency
+
+- ``materialized()``
+- ``MaterializedArray``
+- ``materialize(_:)->MaterializedArray``
+- ``materialize(_:)->[MaterializedArray]``
