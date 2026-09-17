@@ -592,10 +592,6 @@ private func assertGradientWhole(
 /// which is why this runs in CI without a launcher.
 class DistributedNNTests: XCTestCase {
 
-    override class func setUp() {
-        setDefaultDevice()
-    }
-
     override func setUpWithError() throws {
         try XCTSkipIf(
             ProcessInfo.processInfo.environment["MLX_TEST_DISTRIBUTED"] == "1",
@@ -650,10 +646,6 @@ class DistributedNNRingTests: XCTestCase {
     /// Four ranks: the dimensions the Python tests use, 1024 and 128, divide by
     /// four, and a shard of 1024 inputs still holds whole quantization groups.
     static let rankCount = 4
-
-    override class func setUp() {
-        setDefaultDevice()
-    }
 
     func testShardedLayers() throws {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
