@@ -246,7 +246,7 @@ private let compiledGetWeight1: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     // PyTorch uses -0.5 for antialiasing=true (compatibility with PIL)
     // and uses -0.75 for antialiasing=false (compatibility with OpenCV)
 
-    compileSendable(shapeless: true) { ind, grid in
+    compile(shapeless: true) { ind, grid in
         let a = -0.75
         let x = abs(ind - grid)
         return ((a + 2.0) * x - (a + 3.0)) * x * x + 1
@@ -257,7 +257,7 @@ private let compiledGetWeight2: @Sendable (MLXArray, MLXArray) -> MLXArray = {
     // PyTorch uses -0.5 for antialiasing=true (compatibility with PIL)
     // and uses -0.75 for antialiasing=false (compatibility with OpenCV)
 
-    compileSendable(shapeless: true) { ind, grid in
+    compile(shapeless: true) { ind, grid in
         let a = -0.75
         let x = abs(ind - grid)
         return (((x - 5) * x + 8) * x - 4) * a
