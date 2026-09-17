@@ -555,7 +555,7 @@ public func compile(
 // MARK: - no state/Sendable
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray) -> (MLXArray, MLXArray)
 ) -> @Sendable (MLXArray) -> (MLXArray, MLXArray) {
@@ -571,7 +571,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray) -> (MLXArray, MLXArray, MLXArray)
 ) -> @Sendable (MLXArray) -> (MLXArray, MLXArray, MLXArray) {
@@ -587,7 +587,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray) -> (MLXArray, MLXArray, MLXArray, MLXArray)
 ) -> @Sendable (MLXArray) -> (MLXArray, MLXArray, MLXArray, MLXArray) {
@@ -603,7 +603,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> (MLXArray, MLXArray)
 ) -> @Sendable (MLXArray, MLXArray) -> (MLXArray, MLXArray) {
@@ -619,7 +619,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray)
 ) -> @Sendable (MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray) {
@@ -635,7 +635,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray, MLXArray)
 ) -> @Sendable (MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray, MLXArray) {
@@ -651,7 +651,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray)
 ) -> @Sendable (MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray) {
@@ -667,7 +667,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray)
 ) -> @Sendable (MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray, MLXArray) {
@@ -683,7 +683,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray) -> (
@@ -702,7 +702,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray) -> MLXArray
 ) -> @Sendable (MLXArray, MLXArray, MLXArray, MLXArray) -> MLXArray {
@@ -716,7 +716,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray)
 ) -> @Sendable (MLXArray, MLXArray, MLXArray, MLXArray) -> (MLXArray, MLXArray) {
@@ -732,7 +732,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -751,7 +751,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -771,7 +771,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> MLXArray
 ) -> @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> MLXArray {
@@ -785,7 +785,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -804,7 +804,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -824,7 +824,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -847,7 +847,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> MLXArray
@@ -862,7 +862,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -882,7 +882,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -905,7 +905,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray) -> (
@@ -928,7 +928,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray)
@@ -944,7 +944,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray)
@@ -968,7 +968,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray)
@@ -992,7 +992,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray, MLXArray)
@@ -1016,7 +1016,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (
@@ -1037,7 +1037,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (
@@ -1060,7 +1060,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (
@@ -1083,7 +1083,7 @@ public func compileSendable(
 }
 
 @_documentation(visibility: internal)
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f:
         @escaping @Sendable (

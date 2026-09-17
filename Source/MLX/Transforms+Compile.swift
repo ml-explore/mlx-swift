@@ -323,7 +323,7 @@ public func compile(
 ///
 /// ### See Also
 /// - <doc:compilation>
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable ([MLXArray]) -> [MLXArray]
 ) -> @Sendable ([MLXArray]) -> [MLXArray] {
@@ -357,13 +357,13 @@ public func compile(
     }
 }
 
-/// Overload of ``compileSendable(shapeless:_:)-1i6ud`` that takes a single ``MLXArray`` and
+/// Overload of ``compile(shapeless:_:)-6mb2r`` that takes a single ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-7korq``
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray) -> MLXArray
 ) -> @Sendable (MLXArray) -> MLXArray {
@@ -402,13 +402,13 @@ public func compile(
     }
 }
 
-/// Overload of ``compileSendable(shapeless:_:)-1i6ud`` that takes two ``MLXArray`` and
+/// Overload of ``compile(shapeless:_:)-6mb2r`` that takes two ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-7korq``
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @escaping @Sendable (MLXArray, MLXArray) -> MLXArray
 )
@@ -446,13 +446,13 @@ public func compile(
     }
 }
 
-/// Overload of ``compileSendable(shapeless:_:)-1i6ud`` that takes three ``MLXArray`` and
+/// Overload of ``compile(shapeless:_:)-6mb2r`` that takes three ``MLXArray`` and
 /// produces a single ``MLXArray``.
 ///
 /// ### See Also
 /// - <doc:compilation>
 /// - ``compile(inputs:outputs:shapeless:_:)-7korq``
-public func compileSendable(
+public func compile(
     shapeless: Bool = false,
     _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
 )
