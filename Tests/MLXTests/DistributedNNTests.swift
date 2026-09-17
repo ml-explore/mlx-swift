@@ -194,6 +194,57 @@ func shardPredicateBody(world: MLXDistributed.Group) throws {
         "a predicate sharded model must reproduce the unsharded output")
 }
 
+/// Sharding swaps the layers of a model in place, the way quantization does.
+///
+/// Models declare their projections as `Linear`, and a model's shard method
+/// installs the sharded layers with `update(modules:)`.  That only works
+/// because the sharded layers are `Linear` subclasses: a sharded layer that
+/// was not a `Linear` could not be installed at all.
+func moduleSubstitutionBody(world: MLXDistributed.Group) throws {
+    MLXRandom.seed(0xF0F0_F0F0)
+    let x = MLXRandom.normal([4, 64])
+
+    // the check has to be able to fail: a module that is not a Linear is refused
+    let control = ProjectionBlock(64, 256)
+    let notLinear: [(String, Module)] = [("up", Identity()), ("down", control.down)]
+    XCTAssertThrowsError(
+        try control.update(modules: ModuleChildren.unflattened(notLinear), verify: .all)
+    ) { error in
+        XCTAssertTrue(error is UpdateError, "unexpected error: \(error)")
+    }
+
+    // a float model, and one quantized first like a loaded quantized model
+    for quantized in [false, true] {
+        let block = ProjectionBlock(64, 256)
+        if quantized {
+            quantize(model: block)
+        }
+        let expected = block(x)
+        try checkedEval(expected)
+
+        // what a model's shard method does
+        let up = try shardLinear(block.up, sharding: .allToSharded, group: world)
+        let down = try shardLinear(block.down, sharding: .shardedToAll, group: world)
+        let sharded: [(String, Module)] = [("up", up), ("down", down)]
+        try block.update(modules: ModuleChildren.unflattened(sharded), verify: .all)
+
+        if quantized {
+            XCTAssertTrue(block.up is QuantizedAllToShardedLinear, "\(type(of: block.up))")
+            XCTAssertTrue(block.down is QuantizedShardedToAllLinear, "\(type(of: block.down))")
+        } else {
+            XCTAssertTrue(block.up is AllToShardedLinear, "\(type(of: block.up))")
+            XCTAssertTrue(block.down is ShardedToAllLinear, "\(type(of: block.down))")
+        }
+
+        // every process computes the output of the whole block
+        let y = block(x)
+        try checkedEval(y)
+        XCTAssertTrue(
+            expected.allClose(y, rtol: 1e-4, atol: 1e-6).item(Bool.self),
+            "the sharded block must reproduce the unsharded output (quantized: \(quantized))")
+    }
+}
+
 /// Port of `test_donation`.
 ///
 /// A collective donates its result to the operation that consumes it, so
@@ -468,6 +519,22 @@ func clipGradNormShardedBody(world: MLXDistributed.Group) throws {
     }
 }
 
+/// A block that declares its projections as `Linear`, the way models do.
+private class ProjectionBlock: Module, UnaryLayer {
+
+    @ModuleInfo(key: "up") var up: Linear
+    @ModuleInfo(key: "down") var down: Linear
+
+    init(_ dimensions: Int, _ hiddenDimensions: Int) {
+        self._up.wrappedValue = Linear(dimensions, hiddenDimensions)
+        self._down.wrappedValue = Linear(hiddenDimensions, dimensions)
+    }
+
+    func callAsFunction(_ x: MLXArray) -> MLXArray {
+        down(relu(up(x)))
+    }
+}
+
 /// A convolution that can sum its output across the group, so that a layer fed
 /// sharded input channels produces the whole result.
 private class AggregatingConv: Module, UnaryLayer {
@@ -543,6 +610,10 @@ class DistributedNNTests: XCTestCase {
         try shardPredicateBody(world: try MLXDistributed.initialize())
     }
 
+    func testModuleSubstitution() throws {
+        try moduleSubstitutionBody(world: try MLXDistributed.initialize())
+    }
+
     func testQuantizedShardedConstruction() throws {
         try quantizedShardedConstructionBody(world: try MLXDistributed.initialize())
     }
@@ -588,6 +659,7 @@ class DistributedNNRingTests: XCTestCase {
         try DistributedHarness.run(ranks: Self.rankCount, testName: Self.testName) { group in
             try shardLinearBody(world: group)
             try shardPredicateBody(world: group)
+            try moduleSubstitutionBody(world: group)
             try donationBody(world: group)
             try quantizedShardedConstructionBody(world: group)
             try shardingEdgeCasesBody(world: group)
