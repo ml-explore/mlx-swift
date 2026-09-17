@@ -1,0 +1,34 @@
+diff --git a/mlx/backend/cuda/cuda_utils.h b/mlx/backend/cuda/cuda_utils.h
+index f8a234ee6..3b7a79f27 100644
+--- a/mlx/backend/cuda/cuda_utils.h
++++ b/mlx/backend/cuda/cuda_utils.h
+@@ -30,7 +30,11 @@ class CudaHandle {
+     if (cudaPeekAtLastError() != cudaSuccess) {
+       return;
+     }
+-    reset();
++    // Inline reset() without throwing -- handle shutdown cases.
++    if (handle_ != nullptr) {
++      Destroy(handle_);
++      handle_ = nullptr;
++    }
+   }
+ 
+   CudaHandle(const CudaHandle&) = delete;
+diff --git a/mlx/backend/cuda/device.cpp b/mlx/backend/cuda/device.cpp
+index 472b3d99f..e7d8f2620 100644
+--- a/mlx/backend/cuda/device.cpp
++++ b/mlx/backend/cuda/device.cpp
+@@ -617,8 +617,10 @@ std::unordered_map<int, CommandEncoder>& get_command_encoders() {
+ }
+ 
+ std::unordered_map<int, CommandEncoder>& get_global_command_encoders() {
+-  static std::unordered_map<int, CommandEncoder> encoders;
+-  return encoders;
++  // encoders are leaked intentionally as they would synchronize on process
++  // shutdown
++  static auto* encoders = new std::unordered_map<int, CommandEncoder>();
++  return *encoders;
+ }
+ 
+ } // namespace mlx::core::cu
