@@ -125,7 +125,7 @@ class TransformTests: XCTestCase {
         let r1 = f(inputs: [i1, i2])[0]
 
         // evaluate compiled
-        let compiled = compileSendable(f)
+        let compiled = compile(f)
         let r2 = compiled([i1, i2])[0]
 
         assertEqual(r1, r2)
@@ -289,7 +289,7 @@ class TransformTests: XCTestCase {
         let bias = MLXArray(0)
 
         // without capturing state this won't mutate the random state
-        let c1 = compileSendable(f)
+        let c1 = compile(f)
 
         let c1a = c1(bias)
         let c1b = c1(bias)
@@ -327,7 +327,7 @@ class TransformTests: XCTestCase {
         let x = MLXRandom.uniform(0 ..< 1, [32, 1000, 4096])
 
         measure(gelu, x)
-        measure(compileSendable(gelu), x)
+        measure(compile(gelu), x)
     }
 
     func testVmapSimple() {
@@ -413,7 +413,7 @@ class TransformTests: XCTestCase {
 
         let x = MLXRandom.normal([4, 2])
 
-        let compiled = compileSendable(f)
+        let compiled = compile(f)
         let mapCompile = vmap(compiled)
         assertEqual(mapCompile(x), vmap(f)(x))
 
@@ -455,7 +455,7 @@ class TransformTests: XCTestCase {
         }
 
         func compileSwiglu() -> @Sendable (MLXArray, MLXArray) -> MLXArray {
-            compileSendable(shapeless: true) { xLinear, xGlu in
+            compile(shapeless: true) { xLinear, xGlu in
                 swiglu(xLinear, xGlu)
             }
         }
@@ -512,7 +512,7 @@ class TransformTests: XCTestCase {
         //
         // After fix: innerCall returns [] early on error, the overload returns a placeholder,
         // and withError properly surfaces the MLXError.
-        let compiled = compileSendable { (x: MLXArray) -> MLXArray in
+        let compiled = compile { (x: MLXArray) -> MLXArray in
             let constant = MLXArray([Float](repeating: 1, count: 3))
             return x + constant
         }
@@ -529,7 +529,7 @@ class TransformTests: XCTestCase {
 
     func testCompileMultiArrayErrorPropagatesViaWithError() throws {
         // Same scenario with the [MLXArray] -> [MLXArray] overload.
-        let compiled = compileSendable { (inputs: [MLXArray]) -> [MLXArray] in
+        let compiled = compile { (inputs: [MLXArray]) -> [MLXArray] in
             let constant = MLXArray([Float](repeating: 1, count: 3))
             return [inputs[0] + constant]
         }
@@ -546,7 +546,7 @@ class TransformTests: XCTestCase {
 
     func testCompileTwoArrayErrorPropagatesViaWithError() throws {
         // Same scenario with the (MLXArray, MLXArray) -> MLXArray overload.
-        let compiled = compileSendable { (a: MLXArray, _: MLXArray) -> MLXArray in
+        let compiled = compile { (a: MLXArray, _: MLXArray) -> MLXArray in
             let constant = MLXArray([Float](repeating: 1, count: 3))
             return a + constant
         }

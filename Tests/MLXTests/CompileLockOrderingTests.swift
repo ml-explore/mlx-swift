@@ -292,7 +292,7 @@ import XCTest
                 for i in 0 ..< rounds {
                     // A fresh compile each round keeps the cache cold, so every
                     // round really performs an insert.
-                    let compiled = MLX.compileSendable { (x: MLXArray) in x * 2 + MLXArray(Float(i))
+                    let compiled = MLX.compile { (x: MLXArray) in x * 2 + MLXArray(Float(i))
                     }
                     let r = compiled(MLXArray(Float(1)))
                     eval(r)
