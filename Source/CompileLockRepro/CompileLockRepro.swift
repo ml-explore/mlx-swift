@@ -112,8 +112,6 @@ struct CompileLockRepro {
             default: die(2, "unknown --device \(CommandLine.arguments[index + 1])")
             }
         }
-        Device.setDefault(device: device)
-
         print(
             "compile-lock repro: device=\(device), \(rounds) rounds, \(Int(deadline))s deadline per round"
         )
@@ -125,7 +123,8 @@ struct CompileLockRepro {
         var tracedAtLeastOnce = false
 
         for round in 1 ... rounds {
-            tracedAtLeastOnce = runRound(round, keepAlive: &keepAlive) || tracedAtLeastOnce
+            tracedAtLeastOnce =
+                runRound(round, device: device, keepAlive: &keepAlive) || tracedAtLeastOnce
         }
 
         if !tracedAtLeastOnce {
@@ -141,7 +140,7 @@ struct CompileLockRepro {
     }
 
     /// Runs one round.  Returns whether the traced body actually executed.
-    static func runRound(_ round: Int, keepAlive: inout [Any]) -> Bool {
+    static func runRound(_ round: Int, device: Device, keepAlive: inout [Any]) -> Bool {
         let gate = DispatchSemaphore(value: 0)  // H (inside the trace) -> W
         let hDone = DispatchSemaphore(value: 0)
         let wDone = DispatchSemaphore(value: 0)
@@ -165,23 +164,27 @@ struct CompileLockRepro {
         keepAlive.append(outer)
 
         let h = Thread {
-            let a = MLXArray([1.0, 2.0, 3.0] as [Float])
-            let r = outer(a)
-            eval(r)
-            hDone.signal()
+            Device.withDefaultDevice(device) {
+                let a = MLXArray([1.0, 2.0, 3.0] as [Float])
+                let r = outer(a)
+                eval(r)
+                hDone.signal()
+            }
         }
         h.name = "H-nested-compiled-call"
 
         let w = Thread {
-            gate.wait()
-            let b = MLXArray([4.0, 5.0, 6.0] as [Float])
-            var iterations = 0
-            repeat {
-                let r = shared(b)  // W takes L_cf(shared), then wants evalLock
-                eval(r)
-                iterations += 1
-            } while !stop.isSet && iterations < 1000
-            wDone.signal()
+            Device.withDefaultDevice(device) {
+                gate.wait()
+                let b = MLXArray([4.0, 5.0, 6.0] as [Float])
+                var iterations = 0
+                repeat {
+                    let r = shared(b)  // W takes L_cf(shared), then wants evalLock
+                    eval(r)
+                    iterations += 1
+                } while !stop.isSet && iterations < 1000
+                wDone.signal()
+            }
         }
         w.name = "W-plain-compiled-call"
 
