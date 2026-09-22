@@ -127,6 +127,14 @@ extension MLXArray {
 
         self.eval()
 
+        // An empty array (e.g. an empty slice like `a[128...]` on a shorter
+        // axis) has a logical size of 0 and no backing data pointer, so reading
+        // from it would dereference nil. Return an empty array, matching the
+        // Python `tolist()` behaviour.
+        if self.size == 0 {
+            return []
+        }
+
         return [T](unsafeUninitializedCapacity: self.size) { destination, initializedCount in
             let source = UnsafeRawBufferPointer(
                 start: mlx_array_data_uint8(self.ctx), count: physicalSize * itemSize)
