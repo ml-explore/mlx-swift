@@ -9,7 +9,6 @@ import XCTest
 class ModuleTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func newTestModule() -> Module {

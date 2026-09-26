@@ -23,7 +23,6 @@ import XCTest
     class CompileLockOrderingTests: XCTestCase {
 
         override class func setUp() {
-            setDefaultDevice()
         }
 
         /// The instrumentation must be able to report "not held", otherwise a

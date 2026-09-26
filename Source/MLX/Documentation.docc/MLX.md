@@ -130,3 +130,7 @@ See <doc:wired-memory> for configuration, best practices, and policy guidance.
 - ``Device``
 - ``DeviceType``
 - ``Stream``
+
+### Distributed
+
+- ``MLXDistributed``

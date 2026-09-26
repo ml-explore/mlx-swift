@@ -605,7 +605,7 @@ public func cummin(
 /// ### See Also
 /// - <doc:cumulative>
 /// - ``cumprod(_:reverse:inclusive:dtype:stream:)``
-/// - ``MLXArray/cumprod(axis:reverse:inclusive:stream:)``
+/// - ``MLXArray/cumprod(axis:reverse:inclusive:dtype:stream:)``
 public func cumprod(
     _ array: MLXArray, axis: Int, reverse: Bool = false, inclusive: Bool = true,
     dtype: DType? = nil,
@@ -629,7 +629,7 @@ public func cumprod(
 /// ### See Also
 /// - <doc:cumulative>
 /// - ``cumprod(_:axis:reverse:inclusive:dtype:stream:)``
-/// - ``MLXArray/cumprod(axis:reverse:inclusive:stream:)``
+/// - ``MLXArray/cumprod(axis:reverse:inclusive:dtype:stream:)``
 public func cumprod(
     _ array: MLXArray, reverse: Bool = false, inclusive: Bool = true,
     dtype: DType? = nil,
@@ -653,7 +653,7 @@ public func cumprod(
 /// ### See Also
 /// - <doc:cumulative>
 /// - ``cumsum(_:reverse:inclusive:dtype:stream:)``
-/// - ``MLXArray/cumsum(axis:reverse:inclusive:stream:)``
+/// - ``MLXArray/cumsum(axis:reverse:inclusive:dtype:stream:)``
 public func cumsum(
     _ array: MLXArray, axis: Int, reverse: Bool = false, inclusive: Bool = true,
     dtype: DType? = nil,
@@ -677,7 +677,7 @@ public func cumsum(
 /// ### See Also
 /// - <doc:cumulative>
 /// - ``cumsum(_:axis:reverse:inclusive:dtype:stream:)``
-/// - ``MLXArray/cumsum(axis:reverse:inclusive:stream:)``
+/// - ``MLXArray/cumsum(axis:reverse:inclusive:dtype:stream:)``
 public func cumsum(
     _ array: MLXArray, reverse: Bool = false, inclusive: Bool = true,
     dtype: DType? = nil,

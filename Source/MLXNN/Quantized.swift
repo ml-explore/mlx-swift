@@ -27,7 +27,9 @@ public protocol Quantized: Module {
     var mode: QuantizationMode { get }
 }
 
-private func applyNVFP4GlobalScale(_ value: MLXArray, globalScale: MLXArray?) -> MLXArray {
+/// Internal so that the sharded quantized layers, which cannot reuse
+/// ``QuantizedLinear``'s forward pass, apply the scale the same way.
+func applyNVFP4GlobalScale(_ value: MLXArray, globalScale: MLXArray?) -> MLXArray {
     guard let globalScale else { return value }
     // NVFP4 encodes its E4M3 group scales with (448 * 6) / globalScale.
     return (value * (globalScale / (448 * 6))).asType(value.dtype)

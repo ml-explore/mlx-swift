@@ -7,7 +7,6 @@ import XCTest
 class FFTTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testFFTRoundTrip() {

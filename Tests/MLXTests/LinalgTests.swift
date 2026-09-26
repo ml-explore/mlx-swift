@@ -7,7 +7,6 @@ import XCTest
 class LinalgTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testNormNoAxes() {

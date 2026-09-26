@@ -9,7 +9,6 @@ import XCTest
 class MLXArrayOpsTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     // MARK: - Operators

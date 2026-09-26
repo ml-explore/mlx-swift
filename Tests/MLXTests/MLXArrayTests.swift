@@ -8,7 +8,6 @@ import XCTest
 class MLXArrayTests: XCTestCase {
 
     override class func setUp() {
-        setDefaultDevice()
     }
 
     func testArrayProperties() {
