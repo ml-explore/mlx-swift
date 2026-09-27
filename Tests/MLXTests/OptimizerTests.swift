@@ -613,6 +613,36 @@ class OptimizerTests: XCTestCase {
             model: { RankNet() })
     }
 
+    /// `step` changes beta2 on every update. compile only writes back arrays
+    /// from `innerState()`, so a checkpoint after a compiled run must see the
+    /// same count an eager run would.
+    func testAdafactorCompiledStepAdvances() {
+        func parameters(compiled: Bool) -> ModuleParameters {
+            let model = RankNet()
+            let optimizer = Adafactor(learningRate: 0.1, warmupInit: true)
+            let gradients = model.parameters().mapValues { MLXArray.ones(like: $0) }
+            let token = MLXArray(0)
+            func once(_ token: MLXArray) -> MLXArray {
+                optimizer.update(model: model, gradients: gradients)
+                return token
+            }
+            let step =
+                compiled
+                ? compile(inputs: [model, optimizer], outputs: [model, optimizer], once)
+                : once
+            for _ in 0 ..< 4 {
+                _ = step(token)
+            }
+            eval(model, optimizer)
+            for (key, value) in optimizer.state().flattened() where key.hasSuffix(".step") {
+                XCTAssertEqual(value.item(Int32.self), 4, key)
+            }
+            return detached(model.parameters())
+        }
+
+        assertParametersEqual(parameters(compiled: false), parameters(compiled: true))
+    }
+
     func testStateRoundTripMultiOptimizer() {
         func make() -> MultiOptimizer {
             MultiOptimizer(

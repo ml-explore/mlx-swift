@@ -906,7 +906,10 @@ open class Adafactor: OptimizerBase<Adafactor.State> {
         var expAvg: MLXArray? = nil
 
         public func innerState() -> [MLXArray] {
-            [expAvgSqRow, expAvgSqCol, expAvgSq, expAvg].compactMap { $0 }
+            // `compile` and `eval` only see these arrays. `step` has to be
+            // here or a compiled run keeps the count from the first trace,
+            // and `state()` saves that stuck value.
+            [expAvgSqRow, expAvgSqCol, expAvgSq, expAvg].compactMap { $0 } + [step]
         }
     }
 
