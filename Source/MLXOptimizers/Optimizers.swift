@@ -24,6 +24,71 @@ public protocol Optimizer: Updatable, Evaluatable {
 
     /// Apply the gradients to the parameters of the model and update the model with the new parameters.
     func update(model: Module, gradients: ModuleParameters)
+
+    /// Buffers accumulated while training, as a ``ModuleParameters`` tree.
+    ///
+    /// The tree follows the model parameters. Optimizers that keep one buffer per
+    /// parameter (``SGD``, ``RMSprop``, ``AdaGrad``, ``Lion``, ``Muon``) store that
+    /// array at the parameter. Optimizers that keep several store a dictionary of
+    /// named buffers there:
+    ///
+    /// - ``Adam`` and ``AdamW``: `m`, `v`, and `step`
+    /// - ``Adamax``: `m` and `v`
+    /// - ``AdaDelta``: `v` and `u`
+    /// - ``Adafactor``: `step`, plus the running averages that parameter uses
+    ///   (`expAvgSq`, or `expAvgSqRow` and `expAvgSqCol`, and `expAvg` when
+    ///   `beta1` is set)
+    ///
+    /// ``MultiOptimizer`` nests each sub-optimizer under `states`, indexed
+    /// `"0"`, `"1"`, ... in optimizer order.
+    /// `step` is counted per parameter. Hyperparameters such as the learning rate are
+    /// not part of this tree — build the resumed optimizer with the same values.
+    ///
+    /// The result is empty until the first ``update(model:gradients:)`` or
+    /// ``update(parameters:)``. `flattened()` is the dictionary
+    /// `save(arrays:metadata:url:)` writes.
+    ///
+    /// ```swift
+    /// eval(optimizer)
+    /// let checkpoint = optimizer.state()
+    ///
+    /// let resumed = Adam(learningRate: 1e-3)
+    /// resumed.update(parameters: checkpoint)
+    /// ```
+    func state() -> ModuleParameters
+
+    /// Replace buffers with a tree produced by ``state()``.
+    ///
+    /// Parameters present in the tree replace the stored buffers. Parameters left
+    /// out are unchanged, as with `Module.update(parameters:)`.
+    ///
+    /// - Parameters:
+    ///   - parameters: buffers from ``state()``, or the same tree read back from
+    ///     `loadArrays(url:)`
+    func update(parameters: ModuleParameters)
+}
+
+extension Optimizer {
+    // External `Optimizer` conformers predate this API. The built-in optimizers
+    // replace both methods; a custom one keeps compiling and returns no buffers
+    // until it implements them.
+    public func state() -> ModuleParameters {
+        ModuleParameters()
+    }
+
+    public func update(parameters: ModuleParameters) {
+    }
+}
+
+private func requiredState(
+    _ arrays: [(String, MLXArray)], keys: [String], owner: Any
+) -> [String: MLXArray] {
+    let byKey = Dictionary(arrays, uniquingKeysWith: { _, latest in latest })
+    let missing = keys.filter { byKey[$0] == nil }
+    precondition(
+        missing.isEmpty,
+        "\(type(of: owner)) state is missing \(missing.joined(separator: ", "))")
+    return byKey
 }
 
 /// An optimizer that delegates to several sub-optimizers, routing each parameter to the first
@@ -88,6 +153,38 @@ open class MultiOptimizer: Optimizer {
     public func innerState() -> [MLXArray] {
         optimizers.flatMap { $0.innerState() }
     }
+
+    /// Buffers for every sub-optimizer, under `states.0`, `states.1`, ...
+    public func state() -> ModuleParameters {
+        var flat: [(String, MLXArray)] = []
+        // `states` matches Python. A bare leading index unflattens as an array,
+        // which ModuleParameters cannot hold at the root.
+        for (index, optimizer) in optimizers.enumerated() {
+            for (key, value) in optimizer.state().flattened() {
+                flat.append(("states.\(index).\(key)", value))
+            }
+        }
+        return ModuleParameters.unflattened(flat)
+    }
+
+    public func update(parameters: ModuleParameters) {
+        var grouped: [Int: [(String, MLXArray)]] = [:]
+        for (key, value) in parameters.flattened() {
+            // "states.<index>.<parameter path>", leaving any further dots intact.
+            let parts = key.split(separator: ".", maxSplits: 2).map(String.init)
+            guard parts.count == 3, parts[0] == "states",
+                let index = Int(parts[1]),
+                optimizers.indices.contains(index)
+            else {
+                preconditionFailure(
+                    "MultiOptimizer state key \"\(key)\" is missing a sub-optimizer index")
+            }
+            grouped[index, default: []].append((parts[2], value))
+        }
+        for (index, pairs) in grouped {
+            optimizers[index].update(parameters: ModuleParameters.unflattened(pairs))
+        }
+    }
 }
 
 /// The base class for all optimizers. It allows us to implement an optimizer on a per-parameter basis
@@ -124,6 +221,128 @@ open class OptimizerBase<State: Updatable>: Optimizer {
             .flatMap { $0.innerState() }
     }
 
+    /// Names written by ``exportState(_:)`` for one parameter.
+    ///
+    /// `""` stores the only buffer directly on the parameter. Any other name stores
+    /// a dictionary of buffers under the parameter (`m`, `v`, `step`, ...).
+    /// ``stateSuffixes()`` must list every name ``exportState(_:)`` can produce.
+    open func stateSuffixes() -> [String] { [""] }
+
+    /// Encode one parameter's buffers.
+    ///
+    /// Return `[("", array)]` for a single buffer. Return `[(name, array)]` for
+    /// several, using the names from ``stateSuffixes()``.
+    open func exportState(_ state: State) -> [(String, MLXArray)] {
+        fatalError("exportState() not implemented \(type(of: self))")
+    }
+
+    /// Rebuild one parameter's buffers from the pairs ``exportState(_:)`` produced.
+    open func importState(_ arrays: [(String, MLXArray)]) -> State {
+        fatalError("importState() not implemented \(type(of: self))")
+    }
+
+    open func state() -> ModuleParameters {
+        ModuleParameters(item: exportTree(stateStorage.asItem()))
+    }
+
+    open func update(parameters: ModuleParameters) {
+        let merged = mergeTree(stateStorage.asItem(), parameters.asItem())
+        guard case .dictionary(let values) = merged else {
+            preconditionFailure("optimizer state must be a dictionary")
+        }
+        stateStorage = NestedDictionary(values: values)
+    }
+
+    /// A dictionary of arrays whose keys are all buffer names is one parameter.
+    /// A dictionary of further dictionaries is the module tree, so a parameter
+    /// that is itself named `m` or `v` is not mistaken for a buffer.
+    private func isStateDictionary(_ updates: [String: NestedItem<String, MLXArray>]) -> Bool {
+        let names = Set(stateSuffixes().filter { !$0.isEmpty })
+        guard !names.isEmpty, !updates.isEmpty else { return false }
+        guard updates.keys.allSatisfy({ names.contains($0) }) else { return false }
+        for value in updates.values {
+            guard case .value = value else { return false }
+        }
+        return true
+    }
+
+    private func exportTree(_ item: NestedItem<String, State>) -> NestedItem<String, MLXArray> {
+        switch item {
+        case .none:
+            return .none
+        case .value(let state):
+            return exportValue(state)
+        case .array(let items):
+            return .array(items.map { exportTree($0) })
+        case .dictionary(let dictionary):
+            return .dictionary(dictionary.mapValues { exportTree($0) })
+        }
+    }
+
+    private func exportValue(_ state: State) -> NestedItem<String, MLXArray> {
+        let pairs = exportState(state)
+        precondition(!pairs.isEmpty, "\(type(of: self)) exportState() returned no buffers")
+        if pairs.count == 1, pairs[0].0.isEmpty {
+            return .value(pairs[0].1)
+        }
+
+        var exported: [String: NestedItem<String, MLXArray>] = [:]
+        for (name, array) in pairs {
+            precondition(
+                !name.isEmpty, "\(type(of: self)) mixed an unnamed buffer with named buffers")
+            exported[name] = .value(array)
+        }
+        return .dictionary(exported)
+    }
+
+    private func mergeTree(
+        _ existing: NestedItem<String, State>, _ update: NestedItem<String, MLXArray>
+    ) -> NestedItem<String, State> {
+        switch update {
+        case .none:
+            return existing
+        case .value(let array):
+            return .value(importState([("", array)]))
+        case .array(let updates):
+            var merged: [NestedItem<String, State>]
+            if case .array(let items) = existing {
+                merged = items
+            } else {
+                merged = []
+            }
+            if merged.count < updates.count {
+                merged.append(
+                    contentsOf: Array(repeating: .none, count: updates.count - merged.count))
+            }
+            for (index, item) in updates.enumerated() {
+                merged[index] = mergeTree(merged[index], item)
+            }
+            return .array(merged)
+        case .dictionary(let updates):
+            if isStateDictionary(updates) {
+                return .value(
+                    importState(
+                        updates.map { name, value in
+                            guard case .value(let array) = value else {
+                                preconditionFailure(
+                                    "optimizer state buffer \(name) is not an array")
+                            }
+                            return (name, array)
+                        }))
+            }
+            var merged: [String: NestedItem<String, State>]
+            if case .dictionary(let items) = existing {
+                merged = items
+            } else {
+                merged = [:]
+            }
+            for (key, item) in updates {
+                merged[key] = mergeTree(merged[key] ?? .none, item)
+            }
+            return .dictionary(merged)
+        }
+    }
+
     final public func update(model: Module, gradients: ModuleParameters) {
         model.update(parameters: apply(gradients: gradients, modelParameters: model.parameters()))
     }
@@ -158,6 +377,17 @@ open class OptimizerBase<State: Updatable>: Optimizer {
 open class OptimizerBaseArrayState: OptimizerBase<MLXArray> {
     override open func newState(parameter: MLXArray) -> MLXArray {
         MLXArray.zeros(like: parameter)
+    }
+
+    override open func exportState(_ state: MLXArray) -> [(String, MLXArray)] {
+        [("", state)]
+    }
+
+    override open func importState(_ arrays: [(String, MLXArray)]) -> MLXArray {
+        guard let array = arrays.first(where: { $0.0.isEmpty })?.1 else {
+            preconditionFailure("\(type(of: self)) state is missing the parameter buffer")
+        }
+        return array
     }
 }
 
@@ -388,6 +618,17 @@ open class AdaDelta: OptimizerBase<TupleState> {
         TupleState(zeros: parameter)
     }
 
+    override open func stateSuffixes() -> [String] { ["v", "u"] }
+
+    override open func exportState(_ state: TupleState) -> [(String, MLXArray)] {
+        [("v", state.values.0), ("u", state.values.1)]
+    }
+
+    override open func importState(_ arrays: [(String, MLXArray)]) -> TupleState {
+        let byKey = requiredState(arrays, keys: ["v", "u"], owner: self)
+        return TupleState(byKey["v"]!, byKey["u"]!)
+    }
+
     override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
         MLXArray, TupleState
     ) {
@@ -439,6 +680,17 @@ open class Adam: OptimizerBase<AdamState> {
 
     override open func newState(parameter: MLXArray) -> AdamState {
         AdamState(zeros: parameter)
+    }
+
+    override open func stateSuffixes() -> [String] { ["m", "v", "step"] }
+
+    override open func exportState(_ state: AdamState) -> [(String, MLXArray)] {
+        [("m", state.values.0), ("v", state.values.1), ("step", state.step)]
+    }
+
+    override open func importState(_ arrays: [(String, MLXArray)]) -> AdamState {
+        let byKey = requiredState(arrays, keys: ["m", "v", "step"], owner: self)
+        return AdamState(byKey["m"]!, byKey["v"]!, step: byKey["step"]!)
     }
 
     override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: AdamState) -> (
@@ -539,6 +791,17 @@ open class Adamax: OptimizerBase<TupleState> {
 
     override open func newState(parameter: MLXArray) -> TupleState {
         TupleState(zeros: parameter)
+    }
+
+    override open func stateSuffixes() -> [String] { ["m", "v"] }
+
+    override open func exportState(_ state: TupleState) -> [(String, MLXArray)] {
+        [("m", state.values.0), ("v", state.values.1)]
+    }
+
+    override open func importState(_ arrays: [(String, MLXArray)]) -> TupleState {
+        let byKey = requiredState(arrays, keys: ["m", "v"], owner: self)
+        return TupleState(byKey["m"]!, byKey["v"]!)
     }
 
     override open func applySingle(gradient: MLXArray, parameter: MLXArray, state: TupleState) -> (
@@ -694,6 +957,30 @@ open class Adafactor: OptimizerBase<Adafactor.State> {
         }
 
         return s
+    }
+
+    override open func stateSuffixes() -> [String] {
+        ["step", "expAvgSqRow", "expAvgSqCol", "expAvgSq", "expAvg"]
+    }
+
+    override open func exportState(_ state: State) -> [(String, MLXArray)] {
+        var exported: [(String, MLXArray)] = [("step", state.step)]
+        if let value = state.expAvgSqRow { exported.append(("expAvgSqRow", value)) }
+        if let value = state.expAvgSqCol { exported.append(("expAvgSqCol", value)) }
+        if let value = state.expAvgSq { exported.append(("expAvgSq", value)) }
+        if let value = state.expAvg { exported.append(("expAvg", value)) }
+        return exported
+    }
+
+    override open func importState(_ arrays: [(String, MLXArray)]) -> State {
+        let byKey = requiredState(arrays, keys: ["step"], owner: self)
+        var state = State()
+        state.step = byKey["step"]!
+        state.expAvgSqRow = byKey["expAvgSqRow"]
+        state.expAvgSqCol = byKey["expAvgSqCol"]
+        state.expAvgSq = byKey["expAvgSq"]
+        state.expAvg = byKey["expAvg"]
+        return state
     }
 
     func rms(_ inputs: MLXArray) -> MLXArray {
