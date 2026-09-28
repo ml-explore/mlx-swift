@@ -210,36 +210,64 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
 
         switch whence {
         case SEEK_SET:
+            if offset < 0 || offset > state.data.count {
+                return -1
+            }
             state.offset = Int(offset)
+            return 0
         case SEEK_CUR:
-            state.offset += Int(offset)
+            let proposed = state.offset &+ Int(offset)
+            if proposed < 0 || proposed > state.data.count {
+                return -1
+            }
+            state.offset = proposed
+            return 0
         case SEEK_END:
             // offset is relative to the end of the data, not the current position.
             // mlx's load_safetensors uses seek(0, end) + tell() to size the input.
-            state.offset = state.data.count + Int(offset)
+            let proposed = state.data.count &+ Int(offset)
+            if proposed < 0 || proposed > state.data.count {
+                return -1
+            }
+            state.offset = proposed
+            return 0
         default:
-            break
+            return -1
         }
     } read: { ptr, data, n in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
+        if n <= 0 || (n &+ state.offset < state.offset) {
+            return 0
+        }
+
         if n + state.offset <= state.data.count {
-            guard let data = data else { return }
+            guard let data = data else { return 0 }
             _ = state.data.withUnsafeBytes { buffer in
                 memcpy(data, buffer.baseAddress!.advanced(by: state.offset), n)
             }
             state.offset += n
+
+            return n
+        } else {
+            return 0
         }
 
     } read_at_offset: { ptr, data, n, offset in
         let state = Unmanaged<IOState>.fromOpaque(ptr!).takeUnretainedValue()
 
+        if n <= 0 || offset < 0 || (n &+ offset < offset) {
+            return 0
+        }
+
         if n + offset <= state.data.count {
-            guard let data = data else { return }
+            guard let data = data else { return 0 }
             _ = state.data.withUnsafeBytes { buffer in
                 memcpy(data, buffer.baseAddress!.advanced(by: offset), n)
             }
-            state.offset = offset
+            return n
+        } else {
+            return 0
         }
 
     } write: { ptr, data, n in
@@ -248,6 +276,7 @@ private func new_mlx_io_vtable_dataIO() -> mlx_io_vtable {
         let buffer = UnsafeBufferPointer(start: data, count: n)
         state.data.append(buffer)
         state.offset += n
+        return n
 
     } label: { ptr in
         UnsafeRawPointer(label.utf8Start).assumingMemoryBound(to: Int8.self)
