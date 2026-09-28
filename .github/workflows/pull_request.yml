@@ -3,8 +3,6 @@ name: Build and Test
 on:
   pull_request:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -161,6 +159,7 @@ jobs:
   linux_build_cmake_container:
     name: Linux Container CMake Swift Build (${{ matrix.container }} ${{ matrix.arch }})
     needs: lint
+    if: github.repository == 'ml-explore/mlx-swift'
     strategy:
       fail-fast: false
       matrix:
@@ -198,6 +197,7 @@ jobs:
   linux_build_cmake_cuda:
     name: Linux CUDA CMake Swift Build (cuda-12.9, swift-6.2.3-RELEASE, ubuntu-24.04, x86_64)
     needs: lint
+    if: github.repository == 'ml-explore/mlx-swift'
     runs-on: "gpu-t4-4-core"
     env:
       # Note 12/18/2025: the CI machine does not meet CUDA 13's driver requirement.
