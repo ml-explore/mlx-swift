@@ -13,6 +13,8 @@
 		C35EA5643054AC8E00281871 /* MLXNN.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C35EA5673054AC8E00281871 /* MLXOptimizers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */; };
 		C35EA5683054AC8E00281871 /* MLXOptimizers.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C37BFFFA306C6138006C8EBC /* cLogSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C37BFFEC306C60EE006C8EBC /* cLogSupport.framework */; platformFilters = (ios, maccatalyst, macos, xros, ); };
+		C37BFFFB306C6138006C8EBC /* cLogSupport.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C37BFFEC306C60EE006C8EBC /* cLogSupport.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C3AE8ECE2EAAA15F000BD280 /* MLX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AE8EC42EAAA15F000BD280 /* MLX.framework */; };
 		C3AEA0322EAAE79A000BD280 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0312EAAE79A000BD280 /* Accelerate.framework */; };
 		C3AEA0342EAAE7A0000BD280 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3AEA0332EAAE7A0000BD280 /* Metal.framework */; };
@@ -46,6 +48,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = C3CBE6CE2EAC15310029A645;
 			remoteInfo = MLXOptimizers;
+		};
+		C37BFFFC306C6138006C8EBC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3AE8EBB2EAAA15F000BD280 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C37BFFEB306C60EE006C8EBC;
+			remoteInfo = cLogSupport;
 		};
 		C3AE8ECF2EAAA15F000BD280 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -104,11 +113,23 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C37BFFFE306C6138006C8EBC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C37BFFFB306C6138006C8EBC /* cLogSupport.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C319FC0A2F1564BE00620953 /* MLX.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MLX.xctestplan; sourceTree = "<group>"; };
 		C35E88D13054AACB00281871 /* MLXIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MLXIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C37BFFEC306C60EE006C8EBC /* cLogSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = cLogSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AE8EC42EAAA15F000BD280 /* MLX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MLX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AE8ECD2EAAA15F000BD280 /* MLXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MLXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AE8EE62EAAA3C5000BD280 /* Cmlx.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cmlx.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +168,17 @@
 				"GPU+CUDA.swift",
 			);
 			target = C3AE8EC32EAAA15F000BD280 /* MLX */;
+		};
+		C37BFFF9306C6124006C8EBC /* Exceptions for "cLogSupport" folder in "cLogSupport" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				cLogSupport.c,
+				include/cLogSupport.h,
+			);
+			publicHeaders = (
+				include/cLogSupport.h,
+			);
+			target = C37BFFEB306C60EE006C8EBC /* cLogSupport */;
 		};
 		C3AE939F2EAAAA5A000BD280 /* Exceptions for "metal-cpp" folder in "Cmlx" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -1578,6 +1610,15 @@
 			path = ../Tests/MLXIntegrationTests;
 			sourceTree = SOURCE_ROOT;
 		};
+		C37BFFE4306C6075006C8EBC /* cLogSupport */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C37BFFF9306C6124006C8EBC /* Exceptions for "cLogSupport" folder in "cLogSupport" target */,
+			);
+			name = cLogSupport;
+			path = ../Source/cLogSupport;
+			sourceTree = SOURCE_ROOT;
+		};
 		C3AE8EDE2EAAA21C000BD280 /* xcconfig */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = xcconfig;
@@ -1689,11 +1730,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C37BFFE9306C60EE006C8EBC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3AE8EC12EAAA15F000BD280 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C3CBE67C2EABFBA60029A645 /* Numerics in Frameworks */,
+				C37BFFFA306C6138006C8EBC /* cLogSupport.framework in Frameworks */,
 				C3434FA12EABEF350010D6B8 /* Cmlx.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1741,6 +1790,7 @@
 		C3AE8EBA2EAAA15F000BD280 = {
 			isa = PBXGroup;
 			children = (
+				C37BFFE4306C6075006C8EBC /* cLogSupport */,
 				C319FC0A2F1564BE00620953 /* MLX.xctestplan */,
 				C3CBF17F2EAC22110029A645 /* ACKNOWLEDGMENTS.md */,
 				C3AE8EFC2EAAA40E000BD280 /* Cmlx */,
@@ -1770,6 +1820,7 @@
 				C3CBE6B52EAC14DE0029A645 /* MLXNN.framework */,
 				C3CBE6CF2EAC15310029A645 /* MLXOptimizers.framework */,
 				C35E88D13054AACB00281871 /* MLXIntegrationTests.xctest */,
+				C37BFFEC306C60EE006C8EBC /* cLogSupport.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1804,6 +1855,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		C37BFFE7306C60EE006C8EBC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3AE8EBF2EAAA15F000BD280 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1861,6 +1919,26 @@
 			productReference = C35E88D13054AACB00281871 /* MLXIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C37BFFEB306C60EE006C8EBC /* cLogSupport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C37BFFF0306C60EE006C8EBC /* Build configuration list for PBXNativeTarget "cLogSupport" */;
+			buildPhases = (
+				C37BFFE7306C60EE006C8EBC /* Headers */,
+				C37BFFE8306C60EE006C8EBC /* Sources */,
+				C37BFFE9306C60EE006C8EBC /* Frameworks */,
+				C37BFFEA306C60EE006C8EBC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = cLogSupport;
+			packageProductDependencies = (
+			);
+			productName = cLogSupport;
+			productReference = C37BFFEC306C60EE006C8EBC /* cLogSupport.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		C3AE8EC32EAAA15F000BD280 /* MLX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3AE8ED62EAAA15F000BD280 /* Build configuration list for PBXNativeTarget "MLX" */;
@@ -1869,10 +1947,12 @@
 				C3AE8EC02EAAA15F000BD280 /* Sources */,
 				C3AE8EC12EAAA15F000BD280 /* Frameworks */,
 				C3AE8EC22EAAA15F000BD280 /* Resources */,
+				C37BFFFE306C6138006C8EBC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C37BFFFD306C6138006C8EBC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C3434F7C2EABEF1E0010D6B8 /* MLX */,
@@ -2003,6 +2083,9 @@
 					C35E88D03054AACB00281871 = {
 						CreatedOnToolsVersion = 27.0;
 					};
+					C37BFFEB306C60EE006C8EBC = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					C3AE8EC32EAAA15F000BD280 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -2043,12 +2126,20 @@
 				C3CBE6CE2EAC15310029A645 /* MLXOptimizers */,
 				C3AE8ECC2EAAA15F000BD280 /* MLXTests */,
 				C35E88D03054AACB00281871 /* MLXIntegrationTests */,
+				C37BFFEB306C60EE006C8EBC /* cLogSupport */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C35E88CF3054AACB00281871 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C37BFFEA306C60EE006C8EBC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2094,6 +2185,13 @@
 
 /* Begin PBXSourcesBuildPhase section */
 		C35E88CD3054AACB00281871 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C37BFFE8306C60EE006C8EBC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2152,6 +2250,17 @@
 			isa = PBXTargetDependency;
 			target = C3CBE6CE2EAC15310029A645 /* MLXOptimizers */;
 			targetProxy = C35EA5693054AC8E00281871 /* PBXContainerItemProxy */;
+		};
+		C37BFFFD306C6138006C8EBC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilters = (
+				ios,
+				maccatalyst,
+				macos,
+				xros,
+			);
+			target = C37BFFEB306C60EE006C8EBC /* cLogSupport */;
+			targetProxy = C37BFFFC306C6138006C8EBC /* PBXContainerItemProxy */;
 		};
 		C3AE8ED02EAAA15F000BD280 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2338,6 +2447,206 @@
 			};
 			name = Release;
 		};
+		C37BFFF1306C60EE006C8EBC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Apple Inc. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.cLogSupport;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				XROS_DEPLOYMENT_TARGET = 1.3;
+			};
+			name = Debug;
+		};
+		C37BFFF2306C60EE006C8EBC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Apple Inc. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.cLogSupport;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				XROS_DEPLOYMENT_TARGET = 1.3;
+			};
+			name = Release;
+		};
 		C3AE8ED42EAAA15F000BD280 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = C3AE8EDE2EAAA21C000BD280 /* xcconfig */;
@@ -2442,6 +2751,15 @@
 			buildConfigurations = (
 				C35E88D83054AACB00281871 /* Debug */,
 				C35E88D93054AACB00281871 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C37BFFF0306C60EE006C8EBC /* Build configuration list for PBXNativeTarget "cLogSupport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C37BFFF1306C60EE006C8EBC /* Debug */,
+				C37BFFF2306C60EE006C8EBC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
