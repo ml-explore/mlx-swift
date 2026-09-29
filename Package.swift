@@ -345,7 +345,7 @@ let package = Package(
             name: "CmlxTests",
             dependencies: ["Cmlx"]
         ),
-        
+
         .target(
             name: "cLogSupport",
             path: "Source/cLogSupport",

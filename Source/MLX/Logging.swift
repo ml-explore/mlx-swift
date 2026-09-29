@@ -229,7 +229,7 @@ extension MLXLogger {
     public struct OSLogHandler: MLXLogHandler {
 
         private let logger: os.Logger
-        
+
         // see #491
         private let osLog: OSLog
 
