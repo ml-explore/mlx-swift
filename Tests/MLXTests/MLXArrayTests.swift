@@ -47,8 +47,25 @@ class MLXArrayTests: XCTestCase {
         XCTAssertEqual(b.asArray(Float.self), [])
 
         // a directly-constructed empty array behaves the same
-        let empty = MLXArray(Array<Int32>(), [0])
+        let empty = MLXArray([Int32](), [0])
         XCTAssertEqual(empty.asArray(Int32.self), [])
+
+        // a non-contiguous empty array goes through the strided copy path
+        let t = b.T
+        XCTAssertEqual(t.shape, [200, 0])
+        XCTAssertEqual(t.asArray(Float.self), [])
+    }
+
+    func testAsDataEmpty() {
+        // asData shares physicalSize with asArray, so it also returns empty
+        // data for an empty array (see issue #480)
+        let b = MLXArray.ones([1, 200])[128...]
+        for access in [MLXArray.AccessMethod.copy, .noCopyIfContiguous, .noCopy] {
+            let data = b.asData(access: access)
+            XCTAssertEqual(data.data.count, 0)
+            XCTAssertEqual(data.shape, [0, 200])
+        }
+        XCTAssertEqual(b.T.asData(access: .copy).data.count, 0)
     }
 
     func testAsArrayScalar() {
