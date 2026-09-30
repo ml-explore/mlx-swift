@@ -223,11 +223,15 @@ extension MLXLogger {
 
 #if canImport(OSLog)
     import OSLog
+    import cLogSupport
 
     /// On systems that support it, a log handler that is backed by OSLog.
     public struct OSLogHandler: MLXLogHandler {
 
         private let logger: os.Logger
+
+        // see #491
+        private let osLog: OSLog
 
         public static func install() {
             MLXLogger.factory = { OSLogHandler(label: $0) }
@@ -235,6 +239,7 @@ extension MLXLogger {
 
         public init(label: String) {
             self.logger = Logger(subsystem: "mlx-swift", category: label)
+            self.osLog = OSLog(subsystem: "mlx-swift", category: label)
         }
 
         public func log(
@@ -250,7 +255,7 @@ extension MLXLogger {
                 case .warning: .error
                 case .error: .error
                 }
-            if logger.isEnabled(type: level) {
+            if is_os_log_enabled(osLog, level) {
                 let message = message()
                 logger.log(level: level, "\(message, privacy: .public)")
             }

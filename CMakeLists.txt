@@ -99,6 +99,21 @@ if(MLX_BUILD_CUDA)
            CUDNN::cudnn_all # Promoted from PRIVATE, required by mlx
   )
 endif()
+
+# cLogSupport package small C shim that exposes os_log_type_enabled() to Swift
+# (see #491)
+set(cLogSupport_include ${CMAKE_CURRENT_LIST_DIR}/Source/cLogSupport/include)
+set(cLogSupport_module_dir ${CMAKE_CURRENT_BINARY_DIR}/cLogSupport-module)
+file(
+  WRITE ${cLogSupport_module_dir}/module.modulemap
+  "module cLogSupport {\n    header \"${cLogSupport_include}/cLogSupport.h\"\n    export *\n}\n"
+)
+
+add_library(cLogSupport STATIC
+            ${CMAKE_CURRENT_LIST_DIR}/Source/cLogSupport/cLogSupport.c)
+target_include_directories(cLogSupport PUBLIC ${cLogSupport_include}
+                                              ${cLogSupport_module_dir})
+
 file(GLOB MLX-src ${CMAKE_CURRENT_LIST_DIR}/Source/MLX/*.swift)
 
 if(NOT MLX_BUILD_METAL)
@@ -114,7 +129,7 @@ add_library(MLX STATIC ${MLX-src})
 target_include_directories(MLX
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Source/Cmlx/include)
 # Note: mlxc is target name exported by mlx-c
-target_link_libraries(MLX PUBLIC mlxc Numerics)
+target_link_libraries(MLX PUBLIC mlxc Numerics cLogSupport)
 target_compile_options(MLX PRIVATE -package-name MLX)
 
 # MLXRandom package
