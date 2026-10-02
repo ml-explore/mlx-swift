@@ -31,6 +31,13 @@ extension MLXArray {
     /// Return the physical size of the backing (assuming it is evaluated) in elements.  This should
     /// only be used when accessing the backing directly, e.g. via `mlx_array_data_uint8()`
     var physicalSize: Int {
+        // an empty array (e.g. an empty slice like `a[128...]`) has no backing
+        // data pointer, so there is nothing to read even if some strides are
+        // non-zero
+        if self.size == 0 {
+            return 0
+        }
+
         // nbytes is the logical size of the input, not the physical size
         return zip(self.shape, self.internalStrides)
             .map { Swift.abs($0.0 * $0.1) }
@@ -43,7 +50,11 @@ extension MLXArray {
         let shape = self.shape
         let strides = self.internalStrides
 
-        if contiguousDimension == 0 {
+        if output.isEmpty {
+            // an empty array has nothing to copy (and no backing pointer)
+            return
+
+        } else if contiguousDimension == 0 {
             // entire backing is contiguous
             from.copyBytes(to: output)
 
@@ -218,10 +229,11 @@ extension MLXArray {
             if self.contiguousToDimension() == 0 {
                 // the backing is contiguous, we can provide a wrapper
                 // for the contents without a copy
-                let source = UnsafeMutableRawPointer(mutating: mlx_array_data_uint8(self.ctx))!
-                let data = Data(
-                    bytesNoCopy: source, count: size * itemSize,
-                    deallocator: .none)
+                // an empty array has no backing pointer
+                let data =
+                    UnsafeMutableRawPointer(mutating: mlx_array_data_uint8(self.ctx)).map {
+                        Data(bytesNoCopy: $0, count: size * itemSize, deallocator: .none)
+                    } ?? Data()
 
                 return MLXArrayData(
                     data: data,
@@ -234,10 +246,11 @@ extension MLXArray {
             }
 
         case .noCopy:
-            let source = UnsafeMutableRawPointer(mutating: mlx_array_data_uint8(self.ctx))!
-            let data = Data(
-                bytesNoCopy: source, count: nbytes,
-                deallocator: .none)
+            // an empty array has no backing pointer
+            let data =
+                UnsafeMutableRawPointer(mutating: mlx_array_data_uint8(self.ctx)).map {
+                    Data(bytesNoCopy: $0, count: nbytes, deallocator: .none)
+                } ?? Data()
 
             let strides: [Int]
             if ndim == 0 {
