@@ -29,6 +29,21 @@ for _ in 0 ..< epochs {
 }
 ```
 
+## Checkpoints
+
+``Optimizer/state()`` is the buffers training has accumulated (momentum, moments,
+and per-parameter step counts), in the same shape as the model parameters.
+``Optimizer/update(parameters:)`` writes that tree back. The learning rate and
+other hyperparameters stay on the optimizer you construct:
+
+```swift
+eval(optimizer)
+let state = optimizer.state()
+
+let resumed = Adam(learningRate: 1e-3)
+resumed.update(parameters: state)
+```
+
 ## Other MLX Packages
 
 - [MLX](mlx)
