@@ -10,7 +10,7 @@
 // python mlx:              0.32.2.dev20260910+1f8e74e3f
 // vendored mlx (Cmlx):     0.32.2
 // generator revision:      2
-// cases:                   3
+// cases:                   6
 
 import Foundation
 import MLX
@@ -19,6 +19,70 @@ import Testing
 
 @Suite("generated: ModuleAttention")
 struct GeneratedModuleAttentionTests {
+
+    @Test("createAdditiveCausalMask/float32")
+    func test_createAdditiveCausalMask_float32() throws {
+        try withIntegrationState(seed: 10416) {
+            let result = MultiHeadAttention.createAdditiveCausalMask(4, dtype: .float32)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 4],
+                    dtype: .float32,
+                    mean: -Double.infinity,
+                    minimum: -3.4028234663852886e+38,
+                    maximum: -0.0,
+                    absoluteSum: Double.infinity,
+                    positionChecksum: Double.infinity,
+                    sampleIndices: [0, 3, 6, 9, 12, 15],
+                    samples: [
+                        -0.0, -3.4028234663852886e+38, -3.4028234663852886e+38, -0.0, -0.0, -0.0,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("createAdditiveCausalMask/bfloat16")
+    func test_createAdditiveCausalMask_bfloat16() throws {
+        try withIntegrationState(seed: 338) {
+            let result = MultiHeadAttention.createAdditiveCausalMask(4, dtype: .bfloat16)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 4],
+                    dtype: .bfloat16,
+                    mean: -Double.infinity,
+                    minimum: -3.3895313892515355e+38,
+                    maximum: -0.0,
+                    absoluteSum: Double.infinity,
+                    positionChecksum: Double.infinity,
+                    sampleIndices: [0, 3, 6, 9, 12, 15],
+                    samples: [
+                        -0.0, -3.3895313892515355e+38, -3.3895313892515355e+38, -0.0, -0.0, -0.0,
+                    ]),
+                tolerance: .float16)
+        }
+    }
+
+    @Test("createAdditiveCausalMask/float16")
+    func test_createAdditiveCausalMask_float16() throws {
+        try withIntegrationState(seed: 44331) {
+            let result = MultiHeadAttention.createAdditiveCausalMask(4, dtype: .float16)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 4],
+                    dtype: .float16,
+                    mean: -24564.0,
+                    minimum: -65504.0,
+                    maximum: -0.0,
+                    absoluteSum: 393024.0,
+                    positionChecksum: 147384.0,
+                    sampleIndices: [0, 3, 6, 9, 12, 15],
+                    samples: [-0.0, -65504.0, -65504.0, -0.0, -0.0, -0.0]),
+                tolerance: .float16)
+        }
+    }
 
     @Test("MultiHeadAttention")
     func test_MultiHeadAttention() throws {
