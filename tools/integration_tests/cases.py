@@ -2214,3 +2214,20 @@ defaults(
 )
 
 EXTRA_IMPORTS["Defaults"] = ["MLXNN"]
+
+# ------------------------------------------------------------ attention mask
+#
+# `create_additive_causal_mask` is a static function rather than a forward pass,
+# so it is a plain case emitted into the `ModuleAttention` file next to the
+# `MultiHeadAttention` module cases.  One case per dtype: the fill value has to be
+# representable in `dtype`, otherwise it overflows to -inf and the positions that
+# should be 0 become 0 * -inf == nan.
+
+for _dtype in ("float32", "bfloat16", "float16"):
+    case(
+        f"createAdditiveCausalMask/{_dtype}",
+        "ModuleAttention",
+        {},
+        f"nn.MultiHeadAttention.create_additive_causal_mask(4, mx.{_dtype})",
+        f"MultiHeadAttention.createAdditiveCausalMask(4, dtype: .{_dtype})",
+    )
