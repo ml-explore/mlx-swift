@@ -25,7 +25,7 @@ public protocol Optimizer: Updatable, Evaluatable {
     /// Apply the gradients to the parameters of the model and update the model with the new parameters.
     func update(model: Module, gradients: ModuleParameters)
 
-    /// Buffers accumulated while training, as a ``ModuleParameters`` tree.
+    /// Buffers accumulated while training, as a `ModuleParameters` tree.
     ///
     /// The tree follows the model parameters. Optimizers that keep one buffer per
     /// parameter (``SGD``, ``RMSprop``, ``AdaGrad``, ``Lion``, ``Muon``) store that
@@ -231,7 +231,7 @@ open class OptimizerBase<State: Updatable>: Optimizer {
     /// Encode one parameter's buffers.
     ///
     /// Return `[("", array)]` for a single buffer. Return `[(name, array)]` for
-    /// several, using the names from ``stateSuffixes()``.
+    /// several, using the names from ``/MLXOptimizers/OptimizerBase/stateSuffixes()``.
     open func exportState(_ state: State) -> [(String, MLXArray)] {
         fatalError("exportState() not implemented \(type(of: self))")
     }
