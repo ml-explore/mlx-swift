@@ -187,7 +187,7 @@ contributors](ACKNOWLEDGMENTS.md#Individual-Contributors). If you contribute
 to MLX Swift and wish to be acknowledged, please add your name to the list in your
 pull request.
 
-Smaller, focused PRs are easier and quicker to review.  Sometimes larger PRs can't be helped.  If you want to discuss, feel free to open an issue or ask questions in a PR.  If responses are slow, feel free to @ `davidkoski` - there is a lot of activity and it probably just got past me.  I will do my best to respond!
+Smaller, focused PRs are easier and quicker to review.  Sometimes larger PRs can't be helped.  If you want to discuss, feel free to open an issue or ask questions in a PR.
 
 MLX Swift was initially developed by David Koski and Ronan Collobert, and is
 now maintained by David Koski. MLX Swift is built on top of
