@@ -454,7 +454,7 @@ public func compile(
 /// - ``compile(inputs:outputs:shapeless:_:)-7korq``
 public func compile(
     shapeless: Bool = false,
-    _ f: @Sendable @escaping (MLXArray, MLXArray, MLXArray) -> MLXArray
+    _ f: @escaping @Sendable (MLXArray, MLXArray, MLXArray) -> MLXArray
 )
     -> @Sendable (MLXArray, MLXArray, MLXArray) -> MLXArray
 {
