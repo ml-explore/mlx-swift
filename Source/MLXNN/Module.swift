@@ -194,18 +194,47 @@ open class Module {
         }
     }
 
-    /// Count of the parameters at and beneath this Module
-    open var parameterCount: Int {
-        items().reduce(0) {
+    /// Number of *logical* parameters at and beneath this module.
+    ///
+    /// This is intended for display, e.g. to describe the size of a loaded model
+    /// ("8B parameters").  It is not a measure of memory use -- for the physical
+    /// size sum the `nbytes` of ``parameters()``.
+    ///
+    /// For quantized layers (modules conforming to ``Quantized``) this reports the
+    /// count of the equivalent unquantized layer: the packed `weight` is counted as
+    /// `weight.size * 32 / bits` and the quantization metadata (`scales`, `biases`,
+    /// `global_scale`) is excluded.  Any other parameters (e.g. `bias` or parameters
+    /// added by a subclass, such as LoRA adapters) are counted as-is.
+    ///
+    /// This is best effort: it relies on the conventional parameter names above
+    /// and on quantized weights being packed into `uint32`.  Layers with unusual
+    /// storage may override it.
+    open var logicalParameterCount: Int {
+        let items = items()
+        var count = items.reduce(0) {
             switch $1 {
             case .parameters(let p):
                 $0 + p.size
             case .module(let m):
-                $0 + m.parameterCount
+                $0 + m.logicalParameterCount
             default:
                 $0
             }
         }
+
+        if let q = self as? Quantized, case .parameters(let w)? = items[unwrapping: "weight"] {
+            // replace the packed weight count with the logical (unpacked) count
+            count += w.size * 32 / q.bits - w.size
+
+            // quantization metadata is not part of the logical count
+            for key in ["scales", "biases", "global_scale"] {
+                if case .parameters(let p)? = items[unwrapping: key] {
+                    count -= p.size
+                }
+            }
+        }
+
+        return count
     }
 
     /// Recursively filter and map the contents of the module and its children and produce a `NestedDictionary`
@@ -425,7 +454,8 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `MLXArray` is set on a `Module`.
-    public func update(parameters: ModuleParameters) {
+    @discardableResult
+    public func update(parameters: ModuleParameters) -> Self {
         try! update(parameters: parameters, verify: .none)
     }
 
@@ -473,15 +503,17 @@ open class Module {
     /// - ``parameters()``
     /// - ``mapParameters(map:isLeaf:)``
     /// - ``update(modules:verify:path:modulePath:)``
+    @discardableResult
     open func update(
         parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
-    ) throws {
+    ) throws -> Self {
         _checkMutable()
         try update(parameters: parameters, verify: verify, path: path, modulePath: modulePath) {
             m, k, a, v in
             a._updateInternal(v)
         }
+        return self
     }
 
     func update(
@@ -672,10 +704,11 @@ open class Module {
     /// - Parameters:
     ///   - filter: filter for parameters to apply to
     ///   - map: function to apply to the matched parameters
+    @discardableResult
     open func apply(
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
-    ) {
+    ) -> Self {
         _checkMutable()
         return update(parameters: filterMap(filter: filter, map: Self.mapParameters(map: map)))
     }
@@ -684,7 +717,8 @@ open class Module {
     ///
     /// This passes `verify: .none`.  Note that there may still be `fatalErrors()` if
     /// for example an `Module` is set on a `MLXArray`.
-    public func update(modules: ModuleChildren) {
+    @discardableResult
+    public func update(modules: ModuleChildren) -> Self {
         try! update(modules: modules, verify: .none)
     }
 
@@ -732,10 +766,11 @@ open class Module {
     /// - ``children()``
     /// - ``leafModules()``
     /// - ``QuantizedLinear/quantize(model:groupSize:bits:predicate:)``
+    @discardableResult
     open func update(
         modules: ModuleChildren, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
-    ) throws {
+    ) throws -> Self {
         _checkMutable()
 
         let modulePath = modulePath + [describeType(self)]
@@ -860,6 +895,8 @@ open class Module {
 
         // rebuild the caches because the modules may have changed
         buildCaches()
+
+        return self
     }
 
     /// Set a module to a new value.

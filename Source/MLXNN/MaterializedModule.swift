@@ -14,7 +14,7 @@ import MLX
 ///
 /// This also sets ``Module/training`` to `false`.
 ///
-/// Note: only parameters that can be be mutated, e.g. are wrapped with `@ParameterInfo`,
+/// Note: only parameters that can be replaced, e.g. are wrapped with `@ParameterInfo`,
 /// will actually be updated to the `MaterializedArray` type.  All others will
 /// be evaluated and are materialized, even if they do not have the type
 /// indicating that fact.
@@ -48,7 +48,22 @@ import MLX
 /// wrapped `Module`.  No access to bare `MLXArray` is provided, though
 /// for purposes of introspection the ``parameters()`` can give
 /// `MaterializedArray`.  There are also properties like ``parameterNBytes``
-/// and ``parameterCount`` for callers that just need size information.
+/// and ``logicalParameterCount`` for callers that just need size information.
+///
+/// The interior `Module` instances are still mutable objects, but they are
+/// not reachable through the public API.  They are flagged so that the
+/// `Module` mutation APIs trap, but this is not foolproof.  Any parameters
+/// that are held as bare `let x: MLXArray` cannot be replaced
+/// with `MaterializedArray`, so in-place mutation of them (e.g. `x[0] = 0`)
+/// is not guarded at runtime.  Prefer `@ParameterInfo var x: MLXArray`
+/// instead.
+///
+/// Note that it is the `MaterializedModule` that is `Sendable` -- the
+/// interior `Module` instances are not.  Inference should not mutate
+/// module state (parameters in particular).  If a module does keep state
+/// that changes during a forward pass, e.g. a lazily built cache, it is
+/// responsible for synchronizing access to it (e.g. with a lock) so that
+/// concurrent calls through the `MaterializedModule` are safe.
 ///
 /// ## Calling the wrapped module
 ///
@@ -137,8 +152,13 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
     /// Sum of all the `nbytes` of the parameters in the encapsulated model.
     public let parameterNBytes: Int
 
-    /// Sum of all the `parameterCount` of the modules in the encapsulated model.
-    public let parameterCount: Int
+    /// Number of *logical* parameters in the encapsulated model, see
+    /// ``Module/logicalParameterCount``.
+    ///
+    /// For quantized layers this is the count of the equivalent unquantized
+    /// layer.  This is intended for display (e.g. "8B parameters") and is best
+    /// effort -- use ``parameterNBytes`` for the physical size.
+    public let logicalParameterCount: Int
 
     public init(_ base: consuming LayerType) {
         self._base = base
@@ -158,7 +178,7 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
         }
 
         parameterNBytes = self._base.parameters().reduce(0) { $0 + $1.nbytes }
-        parameterCount = self._base.parameterCount
+        logicalParameterCount = self._base.logicalParameterCount
     }
 
     /// Return a `NestedDictionary<String, MaterializedArray>` for all parameters in the

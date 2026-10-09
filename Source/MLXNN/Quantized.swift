@@ -165,8 +165,8 @@ open class QuantizedEmbedding: Embedding, Quantized {
     public let bits: Int
 
     public let mode: QuantizationMode
-    public let scales: MLXArray
-    public let biases: MLXArray?
+    @ParameterInfo public private(set) var scales: MLXArray
+    @ParameterInfo public private(set) var biases: MLXArray?
     @ParameterInfo(key: "global_scale") public private(set) var globalScale: MLXArray?
 
     open override var shape: (Int, Int) {
@@ -204,8 +204,8 @@ open class QuantizedEmbedding: Embedding, Quantized {
         let (quantizedWeight, scales, biases) = MLX.quantized(
             weight, groupSize: groupSize, bits: bits, mode: mode, globalScale: globalScale)
 
-        self.scales = scales
-        self.biases = biases
+        self._scales.wrappedValue = scales
+        self._biases.wrappedValue = biases
 
         super.init(weight: quantizedWeight)
 
@@ -222,14 +222,10 @@ open class QuantizedEmbedding: Embedding, Quantized {
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
-        self.scales = scales
-        self.biases = biases
+        self._scales.wrappedValue = scales
+        self._biases.wrappedValue = biases
         self._globalScale.wrappedValue = globalScale
         super.init(weight: weight)
-    }
-
-    open override var parameterCount: Int {
-        scales.size * groupSize
     }
 
     open override func callAsFunction(_ x: MLXArray) -> MLXArray {
@@ -273,8 +269,8 @@ open class QuantizedLinear: Linear, Quantized {
     public let bits: Int
 
     public let mode: QuantizationMode
-    public let scales: MLXArray
-    public let biases: MLXArray?
+    @ParameterInfo public private(set) var scales: MLXArray
+    @ParameterInfo public private(set) var biases: MLXArray?
     @ParameterInfo(key: "global_scale") public private(set) var globalScale: MLXArray?
 
     open override var shape: (Int, Int) {
@@ -336,8 +332,8 @@ open class QuantizedLinear: Linear, Quantized {
         let (quantizedWeight, scales, biases) = MLX.quantized(
             weight, groupSize: groupSize, bits: bits, mode: mode, globalScale: globalScale)
 
-        self.scales = scales
-        self.biases = biases
+        self._scales.wrappedValue = scales
+        self._biases.wrappedValue = biases
 
         super.init(weight: quantizedWeight, bias: bias)
 
@@ -357,22 +353,10 @@ open class QuantizedLinear: Linear, Quantized {
         self.groupSize = groupSize
         self.bits = bits
         self.mode = mode
-        self.scales = scales
-        self.biases = biases
+        self._scales.wrappedValue = scales
+        self._biases.wrappedValue = biases
         self._globalScale.wrappedValue = globalScale
         super.init(weight: weight, bias: bias)
-    }
-
-    open override var parameterCount: Int {
-        // represent the count that the non-quantized Linear represents.
-        let outputDimensions = scales.dim(0)
-        let inputDimensions = scales.dim(1) * groupSize
-
-        if bias != nil {
-            return inputDimensions * outputDimensions + outputDimensions
-        } else {
-            return inputDimensions * outputDimensions
-        }
     }
 
     open override func describeExtra(_ indent: Int) -> String {
