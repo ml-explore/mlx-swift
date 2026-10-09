@@ -166,8 +166,9 @@ private final class RealizedStreamPromise: StreamPromise, Sendable {
 
 /// TaskLocal promise for a pair of Streams -- one for CPU and one for GPU.
 ///
-/// Implementation note: the default device will be a realized Stream and the
-/// none default device will be a lazy promise.
+/// Implementation note: in the scoped promises the default device will be a
+/// realized Stream and the non-default device will be a lazy promise.  The
+/// global promise is lazy for both, see ``init()``.
 private final class StreamPairPromise: Sendable {
     let cpu: StreamPromise
     let gpu: StreamPromise
@@ -181,6 +182,10 @@ private final class StreamPairPromise: Sendable {
     }
 
     /// Initialize the global promise.
+    ///
+    /// Both streams are lazy here to avoid the lock inversion
+    /// from `let globalStreams = StreamPairPromise()` and evalLock.
+    /// See StreamInitializationTests.
     init() {
         var default_ctx = mlx_device_new()
         mlx_get_default_device(&default_ctx)
@@ -188,11 +193,11 @@ private final class StreamPairPromise: Sendable {
         let defaultDevice = Device(default_ctx)
         self.defaultDeviceType = defaultDevice.deviceType
         if defaultDevice.deviceType == .cpu {
-            self.cpu = RealizedStreamPromise(defaultDevice)
+            self.cpu = LazyStreamPromise(defaultDevice)
             self.gpu = LazyStreamPromise(Device(.gpu))
         } else {
             self.cpu = LazyStreamPromise(Device(.cpu))
-            self.gpu = RealizedStreamPromise(defaultDevice)
+            self.gpu = LazyStreamPromise(defaultDevice)
         }
     }
 
