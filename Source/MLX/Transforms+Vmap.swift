@@ -1,12 +1,9 @@
 import Cmlx
 import Foundation
 
-@usableFromInline
 final internal class UncheckedSendableBox<T>: @unchecked Sendable {
-    @usableFromInline
     let value: T
 
-    @usableFromInline
     init(_ value: T) {
         self.value = value
     }
@@ -92,7 +89,8 @@ public func vmap(
     vmapInternal(f, inAxes: inAxes, outAxes: outAxes)
 }
 
-/// Returns a vectorized version of `f()`, a pure function (`Sendable`).
+/// Returns a vectorized version of `f()`, a `Sendable` function (does not capture
+/// any non-Sendable state, such as an `MLXArray`).
 ///
 /// The returned function applies `f()` independently over the axis
 /// specified by `inAxes` and stacks the results along `outAxes`.

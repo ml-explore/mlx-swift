@@ -590,7 +590,7 @@ final class WiredMemoryTests: XCTestCase {
     /// Collects events from a stream until a predicate matches or a timeout fires.
     private static func collectEvents(
         stream: AsyncStream<WiredMemoryEvent>,
-        until predicate: @Sendable @escaping (WiredMemoryEvent) -> Bool,
+        until predicate: @escaping @Sendable (WiredMemoryEvent) -> Bool,
         timeout: TimeInterval = 10
     ) async throws -> [WiredMemoryEvent] {
         return try await withThrowingTaskGroup(of: [WiredMemoryEvent].self) { group in
