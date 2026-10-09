@@ -34,6 +34,32 @@ import Numerics
 /// an `MLXArray` is accepted.  Operations involving one still produce
 /// ordinary (lazy) `MLXArray` results — only the snapshot itself is frozen.
 ///
+/// ### Mutation through an `MLXArray` reference
+///
+/// The in-place operators are unavailable when the static type is
+/// `MaterializedArray`, so this is a compile error:
+///
+/// ```swift
+/// var m = a.materialized()
+/// m += 1      // error: unavailable
+/// ```
+///
+/// However, `MLXArray`'s compound assignment operators (`+=`, etc.) and
+/// subscript assignment mutate the array in place.  If a `MaterializedArray`
+/// is held in a variable typed as `MLXArray` these still compile, but they
+/// trap at runtime rather than mutate the shared snapshot:
+///
+/// ```swift
+/// var w: MLXArray = a.materialized()
+/// w += 1      // compiles, traps at runtime
+/// w[0] = 0    // compiles, traps at runtime
+/// ```
+///
+/// The same applies to an operation that returns its input unchanged, e.g.
+/// `asType()` to the array's existing dtype.  To modify the values, produce
+/// a new array rather than mutating in place, e.g. `w = w + 1` rather
+/// than `w += 1`.
+///
 /// ### See Also
 /// - ``MLXArray/materialized()``
 /// - ``materialize(_:)->MaterializedArray``

@@ -113,8 +113,10 @@ Key points:
 - Only parameters that can be replaced (e.g. wrapped with `@ParameterInfo`) are
   actually retyped to `MaterializedArray`; all others are still evaluated and
   materialized, they just keep the `MLXArray` static type.
-- `parameters()` returns a `NestedDictionary<String, MaterializedArray>`, and
-  `parameterNBytes` gives the total size of all parameters.
+- `parameters()` returns a `NestedDictionary<String, MaterializedArray>`,
+  `parameterNBytes` gives the physical size (bytes) of all parameters, and
+  `logicalParameterCount` gives the number of logical parameters (quantized
+  layers are counted as their unquantized equivalent) for display purposes.
 - Calling the wrapped module is added per layer shape via extensions.
   `UnaryLayer` support ships in the package; other protocols (e.g. a
   `LanguageModel` protocol in `mlx-swift-lm`) are wired up with an
