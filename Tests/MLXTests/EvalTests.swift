@@ -141,10 +141,6 @@ private func timed(_ body: () -> Void) -> TimeInterval {
 @Suite("eval + evalLock", .serialized)
 struct EvalTests {
 
-    init() {
-        setDefaultDevice()
-    }
-
     // MARK: Semantics
 
     /// `eval` must not return until the arrays are computed, even though the

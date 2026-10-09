@@ -44,41 +44,51 @@ Task {
 
 ## evalLock
 
-Evaluation and stream creation are serialized through a global `evalLock`:
-
-```swift
-// Defined in Source/MLX/Transforms+Eval.swift
-let evalLock = NSRecursiveLock()
-
-// Used in eval():
-func eval(_ arrays: MLXArray...) {
-    // conceptually, but see below
-    _ = evalLock.withLock {
-        mlx_eval(...)
-    }
-}
-```
+Evaluation, function transformations (`grad`, `valueAndGrad`, `vjp`, `jvp`,
+`vmap`, `compile`, export) and stream creation are serialized through a global,
+recursive `evalLock`.
 
 This means:
-- `eval()` calls and stream creation are serialized across threads
-    - partially true for eval, see below -- there is synchronization but not over the entire operation
+- **`eval()` holds `evalLock` only while scheduling the work**, not while
+  waiting for it to finish. `eval()` is still synchronous -- the arrays are
+  computed when it returns -- but evaluations on different threads overlap
+  their GPU execution: a small eval on one thread does not wait for a large
+  eval on another thread to complete, only for it to be scheduled.
+- Inside a transformation (or any other code already holding `evalLock`),
+  `eval()` is fully synchronous under the lock.
 - **Important**: evalLock only protects eval/stream operations, NOT all GPU ops
 - Lazy array operations are NOT automatically thread-safe
 - Parallelism happens within Metal, not between MLX calls
 
-Important for MLX implmentation, there is one exemption: a caller can evaluate using `mlx_async_eval()` under lock, which resolves all the protected mutation.  So eval can do this:
+### Evaluating inside transformations
+
+- Inside `grad` / `valueAndGrad` / `vjp` / `jvp` (including custom VJPs), a
+  synchronous `eval()` of an intermediate value is allowed, as is reading it
+  (`item()`, `asArray()`, control flow on a value).  `asyncEval()` is **not**
+  allowed there.
+- Inside `compile` and `vmap`, evaluating anything derived from the inputs is
+  not allowed with either `eval()` or `asyncEval()` -- these trace with
+  placeholder inputs that have no data.
 
 ```swift
-public func eval(_ arrays: MLXArray...) {
-    let vector_array = new_mlx_vector_array(arrays)
-    let result = withEvalLock {
-        mlx_async_eval(vector_array)
-    }
-    if result == 0 {
-        mlx_eval(vector_array)
-    }
-    mlx_vector_array_free(vector_array)
+let g = grad { (x: MLXArray) -> MLXArray in
+    let y = x * x
+    print(y.asArray(Float.self))  // OK: synchronous eval of an intermediate
+    // asyncEval(y)               // error: not allowed inside a graph transformation
+    return y.sum()
 }
+```
+
+### Arrays shared across threads
+
+`MLXArray` is not thread safe, and that includes evaluation.  If several
+threads evaluate graphs that contain the *same* unevaluated array (e.g. lazily
+loaded model weights shared by several inference threads), they race on that
+array's state.  Evaluate shared arrays once, on one thread, before sharing them:
+
+```swift
+let model = try loadModel(...)
+eval(model)   // realize the weights before handing the model to other threads
 ```
 
 ## @unchecked Sendable Types
