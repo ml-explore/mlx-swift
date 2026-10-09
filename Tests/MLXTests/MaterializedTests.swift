@@ -2,7 +2,7 @@
 
 import Foundation
 import MLX
-import MLXNN
+@_spi(MaterializedModule) import MLXNN
 import Testing
 
 @Suite
@@ -234,6 +234,20 @@ struct MaterializedTests {
 
         // callable
         let x = uniform(0 ..< 1, [10])
+        let _ = mm(x)
+    }
+
+    @Test func testMaterializedModuleQuantized() {
+        // scales and biases on QuantizedLinear are @ParameterInfo and
+        // should be replaced with MaterializedArray
+        let mm = MaterializedModule(QuantizedLinear(128, 32, bias: true))
+
+        #expect(mm._base.weight is MaterializedArray)
+        #expect(mm._base.bias is MaterializedArray)
+        #expect(mm._base.scales is MaterializedArray)
+        #expect(mm._base.biases is MaterializedArray)
+
+        let x = uniform(0 ..< 1, [128])
         let _ = mm(x)
     }
 
