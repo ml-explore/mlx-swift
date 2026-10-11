@@ -435,4 +435,233 @@ class OptimizerTests: XCTestCase {
         XCTAssertGreaterThan(abs(p2).sum().item(Float.self), 0)
     }
 
+    // MARK: - optimizer state checkpoints
+
+    class StateBlock: Module {
+        let weight = MLXArray.zeros([3])
+    }
+
+    /// Nested parameters, a sibling vector, and an array of parameters.
+    /// The dotted and indexed keys are what a checkpoint has to round-trip.
+    class StateNet: Module {
+        let block = StateBlock()
+        let bias = MLXArray.zeros([3])
+        let heads = [MLXArray.zeros([2]), MLXArray.zeros([2])]
+    }
+
+    class RankNet: Module {
+        let vector = MLXArray.zeros([4])
+        let matrix = MLXArray.zeros([3, 5])
+    }
+
+    func step(_ optimizer: Optimizer, _ model: Module, times: Int) {
+        let gradients = model.parameters().mapValues { MLXArray.ones(like: $0) }
+        for _ in 0 ..< times {
+            optimizer.update(model: model, gradients: gradients)
+        }
+        eval(model, optimizer)
+    }
+
+    /// Value copy. `parameters()` returns the arrays the module will mutate in place.
+    func detached(_ parameters: ModuleParameters) -> ModuleParameters {
+        parameters.mapValues { MLXArray($0.asArray(Float.self), $0.shape) }
+    }
+
+    func parameter(_ parameters: ModuleParameters, _ key: String) -> MLXArray {
+        parameters.flattened().first { $0.0 == key }!.1
+    }
+
+    func assertParametersEqual(
+        _ lhs: ModuleParameters, _ rhs: ModuleParameters, file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let left = lhs.flattened()
+        let right = rhs.flattened()
+        XCTAssertEqual(left.map(\.0), right.map(\.0), file: file, line: line)
+        for (lhs, rhs) in zip(left, right) {
+            assertEqual(lhs.1, rhs.1, file: file, line: line)
+        }
+    }
+
+    /// Train `stepsBefore + stepsAfter` on one optimizer, and the same trajectory
+    /// again with the state saved through the flattened dictionary `save` writes.
+    func assertResumes<T: Optimizer>(
+        _ make: () -> T, model: () -> Module, stepsBefore: Int = 3, stepsAfter: Int = 1,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
+        let reference = model()
+        step(make(), reference, times: stepsBefore + stepsAfter)
+        let continued = detached(reference.parameters())
+
+        let trained = model()
+        let optimizer = make()
+        step(optimizer, trained, times: stepsBefore)
+        let encoded = Dictionary(uniqueKeysWithValues: optimizer.state().flattened())
+        let decoded = ModuleParameters.unflattened(encoded)
+
+        let resumedModel = model()
+        resumedModel.update(parameters: detached(trained.parameters()))
+        let resumed = make()
+        resumed.update(parameters: decoded)
+        step(resumed, resumedModel, times: stepsAfter)
+
+        assertParametersEqual(
+            continued, detached(resumedModel.parameters()), file: file, line: line)
+    }
+
+    func testStateIsEmptyBeforeTheFirstStep() {
+        XCTAssertTrue(Adam(learningRate: 0.1).state().isEmpty)
+        XCTAssertTrue(SGD(learningRate: 0.1, momentum: 0.9).state().isEmpty)
+    }
+
+    func testStateRoundTripSGD() {
+        assertResumes({ SGD(learningRate: 0.1, momentum: 0.9) }, model: { StateNet() })
+
+        // A fresh optimizer from the same weights is not the same trajectory.
+        // Otherwise the comparison above would pass with the buffers ignored.
+        let model = StateNet()
+        step(SGD(learningRate: 0.1, momentum: 0.9), model, times: 3)
+        let weights = detached(model.parameters())
+        let continued = StateNet()
+        step(SGD(learningRate: 0.1, momentum: 0.9), continued, times: 4)
+
+        let freshModel = StateNet()
+        freshModel.update(parameters: weights)
+        step(SGD(learningRate: 0.1, momentum: 0.9), freshModel, times: 1)
+        assertNotEqual(
+            parameter(detached(freshModel.parameters()), "bias"),
+            parameter(detached(continued.parameters()), "bias"))
+    }
+
+    func testStateRoundTripAdam() {
+        assertResumes(
+            { Adam(learningRate: 0.1, biasCorrection: true) }, model: { StateNet() })
+
+        let model = StateNet()
+        let optimizer = Adam(learningRate: 0.1, biasCorrection: true)
+        step(optimizer, model, times: 3)
+
+        let keys = Set(optimizer.state().flattened().map(\.0))
+        XCTAssertTrue(keys.contains("block.weight.m"))
+        XCTAssertTrue(keys.contains("block.weight.v"))
+        XCTAssertTrue(keys.contains("block.weight.step"))
+        XCTAssertTrue(keys.contains("bias.m"))
+        XCTAssertTrue(keys.contains("heads.0.m"))
+        XCTAssertTrue(keys.contains("heads.1.v"))
+        XCTAssertTrue(keys.contains("heads.1.step"))
+
+        for (key, step) in optimizer.state().flattened() where key.hasSuffix(".step") {
+            XCTAssertEqual(step.item(Int32.self), 3, key)
+        }
+
+        // `state()` on the existential is the real tree, not the empty default.
+        let existential: Optimizer = optimizer
+        XCTAssertEqual(
+            Set(existential.state().flattened().map(\.0)), keys)
+
+        // Omitting `bias` leaves it alone and replaces `block.weight`.
+        let biasBefore = optimizer.state().flattened().filter { $0.0.hasPrefix("bias.") }
+        let zeroWeight = optimizer.state().flattened().filter {
+            $0.0.hasPrefix("block.weight.")
+        }.map { ($0.0, MLXArray.zeros(like: $0.1)) }
+        optimizer.update(parameters: ModuleParameters.unflattened(zeroWeight))
+        let after = optimizer.state().flattened()
+        for (key, value) in biasBefore {
+            assertEqual(after.first { $0.0 == key }!.1, value)
+        }
+        for (key, _) in zeroWeight {
+            let value = after.first { $0.0 == key }!.1
+            assertEqual(value, MLXArray.zeros(like: value))
+        }
+    }
+
+    func testStateRoundTripAdaDelta() {
+        assertResumes({ AdaDelta(learningRate: 0.1) }, model: { StateNet() })
+    }
+
+    func testStateRoundTripAdamax() {
+        assertResumes({ Adamax(learningRate: 0.1) }, model: { StateNet() })
+
+        let model = TwoParameterModel()
+        let optimizer = Adamax(learningRate: 0.1)
+        step(optimizer, model, times: 1)
+        XCTAssertEqual(
+            Set(optimizer.state().flattened().map(\.0)),
+            ["bias.m", "bias.v", "weight.m", "weight.v"])
+    }
+
+    func testStateRoundTripAdafactor() {
+        assertResumes(
+            { Adafactor(learningRate: 0.1, relativeStep: false) }, model: { RankNet() })
+
+        let model = RankNet()
+        let optimizer = Adafactor(learningRate: 0.1, beta1: 0.9, relativeStep: false)
+        step(optimizer, model, times: 2)
+        let keys = Set(optimizer.state().flattened().map(\.0))
+        XCTAssertTrue(keys.contains("vector.expAvgSq"))
+        XCTAssertTrue(keys.contains("vector.expAvg"))
+        XCTAssertTrue(keys.contains("vector.step"))
+        XCTAssertTrue(keys.contains("matrix.expAvgSqRow"))
+        XCTAssertTrue(keys.contains("matrix.expAvgSqCol"))
+        XCTAssertFalse(keys.contains("matrix.expAvgSq"))
+        for (key, step) in optimizer.state().flattened() where key.hasSuffix(".step") {
+            XCTAssertEqual(step.item(Int32.self), 2, key)
+        }
+
+        assertResumes(
+            { Adafactor(learningRate: 0.1, beta1: 0.9, relativeStep: false) },
+            model: { RankNet() })
+    }
+
+    /// `step` changes beta2 on every update. compile only writes back arrays
+    /// from `innerState()`, so a checkpoint after a compiled run must see the
+    /// same count an eager run would.
+    func testAdafactorCompiledStepAdvances() {
+        func parameters(compiled: Bool) -> ModuleParameters {
+            let model = RankNet()
+            let optimizer = Adafactor(learningRate: 0.1, warmupInit: true)
+            let gradients = model.parameters().mapValues { MLXArray.ones(like: $0) }
+            let token = MLXArray(0)
+            func once(_ token: MLXArray) -> MLXArray {
+                optimizer.update(model: model, gradients: gradients)
+                return token
+            }
+            let step =
+                compiled
+                ? compile(inputs: [model, optimizer], outputs: [model, optimizer], once)
+                : once
+            for _ in 0 ..< 4 {
+                _ = step(token)
+            }
+            eval(model, optimizer)
+            for (key, value) in optimizer.state().flattened() where key.hasSuffix(".step") {
+                XCTAssertEqual(value.item(Int32.self), 4, key)
+            }
+            return detached(model.parameters())
+        }
+
+        assertParametersEqual(parameters(compiled: false), parameters(compiled: true))
+    }
+
+    func testStateRoundTripMultiOptimizer() {
+        func make() -> MultiOptimizer {
+            MultiOptimizer(
+                optimizers: [
+                    SGD(learningRate: 1.0, momentum: 0.5),
+                    Adam(learningRate: 0.1, biasCorrection: true),
+                ],
+                filters: [{ key, _ in key == "bias" }])
+        }
+        assertResumes(make, model: { TwoParameterModel() })
+
+        let model = TwoParameterModel()
+        let optimizer = make()
+        step(optimizer, model, times: 2)
+        let keys = Set(optimizer.state().flattened().map(\.0))
+        XCTAssertTrue(keys.contains("states.0.bias"))
+        XCTAssertTrue(keys.contains("states.1.weight.m"))
+        XCTAssertTrue(keys.contains("states.1.weight.v"))
+        XCTAssertTrue(keys.contains("states.1.weight.step"))
+    }
+
 }
