@@ -167,11 +167,11 @@ public func eval(_ arrays: MLXArray...) {
 
 /// Evaluate one or more `MLXArray`
 ///
-/// This is synchronous: the arrays are computed when it returns.  ``evalLock``
+/// This is synchronous: the arrays are computed when it returns.  `evalLock`
 /// is only held while the work is scheduled, not while waiting for it to
 /// finish, so evaluations on other threads can overlap.
 ///
-/// When the current thread already holds ``evalLock`` -- inside a `grad`,
+/// When the current thread already holds `evalLock` -- inside a `grad`,
 /// `vjp`, `jvp`, `vmap` or `compile` trace -- the lock cannot be released for
 /// the wait, and evaluation is fully synchronous under the lock.  That path is
 /// also required for correctness: evaluating an intermediate inside `grad` or
