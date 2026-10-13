@@ -7,21 +7,20 @@
 
 import MLX
 import XCTest
-import os
 
-private final class ProgressRecorder: Sendable {
-    private let progress = OSAllocatedUnfairLock(initialState: [LoadProgress]())
+// All access to the recorded callbacks is protected by the lock.
+private final class ProgressRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var progress = [LoadProgress]()
 
     func record(_ progress: LoadProgress) {
-        self.progress.withLock { values in
-            values.append(progress)
+        lock.withLock {
+            self.progress.append(progress)
         }
     }
 
     var reported: [LoadProgress] {
-        progress.withLock { values in
-            values
-        }
+        lock.withLock { progress }
     }
 
     var values: [Double] {
@@ -66,25 +65,23 @@ final class SaveTests: XCTestCase {
     }
 
     public func testSaveArrays() throws {
-        try MLX.Device.withDefaultDevice(.cpu) {
-            let safetensorsPath = temporaryPath.appending(
-                path: "arrays.safetensors",
-                directoryHint: .notDirectory
-            )
+        let safetensorsPath = temporaryPath.appending(
+            path: "arrays.safetensors",
+            directoryHint: .notDirectory
+        )
 
-            let arrays: [String: MLXArray] = [
-                "foo": MLX.ones([1, 2]),
-                "bar": MLX.zeros([2, 1]),
-            ]
+        let arrays: [String: MLXArray] = [
+            "foo": MLX.ones([1, 2]),
+            "bar": MLX.zeros([2, 1]),
+        ]
 
-            try MLX.save(arrays: arrays, url: safetensorsPath)
+        try MLX.save(arrays: arrays, url: safetensorsPath)
 
-            let loadedArrays = try MLX.loadArrays(url: safetensorsPath)
-            XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
+        let loadedArrays = try MLX.loadArrays(url: safetensorsPath)
+        XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
 
-            assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
-            assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
-        }
+        assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
+        assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
     }
 
     public func testLoadArraysProgressReportsThroughEvaluation() throws {
@@ -279,59 +276,144 @@ final class SaveTests: XCTestCase {
         }
     }
 
-    public func testSaveArray() throws {
-        try MLX.Device.withDefaultDevice(.cpu) {
-            // single array npy file
-            let path = temporaryPath.appending(
-                path: "array.npy",
-                directoryHint: .notDirectory
-            )
+    public func testProgressChunksLargeTensorReads() throws {
+        let url = temporaryPath.appending(path: "large.safetensors")
+        let array = MLXArray(Array(repeating: Float(3), count: 3 * 1024 * 1024))
+        try MLX.save(arrays: ["large": array], metadata: ["format": "test"], url: url)
 
-            let array = MLX.ones([2, 4])
-
-            try MLX.save(array: array, url: path)
-
-            let loaded = try MLX.loadArray(url: path)
-
-            assertEqual(array, loaded)
+        let recorder = ProgressRecorder()
+        let (loaded, metadata) = try MLX.loadArraysAndMetadata(url: url) {
+            recorder.record($0)
         }
+        let headerBytes = try XCTUnwrap(recorder.reported.last?.completedUnitCount)
+        XCTAssertLessThan(headerBytes, Int64(array.nbytes))
+        XCTAssertEqual(metadata, ["format": "test"])
+        XCTAssertEqual(
+            try XCTUnwrap(loaded["large"]).asArray(Float.self), array.asArray(Float.self))
+
+        let reports = recorder.reported
+        XCTAssertEqual(reports.first?.completedUnitCount, 0)
+        XCTAssertEqual(reports.last?.fractionCompleted, 1)
+        XCTAssertEqual(
+            reports.map(\.completedUnitCount), reports.map(\.completedUnitCount).sorted())
+        let tensorReports = reports.filter { $0.completedUnitCount > headerBytes }
+        XCTAssertGreaterThanOrEqual(tensorReports.count, 3)
+        for (previous, current) in zip(reports, reports.dropFirst()) {
+            XCTAssertLessThanOrEqual(
+                current.completedUnitCount - previous.completedUnitCount, 4 * 1024 * 1024)
+        }
+    }
+
+    public func testProgressRetainsHandlerAndSkipsUnevaluatedArrays() throws {
+        let url = temporaryPath.appending(path: "partial.safetensors")
+        let values = Array(repeating: Float(7), count: 1024)
+        try MLX.save(arrays: ["used": MLXArray(values), "unused": MLXArray(values)], url: url)
+
+        let recorder = ProgressRecorder()
+        let arrays = try withLoadProgressHandler({ recorder.record($0) }) {
+            try MLX.loadArrays(url: url)
+        }
+        let headerBytes = try XCTUnwrap(recorder.reported.last?.completedUnitCount)
+        XCTAssertEqual(try XCTUnwrap(arrays["used"]).asArray(Float.self), values)
+        let partial = try XCTUnwrap(recorder.reported.last)
+        XCTAssertEqual(
+            partial.completedUnitCount, headerBytes + Int64(values.count * MemoryLayout<Float>.size)
+        )
+        XCTAssertLessThan(partial.fractionCompleted, 1)
+        XCTAssertEqual(try XCTUnwrap(arrays["unused"]).asArray(Float.self), values)
+        XCTAssertEqual(recorder.reported.last?.fractionCompleted, 1)
+    }
+
+    public func testNestedProgressHandlersRestoreAfterThrowAndExplicitHandlerWins() throws {
+        enum TestError: Error { case expected }
+        let url = temporaryPath.appending(path: "nested.safetensors")
+        try MLX.save(arrays: ["weight": MLXArray([Float(1), 2])], url: url)
+        let outer = ProgressRecorder()
+        let inner = ProgressRecorder()
+        let explicit = ProgressRecorder()
+
+        try withLoadProgressHandler({ outer.record($0) }) {
+            XCTAssertThrowsError(
+                try withLoadProgressHandler({ inner.record($0) }) {
+                    let arrays = try MLX.loadArrays(url: url)
+                    try checkedEval(Array(arrays.values) as [Any])
+                    throw TestError.expected
+                })
+            XCTAssertTrue(outer.reported.isEmpty)
+            XCTAssertEqual(inner.reported.last?.fractionCompleted, 1)
+
+            let explicitlyLoaded = try MLX.loadArrays(url: url) { explicit.record($0) }
+            try checkedEval(Array(explicitlyLoaded.values) as [Any])
+            XCTAssertTrue(outer.reported.isEmpty)
+            XCTAssertEqual(explicit.reported.last?.fractionCompleted, 1)
+
+            let arrays = try MLX.loadArrays(url: url)
+            try checkedEval(Array(arrays.values) as [Any])
+        }
+        XCTAssertEqual(outer.reported.last?.fractionCompleted, 1)
+    }
+
+    public func testAsyncProgressScopeInheritsHandler() async throws {
+        let url = temporaryPath.appending(path: "async.safetensors")
+        try MLX.save(arrays: ["weight": MLXArray([Float(1), 2])], url: url)
+        let recorder = ProgressRecorder()
+        try await withLoadProgressHandler({ recorder.record($0) }) {
+            try await Task {
+                let arrays = try MLX.loadArrays(url: url)
+                try checkedEval(Array(arrays.values) as [Any])
+            }.value
+        }
+        XCTAssertEqual(recorder.reported.first?.fractionCompleted, 0)
+        XCTAssertEqual(recorder.reported.last?.fractionCompleted, 1)
+    }
+
+    public func testSaveArray() throws {
+        // single array npy file
+        let path = temporaryPath.appending(
+            path: "array.npy",
+            directoryHint: .notDirectory
+        )
+
+        let array = MLX.ones([2, 4])
+
+        try MLX.save(array: array, url: path)
+
+        let loaded = try MLX.loadArray(url: path)
+
+        assertEqual(array, loaded)
     }
 
     public func testSaveArraysData() throws {
-        try MLX.Device.withDefaultDevice(.cpu) {
-            let arrays: [String: MLXArray] = [
-                "foo": MLX.ones([1, 2]),
-                "bar": MLX.zeros([2, 1]),
-            ]
+        let arrays: [String: MLXArray] = [
+            "foo": MLX.ones([1, 2]),
+            "bar": MLX.zeros([2, 1]),
+        ]
 
-            let data = try saveToData(arrays: arrays)
-            let loadedArrays = try loadArrays(data: data)
-            XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
+        let data = try saveToData(arrays: arrays)
+        let loadedArrays = try loadArrays(data: data)
+        XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
 
-            assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
-            assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
-        }
+        assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
+        assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
     }
 
     public func testSaveArraysMetadataData() throws {
-        try MLX.Device.withDefaultDevice(.cpu) {
-            let arrays: [String: MLXArray] = [
-                "foo": MLX.ones([1, 2]),
-                "bar": MLX.zeros([2, 1]),
-            ]
-            let metadata = [
-                "key": "value",
-                "key2": "value2",
-            ]
+        let arrays: [String: MLXArray] = [
+            "foo": MLX.ones([1, 2]),
+            "bar": MLX.zeros([2, 1]),
+        ]
+        let metadata = [
+            "key": "value",
+            "key2": "value2",
+        ]
 
-            let data = try saveToData(arrays: arrays, metadata: metadata)
-            let (loadedArrays, loadedMetadata) = try loadArraysAndMetadata(data: data)
-            XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
+        let data = try saveToData(arrays: arrays, metadata: metadata)
+        let (loadedArrays, loadedMetadata) = try loadArraysAndMetadata(data: data)
+        XCTAssertEqual(loadedArrays.keys.sorted(), arrays.keys.sorted())
 
-            assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
-            assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
-            XCTAssertEqual(loadedMetadata, metadata)
-        }
+        assertEqual(try XCTUnwrap(loadedArrays["foo"]), try XCTUnwrap(arrays["foo"]))
+        assertEqual(try XCTUnwrap(loadedArrays["bar"]), try XCTUnwrap(arrays["bar"]))
+        XCTAssertEqual(loadedMetadata, metadata)
     }
 
     /// `loadArrays(data:)` seeks to the end to size its input, so the in-memory IO

@@ -6,17 +6,17 @@ import Foundation
 /// Byte-level progress for loading arrays from disk.
 ///
 /// `completedUnitCount` and `totalUnitCount` are bytes and describe a single file.
-/// Progress callbacks for a given file are delivered in monotonically increasing
-/// order, but callbacks for _different_ files may interleave -- use ``url`` to
-/// aggregate progress when loading a model made of several `safetensors` shards.
+/// Progress callbacks for each load are delivered in monotonically increasing order.
+/// Loading the same file again starts a new count. Callbacks for different loads may
+/// interleave -- use ``url`` to aggregate progress when loading a model made of several `safetensors` shards.
 ///
 /// Loading `safetensors` is lazy, which makes the reported progress approximate:
 ///
 /// - It may stop short of `totalUnitCount`. Only arrays that are actually evaluated are
 ///   read, so weights that are dropped before evaluation -- the ones a model's
 ///   `sanitize(weights:metadata:)` discards, for example -- are never read at all. Treat
-///   the load returning as completion rather than waiting for ``fractionCompleted`` to
-///   reach `1`.
+///   completion of array evaluation as completion rather than waiting for
+///   ``fractionCompleted`` to reach `1`.
 /// - It counts bytes read rather than bytes of the file covered, so a region that happens
 ///   to be read more than once is counted more than once. ``completedUnitCount`` is
 ///   clamped to `totalUnitCount`, so ``fractionCompleted`` never exceeds `1`.
@@ -68,13 +68,14 @@ enum LoadProgressHandler {
 /// }
 /// ```
 ///
-/// Loading is lazy: progress is reported as the returned arrays are evaluated, so `body`
-/// should include the evaluation of the loaded arrays. Arrays that are never evaluated
-/// are never read, so the reported progress may legitimately stop short of the file size.
+/// Loading is lazy: the reader captures the handler when the file is opened and keeps
+/// reporting to it when the arrays are evaluated, even after `body` returns. Include
+/// evaluation in `body` to observe all progress before it returns. Arrays that are never
+/// evaluated are never read, so progress may legitimately stop short of the file size.
 ///
-/// - Note: `handler` is called from MLX worker threads, potentially concurrently for
-/// different files, and is on the critical path of the read. It should be cheap and
-/// must not call back into MLX loading.
+/// - Note: `handler` is called on the loading thread and MLX worker threads, potentially
+/// concurrently for different loads, and is on the critical path of the read. It should be cheap and
+/// must not call back into MLX loading or evaluation.
 ///
 /// - Parameters:
 ///   - handler: the scoped progress handler
@@ -258,7 +259,9 @@ public func loadArrays(url: URL, stream: StreamOrDevice = .cpu) throws -> [Strin
 /// - Parameters:
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
-///     - progressHandler: progress callback. This may be called from MLX worker threads.
+///     - progressHandler: progress callback. Called on the loading thread and MLX worker
+///       threads, potentially concurrently across loads. Keep it cheap and do not call
+///       MLX loading or evaluation from the callback.
 ///       Progress is reported in byte chunks while the returned lazy arrays are evaluated,
 ///       so it may stop short of the size of the file -- see ``LoadProgress``.
 public func loadArrays(
@@ -316,7 +319,9 @@ public func loadArraysAndMetadata(url: URL, stream: StreamOrDevice = .cpu) throw
 /// - Parameters:
 ///     - url: URL of file to load
 ///     - stream: stream or device to evaluate on
-///     - progressHandler: progress callback. This may be called from MLX worker threads.
+///     - progressHandler: progress callback. Called on the loading thread and MLX worker
+///       threads, potentially concurrently across loads. Keep it cheap and do not call
+///       MLX loading or evaluation from the callback.
 ///       Progress is reported in byte chunks while the returned lazy arrays are evaluated,
 ///       so it may stop short of the size of the file -- see ``LoadProgress``.
 ///
@@ -442,10 +447,14 @@ private final class FileIOState {
             case SEEK_SET:
                 updated = newOffset
             case SEEK_CUR:
-                updated = offset + newOffset
+                let (position, overflow) = offset.addingReportingOverflow(newOffset)
+                guard !overflow else { return -1 }
+                updated = position
             case SEEK_END:
                 // offset is relative to the end of the file, not the current position.
-                updated = totalUnitCount + newOffset
+                let (position, overflow) = totalUnitCount.addingReportingOverflow(newOffset)
+                guard !overflow else { return -1 }
+                updated = position
             default:
                 return -1
             }
@@ -489,6 +498,10 @@ private final class FileIOState {
     private func readBytes(
         to data: UnsafeMutablePointer<CChar>, count: Int, offset readOffset: Int64
     ) -> Int {
+        guard count >= 0, readOffset >= 0, readOffset <= Int64.max - Int64(count) else {
+            return 0
+        }
+
         var totalRead = 0
         while totalRead < count {
             let chunkSize = min(count - totalRead, Self.maximumReadChunkSize)
@@ -497,6 +510,7 @@ private final class FileIOState {
                 UnsafeMutableRawPointer(data.advanced(by: totalRead)),
                 chunkSize,
                 off_t(readOffset + Int64(totalRead)))
+            if bytesRead < 0 && errno == EINTR { continue }
             guard bytesRead > 0 else {
                 recordReadError(bytesRead: bytesRead, requestedCount: count - totalRead)
                 break
@@ -526,7 +540,7 @@ private final class FileIOState {
         guard bytesRead > 0 else { return }
 
         progressLock.withLock {
-            completedUnitCount = min(totalUnitCount, completedUnitCount + Int64(bytesRead))
+            completedUnitCount += min(totalUnitCount - completedUnitCount, Int64(bytesRead))
             let progress = LoadProgress(
                 url: url,
                 completedUnitCount: completedUnitCount,
