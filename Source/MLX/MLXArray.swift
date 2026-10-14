@@ -564,7 +564,15 @@ public final class MLXArray {
     /// Note: this is an implementation detail and only visible because of the need to call it from
     /// other `mlx-swift` modules.
     public func _updateInternal(_ array: MLXArray) {
+        // Free the old array rather than assigning over it: `mlx_array_set` is a C++ copy assignment,
+        // which skips `array::~array()` and with it the breaking of sibling cycles. An unevaluated
+        // output of a multi-output primitive (e.g. the `Quantize` behind a freshly built
+        // `QuantizedLinear`) replaced through `Module.update(parameters:)` would otherwise leak its
+        // whole graph.
+        let old = self.ctx
+        self.ctx = mlx_array_new()
         mlx_array_set(&self.ctx, array.ctx)
+        mlx_array_free(old)
     }
 
     /// Internal function for copying the backing `mlx::core::array` context.
