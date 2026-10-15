@@ -144,8 +144,11 @@ public final class FunctionExporterSingle {
         let closure = new_mlx_kwargs_closure(keys: keys, f)
         defer { mlx_closure_kwargs_free(closure) }
 
+        // exporting traces `f`, so it needs evalLock like the other transforms
         _ = try withError {
-            mlx_export_function_kwargs(url.path, closure, positionalArgs, kwargs, shapeless)
+            withEvalLock {
+                mlx_export_function_kwargs(url.path, closure, positionalArgs, kwargs, shapeless)
+            }
         }
     }
 }
@@ -204,8 +207,11 @@ public final class FunctionExporterMultiple {
                 uniquingKeysWith: { a, b in a }))
         defer { mlx_map_string_to_array_free(kwargs) }
 
+        // each call traces `f`, so it needs evalLock like the other transforms
         _ = try withError {
-            mlx_function_exporter_apply_kwargs(exporter, positionalArgs, kwargs)
+            withEvalLock {
+                mlx_function_exporter_apply_kwargs(exporter, positionalArgs, kwargs)
+            }
         }
     }
 }
@@ -292,7 +298,9 @@ public final class ImportedFunction {
         defer { mlx_map_string_to_array_free(kwargs) }
 
         _ = try withError {
-            mlx_imported_function_apply_kwargs(&result, ctx, positionalArgs, kwargs)
+            withEvalLock {
+                mlx_imported_function_apply_kwargs(&result, ctx, positionalArgs, kwargs)
+            }
         }
 
         return mlx_vector_array_values(result)
