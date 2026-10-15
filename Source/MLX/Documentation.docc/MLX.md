@@ -134,3 +134,7 @@ See <doc:wired-memory> for configuration, best practices, and policy guidance.
 ### Distributed
 
 - ``MLXDistributed``
+
+### Load Progress
+
+- ``LoadProgress``
