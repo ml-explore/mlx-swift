@@ -568,11 +568,11 @@ public final class MLXArray {
         // which skips `array::~array()` and with it the breaking of sibling cycles. An unevaluated
         // output of a multi-output primitive (e.g. the `Quantize` behind a freshly built
         // `QuantizedLinear`) replaced through `Module.update(parameters:)` would otherwise leak its
-        // whole graph.
-        let old = self.ctx
-        self.ctx = mlx_array_new()
-        mlx_array_set(&self.ctx, array.ctx)
-        mlx_array_free(old)
+        // whole graph. Copy before freeing so `a._updateInternal(a)` keeps its contents.
+        var new = mlx_array_new()
+        mlx_array_set(&new, array.ctx)
+        mlx_array_free(self.ctx)
+        self.ctx = new
     }
 
     /// Internal function for copying the backing `mlx::core::array` context.

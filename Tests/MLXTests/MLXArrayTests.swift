@@ -169,4 +169,11 @@ class MLXArrayTests: XCTestCase {
         }
     }
 
+    func testUpdateInternalWithItself() {
+        // `Module.update(parameters:)` can hand an array its own value back
+        let a = MLXArray([1, 2, 3] as [Float])
+        a._updateInternal(a)
+        XCTAssertEqual(a.asArray(Float.self), [1, 2, 3])
+    }
+
 }
