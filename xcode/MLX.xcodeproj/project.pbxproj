@@ -1095,6 +1095,7 @@
 				mlx/distributed/jaccl/lib/jaccl/threadpool.h,
 				mlx/distributed/jaccl/lib/jaccl/types.h,
 				mlx/distributed/jaccl/lib/README.md,
+				mlx/distributed/jaccl/no_jaccl.cpp,
 				mlx/distributed/mpi/CMakeLists.txt,
 				mlx/distributed/mpi/mpi_declarations.h,
 				mlx/distributed/mpi/mpi.cpp,

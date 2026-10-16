@@ -5,7 +5,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.apple.mlx.Cmlx
 DEFINES_MODULE = YES
 BUILD_LIBRARY_FOR_DISTRIBUTION = YES
 
-HEADER_SEARCH_PATHS = $(SDKROOT)/usr/include/c++/v1 $(SDKROOT)/usr/include $(inherited) $(SRCROOT)/../Source/Cmlx/metal-cpp $(SRCROOT)/../Source/Cmlx/fmt/include $(SRCROOT)/../Source/Cmlx/json/single_include/nlohmann
+HEADER_SEARCH_PATHS = $(SDKROOT)/usr/include/c++/v1 $(SDKROOT)/usr/include $(inherited) $(SRCROOT)/../Source/Cmlx/metal-cpp $(SRCROOT)/../Source/Cmlx/fmt/include $(SRCROOT)/../Source/Cmlx/json/single_include/nlohmann $(SRCROOT)/../Source/Cmlx/mlx/mlx/distributed/jaccl/lib
 
 OTHER_CFLAGS = -isysroot $(SDKROOT)
 

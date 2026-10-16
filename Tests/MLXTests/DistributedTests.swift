@@ -42,7 +42,9 @@ class DistributedTests: XCTestCase {
     /// Backends that are not compiled in report `false` rather than trapping.
     func testUnavailableBackendsReportFalse() {
         XCTAssertFalse(MLXDistributed.isAvailable(.mpi))
-        XCTAssertFalse(MLXDistributed.isAvailable(.jaccl))
+        #if !os(macOS)
+            XCTAssertFalse(MLXDistributed.isAvailable(.jaccl))
+        #endif
 
         // nccl is CUDA-only and is never built on Apple platforms
         #if !os(Linux)
