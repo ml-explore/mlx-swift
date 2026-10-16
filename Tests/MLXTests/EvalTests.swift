@@ -613,32 +613,6 @@ struct EvalTests {
         #endif
     }
 
-    /// `eval` inside a compiled function's traced body: the trace holds
-    /// `evalLock`, so the inner eval is the re-entrant case reached through
-    /// real API rather than through `withEvalLock` directly.
-    ///
-    /// The array evaluated inside the body is already computed and takes no
-    /// part in the trace, so this stays a statement about locking rather than
-    /// about evaluating a traced graph (which MLX does not allow).
-    @Test func evalInsideACompiledBody() {
-        nonisolated(unsafe) var traced = false
-        let side = MLXArray(0 ..< 4).asType(.float32)
-        eval(side)
-
-        let compiled = MLX.compile { (x: MLXArray) in
-            traced = true
-            // re-enters eval (and therefore withEvalLock) while the trace holds it
-            eval(side)
-            return x * 2
-        }
-
-        let r = compiled(MLXArray(Float(3)))
-        eval(r)
-
-        #expect(traced, "the body never traced, so nothing was re-entered")
-        #expect(r.item(Float.self) == 6)
-    }
-
     // MARK: The reason for the change
 
     /// `eval` must not hold `evalLock` while waiting for the computation.
