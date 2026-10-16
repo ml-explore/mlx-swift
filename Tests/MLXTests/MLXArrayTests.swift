@@ -36,6 +36,46 @@ class MLXArrayTests: XCTestCase {
         XCTAssertEqual(b, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
     }
 
+    func testAsArrayEmpty() {
+        // an empty slice has size 0 and no backing pointer; it should return
+        // an empty array rather than crashing (see issue #480)
+        let a = MLXArray.ones([1, 200])
+        let b = a[128...]
+        XCTAssertEqual(b.shape, [0, 200])
+        XCTAssertEqual(b.size, 0)
+        XCTAssertEqual(b.asArray(Int.self), [])
+        XCTAssertEqual(b.asArray(Float.self), [])
+
+        // a directly-constructed empty array behaves the same
+        let empty = MLXArray([Int32](), [0])
+        XCTAssertEqual(empty.asArray(Int32.self), [])
+
+        // a non-contiguous empty array goes through the strided copy path
+        let t = b.T
+        XCTAssertEqual(t.shape, [200, 0])
+        XCTAssertEqual(t.asArray(Float.self), [])
+    }
+
+    func testAsDataEmpty() {
+        // asData shares physicalSize with asArray, so it also returns empty
+        // data for an empty array (see issue #480)
+        let b = MLXArray.ones([1, 200])[128...]
+        for access in [MLXArray.AccessMethod.copy, .noCopyIfContiguous, .noCopy] {
+            let data = b.asData(access: access)
+            XCTAssertEqual(data.data.count, 0)
+            XCTAssertEqual(data.shape, [0, 200])
+        }
+        XCTAssertEqual(b.T.asData(access: .copy).data.count, 0)
+    }
+
+    func testAsArrayScalar() {
+        // a scalar (0-dimensional) array yields a single-element array
+        let a = MLXArray(7)
+        XCTAssertEqual(a.shape, [])
+        XCTAssertEqual(a.size, 1)
+        XCTAssertEqual(a.asArray(Int32.self), [7])
+    }
+
     func testAsArrayNonContiguous1() {
         // skipping elements via slicing
         let a = MLXArray(0 ..< 9, [3, 3])
