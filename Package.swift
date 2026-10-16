@@ -350,16 +350,9 @@ let package = Package(
         ),
 
         .target(
-            name: "cLogSupport",
-            path: "Source/cLogSupport",
-            publicHeadersPath: "include"
-        ),
-
-        .target(
             name: "MLX",
             dependencies: [
                 "Cmlx",
-                "cLogSupport",
                 .product(name: "Numerics", package: "swift-numerics"),
             ],
             exclude: mlxSwiftExcludes,

@@ -1,1 +1,0 @@
-void cLogSupport(void) { }
