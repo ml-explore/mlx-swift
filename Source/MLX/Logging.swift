@@ -223,7 +223,6 @@ extension MLXLogger {
 
 #if canImport(OSLog)
     import OSLog
-    import cLogSupport
 
     /// On systems that support it, a log handler that is backed by OSLog.
     public struct OSLogHandler: MLXLogHandler {
@@ -232,9 +231,6 @@ extension MLXLogger {
         // This handle checks the level before message evaluation.
         private let _osLog: OSLog
         private let logger: os.Logger
-
-        // see #491
-        private let osLog: OSLog
 
         public static func install() {
             MLXLogger.factory = { OSLogHandler(label: $0) }
