@@ -584,6 +584,35 @@ private func assertGradientWhole(
         "\(key) gradient mismatch", file: file, line: line)
 }
 
+/// `shardInPlace` with integer segments on a module that holds a quantized
+/// layer.  The positions count input features, which the packed weight and the
+/// scales hold at different resolutions, so each has to split at its own index.
+func quantizedShardInPlaceBody(world: MLXDistributed.Group) throws {
+    MLXRandom.seed(0)
+    let x = MLXRandom.normal([4, 1024])
+    let model = Sequential(layers: QuantizedLinear(Linear(1024, 32, bias: false)))
+    let expected = model(x)
+
+    try shardInPlace(model, sharding: .shardedToAll, segments: .indices([512]), group: world)
+
+    // each process holds its slice of both segments; the sum of the partial
+    // results is the unsharded result
+    let step = 512 / world.size
+    let lower = world.rank * step
+    let xPart = concatenated(
+        [x[0..., lower ..< lower + step], x[0..., 512 + lower ..< 512 + lower + step]], axis: 1)
+    let result = MLXDistributed.allSum(model(xPart), group: world)
+    XCTAssertTrue(
+        expected.allClose(result, rtol: 1e-4, atol: 1e-6).item(Bool.self),
+        "integer segments landed in the wrong place")
+
+    // a segment has to hold whole quantization groups on every process
+    XCTAssertThrowsError(
+        try shardInPlace(
+            QuantizedLinear(Linear(1024, 32)), sharding: .shardedToAll,
+            segments: .indices([528]), group: world))
+}
+
 /// The single process half: sharding is the identity in a group of size one,
 /// but the layers are still built and run.
 ///
@@ -625,6 +654,10 @@ class DistributedNNTests: XCTestCase {
     func testClipGradNormSharded() throws {
         try clipGradNormShardedBody(world: try MLXDistributed.initialize())
     }
+
+    func testQuantizedShardInPlace() throws {
+        try quantizedShardInPlaceBody(world: try MLXDistributed.initialize())
+    }
 }
 
 /// The multi process half, where every rank holds a different slice.
@@ -654,6 +687,7 @@ class DistributedNNRingTests: XCTestCase {
             try moduleSubstitutionBody(world: group)
             try donationBody(world: group)
             try quantizedShardedConstructionBody(world: group)
+            try quantizedShardInPlaceBody(world: group)
             try shardingEdgeCasesBody(world: group)
             try averageGradientsBody(world: group)
             try clipGradNormShardedBody(world: group)
