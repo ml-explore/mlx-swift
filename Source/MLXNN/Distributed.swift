@@ -217,6 +217,29 @@ private func quantizedShardedToAllPredicate(
     }
 }
 
+/// Shard the input dimensions of every parameter of a module that may hold
+/// quantized layers.
+///
+/// Integer positions count input features, so every ``QuantizedLinear`` gets
+/// them scaled to its own packed parameters, the way
+/// ``quantizedShardedToAllPredicate(_:inputDimensions:groupSize:size:)`` does
+/// for a single layer.  Every other parameter splits at the positions as given.
+private func shardedToAllPredicate(
+    _ segments: Segments, quantizedLayersIn module: Module, size: Int
+) throws -> ShardingPredicate {
+    var quantized = [String: ShardingPredicate]()
+    for (key, layer) in module.namedModules() {
+        guard let layer = layer as? QuantizedLinear else { continue }
+        quantized[key] = try quantizedShardedToAllPredicate(
+            segments, inputDimensions: layer.shape.1, groupSize: layer.groupSize, size: size)
+    }
+    let plain = shardedToAllPredicate(segments)
+    return { path, weight in
+        let owner = path.split(separator: ".").dropLast().joined(separator: ".")
+        return (quantized[owner] ?? plain)(path, weight)
+    }
+}
+
 /// Shard a module in place by replacing its parameters with sharded ones.
 ///
 /// The module itself is unchanged, so distributed communication only happens
@@ -231,8 +254,15 @@ public func shardInPlace(
     _ module: Module, sharding: ShardingType, segments: Segments = .count(1),
     group: MLXDistributed.Group? = nil
 ) throws {
-    try shardInPlace(
-        module, predicate: predicate(for: sharding, segments: segments), group: group)
+    let group = try group ?? MLXDistributed.initialize()
+    let sharded: ShardingPredicate
+    if case .shardedToAll = sharding, case .indices = segments {
+        sharded = try shardedToAllPredicate(
+            segments, quantizedLayersIn: module, size: group.size)
+    } else {
+        sharded = predicate(for: sharding, segments: segments)
+    }
+    try shardInPlace(module, predicate: sharded, group: group)
 }
 
 /// Shard a module in place, choosing how each parameter is split.
