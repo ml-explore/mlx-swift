@@ -64,6 +64,20 @@ print(startMemory.delta(endMemory).description)
 It may be interesting to print the current memory statistics during evaluation if
 you want to see performance over time.
 
+These statistics are process wide. If an application holds several models
+e.g. a language model, an embedding model and an image model -- use
+``Memory/bufferSize(of:)-(some_Collection<MLXArray>)`` to attribute memory to
+one of them:
+
+```swift
+let weights = model.parameters().flattened().map { $0.1 }
+eval(weights)
+print("model: \(Memory.bufferSize(of: weights) / 1024)K")
+```
+
+Each unique buffer is counted once, so tied weights or arrays that view into a
+larger buffer are not double counted.
+
 Decreasing the cache limit to 0 will result in decreased performance due to the
 lack of buffer reuse, but it will also result in smaller memory use.
 Tune this value for your needs.
