@@ -9,6 +9,20 @@ public class MLXArray: ExpressibleByArrayLiteral {
     /// Internal pointer to the mlx-c wrapper on `mlx::core::array`, used with `Cmlx` interop.
     public internal(set) var ctx: mlx_array
 
+    /// True if the array is sealed (immutable): ``_updateInternal(_:)``, and so
+    /// every in-place mutation (`+=`, subscript assignment, the `compile`
+    /// state swap), will `fatalError`.
+    ///
+    /// Note: this is used for places where an MLXArray is materialized
+    /// but cannot be replaced with ``MaterializedArray``.  For example,
+    /// in a `Module`, `let x: MLXArray` can be updated via
+    /// `_updateInternal()` but can't be replaced with a
+    /// `MaterializedArray`.  This is used in that case.
+    ///
+    /// Code that has special handling for `MaterializedArrays`
+    /// (immutable) can use this property.
+    @_spi(Sealing) public internal(set) var isSealed = false
+
     /// Initialize with the given +1 context (transfer ownership).
     ///
     /// This initializer is for `Cmlx` interoperation.
@@ -599,6 +613,10 @@ public class MLXArray: ExpressibleByArrayLiteral {
     ///
     /// This is a thin convenience over ``materialize(_:)->MaterializedArray``.
     ///
+    /// - Important: this must not be called inside a function transformation
+    ///   (`grad`, `vjp`, `compile`, etc.) and will `fatalError` if it is.
+    ///   See ``materialize(_:)->[MaterializedArray]``.
+    ///
     /// ### See Also
     /// - ``MaterializedArray``
     /// - ``materialize(_:)->MaterializedArray``
@@ -611,6 +629,10 @@ public class MLXArray: ExpressibleByArrayLiteral {
     /// Note: this is an implementation detail and only visible because of the need to call it from
     /// other `mlx-swift` modules.
     public func _updateInternal(_ array: MLXArray) {
+        if isSealed {
+            fatalError("MLXArray is sealed (immutable) and cannot be updated")
+        }
+
         // Free the old array rather than assigning over it: `mlx_array_set` is a C++ copy assignment,
         // which skips `array::~array()` and with it the breaking of sibling cycles. An unevaluated
         // output of a multi-output primitive (e.g. the `Quantize` behind a freshly built
@@ -620,6 +642,14 @@ public class MLXArray: ExpressibleByArrayLiteral {
         mlx_array_set(&new, array.ctx)
         mlx_array_free(self.ctx)
         self.ctx = new
+    }
+
+    /// Seal the array: see ``isSealed``.  This is irreversible and idempotent.
+    ///
+    /// The array should already be evaluated, e.g. the parameters of a module
+    /// after `eval`.
+    @_spi(Sealing) public func _seal() {
+        isSealed = true
     }
 
     /// Internal function for copying the backing `mlx::core::array` context.

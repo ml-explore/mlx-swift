@@ -167,11 +167,29 @@ func isEvaluated(_ array: MLXArray) -> Bool {
 /// before the call — but because evaluation is forced, any pending graph work
 /// behind it has been realized as a side effect.
 ///
+/// ### Inside function transformations
+///
+/// `materialize` will `fatalError` if called inside a function transformation
+/// (`grad`, `valueAndGrad`, `vjp`, `jvp`, `vmap`, `compile`), including from
+/// a custom function (``CustomFunction(_:)``) body or VJP that is being run by
+/// one.  Inside `grad`/`vjp` an `eval` of a traced value computes it but
+/// does not detach it from the graph (the graph is needed for the backward
+/// pass), so the result could not honor the ``MaterializedArray`` contract:
+/// it would still reference the trace, and that graph is detached -- mutated
+/// -- by a later `eval` once tracing ends.  Inside `compile`/`vmap` traced
+/// values cannot be evaluated at all.
+///
+/// This is detected by the current thread holding the eval lock, which is
+/// the case for the whole duration of a transformation, so it also rejects
+/// arrays that do not depend on the traced inputs.  Materialize those before
+/// entering the transformation.
+///
 /// ### See Also
 /// - ``MaterializedArray``
 /// - ``MLXArray/materialized()``
 /// - ``materialize(_:)``
 public func materialize(_ array: MLXArray) -> MaterializedArray {
+    requireOutsideTransform()
     eval(array)
     var m = mlx_array_new()
     mlx_array_set(&m, array.ctx)
@@ -185,15 +203,38 @@ public func materialize(_ array: MLXArray) -> MaterializedArray {
 /// work together.  Prefer this overload when you need to materialize several
 /// arrays at once — for example, the parameters of a model.
 ///
+/// - Important: this must not be called inside a function transformation
+///   (`grad`, `valueAndGrad`, `vjp`, `jvp`, `vmap`, `compile`) and will
+///   `fatalError` if it is.  See
+///   ``materialize(_:)->MaterializedArray``.
+///
 /// ### See Also
 /// - ``MaterializedArray``
 /// - ``materialize(_:)``
 public func materialize(_ arrays: [MLXArray]) -> [MaterializedArray] {
+    requireOutsideTransform()
     eval(arrays)
     return arrays.map {
         var m = mlx_array_new()
         mlx_array_set(&m, $0.ctx)
         return MaterializedArray(materialized: m)
+    }
+}
+
+/// Trap if called inside a function transformation -- see
+/// ``materialize(_:)->[MaterializedArray]``.
+///
+/// This is the `.nested` case of ``withEvalLockState(_:)``.  It reads the
+/// (thread-local) ownership directly rather than calling `withEvalLockState`:
+/// acquiring the lock just to check would add contention, and wrapping the
+/// `eval` in it would make that `eval` nested too, losing the wait outside of
+/// the lock in ``eval(_:)-(Collection<MLXArray>)``.
+private func requireOutsideTransform(_ caller: StaticString = #function) {
+    if EvalLockOwnership.isHeldByCurrentThread {
+        fatalError(
+            "\(caller) called inside a function transformation (grad, vjp, compile, etc.). "
+                + "A traced value cannot be materialized -- materialize before "
+                + "entering the transformation.")
     }
 }
 

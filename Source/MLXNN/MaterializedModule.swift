@@ -16,7 +16,7 @@ import MLX
 ///
 /// Note: only parameters that can be replaced, e.g. are wrapped with `@ParameterInfo`,
 /// will actually be updated to the `MaterializedArray` type.  All others will
-/// be evaluated and are materialized, even if they do not have the type
+/// be evaluated and sealed, even if they do not have the type
 /// indicating that fact.
 ///
 /// ## Construction and the `consuming` contract
@@ -52,11 +52,11 @@ import MLX
 ///
 /// The interior `Module` instances are still mutable objects, but they are
 /// not reachable through the public API.  They are flagged so that the
-/// `Module` mutation APIs trap, but this is not foolproof.  Any parameters
-/// that are held as bare `let x: MLXArray` cannot be replaced
-/// with `MaterializedArray`, so in-place mutation of them (e.g. `x[0] = 0`)
-/// is not guarded at runtime.  Prefer `@ParameterInfo var x: MLXArray`
-/// instead.
+/// `Module` mutation APIs trap.  Parameters that are held as bare
+/// `let x: MLXArray` cannot be replaced with `MaterializedArray`, but they
+/// are sealed in place, so in-place mutation of them (e.g. `x[0] = 0`) also
+/// traps.  Prefer `@ParameterInfo var x: MLXArray` so that the type reflects
+/// this.
 ///
 /// Note that it is the `MaterializedModule` that is `Sendable` -- the
 /// interior `Module` instances are not.  Inference should not mutate
@@ -163,16 +163,16 @@ open class MaterializedModule<LayerType: Module>: IndentedDescription, @unchecke
     public init(_ base: consuming LayerType) {
         self._base = base
 
-        if !self._base._isImmutable {
+        if !self._base._isSealed {
             self._base.train(false)
             self._base.materialize()
 
             // seal the consumed base so that any retained reference held by a
             // caller (despite the `consuming` contract) traps on mutation
             // rather than silently violating Sendable
-            self._base._sealImmutable()
+            self._base._seal()
         } else {
-            // it is already immutable.  could be a fatalError -- it suggests
+            // it is already sealed.  could be a fatalError -- it suggests
             // that the module was retained past encapsulation in a MaterializedModule,
             // but is ultimately harmless.
         }

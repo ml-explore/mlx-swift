@@ -1,7 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
-import MLX
+@_spi(Sealing) import MLX
 
 /// `NestedDictionary` structure of `MLXArray`
 public typealias ModuleParameters = NestedDictionary<String, MLXArray>
@@ -109,12 +109,12 @@ open class Module {
     private var _items: ModuleItems?
     private var _setters: [String: TypeErasedSetter]?
 
-    /// Sealed-for-mutation flag.  When `true`, all mutation entry points
+    /// Sealed flag.  When `true`, all mutation entry points
     /// (parameter/module updates, freeze/unfreeze, train) trap.  Set
-    /// recursively by ``_sealImmutable()`` after the module's parameters
-    /// have been replaced with `MaterializedArray` values inside
-    /// ``MaterializedModule``.
-    var _isImmutable = false
+    /// recursively by ``_seal()`` after the module's parameters
+    /// have been replaced with `MaterializedArray` values (or sealed in
+    /// place) inside ``MaterializedModule``.
+    var _isSealed = false
 
     /// Initializes the module.
     public init() {
@@ -508,7 +508,7 @@ open class Module {
         parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
     ) throws -> Self {
-        _checkMutable()
+        _checkNotSealed()
         try update(parameters: parameters, verify: verify, path: path, modulePath: modulePath) {
             m, k, a, v in
             a._updateInternal(v)
@@ -630,16 +630,16 @@ open class Module {
     /// ownership contract: even if a caller retains a stale reference and
     /// tries to mutate the wrapped module, the call will trap rather than
     /// silently violate the `Sendable` invariant.
-    func _sealImmutable() {
+    func _seal() {
         visit { _, m in
-            m._isImmutable = true
+            m._isSealed = true
         }
     }
 
-    private func _checkMutable(_ caller: StaticString = #function) {
-        if _isImmutable {
+    private func _checkNotSealed(_ caller: StaticString = #function) {
+        if _isSealed {
             fatalError(
-                "\(describeType(self)).\(caller): module has been sealed for "
+                "\(describeType(self)).\(caller): module has been sealed against "
                     + "mutation by MaterializedModule.  The original reference "
                     + "must not be retained or used after the module is consumed.")
         }
@@ -662,10 +662,13 @@ open class Module {
                     // use the setter to replace the array
                     try setter.update(v)
                 } catch {
-                    a._updateInternal(v)
+                    a._seal()
                 }
             } else {
-                a._updateInternal(v)
+                // can't replace it (e.g. `let`) -- it is already evaluated,
+                // so seal it in place.  `_seal()` is idempotent, so an array
+                // shared between several parameters (tied weights) is fine.
+                a._seal()
             }
         }
 
@@ -709,7 +712,7 @@ open class Module {
         filter: (Module, String, ModuleItem) -> Bool = Module.filterValidParameters,
         map: @escaping (MLXArray) -> MLXArray
     ) -> Self {
-        _checkMutable()
+        _checkNotSealed()
         return update(parameters: filterMap(filter: filter, map: Self.mapParameters(map: map)))
     }
 
@@ -771,7 +774,7 @@ open class Module {
         modules: ModuleChildren, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = []
     ) throws -> Self {
-        _checkMutable()
+        _checkNotSealed()
 
         let modulePath = modulePath + [describeType(self)]
 
@@ -916,7 +919,7 @@ open class Module {
     ///   - key: module key, see ``ModuleInfo``
     ///   - value: the replacement module
     open func updateModule(key: String, _ value: Any) throws {
-        _checkMutable()
+        _checkNotSealed()
         if _setters == nil {
             buildCaches()
         }
@@ -1031,7 +1034,7 @@ open class Module {
     /// - ``freeze(recursive:keys:)``
     /// - ``unfreeze(recursive:keys:strict:)``
     open func freeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
-        _checkMutable()
+        _checkNotSealed()
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0._noGrad.formUnion($1)
             $0.didSetNoGrad($0._noGrad)
@@ -1070,7 +1073,7 @@ open class Module {
     /// - ``Module/freeze(recursive:keys:)``
     /// - ``Module/unfreeze(recursive:keys:strict:)``
     open func unfreeze(recursive: Bool = true, keys: [String]? = nil, strict: Bool = false) throws {
-        _checkMutable()
+        _checkNotSealed()
         let visitor = freezeVisitor(keys: keys, strict: strict) {
             $0._noGrad.subtract($1)
             $0.didSetNoGrad($0._noGrad)
@@ -1111,7 +1114,7 @@ open class Module {
     /// - ``training``
     /// - ``didSetTrain(_:)``
     public func train(_ mode: Bool = true) {
-        _checkMutable()
+        _checkNotSealed()
         visit(modules: {
             $1.training = mode
             $1.didSetTrain(mode)

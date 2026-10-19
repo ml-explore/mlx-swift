@@ -345,6 +345,36 @@ This split matches how the result is used: a compiled function that captures
 mutable, non-`Sendable` state cannot safely be shared between threads, while a
 compiled pure function can.
 
+### Materialized state
+
+``MaterializedArray`` and `MaterializedModule` (from `MLXNN`) are `Sendable`, so
+a `@Sendable` closure may capture them and still use the `@Sendable` family:
+
+```swift
+let model = MaterializedModule(Linear(16, 16))
+
+// @Sendable -- the model's parameters are captured as constants
+let compiled: @Sendable (MLXArray) -> MLXArray = compile { x in
+    model(x)
+}
+```
+
+Captured values are frozen at trace time, which is exactly right here: the
+contents of a ``MaterializedArray`` (and the parameters of a `MaterializedModule`)
+are sealed and can never change, so there is nothing to observe and no need for
+`inputs:`.
+
+What *can* change is which value the closure reaches.  If it captures a
+mutable container -- for example a `Mutex<MaterializedModule>` or a class that
+holds the current model -- and that container is later pointed at a different
+model, the compiled function keeps using the one it was traced with.  Compile a
+new function when the model is replaced.
+
+Sealed state reached through `inputs:` is also treated as a constant rather
+than being fed in on every call, but there the compiled function checks the
+identity of the sealed arrays on each call and retraces if they have been
+replaced.
+
 > Note: in the Swift 5 language mode with minimal concurrency checking the
 compiler does not diagnose non-`Sendable` captures, so a capturing closure
 literal may still resolve to the `@Sendable` variant. Use the Swift 6 language

@@ -17,7 +17,9 @@ import Numerics
 /// - The contents are evaluated at the moment of construction, so no further
 ///   graph work is pending.
 /// - You can only create an instance via ``MLXArray/materialized()``
-///   or ``materialize(_:)->MaterializedArray``
+///   or ``materialize(_:)->MaterializedArray``, and not inside a function
+///   transformation such as `grad` or `compile` (that traps, see
+///   ``materialize(_:)->[MaterializedArray]``)
 /// - Mutation methods are marked as unavailable and will `fatalError`
 ///   if you somehow manage to call them (e.g. through dynamic types)
 /// - It is declared `@unchecked Sendable` and may be passed freely between
@@ -67,6 +69,7 @@ public final class MaterializedArray: MLXArray, @unchecked Sendable {
 
     init(materialized ctx: consuming mlx_array) {
         super.init(ctx)
+        self.isSealed = true
     }
 
     @available(*, unavailable, message: "MaterializedArray can only be created via materialize()")
