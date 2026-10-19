@@ -44,3 +44,15 @@ Here `x` is mapped over its first axis while `y` is used as a broadcast value.
 You can nest calls to `vmap` to map over multiple axes.
 Each nested `vmap` introduces another batch dimension in the result.
 
+## Sendable
+
+If the function being transformed is `Sendable` (typically meaning it
+does not capture any MLXArray values, it only uses its inputs) you can use
+``vmapSendable(_:inAxes:outAxes:)-3tm2r`` (and variants) to
+produce a `Sendable` result closure:
+
+```swift
+@Sendable
+func add(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
+let vf = vmapSendable(add, inAxes: (0, nil))
+```
