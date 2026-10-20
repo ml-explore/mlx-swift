@@ -13,7 +13,6 @@ final class ConcurrentLoadTests: XCTestCase {
     )
 
     override func setUpWithError() throws {
-        setDefaultDevice()
         try FileManager.default.createDirectory(
             at: temporaryPath,
             withIntermediateDirectories: false
