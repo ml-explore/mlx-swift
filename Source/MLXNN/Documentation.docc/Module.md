@@ -6,6 +6,7 @@
 
 - ``Module/apply(filter:map:)``
 - ``Module/filterMap(filter:map:isLeaf:)``
+- ``Module/logicalParameterCount``
 - ``Module/mapParameters(map:isLeaf:)``
 - ``Module/parameters()``
 - ``Module/trainableParameters()``
