@@ -4,6 +4,42 @@ import Cmlx
 
 public enum MLXFast {
 
+    /// Chunked gated delta network forward pass.
+    ///
+    /// - Parameters:
+    ///   - queries: shape (B, T, Hk, Dk)
+    ///   - keys: shape (B, T, Hk, Dk)
+    ///   - values: shape (B, T, Hv, Dv)
+    ///   - gamma: decay rate in linear space (B, T, Hv)
+    ///   - beta: delta update rates (B, T, Hv)
+    ///   - initialState: initial hidden state (B, Hv, Dv, Dk), zeros if not given
+    ///   - mask: optional boolean mask (B, T); masked steps leave the state unchanged
+    ///   - stream: stream or device to evaluate on
+    /// - Returns: `output` (B, T, Hv, Dv) and the final `state` (B, Hv, Dv, Dk)
+    public static func gatedDeltaUpdate(
+        queries: MLXArray,
+        keys: MLXArray,
+        values: MLXArray,
+        gamma: MLXArray,
+        beta: MLXArray,
+        initialState: MLXArray? = nil,
+        mask: MLXArray? = nil,
+        stream: StreamOrDevice = .default
+    ) -> (output: MLXArray, state: MLXArray) {
+        var result = mlx_vector_array_new()
+        defer { mlx_vector_array_free(result) }
+        mlx_fast_gated_delta_update(
+            &result,
+            queries.ctx, keys.ctx, values.ctx,
+            gamma.ctx, beta.ctx,
+            (initialState ?? .mlxNone).ctx,
+            (mask ?? .mlxNone).ctx,
+            stream.ctx)
+
+        let tuple = mlx_vector_array_values(result)
+        return (output: tuple[0], state: tuple[1])
+    }
+
     /// Optimized implementation of `NN.RoPE`.
     ///
     /// Used like this:

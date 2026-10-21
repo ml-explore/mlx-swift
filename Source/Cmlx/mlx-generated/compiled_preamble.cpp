@@ -76,11 +76,6 @@ inline float operator+(float16_t lhs, bfloat16_t rhs) { return static_cast<float
 inline float operator-(float16_t lhs, bfloat16_t rhs) { return static_cast<float>(lhs) - static_cast<float>(rhs); } inline float operator-(bfloat16_t lhs, float16_t rhs) { return static_cast<float>(lhs) - static_cast<float>(rhs); }
 inline float operator*(float16_t lhs, bfloat16_t rhs) { return static_cast<float>(lhs) * static_cast<float>(rhs); } inline float operator*(bfloat16_t lhs, float16_t rhs) { return static_cast<float>(lhs) * static_cast<float>(rhs); }
 inline float operator/(float16_t lhs, bfloat16_t rhs) { return static_cast<float>(lhs) / static_cast<float>(rhs); } inline float operator/(bfloat16_t lhs, float16_t rhs) { return static_cast<float>(lhs) / static_cast<float>(rhs); }
-template <typename, typename = void>
-constexpr bool is_complex = false;
-template <typename T>
-constexpr bool is_complex<T, std::void_t<decltype(std::declval<T>().real())>> =
-    true;
 template <typename T>
 constexpr bool is_signed_v = std::is_signed_v<T> ||
     std::is_same_v<T, float16_t> || std::is_same_v<T, bfloat16_t>;
@@ -120,6 +115,9 @@ struct complex64_t : public std::complex<float> {
   operator float() const {
     return real();
   };
+  explicit operator bool() const {
+    return real() != 0 || imag() != 0;
+  };
 };
 inline bool operator>=(const complex64_t& a, const complex64_t& b) {
   return (a.real() > b.real()) ||
@@ -147,6 +145,18 @@ inline complex64_t operator-(const complex64_t& v) {
   return -static_cast<std::complex<float>>(v);
 }
 inline complex64_t operator+(const std::complex<float>& x, const complex64_t& y) { return x + static_cast<std::complex<float>>(y); } inline complex64_t operator+(const complex64_t& x, const std::complex<float>& y) { return static_cast<std::complex<float>>(x) + y; } inline complex64_t operator+(const complex64_t& x, const complex64_t& y) { return static_cast<std::complex<float>>(x) + static_cast<std::complex<float>>(y); } inline complex64_t operator+(bool x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, bool y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(uint32_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, uint32_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(uint64_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, uint64_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(int32_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, int32_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(int64_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, int64_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(float16_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, float16_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(bfloat16_t x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, bfloat16_t y) { return x + static_cast<complex64_t>(y); } inline complex64_t operator+(float x, const complex64_t& y) { return static_cast<complex64_t>(x) + y; } inline complex64_t operator+(const complex64_t& x, float y) { return x + static_cast<complex64_t>(y); }
+template <typename, typename = void>
+constexpr bool is_complex = false;
+template <typename T>
+constexpr bool is_complex<T, std::void_t<decltype(std::declval<T>().real())>> = true;
+template <typename T>
+inline bool isnan(T v) {
+  if constexpr (is_complex<T>) {
+    return std::isnan(std::real(v)) || std::isnan(std::imag(v));
+  } else {
+    return std::isnan(v);
+  }
+}
 }
 namespace mlx::core::simd {
 template <typename T, int N>
@@ -269,7 +279,7 @@ auto imag(Simd<T, 1> in) -> Simd<decltype(std::imag(in.value)), 1> {
 }
 template <typename T>
 Simd<bool, 1> isnan(Simd<T, 1> in) {
-  return std::isnan(in.value);
+  return mlx::core::isnan(in.value);
 }
 template <typename T1, typename T2> auto operator +(Simd<T1, 1> a, Simd<T2, 1> b) ->Simd<decltype(a.value + b.value), 1> { return a.value + b.value; } template <typename T1, typename T2> auto operator +(T1 a, Simd<T2, 1> b)->Simd<decltype(a + b.value), 1> { return a + b.value; } template <typename T1, typename T2> auto operator +(Simd<T1, 1> a, T2 b)->Simd<decltype(a.value + b), 1> { return a.value + b; }
 template <typename T1, typename T2> auto operator -(Simd<T1, 1> a, Simd<T2, 1> b) ->Simd<decltype(a.value - b.value), 1> { return a.value - b.value; } template <typename T1, typename T2> auto operator -(T1 a, Simd<T2, 1> b)->Simd<decltype(a - b.value), 1> { return a - b.value; } template <typename T1, typename T2> auto operator -(Simd<T1, 1> a, T2 b)->Simd<decltype(a.value - b), 1> { return a.value - b; }
@@ -287,11 +297,46 @@ Simd<T, 1> clz(Simd<T, 1> x_) {
   return __builtin_clz(x_.value);
 }
 template <typename T>
+Simd<T, 1> divide(Simd<T, 1> a_, Simd<T, 1> b_) {
+  T a = a_.value;
+  T b = b_.value;
+  if constexpr (std::is_integral_v<T>) {
+    if (b == 0) {
+      return T(0);
+    }
+  }
+  return a / b;
+}
+template <typename T>
+Simd<T, 1> floor_divide(Simd<T, 1> a_, Simd<T, 1> b_) {
+  T a = a_.value;
+  T b = b_.value;
+  if constexpr (std::is_integral_v<T>) {
+    if (b == 0) {
+      return T(0);
+    }
+    T q = a / b;
+    if constexpr (is_signed_v<T>) {
+      if (a % b != 0 && (a < 0 != b < 0)) {
+        q -= 1;
+      }
+    }
+    return q;
+  } else if constexpr (is_complex<T>) {
+    return a / b;
+  } else {
+    return floor(divide(a_, b_));
+  }
+}
+template <typename T>
 Simd<T, 1> remainder(Simd<T, 1> a_, Simd<T, 1> b_) {
   T a = a_.value;
   T b = b_.value;
   T r;
   if constexpr (std::is_integral_v<T>) {
+    if (b == 0) {
+      return a;
+    }
     r = a % b;
   } else {
     r = std::remainder(a, b);
@@ -308,7 +353,7 @@ Simd<T, 1> maximum(Simd<T, 1> a_, Simd<T, 1> b_) {
   T a = a_.value;
   T b = b_.value;
   if constexpr (!std::is_integral_v<T>) {
-    if (std::isnan(a)) {
+    if (mlx::core::isnan(a)) {
       return a;
     }
   }
@@ -319,7 +364,7 @@ Simd<T, 1> minimum(Simd<T, 1> a_, Simd<T, 1> b_) {
   T a = a_.value;
   T b = b_.value;
   if constexpr (!std::is_integral_v<T>) {
-    if (std::isnan(a)) {
+    if (mlx::core::isnan(a)) {
       return a;
     }
   }
@@ -640,19 +685,20 @@ struct ToFP8 {
 struct FromFP8 {
   template <int N>
   Simd<float, N> operator()(Simd<uint8_t, N> x) {
-    auto v = Simd<uint16_t, N>(x & 127) << 7;
+    auto v = Simd<uint16_t, N>(x & 127);
+    auto sign_bit = Simd<uint16_t, N>((x >> 7) & 1) << 15;
+    auto u = (v << 7) | (((v + 1) >> 7) << 14) | sign_bit;
     Simd<float, N> out;
     if constexpr (simd::max_size<float16_t> >= N) {
-      auto converted = *(Simd<float16_t, N>*)(&v);
+      auto converted = *(Simd<float16_t, N>*)(&u);
       out = converted * 256.0;
     } else {
       for (int i = 0; i < N; ++i) {
-        auto converted = *(float16_t*)(&v[i]);
+        auto converted = *(float16_t*)(&u[i]);
         out[i] = converted * 256.0;
       }
     }
-    auto sign = Simd<bool, N>(x & 128);
-    return select(sign, -out, out);
+    return out;
   }
   float operator()(uint8_t x) {
     return (*this)(Simd<uint8_t, 1>(x)).value;
@@ -663,7 +709,8 @@ namespace mlx::core::detail {
 using namespace mlx::core::simd;
 struct Add { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return operator+(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
 struct ArcTan2 { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return atan2(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
-struct Divide { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return operator/(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
+struct Divide { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return divide(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
+struct FloorDivide { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return floor_divide(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
 struct Multiply { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return operator*(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
 struct Subtract { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return operator-(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };
 struct LogicalAnd { template <int N, typename T> Simd<T, N> operator()(Simd<T, N> x, Simd<T, N> y) { return operator&&(x, y); } template <typename T> T operator()(T x, T y) { return (*this)(Simd<T, 1>(x), Simd<T, 1>(y)).value; } };

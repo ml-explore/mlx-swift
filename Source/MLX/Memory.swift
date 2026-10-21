@@ -358,4 +358,21 @@ public enum Memory {
             mlx_clear_cache()
         }
     }
+
+    /// Get the size of the buffers backing the given arrays in bytes.
+    ///
+    /// Each unique buffer is counted once. The full allocator size of each buffer
+    /// is used, which can exceed the logical size of its arrays. The arrays must be
+    /// evaluated before calling this function.
+    ///
+    /// - Parameter arrays: arrays to count
+    /// - Returns: size in bytes
+    public static func bufferSize(_ arrays: some Collection<MLXArray>) -> Int {
+        let vector = new_mlx_vector_array(arrays)
+        defer { mlx_vector_array_free(vector) }
+
+        var result = 0
+        mlx_get_array_buffer_size(&result, vector)
+        return result
+    }
 }

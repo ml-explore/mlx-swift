@@ -59,7 +59,7 @@ implicit_gemm_conv_2d(
 
   using loader_a_t = typename metal::conditional_t<
       // Check for small channel specialization
-      N_CHANNELS != 0 && N_CHANNELS <= 4,
+      N_CHANNELS != 0 && N_CHANNELS <= 8,
 
       // Go to small channel specialization
       Conv2DInputBlockLoaderSmallChannels<
@@ -97,7 +97,7 @@ implicit_gemm_conv_2d(
   // Weight loader
   using loader_b_t = typename metal::conditional_t<
       // Check for small channel specialization
-      N_CHANNELS != 0 && N_CHANNELS <= 4,
+      N_CHANNELS != 0 && N_CHANNELS <= 8,
 
       // Go to small channel specialization
       Conv2DWeightBlockLoaderSmallChannels<
