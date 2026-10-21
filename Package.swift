@@ -313,6 +313,7 @@ let cmlx = Target.target(
         .headerSearchPath("json/single_include/nlohmann"),
         .headerSearchPath("fmt/include"),
         .define("MLX_VERSION", to: "\"0.32.0\""),
+        .disableWarning("shorten-64-to-32"),
     ],
     linkerSettings: linkerSettings,
     plugins: cudaBuildPlugins,
