@@ -546,8 +546,40 @@ struct SendableTransformsMaterializedTests {
         let compiled: @Sendable (MLXArray) -> MLXArray = compile { x in
             x * scale
         }
-        let input = compileInput()
-        #expect(compiled(input).allClose(input * 3).item(Bool.self))
+        for offset in 0 ..< 3 {
+            let input = compileInput() + Float(offset)
+            #expect(compiled(input).allClose(input * 3).item(Bool.self))
+            #expect(isEvaluated(scale))
+            #expect(!hasGraph(scale))
+            #expect(scale.item(Float.self) == 3)
+        }
+    }
+
+    @Test func sendableCompileCapturingMaterializedArrayConcurrently() async {
+        let scale = MLXArray(Float(3)).materialized()
+        let compiled: @Sendable (MLXArray) -> MLXArray = compile { x in
+            x * scale
+        }
+
+        await withTaskGroup(of: Bool.self) { group in
+            for worker in 0 ..< 8 {
+                group.addTask {
+                    for iteration in 0 ..< 25 {
+                        let input = compileInput() + Float(worker * 25 + iteration)
+                        if !compiled(input).allClose(input * 3).item(Bool.self) {
+                            return false
+                        }
+                    }
+                    return true
+                }
+            }
+            for await ok in group {
+                #expect(ok)
+            }
+        }
+        #expect(isEvaluated(scale))
+        #expect(!hasGraph(scale))
+        #expect(scale.item(Float.self) == 3)
     }
 
     /// `CustomFunction` closures may capture a MaterializedArray, including
