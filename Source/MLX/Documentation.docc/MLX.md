@@ -143,3 +143,7 @@ boundaries, take an evaluated, immutable snapshot.
 ### Distributed
 
 - ``MLXDistributed``
+
+### Load Progress
+
+- ``LoadProgress``
