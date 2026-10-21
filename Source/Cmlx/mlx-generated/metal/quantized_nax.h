@@ -31,15 +31,30 @@ inline constexpr short get_bytes_per_pack() {
 template <typename T, typename U, int values_per_thread, int bits>
 inline U load_vector(const device T* x, thread U* x_thread) {
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   U sum = 0;
 
-  if (bits == 2) {
+  if (bits == 1) {
+    for (int i = 0; i < values_per_thread; i += 8) {
+      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3] + x[i + 4] + x[i + 5] +
+          x[i + 6] + x[i + 7];
+      x_thread[i] = x[i];
+      x_thread[i + 1] = x[i + 1] / 2.0f;
+      x_thread[i + 2] = x[i + 2] / 4.0f;
+      x_thread[i + 3] = x[i + 3] / 8.0f;
+      x_thread[i + 4] = x[i + 4] / 16.0f;
+      x_thread[i + 5] = x[i + 5] / 32.0f;
+      x_thread[i + 6] = x[i + 6] / 64.0f;
+      x_thread[i + 7] = x[i + 7] / 128.0f;
+    }
+  }
+
+  else if (bits == 2) {
     for (int i = 0; i < values_per_thread; i += 4) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 4.0f;
       x_thread[i + 2] = x[i + 2] / 16.0f;
@@ -49,8 +64,8 @@ inline U load_vector(const device T* x, thread U* x_thread) {
 
   else if (bits == 3) {
     for (int i = 0; i < values_per_thread; i += 8) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3] + x[i + 4] + x[i + 5] +
-          x[i + 6] + x[i + 7];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]) + U(x[i + 4]) +
+          U(x[i + 5]) + U(x[i + 6]) + U(x[i + 7]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 8.0f;
       x_thread[i + 2] = x[i + 2] / 64.0f;
@@ -64,7 +79,7 @@ inline U load_vector(const device T* x, thread U* x_thread) {
 
   else if (bits == 4) {
     for (int i = 0; i < values_per_thread; i += 4) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 16.0f;
       x_thread[i + 2] = x[i + 2] / 256.0f;
@@ -74,8 +89,8 @@ inline U load_vector(const device T* x, thread U* x_thread) {
 
   else if (bits == 5) {
     for (int i = 0; i < values_per_thread; i += 8) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3] + x[i + 4] + x[i + 5] +
-          x[i + 6] + x[i + 7];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]) + U(x[i + 4]) +
+          U(x[i + 5]) + U(x[i + 6]) + U(x[i + 7]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 32.0f;
       x_thread[i + 2] = x[i + 2] / 4.0f;
@@ -89,7 +104,7 @@ inline U load_vector(const device T* x, thread U* x_thread) {
 
   else if (bits == 6) {
     for (int i = 0; i < values_per_thread; i += 4) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 64.0f;
       x_thread[i + 2] = x[i + 2] / 16.0f;
@@ -110,15 +125,30 @@ inline U load_vector(const device T* x, thread U* x_thread) {
 template <typename T, typename U, int values_per_thread, int bits>
 inline U load_vector_safe(const device T* x, thread U* x_thread, int N) {
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   U sum = 0;
 
-  if (bits == 2) {
+  if (bits == 1) {
+    for (int i = 0; i < N; i += 8) {
+      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3] + x[i + 4] + x[i + 5] +
+          x[i + 6] + x[i + 7];
+      x_thread[i] = x[i];
+      x_thread[i + 1] = x[i + 1] / 2.0f;
+      x_thread[i + 2] = x[i + 2] / 4.0f;
+      x_thread[i + 3] = x[i + 3] / 8.0f;
+      x_thread[i + 4] = x[i + 4] / 16.0f;
+      x_thread[i + 5] = x[i + 5] / 32.0f;
+      x_thread[i + 6] = x[i + 6] / 64.0f;
+      x_thread[i + 7] = x[i + 7] / 128.0f;
+    }
+  }
+
+  else if (bits == 2) {
     for (int i = 0; i < N; i += 4) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 4.0f;
       x_thread[i + 2] = x[i + 2] / 16.0f;
@@ -128,8 +158,8 @@ inline U load_vector_safe(const device T* x, thread U* x_thread, int N) {
 
   else if (bits == 3) {
     for (int i = 0; i < N; i += 8) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3] + x[i + 4] + x[i + 5] +
-          x[i + 6] + x[i + 7];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]) + U(x[i + 4]) +
+          U(x[i + 5]) + U(x[i + 6]) + U(x[i + 7]);
 
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 8.0f;
@@ -144,7 +174,7 @@ inline U load_vector_safe(const device T* x, thread U* x_thread, int N) {
 
   else if (bits == 4) {
     for (int i = 0; i < N; i += 4) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 16.0f;
       x_thread[i + 2] = x[i + 2] / 256.0f;
@@ -154,8 +184,8 @@ inline U load_vector_safe(const device T* x, thread U* x_thread, int N) {
 
   else if (bits == 5) {
     for (int i = 0; i < N; i += 8) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3] + x[i + 4] + x[i + 5] +
-          x[i + 6] + x[i + 7];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]) + U(x[i + 4]) +
+          U(x[i + 5]) + U(x[i + 6]) + U(x[i + 7]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 32.0f;
       x_thread[i + 2] = x[i + 2] / 4.0f;
@@ -169,7 +199,7 @@ inline U load_vector_safe(const device T* x, thread U* x_thread, int N) {
 
   else if (bits == 6) {
     for (int i = 0; i < N; i += 4) {
-      sum += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+      sum += U(x[i]) + U(x[i + 1]) + U(x[i + 2]) + U(x[i + 3]);
       x_thread[i] = x[i];
       x_thread[i + 1] = x[i + 1] / 64.0f;
       x_thread[i + 2] = x[i + 2] / 16.0f;
@@ -199,13 +229,27 @@ inline U qdot(
     U bias,
     U sum) {
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   U accum = 0;
 
-  if (bits == 2) {
+  if (bits == 1) {
+    for (int i = 0; i < (values_per_thread / 8); i++) {
+      accum +=
+          (x_thread[8 * i] * (w[i] & 0x01) +
+           x_thread[8 * i + 1] * (w[i] & 0x02) +
+           x_thread[8 * i + 2] * (w[i] & 0x04) +
+           x_thread[8 * i + 3] * (w[i] & 0x08) +
+           x_thread[8 * i + 4] * (w[i] & 0x10) +
+           x_thread[8 * i + 5] * (w[i] & 0x20) +
+           x_thread[8 * i + 6] * (w[i] & 0x40) +
+           x_thread[8 * i + 7] * (w[i] & 0x80));
+    }
+  }
+
+  else if (bits == 2) {
     for (int i = 0; i < (values_per_thread / 4); i++) {
       accum +=
           (x_thread[4 * i] * (w[i] & 0x03) +
@@ -301,13 +345,27 @@ inline U qdot_safe(
     U sum,
     int N) {
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   U accum = 0;
 
-  if (bits == 2) {
+  if (bits == 1) {
+    for (int i = 0; i < (N / 8); i++) {
+      accum +=
+          (x_thread[8 * i] * (w[i] & 0x01) +
+           x_thread[8 * i + 1] * (w[i] & 0x02) +
+           x_thread[8 * i + 2] * (w[i] & 0x04) +
+           x_thread[8 * i + 3] * (w[i] & 0x08) +
+           x_thread[8 * i + 4] * (w[i] & 0x10) +
+           x_thread[8 * i + 5] * (w[i] & 0x20) +
+           x_thread[8 * i + 6] * (w[i] & 0x40) +
+           x_thread[8 * i + 7] * (w[i] & 0x80));
+    }
+  }
+
+  else if (bits == 2) {
     for (int i = 0; i < (N / 4); i++) {
       accum +=
           (x_thread[4 * i] * (w[i] & 0x03) +
@@ -398,11 +456,33 @@ template <typename U, int values_per_thread, int bits>
 inline void
 qouter(const thread uint8_t* w, U x, U scale, U bias, thread U* result) {
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
-  if (bits == 2) {
+  if (bits == 1) {
+    U s[8] = {
+        scale,
+        scale / 2.0f,
+        scale / 4.0f,
+        scale / 8.0f,
+        scale / 16.0f,
+        scale / 32.0f,
+        scale / 64.0f,
+        scale / 128.0f};
+    for (int i = 0; i < (values_per_thread / 8); i++) {
+      result[8 * i] += x * (s[0] * (w[i] & 0x01) + bias);
+      result[8 * i + 1] += x * (s[1] * (w[i] & 0x02) + bias);
+      result[8 * i + 2] += x * (s[2] * (w[i] & 0x04) + bias);
+      result[8 * i + 3] += x * (s[3] * (w[i] & 0x08) + bias);
+      result[8 * i + 4] += x * (s[4] * (w[i] & 0x10) + bias);
+      result[8 * i + 5] += x * (s[5] * (w[i] & 0x20) + bias);
+      result[8 * i + 6] += x * (s[6] * (w[i] & 0x40) + bias);
+      result[8 * i + 7] += x * (s[7] * (w[i] & 0x80) + bias);
+    }
+  }
+
+  else if (bits == 2) {
     U s[4] = {scale, scale / 4.0f, scale / 16.0f, scale / 64.0f};
     for (int i = 0; i < (values_per_thread / 4); i++) {
       result[4 * i] += x * (s[0] * (w[i] & 0x03) + bias);
@@ -487,14 +567,36 @@ template <typename U, int N, int bits>
 inline void
 dequantize(const device uint8_t* w, U scale, U bias, threadgroup U* w_local) {
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   const float s = float(scale);
   const float b = float(bias);
 
-  if (bits == 2) {
+  if (bits == 1) {
+    float sc[8] = {
+        s,
+        s / 2.0f,
+        s / 4.0f,
+        s / 8.0f,
+        s / 16.0f,
+        s / 32.0f,
+        s / 64.0f,
+        s / 128.0f};
+    for (int i = 0; i < (N / 8); i++) {
+      w_local[8 * i] = static_cast<U>(sc[0] * (w[i] & 0x01) + b);
+      w_local[8 * i + 1] = static_cast<U>(sc[1] * (w[i] & 0x02) + b);
+      w_local[8 * i + 2] = static_cast<U>(sc[2] * (w[i] & 0x04) + b);
+      w_local[8 * i + 3] = static_cast<U>(sc[3] * (w[i] & 0x08) + b);
+      w_local[8 * i + 4] = static_cast<U>(sc[4] * (w[i] & 0x10) + b);
+      w_local[8 * i + 5] = static_cast<U>(sc[5] * (w[i] & 0x20) + b);
+      w_local[8 * i + 6] = static_cast<U>(sc[6] * (w[i] & 0x40) + b);
+      w_local[8 * i + 7] = static_cast<U>(sc[7] * (w[i] & 0x80) + b);
+    }
+  }
+
+  else if (bits == 2) {
     float sc[4] = {s, s / 4.0f, s / 16.0f, s / 64.0f};
     for (int i = 0; i < (N / 4); i++) {
       w_local[4 * i] = static_cast<U>(sc[0] * (w[i] & 0x03) + b);
@@ -587,9 +689,9 @@ struct QuantizedBlockLoader {
       group_size % BCOLS == 0,
       "The group size should be divisible by the columns");
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   MLX_MTL_CONST short pack_factor = get_pack_factor<bits, 8>();
   MLX_MTL_CONST short bytes_per_pack = get_bytes_per_pack<bits>();
@@ -653,14 +755,7 @@ struct QuantizedBlockLoader {
       return;
     }
 
-    if (reduction_dim == 1 && bi >= src_tile_dim.x) {
-      for (int i = 0; i < n_reads * pack_factor; i++) {
-        dst[i] = T(0);
-      }
-      return;
-    }
-
-    if (reduction_dim == 0 && bi >= src_tile_dim.y) {
+    if (bi >= src_tile_dim.y) {
       for (int i = 0; i < n_reads * pack_factor; i++) {
         dst[i] = T(0);
       }
@@ -722,9 +817,9 @@ struct QuantizedBlockLoader<
       BCOLS % group_size == 0,
       "The group size should be divisible by the columns");
   static_assert(
-      bits == 2 || bits == 3 || bits == 4 || bits == 5 || bits == 6 ||
-          bits == 8,
-      "Template undefined for bits not in {2, 3, 4, 5, 6, 8}");
+      bits == 1 || bits == 2 || bits == 3 || bits == 4 || bits == 5 ||
+          bits == 6 || bits == 8,
+      "Template undefined for bits not in {1, 2, 3, 4, 5, 6, 8}");
 
   MLX_MTL_CONST short pack_factor = get_pack_factor<bits, 8>();
   MLX_MTL_CONST short bytes_per_pack = get_bytes_per_pack<bits>();
@@ -793,14 +888,7 @@ struct QuantizedBlockLoader<
       return;
     }
 
-    if (reduction_dim == 1 && bi >= src_tile_dim.x) {
-      for (int i = 0; i < n_reads * pack_factor; i++) {
-        dst[i] = T(0);
-      }
-      return;
-    }
-
-    if (reduction_dim == 0 && bi >= src_tile_dim.y) {
+    if (bi >= src_tile_dim.y) {
       for (int i = 0; i < n_reads * pack_factor; i++) {
         dst[i] = T(0);
       }
@@ -1215,7 +1303,8 @@ template <
     const int BK = 32,
     const int BN = 64,
     const int WM = 2,
-    const int WN = 2>
+    const int WN = 2,
+    const bool has_global_scale = false>
 [[kernel]] void affine_qmm_t_nax(
     const device uint32_t* w [[buffer(0)]],
     const device T* scales [[buffer(1)]],
@@ -1334,7 +1423,8 @@ template <
     const int BK = 64,
     const int BN = 64,
     const int WM = 2,
-    const int WN = 2>
+    const int WN = 2,
+    const bool has_global_scale = false>
 [[kernel]] void affine_gather_qmm_t_nax(
     const device uint32_t* w [[buffer(0)]],
     const device T* scales [[buffer(1)]],
@@ -1477,11 +1567,12 @@ template <
     const device uint32_t* w [[buffer(1)]],
     const device T* scales [[buffer(2)]],
     const device T* biases [[buffer(3)]],
-    const device uint32_t* indices [[buffer(4)]],
+    const device int32_t* offsets [[buffer(4)]],
     device T* y [[buffer(5)]],
     const constant int& M [[buffer(6)]],
     const constant int& N [[buffer(7)]],
     const constant int& K [[buffer(8)]],
+    const constant int& num_groups [[buffer(9)]],
     uint3 tid [[threadgroup_position_in_grid]],
     uint simd_group_id [[simdgroup_index_in_threadgroup]],
     uint simd_lane_id [[thread_index_in_simdgroup]]) {
@@ -1510,13 +1601,18 @@ template <
   const int K_it = K / BK;
   const size_t stride_w = transpose ? N * K_w : K * N_w;
   const size_t stride_s = transpose ? N * K_g : K * N_g;
-  const int y_row = tid.y * BM;
+  int y_row;
+  int group;
+  short tgp_bm;
+  if (!schedule_row_tile<BM>(
+          offsets, num_groups, M, tid.y, simd_lane_id, y_row, group, tgp_bm)) {
+    return;
+  }
   const int y_col = tid.x * BN;
   const size_t y_row_long = size_t(y_row);
   const size_t y_col_long = size_t(y_col);
 
   // Prepare threadgroup bounds
-  const short tgp_bm = align_M ? BM : short(min(BM, M - y_row));
   const short tgp_bn = align_N ? BN : short(min(BN, N - y_col));
 
   // Calculate the final tiles in the case that K is not aligned
@@ -1543,12 +1639,11 @@ template <
   const short tm = SM * (simd_group_id / WN);
   const short tn = SN * (simd_group_id % WN);
 
-  const short sgp_sm =
-      align_M ? SM : min(SM, short(max(0, (M - (y_row + tm)))));
+  const short sgp_sm = short(clamp(int(tgp_bm) - tm, 0, int(SM)));
   const short sgp_sn =
       align_N ? SN : min(SN, short(max(0, (N - (y_col + tn)))));
 
-  const bool is_unaligned_sm = align_M ? false : (sgp_sm != SM);
+  const bool rows_in_bounds = y_row + tm + SM <= M;
   const bool is_unaligned_bn = align_N ? false : (tgp_bn != BN);
 
   constexpr short BR = transpose ? TN : TK;
@@ -1556,145 +1651,119 @@ template <
 
   using AccumType = float;
 
-  // Do as many matmuls as necessary
-  uint32_t index;
-  short offset;
-  uint32_t index_next = indices[y_row];
-  short offset_next = 0;
-  int n = 0;
-  while (n < tgp_bm) {
-    n++;
-    offset = offset_next;
-    index = index_next;
-    offset_next = tgp_bm;
-    for (; n < tgp_bm; n++) {
-      if (indices[y_row + n] != index) {
-        offset_next = n;
-        index_next = indices[y_row + n];
-        break;
-      }
-    }
-    threadgroup_barrier(mem_flags::mem_none);
+  const bool sg_active = sgp_sm > 0;
 
-    const short m_lo_lim = min(int(sgp_sm), max(0, offset - tm));
-    const short m_hi_lim = min(int(sgp_sm), max(0, offset_next - tm));
-    const bool sg_active = m_hi_lim > m_lo_lim;
+  NAXTile<AccumType, TM, TN> Dtile;
+  Dtile.clear();
 
-    NAXTile<AccumType, TM, TN> Dtile;
-    Dtile.clear();
+  const device T* xn = x + tm * K;
 
-    const device T* xn = x + tm * K;
+  // Prepare threadgroup loading operations
+  thread loader_w_t loader_w(
+      wl + group * stride_w,
+      scales + group * stride_s,
+      biases + group * stride_s,
+      transpose ? K : N,
+      Ws,
+      simd_group_id,
+      simd_lane_id);
 
-    // Prepare threadgroup loading operations
-    thread loader_w_t loader_w(
-        wl + index * stride_w,
-        scales + index * stride_s,
-        biases + index * stride_s,
-        transpose ? K : N,
-        Ws,
-        simd_group_id,
-        simd_lane_id);
-
-    dispatch_bool(align_M || !is_unaligned_sm, [&](auto kAlignedM) {
-      dispatch_bool(align_N || !is_unaligned_bn, [&](auto kAlignedN) {
-        for (int k = 0; k < K_it; k++) {
-          threadgroup_barrier(mem_flags::mem_threadgroup);
-          if constexpr (kAlignedN.value) {
-            loader_w.load_unsafe();
-          } else {
-            loader_w.load_safe(
-                transpose ? short2(BK, tgp_bn) : short2(tgp_bn, BK));
-          }
-
-          threadgroup_barrier(mem_flags::mem_threadgroup);
-
-          STEEL_PRAGMA_NO_UNROLL
-          for (int kk1 = 0; kk1 < BK; kk1 += SK) {
-            if (sg_active) {
-              NAXTile<T, TM, TK> Atile;
-              NAXTile<T, BR, BC> Btile;
-
-              volatile int compiler_barrier;
-
-              if constexpr (kAlignedM.value) {
-                Atile.load(xn + kk1, K);
-              } else {
-                Atile.load_safe(xn + kk1, K, short2(SK, sgp_sm));
-              }
-
-              if constexpr (transpose) {
-                Btile.template load<T, BK_padded, 1>(Ws + tn * BK_padded + kk1);
-              } else {
-                Btile.template load<T, BN_padded, 1>(Ws + tn + kk1 * BN_padded);
-              }
-
-              tile_matmad_nax(
-                  Dtile,
-                  Atile,
-                  metal::bool_constant<false>{},
-                  Btile,
-                  metal::bool_constant<transpose>{});
-
-              (void)compiler_barrier;
-            }
-          }
-
-          xn += BK;
-          loader_w.next();
-        }
-
-        if (!align_K) {
-          threadgroup_barrier(mem_flags::mem_threadgroup);
-          loader_w.load_safe(tile_w);
-          threadgroup_barrier(mem_flags::mem_threadgroup);
-
-          STEEL_PRAGMA_NO_UNROLL
-          for (int kk1 = 0; kk1 < BK; kk1 += SK) {
-            if (sg_active) {
-              NAXTile<T, TM, TK> Atile;
-              NAXTile<T, BR, BC> Btile;
-
-              volatile int compiler_barrier;
-
-              const short psk = min(int(SK), max(0, (BK - kk1)));
-              Atile.load_safe(xn + kk1, K, short2(psk, sgp_sm));
-
-              if constexpr (transpose) {
-                Btile.template load<T, BK_padded, 1>(Ws + tn * BK_padded + kk1);
-              } else {
-                Btile.template load<T, BN_padded, 1>(Ws + tn + kk1 * BN_padded);
-              }
-
-              tile_matmad_nax(
-                  Dtile,
-                  Atile,
-                  metal::bool_constant<false>{},
-                  Btile,
-                  metal::bool_constant<transpose>{});
-
-              (void)compiler_barrier;
-            }
-          }
+  dispatch_bool(rows_in_bounds, [&](auto kAlignedM) {
+    dispatch_bool(align_N || !is_unaligned_bn, [&](auto kAlignedN) {
+      for (int k = 0; k < K_it; k++) {
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+        if constexpr (kAlignedN.value) {
+          loader_w.load_unsafe();
+        } else {
+          loader_w.load_safe(
+              transpose ? short2(BK, tgp_bn) : short2(tgp_bn, BK));
         }
 
         threadgroup_barrier(mem_flags::mem_threadgroup);
 
-        // Store results to device memory
-        if constexpr (kAlignedN.value) {
-          if (m_lo_lim == 0 && m_hi_lim == SM) {
-            Dtile.store(y + tm * N + tn, N);
-          } else {
-            Dtile.store_slice(
-                y + tm * N + tn, N, short2(0, m_lo_lim), short2(SN, m_hi_lim));
+        STEEL_PRAGMA_NO_UNROLL
+        for (int kk1 = 0; kk1 < BK; kk1 += SK) {
+          if (sg_active) {
+            NAXTile<T, TM, TK> Atile;
+            NAXTile<T, BR, BC> Btile;
+
+            volatile int compiler_barrier;
+
+            if constexpr (kAlignedM.value) {
+              Atile.load(xn + kk1, K);
+            } else {
+              Atile.load_safe(xn + kk1, K, short2(SK, sgp_sm));
+            }
+
+            if constexpr (transpose) {
+              Btile.template load<T, BK_padded, 1>(Ws + tn * BK_padded + kk1);
+            } else {
+              Btile.template load<T, BN_padded, 1>(Ws + tn + kk1 * BN_padded);
+            }
+
+            tile_matmad_nax(
+                Dtile,
+                Atile,
+                metal::bool_constant<false>{},
+                Btile,
+                metal::bool_constant<transpose>{});
+
+            (void)compiler_barrier;
           }
+        }
+
+        xn += BK;
+        loader_w.next();
+      }
+
+      if (!align_K) {
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+        loader_w.load_safe(tile_w);
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        STEEL_PRAGMA_NO_UNROLL
+        for (int kk1 = 0; kk1 < BK; kk1 += SK) {
+          if (sg_active) {
+            NAXTile<T, TM, TK> Atile;
+            NAXTile<T, BR, BC> Btile;
+
+            volatile int compiler_barrier;
+
+            const short psk = min(int(SK), max(0, (k_remain - kk1)));
+            Atile.load_safe(xn + kk1, K, short2(psk, sgp_sm));
+
+            if constexpr (transpose) {
+              Btile.template load<T, BK_padded, 1>(Ws + tn * BK_padded + kk1);
+            } else {
+              Btile.template load<T, BN_padded, 1>(Ws + tn + kk1 * BN_padded);
+            }
+
+            tile_matmad_nax(
+                Dtile,
+                Atile,
+                metal::bool_constant<false>{},
+                Btile,
+                metal::bool_constant<transpose>{});
+
+            (void)compiler_barrier;
+          }
+        }
+      }
+
+      threadgroup_barrier(mem_flags::mem_threadgroup);
+
+      // Store results to device memory
+      if constexpr (kAlignedN.value) {
+        if (sgp_sm == SM) {
+          Dtile.store(y + tm * N + tn, N);
         } else {
           Dtile.store_slice(
-              y + tm * N + tn,
-              N,
-              short2(0, m_lo_lim),
-              short2(sgp_sn, m_hi_lim));
+              y + tm * N + tn, N, short2(0, 0), short2(SN, sgp_sm));
         }
-      });
+      } else {
+        Dtile.store_slice(
+            y + tm * N + tn, N, short2(0, 0), short2(sgp_sn, sgp_sm));
+      }
     });
-  }
+  });
 }

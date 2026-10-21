@@ -977,6 +977,132 @@ case(
     "mx.hadamard_transform(a, scale=0.25)",
     "MLX.hadamardTransform(a, scale: 0.25)",
 )
+case(
+    "matrixTransposed",
+    "Shape",
+    {"a": Normal(S)},
+    "mx.matrix_transpose(a)",
+    "MLX.matrixTransposed(a)",
+)
+case(
+    "matrixTransposed/4d",
+    "Shape",
+    {"a": Normal((2, 3, 4, 5))},
+    "mx.matrix_transpose(a)",
+    "MLX.matrixTransposed(a)",
+    note="only the last two axes move, unlike transposed(a) which reverses all of them",
+)
+
+# `uniqued` has a fixed output `size`; inputs draw from a small range so there
+# are repeats (20 draws from 6 values).  Multiple return values are compared
+# one field at a time; the combined `returning:` cases check that the fields
+# are read back in the right order.
+UNIQUE_A = RandInt(0, 6, (4, 5))
+case(
+    "uniqued",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=6)",
+    "MLX.uniqued(a, size: 6)",
+)
+case(
+    "uniqued/padded",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10)",
+    "MLX.uniqued(a, size: 10)",
+    note="no fillValue: pins down the default padding",
+)
+case(
+    "uniqued/fillValue",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, fill_value=mx.array(-1))",
+    "MLX.uniqued(a, size: 10, fillValue: MLXArray(-1))",
+)
+case(
+    "uniqued/truncated",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=3)",
+    "MLX.uniqued(a, size: 3)",
+    note="keeps the smallest `size` unique elements",
+)
+case(
+    "uniqued/float",
+    "Shape",
+    {"a": Normal(S)},
+    "mx.unique(a, size=12)",
+    "MLX.uniqued(a, size: 12)",
+)
+case(
+    "uniqued/bool",
+    "Shape",
+    {"a": Bernoulli(S)},
+    "mx.unique(a, size=2, stream=mx.cpu)",
+    "MLX.uniqued(a, size: 2, stream: .cpu)",
+    note="bool needs the cpu stream (builds on sort)",
+)
+case(
+    "uniqued/returning/values",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, return_index=True, return_inverse=True, "
+    "return_counts=True, fill_value=mx.array(-1))[0]",
+    "MLX.uniqued(a, size: 10, fillValue: MLXArray(-1), "
+    "returning: [.index, .inverse, .counts]).values",
+)
+for _field, _flag in (("index", "return_index"), ("inverse", "return_inverse"), ("counts", "return_counts")):
+    case(
+        f"uniqued/returning/{_field}",
+        "Shape",
+        {"a": UNIQUE_A},
+        f"mx.unique(a, size=10, {_flag}=True)[1]",
+        f"MLX.uniqued(a, size: 10, returning: .{_field}).{_field}!",
+    )
+    case(
+        f"uniqued/returning/{_field}/truncated",
+        "Shape",
+        {"a": UNIQUE_A},
+        f"mx.unique(a, size=3, {_flag}=True)[1]",
+        f"MLX.uniqued(a, size: 3, returning: .{_field}).{_field}!",
+    )
+case(
+    "uniqued/returning/all/index",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, return_index=True, return_inverse=True, return_counts=True)[1]",
+    "MLX.uniqued(a, size: 10, returning: [.index, .inverse, .counts]).index!",
+)
+case(
+    "uniqued/returning/all/inverse",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, return_index=True, return_inverse=True, return_counts=True)[2]",
+    "MLX.uniqued(a, size: 10, returning: [.index, .inverse, .counts]).inverse!",
+)
+case(
+    "uniqued/returning/all/counts",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, return_index=True, return_inverse=True, return_counts=True)[3]",
+    "MLX.uniqued(a, size: 10, returning: [.index, .inverse, .counts]).counts!",
+)
+case(
+    "uniqued/returning/indexCounts",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, return_index=True, return_counts=True)[2]",
+    "MLX.uniqued(a, size: 10, returning: [.index, .counts]).counts!",
+    note="skips .inverse: counts must be read from slot 2, not 3",
+)
+case(
+    "uniqued/returning/inverseCounts",
+    "Shape",
+    {"a": UNIQUE_A},
+    "mx.unique(a, size=10, return_inverse=True, return_counts=True)[1]",
+    "MLX.uniqued(a, size: 10, returning: [.inverse, .counts]).inverse!",
+)
 
 # ------------------------------------------------------------------- factory
 #
@@ -1335,6 +1461,63 @@ case(
     "MLX.fromFP8(encoded, dtype: .float32)",
 )
 
+# nvfp4 with one global scale per expert: `quantize` takes a single scale, so
+# each expert is quantized on its own and the results stacked.  The experts get
+# different magnitudes so a scale applied to the wrong expert is visible.
+NVFP4_EXPERTS = {
+    "w": Expression(
+        py="mx.random.normal((4, 32, 64)) * mx.array([1.0, 2.0, 4.0, 8.0]).reshape(4, 1, 1)",
+        swift="MLXRandom.normal([4, 32, 64]) * MLXArray([1.0, 2.0, 4.0, 8.0] as [Float]).reshaped(4, 1, 1)",
+    ),
+    "globalScale": Expression(
+        py="mx.max(mx.abs(w), axis=(1, 2))",
+        swift="MLX.abs(w).max(axes: [1, 2])",
+    ),
+    "q": Expression(
+        py='[mx.quantize(w[e], mode="nvfp4", global_scale=globalScale[e]) for e in range(4)]',
+        swift="(0 ..< 4).map { MLX.quantized(w[$0], mode: .nvfp4, globalScale: globalScale[$0]) }",
+        array=False,
+    ),
+    "wq": Expression(py="mx.stack([p[0] for p in q])", swift="MLX.stacked(q.map { $0.wq })"),
+    "scales": Expression(
+        py="mx.stack([p[1] for p in q])", swift="MLX.stacked(q.map { $0.scales })"
+    ),
+    "x": Normal((3, 2, 64)),
+    "indices": Expression(py="mx.array([2, 0, 3], dtype=mx.uint32)", swift="MLXArray([2, 0, 3] as [UInt32])"),
+}
+case(
+    "gatherQuantizedMM/nvfp4/globalScale",
+    "Quantization",
+    NVFP4_EXPERTS,
+    'mx.gather_qmm(x, wq, scales, rhs_indices=indices, mode="nvfp4", global_scale=globalScale)',
+    "MLX.gatherQuantizedMM(x, wq, scales: scales, rhsIndices: indices, mode: .nvfp4, "
+    "globalScale: globalScale)",
+    note="global scale is gpu only and needs indices",
+)
+case(
+    "gatherQuantizedMM/nvfp4/globalScale/transpose",
+    "Quantization",
+    {**NVFP4_EXPERTS, "x": Normal((3, 2, 32))},
+    'mx.gather_qmm(x, wq, scales, rhs_indices=indices, transpose=False, mode="nvfp4", '
+    "global_scale=globalScale)",
+    "MLX.gatherQuantizedMM(x, wq, scales: scales, rhsIndices: indices, transpose: false, "
+    "mode: .nvfp4, globalScale: globalScale)",
+)
+case(
+    "gatherQuantizedMM/nvfp4/globalScale/sorted",
+    "Quantization",
+    {
+        **NVFP4_EXPERTS,
+        "indices": Expression(
+            py="mx.array([0, 2, 2], dtype=mx.uint32)", swift="MLXArray([0, 2, 2] as [UInt32])"
+        ),
+    },
+    'mx.gather_qmm(x, wq, scales, rhs_indices=indices, mode="nvfp4", global_scale=globalScale, '
+    "sorted_indices=True)",
+    "MLX.gatherQuantizedMM(x, wq, scales: scales, rhsIndices: indices, mode: .nvfp4, "
+    "globalScale: globalScale, sortedIndices: true)",
+)
+
 # ----------------------------------------------------------------------- fft
 
 FFT_1D = Normal((100,))
@@ -1642,6 +1825,78 @@ case(
     "MLX.scaledDotProductAttention(queries: queries, keys: keys, values: values, "
     "scale: 0.35, mask: mask)",
 )
+
+
+def gated_delta_inputs(B, T, Hk, Hv, Dk, Dv, *, initial_state=True, mask=None) -> dict:
+    """inputs for `gated_delta_update`; small `keys` keep the delta rule stable"""
+    inputs = {
+        "queries": Normal((B, T, Hk, Dk)),
+        "keys": Uniform((B, T, Hk, Dk), low=-0.1, high=0.1),
+        "values": Normal((B, T, Hv, Dv)),
+        "gamma": Uniform((B, T, Hv), low=0.5, high=1.0),
+        "beta": Uniform((B, T, Hv), low=0.1, high=0.9),
+    }
+    if initial_state:
+        inputs["initialState"] = Normal((B, Hv, Dv, Dk))
+    if mask is not None:
+        inputs["mask"] = mask
+    return inputs
+
+
+# (name, dims, extra inputs, python kwargs, swift arguments, note)
+GATED_DELTA = [
+    # the generic (ops) path: any shape the metal kernel does not support
+    ("fallback", (2, 5, 2, 4, 8, 8), {}, "", "", "Hv != Hk, shape not supported by the kernel"),
+    (
+        "fallback/initialState",
+        (2, 5, 2, 4, 8, 8),
+        {"initial_state": True},
+        ", initial_state=initialState",
+        ", initialState: initialState",
+        None,
+    ),
+    (
+        "fallback/mask",
+        (2, 5, 2, 4, 8, 8),
+        {
+            "initial_state": True,
+            "mask": Expression(
+                py="mx.array([[True] * 5, [True, True, True, False, False]])",
+                swift="MLXArray([true, true, true, true, true, true, true, true, false, false], [2, 5])",
+            ),
+        },
+        ", initial_state=initialState, mask=mask",
+        ", initialState: initialState, mask: mask",
+        "masked steps leave the state unchanged and output zeros",
+    ),
+    # Dk == Dv == 128 with these head counts runs the metal kernel
+    (
+        "kernel",
+        (1, 3, 16, 32, 128, 128),
+        {"initial_state": True},
+        ", initial_state=initialState",
+        ", initialState: initialState",
+        "a shape the metal kernel supports",
+    ),
+]
+for _name, _dims, _extra, _py_kwargs, _swift_args, _note in GATED_DELTA:
+    _extra = {"initial_state": False, **_extra}
+    for _index, _output in ((0, "output"), (1, "state")):  # python index, Swift label
+        case(
+            f"gatedDeltaUpdate/{_name}/{_output}",
+            "Fast",
+            gated_delta_inputs(*_dims, **_extra),
+            f"mx.fast.gated_delta_update(queries, keys, values, gamma, beta{_py_kwargs})[{_index}]",
+            "MLXFast.gatedDeltaUpdate(queries: queries, keys: keys, values: values, "
+            f"gamma: gamma, beta: beta{_swift_args}).{_output}",
+            note=_note,
+        )
+
+# `Memory.bufferSize` is deliberately not here: it reports the allocator length
+# of each buffer, and the allocator hands out cached buffers up to ~2x the
+# requested size, so the value depends on what the process freed earlier (the
+# generator runs every case in one warm process).  It is covered by property
+# tests in Tests/MLXTests/MemoryTests.swift instead.
 
 # -------------------------------------------------------------------- random
 

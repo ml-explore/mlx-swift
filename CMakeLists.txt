@@ -61,7 +61,7 @@ set(MLX_BUILD_PYTHON_BINDINGS OFF)
 FetchContent_Declare(
   mlx
   GIT_REPOSITORY "https://github.com/ml-explore/mlx.git"
-  GIT_TAG "v0.32.2"
+  GIT_TAG "v0.32.4"
   PATCH_COMMAND ${mlx_patch})
 FetchContent_MakeAvailable(mlx)
 
@@ -70,7 +70,7 @@ set(MLX_C_BUILD_EXAMPLES OFF)
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
-  GIT_TAG "ebc88f10caa1b625e6b581437a8dea6df8a70085")
+  GIT_TAG "57731b00e8bed710e0750e7356da9f18f8eb3e20")
 FetchContent_MakeAvailable(mlx-c)
 
 # swift-numerics

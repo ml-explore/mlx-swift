@@ -7,10 +7,12 @@
 //
 //     python3 tools/integration_tests/generate.py
 //
-// python mlx:              0.32.2.dev20260910+1f8e74e3f
-// vendored mlx (Cmlx):     0.32.2
+// python mlx:              0.32.4.dev20261021+36969c094
+// vendored mlx (Cmlx):     0.32.4
 // generator revision:      2
-// cases:                   49
+// MLX_ENABLE_TF32:         0
+// device:                  Apple M5 Max (applegpu_g17s)
+// cases:                   69
 
 import Foundation
 import MLX
@@ -1167,6 +1169,442 @@ struct GeneratedShapeTests {
                         -1.6855876445770264, -1.0864219665527344, 0.4750545620918274,
                     ]),
                 tolerance: .float32)
+        }
+    }
+
+    @Test("matrixTransposed")
+    func test_matrixTransposed() throws {
+        try withIntegrationState(seed: 94372) {
+            let a = MLXRandom.normal([4, 3], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLX.matrixTransposed(a)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3, 4],
+                    dtype: .float32,
+                    mean: 0.33135515451431274,
+                    minimum: -1.0816655158996582,
+                    maximum: 1.7783619165420532,
+                    absoluteSum: 8.355605125427246,
+                    positionChecksum: 4.310164133707683,
+                    sampleIndices: [0, 2, 4, 7, 9, 11],
+                    samples: [
+                        0.028264261782169342, 0.2258906066417694, 1.7783619165420532,
+                        0.21972355246543884, 1.0169203281402588, -0.8231726884841919,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("matrixTransposed/4d")
+    func test_matrixTransposed_4d() throws {
+        // only the last two axes move, unlike transposed(a) which reverses all of them
+        try withIntegrationState(seed: 89528) {
+            let a = MLXRandom.normal([2, 3, 4, 5], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLX.matrixTransposed(a)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 3, 5, 4],
+                    dtype: .float32,
+                    mean: -0.06181011348962784,
+                    minimum: -2.80637788772583,
+                    maximum: 2.895658016204834,
+                    absoluteSum: 101.28848266601562,
+                    positionChecksum: 53.0994384765625,
+                    sampleIndices: [0, 24, 48, 71, 95, 119],
+                    samples: [
+                        -1.9200016260147095, 0.419328898191452, -0.08306543529033661,
+                        -1.4899338483810425, -1.7050701379776, 0.0025647925212979317,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("uniqued")
+    func test_uniqued() throws {
+        try withIntegrationState(seed: 57697) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 6)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [6],
+                    dtype: .int32,
+                    mean: 2.5,
+                    minimum: 0.0,
+                    maximum: 5.0,
+                    absoluteSum: 15.0,
+                    positionChecksum: 11.666666666666666,
+                    sampleIndices: [0, 1, 2, 3, 4, 5],
+                    samples: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/padded")
+    func test_uniqued_padded() throws {
+        // no fillValue: pins down the default padding
+        try withIntegrationState(seed: 24389) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .int32,
+                    mean: 1.5,
+                    minimum: 0.0,
+                    maximum: 5.0,
+                    absoluteSum: 15.0,
+                    positionChecksum: 7.0,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [0.0, 2.0, 4.0, 5.0, 0.0, 0.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/fillValue")
+    func test_uniqued_fillValue() throws {
+        try withIntegrationState(seed: 96023) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, fillValue: MLXArray(-1))
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .int32,
+                    mean: 1.100000023841858,
+                    minimum: -1.0,
+                    maximum: 5.0,
+                    absoluteSum: 19.0,
+                    positionChecksum: 10.4,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [0.0, 2.0, 4.0, 5.0, -1.0, -1.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/truncated")
+    func test_uniqued_truncated() throws {
+        // keeps the smallest `size` unique elements
+        try withIntegrationState(seed: 55506) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 3)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3],
+                    dtype: .int32,
+                    mean: 1.0,
+                    minimum: 0.0,
+                    maximum: 2.0,
+                    absoluteSum: 3.0,
+                    positionChecksum: 2.6666666666666665,
+                    sampleIndices: [0, 1, 2],
+                    samples: [0.0, 1.0, 2.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/float")
+    func test_uniqued_float() throws {
+        try withIntegrationState(seed: 21512) {
+            let a = MLXRandom.normal([4, 3], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLX.uniqued(a, size: 12)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [12],
+                    dtype: .float32,
+                    mean: -0.4238990545272827,
+                    minimum: -2.4105277061462402,
+                    maximum: 1.042361855506897,
+                    absoluteSum: 8.695816040039062,
+                    positionChecksum: 3.2035303115844727,
+                    sampleIndices: [0, 2, 4, 7, 9, 11],
+                    samples: [
+                        -2.4105277061462402, -0.8730838298797607, -0.5980460047721863,
+                        -0.14297938346862793, 0.14883598685264587, 1.042361855506897,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("uniqued/bool")
+    func test_uniqued_bool() throws {
+        // bool needs the cpu stream (builds on sort)
+        try withIntegrationState(seed: 40846) {
+            let a = MLXRandom.bernoulli(0.5, [4, 3])
+            let result = MLX.uniqued(a, size: 2, stream: .cpu)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2],
+                    dtype: .bool,
+                    mean: 0.5,
+                    minimum: 0.0,
+                    maximum: 1.0,
+                    absoluteSum: 1.0,
+                    positionChecksum: 1.0,
+                    sampleIndices: [0, 1],
+                    samples: [0.0, 1.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/values")
+    func test_uniqued_returning_values() throws {
+        try withIntegrationState(seed: 21630) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(
+                a, size: 10, fillValue: MLXArray(-1), returning: [.index, .inverse, .counts]
+            ).values
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .int32,
+                    mean: 1.100000023841858,
+                    minimum: -1.0,
+                    maximum: 5.0,
+                    absoluteSum: 19.0,
+                    positionChecksum: 10.4,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [0.0, 2.0, 4.0, 5.0, -1.0, -1.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/index")
+    func test_uniqued_returning_index() throws {
+        try withIntegrationState(seed: 59710) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: .index).index!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .uint32,
+                    mean: 3.9000000953674316,
+                    minimum: 0.0,
+                    maximum: 10.0,
+                    absoluteSum: 39.0,
+                    positionChecksum: 20.2,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [3.0, 7.0, 0.0, 10.0, 3.0, 3.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/index/truncated")
+    func test_uniqued_returning_index_truncated() throws {
+        try withIntegrationState(seed: 97801) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 3, returning: .index).index!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3],
+                    dtype: .uint32,
+                    mean: 2.0,
+                    minimum: 1.0,
+                    maximum: 3.0,
+                    absoluteSum: 6.0,
+                    positionChecksum: 4.333333333333333,
+                    sampleIndices: [0, 1, 2],
+                    samples: [2.0, 1.0, 3.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/inverse")
+    func test_uniqued_returning_inverse() throws {
+        try withIntegrationState(seed: 34157) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: .inverse).inverse!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 5],
+                    dtype: .uint32,
+                    mean: 1.899999976158142,
+                    minimum: 0.0,
+                    maximum: 4.0,
+                    absoluteSum: 38.0,
+                    positionChecksum: 22.35,
+                    sampleIndices: [0, 4, 8, 11, 15, 19],
+                    samples: [2.0, 1.0, 0.0, 4.0, 2.0, 0.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/inverse/truncated")
+    func test_uniqued_returning_inverse_truncated() throws {
+        try withIntegrationState(seed: 75343) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 3, returning: .inverse).inverse!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 5],
+                    dtype: .uint32,
+                    mean: 1.5,
+                    minimum: 0.0,
+                    maximum: 2.0,
+                    absoluteSum: 30.0,
+                    positionChecksum: 15.55,
+                    sampleIndices: [0, 4, 8, 11, 15, 19],
+                    samples: [0.0, 1.0, 2.0, 2.0, 2.0, 2.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/counts")
+    func test_uniqued_returning_counts() throws {
+        try withIntegrationState(seed: 13539) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: .counts).counts!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .int32,
+                    mean: 2.0,
+                    minimum: 0.0,
+                    maximum: 6.0,
+                    absoluteSum: 20.0,
+                    positionChecksum: 6.9,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [3.0, 5.0, 5.0, 0.0, 0.0, 0.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/counts/truncated")
+    func test_uniqued_returning_counts_truncated() throws {
+        try withIntegrationState(seed: 70850) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 3, returning: .counts).counts!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3],
+                    dtype: .int32,
+                    mean: 4.0,
+                    minimum: 2.0,
+                    maximum: 6.0,
+                    absoluteSum: 12.0,
+                    positionChecksum: 8.666666666666666,
+                    sampleIndices: [0, 1, 2],
+                    samples: [4.0, 2.0, 6.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/all/index")
+    func test_uniqued_returning_all_index() throws {
+        try withIntegrationState(seed: 80422) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: [.index, .inverse, .counts]).index!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .uint32,
+                    mean: 6.700000286102295,
+                    minimum: 0.0,
+                    maximum: 12.0,
+                    absoluteSum: 67.0,
+                    positionChecksum: 37.1,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [8.0, 0.0, 3.0, 1.0, 8.0, 8.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/all/inverse")
+    func test_uniqued_returning_all_inverse() throws {
+        try withIntegrationState(seed: 44680) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: [.index, .inverse, .counts]).inverse!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 5],
+                    dtype: .uint32,
+                    mean: 1.600000023841858,
+                    minimum: 0.0,
+                    maximum: 3.0,
+                    absoluteSum: 32.0,
+                    positionChecksum: 14.9,
+                    sampleIndices: [0, 4, 8, 11, 15, 19],
+                    samples: [1.0, 2.0, 2.0, 1.0, 1.0, 3.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/all/counts")
+    func test_uniqued_returning_all_counts() throws {
+        try withIntegrationState(seed: 302) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: [.index, .inverse, .counts]).counts!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .int32,
+                    mean: 2.0,
+                    minimum: 0.0,
+                    maximum: 9.0,
+                    absoluteSum: 20.0,
+                    positionChecksum: 6.2,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [2.0, 9.0, 3.0, 0.0, 0.0, 0.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/indexCounts")
+    func test_uniqued_returning_indexCounts() throws {
+        // skips .inverse: counts must be read from slot 2, not 3
+        try withIntegrationState(seed: 95441) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: [.index, .counts]).counts!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [10],
+                    dtype: .int32,
+                    mean: 2.0,
+                    minimum: 0.0,
+                    maximum: 5.0,
+                    absoluteSum: 20.0,
+                    positionChecksum: 7.4,
+                    sampleIndices: [0, 2, 4, 5, 7, 9],
+                    samples: [3.0, 5.0, 2.0, 4.0, 0.0, 0.0]),
+                tolerance: .exact)
+        }
+    }
+
+    @Test("uniqued/returning/inverseCounts")
+    func test_uniqued_returning_inverseCounts() throws {
+        try withIntegrationState(seed: 29675) {
+            let a = MLXRandom.randInt(low: 0, high: 6, [4, 5], type: Int32.self)
+            let result = MLX.uniqued(a, size: 10, returning: [.inverse, .counts]).inverse!
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [4, 5],
+                    dtype: .uint32,
+                    mean: 2.6500000953674316,
+                    minimum: 0.0,
+                    maximum: 5.0,
+                    absoluteSum: 53.0,
+                    positionChecksum: 28.6,
+                    sampleIndices: [0, 4, 8, 11, 15, 19],
+                    samples: [5.0, 0.0, 5.0, 2.0, 5.0, 4.0]),
+                tolerance: .exact)
         }
     }
 }
