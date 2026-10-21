@@ -3,16 +3,47 @@
 import Cmlx
 import Foundation
 
-// Note: this is all immutable state -- the `id` property is only set at init time --
-// except for ``CompiledFunction/tracedConstants``, which is guarded by
-// ``CompiledFunction/lock``.
-// Also: this is marked as Sendable even though it may capture non-Sendable state
-// in inputs/outputs.  The functions that create it will not return a Sendable
-// type in that case -- see compile(inputs:)
+/// A weak handle to MLX's thread-local cache. Retaining this wrapper does not keep
+/// the backend cache alive after its thread exits.
+private final class ThreadCompilationCache {
+    private let ctx: mlx_compile_cache
+
+    private init() {
+        var cache = mlx_compile_cache_new()
+        mlx_detail_compile_cache(&cache)
+        self.ctx = cache
+    }
+
+    deinit {
+        mlx_compile_cache_free(ctx)
+    }
+
+    static var current: ThreadCompilationCache {
+        let key = "MLX.ThreadCompilationCache"
+        let dictionary = Thread.current.threadDictionary
+        if let cache = dictionary[key] as? ThreadCompilationCache {
+            return cache
+        }
+        let cache = ThreadCompilationCache()
+        dictionary[key] = cache
+        return cache
+    }
+
+    func erase(_ functionID: UInt) {
+        mlx_detail_compile_erase(ctx, functionID)
+    }
+}
+
+// Mutable cache bookkeeping is guarded by evalLock. The stateful overloads also
+// hold the instance lock while replacing observed inputs and outputs.
+// Only the overloads accepting Sendable captures return a Sendable closure.
 final class CompiledFunction: @unchecked (Sendable) {
 
     /// unique (for the lifetime of the object) identifier for the compiled function
     private var id: UInt!
+
+    /// Every backend cache this function has used, guarded by evalLock.
+    private var caches: [ObjectIdentifier: ThreadCompilationCache] = [:]
 
     /// guards the observed state (``inputs`` / ``outputs``) -- see #226
     ///
@@ -75,77 +106,24 @@ final class CompiledFunction: @unchecked (Sendable) {
         self.id = UInt(bitPattern: Unmanaged.passUnretained(self).toOpaque())
     }
 
-    /// Remove the compiled structure from the back end.
-    ///
-    /// ### Why this takes `evalLock`
-    ///
-    /// `mlx_detail_compile_erase` is `compiler_cache().erase(fun_id)`, i.e.
-    /// `std::unordered_map::erase` on the *same* process-global
-    /// `mlx::core::detail::CompilerCache` that ``innerCall(_:)`` reads and
-    /// inserts into via `CompilerCache::find` (`cache_[fun_id]`, which itself
-    /// can insert and rehash, followed by `entries.push_back`).  That cache has
-    /// no synchronization of its own, and `find` hands back a *reference* to an
-    /// entry that the caller then fills in and reads from across the whole
-    /// trace.  An unlocked erase can therefore rehash the map out from under a
-    /// concurrent `find`, or destroy the very entry another thread is compiling
-    /// into.
-    ///
-    /// Every other use of that cache happens under `evalLock`, so the erase has
-    /// to as well; otherwise the lock does not actually make the cache
-    /// single-threaded, it only makes most of it single-threaded.
-    ///
-    /// ### Why blocking here is safe
-    ///
-    /// `deinit` runs on whichever thread drops the last reference:
-    ///
-    /// - A thread that holds no MLX lock simply waits for the current eval or
-    ///   compiled call to finish.  Bounded, since `evalLock` is only ever held
-    ///   for the duration of one call.
-    /// - A thread already inside a compiled call or an `eval` -- for instance a
-    ///   traced body that drops the last reference to some other compiled
-    ///   function -- already holds `evalLock`, and it is an `NSRecursiveLock`,
-    ///   so re-entry is free.
-    /// - A thread holding some other ``CompiledFunction``'s ``lock`` also holds
-    ///   `evalLock` already (see ``call(_:)``), so that is the same case; no new
-    ///   edge is added to the lock graph.
-    ///
-    /// Within this library the only releases of a ``CompiledFunction`` are the
-    /// caller's own (the closure returned by ``compile(inputs:outputs:shapeless:_:)-([Updatable],[Updatable],Bool,([MLXArray])->[MLXArray])``
-    /// holds the sole strong reference) and the `mlx_closure_free` of the
-    /// closure built in ``innerCall(_:)``, which runs on the calling thread with
-    /// `evalLock` already held.  Nothing hands a reference to a back-end worker
-    /// thread, so the erase can never be the thing an `evalLock` holder is
-    /// waiting for.
-    ///
-    /// The erase stays synchronous rather than being deferred to a queue on
-    /// purpose: ``id`` is the object's own address, so once this object is
-    /// freed a new ``CompiledFunction`` can be allocated at the same address and
-    /// receive the same id.  A deferred erase could delete that new function's
-    /// cache entries.
+    // Erase every calling thread's cache before this address can be reused as an ID.
     deinit {
-        let functionID = id!
         withEvalLock {
             #if DEBUG
-                // Trivially true two lines below the acquisition -- it is here to
-                // catch a future change that moves the erase back out from under
-                // the lock, the same way `withInstanceLock` guards `call(_:)`.
                 EvalLockOwnership.requireHeldByCurrentThread(
                     "the compiler cache was erased without holding evalLock; "
                         + "see CompiledFunction.deinit")
                 EvalLockOwnership.recordCompileErase()
             #endif
-            Self.eraseCache(functionID)
+            eraseCaches()
         }
     }
 
-    /// Remove the compiled structure for `functionID` from the back end.
-    ///
-    /// - Precondition: `evalLock` is held -- see ``deinit``.
-    private static func eraseCache(_ functionID: UInt) {
-        var cache = mlx_compile_cache_new()
-        mlx_detail_compile_cache(&cache)
-        defer { mlx_compile_cache_free(cache) }
-        mlx_detail_compile_erase(cache, functionID)
+    /// Must be called under evalLock, including when sealed state is rebound.
+    private func eraseCaches() {
+        for cache in caches.values {
+            cache.erase(id)
+        }
     }
 
     /// Evaluate the compiled function.
@@ -155,10 +133,8 @@ final class CompiledFunction: @unchecked (Sendable) {
     /// `evalLock` is acquired **outermost**, before the per-instance ``lock``.
     /// That order is not a preference, it is forced:
     ///
-    /// - Tracing mutates process-global state that has no synchronization of its
-    ///   own -- `mlx::core::detail::CompilerCache` is an unguarded singleton and
-    ///   `detail::InTracing::trace_stack()` is a plain function-local `static`,
-    ///   not `thread_local` -- so `evalLock` has to span the whole trace (#339).
+    /// - A trace can call back into Swift and mutate observed state, so
+    ///   `evalLock` spans the whole trace and cache invalidation (#339).
     /// - The trace calls back into Swift, and the traced body routinely calls
     ///   *other* compiled functions: every `MLXNN` activation is a file-scope
     ///   `CompiledFunction`, so e.g. `silu` inside a traced body enters
@@ -182,16 +158,7 @@ final class CompiledFunction: @unchecked (Sendable) {
     /// closure creation at the top of ``innerCall(_:)``.
     func call(_ arguments: [MLXArray]) -> [MLXArray] {
         withEvalLock {
-            // ``lock`` exists only to guard the observed state (#226): the
-            // `_updateInternal` swaps in `innerCall` are the sole mutation of
-            // anything reachable from `self` -- every other stored property is
-            // `let` except ``tracedConstants`` (only written when there is
-            // state), and `id` is written once at init.  With no state there is
-            // nothing to guard, and `evalLock` above already serializes the
-            // compiler cache and every other caller.
-            //
-            // This is the common case: every compiled function in `MLXNN` is
-            // stateless.
+            // Stateless functions need only evalLock for cache bookkeeping.
             if inputs.isEmpty && outputs.isEmpty {
                 return innerCall(arguments)
             }
@@ -220,6 +187,9 @@ final class CompiledFunction: @unchecked (Sendable) {
     ///   too unless this function has no observed state; see ``call(_:)``,
     ///   which is the only caller.
     func innerCall(_ arguments: [MLXArray]) -> [MLXArray] {
+        let cache = ThreadCompilationCache.current
+        caches[ObjectIdentifier(cache)] = cache
+
         // Sealed arrays (MaterializedArray, the parameters of a sealed module)
         // can never change, and must not be mutated, so they are not threaded
         // through the tracer swap below -- they are simply captured as
@@ -239,7 +209,7 @@ final class CompiledFunction: @unchecked (Sendable) {
                     traced.count == constants.count
                     && zip(traced, constants).allSatisfy { $0 === $1 }
                 if !same {
-                    Self.eraseCache(id)
+                    eraseCaches()
                     tracedConstants = constants
                 }
             } else {

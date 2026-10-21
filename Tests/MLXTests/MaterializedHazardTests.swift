@@ -1,5 +1,6 @@
 // Copyright © 2026 Apple Inc.
 
+import Cmlx
 import Foundation
 @_spi(MaterializedModule) import MLXNN
 import Testing
@@ -336,8 +337,120 @@ private func compileInput() -> MLXArray {
     MLXArray((0 ..< 8).map { Float($0) }, [2, 4])
 }
 
+// Access to the mutable state is handed between threads by the test's semaphores.
+private final class ReboundCompileState: @unchecked Sendable {
+    let holder: ArrayHolder
+    let compiled: (MLXArray) -> MLXArray
+    var workerBefore: Float = 0
+    var workerAfter: Float = 0
+
+    init() {
+        let holder = ArrayHolder(MLXArray(Float(1)).materialized())
+        self.holder = holder
+        self.compiled = compile(inputs: [holder]) { (x: MLXArray) in x * holder.value }
+    }
+
+    func value() -> Float {
+        compiled(MLXArray(Float(2))).item(Float.self)
+    }
+}
+
+private final class ReleasedCompileState: @unchecked Sendable {
+    var compiled: CompiledFunction?
+    let functionID: UInt
+    var before: Float = 0
+    var after: Float = 0
+
+    init() {
+        let scale = MLXArray(Float(2)).materialized()
+        let compiled = CompiledFunction(shapeless: false) { [$0[0] * scale] }
+        self.compiled = compiled
+        self.functionID = UInt(bitPattern: Unmanaged.passUnretained(compiled).toOpaque())
+    }
+
+    // Reuse the old address-derived ID without depending on allocator reuse.
+    func replacementValue() -> Float {
+        let result = withEvalLock {
+            let body = new_mlx_closure { [$0[0] * 3] }
+            defer { mlx_closure_free(body) }
+            var replacement = mlx_closure_new()
+            defer { mlx_closure_free(replacement) }
+            mlx_detail_compile(&replacement, body, functionID, false, [], 0)
+            let input = new_mlx_vector_array([MLXArray(Float(2))])
+            defer { mlx_vector_array_free(input) }
+            var output = mlx_vector_array_new()
+            defer { mlx_vector_array_free(output) }
+            mlx_closure_apply(&output, replacement, input)
+            return mlx_vector_array_values(output)[0]
+        }
+        return result.item(Float.self)
+    }
+}
+
 @Suite("compile with rebound materialized state")
 struct CompileReboundMaterializedStateTests {
+
+    @Test func deinitErasesCacheOnTheThreadThatCompiled() {
+        let state = ReleasedCompileState()
+        let primed = DispatchSemaphore(value: 0)
+        let released = DispatchSemaphore(value: 0)
+        let finished = DispatchSemaphore(value: 0)
+        let worker = Thread {
+            state.before = state.compiled!.call([MLXArray(Float(2))])[0].item(Float.self)
+            primed.signal()
+            if released.wait(timeout: .now() + 30) == .success {
+                state.after = state.replacementValue()
+            }
+            finished.signal()
+        }
+        worker.start()
+        guard primed.wait(timeout: .now() + 30) == .success else {
+            released.signal()
+            Issue.record("worker did not populate its compilation cache")
+            return
+        }
+        state.compiled = nil
+        released.signal()
+        guard finished.wait(timeout: .now() + 30) == .success else {
+            Issue.record("worker did not finish the replacement call")
+            return
+        }
+        #expect(state.before == 4)
+        #expect(state.after == 6)
+    }
+
+    @Test func rebindingInvalidatesEveryCallingThreadCache() {
+        let state = ReboundCompileState()
+        let primed = DispatchSemaphore(value: 0)
+        let rebound = DispatchSemaphore(value: 0)
+        let finished = DispatchSemaphore(value: 0)
+
+        #expect(state.value() == 2)
+        let worker = Thread {
+            state.workerBefore = state.value()
+            primed.signal()
+            if rebound.wait(timeout: .now() + 30) == .success {
+                state.workerAfter = state.value()
+            }
+            finished.signal()
+        }
+        worker.start()
+        guard primed.wait(timeout: .now() + 30) == .success else {
+            rebound.signal()
+            Issue.record("worker did not populate its compilation cache")
+            return
+        }
+
+        state.holder.value = MLXArray(Float(3)).materialized()
+        #expect(state.value() == 6)
+        rebound.signal()
+        guard finished.wait(timeout: .now() + 30) == .success else {
+            Issue.record("worker did not finish its cached call")
+            return
+        }
+        #expect(state.workerBefore == 2)
+        #expect(state.workerAfter == 6)
+    }
 
     /// Control: plain modules rebound between calls are threaded through as
     /// inputs and the compiled function follows the rebinding.
@@ -546,8 +659,40 @@ struct SendableTransformsMaterializedTests {
         let compiled: @Sendable (MLXArray) -> MLXArray = compile { x in
             x * scale
         }
-        let input = compileInput()
-        #expect(compiled(input).allClose(input * 3).item(Bool.self))
+        for offset in 0 ..< 3 {
+            let input = compileInput() + Float(offset)
+            #expect(compiled(input).allClose(input * 3).item(Bool.self))
+            #expect(isEvaluated(scale))
+            #expect(!hasGraph(scale))
+            #expect(scale.item(Float.self) == 3)
+        }
+    }
+
+    @Test func sendableCompileCapturingMaterializedArrayConcurrently() async {
+        let scale = MLXArray(Float(3)).materialized()
+        let compiled: @Sendable (MLXArray) -> MLXArray = compile { x in
+            x * scale
+        }
+
+        await withTaskGroup(of: Bool.self) { group in
+            for worker in 0 ..< 8 {
+                group.addTask {
+                    for iteration in 0 ..< 25 {
+                        let input = compileInput() + Float(worker * 25 + iteration)
+                        if !compiled(input).allClose(input * 3).item(Bool.self) {
+                            return false
+                        }
+                    }
+                    return true
+                }
+            }
+            for await ok in group {
+                #expect(ok)
+            }
+        }
+        #expect(isEvaluated(scale))
+        #expect(!hasGraph(scale))
+        #expect(scale.item(Float.self) == 3)
     }
 
     /// `CustomFunction` closures may capture a MaterializedArray, including
