@@ -30,6 +30,27 @@ class LossTests: XCTestCase {
         XCTAssertTrue(all(isNaN(loss2)).item())
     }
 
+    func testCrossEntropyAxis() {
+        // The class axis need not be the last one. Expected values from Python mlx:
+        // nn.losses.cross_entropy(logits, targets, axis=0) -> [0.169846, 0.169846].
+        let logits = MLXArray(converting: [2.0, -1.0, -1.0, 2.0, 0.0, 0.0], [3, 2])
+        let targets = MLXArray([0, 1])
+        let expected = MLXArray(converting: [0.169846, 0.169846])
+        let loss = crossEntropy(logits: logits, targets: targets, axis: 0, reduction: .none)
+        XCTAssertEqual(loss.shape, [2])
+        XCTAssertTrue(allClose(loss, expected, atol: 1e-5).item())
+    }
+
+    func testNLLLossAxis() {
+        // nn.losses.nll_loss(inputs, targets, axis=0) -> [-2, -2]
+        let inputs = MLXArray(converting: [2.0, -1.0, -1.0, 2.0, 0.0, 0.0], [3, 2])
+        let targets = MLXArray([0, 1])
+        let expected = MLXArray(converting: [-2.0, -2.0])
+        let loss = nllLoss(inputs: inputs, targets: targets, axis: 0, reduction: .none)
+        XCTAssertEqual(loss.shape, [2])
+        XCTAssertTrue(allClose(loss, expected).item())
+    }
+
     func testTripletLoss() {
         // This mainly tests that tripletLoss now works for arbitrary values of p
 
