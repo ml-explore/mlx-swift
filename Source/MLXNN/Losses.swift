@@ -51,8 +51,8 @@ public func crossEntropy(
     if targets_as_probs {
         score = sum(logits * targets, axis: axis)
     } else {
-        score = takeAlong(logits, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
-            axis: -1)
+        score = takeAlong(logits, targets.expandedDimensions(axis: axis), axis: axis).squeezed(
+            axis: axis)
     }
 
     let logSumExpLogits = logSumExp(logits, axis: axis)
@@ -164,8 +164,8 @@ public func mseLoss(predictions: MLXArray, targets: MLXArray, reduction: LossRed
 public func nllLoss(
     inputs: MLXArray, targets: MLXArray, axis: Int = -1, reduction: LossReduction = .none
 ) -> MLXArray {
-    let loss = -takeAlong(inputs, targets.expandedDimensions(axis: -1), axis: axis).squeezed(
-        axis: -1)
+    let loss = -takeAlong(inputs, targets.expandedDimensions(axis: axis), axis: axis).squeezed(
+        axis: axis)
     return reduction.reduce(loss: loss)
 }
 
