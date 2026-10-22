@@ -1528,6 +1528,8 @@ public func gatherQuantizedMatmul(
 ///   - groupSize: The size of the group in `w` that shares a scale and bias. Default is `64`
 ///   - bits: The number of bits occupied by each element in `w`. Default is `4`
 ///   - mode: The quantization mode. Default is `.affine`
+///   - globalScale: The per-input float32 scale used for
+///     `nvfp4` quantization of `w`. Only supported on the GPU.
 ///   - sortedIndices: Whether the indices are sorted. Default is `false`
 ///   - stream: Stream or device to evaluate on
 ///
@@ -3039,6 +3041,8 @@ public func unstacked(
 ///   - size: The size of the output. If the size is smaller than
 ///     the number of unique elements of `array`, the output is truncated.
 ///     If it is larger, the output is padded with `fillValue`.
+///   - fillValue: optional value to fill empty positions in the result.  If
+///     not specified this defaults to the first of the sorted unique elements.
 ///   - stream: stream or device to evaluate on
 /// - Returns: sorted unique elements
 public func uniqued(
@@ -3131,6 +3135,8 @@ public struct UniqueResult {
 ///   - size: The size of the output. If the size is smaller than
 ///     the number of unique elements of `array`, the output is truncated.
 ///     If it is larger, the output is padded with `fillValue`.
+///   - fillValue: optional value to fill empty positions in the result.  If
+///     not specified this defaults to the first of the sorted unique elements.
 ///   - returning: Additional values to return
 ///   - stream: stream or device to evaluate on
 /// - Returns: sorted unique elements
