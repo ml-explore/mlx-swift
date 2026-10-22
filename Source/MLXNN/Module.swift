@@ -509,19 +509,36 @@ open class Module {
         modulePath: [String] = []
     ) throws -> Self {
         _checkNotSealed()
-        try update(parameters: parameters, verify: verify, path: path, modulePath: modulePath) {
-            m, k, a, v in
-            a._updateInternal(v)
-        }
+        try update(
+            parameters: parameters, verify: verify, path: path, modulePath: modulePath,
+            mutate: nil)
         return self
     }
 
+    /// Applies `parameters` to this module and recurses into its children.
+    ///
+    /// With a `nil` `mutate`, arrays update in place and children recurse through the
+    /// open `update(parameters:verify:path:modulePath:)` so subclass overrides run.
+    /// A custom `mutate` (see `materialize()`) recurses directly and skips overrides.
     func update(
         parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
         modulePath: [String] = [],
-        mutate: (Module, String, MLXArray, MLXArray) -> Void
+        mutate: ((Module, String, MLXArray, MLXArray) -> Void)?
     ) throws {
         let modulePath = modulePath + [describeType(self)]
+
+        func updateChild(
+            _ module: Module, _ parameters: ModuleParameters, path: [String]
+        ) throws {
+            if let mutate {
+                try module.update(
+                    parameters: parameters, verify: verify, path: path,
+                    modulePath: modulePath, mutate: mutate)
+            } else {
+                try module.update(
+                    parameters: parameters, verify: verify, path: path, modulePath: modulePath)
+            }
+        }
 
         func apply(
             key: String, path: [String], _ item: ModuleItem, _ value: NestedItem<String, MLXArray>
@@ -542,7 +559,11 @@ open class Module {
                         path: path, modules: modulePath, expectedShape: p.shape,
                         actualShape: newArray.shape)
                 }
-                mutate(self, key, p, newArray)
+                if let mutate {
+                    mutate(self, key, p, newArray)
+                } else {
+                    p._updateInternal(newArray)
+                }
 
             case (.value(.parameters), .none):
                 if Self.parameterIsValid(key) {
@@ -586,14 +607,10 @@ open class Module {
                 }
 
             case (.value(.module(let module)), .dictionary(let values)):
-                try module.update(
-                    parameters: NestedDictionary(values: values), verify: verify, path: path,
-                    modulePath: modulePath, mutate: mutate)
+                try updateChild(module, NestedDictionary(values: values), path: path)
 
             case (.value(.module(let module)), .none):
-                try module.update(
-                    parameters: NestedDictionary(), verify: verify, path: path,
-                    modulePath: modulePath, mutate: mutate)
+                try updateChild(module, NestedDictionary(), path: path)
 
             case (.none, .none), (.value(.none), .none), (.value(.other(_)), .none):
                 break
