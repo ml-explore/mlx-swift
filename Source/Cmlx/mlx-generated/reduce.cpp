@@ -202,7 +202,7 @@ template <typename T, typename U, typename Op, typename IdxT, int NDIMS>
 
   IdxT out_idx = gid.x + gsize.x * IdxT(gid.y);
   IdxT in_idx = elem_to_loc<IdxT>(out_idx, shape, strides, ndim);
-  in += in_idx + lid.x;
+  in += in_idx + IdxT(lid.x);
 
   U total = Op::init;
   IdxT total_rows = IdxT(non_col_reductions) * IdxT(reduction_size);
@@ -257,6 +257,7 @@ template <
     const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     const constant size_t& non_col_reductions [[buffer(10)]],
+    const constant int64_t& column_offset [[buffer(11)]],
     uint3 gid [[threadgroup_position_in_grid]],
     uint3 gsize [[threadgroups_per_grid]],
     uint simd_lane_id [[thread_index_in_simdgroup]],
@@ -278,7 +279,7 @@ template <
 
   short lid = simd_group_id * simd_size + simd_lane_id;
   short2 offset((lid % n_read_blocks) * n_reads, lid / n_read_blocks);
-  IdxT column = BN * gid.x + offset.x;
+  IdxT column = IdxT(BN) * gid.x + IdxT(column_offset) + offset.x;
   bool safe = column + n_reads <= reduction_stride;
 
   IdxT out_idx = gid.y + gsize.y * IdxT(gid.z);
@@ -328,7 +329,7 @@ template <
 
     // Write the output.
     if (simd_lane_id == 0) {
-      IdxT out_column = BN * gid.x + out_offset.x;
+      IdxT out_column = IdxT(BN) * gid.x + IdxT(column_offset) + out_offset.x;
       out += out_idx * IdxT(reduction_stride) + out_column;
       if (out_column + n_outputs <= reduction_stride) {
         for (int i = 0; i < n_outputs; i++) {
@@ -396,7 +397,8 @@ template <
     const constant int64_t* reduce_strides [[buffer(8)]],
     const constant int& reduce_ndim [[buffer(9)]],
     const constant size_t& non_col_reductions [[buffer(10)]],
-    const constant size_t& out_size [[buffer(11)]],
+    const constant int64_t& column_offset [[buffer(11)]],
+    const constant size_t& out_size [[buffer(12)]],
     uint3 gid [[threadgroup_position_in_grid]],
     uint3 gsize [[threadgroups_per_grid]],
     uint simd_lane_id [[thread_index_in_simdgroup]],
@@ -421,7 +423,7 @@ template <
 
   short lid = simd_group_id * simd_size + simd_lane_id;
   short2 offset((lid % n_read_blocks) * n_reads, lid / n_read_blocks);
-  IdxT column = BN * gid.x + offset.x;
+  IdxT column = IdxT(BN) * gid.x + IdxT(column_offset) + offset.x;
   bool safe = column + n_reads <= reduction_stride;
 
   IdxT full_idx = gid.y + gsize.y * IdxT(gid.z);
@@ -468,7 +470,7 @@ template <
 
   // Write the output.
   if (simd_lane_id == 0) {
-    IdxT out_column = BN * gid.x + out_offset.x;
+    IdxT out_column = IdxT(BN) * gid.x + IdxT(column_offset) + out_offset.x;
     out += full_idx * IdxT(reduction_stride) + out_column;
     if (out_column + n_outputs <= reduction_stride) {
       for (int i = 0; i < n_outputs; i++) {
@@ -492,8 +494,9 @@ template <
 template <typename T, typename Op>
 [[kernel]] void init_reduce(
     device T* out [[buffer(0)]],
-    uint tid [[thread_position_in_grid]]) {
-  out[tid] = Op::init;
+    uint2 index [[thread_position_in_grid]],
+    uint2 grid_dim [[threads_per_grid]]) {
+  out[index.x + grid_dim.x * int64_t(index.y)] = Op::init;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -382,6 +382,9 @@ inline array transpose(
   return transpose(a, std::vector<int>(axes), s);
 }
 
+/** Permutes last two dimensions of an array. */
+MLX_API array matrix_transpose(const array& a, StreamOrDevice s = {});
+
 /** Swap two axes of an array. */
 MLX_API array
 swapaxes(const array& a, int axis1, int axis2, StreamOrDevice s = {});
@@ -784,6 +787,23 @@ min(const array& a,
 MLX_API array
 min(const array& a, int axis, bool keepdims = false, StreamOrDevice s = {});
 
+MLX_API std::tuple<array, array>
+minmax(const array& a, bool keepdims, StreamOrDevice s = {});
+inline std::tuple<array, array> minmax(const array& a, StreamOrDevice s = {}) {
+  return minmax(a, false, to_stream(s));
+}
+
+/** The minimum and maximum of the elements of an array along the given axes. */
+MLX_API std::tuple<array, array> minmax(
+    const array& a,
+    const std::vector<int>& axes,
+    bool keepdims = false,
+    StreamOrDevice s = {});
+
+/** The minimum and maximum of the elements of an array along the given axis. */
+MLX_API std::tuple<array, array>
+minmax(const array& a, int axis, bool keepdims = false, StreamOrDevice s = {});
+
 /** Returns the Hanning window of size M. */
 MLX_API array hanning(int M, StreamOrDevice s = {});
 
@@ -878,6 +898,27 @@ MLX_API array topk(const array& a, int k, StreamOrDevice s = {});
 
 /** Returns topk elements of the array along a given axis. */
 MLX_API array topk(const array& a, int k, int axis, StreamOrDevice s = {});
+
+/**
+ * Returns the sorted unique elements of the flattened array, and optionally
+ * the index of the first occurrence of each, the inverse indices and the
+ * counts. The output has the given size, and
+ * is truncated if ``size`` is smaller than the number of unique values.
+ * If ``size`` is larger, the result is padded with ``fill_value``, or the
+ * first of the sorted unique values if no fill value is provided. An empty
+ * input has none, so it throws unless ``size`` is zero or a fill value is
+ * given.
+ * A truncated output loses the counts of the values it drops, and its inverse
+ * indices are clamped to the last entry.
+ */
+MLX_API std::vector<array> unique(
+    const array& a,
+    int size,
+    bool return_index = false,
+    bool return_inverse = false,
+    bool return_counts = false,
+    const std::optional<array>& fill_value = std::nullopt,
+    StreamOrDevice s = {});
 
 /** Cumulative logsumexp of an array. */
 MLX_API array logcumsumexp(
@@ -1627,6 +1668,7 @@ MLX_API array gather_qmm(
     std::optional<int> group_size = std::nullopt,
     std::optional<int> bits = std::nullopt,
     const std::string& mode = "affine",
+    const std::optional<array>& global_scale = std::nullopt,
     bool sorted_indices = false,
     StreamOrDevice s = {});
 

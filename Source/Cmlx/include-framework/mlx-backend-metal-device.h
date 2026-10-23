@@ -63,8 +63,13 @@ class MLX_API CommandEncoder {
 
   template <typename Vec, typename = std::enable_if_t<is_vector_v<Vec>>>
   void set_vector_bytes(const Vec& vec, size_t nelems, int idx) {
-    get_command_encoder()->setBytes(
-        vec.data(), nelems * sizeof(typename Vec::value_type), idx);
+    using T = typename Vec::value_type;
+    if (nelems > 0) {
+      get_command_encoder()->setBytes(vec.data(), nelems * sizeof(T), idx);
+    } else {
+      T val{};
+      get_command_encoder()->setBytes(&val, sizeof(T), idx);
+    }
   }
   template <typename Vec, typename = std::enable_if_t<is_vector_v<Vec>>>
   void set_vector_bytes(const Vec& vec, int idx) {
@@ -90,7 +95,7 @@ class MLX_API CommandEncoder {
   }
 
   void barrier();
-  void end_encoding();
+  void end_encoding(bool wait_in_flight = false);
   void wait_event(Event event, uint64_t value);
   void signal_event(Event event, uint64_t value);
   bool needs_commit() const;

@@ -7,10 +7,12 @@
 //
 //     python3 tools/integration_tests/generate.py
 //
-// python mlx:              0.32.2.dev20260910+1f8e74e3f
-// vendored mlx (Cmlx):     0.32.2
+// python mlx:              0.32.4.dev20261021+36969c094
+// vendored mlx (Cmlx):     0.32.4
 // generator revision:      2
-// cases:                   22
+// MLX_ENABLE_TF32:         0
+// device:                  Apple M5 Max (applegpu_g17s)
+// cases:                   25
 
 import Foundation
 import MLX
@@ -565,6 +567,114 @@ struct GeneratedQuantizationTests {
                     positionChecksum: 14.755208333333334,
                     sampleIndices: [0, 2, 4, 7, 9, 11],
                     samples: [-0.625, 2.75, 3.25, -1.125, -3.75, 4.0]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatherQuantizedMM/nvfp4/globalScale")
+    func test_gatherQuantizedMM_nvfp4_globalScale() throws {
+        // global scale is gpu only and needs indices
+        try withIntegrationState(seed: 48073) {
+            let w =
+                MLXRandom.normal([4, 32, 64])
+                * MLXArray([1.0, 2.0, 4.0, 8.0] as [Float]).reshaped(4, 1, 1)
+            let globalScale = MLX.abs(w).max(axes: [1, 2])
+            let q = (0 ..< 4).map {
+                MLX.quantized(w[$0], mode: .nvfp4, globalScale: globalScale[$0])
+            }
+            let wq = MLX.stacked(q.map { $0.wq })
+            let scales = MLX.stacked(q.map { $0.scales })
+            let x = MLXRandom.normal([3, 2, 64], dtype: .float32, loc: 0.0, scale: 1.0)
+            let indices = MLXArray([2, 0, 3] as [UInt32])
+            let result = MLX.gatherQuantizedMM(
+                x, wq, scales: scales, rhsIndices: indices, mode: .nvfp4, globalScale: globalScale)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3, 2, 32],
+                    dtype: .float32,
+                    mean: -0.9819647669792175,
+                    minimum: -165.96966552734375,
+                    maximum: 144.31866455078125,
+                    absoluteSum: 5297.81396484375,
+                    positionChecksum: 3304.0732421875,
+                    sampleIndices: [0, 38, 76, 115, 153, 191],
+                    samples: [
+                        -55.56662368774414, -11.178827285766602, -5.531567096710205,
+                        0.3299040198326111, -16.427204132080078, 57.386314392089844,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatherQuantizedMM/nvfp4/globalScale/transpose")
+    func test_gatherQuantizedMM_nvfp4_globalScale_transpose() throws {
+        try withIntegrationState(seed: 33918) {
+            let w =
+                MLXRandom.normal([4, 32, 64])
+                * MLXArray([1.0, 2.0, 4.0, 8.0] as [Float]).reshaped(4, 1, 1)
+            let globalScale = MLX.abs(w).max(axes: [1, 2])
+            let q = (0 ..< 4).map {
+                MLX.quantized(w[$0], mode: .nvfp4, globalScale: globalScale[$0])
+            }
+            let wq = MLX.stacked(q.map { $0.wq })
+            let scales = MLX.stacked(q.map { $0.scales })
+            let x = MLXRandom.normal([3, 2, 32], dtype: .float32, loc: 0.0, scale: 1.0)
+            let indices = MLXArray([2, 0, 3] as [UInt32])
+            let result = MLX.gatherQuantizedMM(
+                x, wq, scales: scales, rhsIndices: indices, transpose: false, mode: .nvfp4,
+                globalScale: globalScale)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3, 2, 64],
+                    dtype: .float32,
+                    mean: -1.6645965576171875,
+                    minimum: -119.096923828125,
+                    maximum: 92.36067199707031,
+                    absoluteSum: 7135.9306640625,
+                    positionChecksum: 4085.1412760416665,
+                    sampleIndices: [0, 77, 153, 230, 306, 383],
+                    samples: [
+                        -43.466453552246094, 8.144684791564941, -3.2288098335266113,
+                        6.519178867340088, 6.189074516296387, 76.47562408447266,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatherQuantizedMM/nvfp4/globalScale/sorted")
+    func test_gatherQuantizedMM_nvfp4_globalScale_sorted() throws {
+        try withIntegrationState(seed: 24933) {
+            let w =
+                MLXRandom.normal([4, 32, 64])
+                * MLXArray([1.0, 2.0, 4.0, 8.0] as [Float]).reshaped(4, 1, 1)
+            let globalScale = MLX.abs(w).max(axes: [1, 2])
+            let q = (0 ..< 4).map {
+                MLX.quantized(w[$0], mode: .nvfp4, globalScale: globalScale[$0])
+            }
+            let wq = MLX.stacked(q.map { $0.wq })
+            let scales = MLX.stacked(q.map { $0.scales })
+            let x = MLXRandom.normal([3, 2, 64], dtype: .float32, loc: 0.0, scale: 1.0)
+            let indices = MLXArray([0, 2, 2] as [UInt32])
+            let result = MLX.gatherQuantizedMM(
+                x, wq, scales: scales, rhsIndices: indices, mode: .nvfp4, globalScale: globalScale,
+                sortedIndices: true)
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [3, 2, 32],
+                    dtype: .float32,
+                    mean: -1.1882468461990356,
+                    minimum: -89.71018981933594,
+                    maximum: 76.8901138305664,
+                    absoluteSum: 3490.58984375,
+                    positionChecksum: 2165.3154296875,
+                    sampleIndices: [0, 38, 76, 115, 153, 191],
+                    samples: [
+                        2.895949125289917, -2.178328037261963, 52.326904296875, 13.967162132263184,
+                        -27.429550170898438, -89.71018981933594,
+                    ]),
                 tolerance: .float32)
         }
     }

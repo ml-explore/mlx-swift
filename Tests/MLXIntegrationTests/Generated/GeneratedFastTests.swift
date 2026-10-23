@@ -7,10 +7,12 @@
 //
 //     python3 tools/integration_tests/generate.py
 //
-// python mlx:              0.32.2.dev20260910+1f8e74e3f
-// vendored mlx (Cmlx):     0.32.2
+// python mlx:              0.32.4.dev20261021+36969c094
+// vendored mlx (Cmlx):     0.32.4
 // generator revision:      2
-// cases:                   7
+// MLX_ENABLE_TF32:         0
+// device:                  Apple M5 Max (applegpu_g17s)
+// cases:                   15
 
 import Foundation
 import MLX
@@ -194,6 +196,274 @@ struct GeneratedFastTests {
                     samples: [
                         -0.4037952125072479, 0.0268552303314209, -0.7593691945075989,
                         -0.8534163236618042, -0.503488302230835, 0.6569595336914062,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/fallback/output")
+    func test_gatedDeltaUpdate_fallback_output() throws {
+        // Hv != Hk, shape not supported by the kernel
+        try withIntegrationState(seed: 53947) {
+            let queries = MLXRandom.normal([2, 5, 2, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [2, 5, 2, 8], dtype: .float32)
+            let values = MLXRandom.normal([2, 5, 4, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [2, 5, 4], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [2, 5, 4], dtype: .float32)
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta
+            ).output
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 5, 4, 8],
+                    dtype: .float32,
+                    mean: -0.018037354573607445,
+                    minimum: -0.5729220509529114,
+                    maximum: 0.4151778519153595,
+                    absoluteSum: 30.585939407348633,
+                    positionChecksum: 17.2472412109375,
+                    sampleIndices: [0, 64, 128, 191, 255, 319],
+                    samples: [
+                        -0.05421087518334389, -0.12156698107719421, -0.15238893032073975,
+                        -0.14626511931419373, 0.2740327715873718, -0.10090052336454391,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/fallback/state")
+    func test_gatedDeltaUpdate_fallback_state() throws {
+        // Hv != Hk, shape not supported by the kernel
+        try withIntegrationState(seed: 93688) {
+            let queries = MLXRandom.normal([2, 5, 2, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [2, 5, 2, 8], dtype: .float32)
+            let values = MLXRandom.normal([2, 5, 4, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [2, 5, 4], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [2, 5, 4], dtype: .float32)
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta
+            ).state
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 4, 8, 8],
+                    dtype: .float32,
+                    mean: 0.006113756913691759,
+                    minimum: -0.15103420615196228,
+                    maximum: 0.1642816811800003,
+                    absoluteSum: 18.600929260253906,
+                    positionChecksum: 9.371909141540527,
+                    sampleIndices: [0, 102, 204, 307, 409, 511],
+                    samples: [
+                        -0.07339409738779068, 0.03697947785258293, 0.03930574283003807,
+                        0.003275439143180847, 0.005969321355223656, 0.0017838235944509506,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/fallback/initialState/output")
+    func test_gatedDeltaUpdate_fallback_initialState_output() throws {
+        try withIntegrationState(seed: 34247) {
+            let queries = MLXRandom.normal([2, 5, 2, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [2, 5, 2, 8], dtype: .float32)
+            let values = MLXRandom.normal([2, 5, 4, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [2, 5, 4], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [2, 5, 4], dtype: .float32)
+            let initialState = MLXRandom.normal(
+                [2, 4, 8, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta,
+                initialState: initialState
+            ).output
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 5, 4, 8],
+                    dtype: .float32,
+                    mean: 0.05453367158770561,
+                    minimum: -3.9586031436920166,
+                    maximum: 7.431026935577393,
+                    absoluteSum: 279.72869873046875,
+                    positionChecksum: 135.665087890625,
+                    sampleIndices: [0, 64, 128, 191, 255, 319],
+                    samples: [
+                        -1.2578498125076294, 1.2448211908340454, 0.4136521518230438,
+                        -0.41495442390441895, 0.16835975646972656, -0.2699488699436188,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/fallback/initialState/state")
+    func test_gatedDeltaUpdate_fallback_initialState_state() throws {
+        try withIntegrationState(seed: 95025) {
+            let queries = MLXRandom.normal([2, 5, 2, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [2, 5, 2, 8], dtype: .float32)
+            let values = MLXRandom.normal([2, 5, 4, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [2, 5, 4], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [2, 5, 4], dtype: .float32)
+            let initialState = MLXRandom.normal(
+                [2, 4, 8, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta,
+                initialState: initialState
+            ).state
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 4, 8, 8],
+                    dtype: .float32,
+                    mean: -0.009089105762541294,
+                    minimum: -0.5524362325668335,
+                    maximum: 0.5001603960990906,
+                    absoluteSum: 72.35923767089844,
+                    positionChecksum: 33.11988830566406,
+                    sampleIndices: [0, 102, 204, 307, 409, 511],
+                    samples: [
+                        0.20271210372447968, -0.2317522168159485, 0.268993079662323,
+                        0.03319134935736656, 0.012991426512598991, 0.024516910314559937,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/fallback/mask/output")
+    func test_gatedDeltaUpdate_fallback_mask_output() throws {
+        // masked steps leave the state unchanged and output zeros
+        try withIntegrationState(seed: 92033) {
+            let queries = MLXRandom.normal([2, 5, 2, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [2, 5, 2, 8], dtype: .float32)
+            let values = MLXRandom.normal([2, 5, 4, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [2, 5, 4], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [2, 5, 4], dtype: .float32)
+            let initialState = MLXRandom.normal(
+                [2, 4, 8, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let mask = MLXArray(
+                [true, true, true, true, true, true, true, true, false, false], [2, 5])
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta,
+                initialState: initialState, mask: mask
+            ).output
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 5, 4, 8],
+                    dtype: .float32,
+                    mean: 0.052943795919418335,
+                    minimum: -6.441189765930176,
+                    maximum: 6.602780342102051,
+                    absoluteSum: 320.8973693847656,
+                    positionChecksum: 117.5300537109375,
+                    sampleIndices: [0, 64, 128, 191, 255, 319],
+                    samples: [
+                        -5.145998001098633, -0.6544278860092163, 0.9613724946975708,
+                        0.406800240278244, -0.6966778635978699, 0.0,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/fallback/mask/state")
+    func test_gatedDeltaUpdate_fallback_mask_state() throws {
+        // masked steps leave the state unchanged and output zeros
+        try withIntegrationState(seed: 40800) {
+            let queries = MLXRandom.normal([2, 5, 2, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [2, 5, 2, 8], dtype: .float32)
+            let values = MLXRandom.normal([2, 5, 4, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [2, 5, 4], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [2, 5, 4], dtype: .float32)
+            let initialState = MLXRandom.normal(
+                [2, 4, 8, 8], dtype: .float32, loc: 0.0, scale: 1.0)
+            let mask = MLXArray(
+                [true, true, true, true, true, true, true, true, false, false], [2, 5])
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta,
+                initialState: initialState, mask: mask
+            ).state
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [2, 4, 8, 8],
+                    dtype: .float32,
+                    mean: -0.005854031536728144,
+                    minimum: -1.9470419883728027,
+                    maximum: 2.252192974090576,
+                    absoluteSum: 151.9166259765625,
+                    positionChecksum: 87.9920883178711,
+                    sampleIndices: [0, 102, 204, 307, 409, 511],
+                    samples: [
+                        0.21978959441184998, -0.0349111407995224, 0.3030872046947479,
+                        0.8860476016998291, -0.3838585615158081, 0.10365576297044754,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/kernel/output")
+    func test_gatedDeltaUpdate_kernel_output() throws {
+        // a shape the metal kernel supports
+        try withIntegrationState(seed: 91400) {
+            let queries = MLXRandom.normal([1, 3, 16, 128], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [1, 3, 16, 128], dtype: .float32)
+            let values = MLXRandom.normal([1, 3, 32, 128], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [1, 3, 32], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [1, 3, 32], dtype: .float32)
+            let initialState = MLXRandom.normal(
+                [1, 32, 128, 128], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta,
+                initialState: initialState
+            ).output
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [1, 3, 32, 128],
+                    dtype: .float32,
+                    mean: -0.07715722918510437,
+                    minimum: -33.80734634399414,
+                    maximum: 35.589317321777344,
+                    absoluteSum: 67446.203125,
+                    positionChecksum: 29519.645833333332,
+                    sampleIndices: [0, 2457, 4915, 7372, 9830, 12287],
+                    samples: [
+                        6.1729230880737305, -1.2932864427566528, 4.83355188369751,
+                        9.386662483215332, 3.525575637817383, -4.2895827293396,
+                    ]),
+                tolerance: .float32)
+        }
+    }
+
+    @Test("gatedDeltaUpdate/kernel/state")
+    func test_gatedDeltaUpdate_kernel_state() throws {
+        // a shape the metal kernel supports
+        try withIntegrationState(seed: 81342) {
+            let queries = MLXRandom.normal([1, 3, 16, 128], dtype: .float32, loc: 0.0, scale: 1.0)
+            let keys = MLXRandom.uniform(low: -0.1, high: 0.1, [1, 3, 16, 128], dtype: .float32)
+            let values = MLXRandom.normal([1, 3, 32, 128], dtype: .float32, loc: 0.0, scale: 1.0)
+            let gamma = MLXRandom.uniform(low: 0.5, high: 1.0, [1, 3, 32], dtype: .float32)
+            let beta = MLXRandom.uniform(low: 0.1, high: 0.9, [1, 3, 32], dtype: .float32)
+            let initialState = MLXRandom.normal(
+                [1, 32, 128, 128], dtype: .float32, loc: 0.0, scale: 1.0)
+            let result = MLXFast.gatedDeltaUpdate(
+                queries: queries, keys: keys, values: values, gamma: gamma, beta: beta,
+                initialState: initialState
+            ).state
+            expectSummary(
+                result,
+                ArraySummary(
+                    shape: [1, 32, 128, 128],
+                    dtype: .float32,
+                    mean: -0.0014557009562849998,
+                    minimum: -3.1630849838256836,
+                    maximum: 2.9891040325164795,
+                    absoluteSum: 172419.046875,
+                    positionChecksum: 84804.59375,
+                    sampleIndices: [0, 104857, 209715, 314572, 419430, 524287],
+                    samples: [
+                        0.1790539026260376, -0.17156574130058289, -0.12500464916229248,
+                        -0.21596695482730865, 0.10746431350708008, -0.5037912130355835,
                     ]),
                 tolerance: .float32)
         }
