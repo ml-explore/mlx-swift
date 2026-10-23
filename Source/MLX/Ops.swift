@@ -1491,7 +1491,7 @@ public func gatherMM(
 @available(
     *, deprecated,
     renamed:
-        "gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)"
+        "gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:globalScale:sortedIndices:stream:)"
 )
 public func gatherQuantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
