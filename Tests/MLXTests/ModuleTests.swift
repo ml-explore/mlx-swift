@@ -444,6 +444,40 @@ class ModuleTests: XCTestCase {
         XCTAssertEqual(collect["interior2.children.1"], "Linear")
     }
 
+    func testUpdateParametersCallsChildOverride() throws {
+        // a child's update(parameters:verify:path:modulePath:) override runs
+        // when the update starts at an ancestor
+        class RecordingLinear: Linear {
+            var updateCount = 0
+
+            override func update(
+                parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
+                modulePath: [String] = []
+            ) throws -> Self {
+                updateCount += 1
+                return try super.update(
+                    parameters: parameters, verify: verify, path: path, modulePath: modulePath)
+            }
+        }
+
+        class Parent: Module {
+            let child = RecordingLinear(2, 2)
+            let list = [RecordingLinear(2, 2)]
+        }
+
+        let m = Parent()
+        let weight = MLXArray.ones([2, 2])
+        m.update(
+            parameters: .unflattened([
+                "child.weight": weight, "list.0.weight": weight,
+            ]))
+
+        XCTAssertEqual(m.child.updateCount, 1)
+        XCTAssertEqual(m.list[0].updateCount, 1)
+        assertEqual(m.child.weight, weight)
+        assertEqual(m.list[0].weight, weight)
+    }
+
     func testUpdateModuleSameType() throws {
         // set a single module with same type
         let m = newStructureModule()
