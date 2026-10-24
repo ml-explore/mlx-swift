@@ -117,8 +117,10 @@ enum DistributedHarness {
 
             // a group of one makes every assertion about sharding pass without
             // proving anything, so the size is part of the contract
-            print("[rank \(group.rank)] joined a group of size \(group.size)")
-            XCTAssertEqual(group.size, ranks, "joined a group of the wrong size")
+            let rank = try group.rank
+            let size = try group.size
+            print("[rank \(rank)] joined a group of size \(size)")
+            XCTAssertEqual(size, ranks, "joined a group of the wrong size")
 
             try withError {
                 try body(group)

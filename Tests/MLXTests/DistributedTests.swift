@@ -1,8 +1,10 @@
 // Copyright © 2026 Apple Inc.
 
+import Cmlx
 import Foundation
-import MLX
 import XCTest
+
+@testable import MLX
 
 /// Single process tests for ``MLXDistributed``.
 ///
@@ -56,8 +58,22 @@ class DistributedTests: XCTestCase {
 
     func testDefaultGroupIsSingleton() throws {
         let group = try MLXDistributed.initialize()
-        XCTAssertEqual(group.rank, 0)
-        XCTAssertEqual(group.size, 1)
+        XCTAssertEqual(try group.rank, 0)
+        XCTAssertEqual(try group.size, 1)
+
+        try MLXDistributed.clearBackends()
+        XCTAssertEqual(try group.size, 1)
+    }
+
+    func testEmptyGroupGettersReportErrors() {
+        let group = MLXDistributed.Group(mlx_distributed_group_new())
+
+        XCTAssertThrowsError(try group.rank) { error in
+            XCTAssertTrue(error is MLXError)
+        }
+        XCTAssertThrowsError(try group.size) { error in
+            XCTAssertTrue(error is MLXError)
+        }
     }
 
     /// A strict init throws when no backend can form a group.
@@ -92,6 +108,71 @@ class DistributedTests: XCTestCase {
     func testSplitSingletonGroupThrows() throws {
         let group = try MLXDistributed.initialize()
         XCTAssertThrowsError(try group.split(color: 0))
+    }
+
+    // MARK: - Metadata all-gather initialization
+
+    func testMetadataAllGatherBridgeForwardsBorrowedBuffers() {
+        let expected: [UInt8] = [0, 255, 127, 128]
+        let bridge = makeMetadataAllGatherBridge { rank, size, source, destination in
+            XCTAssertEqual(rank, 1)
+            XCTAssertEqual(size, 2)
+            XCTAssertEqual(Array(source), [0, 255])
+            XCTAssertEqual(destination.count, expected.count)
+            guard destination.count == expected.count else { return }
+            destination.copyBytes(from: expected)
+        }
+        defer { bridge.dtor(bridge.payload) }
+
+        let source: [CChar] = [0, -1]
+        var destination = [CChar](repeating: -2, count: 4)
+        let status = source.withUnsafeBufferPointer { source in
+            destination.withUnsafeMutableBufferPointer { destination in
+                bridge.callback(
+                    1, 2, source.baseAddress, destination.baseAddress, source.count, bridge.payload)
+            }
+        }
+
+        XCTAssertEqual(status, 0)
+        XCTAssertEqual(destination.map { UInt8(bitPattern: $0) }, expected)
+    }
+
+    func testMetadataAllGatherBridgeConvertsThrownErrorToFailureStatus() {
+        let bridge = makeMetadataAllGatherBridge { _, _, _, destination in
+            destination[0] = 42
+            throw MetadataAllGatherTestError.callbackFailure
+        }
+        defer { bridge.dtor(bridge.payload) }
+
+        let source: [CChar] = [42]
+        var destination: [CChar] = [-2, -2]
+        let status = source.withUnsafeBufferPointer { source in
+            destination.withUnsafeMutableBufferPointer { destination in
+                bridge.callback(
+                    0, 2, source.baseAddress, destination.baseAddress, source.count, bridge.payload)
+            }
+        }
+
+        XCTAssertNotEqual(status, 0)
+        XCTAssertEqual(destination, [42, -2])
+    }
+
+    func testMetadataAllGatherFailureReleasesCapture() {
+        weak var captured: MetadataAllGatherCapture?
+        do {
+            let capture = MetadataAllGatherCapture()
+            captured = capture
+            XCTAssertThrowsError(
+                try MLXDistributed.initialize(backend: .ring) { [capture] _, _, _, _ in
+                    withExtendedLifetime(capture) {
+                        XCTFail("Callback should not run when initialization fails")
+                    }
+                }
+            ) { error in
+                XCTAssertTrue(error is MLXError)
+            }
+        }
+        XCTAssertNil(captured)
     }
 
     // MARK: - Collectives
@@ -132,3 +213,9 @@ class DistributedTests: XCTestCase {
             })
     }
 }
+
+private enum MetadataAllGatherTestError: Error {
+    case callbackFailure
+}
+
+private final class MetadataAllGatherCapture: Sendable {}
