@@ -7,8 +7,9 @@ import Foundation
 ///
 /// This mirrors `mlx.core.distributed` in the Python API.
 ///
-/// Forming a group can fail as soon as it is attempted, so
-/// ``initialize(backend:strict:)`` and ``Group/split(color:key:)`` throw.
+/// Forming a group, splitting it, and reading its rank or size can fail, so
+/// ``initialize(backend:strict:)``, ``Group/split(color:key:)``, ``Group/rank``,
+/// and ``Group/size`` throw.
 ///
 /// The collectives and the point to point operations are lazy like every
 /// other MLX operation.  Invalid arguments -- e.g. sending in a group of size
@@ -51,6 +52,23 @@ public enum MLXDistributed {
         case jaccl
     }
 
+    /// A synchronous byte-level all-gather for JACCL initialization metadata.
+    ///
+    /// `source` contains this process's contribution. Fill `destination`, whose
+    /// byte count is `size * source.count`, with all contributions in rank order.
+    /// The contribution from rank `r` starts at byte `r * source.count`.
+    ///
+    /// Both buffers are borrowed for the duration of the call. Do not retain
+    /// their pointers or return before the destination is filled. The callback
+    /// may run outside the main actor; captured transport state must be safe to
+    /// use from the calling thread. A thrown error fails initialization and is
+    /// reported as an MLX error.
+    public typealias MetadataAllGather =
+        @Sendable (
+            _ rank: Int, _ size: Int, _ source: UnsafeRawBufferPointer,
+            _ destination: UnsafeMutableRawBufferPointer
+        ) throws -> Void
+
     /// Check if a communication backend is available.
     ///
     /// - Parameter backend: the backend to check for, defaulting to ``Backend/any``
@@ -75,13 +93,29 @@ public enum MLXDistributed {
         }
 
         /// The rank of this process in the group.
+        ///
+        /// Throws if the underlying group cannot provide its rank.
         public var rank: Int {
-            Int(mlx_distributed_group_rank(ctx))
+            get throws {
+                try withError {
+                    var result: Int32 = 0
+                    _ = mlx_distributed_group_get_rank(&result, ctx)
+                    return Int(result)
+                }
+            }
         }
 
         /// The number of processes in the group.
+        ///
+        /// Throws if the underlying group cannot provide its size.
         public var size: Int {
-            Int(mlx_distributed_group_size(ctx))
+            get throws {
+                try withError {
+                    var result: Int32 = 0
+                    _ = mlx_distributed_group_get_size(&result, ctx)
+                    return Int(result)
+                }
+            }
         }
 
         /// Split the group into subgroups based on the provided color.
@@ -124,12 +158,12 @@ public enum MLXDistributed {
     /// backend is configured but cannot form its group, e.g. the ring backend
     /// with a malformed `MLX_HOSTFILE`.
     ///
-    /// MLX caches the group for each backend for the life of the process,
+    /// MLX caches the group for each backend until ``clearBackends()`` is called,
     /// including the group of size one that a non-strict call falls back to,
     /// and a later strict call for that backend returns the cached group
     /// instead of throwing.  A non-strict ``Backend/any`` that finds no backend
-    /// caches its fallback under ``Backend/jaccl``.  Initialize strictly
-    /// before anything else initializes the backend.
+    /// caches its fallback under ``Backend/jaccl``. Initialize strictly before
+    /// anything else initializes the backend, or clear the cache before retrying.
     ///
     /// - Parameters:
     ///   - backend: the backend to use, defaulting to ``Backend/any``
@@ -148,6 +182,56 @@ public enum MLXDistributed {
             throw error
         }
         return Group(result)
+    }
+
+    /// Initialize JACCL with a custom all-gather for initialization metadata.
+    ///
+    /// The callback runs synchronously with borrowed buffers, as described by
+    /// ``MetadataAllGather``. The backend validates whether it supports this
+    /// initialization method.
+    ///
+    /// If the backend already has a cached group, that group is returned without
+    /// calling `allGather`, and the new callback is released before this function
+    /// returns. Call ``clearBackends()`` first to initialize with a new callback.
+    /// Otherwise, the callback may be retained by the cache and live groups.
+    /// Clearing the cache does not release callbacks still held by live groups.
+    /// The callback is also released if initialization fails.
+    ///
+    /// - Parameters:
+    ///   - backend: the backend to use, defaulting to ``Backend/jaccl``
+    ///   - strict: if `true`, throw rather than fall back to a group of size one
+    ///     when no backend can be initialized
+    ///   - allGather: the synchronous metadata all-gather callback
+    /// - Returns: the global group
+    @discardableResult
+    public static func initialize(
+        backend: Backend = .jaccl, strict: Bool = false,
+        allGather: @escaping MetadataAllGather
+    ) throws -> Group {
+        var result = mlx_distributed_group_new()
+        do {
+            try withError {
+                let bridge = makeMetadataAllGatherBridge(allGather)
+                // C takes ownership on entry, including failure and cache hits.
+                _ = mlx_distributed_init_with_all_gather(
+                    &result, strict, backend.rawValue, bridge.callback,
+                    bridge.payload, bridge.dtor)
+            }
+        } catch {
+            mlx_distributed_group_free(result)
+            throw error
+        }
+        return Group(result)
+    }
+
+    /// Clear the distributed backend cache.
+    ///
+    /// Existing groups remain valid. Callbacks retained by those groups remain
+    /// alive until the groups release them.
+    public static func clearBackends() throws {
+        try withError {
+            _ = mlx_distributed_clear_backends()
+        }
     }
 
     // MARK: - Collectives
@@ -288,6 +372,58 @@ public enum MLXDistributed {
         var result = mlx_array_new()
         mlx_distributed_recv_like(&result, x.ctx, Int32(src), group.groupCtx, stream.ctx)
         return MLXArray(result)
+    }
+}
+
+// The caller must transfer the payload to C or release it with the destructor.
+func makeMetadataAllGatherBridge(_ allGather: @escaping MLXDistributed.MetadataAllGather) -> (
+    callback: mlx_distributed_all_gather_fn, payload: UnsafeMutableRawPointer,
+    dtor: @convention(c) (UnsafeMutableRawPointer?) -> Void
+) {
+    let payload = Unmanaged.passRetained(MetadataAllGatherCaptureState(allGather)).toOpaque()
+    return (metadataAllGatherTrampoline, payload, freeMetadataAllGather)
+}
+
+private final class MetadataAllGatherCaptureState: Sendable {
+    let allGather: MLXDistributed.MetadataAllGather
+
+    init(_ allGather: @escaping MLXDistributed.MetadataAllGather) {
+        self.allGather = allGather
+    }
+}
+
+private func freeMetadataAllGather(_ payload: UnsafeMutableRawPointer?) {
+    if let payload {
+        Unmanaged<MetadataAllGatherCaptureState>.fromOpaque(payload).release()
+    }
+}
+
+private func metadataAllGatherTrampoline(
+    rank: Int32, size: Int32, source: UnsafePointer<CChar>?,
+    destination: UnsafeMutablePointer<CChar>?, byteCount: Int,
+    payload: UnsafeMutableRawPointer?
+) -> Int32 {
+    guard let payload, size > 0, rank >= 0, rank < size, byteCount >= 0 else {
+        return 1
+    }
+    let (destinationCount, overflow) = Int(size).multipliedReportingOverflow(by: byteCount)
+    guard !overflow,
+        byteCount == 0 || source != nil,
+        destinationCount == 0 || destination != nil
+    else {
+        return 1
+    }
+
+    let state = Unmanaged<MetadataAllGatherCaptureState>.fromOpaque(payload).takeUnretainedValue()
+    do {
+        try state.allGather(
+            Int(rank), Int(size),
+            UnsafeRawBufferPointer(start: source.map { UnsafeRawPointer($0) }, count: byteCount),
+            UnsafeMutableRawBufferPointer(
+                start: destination.map { UnsafeMutableRawPointer($0) }, count: destinationCount))
+        return 0
+    } catch {
+        return 1
     }
 }
 
