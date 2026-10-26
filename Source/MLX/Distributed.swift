@@ -76,12 +76,16 @@ public enum MLXDistributed {
 
         /// The rank of this process in the group.
         public var rank: Int {
-            Int(mlx_distributed_group_rank(ctx))
+            var result: Int32 = 0
+            mlx_distributed_group_get_rank(&result, ctx)
+            return Int(result)
         }
 
         /// The number of processes in the group.
         public var size: Int {
-            Int(mlx_distributed_group_size(ctx))
+            var result: Int32 = 0
+            mlx_distributed_group_get_size(&result, ctx)
+            return Int(result)
         }
 
         /// Split the group into subgroups based on the provided color.
