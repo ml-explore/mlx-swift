@@ -215,7 +215,7 @@ Note: the `-` and `/` operators are not able to be linked here.
 - ``blockMaskedMM(_:_:blockSize:maskOut:maskLHS:maskRHS:stream:)``
 - ``addMM(_:_:_:alpha:beta:stream:)``
 - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
-- ``gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)``
+- ``gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:globalScale:sortedIndices:stream:)``
 - ``quantizedQuantizedMM(_:_:scales:groupSize:bits:mode:globalScaleX:globalScaleW:stream:)``
 - ``segmentedMM(_:_:segments:stream:)``
 - ``inner(_:_:stream:)``

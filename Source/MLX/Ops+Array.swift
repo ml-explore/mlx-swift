@@ -1928,6 +1928,7 @@ public func take(_ array: MLXArray, _ indices: MLXArray, stream: StreamOrDevice 
 ///
 /// ### See Also
 /// - <doc:shapes>
+/// - ``matrixTransposed(_:stream:)``
 /// - ``transposed(_:axis:stream:)``
 /// - ``transposed(_:stream:)``
 /// - ``MLXArray/transposed(axes:stream:)``
@@ -1941,6 +1942,19 @@ public func transposed(
     return MLXArray(result)
 }
 
+/// Transpose the dimensions of the array.
+///
+/// - Parameters:
+///     - array: input array
+///     - axes: Specifies the source axis for each axis in the new array
+///     - stream: stream or device to evaluate on
+///
+/// ### See Also
+/// - <doc:shapes>
+/// - ``matrixTransposed(_:stream:)``
+/// - ``transposed(_:axis:stream:)``
+/// - ``transposed(_:stream:)``
+/// - ``MLXArray/transposed(axes:stream:)``
 public func transposed(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice = .default)
     -> MLXArray
 {
@@ -1955,6 +1969,7 @@ public func transposed(_ array: MLXArray, _ axes: Int..., stream: StreamOrDevice
 ///
 /// ### See Also
 /// - <doc:shapes>
+/// - ``matrixTransposed(_:stream:)``
 /// - ``transposed(_:axes:stream:)``
 /// - ``transposed(_:stream:)``
 /// - ``MLXArray/transposed(axes:stream:)``
@@ -1971,6 +1986,7 @@ public func transposed(_ array: MLXArray, axis: Int, stream: StreamOrDevice = .d
 ///
 /// ### See Also
 /// - <doc:shapes>
+/// - ``matrixTransposed(_:stream:)``
 /// - ``transposed(_:axes:stream:)``
 /// - ``transposed(_:axis:stream:)``
 /// - ``MLXArray/transposed(axes:stream:)``

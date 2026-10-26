@@ -35,14 +35,14 @@ pair (`MAINTENANCE.md` step 10).
 | `Elementwise` | unary math, predicates, dtype conversions, complex parts |
 | `Binary` | binary ops, operators, comparisons, logical/bitwise, matmul family |
 | `Reduction` | reductions, cumulative ops, argMin/argMax, softmax |
-| `Shape` | shape/structure ops, sort/partition, take/put, trace, hadamard |
+| `Shape` | shape/structure ops, sort/partition, take/put, trace, hadamard, `matrixTransposed`, `uniqued` |
 | `Indexing` | subscript forms (ranges, `.ellipsis`, `.newAxis`, strides, arrays) |
 | `Factory` | `arange`, `linspace`, `zeros`/`ones`/`full`, `eye`, windows |
 | `Convolution` | `convolve`, `conv1d/2d/3d`, `convTransposed*`, `convGeneral` |
-| `Quantization` | `quantized`/`dequantized`/`quantizedMM` per bits, gather/masked MM, fp8 |
+| `Quantization` | `quantized`/`dequantized`/`quantizedMM` per bits, gather/masked MM, fp8, nvfp4 `globalScale` |
 | `FFT` | the whole `mx.fft` surface, including complex results |
 | `Linalg` | single-value linalg (`inv`, `cholesky`, `solve`, `det`, ...) |
-| `Fast` | `rmsNorm`, `layerNorm`, `RoPE`, `scaledDotProductAttention` |
+| `Fast` | `rmsNorm`, `layerNorm`, `RoPE`, `scaledDotProductAttention`, `gatedDeltaUpdate` |
 | `Random` | `gumbel`, `laplace`, `truncatedNormal`, `categorical`, `permutation`, ... |
 | `Activations` | the `MLXNN` activation free functions |
 | `Losses` | the `MLXNN` loss functions, per `reduction` |
@@ -381,6 +381,11 @@ and exits before generating.
   bugs -- `MLX.nanToNum` defaulted `posInf`/`negInf` to `0` where python uses the
   dtype max/min (contradicting its own doc comment), and `MLX.tensordot`
   defaulted `axes` to `1` where python/numpy use `2`.  Both are fixed.
+- `Memory.bufferSize` / `mx.get_array_buffer_size` cannot be compared against
+  python: it reports the allocator length of each buffer, and the buffer cache
+  reuses any cached buffer smaller than `min(2 * size, size + 2 * page)`, so the
+  value depends on the allocation history of the process.  It has property tests
+  in `Tests/MLXTests/MemoryTests.swift` instead.
 - `MLXRandom.laplace` requires `dtype:` where python defaults it, so the case
   spells it out.
 - `linspace` used to take its dtype from the literal type (`Int` -> `int64`,

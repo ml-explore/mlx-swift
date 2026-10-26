@@ -1491,7 +1491,7 @@ public func gatherMM(
 @available(
     *, deprecated,
     renamed:
-        "gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:sortedIndices:stream:)"
+        "gatherQuantizedMM(_:_:scales:biases:lhsIndices:rhsIndices:transpose:groupSize:bits:mode:globalScale:sortedIndices:stream:)"
 )
 public func gatherQuantizedMatmul(
     _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
@@ -1528,6 +1528,8 @@ public func gatherQuantizedMatmul(
 ///   - groupSize: The size of the group in `w` that shares a scale and bias. Default is `64`
 ///   - bits: The number of bits occupied by each element in `w`. Default is `4`
 ///   - mode: The quantization mode. Default is `.affine`
+///   - globalScale: The per-input float32 scale used for
+///     `nvfp4` quantization of `w`. Only supported on the GPU.
 ///   - sortedIndices: Whether the indices are sorted. Default is `false`
 ///   - stream: Stream or device to evaluate on
 ///
@@ -1535,10 +1537,11 @@ public func gatherQuantizedMatmul(
 /// - <doc:arithmetic>
 /// - ``quantizedMM(_:_:scales:biases:transpose:groupSize:bits:mode:stream:)``
 public func gatherQuantizedMM(
-    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray?,
+    _ x: MLXArray, _ w: MLXArray, scales: MLXArray, biases: MLXArray? = nil,
     lhsIndices: MLXArray? = nil, rhsIndices: MLXArray? = nil,
     transpose: Bool = true, groupSize: Int? = nil, bits: Int? = nil,
     mode: QuantizationMode = .affine,
+    globalScale: MLXArray? = nil,
     sortedIndices: Bool = false,
     stream: StreamOrDevice = .default
 ) -> MLXArray {
@@ -1551,7 +1554,10 @@ public func gatherQuantizedMM(
         &result,
         x.ctx, w.ctx, scales.ctx, (biases ?? .mlxNone).ctx, (lhsIndices ?? .mlxNone).ctx,
         (rhsIndices ?? .mlxNone).ctx, transpose,
-        gs, bits, mode.rawValue, sortedIndices,
+        gs, bits,
+        mode.rawValue,
+        (globalScale ?? .mlxNone).ctx,
+        sortedIndices,
         stream.ctx)
 
     return MLXArray(result)
@@ -2041,6 +2047,22 @@ public func meshGrid(
     defer { mlx_vector_array_free(vec) }
 
     return mlx_vector_array_values(vec)
+}
+
+/// Transpose the last two dimensions of the array.
+///
+/// ### See Also
+/// - ``transposed(_:stream:)``
+///
+/// - Parameters:
+///   - array: array to transpose
+///   - stream: stream or device to evaluate on
+public func matrixTransposed(
+    _ array: MLXArray, stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_matrix_transpose(&result, array.ctx, stream.ctx)
+    return MLXArray(result)
 }
 
 /// Element-wise maximum.
@@ -2997,6 +3019,163 @@ public func unstacked(
     defer { mlx_vector_array_free(result) }
     mlx_unstack_axis(&result, array.ctx, axis.int32, stream.ctx)
     return mlx_vector_array_values(result)
+}
+
+/// Returns the sorted unique elements of the flattened array.
+///
+/// The shape of the output does not depend on the values in `array`, so
+/// `array` is not evaluated. Unlike NumPy, the size is never inferred from
+/// the values and must be provided.
+///
+/// Entries past the last unique element hold `fillValue`.
+/// A truncated output keeps the smallest `size` unique elements.
+///
+/// This op builds on ``sorted(_:stream:)``, so a `Bool` input needs the CPU
+/// stream.
+///
+/// ### See Also
+/// - ``uniqued(_:size:fillValue:returning:stream:)``
+///
+/// - Parameters:
+///   - array: input array
+///   - size: The size of the output. If the size is smaller than
+///     the number of unique elements of `array`, the output is truncated.
+///     If it is larger, the output is padded with `fillValue`.
+///   - fillValue: optional value to fill empty positions in the result.  If
+///     not specified this defaults to the first of the sorted unique elements.
+///   - stream: stream or device to evaluate on
+/// - Returns: sorted unique elements
+public func uniqued(
+    _ array: MLXArray,
+    size: Int,
+    fillValue: MLXArray? = nil,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var vector = mlx_vector_array_new()
+    defer { mlx_vector_array_free(vector) }
+
+    mlx_unique(
+        &vector,
+        array.ctx, size.int32,
+        false, false, false,
+        (fillValue ?? .mlxNone).ctx,
+        stream.ctx)
+
+    let arrays = mlx_vector_array_values(vector)
+    return arrays[0]
+}
+
+/// Options for `uniqued()`.
+///
+/// See ``uniqued(_:size:fillValue:returning:stream:)``.
+public struct UniqueOptions: OptionSet, Sendable {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+
+    /// Requests the index in the flattened input of the first
+    /// occurence of each unique element.
+    public static let index = UniqueOptions(rawValue: 1 << 0)
+
+    /// Requests the indices of the unique array that rebuild
+    /// the input to `uniqued()`.
+    public static let inverse = UniqueOptions(rawValue: 1 << 1)
+
+    /// Requests the number of times each unique element occurs in the
+    /// input.
+    public static let counts = UniqueOptions(rawValue: 1 << 2)
+}
+
+/// Return value for `uniqued()`.
+///
+/// See ``uniqued(_:size:fillValue:returning:stream:)``.
+public struct UniqueResult {
+
+    /// Array of unique values of the given size.
+    public var values: MLXArray
+    public var index: MLXArray?
+    public var inverse: MLXArray?
+    public var counts: MLXArray?
+
+    public init(
+        values: MLXArray,
+        index: MLXArray? = nil, inverse: MLXArray? = nil, counts: MLXArray? = nil
+    ) {
+        self.values = values
+        self.index = index
+        self.inverse = inverse
+        self.counts = counts
+    }
+}
+
+/// Returns the sorted unique elements of the flattened array.
+///
+/// The shape of the output does not depend on the values in `array`, so
+/// `array` is not evaluated. Unlike NumPy, the size is never inferred from
+/// the values and must be provided.
+///
+/// Entries past the last unique element hold `fillValue` and their
+/// count is `0`, so `sum(result.counts > 0)` gives the number of unique
+/// elements as long as the output is not truncated.
+///
+/// A truncated output keeps the smallest `size` unique elements, and
+/// `result.index`, `result.inverse` and `result.counts`
+/// then stop describing all of `array`,
+/// and `result.inverse` and `result.counts` stop agreeing with each other:
+/// the counts of the dropped elements are gone, while their
+/// indices in `result.inverse` are clamped to the last entry.
+///
+/// This op builds on ``sorted(_:stream:)``, so a `Bool` input needs the CPU
+/// stream.
+///
+/// ### See Also
+/// - ``uniqued(_:size:fillValue:stream:)``
+///
+/// - Parameters:
+///   - array: input array
+///   - size: The size of the output. If the size is smaller than
+///     the number of unique elements of `array`, the output is truncated.
+///     If it is larger, the output is padded with `fillValue`.
+///   - fillValue: optional value to fill empty positions in the result.  If
+///     not specified this defaults to the first of the sorted unique elements.
+///   - returning: Additional values to return
+///   - stream: stream or device to evaluate on
+/// - Returns: sorted unique elements
+public func uniqued(
+    _ array: MLXArray,
+    size: Int,
+    fillValue: MLXArray? = nil,
+    returning: UniqueOptions,
+    stream: StreamOrDevice = .default
+) -> UniqueResult {
+    var vector = mlx_vector_array_new()
+    defer { mlx_vector_array_free(vector) }
+
+    mlx_unique(
+        &vector,
+        array.ctx, size.int32,
+        returning.contains(.index),
+        returning.contains(.inverse),
+        returning.contains(.counts),
+        (fillValue ?? .mlxNone).ctx,
+        stream.ctx)
+
+    let arrays = mlx_vector_array_values(vector)
+    var result = UniqueResult(values: arrays[0])
+
+    var readIndex = 1
+    if returning.contains(.index) {
+        result.index = arrays[readIndex]
+        readIndex += 1
+    }
+    if returning.contains(.inverse) {
+        result.inverse = arrays[readIndex]
+        readIndex += 1
+    }
+    if returning.contains(.counts) {
+        result.counts = arrays[readIndex]
+        readIndex += 1
+    }
+    return result
 }
 
 /// Stop gradients from being computed.
