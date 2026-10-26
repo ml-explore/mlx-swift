@@ -57,7 +57,7 @@ set(MLX_C_BUILD_EXAMPLES OFF)
 FetchContent_Declare(
   mlx-c
   GIT_REPOSITORY "https://github.com/ml-explore/mlx-c.git"
-  GIT_TAG "57731b00e8bed710e0750e7356da9f18f8eb3e20")
+  GIT_TAG "19d3c9c180dddf51be441b55e7f454861899bc93")
 FetchContent_MakeAvailable(mlx-c)
 
 # swift-numerics
