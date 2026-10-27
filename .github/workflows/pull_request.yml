@@ -81,12 +81,21 @@ jobs:
         with:
           submodules: recursive
 
+      - name: List XCodes
+        shell: bash
+        run: |
+          ls -l /Applications/Xcode-latest.app
+          ls /Applications | grep -i xcode
+          swift --version
+
       - name: Verify MetalToolchain installed
         shell: bash
         run: xcodebuild -showComponent MetalToolchain
 
       - name: Verify SwiftPM manifest CUDA containment
-        run: scripts/verify-spm-manifest.py
+        shell: sh
+        run: |
+          scripts/verify-spm-manifest.py
 
       - name: Setup cmake
         shell: sh
@@ -150,6 +159,11 @@ jobs:
       - name: Build (cmake)
         shell: sh
         run: |
+          # Without an explicit SDK, /usr/bin/cc (xcrun) may pick the
+          # CommandLineTools SDK, which can be newer than the active Xcode's
+          # compiler/linker understands.  Use the SDK that ships with Xcode.
+          export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          echo "SDKROOT=$SDKROOT"
           rm -rf build
           mkdir build
           cd build
