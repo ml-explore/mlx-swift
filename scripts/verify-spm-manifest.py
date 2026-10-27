@@ -10,14 +10,18 @@ def require(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 
-manifest = json.loads(
-    subprocess.run(
-        ["swift", "package", "dump-package"],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout
+# Capture only stdout (the JSON); let stderr flow to the console so that
+# SwiftPM errors are visible in CI logs.
+result = subprocess.run(
+    ["swift", "package", "dump-package"],
+    stdout=subprocess.PIPE,
+    text=True,
 )
+if result.returncode != 0:
+    raise SystemExit(
+        f"`swift package dump-package` failed with exit code {result.returncode}"
+    )
+manifest = json.loads(result.stdout)
 
 targets = {target["name"]: target for target in manifest["targets"]}
 dependencies = {
