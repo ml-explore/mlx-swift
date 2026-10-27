@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import os
 import platform
 import subprocess
 
@@ -10,12 +11,20 @@ def require(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 
+# On macOS, /usr/bin/python3 is an xcrun shim that injects SDKROOT into the
+# environment (possibly pointing at the CommandLineTools SDK).  That SDK may
+# not match the active Xcode's swift compiler, so drop it and let swift pick
+# the SDK matching its own toolchain -- same as running from the shell.
+env = dict(os.environ)
+env.pop("SDKROOT", None)
+
 # Capture only stdout (the JSON); let stderr flow to the console so that
 # SwiftPM errors are visible in CI logs.
 result = subprocess.run(
     ["swift", "package", "dump-package"],
     stdout=subprocess.PIPE,
     text=True,
+    env=env,
 )
 if result.returncode != 0:
     raise SystemExit(

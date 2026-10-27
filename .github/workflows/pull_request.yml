@@ -88,6 +88,7 @@ jobs:
       - name: Verify SwiftPM manifest CUDA containment
         shell: sh
         run: |
+          ls /Applications
           swift --version
           swift package dump-package
           scripts/verify-spm-manifest.py
