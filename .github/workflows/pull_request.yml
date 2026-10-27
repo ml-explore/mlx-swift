@@ -86,6 +86,7 @@ jobs:
         run: xcodebuild -showComponent MetalToolchain
 
       - name: Verify SwiftPM manifest CUDA containment
+        shell: sh
         run: |
           swift --version
 		  swift package dump-package
