@@ -159,6 +159,11 @@ jobs:
       - name: Build (cmake)
         shell: sh
         run: |
+          # Without an explicit SDK, /usr/bin/cc (xcrun) may pick the
+          # CommandLineTools SDK, which can be newer than the active Xcode's
+          # compiler/linker understands.  Use the SDK that ships with Xcode.
+          export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          echo "SDKROOT=$SDKROOT"
           rm -rf build
           mkdir build
           cd build
