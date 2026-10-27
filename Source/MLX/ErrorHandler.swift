@@ -269,8 +269,8 @@ public final class ErrorBox: @unchecked Sendable {
 
     /// Throw the ``firstError`` if set, otherwise do nothing.
     public func check() throws {
-        if let _firstError {
-            throw _firstError
+        if let firstError {
+            throw firstError
         }
     }
 }
