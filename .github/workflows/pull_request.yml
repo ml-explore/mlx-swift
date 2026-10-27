@@ -89,7 +89,7 @@ jobs:
         shell: sh
         run: |
           swift --version
-		  swift package dump-package
+          swift package dump-package
           scripts/verify-spm-manifest.py
 
       - name: Setup cmake
