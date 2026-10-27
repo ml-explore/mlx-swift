@@ -86,7 +86,10 @@ jobs:
         run: xcodebuild -showComponent MetalToolchain
 
       - name: Verify SwiftPM manifest CUDA containment
-        run: scripts/verify-spm-manifest.py
+        run: |
+          swift --version
+		  swift package dump-package
+          scripts/verify-spm-manifest.py
 
       - name: Setup cmake
         shell: sh
