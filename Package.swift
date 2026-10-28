@@ -250,6 +250,7 @@ let noCudaCmlxExcludes = [
         .headerSearchPath("mlx/mlx/distributed/jaccl/lib"),
 
         .define("MLX_USE_ACCELERATE"),
+        .define("MLX_USE_JACCL", .when(traits: ["JACCL"])),
         .define("ACCELERATE_NEW_LAPACK"),
         .define("_METAL_"),
         .define("SWIFTPM_BUNDLE", to: "\"mlx-swift_Cmlx\""),
@@ -319,7 +320,8 @@ let cmlx = Target.target(
         "mlx/mlx/backend/metal/nojit_kernels.cpp",
 
         // distributed backends: enable ring, disable MPI + NCCL.  JACCL is
-        // built through mlx-conditional on macOS, so its sources are excluded here.
+        // built through mlx-conditional on macOS when the JACCL trait is
+        // enabled, so its sources are excluded here.
         "mlx/mlx/distributed/mpi/mpi.cpp",
         "mlx/mlx/distributed/ring/no_ring.cpp",
         "mlx/mlx/distributed/nccl/nccl.cpp",
@@ -362,6 +364,14 @@ let package = Package(
         .library(name: "MLXFFT", targets: ["MLXFFT"]),
         .library(name: "MLXLinalg", targets: ["MLXLinalg"]),
         .library(name: "MLXFast", targets: ["MLXFast"]),
+    ],
+    traits: [
+        .trait(
+            name: "JACCL",
+            description:
+                "Builds the JACCL distributed backend (RDMA over Thunderbolt 5) on macOS. Disable it to leave the backend out of an app that does not run distributed MLX."
+        ),
+        .default(enabledTraits: ["JACCL"]),
     ],
     dependencies: [
         // for Complex type

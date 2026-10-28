@@ -4,9 +4,10 @@
 
 // JACCL (RDMA over Thunderbolt 5) needs <infiniband/verbs.h>, which ships with
 // the macOS 26.2 SDK and later. Build the backend and its library when the
-// header is present, and the stub otherwise. librdma is loaded at runtime, so
-// on an older macOS MLXDistributed.isAvailable(.jaccl) reports false.
-#if TARGET_OS_OSX && __has_include(<infiniband/verbs.h>)
+// JACCL package trait is enabled and the header is present, and the stub
+// otherwise. librdma is loaded at runtime, so on an older macOS
+// MLXDistributed.isAvailable(.jaccl) reports false.
+#if TARGET_OS_OSX && defined(MLX_USE_JACCL) && __has_include(<infiniband/verbs.h>)
 #include "../mlx/mlx/distributed/jaccl/jaccl.cpp"
 #include "../mlx/mlx/distributed/jaccl/lib/jaccl/jaccl.cpp"
 #include "../mlx/mlx/distributed/jaccl/lib/jaccl/mesh.cpp"
