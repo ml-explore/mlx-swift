@@ -381,7 +381,7 @@ private final class ReleasedCompileState: @unchecked Sendable {
             var output = mlx_vector_array_new()
             defer { mlx_vector_array_free(output) }
             mlx_closure_apply(&output, replacement, input)
-            return mlx_vector_array_values(output)[0]
+            return mlx_vector_array_values(output, count: 1)[0]
         }
         return result.item(Float.self)
     }

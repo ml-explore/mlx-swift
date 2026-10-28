@@ -6,6 +6,21 @@ import MLXNN
 import XCTest
 
 class QuantizationTests: XCTestCase {
+
+    func testQuantizationError() {
+        let a = MLXRandom.uniform(low: 0, high: 1, [16, 16])
+        do {
+            try withError {
+                let _ = quantized(a, bits: 1)
+                // note: at this point the return values from quantized
+                // are mlxNone and unsuable
+            }
+            XCTFail("should have thrown an error")
+        } catch {
+            // expected
+        }
+    }
+
     func testQuantizedLinearAppliesNVFP4GlobalScaleOnMetal() {
         let (input, quantizedWeight, scales, biases, globalScale, bias, expected) =
             Device.withDefaultDevice(.cpu) {

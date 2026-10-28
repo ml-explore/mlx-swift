@@ -10,6 +10,8 @@ func new_mlx_vector_array(_ arrays: some Collection<MLXArray>) -> mlx_vector_arr
     }
 }
 
+/// Convert `mlx_vector_array` into a Swift array of `MLXArray`.
+/// - Parameter vector_array: input vector
 func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
     (0 ..< mlx_vector_array_size(vector_array))
         .map { index in
@@ -17,6 +19,35 @@ func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
             var ctx = mlx_array_new()
             mlx_vector_array_get(&ctx, vector_array, index)
             return MLXArray(ctx)
+        }
+}
+
+/// Convert `mlx_vector_array` into a Swift array of `MLXArray` and ensure
+/// that there are at least `count` items in the result.
+///
+/// This variant is useful for callers that want to assume there are at
+/// least `count` values in the result, even though an error condition might
+/// result in fewer.
+///
+/// Note: the extra values supplied after the actual length of the vector
+/// are `mlxNone` and are not typically usable.
+///
+/// - Parameters:
+///   - vector_array: input vector
+///   - count: minimum number of values in the result
+func mlx_vector_array_values(
+    _ vector_array: mlx_vector_array, count: Int
+) -> [MLXArray] {
+    (0 ..< max(mlx_vector_array_size(vector_array), count))
+        .map { index in
+            if index < mlx_vector_array_size(vector_array) {
+                // ctx is a +1 object, the array takes ownership
+                var ctx = mlx_array_new()
+                mlx_vector_array_get(&ctx, vector_array, index)
+                return MLXArray(ctx)
+            } else {
+                return MLXArray.mlxNone
+            }
         }
 }
 

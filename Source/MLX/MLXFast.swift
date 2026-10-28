@@ -36,7 +36,7 @@ public enum MLXFast {
             (mask ?? .mlxNone).ctx,
             stream.ctx)
 
-        let tuple = mlx_vector_array_values(result)
+        let tuple = mlx_vector_array_values(result, count: 2)
         return (output: tuple[0], state: tuple[1])
     }
 
