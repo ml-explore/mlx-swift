@@ -49,6 +49,8 @@ public enum MLXDistributed {
         case ring
         case mpi
         case nccl
+        /// RDMA over Thunderbolt 5, on macOS only.  Built when the `JACCL`
+        /// package trait is enabled, which is the default.
         case jaccl
     }
 

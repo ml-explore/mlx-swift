@@ -32,6 +32,22 @@ dependencies: [.product(name: "MLX", package: "mlx-swift"),
 > Note that SwiftPM cannot build the metal shaders so the ultimate build has to be done via
 Xcode or `xcodebuild`.
 
+## Package Traits
+
+`JACCL` builds the JACCL distributed backend (RDMA over Thunderbolt 5) on
+macOS. It is enabled by default. iOS, tvOS and visionOS never build it.
+
+An app that does not run distributed MLX can leave the backend out of its
+binary by disabling the default traits:
+
+```swift
+.package(url: "https://github.com/ml-explore/mlx-swift", from: "0.33.0", traits: [])
+```
+
+SwiftPM enables the union of the traits that all dependents request. If another
+package in the graph depends on `mlx-swift` with the default traits, `JACCL`
+stays enabled.
+
 ## Command Line Tools
 
 See <doc:troubleshooting> (Running From Command Line) for information about running command line tools from the shell.
