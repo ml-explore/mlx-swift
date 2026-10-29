@@ -1,7 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
-import XCTest
+import Testing
 
 @testable import MLX
 
@@ -20,93 +20,91 @@ extension MLXArrayIndexOperation: Equatable {
     }
 }
 
-class MLXArrayIndexingTests: XCTestCase {
-
-    override class func setUp() {
-    }
+@Suite
+struct MLXArrayIndexingTests {
 
     // MARK: - Subscript (get)
 
-    func testArraySubscriptInt() {
+    @Test func arraySubscriptInt() {
         let a = MLXArray(0 ..< 512, [8, 8, 8])
         let s = a[1]
-        XCTAssertEqual(s.ndim, 2)
-        XCTAssertEqual(s.shape, [8, 8])
+        #expect(s.ndim == 2)
+        #expect(s.shape == [8, 8])
 
-        assertEqual(s, MLXArray(64 ..< 128, [8, 8]))
+        expectEqual(s, MLXArray(64 ..< 128, [8, 8]))
     }
 
-    func testArraySubscriptIntArray() {
+    @Test func arraySubscriptIntArray() {
         // squeeze output dimensions as needed
         let a = MLXArray(0 ..< 512, [8, 8, 8])
         let s1 = a[1, 2]
-        XCTAssertEqual(s1.ndim, 1)
-        XCTAssertEqual(s1.shape, [8])
-        assertEqual(s1, MLXArray(80 ..< 88))
+        #expect(s1.ndim == 1)
+        #expect(s1.shape == [8])
+        expectEqual(s1, MLXArray(80 ..< 88))
 
         let s2 = a[1, 2, 3]
-        XCTAssertEqual(s2.ndim, 0)
-        XCTAssertEqual(s2.shape, [])
-        XCTAssertEqual(s2.item(), 64 + 2 * 8 + 3)
+        #expect(s2.ndim == 0)
+        #expect(s2.shape == [])
+        #expect(s2.item(Int.self) == 64 + 2 * 8 + 3)
     }
 
-    func testArraySubscriptIntArray2() {
+    @Test func arraySubscriptIntArray2() {
         // last dimension should not be squeezed
         let a = MLXArray(0 ..< 512, [8, 8, 8, 1])
 
         let s = a[1]
-        XCTAssertEqual(s.ndim, 3)
-        XCTAssertEqual(s.shape, [8, 8, 1])
+        #expect(s.ndim == 3)
+        #expect(s.shape == [8, 8, 1])
 
         let s1 = a[1, 2]
-        XCTAssertEqual(s1.ndim, 2)
-        XCTAssertEqual(s1.shape, [8, 1])
+        #expect(s1.ndim == 2)
+        #expect(s1.shape == [8, 1])
 
         let s2 = a[1, 2, 3]
-        XCTAssertEqual(s2.ndim, 1)
-        XCTAssertEqual(s2.shape, [1])
+        #expect(s2.ndim == 1)
+        #expect(s2.shape == [1])
     }
 
-    func testArraySubscriptFromEnd() {
+    @Test func arraySubscriptFromEnd() {
         // allow negative indices to indicate distance from end (only for int indices)
         let a = MLXArray(0 ..< 12, [3, 4])
         let s = a[-1, -2]
-        XCTAssertEqual(s.ndim, 0)
-        XCTAssertEqual(s.item(), 10)
+        #expect(s.ndim == 0)
+        #expect(s.item(Int.self) == 10)
     }
 
-    func testArraySubscriptRange() {
+    @Test func arraySubscriptRange() {
         let a = MLXArray(0 ..< 512, [8, 8, 8])
 
         let s1 = a[1 ..< 3]
-        XCTAssertEqual(s1.ndim, 3)
-        XCTAssertEqual(s1.shape, [2, 8, 8])
-        assertEqual(s1, MLXArray(64 ..< 192, [2, 8, 8]))
+        #expect(s1.ndim == 3)
+        #expect(s1.shape == [2, 8, 8])
+        expectEqual(s1, MLXArray(64 ..< 192, [2, 8, 8]))
 
         // even though the first dimension is 1 we do not squeeze it
         let s2 = a[1 ... 1]
-        XCTAssertEqual(s2.ndim, 3)
-        XCTAssertEqual(s2.shape, [1, 8, 8])
-        assertEqual(s2, MLXArray(64 ..< 128, [1, 8, 8]))
+        #expect(s2.ndim == 3)
+        #expect(s2.shape == [1, 8, 8])
+        expectEqual(s2, MLXArray(64 ..< 128, [1, 8, 8]))
 
         // multiple ranges, resolving RangeExpressions vs the dimensions
         let s3 = a[1 ..< 2, ..<3, 3...]
-        XCTAssertEqual(s3.ndim, 3)
-        XCTAssertEqual(s3.shape, [1, 3, 5])
-        assertEqual(
+        #expect(s3.ndim == 3)
+        #expect(s3.shape == [1, 3, 5])
+        expectEqual(
             s3, MLXArray([67, 68, 69, 70, 71, 75, 76, 77, 78, 79, 83, 84, 85, 86, 87], [1, 3, 5]))
 
         let s4 = a[-2 ..< -1, ..<(-3), (-3)...]
-        XCTAssertEqual(s4.ndim, 3)
-        XCTAssertEqual(s4.shape, [1, 5, 3])
-        assertEqual(
+        #expect(s4.ndim == 3)
+        #expect(s4.shape == [1, 5, 3])
+        expectEqual(
             s4,
             MLXArray(
                 [389, 390, 391, 397, 398, 399, 405, 406, 407, 413, 414, 415, 421, 422, 423],
                 [1, 5, 3]))
     }
 
-    func testArraySubscriptAdvanced() {
+    @Test func arraySubscriptAdvanced() {
         // advanced subscript examples taken from
         // https://numpy.org/doc/stable/user/basics.indexing.html#integer-array-indexing
 
@@ -117,24 +115,24 @@ class MLXArrayIndexingTests: XCTestCase {
 
         let s1 = a[i1, i2]
 
-        XCTAssertEqual(s1.ndim, 1)
-        XCTAssertEqual(s1.shape, [3])
+        #expect(s1.ndim == 1)
+        #expect(s1.shape == [3])
 
         let expected = MLXArray([0, 15, 30].asInt32)
-        assertEqual(s1, expected)
+        expectEqual(s1, expected)
     }
 
-    func testArraySubscriptAdvanced2() {
+    @Test func arraySubscriptAdvanced2() {
         let a = MLXArray(0 ..< 12, [6, 2]).asType(Int32.self)
 
         let i1 = MLXArray([0, 2, 4])
         let s2 = a[i1]
 
         let expected = MLXArray([0, 1, 4, 5, 8, 9].asInt32, [3, 2])
-        assertEqual(s2, expected)
+        expectEqual(s2, expected)
     }
 
-    func testArraySubscriptAdvanced2d() {
+    @Test func arraySubscriptAdvanced2d() {
         let a = MLXArray(0 ..< 12, [4, 3]).asType(Int32.self)
 
         let rows = MLXArray([0, 0, 3, 3], [2, 2])
@@ -143,10 +141,10 @@ class MLXArrayIndexingTests: XCTestCase {
         let s = a[rows, cols]
 
         let expected = MLXArray([0, 2, 9, 11].asInt32, [2, 2])
-        assertEqual(s, expected)
+        expectEqual(s, expected)
     }
 
-    func testArraySubscriptAdvanced2d2() {
+    @Test func arraySubscriptAdvanced2d2() {
         let a = MLXArray(0 ..< 12, [4, 3]).asType(Int32.self)
 
         let rows = MLXArray([0, 3], [2, 1])
@@ -155,20 +153,20 @@ class MLXArrayIndexingTests: XCTestCase {
         let s = a[rows, cols]
 
         let expected = MLXArray([0, 2, 9, 11].asInt32, [2, 2])
-        assertEqual(s, expected)
+        expectEqual(s, expected)
     }
 
     // MARK: - Subscript (set)
 
-    func testArrayMutateSingleIndex() {
+    @Test func arrayMutateSingleIndex() {
         let a = MLXArray((0 ..< 12).asInt32, [3, 4])
         a[1] = [77]
 
         let expected = MLXArray([0, 1, 2, 3, 77, 77, 77, 77, 8, 9, 10, 11].asInt32, [3, 4])
-        assertEqual(a, expected)
+        expectEqual(a, expected)
     }
 
-    func testArrayMutateBroadcastMultiIndex() {
+    @Test func arrayMutateBroadcastMultiIndex() {
         let a = MLXArray((0 ..< 20).asInt32, [2, 2, 5])
 
         // broadcast to a row
@@ -183,10 +181,10 @@ class MLXArrayIndexingTests: XCTestCase {
         let expected = MLXArray(
             [55, 66, 77, 88, 99, 5, 6, 7, 123, 9, 77, 77, 77, 77, 77, 15, 16, 17, 18, 19].asInt32,
             [2, 2, 5])
-        assertEqual(a, expected)
+        expectEqual(a, expected)
     }
 
-    func testArrayMutateBroadcastSlice() {
+    @Test func arrayMutateBroadcastSlice() {
         let a = MLXArray((0 ..< 20).asInt32, [2, 2, 5])
 
         // write using slices -- this ends up covering two elements
@@ -195,10 +193,10 @@ class MLXArrayIndexingTests: XCTestCase {
         let expected = MLXArray(
             [0, 1, 2, 3, 4, 5, 6, 88, 88, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].asInt32,
             [2, 2, 5])
-        assertEqual(a, expected)
+        expectEqual(a, expected)
     }
 
-    func testArrayMutateAdvanced() {
+    @Test func arrayMutateAdvanced() {
         let a = MLXArray(0 ..< 35, [5, 7]).asType(Int32.self)
 
         let i1 = MLXArray([0, 2, 4])
@@ -206,18 +204,18 @@ class MLXArrayIndexingTests: XCTestCase {
 
         a[i1, i2] = MLXArray([100, 200, 300].asInt32)
 
-        XCTAssertEqual(a[0, 0].item(), 100.int32)
-        XCTAssertEqual(a[2, 1].item(), 200.int32)
-        XCTAssertEqual(a[4, 2].item(), 300.int32)
+        #expect(a[0, 0].item(Int32.self) == 100)
+        #expect(a[2, 1].item(Int32.self) == 200)
+        #expect(a[4, 2].item(Int32.self) == 300)
     }
 
-    func testCollection() {
+    @Test func collection() {
         let a = MLXArray((0 ..< 20).asInt32, [2, 2, 5])
 
         // enumerate "rows"
         for (i, r) in a.enumerated() {
             let expected = MLXArray((i * 10 ..< i * 10 + 10).asInt32, [2, 5])
-            assertEqual(r, expected)
+            expectEqual(r, expected)
         }
     }
 
@@ -226,11 +224,11 @@ class MLXArrayIndexingTests: XCTestCase {
     // These calls are still tested but have been deprecated in favor of the full python indexing,
     // e.g. array[.ellipsis, .stride(by: 2)]
 
-    func testArraySubscriptIntAxis() {
+    @Test func arraySubscriptIntAxis() {
         let a = MLXArray(0 ..< 512, [8, 8, 8])
         let s = a[1, axis: -1]
-        XCTAssertEqual(s.ndim, 2)
-        XCTAssertEqual(s.shape, [8, 8])
+        #expect(s.ndim == 2)
+        #expect(s.shape == [8, 8])
 
         // array([[1, 9, 17, ..., 41, 49, 57],
         //        [65, 73, 81, ..., 105, 113, 121],
@@ -240,81 +238,81 @@ class MLXArrayIndexingTests: XCTestCase {
         //        [385, 393, 401, ..., 425, 433, 441],
         //        [449, 457, 465, ..., 489, 497, 505]], dtype=int64)
 
-        XCTAssertEqual(s[0, 0].item(Int.self), 1)
-        XCTAssertEqual(s[0, 1].item(Int.self), 9)
-        XCTAssertEqual(s[0, 2].item(Int.self), 17)
+        #expect(s[0, 0].item(Int.self) == 1)
+        #expect(s[0, 1].item(Int.self) == 9)
+        #expect(s[0, 2].item(Int.self) == 17)
     }
 
-    public func testReversed() {
+    @Test func reversed() {
         // tests for [::-1]
         let a = MLXArray(0 ..< 4)
 
         // reverse last dimension (only in this case)
-        assertEqual(a[stride: -1], MLXArray([3, 2, 1, 0]))
+        expectEqual(a[stride: -1], MLXArray([3, 2, 1, 0]))
 
         // reverse first dimension
-        assertEqual(a.reshaped(1, 1, 4)[stride: -1, axis: 0], MLXArray(0 ..< 4).reshaped(1, 1, 4))
+        expectEqual(a.reshaped(1, 1, 4)[stride: -1, axis: 0], MLXArray(0 ..< 4).reshaped(1, 1, 4))
 
     }
 
-    public func testStridedBy2() {
+    @Test func stridedBy2() {
         let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
 
         let r = a[stride: 2, axis: -1]
         let expected = MLXArray(Array(stride(from: 0, to: 2 * 3 * 4, by: 2)), [2, 3, 2])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedBy2Offset() {
+    @Test func stridedBy2Offset() {
         let a = MLXArray(0 ..< (2 * 3 * 5), [2, 3, 5])
 
         let r = a[from: 1, stride: 2, axis: -1]
         let expected = MLXArray([1, 3, 6, 8, 11, 13, 16, 18, 21, 23, 26, 28], [2, 3, 2])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative1Last() {
+    @Test func stridedByNegative1Last() {
         let a = MLXArray(0 ..< 6, [2, 3])
 
         let r = a[stride: -1, axis: -1]
         let expected = MLXArray([2, 1, 0, 5, 4, 3], [2, 3])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative1First() {
+    @Test func stridedByNegative1First() {
         let a = MLXArray(0 ..< 6, [2, 3])
 
         let r = a[stride: -1, axis: 0]
         let expected = MLXArray([3, 4, 5, 0, 1, 2], [2, 3])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative1SecondOffset() {
+    @Test func stridedByNegative1SecondOffset() {
         let a = MLXArray(0 ..< (2 * 3 * 5), [2, 3, 5])
 
         let r = a[from: 1, stride: -1, axis: 1]
         let expected = MLXArray(
             [5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 20, 21, 22, 23, 24, 15, 16, 17, 18, 19], [2, 2, 5])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative1LastOffset() {
+    @Test func stridedByNegative1LastOffset() {
         let a = MLXArray(0 ..< (2 * 3 * 5), [2, 3, 5])
 
         let r = a[from: 1, stride: -1, axis: -1]
         let expected = MLXArray([1, 0, 6, 5, 11, 10, 16, 15, 21, 20, 26, 25], [2, 3, 2])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative2SecondOffset() {
+    @Test func stridedByNegative2SecondOffset() {
         let a = MLXArray(0 ..< (2 * 5 * 3), [2, 5, 3])
 
         let r = a[from: 1, stride: -2, axis: 1]
         let expected = MLXArray([3, 4, 5, 18, 19, 20], [2, 1, 3])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative2Last() {
+    @Test func stridedByNegative2Last() {
         let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
 
         let r = a[stride: -2, axis: -1]
@@ -329,10 +327,10 @@ class MLXArrayIndexingTests: XCTestCase {
         //         [23, 21]]], dtype=int64)
 
         let expected = MLXArray([3, 1, 7, 5, 11, 9, 15, 13, 19, 17, 23, 21], [2, 3, 2])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative2First() {
+    @Test func stridedByNegative2First() {
         let a = MLXArray(0 ..< (2 * 3 * 4), [2, 3, 4])
 
         let r = a[stride: -2, axis: 0]
@@ -344,10 +342,10 @@ class MLXArrayIndexingTests: XCTestCase {
         //         [20, 21, 22, 23]]], dtype=int64)
 
         let expected = MLXArray([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], [1, 3, 4])
-        assertEqual(r, expected)
+        expectEqual(r, expected)
     }
 
-    public func testStridedByNegative2SecondSet() {
+    @Test func stridedByNegative2SecondSet() {
         let a = MLXArray(Int32(0) ..< (2 * 3 * 4), [2, 3, 4])
 
         a[stride: -2, axis: 1] = [99, 88, 77, 66]
@@ -364,20 +362,19 @@ class MLXArrayIndexingTests: XCTestCase {
                 99, 88, 77, 66, 4, 5, 6, 7, 99, 88, 77, 66, 99, 88, 77, 66, 16, 17, 18, 19, 99, 88,
                 77, 66,
             ], [2, 3, 4])
-        assertEqual(a, expected)
+        expectEqual(a, expected)
     }
 
     // MARK: - Full Indexing - Read
 
-    public func testExpandEllipsisOperations() {
+    @Test func expandEllipsis() {
         // test equivalent of mlx_expand_ellipsis
         let shape: [Int32] = [4, 6, 8, 8, 2]
 
         let operations1: [MLXArrayIndexOperation] = [.ellipsis, .index(0), .index(0)]
         let result1 = expandEllipsisOperations(shape: shape, operations: operations1)
-        XCTAssertEqual(
-            result1,
-            [
+        #expect(
+            result1 == [
                 .slice(.init(start: 0, end: 4, stride: 1)),
                 .slice(.init(start: 0, end: 6, stride: 1)),
                 .slice(.init(start: 0, end: 8, stride: 1)),
@@ -387,9 +384,8 @@ class MLXArrayIndexingTests: XCTestCase {
 
         let operations2: [MLXArrayIndexOperation] = [.index(0), .index(0), .ellipsis]
         let result2 = expandEllipsisOperations(shape: shape, operations: operations2)
-        XCTAssertEqual(
-            result2,
-            [
+        #expect(
+            result2 == [
                 .index(0),
                 .index(0),
                 .slice(.init(start: 0, end: 8, stride: 1)),
@@ -399,9 +395,8 @@ class MLXArrayIndexingTests: XCTestCase {
 
         let operations3: [MLXArrayIndexOperation] = [.index(0), .ellipsis, .index(0)]
         let result3 = expandEllipsisOperations(shape: shape, operations: operations3)
-        XCTAssertEqual(
-            result3,
-            [
+        #expect(
+            result3 == [
                 .index(0),
                 .slice(.init(start: 0, end: 6, stride: 1)),
                 .slice(.init(start: 0, end: 8, stride: 1)),
@@ -413,9 +408,8 @@ class MLXArrayIndexingTests: XCTestCase {
             .newAxis, .index(0), .ellipsis, .index(0), .newAxis,
         ]
         let result4 = expandEllipsisOperations(shape: shape, operations: operations4)
-        XCTAssertEqual(
-            result4,
-            [
+        #expect(
+            result4 == [
                 .newAxis,
                 .index(0),
                 .slice(.init(start: 0, end: 6, stride: 1)),
@@ -427,14 +421,14 @@ class MLXArrayIndexingTests: XCTestCase {
     }
 
     func check(
-        _ result: MLXArray, _ shape: [Int], _ sum: Int, file: StaticString = #filePath,
-        line: UInt = #line
+        _ result: MLXArray, _ shape: [Int], _ sum: Int,
+        sourceLocation: SourceLocation = #_sourceLocation
     ) {
-        XCTAssertEqual(result.shape, shape, file: file, line: line)
-        XCTAssertEqual(result.sum().item(Int.self), sum, file: file, line: line)
+        #expect(result.shape == shape, sourceLocation: sourceLocation)
+        #expect(result.sum().item(Int.self) == sum, sourceLocation: sourceLocation)
     }
 
-    public func testFullIndexReadSingle() {
+    @Test func fullIndexReadSingle() {
         // single operators go through an optimized path
 
         // a = mx.arange(60).reshape(3, 4, 5)
@@ -459,7 +453,7 @@ class MLXArrayIndexingTests: XCTestCase {
         check(a[i], [2, 4, 5], 1580)
     }
 
-    public func testFullIndexReadNoArray() {
+    @Test func fullIndexReadNoArray() {
         // a = mx.arange(360).reshape(2, 3, 4, 5, 3)
         let a = MLXArray(0 ..< 360, [2, 3, 4, 5, 3])
 
@@ -487,7 +481,7 @@ class MLXArrayIndexingTests: XCTestCase {
             [2, 2, 2, 5, 1, 2], 13160)
     }
 
-    public func testFullIndexReadArray() {
+    @Test func fullIndexReadArray() {
         // these have an MLXArray as a source of indexes and go through the gather path
 
         // a = mx.arange(540).reshape(3, 3, 4, 5, 3)
@@ -527,18 +521,18 @@ class MLXArrayIndexingTests: XCTestCase {
 
     // MARK: - Full Indexing - Write
 
-    public func testFullIndexWriteSingle() {
+    @Test func fullIndexWriteSingle() {
         // single operators go through an optimized path
 
         func check(
-            _ indexes: [MLXArrayIndex], _ sum: Int, file: StaticString = #filePath,
-            line: UInt = #line
+            _ indexes: [MLXArrayIndex], _ sum: Int,
+            sourceLocation: SourceLocation = #_sourceLocation
         ) {
             // a = mx.arange(60).reshape(3, 4, 5)
             let a = MLXArray(0 ..< 60, [3, 4, 5])
 
             a[operations: indexes.map { $0.mlxArrayIndexOperation }] = MLXArray(1)
-            XCTAssertEqual(a.sum().item(Int.self), sum, file: file, line: line)
+            #expect(a.sum().item(Int.self) == sum, sourceLocation: sourceLocation)
         }
 
         // a[...]
@@ -560,16 +554,16 @@ class MLXArrayIndexingTests: XCTestCase {
         check([i], 230)
     }
 
-    public func testFullIndexWriteNoArray() {
+    @Test func fullIndexWriteNoArray() {
         func check(
-            _ indexes: [MLXArrayIndex], _ sum: Int, file: StaticString = #filePath,
-            line: UInt = #line
+            _ indexes: [MLXArrayIndex], _ sum: Int,
+            sourceLocation: SourceLocation = #_sourceLocation
         ) {
             // a = mx.arange(360).reshape(2, 3, 4, 5, 3)
             let a = MLXArray(0 ..< 360, [2, 3, 4, 5, 3])
 
             a[operations: indexes.map { $0.mlxArrayIndexOperation }] = MLXArray(1)
-            XCTAssertEqual(a.sum().item(Int.self), sum, file: file, line: line)
+            #expect(a.sum().item(Int.self) == sum, sourceLocation: sourceLocation)
         }
 
         // a[..., 0] = 1
@@ -596,18 +590,18 @@ class MLXArrayIndexingTests: XCTestCase {
             51540)
     }
 
-    public func testFullIndexWriteArray() {
+    @Test func fullIndexWriteArray() {
         // these have an MLXArray as a source of indexes and go through the gather path
 
         func check(
-            _ indexes: [MLXArrayIndex], _ sum: Int, file: StaticString = #filePath,
-            line: UInt = #line
+            _ indexes: [MLXArrayIndex], _ sum: Int,
+            sourceLocation: SourceLocation = #_sourceLocation
         ) {
             // a = mx.arange(540).reshape(3, 3, 4, 5, 3)
             let a = MLXArray(0 ..< 540, [3, 3, 4, 5, 3])
 
             a[operations: indexes.map { $0.mlxArrayIndexOperation }] = MLXArray(1)
-            XCTAssertEqual(a.sum().item(Int.self), sum, file: file, line: line)
+            #expect(a.sum().item(Int.self) == sum, sourceLocation: sourceLocation)
         }
 
         // i = mx.array([2, 1])
@@ -639,7 +633,7 @@ class MLXArrayIndexingTests: XCTestCase {
             [.stride(by: -1), ..<2, i, 2..., .ellipsis, .newAxis, .stride(by: 2)], 128142)
     }
 
-    public func testSliceWithBroadcast() {
+    @Test func sliceWithBroadcast() {
         // https://github.com/ml-explore/mlx-swift/issues/76
 
         let a = MLXArray.ones([2, 6, 6, 6])
@@ -658,10 +652,10 @@ class MLXArrayIndexingTests: XCTestCase {
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             ], [3, 4, 4, 4])
 
-        assertEqual(b, expected)
+        expectEqual(b, expected)
     }
 
-    public func testCopyEllipsis() {
+    @Test func copyEllipsis() {
         // https://github.com/ml-explore/mlx-swift/issues/364
         let x = arange(0, 12).reshaped([3, 4])
 
@@ -672,7 +666,7 @@ class MLXArrayIndexingTests: XCTestCase {
         y[.ellipsis, 1] *= 10
 
         // x and y should be different
-        XCTAssertFalse(x.allClose(y).all().item())
+        expectNotEqual(x, y)
     }
 
 }

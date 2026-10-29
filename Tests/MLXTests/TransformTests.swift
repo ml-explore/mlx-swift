@@ -71,43 +71,44 @@ class TransformTests: XCTestCase {
         // this isn't a real model but can exercise the
         // machinery
 
-        MLXRandom.seed(0)
+        withRandomState(MLXRandom.RandomState(seed: 0)) {
 
-        class M: Module, UnaryLayer {
-            let linear = Linear(5, 5)
+            class M: Module, UnaryLayer {
+                let linear = Linear(5, 5)
 
-            func callAsFunction(_ x: MLXArray) -> MLXArray {
-                relu(linear(x) * 5 + 1)
+                func callAsFunction(_ x: MLXArray) -> MLXArray {
+                    relu(linear(x) * 5 + 1)
+                }
             }
-        }
 
-        let m = M()
-        MLX.eval(m)
+            let m = M()
+            MLX.eval(m)
 
-        let x = MLXArray(0 ..< 5, [1, 5])
-        let y = MLXArray(0 ..< 5)
+            let x = MLXArray(0 ..< 5, [1, 5])
+            let y = MLXArray(0 ..< 5)
 
-        func loss(model: M, x: MLXArray, y: MLXArray) -> MLXArray {
-            crossEntropy(logits: model(x), targets: y, reduction: .mean)
-        }
-
-        let lg = valueAndGrad(model: m, loss)
-
-        let (loss, grads) = lg(m, x, y)
-
-        // we have known loss because of the random seed
-        XCTAssertEqual(loss.item(), Float(5.98534), accuracy: 0.001)
-
-        if let linear = grads["linear"] {
-            switch linear {
-            case .dictionary(let d):
-                XCTAssertNotNil(d["bias"])
-                XCTAssertNotNil(d["weight"])
-            default:
-                XCTFail("linear is not a dictionary")
+            func loss(model: M, x: MLXArray, y: MLXArray) -> MLXArray {
+                crossEntropy(logits: model(x), targets: y, reduction: .mean)
             }
-        } else {
-            XCTFail("missing linear key")
+
+            let lg = valueAndGrad(model: m, loss)
+
+            let (loss, grads) = lg(m, x, y)
+
+            // we have known loss because of the random seed
+            XCTAssertEqual(loss.item(), Float(5.98534), accuracy: 0.001)
+
+            if let linear = grads["linear"] {
+                switch linear {
+                case .dictionary(let d):
+                    XCTAssertNotNil(d["bias"])
+                    XCTAssertNotNil(d["weight"])
+                default:
+                    XCTFail("linear is not a dictionary")
+                }
+            } else {
+                XCTFail("missing linear key")
+            }
         }
     }
 

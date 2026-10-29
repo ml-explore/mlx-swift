@@ -9,23 +9,25 @@ class QuantizationTests: XCTestCase {
     func testQuantizedLinearAppliesNVFP4GlobalScaleOnMetal() {
         let (input, quantizedWeight, scales, biases, globalScale, bias, expected) =
             Device.withDefaultDevice(.cpu) {
-                MLXRandom.seed(7)
-                let weight = MLXRandom.uniform(low: -2, high: 2, [32, 32])
-                let input = MLXRandom.uniform(low: -1, high: 1, [4, 32])
-                let globalScale = MLX.max(abs(weight)).asType(.float32)
-                let bias = MLXRandom.uniform(low: -1, high: 1, [32])
-                let (quantizedWeight, scales, biases) = MLX.quantized(
-                    weight, groupSize: 16, bits: 4, mode: .nvfp4, globalScale: globalScale)
-                let expected =
-                    matmul(
-                        input,
-                        dequantized(
-                            quantizedWeight, scales: scales, biases: biases, groupSize: 16, bits: 4,
-                            mode: .nvfp4, globalScale: globalScale, dtype: .float32
-                        ).T)
-                    + bias
-                eval(quantizedWeight, scales, expected)
-                return (input, quantizedWeight, scales, biases, globalScale, bias, expected)
+                withRandomState(MLXRandom.RandomState(seed: 7)) {
+                    let weight = MLXRandom.uniform(low: -2, high: 2, [32, 32])
+                    let input = MLXRandom.uniform(low: -1, high: 1, [4, 32])
+                    let globalScale = MLX.max(abs(weight)).asType(.float32)
+                    let bias = MLXRandom.uniform(low: -1, high: 1, [32])
+                    let (quantizedWeight, scales, biases) = MLX.quantized(
+                        weight, groupSize: 16, bits: 4, mode: .nvfp4, globalScale: globalScale)
+                    let expected =
+                        matmul(
+                            input,
+                            dequantized(
+                                quantizedWeight, scales: scales, biases: biases, groupSize: 16,
+                                bits: 4,
+                                mode: .nvfp4, globalScale: globalScale, dtype: .float32
+                            ).T)
+                        + bias
+                    eval(quantizedWeight, scales, expected)
+                    return (input, quantizedWeight, scales, biases, globalScale, bias, expected)
+                }
             }
 
         let actual = Device.withDefaultDevice(.gpu) {
@@ -42,25 +44,26 @@ class QuantizationTests: XCTestCase {
             input, indices, quantizedWeight, scales, biases, globalScale, expectedLinear,
             expectedLookup
         ) = Device.withDefaultDevice(.cpu) {
-            MLXRandom.seed(11)
-            let weight = MLXRandom.uniform(low: -2, high: 2, [32, 32])
-            let input = MLXRandom.uniform(low: -1, high: 1, [4, 32])
-            let indices = MLXArray([0, 3, 7, 31])
-            let globalScale = MLX.max(abs(weight)).asType(.float32)
-            let (quantizedWeight, scales, biases) = MLX.quantized(
-                weight, groupSize: 16, bits: 4, mode: .nvfp4, globalScale: globalScale)
-            let dequantizedWeight = dequantized(
-                quantizedWeight, scales: scales, biases: biases, groupSize: 16, bits: 4,
-                mode: .nvfp4, globalScale: globalScale, dtype: .float32)
-            let expectedLinear = matmul(input, dequantizedWeight.T)
-            let expectedLookup = dequantized(
-                quantizedWeight, scales: scales, biases: biases, groupSize: 16, bits: 4,
-                mode: .nvfp4, globalScale: globalScale)[indices].asType(.bfloat16)
-            eval(quantizedWeight, scales, expectedLinear, expectedLookup)
-            return (
-                input, indices, quantizedWeight, scales, biases, globalScale, expectedLinear,
-                expectedLookup
-            )
+            withRandomState(MLXRandom.RandomState(seed: 11)) {
+                let weight = MLXRandom.uniform(low: -2, high: 2, [32, 32])
+                let input = MLXRandom.uniform(low: -1, high: 1, [4, 32])
+                let indices = MLXArray([0, 3, 7, 31])
+                let globalScale = MLX.max(abs(weight)).asType(.float32)
+                let (quantizedWeight, scales, biases) = MLX.quantized(
+                    weight, groupSize: 16, bits: 4, mode: .nvfp4, globalScale: globalScale)
+                let dequantizedWeight = dequantized(
+                    quantizedWeight, scales: scales, biases: biases, groupSize: 16, bits: 4,
+                    mode: .nvfp4, globalScale: globalScale, dtype: .float32)
+                let expectedLinear = matmul(input, dequantizedWeight.T)
+                let expectedLookup = dequantized(
+                    quantizedWeight, scales: scales, biases: biases, groupSize: 16, bits: 4,
+                    mode: .nvfp4, globalScale: globalScale)[indices].asType(.bfloat16)
+                eval(quantizedWeight, scales, expectedLinear, expectedLookup)
+                return (
+                    input, indices, quantizedWeight, scales, biases, globalScale, expectedLinear,
+                    expectedLookup
+                )
+            }
         }
 
         let (actualLinear, actualLookup) = Device.withDefaultDevice(.gpu) {

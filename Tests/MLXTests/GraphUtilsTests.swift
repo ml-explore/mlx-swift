@@ -2,34 +2,32 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-class GraphUtilsTests: XCTestCase {
+@Suite
+struct GraphUtilsTests {
 
-    override class func setUp() {
-    }
-
-    func testExportToDot() {
+    @Test func exportToDotIncludesPrimitives() {
         let x = MLXArray([1, 2, 3])
         let dot = exportToDot([x * 2 + 1])
 
-        XCTAssertFalse(dot.isEmpty)
-        XCTAssertTrue(dot.contains("digraph"), "expected a digraph, got:\n\(dot)")
+        #expect(!dot.isEmpty)
+        #expect(dot.contains("digraph"), "expected a digraph, got:\n\(dot)")
 
         // the graph should mention the primitives that produce the output
-        XCTAssertTrue(dot.contains("Add"), "expected Add in:\n\(dot)")
-        XCTAssertTrue(dot.contains("Multiply"), "expected Multiply in:\n\(dot)")
+        #expect(dot.contains("Add"), "expected Add in:\n\(dot)")
+        #expect(dot.contains("Multiply"), "expected Multiply in:\n\(dot)")
     }
 
-    func testGraphDescription() {
+    @Test func graphDescriptionIncludesPrimitives() {
         let x = MLXArray([1, 2, 3])
         let description = graphDescription([x + x])
 
-        XCTAssertFalse(description.isEmpty)
-        XCTAssertTrue(description.contains("Add"), "expected Add in:\n\(description)")
+        #expect(!description.isEmpty)
+        #expect(description.contains("Add"), "expected Add in:\n\(description)")
     }
 
-    func testNodeNamer() {
+    @Test func nodeNamer() {
         let x = MLXArray([1, 2, 3])
         let y = MLXArray([4, 5, 6])
 
@@ -37,25 +35,25 @@ class GraphUtilsTests: XCTestCase {
         namer.setName("lhs", for: x)
         namer.setName("rhs", for: y)
 
-        XCTAssertEqual(namer.name(for: x), "lhs")
-        XCTAssertEqual(namer.name(for: y), "rhs")
+        #expect(namer.name(for: x) == "lhs")
+        #expect(namer.name(for: y) == "rhs")
 
         let dot = exportToDot([x + y], namer: namer)
-        XCTAssertTrue(dot.contains("lhs"), "expected lhs in:\n\(dot)")
-        XCTAssertTrue(dot.contains("rhs"), "expected rhs in:\n\(dot)")
+        #expect(dot.contains("lhs"), "expected lhs in:\n\(dot)")
+        #expect(dot.contains("rhs"), "expected rhs in:\n\(dot)")
     }
 
-    func testNodeNamerGeneratesNames() {
+    @Test func nodeNamerGeneratesNames() {
         // unnamed arrays get a generated name, and it is stable
         let x = MLXArray([1, 2, 3])
         let namer = NodeNamer()
 
         let first = namer.name(for: x)
-        XCTAssertNotNil(first)
-        XCTAssertEqual(namer.name(for: x), first)
+        #expect(first != nil)
+        #expect(namer.name(for: x) == first)
     }
 
-    func testGraphIsNotEvaluated() {
+    @Test func graphIsNotEvaluated() {
         // describing the graph should not force evaluation
         let x = MLXArray([1, 2, 3])
         let y = x * 2
@@ -63,6 +61,6 @@ class GraphUtilsTests: XCTestCase {
         _ = exportToDot([y])
 
         // still usable afterwards
-        assertEqual(y, MLXArray([2, 4, 6]))
+        expectEqual(y, MLXArray([2, 4, 6]))
     }
 }

@@ -2,12 +2,10 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-class NestedTests: XCTestCase {
-
-    override class func setUp() {
-    }
+@Suite
+struct NestedTests {
 
     static let defaultValues = [10, 1, 2, 1, 2, 3, 10, 20, 30]
 
@@ -29,45 +27,45 @@ class NestedTests: XCTestCase {
         return result
     }
 
-    func testCollection() {
+    @Test func collection() {
         let n = newNested()
-        XCTAssertEqual(n.count, 4)
-        XCTAssertEqual(Set(n.keys), Set(["value", "array1", "array2", "dictionary"]))
+        #expect(n.count == 4)
+        #expect(Set(n.keys) == Set(["value", "array1", "array2", "dictionary"]))
     }
 
-    func testMapValues() {
+    @Test func mapValues() {
         let n = newNested()
         let incremented = n.mapValues { $0 + 1 }
         let expected = newNested(values: Self.defaultValues.map { $0 + 1 })
 
-        XCTAssertEqual(incremented, expected)
+        #expect(incremented == expected)
     }
 
-    func testCompactMapValues() {
+    @Test func compactMapValues() {
         let n = newNested()
         let trimmed = n.compactMapValues { $0 % 2 == 1 ? $0 : nil }
-        XCTAssertEqual(trimmed.count, 2)
-        XCTAssertEqual(trimmed["array1"], .array([.value(1)]))
+        #expect(trimmed.count == 2)
+        #expect(trimmed["array1"] == .array([.value(1)]))
     }
 
-    func testFlatten1() {
+    @Test func flatten1() {
         let v: NestedItem<String, Int> = .array([.array([.array([.value(10)])])])
 
         let f = v.flattened()
-        XCTAssertEqual(f.description, #"[("0.0.0", 10)]"#)
+        #expect(f.description == #"[("0.0.0", 10)]"#)
 
         let uf = NestedItem<String, Int>.unflattened(f)
-        XCTAssertEqual(uf, v)
+        #expect(uf == v)
     }
 
-    func testFlatten() {
+    @Test func flatten() {
         let n = newNested()
         let f = n.flattened()
         let n2 = NestedDictionary<String, Int>.unflattened(f)
-        XCTAssertEqual(n, n2)
+        #expect(n == n2)
     }
 
-    func testFlattenedValues() {
+    @Test func flattenedValues() {
         // replacingValues() uses the original structure
         // and makes an identical structure with new values
         // from a flat array of values
@@ -77,10 +75,10 @@ class NestedTests: XCTestCase {
         let n2 = n.replacingValues(with: f)
 
         let expected = n.mapValues { $0 + 1 }
-        XCTAssertEqual(n2, expected)
+        #expect(n2 == expected)
     }
 
-    func testMap2() {
+    @Test func map2() {
         // map 2 parallel structures
         var d1 = NestedDictionary<String, Int>()
         d1["layers"] = .array([
@@ -100,10 +98,10 @@ class NestedTests: XCTestCase {
 
         let expected = d1.mapValues { "value = \($0)" }
 
-        XCTAssertEqual(r2, expected)
+        #expect(r2 == expected)
     }
 
-    func testMap3() {
+    @Test func map3() {
         // map 3 parallel structures
         var d1 = NestedDictionary<String, Int>()
         d1["layers"] = .array([
@@ -132,8 +130,8 @@ class NestedTests: XCTestCase {
         let expected2 = d2.mapValues { -$0 }
         let (_, expected3) = d1.mapValues(d2) { (0, "value = \($0) + \($1 ?? 0)") }
 
-        XCTAssertEqual(r2, expected2)
-        XCTAssertEqual(r3, expected3)
+        #expect(r2 == expected2)
+        #expect(r3 == expected3)
     }
 
 }

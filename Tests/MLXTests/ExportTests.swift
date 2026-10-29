@@ -2,27 +2,32 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-class ExportTests: XCTestCase {
+/// A class rather than a struct so that `deinit` can clean up -- Swift Testing
+/// creates a new instance per test, so `init` / `deinit` take the place of
+/// XCTest's `setUpWithError` / `tearDownWithError`.
+@Suite
+final class ExportTests {
 
     let temporaryPath = FileManager.default.temporaryDirectory.appending(
         path: UUID().uuidString,
         directoryHint: .isDirectory
     )
 
-    override func setUpWithError() throws {
+    init() throws {
         try FileManager.default.createDirectory(
             at: temporaryPath,
             withIntermediateDirectories: false
         )
     }
 
-    override func tearDownWithError() throws {
-        try FileManager.default.removeItem(at: temporaryPath)
+    deinit {
+        // deinit cannot throw -- a leftover temporary directory is not a test failure
+        try? FileManager.default.removeItem(at: temporaryPath)
     }
 
-    func testExportFunction() throws {
+    @Test func exportAndImportFunction() throws {
         let url = temporaryPath.appending(path: "fn.mlxfn")
 
         func f(arrays: [MLXArray]) -> [MLXArray] {
@@ -42,10 +47,10 @@ class ExportTests: XCTestCase {
 
         // call it -- the shapes and labels have to match
         let r = try f2(a, y: b)[0]
-        assertEqual(r, MLXArray([50, 100, 200]))
+        expectEqual(r, MLXArray([50, 100, 200]))
     }
 
-    func testExportFunctions() throws {
+    @Test func exportAndImportShapelessFunctions() throws {
         let url = temporaryPath.appending(path: "fn.mlxfn")
 
         func f(_ arrays: [MLXArray]) -> [MLXArray] {
@@ -68,16 +73,16 @@ class ExportTests: XCTestCase {
         let c = MLXArray([1, 2, 3])
 
         let r1 = try f2(a)[0]
-        assertEqual(r1, a)
+        expectEqual(r1, a)
 
         let r2 = try f2(a, b)[0]
-        assertEqual(r2, a + b)
+        expectEqual(r2, a + b)
 
         let r3 = try f2(a, b, c)[0]
-        assertEqual(r3, a + b + c)
+        expectEqual(r3, a + b + c)
     }
 
-    func testExportError() {
+    @Test func exportToInvalidPathThrows() {
         func f(arrays: [MLXArray]) -> [MLXArray] {
             [arrays[0] * arrays[1]]
         }
@@ -85,11 +90,8 @@ class ExportTests: XCTestCase {
         let x = MLXArray(1)
         let y = MLXArray([1, 2, 3])
 
-        do {
+        #expect(throws: MLXError.self) {
             try exportFunction(to: URL(fileURLWithPath: "/does/not/exist"), f)(x, y: y)
-            XCTFail("should throw")
-        } catch {
-            // expected
         }
     }
 

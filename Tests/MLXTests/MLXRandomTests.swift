@@ -2,119 +2,117 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-class MLXRandomTests: XCTestCase {
+@Suite
+struct MLXRandomTests {
 
-    override class func setUp() {
-    }
-
-    func testSplit() {
+    @Test func splitKey() {
         let key = MLXRandom.key(0)
         let keys = MLXRandom.split(key: key, into: 4)
 
-        XCTAssertEqual(keys.count, 4)
+        #expect(keys.count == 4)
     }
 
-    func testUniformSingle() {
+    @Test func uniformSingle() {
         let key = MLXRandom.key(0)
         let value = MLXRandom.uniform(0 ..< 10, key: key).item(Float.self)
-        XCTAssertEqual(value, 4.18, accuracy: 0.01)
+        expectEqual(value, 4.18, accuracy: 0.01)
     }
 
-    func testUniformMultiple() {
+    @Test func uniformMultiple() {
         let key = MLXRandom.key(0)
 
         // specify shape to broadcast
         let value = MLXRandom.uniform(0.0 ..< 10, [3], key: key)
         let expected = MLXArray(converting: [9.65, 3.14, 6.33])
-        assertEqual(value, expected, atol: 0.01)
+        expectEqual(value, expected, atol: 0.01)
     }
 
-    func testUniformMultipleArray() {
+    @Test func uniformMultipleArray() {
         let key = MLXRandom.key(0)
 
         // give an array of bounds
         let value = MLXRandom.uniform(low: [0, 10], high: [10, 100], key: key)
 
         let expected = MLXArray(converting: [2.16, 82.37])
-        assertEqual(value, expected, atol: 0.01)
+        expectEqual(value, expected, atol: 0.01)
     }
 
-    func testNormal() {
+    @Test func normalSingle() {
         let key = MLXRandom.key(0)
 
         let value = MLXRandom.normal(key: key).item(Float.self)
-        XCTAssertEqual(value, -0.20, accuracy: 0.01)
+        expectEqual(value, -0.20, accuracy: 0.01)
     }
 
-    func testRandIntSingle() {
+    @Test func randIntSingle() {
         let key = MLXRandom.key(0)
         let value = MLXRandom.randInt(0 ..< 100, key: key).item(Int.self)
-        XCTAssertEqual(value, 41)
+        #expect(value == 41)
     }
 
-    func testRandIntMultiple() {
+    @Test func randIntMultiple() {
         let key = MLXRandom.key(0)
 
         let value = MLXRandom.randInt(low: [0, 10], high: [10, 100], key: key)
 
         let expected: [Int32] = [2, 82]
-        assertEqual(value, MLXArray(expected))
+        expectEqual(value, MLXArray(expected))
     }
 
-    func testRandIntMultipleType() {
+    @Test func randIntMultipleType() {
         let key = MLXRandom.key(0)
 
         let value = MLXRandom.randInt(low: [0, 10], high: [10, 100], type: Int8.self, key: key)
 
         let expected: [Int8] = [2, 82]
-        assertEqual(value, MLXArray(expected))
+        expectEqual(value, MLXArray(expected))
     }
 
-    func testBernoulliSingle() {
+    @Test func bernoulliSingle() {
         let key = MLXRandom.key(0)
         let value = MLXRandom.bernoulli(key: key).item(Bool.self)
-        XCTAssertEqual(value, true)
+        #expect(value == true)
     }
 
-    func testBernoulliMultiple() {
+    @Test func bernoulliMultiple() {
         let key = MLXRandom.key(0)
         let array = MLXRandom.bernoulli([4], key: key)
         let expected = MLXArray([false, true, false, true])
-        assertEqual(array, expected)
+        expectEqual(array, expected)
     }
 
-    func testBernoulliP() {
+    @Test func bernoulliP() {
         let key = MLXRandom.key(0)
         let array = MLXRandom.bernoulli(0.8, [4], key: key)
         let expected = MLXArray([false, true, true, true])
-        assertEqual(array, expected)
+        expectEqual(array, expected)
     }
 
-    func testBernoulliPArray() {
+    @Test func bernoulliPArray() {
         let key = MLXRandom.key(0)
         let array = MLXRandom.bernoulli(MLXArray(converting: [0.1, 0.5, 0.8]), key: key)
         let expected = MLXArray([false, true, true])
-        assertEqual(array, expected)
+        expectEqual(array, expected)
     }
 
-    func testTruncatedNormalSingle() {
+    @Test func truncatedNormalSingle() {
         let key = MLXRandom.key(0)
         let value = MLXRandom.truncatedNormal(0 ..< 10, key: key).item(Float.self)
-        XCTAssertEqual(value, 0.55, accuracy: 0.01)
+        expectEqual(value, 0.55, accuracy: 0.01)
     }
 
-    func testTruncatedNormalMultiple() {
+    @Test func truncatedNormalMultiple() {
         let key = MLXRandom.key(0)
 
         // specify shape to broadcast
         let value = MLXRandom.truncatedNormal(0 ..< 0.5, [3], key: key)
         let expected = MLXArray(converting: [0.48, 0.15, 0.30])
-        assertEqual(value, expected, atol: 0.01)
+        expectEqual(value, expected, atol: 0.01)
     }
 
-    func testTruncatedNormalMultipleArray() {
+    @Test func truncatedNormalMultipleArray() {
         let key = MLXRandom.key(0)
 
         // give an array of bounds
@@ -122,54 +120,60 @@ class MLXRandomTests: XCTestCase {
             low: MLXArray(converting: [0, 0.5]), high: MLXArray(converting: [0.5, 1]), key: key)
 
         let expected = MLXArray(converting: [0.10, 0.88])
-        assertEqual(value, expected, atol: 0.01)
+        expectEqual(value, expected, atol: 0.01)
     }
 
-    func testGumbel() {
+    @Test func gumbelSingle() {
         let key = MLXRandom.key(0)
 
         let value = MLXRandom.gumbel(key: key).item(Float.self)
-        XCTAssertEqual(value, 0.13, accuracy: 0.01)
+        expectEqual(value, 0.13, accuracy: 0.01)
     }
 
-    func testLogits() {
+    @Test func categoricalLogits() {
         let key = MLXRandom.key(0)
 
         let logits = MLXArray.zeros([5, 20])
         let result = MLXRandom.categorical(logits, key: key)
 
-        XCTAssertEqual(result.shape, [5])
-        XCTAssertEqual(result.dtype, .uint32)
+        #expect(result.shape == [5])
+        #expect(result.dtype == .uint32)
 
         let expected = MLXArray([1, 1, 17, 17, 17])
-        assertEqual(result, expected)
+        expectEqual(result, expected)
     }
 
-    func testLogitsCount() {
+    @Test func categoricalLogitsCount() {
         let key = MLXRandom.key(0)
 
         let logits = MLXArray.zeros([5, 20])
         let result = MLXRandom.categorical(logits, count: 2, key: key)
 
-        XCTAssertEqual(result.shape, [5, 2])
-        XCTAssertEqual(result.dtype, .uint32)
+        #expect(result.shape == [5, 2])
+        #expect(result.dtype == .uint32)
 
         let expected = MLXArray([16, 3, 14, 10, 17, 7, 6, 8, 12, 8], [5, 2])
-        assertEqual(result, expected)
+        expectEqual(result, expected)
     }
 
-    func testRandomStateOrKeySame() {
+    @Test func randomStateOrKeySame() {
         // these should all produce the same value since they
         // all resolve to the same key
+        //
+        // note: this does not use the global state (MLXRandom.seed()) -- it is
+        // shared by every test in the process and other tests running in parallel
+        // may draw from it.  MLXRandom.seed(n) is MLXRandom.globalState.seed(n),
+        // which is covered by v3 below.
 
         let key = MLXRandom.key(0)
         let (_, k1) = split(key: key)
 
         let state = MLXRandom.RandomState(seed: 0)
-        MLXRandom.seed(0)
 
-        // global state
-        let v0 = uniform(0 ..< 1, [5])
+        // task local RandomState (the fallback when no key is given)
+        let v0 = withRandomState(MLXRandom.RandomState(seed: 0)) {
+            uniform(0 ..< 1, [5])
+        }
 
         // explicit key
         let v1 = uniform(0 ..< 1, [5], key: k1)
@@ -177,23 +181,32 @@ class MLXRandomTests: XCTestCase {
         // local RandomState
         let v2 = uniform(0 ..< 1, [5], key: state)
 
-        assertEqual(v0, v1)
-        assertEqual(v1, v2)
+        // a RandomState that is re-seeded, the same as MLXRandom.seed(0) does
+        // to the global state
+        let reseeded = MLXRandom.RandomState(seed: 99)
+        _ = uniform(0 ..< 1, [5], key: reseeded)
+        reseeded.seed(0)
+        let v3 = uniform(0 ..< 1, [5], key: reseeded)
+
+        expectEqual(v0, v1)
+        expectEqual(v1, v2)
+        expectEqual(v2, v3)
     }
 
-    func testRandomStateOrKeyDifferent() {
+    @Test func randomStateOrKeyDifferent() {
         // these should all produce different values as they
         // use different keys -- note this is otherwise identical
-        // to testRandomStateOrKeySame
+        // to randomStateOrKeySame
 
         let key = MLXRandom.key(7)
         let (_, k1) = split(key: key)
 
         let state = MLXRandom.RandomState(seed: 11)
-        MLXRandom.seed(31)
 
-        // global state
-        let v0 = uniform(0 ..< 1, [5])
+        // task local RandomState
+        let v0 = withRandomState(MLXRandom.RandomState(seed: 31)) {
+            uniform(0 ..< 1, [5])
+        }
 
         // explicit key
         let v1 = uniform(0 ..< 1, [5], key: k1)
@@ -201,12 +214,12 @@ class MLXRandomTests: XCTestCase {
         // local RandomState
         let v2 = uniform(0 ..< 1, [5], key: state)
 
-        assertNotEqual(v0, v1)
-        assertNotEqual(v1, v2)
-        assertNotEqual(v0, v2)
+        expectNotEqual(v0, v1)
+        expectNotEqual(v1, v2)
+        expectNotEqual(v0, v2)
     }
 
-    func testRandomThreadsSame() async {
+    @Test func randomThreadsSame() async {
         // several threads using task local random state with a constant
         // seed will produce the same value
         await withTaskGroup(of: Float.self) { group in
@@ -229,11 +242,11 @@ class MLXRandomTests: XCTestCase {
             }
 
             let unique = Set(result)
-            XCTAssertEqual(unique.count, 1, "Different values: \(result)")
+            #expect(unique.count == 1, "Different values: \(result)")
         }
     }
 
-    func testRandomThreadsDifferent() async {
+    @Test func randomThreadsDifferent() async {
 
         // several threads using task local random state with different
         // seeds will produce different values
@@ -259,7 +272,7 @@ class MLXRandomTests: XCTestCase {
             }
 
             let unique = Set(result)
-            XCTAssertEqual(unique.count, 10, "Same values: \(result)")
+            #expect(unique.count == 10, "Same values: \(result)")
         }
     }
 

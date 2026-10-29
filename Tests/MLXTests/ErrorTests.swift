@@ -2,7 +2,7 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
 private func triggerError() {
     let a = MLXArray(0 ..< 10, [2, 5])
@@ -14,9 +14,10 @@ private func triggerError() {
     eval(a + b)
 }
 
-class ErrorTests: XCTestCase {
+@Suite
+struct ErrorTests {
 
-    func testErrorHandler() {
+    @Test func errorHandler() throws {
         // a test with a custom error handler that captures the first error seen
         final class BoxedError: @unchecked (Sendable) {
             let lock = NSLock()
@@ -46,68 +47,49 @@ class ErrorTests: XCTestCase {
             triggerError()
         }
 
-        if let error = boxedError.error {
-            let prefix = error.split(separator: ". at")[0]
-            XCTAssertEqual(prefix, "[broadcast_shapes] Shapes (2,5) and (3,5) cannot be broadcast")
-        } else {
-            XCTFail("boxedError.error should be set")
-        }
+        let error = try #require(boxedError.error, "boxedError.error should be set")
+        let prefix = error.split(separator: ". at")[0]
+        #expect(prefix == "[broadcast_shapes] Shapes (2,5) and (3,5) cannot be broadcast")
     }
 
-    func testWithErrorCheck() {
-        do {
+    @Test func withErrorCheck() {
+        #expect(throws: MLXError.self) {
             try withError { error in
                 triggerError()
                 try error.check()
             }
-            XCTFail("should throw")
-        } catch {
-            print(error)
         }
     }
 
-    func testWithErrorThrow() {
-        do {
-            // outer container should throw
+    @Test func withErrorThrow() {
+        // outer container should throw
+        #expect(throws: MLXError.self) {
             try withError {
                 triggerError()
             }
-            XCTFail("should throw")
-        } catch {
-            print(error)
         }
     }
 
-    func testWithErrorThrowAsync() async {
-        do {
+    @Test func withErrorThrowAsync() async {
+        await #expect(throws: MLXError.self) {
             try await withError {
                 let t = Task {
                     triggerError()
                 }
                 await t.value
             }
-            XCTFail("should throw")
-        } catch {
-            print(error)
         }
     }
 
-    func testWithErrorThrowNested() {
-        do {
-            // outer container should throw
-            try withError {
-                do {
-                    try withError {
-                        triggerError()
-                    }
-                    XCTFail("should throw")
-                } catch {
-                    // expected
+    @Test func withErrorThrowNested() throws {
+        // the outer layer does not produce an error -- if it throws the test fails
+        try withError {
+            // the inner container should throw
+            #expect(throws: MLXError.self) {
+                try withError {
+                    triggerError()
                 }
-                // the outer layer does not produce an error
             }
-        } catch {
-            XCTFail("unexpected outer error: \(error)")
         }
     }
 
