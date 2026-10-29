@@ -308,7 +308,6 @@ struct ModuleTests {
         let t = Test()
 
         #expect(t.b == nil)
-        #expect(t.a != nil)
         #expect(t.a.x == nil)
     }
 

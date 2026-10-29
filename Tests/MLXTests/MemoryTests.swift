@@ -7,11 +7,25 @@ import Testing
 @Suite
 struct MemoryTests {
 
-    @Test func wiredMemory() {
-        Memory.withWiredLimit(1024 * 1024 * 256) {
+    @Test func wiredMemoryDeprecated() {
+        // this is a NOP wired-memory-wise but should still work
+        let r = Memory.withWiredLimit(1024 * 1024 * 256) {
             let x = MLXArray(10)
-            print(x * x)
+            return x * 3
         }
+
+        #expect(r.item(Int.self) == 30)
+    }
+
+    @Test func wiredMemory() async {
+        let policy = WiredSumPolicy()
+        let weights = policy.ticket(size: 1024 * 1024)
+        let r = await weights.withWiredLimit {
+            let x = MLXArray(10)
+            return x * 3
+        }
+
+        #expect(r.item(Int.self) == 30)
     }
 
     @Test func deviceInfo() {

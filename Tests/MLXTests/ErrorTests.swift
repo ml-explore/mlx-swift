@@ -83,7 +83,7 @@ struct ErrorTests {
 
     @Test func withErrorThrowNested() throws {
         // the outer layer does not produce an error -- if it throws the test fails
-        try withError {
+        let _ = try withError {
             // the inner container should throw
             #expect(throws: MLXError.self) {
                 try withError {
