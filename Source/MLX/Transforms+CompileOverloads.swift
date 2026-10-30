@@ -15,7 +15,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a in
-        let r = compileState.call([a])
+        let r = compileState.call([a], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -31,7 +31,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a in
-        let r = compileState.call([a])
+        let r = compileState.call([a], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -47,7 +47,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a in
-        let r = compileState.call([a])
+        let r = compileState.call([a], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -63,7 +63,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b in
-        let r = compileState.call([a, b])
+        let r = compileState.call([a, b], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -79,7 +79,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b in
-        let r = compileState.call([a, b])
+        let r = compileState.call([a, b], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -95,7 +95,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b in
-        let r = compileState.call([a, b])
+        let r = compileState.call([a, b], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -111,7 +111,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c in
-        let r = compileState.call([a, b, c])
+        let r = compileState.call([a, b, c], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -127,7 +127,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c in
-        let r = compileState.call([a, b, c])
+        let r = compileState.call([a, b, c], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -146,7 +146,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c in
-        let r = compileState.call([a, b, c])
+        let r = compileState.call([a, b, c], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -161,7 +161,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3])]
     }
     return { a, b, c, d in
-        compileState.call([a, b, c, d])[0]
+        compileState.call([a, b, c, d], expected: 1)[0]
     }
 }
 
@@ -176,7 +176,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d in
-        let r = compileState.call([a, b, c, d])
+        let r = compileState.call([a, b, c, d], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -195,7 +195,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d in
-        let r = compileState.call([a, b, c, d])
+        let r = compileState.call([a, b, c, d], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -214,7 +214,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d in
-        let r = compileState.call([a, b, c, d])
+        let r = compileState.call([a, b, c, d], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -229,7 +229,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4])]
     }
     return { a, b, c, d, e in
-        compileState.call([a, b, c, d, e])[0]
+        compileState.call([a, b, c, d, e], expected: 1)[0]
     }
 }
 
@@ -247,7 +247,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e in
-        let r = compileState.call([a, b, c, d, e])
+        let r = compileState.call([a, b, c, d, e], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -266,7 +266,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e in
-        let r = compileState.call([a, b, c, d, e])
+        let r = compileState.call([a, b, c, d, e], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -289,7 +289,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e in
-        let r = compileState.call([a, b, c, d, e])
+        let r = compileState.call([a, b, c, d, e], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -305,7 +305,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4], args[5])]
     }
     return { a, b, c, d, e, g in
-        compileState.call([a, b, c, d, e, g])[0]
+        compileState.call([a, b, c, d, e, g], expected: 1)[0]
     }
 }
 
@@ -323,7 +323,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e, g in
-        let r = compileState.call([a, b, c, d, e, g])
+        let r = compileState.call([a, b, c, d, e, g], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -346,7 +346,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e, g in
-        let r = compileState.call([a, b, c, d, e, g])
+        let r = compileState.call([a, b, c, d, e, g], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -369,7 +369,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e, g in
-        let r = compileState.call([a, b, c, d, e, g])
+        let r = compileState.call([a, b, c, d, e, g], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -386,7 +386,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4], args[5], args[6])]
     }
     return { a, b, c, d, e, g, h in
-        compileState.call([a, b, c, d, e, g, h])[0]
+        compileState.call([a, b, c, d, e, g, h], expected: 1)[0]
     }
 }
 
@@ -409,7 +409,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e, g, h in
-        let r = compileState.call([a, b, c, d, e, g, h])
+        let r = compileState.call([a, b, c, d, e, g, h], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -433,7 +433,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e, g, h in
-        let r = compileState.call([a, b, c, d, e, g, h])
+        let r = compileState.call([a, b, c, d, e, g, h], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -457,7 +457,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e, g, h in
-        let r = compileState.call([a, b, c, d, e, g, h])
+        let r = compileState.call([a, b, c, d, e, g, h], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -479,7 +479,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])]
     }
     return { a, b, c, d, e, g, h, i in
-        compileState.call([a, b, c, d, e, g, h, i])[0]
+        compileState.call([a, b, c, d, e, g, h, i], expected: 1)[0]
     }
 }
 
@@ -501,7 +501,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e, g, h, i in
-        let r = compileState.call([a, b, c, d, e, g, h, i])
+        let r = compileState.call([a, b, c, d, e, g, h, i], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -524,7 +524,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e, g, h, i in
-        let r = compileState.call([a, b, c, d, e, g, h, i])
+        let r = compileState.call([a, b, c, d, e, g, h, i], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -547,7 +547,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e, g, h, i in
-        let r = compileState.call([a, b, c, d, e, g, h, i])
+        let r = compileState.call([a, b, c, d, e, g, h, i], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -565,7 +565,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a in
-        let r = compileState.call([a])
+        let r = compileState.call([a], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -581,7 +581,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a in
-        let r = compileState.call([a])
+        let r = compileState.call([a], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -597,7 +597,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a in
-        let r = compileState.call([a])
+        let r = compileState.call([a], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -613,7 +613,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b in
-        let r = compileState.call([a, b])
+        let r = compileState.call([a, b], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -629,7 +629,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b in
-        let r = compileState.call([a, b])
+        let r = compileState.call([a, b], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -645,7 +645,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b in
-        let r = compileState.call([a, b])
+        let r = compileState.call([a, b], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -661,7 +661,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c in
-        let r = compileState.call([a, b, c])
+        let r = compileState.call([a, b, c], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -677,7 +677,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c in
-        let r = compileState.call([a, b, c])
+        let r = compileState.call([a, b, c], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -696,7 +696,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c in
-        let r = compileState.call([a, b, c])
+        let r = compileState.call([a, b, c], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -711,7 +711,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3])]
     }
     return { a, b, c, d in
-        compileState.call([a, b, c, d])[0]
+        compileState.call([a, b, c, d], expected: 1)[0]
     }
 }
 
@@ -726,7 +726,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d in
-        let r = compileState.call([a, b, c, d])
+        let r = compileState.call([a, b, c, d], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -745,7 +745,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d in
-        let r = compileState.call([a, b, c, d])
+        let r = compileState.call([a, b, c, d], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -765,7 +765,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d in
-        let r = compileState.call([a, b, c, d])
+        let r = compileState.call([a, b, c, d], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -780,7 +780,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4])]
     }
     return { a, b, c, d, e in
-        compileState.call([a, b, c, d, e])[0]
+        compileState.call([a, b, c, d, e], expected: 1)[0]
     }
 }
 
@@ -798,7 +798,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e in
-        let r = compileState.call([a, b, c, d, e])
+        let r = compileState.call([a, b, c, d, e], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -818,7 +818,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e in
-        let r = compileState.call([a, b, c, d, e])
+        let r = compileState.call([a, b, c, d, e], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -841,7 +841,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e in
-        let r = compileState.call([a, b, c, d, e])
+        let r = compileState.call([a, b, c, d, e], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -857,7 +857,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4], args[5])]
     }
     return { a, b, c, d, e, g in
-        compileState.call([a, b, c, d, e, g])[0]
+        compileState.call([a, b, c, d, e, g], expected: 1)[0]
     }
 }
 
@@ -876,7 +876,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e, g in
-        let r = compileState.call([a, b, c, d, e, g])
+        let r = compileState.call([a, b, c, d, e, g], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -899,7 +899,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e, g in
-        let r = compileState.call([a, b, c, d, e, g])
+        let r = compileState.call([a, b, c, d, e, g], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -922,7 +922,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e, g in
-        let r = compileState.call([a, b, c, d, e, g])
+        let r = compileState.call([a, b, c, d, e, g], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -939,7 +939,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4], args[5], args[6])]
     }
     return { a, b, c, d, e, g, h in
-        compileState.call([a, b, c, d, e, g, h])[0]
+        compileState.call([a, b, c, d, e, g, h], expected: 1)[0]
     }
 }
 
@@ -962,7 +962,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e, g, h in
-        let r = compileState.call([a, b, c, d, e, g, h])
+        let r = compileState.call([a, b, c, d, e, g, h], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -986,7 +986,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e, g, h in
-        let r = compileState.call([a, b, c, d, e, g, h])
+        let r = compileState.call([a, b, c, d, e, g, h], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -1010,7 +1010,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e, g, h in
-        let r = compileState.call([a, b, c, d, e, g, h])
+        let r = compileState.call([a, b, c, d, e, g, h], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }
@@ -1032,7 +1032,7 @@ public func compile(
         [f(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])]
     }
     return { a, b, c, d, e, g, h, i in
-        compileState.call([a, b, c, d, e, g, h, i])[0]
+        compileState.call([a, b, c, d, e, g, h, i], expected: 1)[0]
     }
 }
 
@@ -1054,7 +1054,7 @@ public func compile(
         return [r.0, r.1]
     }
     return { a, b, c, d, e, g, h, i in
-        let r = compileState.call([a, b, c, d, e, g, h, i])
+        let r = compileState.call([a, b, c, d, e, g, h, i], expected: 2)
         return (r[0], r[1])
     }
 }
@@ -1077,7 +1077,7 @@ public func compile(
         return [r.0, r.1, r.2]
     }
     return { a, b, c, d, e, g, h, i in
-        let r = compileState.call([a, b, c, d, e, g, h, i])
+        let r = compileState.call([a, b, c, d, e, g, h, i], expected: 3)
         return (r[0], r[1], r[2])
     }
 }
@@ -1100,7 +1100,7 @@ public func compile(
         return [r.0, r.1, r.2, r.3]
     }
     return { a, b, c, d, e, g, h, i in
-        let r = compileState.call([a, b, c, d, e, g, h, i])
+        let r = compileState.call([a, b, c, d, e, g, h, i], expected: 4)
         return (r[0], r[1], r[2], r[3])
     }
 }

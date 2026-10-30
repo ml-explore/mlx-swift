@@ -223,7 +223,7 @@ public enum MLXLinalg {
         mlx_linalg_svd(&vec, array.ctx, true, stream.ctx)
         defer { mlx_vector_array_free(vec) }
 
-        let arrays = mlx_vector_array_values(vec)
+        let arrays = mlx_vector_array_values(vec, count: 3)
         return (arrays[0], arrays[1], arrays[2])
     }
 
@@ -242,7 +242,7 @@ public enum MLXLinalg {
         mlx_linalg_svd(&vec, array.ctx, false, stream.ctx)
         defer { mlx_vector_array_free(vec) }
 
-        let arrays = mlx_vector_array_values(vec)
+        let arrays = mlx_vector_array_values(vec, count: 1)
         return arrays[0]
     }
 
@@ -369,7 +369,7 @@ public enum MLXLinalg {
         var vec = mlx_vector_array_new()
         mlx_linalg_lu(&vec, a.ctx, stream.ctx)
         defer { mlx_vector_array_free(vec) }
-        let arrays = mlx_vector_array_values(vec)
+        let arrays = mlx_vector_array_values(vec, count: 3)
         return (arrays[0], arrays[1], arrays[2])
     }
 

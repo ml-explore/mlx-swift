@@ -1066,7 +1066,7 @@ public func depends(input: MLXArray, dependencies: [MLXArray]) -> MLXArray {
     defer { mlx_vector_array_free(dependencies) }
     mlx_depends(&result, inputs, dependencies)
 
-    let arrays = mlx_vector_array_values(result)
+    let arrays = mlx_vector_array_values(result, count: 1)
     return arrays[0]
 }
 
@@ -1235,7 +1235,7 @@ public func divmod(
     var vec = mlx_vector_array_new()
     mlx_divmod(&vec, a.ctx, b.ctx, stream.ctx)
     defer { mlx_vector_array_free(vec) }
-    let result = mlx_vector_array_values(vec)
+    let result = mlx_vector_array_values(vec, count: 2)
     return (result[0], result[1])
 }
 
@@ -2510,7 +2510,7 @@ public func quantized(
         (globalScale ?? .mlxNone).ctx,
         stream.ctx)
 
-    let arrays = mlx_vector_array_values(r)
+    let arrays = mlx_vector_array_values(r, count: 2)
     return (arrays[0], arrays[1], arrays.count > 2 ? arrays[2] : nil)
 }
 
@@ -3061,7 +3061,7 @@ public func uniqued(
         (fillValue ?? .mlxNone).ctx,
         stream.ctx)
 
-    let arrays = mlx_vector_array_values(vector)
+    let arrays = mlx_vector_array_values(vector, count: 1)
     return arrays[0]
 }
 
@@ -3159,7 +3159,9 @@ public func uniqued(
         (fillValue ?? .mlxNone).ctx,
         stream.ctx)
 
-    let arrays = mlx_vector_array_values(vector)
+    let expectedCount =
+        1 + [UniqueOptions.index, .inverse, .counts].filter { returning.contains($0) }.count
+    let arrays = mlx_vector_array_values(vector, count: expectedCount)
     var result = UniqueResult(values: arrays[0])
 
     var readIndex = 1

@@ -2767,7 +2767,7 @@ extension MLXArray {
         var vec = mlx_vector_array_new()
         mlx_split(&vec, ctx, 2, axis.int32, stream.ctx)
         defer { mlx_vector_array_free(vec) }
-        let pieces = mlx_vector_array_values(vec)
+        let pieces = mlx_vector_array_values(vec, count: 2)
         return (pieces[0], pieces[1])
     }
 
