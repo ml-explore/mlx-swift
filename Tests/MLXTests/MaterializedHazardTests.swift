@@ -396,7 +396,8 @@ struct CompileReboundMaterializedStateTests {
         let released = DispatchSemaphore(value: 0)
         let finished = DispatchSemaphore(value: 0)
         let worker = Thread {
-            state.before = state.compiled!.call([MLXArray(Float(2))])[0].item(Float.self)
+            state.before = state.compiled!.call([MLXArray(Float(2))], expected: 1)[0]
+                .item(Float.self)
             primed.signal()
             if released.wait(timeout: .now() + 30) == .success {
                 state.after = state.replacementValue()

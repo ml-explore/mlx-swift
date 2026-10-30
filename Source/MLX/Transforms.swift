@@ -74,7 +74,11 @@ public func vjp(
     defer { mlx_vector_array_free(r0) }
     defer { mlx_vector_array_free(r1) }
 
-    return (mlx_vector_array_values(r0), mlx_vector_array_values(r1))
+    // outputs match the cotangents in number, vjps match the primals
+    return (
+        mlx_vector_array_values(r0, count: cotangents.count),
+        mlx_vector_array_values(r1, count: primals.count)
+    )
 }
 
 /// Returns a function that computes the gradient and result of `f`, computing the gradient with respect to the ``NestedDictionary``.

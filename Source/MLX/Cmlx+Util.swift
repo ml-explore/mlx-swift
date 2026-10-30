@@ -38,17 +38,9 @@ func mlx_vector_array_values(_ vector_array: mlx_vector_array) -> [MLXArray] {
 func mlx_vector_array_values(
     _ vector_array: mlx_vector_array, count: Int
 ) -> [MLXArray] {
-    (0 ..< max(mlx_vector_array_size(vector_array), count))
-        .map { index in
-            if index < mlx_vector_array_size(vector_array) {
-                // ctx is a +1 object, the array takes ownership
-                var ctx = mlx_array_new()
-                mlx_vector_array_get(&ctx, vector_array, index)
-                return MLXArray(ctx)
-            } else {
-                return MLXArray.mlxNone
-            }
-        }
+    var result = mlx_vector_array_values(vector_array)
+    while result.count < count { result.append(.mlxNone) }
+    return result
 }
 
 func mlx_map_array_values(_ mlx_map: mlx_map_string_to_array) -> [String: MLXArray] {

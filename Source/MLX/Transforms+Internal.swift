@@ -5,11 +5,16 @@ import Foundation
 
 // see Transforms+Variants for generated grad() functions
 
+/// Inner build of the value and gradient function
+/// - Parameters:
+///   - valueAndGrad: closure to transform
+///   - arrays: inputs
+///   - expected: minimum number of values and gradients to return.  If an error
+///     occurs, the results are padded with `mlxNone` so callers can index safely.
 private func valueAndGradient(
-    apply valueAndGrad: mlx_closure_value_and_grad, arrays: some Collection<MLXArray>
-)
-    -> ([MLXArray], [MLXArray])
-{
+    apply valueAndGrad: mlx_closure_value_and_grad, arrays: some Collection<MLXArray>,
+    expected: (values: Int, gradients: Int)
+) -> ([MLXArray], [MLXArray]) {
     let input_vector = new_mlx_vector_array(arrays)
     defer { mlx_vector_array_free(input_vector) }
 
@@ -23,7 +28,10 @@ private func valueAndGradient(
     defer { mlx_vector_array_free(r0) }
     defer { mlx_vector_array_free(r1) }
 
-    return (mlx_vector_array_values(r0), mlx_vector_array_values(r1))
+    return (
+        mlx_vector_array_values(r0, count: expected.values),
+        mlx_vector_array_values(r1, count: expected.gradients)
+    )
 }
 
 func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: some Collection<Int>)
@@ -40,7 +48,11 @@ func buildGradient(_ f: @escaping ([MLXArray]) -> [MLXArray], argumentNumbers: s
 
         defer { mlx_closure_value_and_grad_free(vag) }
 
-        return valueAndGradient(apply: vag, arrays: arrays).1
+        // unwrapResult() reads gradients[0], so ensure at least one
+        let (_, gradients) = valueAndGradient(
+            apply: vag, arrays: arrays,
+            expected: (values: 0, gradients: max(1, argumentNumbers.count)))
+        return gradients
     }
 }
 
@@ -58,7 +70,9 @@ func buildValueAndGradient(
 
         defer { mlx_closure_value_and_grad_free(vag) }
 
-        return valueAndGradient(apply: vag, arrays: arrays)
+        return valueAndGradient(
+            apply: vag, arrays: arrays,
+            expected: (values: 1, gradients: argumentNumbers.count))
     }
 }
 
@@ -106,7 +120,9 @@ func buildValueAndGradient<T>(
 
         defer { mlx_closure_value_and_grad_free(vag) }
 
-        let (values, flatGradients) = valueAndGradient(apply: vag, arrays: flattenedArrays)
+        let (values, flatGradients) = valueAndGradient(
+            apply: vag, arrays: flattenedArrays,
+            expected: (values: 1, gradients: flattenedArrays.count))
         let gradients = unflattened(flatGradients)
 
         return (values, gradients)

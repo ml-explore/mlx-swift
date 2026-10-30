@@ -59,7 +59,6 @@ public func valueAndGrad(
 )
     -> ([MLXArray]) -> ([MLXArray], [MLXArray])
 {
-    //
     return buildValueAndGradient(f, argumentNumbers: argumentNumbers)
 }
 
