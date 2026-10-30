@@ -7,6 +7,8 @@ with a short description of your contribution(s) below. For example:
 
 MLX Swift was developed with contributions from the following individuals:
 
+- [Ledio Berdellima](https://github.com/x-n2o): Added Markdown link checks in pre-commit/CI.
+
 <a href="https://github.com/ml-explore/mlx-swift/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=ml-explore/mlx-swift&anon=0&columns=20&max=100&r=true" />
 </a>
