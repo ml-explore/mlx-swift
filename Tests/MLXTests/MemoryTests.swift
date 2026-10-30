@@ -2,30 +2,45 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-class MemoryTests: XCTestCase {
+@Suite
+struct MemoryTests {
 
-    func testWiredMemory() {
-        Memory.withWiredLimit(1024 * 1024 * 256) {
+    @Test func wiredMemoryDeprecated() {
+        // this is a NOP wired-memory-wise but should still work
+        let r = Memory.withWiredLimit(1024 * 1024 * 256) {
             let x = MLXArray(10)
-            print(x * x)
+            return x * 3
         }
+
+        #expect(r.item(Int.self) == 30)
     }
 
-    func testDeviceInfo() {
+    @Test func wiredMemory() async {
+        let policy = WiredSumPolicy()
+        let weights = policy.ticket(size: 1024 * 1024)
+        let r = await weights.withWiredLimit {
+            let x = MLXArray(10)
+            return x * 3
+        }
+
+        #expect(r.item(Int.self) == 30)
+    }
+
+    @Test func deviceInfo() {
         let info = GPU.deviceInfo()
-        XCTAssertGreaterThan(info.memorySize, 0)
+        #expect(info.memorySize > 0)
 
         guard Device.defaultDevice().deviceType == .gpu else { return }
-        XCTAssertNotEqual(info.architecture, "Unknown")
-        XCTAssertGreaterThan(info.maxBufferSize, 0)
-        XCTAssertGreaterThan(info.maxRecommendedWorkingSetSize, 0)
+        #expect(info.architecture != "Unknown")
+        #expect(info.maxBufferSize > 0)
+        #expect(info.maxRecommendedWorkingSetSize > 0)
 
         let again = GPU.deviceInfo()
-        XCTAssertEqual(again.architecture, info.architecture)
-        XCTAssertEqual(again.maxBufferSize, info.maxBufferSize)
-        XCTAssertEqual(again.maxRecommendedWorkingSetSize, info.maxRecommendedWorkingSetSize)
+        #expect(again.architecture == info.architecture)
+        #expect(again.maxBufferSize == info.maxBufferSize)
+        #expect(again.maxRecommendedWorkingSetSize == info.maxRecommendedWorkingSetSize)
     }
 
     // `Memory.bufferSize` reports the allocator length of each buffer, and the
@@ -34,27 +49,27 @@ class MemoryTests: XCTestCase {
     // tests running in parallel).  These tests only check the properties that hold
     // regardless of the cache.
 
-    func testBufferSizeAtLeastLogicalSize() {
+    @Test func bufferSizeAtLeastLogicalSize() {
         let a = MLXRandom.normal([64, 32])
         let b = MLXArray.zeros([10, 10], type: UInt8.self)
         eval(a, b)
 
-        XCTAssertGreaterThanOrEqual(Memory.bufferSize([a]), a.nbytes)
-        XCTAssertGreaterThanOrEqual(Memory.bufferSize([b]), b.nbytes)
+        #expect(Memory.bufferSize([a]) >= a.nbytes)
+        #expect(Memory.bufferSize([b]) >= b.nbytes)
     }
 
-    func testBufferSizeEmpty() {
-        XCTAssertEqual(Memory.bufferSize([MLXArray]()), 0)
+    @Test func bufferSizeEmpty() {
+        #expect(Memory.bufferSize([MLXArray]()) == 0)
     }
 
-    func testBufferSizeCountsDuplicatesOnce() {
+    @Test func bufferSizeCountsDuplicatesOnce() {
         let a = MLXRandom.normal([64, 32])
         eval(a)
 
-        XCTAssertEqual(Memory.bufferSize([a, a, a]), Memory.bufferSize([a]))
+        #expect(Memory.bufferSize([a, a, a]) == Memory.bufferSize([a]))
     }
 
-    func testBufferSizeCountsViewsOnce() {
+    @Test func bufferSizeCountsViewsOnce() {
         let a = MLXRandom.normal([64, 32])
         let slice = a[0 ..< 8]
         let transposed = a.T
@@ -62,19 +77,19 @@ class MemoryTests: XCTestCase {
 
         // views share the buffer of `a`
         let size = Memory.bufferSize([a])
-        XCTAssertEqual(Memory.bufferSize([a, slice]), size)
-        XCTAssertEqual(Memory.bufferSize([a, transposed]), size)
-        XCTAssertEqual(Memory.bufferSize([slice, transposed]), size)
+        #expect(Memory.bufferSize([a, slice]) == size)
+        #expect(Memory.bufferSize([a, transposed]) == size)
+        #expect(Memory.bufferSize([slice, transposed]) == size)
     }
 
-    func testBufferSizeSumsDistinctBuffers() {
+    @Test func bufferSizeSumsDistinctBuffers() {
         let a = MLXRandom.normal([64, 32])
         let b = MLXRandom.normal([5])
         let c = MLXRandom.randInt(low: 0, high: 4, [100], type: UInt32.self)
         eval(a, b, c)
 
-        XCTAssertEqual(
-            Memory.bufferSize([a, b, c]),
-            Memory.bufferSize([a]) + Memory.bufferSize([b]) + Memory.bufferSize([c]))
+        #expect(
+            Memory.bufferSize([a, b, c]) == Memory.bufferSize([a]) + Memory.bufferSize([b])
+                + Memory.bufferSize([c]))
     }
 }

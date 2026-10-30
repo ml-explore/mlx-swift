@@ -129,7 +129,7 @@ private func compileSealedModuleWhileShared() {
                 eval(compiled(x))
             } else {
                 let r = mm(x)
-                #expect(r.allClose(expected).item(Bool.self))
+                expectEqual(r, expected)
             }
         }
     }
@@ -241,7 +241,7 @@ struct MaterializedHazardTests {
         let x = MLXRandom.normal([4, 16])
         let expected = mm(x)
         let result = compiled(x)
-        #expect(result.allClose(expected).item(Bool.self))
+        expectEqual(result, expected)
 
         // make sure the trace actually ran so the checks below mean something
         #expect(traced)
@@ -459,10 +459,10 @@ struct CompileReboundMaterializedStateTests {
         let holder = ModuleHolder(makeLinear(1, sealed: false))
         let c = compile(inputs: [holder], outputs: [holder]) { (x: MLXArray) in holder.model(x) }
 
-        #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+        expectEqual(c(input), holder.model(input))
 
         holder.model = makeLinear(2, sealed: false)
-        #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+        expectEqual(c(input), holder.model(input))
     }
 
     /// Control: a plain array rebound between calls.
@@ -471,10 +471,10 @@ struct CompileReboundMaterializedStateTests {
         let holder = ArrayHolder(MLXArray(Float(1)))
         let c = compile(inputs: [holder], outputs: [holder]) { (x: MLXArray) in x + holder.value }
 
-        #expect(c(input).allClose(input + 1).item(Bool.self))
+        expectEqual(c(input), input + 1)
 
         holder.value = MLXArray(Float(2))
-        #expect(c(input).allClose(input + 2).item(Bool.self))
+        expectEqual(c(input), input + 2)
     }
 
     /// Sealed A -> sealed A2 (same shapes): both have zero threaded state
@@ -485,11 +485,11 @@ struct CompileReboundMaterializedStateTests {
         let holder = ModuleHolder(makeLinear(1, sealed: true))
         let c = compile(inputs: [holder], outputs: [holder]) { (x: MLXArray) in holder.model(x) }
 
-        #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+        expectEqual(c(input), holder.model(input))
 
         holder.model = makeLinear(2, sealed: true)
-        #expect(
-            c(input).allClose(holder.model(input)).item(Bool.self),
+        expectEqual(
+            c(input), holder.model(input),
             "compiled function used the weights of the module it was traced with")
     }
 
@@ -501,14 +501,14 @@ struct CompileReboundMaterializedStateTests {
         let holder = ModuleHolder(makeLinear(1, sealed: true))
         let c = compile(inputs: [holder], outputs: [holder]) { (x: MLXArray) in holder.model(x) }
 
-        #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+        expectEqual(c(input), holder.model(input))
 
         holder.model = makeLinear(2, sealed: false)
-        #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+        expectEqual(c(input), holder.model(input))
 
         holder.model = makeLinear(3, sealed: true)
-        #expect(
-            c(input).allClose(holder.model(input)).item(Bool.self),
+        expectEqual(
+            c(input), holder.model(input),
             "compiled function reused the trace of an earlier sealed module")
     }
 
@@ -520,11 +520,11 @@ struct CompileReboundMaterializedStateTests {
         let holder = ModuleHolder(partlySealed(1))
         let c = compile(inputs: [holder], outputs: [holder]) { (x: MLXArray) in holder.model(x) }
 
-        #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+        expectEqual(c(input), holder.model(input))
 
         holder.model = partlySealed(2)
-        #expect(
-            c(input).allClose(holder.model(input)).item(Bool.self),
+        expectEqual(
+            c(input), holder.model(input),
             "compiled function mixed baked weights from the traced module")
     }
 
@@ -536,14 +536,14 @@ struct CompileReboundMaterializedStateTests {
         let parent = Parent(makeLinear(1, sealed: true))
         let c = compile(inputs: [parent], outputs: [parent]) { (x: MLXArray) in parent(x) }
 
-        #expect(c(input).allClose(parent(input)).item(Bool.self))
+        expectEqual(c(input), parent(input))
 
         var u = NestedDictionary<String, Module>()
         u["child"] = .value(makeLinear(2, sealed: true))
         parent.update(modules: u)
 
-        #expect(
-            c(input).allClose(parent(input)).item(Bool.self),
+        expectEqual(
+            c(input), parent(input),
             "compiled function used the weights of the child it was traced with")
     }
 
@@ -556,11 +556,11 @@ struct CompileReboundMaterializedStateTests {
         let holder = ArrayHolder(MLXArray(Float(1)).materialized())
         let c = compile(inputs: [holder], outputs: [holder]) { (x: MLXArray) in x + holder.value }
 
-        #expect(c(input).allClose(input + 1).item(Bool.self))
+        expectEqual(c(input), input + 1)
 
         holder.value = MLXArray(Float(2)).materialized()
-        #expect(
-            c(input).allClose(input + 2).item(Bool.self),
+        expectEqual(
+            c(input), input + 2,
             "compiled function used the MaterializedArray it was traced with")
     }
 
@@ -583,7 +583,7 @@ struct CompileReboundMaterializedStateTests {
 
         holder.model = makeLinear(2, sealed: true)
         for _ in 0 ..< 3 {
-            #expect(c(input).allClose(holder.model(input)).item(Bool.self))
+            expectEqual(c(input), holder.model(input))
         }
         #expect(traces == 2)
     }
@@ -641,14 +641,11 @@ struct SendableTransformsMaterializedTests {
         let input = compileInput().materialized()
         let expected = model(input).materialized()
 
-        await withTaskGroup(of: Bool.self) { group in
+        await withTaskGroup(of: Void.self) { group in
             for _ in 0 ..< 8 {
                 group.addTask {
-                    compiled(input).allClose(expected).item(Bool.self)
+                    expectEqual(compiled(input), expected)
                 }
-            }
-            for await ok in group {
-                #expect(ok)
             }
         }
     }
@@ -661,7 +658,7 @@ struct SendableTransformsMaterializedTests {
         }
         for offset in 0 ..< 3 {
             let input = compileInput() + Float(offset)
-            #expect(compiled(input).allClose(input * 3).item(Bool.self))
+            expectEqual(compiled(input), input * 3)
             #expect(isEvaluated(scale))
             #expect(!hasGraph(scale))
             #expect(scale.item(Float.self) == 3)
@@ -674,20 +671,17 @@ struct SendableTransformsMaterializedTests {
             x * scale
         }
 
-        await withTaskGroup(of: Bool.self) { group in
+        await withTaskGroup(of: Void.self) { group in
             for worker in 0 ..< 8 {
                 group.addTask {
                     for iteration in 0 ..< 25 {
                         let input = compileInput() + Float(worker * 25 + iteration)
-                        if !compiled(input).allClose(input * 3).item(Bool.self) {
-                            return false
+                        // stop at the first failure rather than recording 25 of them
+                        if !expectEqual(compiled(input), input * 3) {
+                            return
                         }
                     }
-                    return true
                 }
-            }
-            for await ok in group {
-                #expect(ok)
             }
         }
         #expect(isEvaluated(scale))

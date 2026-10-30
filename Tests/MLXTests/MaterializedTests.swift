@@ -34,7 +34,7 @@ struct MaterializedTests {
         let t = Task {
             let s = sum(c(i1, i2))
             let s2 = sum(f(i1, i2))
-            #expect(s.allClose(s2).item(Bool.self))
+            expectEqual(s, s2)
             print(s, s2)
         }
         _ = await t.result
@@ -57,7 +57,7 @@ struct MaterializedTests {
         let x = MLXRandom.normal([4, 4])
         let r1 = compiled(x)
         let r2 = x + state
-        #expect(r1.allClose(r2).item(Bool.self))
+        expectEqual(r1, r2)
 
         // same for a `Module` whose parameters were materialized (e.g. via
         // `MaterializedModule`) -- this is the documented
@@ -75,7 +75,7 @@ struct MaterializedTests {
         let input = MLXRandom.normal([4, 4])
         let modelResult = compiledModel(input)
         let expected = l(input)
-        #expect(modelResult.allClose(expected).item(Bool.self))
+        expectEqual(modelResult, expected)
     }
 
     @Test
