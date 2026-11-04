@@ -47,12 +47,21 @@ using Int = integral_constant<int, val>;
 // Binary Operators on Integral constants
 ///////////////////////////////////////////////////////////////////////////////
 
+// metal::remove_addrspace_t is only in the Metal 3.2 standard library and
+// later. On Metal 3.1 (iOS 17, macOS 14) decltype() does not add an address
+// space qualifier, so the type is already unqualified there.
+#if __METAL_VERSION__ >= 320
+#define integral_const_res_t(__type__) metal::remove_addrspace_t<__type__>
+#else
+#define integral_const_res_t(__type__) __type__
+#endif
+
 #define integral_const_binop(__op__, __operator__)          \
   template <typename T, T tv, typename U, U uv>             \
   METAL_FUNC constexpr auto __operator__(                   \
       integral_constant<T, tv>, integral_constant<U, uv>) { \
     constexpr auto res = tv __op__ uv;                      \
-    using res_t = metal::remove_addrspace_t<decltype(res)>; \
+    using res_t = integral_const_res_t(decltype(res));      \
     return integral_constant<res_t, res>{};                 \
   }
 
@@ -110,6 +119,7 @@ constexpr void const_for_loop(F f) {
 }
 
 #undef integral_const_binop
+#undef integral_const_res_t
 
 ///////////////////////////////////////////////////////////////////////////////
 // Reduction operators
