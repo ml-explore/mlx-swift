@@ -273,12 +273,13 @@ public enum MLXFast {
     ///   - eps: A small additive constant for numerical stability
     ///   - stream: stream or device to evaluate on
     public static func rmsNorm(
-        _ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default
+        _ x: MLXArray, weight: MLXArray? = nil, eps: Float,
+        stream: StreamOrDevice = .default
     )
         -> MLXArray
     {
         var result = mlx_array_new()
-        mlx_fast_rms_norm(&result, x.ctx, weight.ctx, eps, stream.ctx)
+        mlx_fast_rms_norm(&result, x.ctx, (weight ?? .mlxNone).ctx, eps, stream.ctx)
         return MLXArray(result)
     }
 
@@ -404,9 +405,10 @@ public func scaledDotProductAttention(
 ///     with the same size as the last axis of `x`.
 ///   - eps: A small additive constant for numerical stability
 ///   - stream: stream or device to evaluate on
-public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default)
-    -> MLXArray
-{
+public func rmsNorm(
+    _ x: MLXArray, weight: MLXArray? = nil, eps: Float,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     return MLXFast.rmsNorm(x, weight: weight, eps: eps, stream: stream)
 }
 
