@@ -9,6 +9,13 @@ repos:
       require_serial: true
       types: [swift]
 
+    - id: check-markdown-links
+      name: check markdown links
+      language: system
+      entry: python3 tools/check_links.py
+      require_serial: true
+      types: [markdown]
+
 - repo: https://github.com/cheshirekow/cmake-format-precommit
   rev: v0.6.10
   hooks:
