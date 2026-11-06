@@ -169,7 +169,7 @@ struct DistributedTests {
             captured = capture
             #expect(throws: MLXError.self) {
                 try MLXDistributed.initialize(backend: .ring) { [capture] _, _, _, _ in
-                    withExtendedLifetime(capture) {
+                    let _ = withExtendedLifetime(capture) {
                         Issue.record("Callback should not run when initialization fails")
                     }
                 }
