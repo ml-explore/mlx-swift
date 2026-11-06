@@ -3,14 +3,12 @@
 import Foundation
 import MLX
 import MLXNN
-import XCTest
+import Testing
 
 @testable import MLXOptimizers
 
-class OptimizerTests: XCTestCase {
-
-    override class func setUp() {
-    }
+@Suite
+struct OptimizerTests {
 
     class ShapeModule: Module {
         // ranks 1 through 3: some optimizers (Adafactor, Muon) treat them differently
@@ -42,7 +40,7 @@ class OptimizerTests: XCTestCase {
             }
         }
 
-        XCTAssertTrue(shapesEqual)
+        #expect(shapesEqual)
     }
 
     // A very simple model that implements the equation
@@ -82,7 +80,7 @@ class OptimizerTests: XCTestCase {
     ///     updates the model and the optimizer)
     func checkTrain<T>(
         optimizer: OptimizerBase<T>, steps: Int = 300, compile: Bool = false,
-        file: StaticString = #filePath, line: UInt = #line
+        sourceLocation: SourceLocation = #_sourceLocation
     ) {
         // the model initialization and the training data are random -- use a fixed
         // seed so the result is repeatable.  the state is task local so tests running
@@ -141,10 +139,10 @@ class OptimizerTests: XCTestCase {
             let finalLoss = loss(model: model, x: xEval, y: yEval).item(Float.self)
 
             // the loss should drop by at least 90%
-            XCTAssertLessThan(
-                finalLoss, initialLoss * 0.1,
+            #expect(
+                finalLoss < initialLoss * 0.1,
                 "\(type(of: optimizer)) (compile: \(compile)): loss \(initialLoss) -> \(finalLoss)",
-                file: file, line: line)
+                sourceLocation: sourceLocation)
         }
     }
 
@@ -154,7 +152,7 @@ class OptimizerTests: XCTestCase {
     // - verify shapes match input (sort of a smoke test, copied from python)
     // - verify that training with the optimizer reduces the loss of a simple model
 
-    func testSGD() {
+    @Test func sgd() {
         checkShape(optimizer: SGD(learningRate: 0.1))
         checkTrain(optimizer: SGD(learningRate: 0.1))
 
@@ -162,30 +160,30 @@ class OptimizerTests: XCTestCase {
         checkTrain(optimizer: SGD(learningRate: 0.1), compile: true)
     }
 
-    func testRMSprop() {
+    @Test func rmsprop() {
         checkShape(optimizer: RMSprop(learningRate: 0.1))
         checkTrain(optimizer: RMSprop(learningRate: 0.1))
     }
 
-    func testAdaGrad() {
+    @Test func adaGrad() {
         checkShape(optimizer: AdaGrad(learningRate: 0.1))
         // the step shrinks as the squared gradients accumulate
         checkTrain(optimizer: AdaGrad(learningRate: 1.0))
     }
 
-    func testAdaDelta() {
+    @Test func adaDelta() {
         checkShape(optimizer: AdaDelta(learningRate: 0.1))
         // the step starts near sqrt(eps) and grows slowly -- with the default eps
         // (1e-6) it barely moves in a few hundred steps, whatever the learning rate
         checkTrain(optimizer: AdaDelta(learningRate: 1.0, eps: 1e-3))
     }
 
-    func testAdam() {
+    @Test func adam() {
         checkShape(optimizer: Adam(learningRate: 0.1))
         checkTrain(optimizer: Adam(learningRate: 0.1))
     }
 
-    func testAdamBiasCorrection() {
+    @Test func adamBiasCorrection() {
         let parameter = MLXArray([1.0 as Float, -2.0, 3.0])
         let gradient = MLXArray([0.5 as Float, -0.25, 2.0])
         let optimizer = Adam(learningRate: 0.1 as Float, biasCorrection: true)
@@ -200,15 +198,15 @@ class OptimizerTests: XCTestCase {
         let m = (1 - Float(0.9)) * gradient
         let v = (1 - Float(0.999)) * square(gradient)
         let expected = parameter - (c1 * m) / (sqrt(v) * c2 + Float(1e-8))
-        assertEqual(result.0, expected, atol: 1e-6)
+        expectEqual(result.0, expected, atol: 1e-6)
     }
 
-    func testAdamW() {
+    @Test func adamW() {
         checkShape(optimizer: AdamW(learningRate: 0.1))
         checkTrain(optimizer: AdamW(learningRate: 0.1))
     }
 
-    func testAdamWBiasCorrection() {
+    @Test func adamWBiasCorrection() {
         let parameter = MLXArray([1.0 as Float, -2.0, 3.0])
         let gradient = MLXArray([0.5 as Float, -0.25, 2.0])
         let optimizer = AdamW(
@@ -225,21 +223,21 @@ class OptimizerTests: XCTestCase {
         let m = (1 - Float(0.9)) * gradient
         let v = (1 - Float(0.999)) * square(gradient)
         let expected = decayed - (c1 * m) / (sqrt(v) * c2 + Float(1e-8))
-        assertEqual(result.0, expected, atol: 1e-6)
+        expectEqual(result.0, expected, atol: 1e-6)
     }
 
-    func testAdamax() {
+    @Test func adamax() {
         checkShape(optimizer: Adamax(learningRate: 0.1))
         checkTrain(optimizer: Adamax(learningRate: 1.0))
     }
 
-    func testLion() {
+    @Test func lion() {
         checkShape(optimizer: Lion(learningRate: 0.1))
         // every step is exactly ±learningRate per parameter
         checkTrain(optimizer: Lion(learningRate: 0.1))
     }
 
-    func testAdafactor() {
+    @Test func adafactor() {
         checkShape(optimizer: Adafactor(learningRate: 0.1))
         // by default (relativeStep) the learning rate is ignored and the step is
         // relative to the size of the parameter, so parameters near zero hardly move
@@ -249,7 +247,7 @@ class OptimizerTests: XCTestCase {
 
     // MARK: - Muon
 
-    func testMuonUpdateIsConditioned() {
+    @Test func muonUpdateIsConditioned() {
         // the Newton-Schulz iteration used by Muon is a *crude* polar approximation:
         // it pulls the singular values of the update into a band around 1 (it does
         // not converge to an exactly orthogonal matrix).  With no momentum and
@@ -286,14 +284,14 @@ class OptimizerTests: XCTestCase {
         let updateCondition =
             updateSingular.max().item(Float.self) / updateSingular.min().item(Float.self)
 
-        XCTAssertGreaterThan(inputCondition, 10)
-        XCTAssertLessThan(updateCondition, 2)
+        #expect(inputCondition > 10)
+        #expect(updateCondition < 2)
         // and the values are pulled toward 1 rather than being rescaled arbitrarily
-        XCTAssertGreaterThan(updateSingular.min().item(Float.self), 0.5)
-        XCTAssertLessThan(updateSingular.max().item(Float.self), 1.5)
+        #expect(updateSingular.min().item(Float.self) > 0.5)
+        #expect(updateSingular.max().item(Float.self) < 1.5)
     }
 
-    func testMuonLeavesLowRankParametersAlone() {
+    @Test func muonLeavesLowRankParametersAlone() {
         // rank 0/1 parameters skip the orthogonalization: the update is the plain
         // momentum direction, so a single step moves by learningRate * gradient
         let optimizer = Muon(
@@ -305,7 +303,7 @@ class OptimizerTests: XCTestCase {
             gradients: gradients,
             modelParameters: ModuleParameters.unflattened([("b", parameter)]))
 
-        assertEqual(
+        expectEqual(
             updated[unwrapping: "b"]!, MLXArray(converting: [0.9, 1.9, 2.9]), atol: 1e-6)
     }
 
@@ -314,26 +312,26 @@ class OptimizerTests: XCTestCase {
     // these have to match python: `tools/audit_defaults.py` compares them
     // automatically, and this is the regression test for the one that was wrong
 
-    func testLionDefaults() {
+    @Test func lionDefaults() {
         let lion = Lion(learningRate: 0.1)
-        XCTAssertEqual(lion.betas.0, 0.9)
+        #expect(lion.betas.0 == 0.9)
         // python's Lion uses 0.99 here -- Adam is the one with 0.999
-        XCTAssertEqual(lion.betas.1, 0.99)
-        XCTAssertEqual(lion.weightDecay, 0)
+        #expect(lion.betas.1 == 0.99)
+        #expect(lion.weightDecay == 0)
     }
 
-    func testAdamAndAdamWDefaults() {
-        XCTAssertEqual(Adam(learningRate: 0.1).betas.1, 0.999)
-        XCTAssertEqual(AdamW(learningRate: 0.1).betas.1, 0.999)
-        XCTAssertEqual(AdamW(learningRate: 0.1).weightDecay, 0.01)
+    @Test func adamAndAdamWDefaults() {
+        #expect(Adam(learningRate: 0.1).betas.1 == 0.999)
+        #expect(AdamW(learningRate: 0.1).betas.1 == 0.999)
+        #expect(AdamW(learningRate: 0.1).weightDecay == 0.01)
     }
 
-    func testMuonDefaults() {
+    @Test func muonDefaults() {
         let muon = Muon(learningRate: 0.1)
-        XCTAssertEqual(muon.momentum, 0.95)
-        XCTAssertEqual(muon.weightDecay, 0.01)
-        XCTAssertTrue(muon.nesterov)
-        XCTAssertEqual(muon.nsSteps, 5)
+        #expect(muon.momentum == 0.95)
+        #expect(muon.weightDecay == 0.01)
+        #expect(muon.nesterov)
+        #expect(muon.nsSteps == 5)
     }
 
     // MARK: - Adafactor
@@ -343,7 +341,7 @@ class OptimizerTests: XCTestCase {
     // about the rank -- rank 3+ was broken (an outer product via matmul, which only
     // works for rank 2) and the mismatch then crashed on a nil state.
 
-    func testAdafactorRanks() throws {
+    @Test func adafactorRanks() throws {
         let optimizer = Adafactor(learningRate: 0.1, relativeStep: false)
 
         var parameters = ModuleParameters.unflattened([
@@ -363,16 +361,16 @@ class OptimizerTests: XCTestCase {
             ("vector", [7]), ("matrix", [3, 5]), ("tensor", [2, 3, 4]), ("big", [2, 3, 4, 5]),
         ] {
             let value = parameters[unwrapping: key]!
-            XCTAssertEqual(value.shape, shape, key)
-            XCTAssertTrue(isFinite(value).all().item(Bool.self), "\(key) is not finite")
+            #expect(value.shape == shape, "\(key)")
+            #expect(isFinite(value).all().item(Bool.self), "\(key) is not finite")
             // the update should have moved the parameter off its starting value
-            XCTAssertFalse(
-                value.allClose(MLXArray.ones(like: value), rtol: 1e-6).item(Bool.self),
+            #expect(
+                !value.allClose(MLXArray.ones(like: value), rtol: 1e-6).item(Bool.self),
                 "\(key) did not change")
         }
     }
 
-    func testAdafactorFactoredUpdateIsBatched() {
+    @Test func adafactorFactoredUpdateIsBatched() {
         // the row/column factors combine per leading index: slice `i` of a rank 3
         // update must equal the rank 2 update of slice `i` of the factors
         let optimizer = Adafactor(learningRate: 0.1, relativeStep: false)
@@ -382,16 +380,16 @@ class OptimizerTests: XCTestCase {
 
         let combined = optimizer.approvateExpMovingAverage(
             expAvgSqRow: row, expAvgSqCol: column)
-        XCTAssertEqual(combined.shape, [2, 3, 4])
+        #expect(combined.shape == [2, 3, 4])
 
         for i in 0 ..< 2 {
             let slice = optimizer.approvateExpMovingAverage(
                 expAvgSqRow: row[i], expAvgSqCol: column[i])
-            assertEqual(combined[i], slice, atol: 1e-6)
+            expectEqual(combined[i], slice, atol: 1e-6)
         }
     }
 
-    func testAdafactorRankChangeDoesNotCrash() {
+    @Test func adafactorRankChangeDoesNotCrash() {
         // the state is created for the rank seen on the first step; a later call with
         // a different rank for the same key used to hit a nil state
         let optimizer = Adafactor(learningRate: 0.1, relativeStep: false)
@@ -405,7 +403,7 @@ class OptimizerTests: XCTestCase {
             gradients: vector.mapValues { 0.5 * $0 }, modelParameters: vector)
         eval(vector)
 
-        XCTAssertEqual(vector[unwrapping: "w"]!.shape, [5])
+        #expect(vector[unwrapping: "w"]!.shape == [5])
     }
 
     class TwoParameterModel: Module {
@@ -413,7 +411,7 @@ class OptimizerTests: XCTestCase {
         let bias = MLXArray.zeros([3])
     }
 
-    func testMultiOptimizer() {
+    @Test func multiOptimizer() {
         let model = TwoParameterModel()
         let grads = model.parameters().mapValues { MLXArray.ones(like: $0) }
 
@@ -427,14 +425,14 @@ class OptimizerTests: XCTestCase {
         eval(model)
 
         // plain SGD from zeros with unit gradients: new = -learningRate
-        assertEqual(model.bias, MLXArray([Float(-1.0), -1.0, -1.0]), atol: 1e-6)
-        assertEqual(model.weight, MLXArray([Float(-0.1), -0.1, -0.1]), atol: 1e-6)
+        expectEqual(model.bias, MLXArray([Float(-1.0), -1.0, -1.0]), atol: 1e-6)
+        expectEqual(model.weight, MLXArray([Float(-0.1), -0.1, -0.1]), atol: 1e-6)
 
         // innerState surfaces the sub-optimizers' state.
-        XCTAssertEqual(optimizer.innerState().count, 2)
+        #expect(optimizer.innerState().count == 2)
     }
 
-    func testMuon() {
+    @Test func muon() {
         checkShape(optimizer: Muon(learningRate: 0.1))
 
         // 1D (and 0D) parameters skip the Newton-Schulz orthogonalization and
@@ -448,9 +446,9 @@ class OptimizerTests: XCTestCase {
             state: MLXArray([0.0, 0.0] as [Float]))
         eval(p, v)
         // update = 1*0.05 + 0.05*0.95 = 0.0975 ; param0' = 1 - 0.1*0.0975
-        XCTAssertEqual(p[0].item(Float.self), 0.99025, accuracy: 1e-5)
-        XCTAssertEqual(p[1].item(Float.self), 1.99025, accuracy: 1e-5)
-        XCTAssertEqual(v[0].item(Float.self), 0.05, accuracy: 1e-6)
+        expectEqual(p[0].item(Float.self), 0.99025, accuracy: 1e-5)
+        expectEqual(p[1].item(Float.self), 1.99025, accuracy: 1e-5)
+        expectEqual(v[0].item(Float.self), 0.05, accuracy: 1e-6)
 
         // 2D parameters take the orthogonalization path: it must run, preserve
         // shape, and produce finite values that move the parameter.
@@ -458,9 +456,9 @@ class OptimizerTests: XCTestCase {
         let (p2, _) = opt.applySingle(
             gradient: g2, parameter: MLXArray.zeros([2, 3]), state: MLXArray.zeros([2, 3]))
         eval(p2)
-        XCTAssertEqual(p2.shape, [2, 3])
-        XCTAssertTrue(p2.sum().item(Float.self).isFinite)
-        XCTAssertGreaterThan(abs(p2).sum().item(Float.self), 0)
+        #expect(p2.shape == [2, 3])
+        #expect(p2.sum().item(Float.self).isFinite)
+        #expect(abs(p2).sum().item(Float.self) > 0)
     }
 
     // MARK: - optimizer state checkpoints
@@ -499,23 +497,23 @@ class OptimizerTests: XCTestCase {
         parameters.flattened().first { $0.0 == key }!.1
     }
 
-    func assertParametersEqual(
-        _ lhs: ModuleParameters, _ rhs: ModuleParameters, file: StaticString = #filePath,
-        line: UInt = #line
+    func expectParametersEqual(
+        _ lhs: ModuleParameters, _ rhs: ModuleParameters,
+        sourceLocation: SourceLocation = #_sourceLocation
     ) {
         let left = lhs.flattened()
         let right = rhs.flattened()
-        XCTAssertEqual(left.map(\.0), right.map(\.0), file: file, line: line)
+        #expect(left.map(\.0) == right.map(\.0), sourceLocation: sourceLocation)
         for (lhs, rhs) in zip(left, right) {
-            assertEqual(lhs.1, rhs.1, file: file, line: line)
+            expectEqual(lhs.1, rhs.1, sourceLocation: sourceLocation)
         }
     }
 
     /// Train `stepsBefore + stepsAfter` on one optimizer, and the same trajectory
     /// again with the state saved through the flattened dictionary `save` writes.
-    func assertResumes<T: Optimizer>(
+    func expectResumes<T: Optimizer>(
         _ make: () -> T, model: () -> Module, stepsBefore: Int = 3, stepsAfter: Int = 1,
-        file: StaticString = #filePath, line: UInt = #line
+        sourceLocation: SourceLocation = #_sourceLocation
     ) {
         let reference = model()
         step(make(), reference, times: stepsBefore + stepsAfter)
@@ -533,17 +531,17 @@ class OptimizerTests: XCTestCase {
         resumed.update(parameters: decoded)
         step(resumed, resumedModel, times: stepsAfter)
 
-        assertParametersEqual(
-            continued, detached(resumedModel.parameters()), file: file, line: line)
+        expectParametersEqual(
+            continued, detached(resumedModel.parameters()), sourceLocation: sourceLocation)
     }
 
-    func testStateIsEmptyBeforeTheFirstStep() {
-        XCTAssertTrue(Adam(learningRate: 0.1).state().isEmpty)
-        XCTAssertTrue(SGD(learningRate: 0.1, momentum: 0.9).state().isEmpty)
+    @Test func stateIsEmptyBeforeTheFirstStep() {
+        #expect(Adam(learningRate: 0.1).state().isEmpty)
+        #expect(SGD(learningRate: 0.1, momentum: 0.9).state().isEmpty)
     }
 
-    func testStateRoundTripSGD() {
-        assertResumes({ SGD(learningRate: 0.1, momentum: 0.9) }, model: { StateNet() })
+    @Test func stateRoundTripSGD() {
+        expectResumes({ SGD(learningRate: 0.1, momentum: 0.9) }, model: { StateNet() })
 
         // A fresh optimizer from the same weights is not the same trajectory.
         // Otherwise the comparison above would pass with the buffers ignored.
@@ -556,13 +554,13 @@ class OptimizerTests: XCTestCase {
         let freshModel = StateNet()
         freshModel.update(parameters: weights)
         step(SGD(learningRate: 0.1, momentum: 0.9), freshModel, times: 1)
-        assertNotEqual(
+        expectNotEqual(
             parameter(detached(freshModel.parameters()), "bias"),
             parameter(detached(continued.parameters()), "bias"))
     }
 
-    func testStateRoundTripAdam() {
-        assertResumes(
+    @Test func stateRoundTripAdam() {
+        expectResumes(
             { Adam(learningRate: 0.1, biasCorrection: true) }, model: { StateNet() })
 
         let model = StateNet()
@@ -570,22 +568,21 @@ class OptimizerTests: XCTestCase {
         step(optimizer, model, times: 3)
 
         let keys = Set(optimizer.state().flattened().map(\.0))
-        XCTAssertTrue(keys.contains("block.weight.m"))
-        XCTAssertTrue(keys.contains("block.weight.v"))
-        XCTAssertTrue(keys.contains("block.weight.step"))
-        XCTAssertTrue(keys.contains("bias.m"))
-        XCTAssertTrue(keys.contains("heads.0.m"))
-        XCTAssertTrue(keys.contains("heads.1.v"))
-        XCTAssertTrue(keys.contains("heads.1.step"))
+        #expect(keys.contains("block.weight.m"))
+        #expect(keys.contains("block.weight.v"))
+        #expect(keys.contains("block.weight.step"))
+        #expect(keys.contains("bias.m"))
+        #expect(keys.contains("heads.0.m"))
+        #expect(keys.contains("heads.1.v"))
+        #expect(keys.contains("heads.1.step"))
 
         for (key, step) in optimizer.state().flattened() where key.hasSuffix(".step") {
-            XCTAssertEqual(step.item(Int32.self), 3, key)
+            #expect(step.item(Int32.self) == 3, "\(key)")
         }
 
         // `state()` on the existential is the real tree, not the empty default.
         let existential: Optimizer = optimizer
-        XCTAssertEqual(
-            Set(existential.state().flattened().map(\.0)), keys)
+        #expect(Set(existential.state().flattened().map(\.0)) == keys)
 
         // Omitting `bias` leaves it alone and replaces `block.weight`.
         let biasBefore = optimizer.state().flattened().filter { $0.0.hasPrefix("bias.") }
@@ -595,48 +592,49 @@ class OptimizerTests: XCTestCase {
         optimizer.update(parameters: ModuleParameters.unflattened(zeroWeight))
         let after = optimizer.state().flattened()
         for (key, value) in biasBefore {
-            assertEqual(after.first { $0.0 == key }!.1, value)
+            expectEqual(after.first { $0.0 == key }!.1, value)
         }
         for (key, _) in zeroWeight {
             let value = after.first { $0.0 == key }!.1
-            assertEqual(value, MLXArray.zeros(like: value))
+            expectEqual(value, MLXArray.zeros(like: value))
         }
     }
 
-    func testStateRoundTripAdaDelta() {
-        assertResumes({ AdaDelta(learningRate: 0.1) }, model: { StateNet() })
+    @Test func stateRoundTripAdaDelta() {
+        expectResumes({ AdaDelta(learningRate: 0.1) }, model: { StateNet() })
     }
 
-    func testStateRoundTripAdamax() {
-        assertResumes({ Adamax(learningRate: 0.1) }, model: { StateNet() })
+    @Test func stateRoundTripAdamax() {
+        expectResumes({ Adamax(learningRate: 0.1) }, model: { StateNet() })
 
         let model = TwoParameterModel()
         let optimizer = Adamax(learningRate: 0.1)
         step(optimizer, model, times: 1)
-        XCTAssertEqual(
-            Set(optimizer.state().flattened().map(\.0)),
-            ["bias.m", "bias.v", "weight.m", "weight.v"])
+        #expect(
+            Set(optimizer.state().flattened().map(\.0)) == [
+                "bias.m", "bias.v", "weight.m", "weight.v",
+            ])
     }
 
-    func testStateRoundTripAdafactor() {
-        assertResumes(
+    @Test func stateRoundTripAdafactor() {
+        expectResumes(
             { Adafactor(learningRate: 0.1, relativeStep: false) }, model: { RankNet() })
 
         let model = RankNet()
         let optimizer = Adafactor(learningRate: 0.1, beta1: 0.9, relativeStep: false)
         step(optimizer, model, times: 2)
         let keys = Set(optimizer.state().flattened().map(\.0))
-        XCTAssertTrue(keys.contains("vector.expAvgSq"))
-        XCTAssertTrue(keys.contains("vector.expAvg"))
-        XCTAssertTrue(keys.contains("vector.step"))
-        XCTAssertTrue(keys.contains("matrix.expAvgSqRow"))
-        XCTAssertTrue(keys.contains("matrix.expAvgSqCol"))
-        XCTAssertFalse(keys.contains("matrix.expAvgSq"))
+        #expect(keys.contains("vector.expAvgSq"))
+        #expect(keys.contains("vector.expAvg"))
+        #expect(keys.contains("vector.step"))
+        #expect(keys.contains("matrix.expAvgSqRow"))
+        #expect(keys.contains("matrix.expAvgSqCol"))
+        #expect(!keys.contains("matrix.expAvgSq"))
         for (key, step) in optimizer.state().flattened() where key.hasSuffix(".step") {
-            XCTAssertEqual(step.item(Int32.self), 2, key)
+            #expect(step.item(Int32.self) == 2, "\(key)")
         }
 
-        assertResumes(
+        expectResumes(
             { Adafactor(learningRate: 0.1, beta1: 0.9, relativeStep: false) },
             model: { RankNet() })
     }
@@ -644,7 +642,7 @@ class OptimizerTests: XCTestCase {
     /// `step` changes beta2 on every update. compile only writes back arrays
     /// from `innerState()`, so a checkpoint after a compiled run must see the
     /// same count an eager run would.
-    func testAdafactorCompiledStepAdvances() {
+    @Test func adafactorCompiledStepAdvances() {
         func parameters(compiled: Bool) -> ModuleParameters {
             let model = RankNet()
             let optimizer = Adafactor(learningRate: 0.1, warmupInit: true)
@@ -663,15 +661,15 @@ class OptimizerTests: XCTestCase {
             }
             eval(model, optimizer)
             for (key, value) in optimizer.state().flattened() where key.hasSuffix(".step") {
-                XCTAssertEqual(value.item(Int32.self), 4, key)
+                #expect(value.item(Int32.self) == 4, "\(key)")
             }
             return detached(model.parameters())
         }
 
-        assertParametersEqual(parameters(compiled: false), parameters(compiled: true))
+        expectParametersEqual(parameters(compiled: false), parameters(compiled: true))
     }
 
-    func testStateRoundTripMultiOptimizer() {
+    @Test func stateRoundTripMultiOptimizer() {
         func make() -> MultiOptimizer {
             MultiOptimizer(
                 optimizers: [
@@ -680,16 +678,16 @@ class OptimizerTests: XCTestCase {
                 ],
                 filters: [{ key, _ in key == "bias" }])
         }
-        assertResumes(make, model: { TwoParameterModel() })
+        expectResumes(make, model: { TwoParameterModel() })
 
         let model = TwoParameterModel()
         let optimizer = make()
         step(optimizer, model, times: 2)
         let keys = Set(optimizer.state().flattened().map(\.0))
-        XCTAssertTrue(keys.contains("states.0.bias"))
-        XCTAssertTrue(keys.contains("states.1.weight.m"))
-        XCTAssertTrue(keys.contains("states.1.weight.v"))
-        XCTAssertTrue(keys.contains("states.1.weight.step"))
+        #expect(keys.contains("states.0.bias"))
+        #expect(keys.contains("states.1.weight.m"))
+        #expect(keys.contains("states.1.weight.v"))
+        #expect(keys.contains("states.1.weight.step"))
     }
 
 }

@@ -1,43 +1,41 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
-import XCTest
+import Testing
 
 @testable import MLX
 
-class OpsTests: XCTestCase {
+@Suite
+struct OpsTests {
 
-    override class func setUp() {
-    }
-
-    func testAsStridedReshape() {
+    @Test func asStridedReshape() {
         // just changing the shape and using the default strides is the same as reshape
         let a = MLXArray(0 ..< 12, [4, 3])
 
         // this uses [4, 1] as the strides
         let b = asStrided(a, [3, 4])
-        assertEqual(b, a.reshaped([3, 4]))
+        expectEqual(b, a.reshaped([3, 4]))
 
         let c = asStrided(a, [3, 4], strides: [4, 1])
-        assertEqual(b, c)
+        expectEqual(b, c)
     }
 
-    func testAsStridedTranspose() {
+    @Test func asStridedTranspose() {
         // strides in the reverse order is a transpose
         let a = MLXArray(0 ..< 12, [4, 3])
 
         let b = asStrided(a, [3, 4], strides: [1, 3])
-        assertEqual(b, a.transposed())
+        expectEqual(b, a.transposed())
     }
 
-    func testAsStridedOffset() {
+    @Test func asStridedOffset() {
         let a = MLXArray(0 ..< 16, [4, 4])
 
         let b = asStrided(a, [3, 4], offset: 1)
-        assertEqual(b, MLXArray(1 ..< 13, [3, 4]))
+        expectEqual(b, MLXArray(1 ..< 13, [3, 4]))
     }
 
-    func testTensordot() {
+    @Test func tensordotExplicitAxes() {
         let a = MLXArray(0 ..< 60, [3, 4, 5]).asType(.float32)
         let b = MLXArray(0 ..< 24, [4, 3, 2]).asType(.float32)
         let c = tensordot(a, b, axes: ([1, 0], [0, 1]))
@@ -50,28 +48,28 @@ class OpsTests: XCTestCase {
                 4796.0, 5162.0,
                 4928.0, 5306.0,
             ], [5, 2])
-        assertEqual(c, expected)
+        expectEqual(c, expected)
     }
 
-    func testTensordotDefaultAxes() {
+    @Test func tensordotDefaultAxes() {
         // axes defaults to 2 (as in numpy and python mlx): sum over the last two
         // dimensions of a and the first two of b
         let a = MLXArray(0 ..< 24, [2, 3, 4]).asType(.float32)
         let b = MLXArray(0 ..< 60, [3, 4, 5]).asType(.float32)
 
-        assertEqual(tensordot(a, b), tensordot(a, b, axes: 2))
-        XCTAssertEqual(tensordot(a, b).shape, [2, 5])
+        expectEqual(tensordot(a, b), tensordot(a, b, axes: 2))
+        #expect(tensordot(a, b).shape == [2, 5])
     }
 
-    func testNanToNumDefaults() {
+    @Test func nanToNumDefaults() {
         // by default infinities become the largest finite value for the dtype
         // (matching python mlx) and NaN becomes 0
         let a = MLXArray(
             [1.5, Float.nan, Float.infinity, -Float.infinity] as [Float])
 
         let result = nanToNum(a)
-        XCTAssertEqual(result.dtype, .float32)
-        assertEqual(
+        #expect(result.dtype == .float32)
+        expectEqual(
             result,
             MLXArray(
                 [
@@ -79,41 +77,41 @@ class OpsTests: XCTestCase {
                 ] as [Float]))
 
         // and they can be replaced explicitly
-        assertEqual(
+        expectEqual(
             nanToNum(a, nan: -1, posInf: 100, negInf: -100),
             MLXArray([1.5, -1, 100, -100] as [Float]))
     }
 
-    func testNanToNumDefaultsFloat16() {
+    @Test func nanToNumDefaultsFloat16() {
         // the replacement follows the dtype
         let a = MLXArray([Float.infinity, -Float.infinity] as [Float]).asType(.float16)
         let limit = Float(DType.float16.finfo!.max)
 
         let result = nanToNum(a)
-        XCTAssertEqual(result.dtype, .float16)
-        XCTAssertEqual(result[0].item(Float.self), limit)
-        XCTAssertEqual(result[1].item(Float.self), -limit)
+        #expect(result.dtype == .float16)
+        #expect(result[0].item(Float.self) == limit)
+        #expect(result[1].item(Float.self) == -limit)
     }
 
-    func testConvolveModeShapes() {
+    @Test func convolveModeShapes() {
         // matches numpy/python mlx: full is M + K - 1, same is M, valid is M - K + 1
         let a = MLXArray(0 ..< 20).asType(.float32)
 
         for kernelSize in [3, 4, 5, 6] {
             let v = MLXArray(1 ..< (kernelSize + 1)).asType(.float32)
 
-            XCTAssertEqual(
-                convolve(a, v, mode: .full).shape, [a.size + kernelSize - 1],
+            #expect(
+                convolve(a, v, mode: .full).shape == [a.size + kernelSize - 1],
                 "full, kernel \(kernelSize)")
-            XCTAssertEqual(
-                convolve(a, v, mode: .same).shape, [a.size], "same, kernel \(kernelSize)")
-            XCTAssertEqual(
-                convolve(a, v, mode: .valid).shape, [a.size - kernelSize + 1],
+            #expect(
+                convolve(a, v, mode: .same).shape == [a.size], "same, kernel \(kernelSize)")
+            #expect(
+                convolve(a, v, mode: .valid).shape == [a.size - kernelSize + 1],
                 "valid, kernel \(kernelSize)")
         }
     }
 
-    func testConvolveSameAndValidAreWindowsOfFull() {
+    @Test func convolveSameAndValidAreWindowsOfFull() {
         // `same` is the centered `a.size` window of the full convolution and
         // `valid` is the window with no zero padding at all -- true for both odd
         // and even sized weights (even sizes need asymmetric padding)
@@ -124,47 +122,47 @@ class OpsTests: XCTestCase {
             let full = convolve(a, v, mode: .full)
 
             let sameStart = (kernelSize - 1) / 2
-            assertEqual(
+            expectEqual(
                 convolve(a, v, mode: .same), full[sameStart ..< (sameStart + a.size)])
 
-            assertEqual(
+            expectEqual(
                 convolve(a, v, mode: .valid), full[(kernelSize - 1) ..< a.size])
         }
     }
 
-    func testConvertScalarInt() {
+    @Test func convertScalarInt() {
         let a = MLXArray(0 ..< 10)
         let b = a .< (a + 1)
         let c = b * 25
-        XCTAssertEqual(b.dtype, .bool)
-        XCTAssertEqual(c.dtype, .int32)
+        #expect(b.dtype == .bool)
+        #expect(c.dtype == .int32)
     }
 
-    func testConvertScalarFloat16() {
+    @Test func convertScalarFloat16() {
         let a = MLXArray(0 ..< 10)
         let b = a .< (a + 1)
         let c = b * Float16(2.5)
-        XCTAssertEqual(b.dtype, .bool)
-        XCTAssertEqual(c.dtype, .float16)
+        #expect(b.dtype == .bool)
+        #expect(c.dtype == .float16)
     }
 
-    func testConvertScalarFloat() {
+    @Test func convertScalarFloat() {
         let a = MLXArray(0 ..< 10)
         let b = a .< (a + 1)
         let c = b * Float(2.5)
-        XCTAssertEqual(b.dtype, .bool)
-        XCTAssertEqual(c.dtype, .float32)
+        #expect(b.dtype == .bool)
+        #expect(c.dtype == .float32)
     }
 
-    func testConvertScalarDouble() {
+    @Test func convertScalarDouble() {
         let a = MLXArray(0 ..< 10)
         let b = a .< (a + 1)
         let c = b * 2.5
-        XCTAssertEqual(b.dtype, .bool)
-        XCTAssertEqual(c.dtype, .float32)
+        #expect(b.dtype == .bool)
+        #expect(c.dtype == .float32)
     }
 
-    func testCountNonzero() {
+    @Test func countNonzeroAxes() {
         let a = MLXArray([0, 1, 2, 0, 3, 0], [2, 3])
         let resAxes0 = countNonzero(a, axes: [0])
         let resAxes1 = countNonzero(a, axes: [1])
@@ -172,66 +170,63 @@ class OpsTests: XCTestCase {
         let resAxis1 = countNonzero(a, axis: 1)
         let resAll = countNonzero(a)
 
-        assertEqual(resAxes0, [0, 2, 1])
-        assertEqual(resAxes0, resAxis0)
-        assertEqual(resAxes1, [2, 1])
-        assertEqual(resAxes1, resAxis1)
-        assertEqual(resAll, 3.asMLXArray(dtype: .int32))
+        expectEqual(resAxes0, [0, 2, 1])
+        expectEqual(resAxes0, resAxis0)
+        expectEqual(resAxes1, [2, 1])
+        expectEqual(resAxes1, resAxis1)
+        expectEqual(resAll, 3.asMLXArray(dtype: .int32))
     }
 
-    func testFlatten() {
+    @Test func flattenUnflatten() {
         let a = zeros([4, 5, 6, 7])
         let b = flatten(a, startAxis: 1, endAxis: 2)
         let c = unflatten(b, axis: 1, shape: [5, 6])
-        assertEqual(a, c)
+        expectEqual(a, c)
     }
 
-    func testQuantized() {
+    @Test func quantizedShapes() throws {
         let a = MLXRandom.uniform(low: 0, high: 1, [8, 64])
 
         let (wq1, s1, b1) = quantized(a, mode: .affine)
-        XCTAssertEqual(wq1.dtype, .uint32)
-        XCTAssertEqual(wq1.shape, [8, 8])
-        XCTAssertEqual(s1.shape, [8, 1])
-        if let b1 {
-            XCTAssertEqual(b1.shape, [8, 1])
-        } else {
-            XCTFail("b1 should not be nil")
-        }
+        #expect(wq1.dtype == .uint32)
+        #expect(wq1.shape == [8, 8])
+        #expect(s1.shape == [8, 1])
+        let biases1 = try #require(b1, "b1 should not be nil")
+        #expect(biases1.shape == [8, 1])
 
         let (wq2, s2, b2) = quantized(a, groupSize: 32, mode: .mxfp4)
-        XCTAssertEqual(wq2.dtype, .uint32)
-        XCTAssertEqual(wq2.shape, [8, 8])
-        XCTAssertEqual(s2.shape, [8, 2])
-        XCTAssertNil(b2)
+        #expect(wq2.dtype == .uint32)
+        #expect(wq2.shape == [8, 8])
+        #expect(s2.shape == [8, 2])
+        #expect(b2 == nil)
     }
 
-    func testConvolve() {
+    @Test func convolveValues() {
         let a = MLXArray([1, 2, 3, 4, 5] as [Float])
         let vEven = MLXArray([1, 2, 3, 4] as [Float])
         let vOdd = MLXArray([1, 2, 3] as [Float])
 
         // Even kernel size
         let fullEven = convolve(a, vEven, mode: .full)
-        assertEqual(fullEven, MLXArray([1, 4, 10, 20, 30, 34, 31, 20] as [Float]))
+        expectEqual(fullEven, MLXArray([1, 4, 10, 20, 30, 34, 31, 20] as [Float]))
 
         let validEven = convolve(a, vEven, mode: .valid)
-        assertEqual(validEven, MLXArray([20, 30] as [Float]))
+        expectEqual(validEven, MLXArray([20, 30] as [Float]))
 
         let sameEven = convolve(a, vEven, mode: .same)
-        XCTAssertEqual(sameEven.shape, [5])
-        assertEqual(sameEven, MLXArray([4, 10, 20, 30, 34] as [Float]))
+        #expect(sameEven.shape == [5])
+        expectEqual(sameEven, MLXArray([4, 10, 20, 30, 34] as [Float]))
 
         // Odd kernel size
         let fullOdd = convolve(a, vOdd, mode: .full)
-        assertEqual(fullOdd, MLXArray([1, 4, 10, 16, 22, 22, 15] as [Float]))
+        expectEqual(fullOdd, MLXArray([1, 4, 10, 16, 22, 22, 15] as [Float]))
 
         let validOdd = convolve(a, vOdd, mode: .valid)
-        assertEqual(validOdd, MLXArray([10, 16, 22] as [Float]))
+        expectEqual(validOdd, MLXArray([10, 16, 22] as [Float]))
 
         let sameOdd = convolve(a, vOdd, mode: .same)
-        XCTAssertEqual(sameOdd.shape, [5])
-        assertEqual(sameOdd, MLXArray([4, 10, 16, 22, 22] as [Float]))
+        #expect(sameOdd.shape == [5])
+        expectEqual(sameOdd, MLXArray([4, 10, 16, 22, 22] as [Float]))
     }
 
 }

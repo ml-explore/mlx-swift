@@ -3,16 +3,14 @@
 import Foundation
 import MLX
 import MLXNN
-import XCTest
+import Testing
 
 @testable import MLXOptimizers
 
-class TransformTests: XCTestCase {
+@Suite
+struct TransformTests {
 
-    override class func setUp() {
-    }
-
-    func testEval() {
+    @Test func evalStructures() {
         // eval various structures
         let a = MLXArray(0)
         let b = (a, a)
@@ -32,7 +30,7 @@ class TransformTests: XCTestCase {
         eval(a, b, c, d, e)
     }
 
-    func testGrad() {
+    @Test func gradOfSquare() {
         func fn(_ x: MLXArray) -> MLXArray {
             x.square()
         }
@@ -43,14 +41,14 @@ class TransformTests: XCTestCase {
 
         // derivative of x^2 is 2*x
         let dfdx = gradFn(x)
-        XCTAssertEqual(dfdx.item(), Float(2 * 1.5))
+        #expect(dfdx.item() == Float(2 * 1.5))
 
         // derivative of 2*x is 2
         let df2dx2 = grad(grad(fn))(x)
-        XCTAssertEqual(df2dx2.item(), Float(2))
+        #expect(df2dx2.item() == Float(2))
     }
 
-    func testValueAndGrad() {
+    @Test func valueAndGradOfSquare() {
         // note: valueAndGrad only deals with arrays of MLXArray
         func fn(_ x: [MLXArray]) -> [MLXArray] {
             [x[0].square()]
@@ -62,57 +60,51 @@ class TransformTests: XCTestCase {
 
         let (value, grad) = vg([x])
 
-        XCTAssertEqual(value[0].item(), Float(1.5 * 1.5))
-        XCTAssertEqual(grad[0].item(), Float(2 * 1.5))
+        #expect(value[0].item() == Float(1.5 * 1.5))
+        #expect(grad[0].item() == Float(2 * 1.5))
     }
 
-    func testValueAndGradNested() {
+    @Test(.randomSeed(0)) func valueAndGradNested() throws {
         // valueAndGrad on a nested structure, e.g. parameters.
         // this isn't a real model but can exercise the
         // machinery
 
-        withRandomState(MLXRandom.RandomState(seed: 0)) {
+        class M: Module, UnaryLayer {
+            let linear = Linear(5, 5)
 
-            class M: Module, UnaryLayer {
-                let linear = Linear(5, 5)
-
-                func callAsFunction(_ x: MLXArray) -> MLXArray {
-                    relu(linear(x) * 5 + 1)
-                }
+            func callAsFunction(_ x: MLXArray) -> MLXArray {
+                relu(linear(x) * 5 + 1)
             }
+        }
 
-            let m = M()
-            MLX.eval(m)
+        let m = M()
+        MLX.eval(m)
 
-            let x = MLXArray(0 ..< 5, [1, 5])
-            let y = MLXArray(0 ..< 5)
+        let x = MLXArray(0 ..< 5, [1, 5])
+        let y = MLXArray(0 ..< 5)
 
-            func loss(model: M, x: MLXArray, y: MLXArray) -> MLXArray {
-                crossEntropy(logits: model(x), targets: y, reduction: .mean)
-            }
+        func loss(model: M, x: MLXArray, y: MLXArray) -> MLXArray {
+            crossEntropy(logits: model(x), targets: y, reduction: .mean)
+        }
 
-            let lg = valueAndGrad(model: m, loss)
+        let lg = valueAndGrad(model: m, loss)
 
-            let (loss, grads) = lg(m, x, y)
+        let (loss, grads) = lg(m, x, y)
 
-            // we have known loss because of the random seed
-            XCTAssertEqual(loss.item(), Float(5.98534), accuracy: 0.001)
+        // we have known loss because of the random seed
+        expectEqual(loss.item(), Float(5.98534), accuracy: 0.001)
 
-            if let linear = grads["linear"] {
-                switch linear {
-                case .dictionary(let d):
-                    XCTAssertNotNil(d["bias"])
-                    XCTAssertNotNil(d["weight"])
-                default:
-                    XCTFail("linear is not a dictionary")
-                }
-            } else {
-                XCTFail("missing linear key")
-            }
+        let linear = try #require(grads["linear"], "missing linear key")
+        switch linear {
+        case .dictionary(let d):
+            #expect(d["bias"] != nil)
+            #expect(d["weight"] != nil)
+        default:
+            Issue.record("linear is not a dictionary")
         }
     }
 
-    func testCompile() {
+    @Test func compileMatchesUncompiled() {
         @Sendable
         func f(inputs: [MLXArray]) -> [MLXArray] {
             [square(inputs[0] * inputs[1])]
@@ -128,10 +120,10 @@ class TransformTests: XCTestCase {
         let compiled = compile(f)
         let r2 = compiled([i1, i2])[0]
 
-        assertEqual(r1, r2)
+        expectEqual(r1, r2)
 
         let r3 = compiled([i1, i2])[0]
-        assertEqual(r1, r3)
+        expectEqual(r1, r3)
     }
 
     class CompileTestState: CustomStringConvertible, Updatable {
@@ -151,7 +143,7 @@ class TransformTests: XCTestCase {
         }
     }
 
-    func testCompileStateNoCompile() {
+    @Test func compileStateNoCompile() {
         // tests of the function & state without using compile
         let state = CompileTestState()
 
@@ -162,15 +154,15 @@ class TransformTests: XCTestCase {
 
         // state is not mutated
         _ = testState([MLXArray(1)])
-        XCTAssertEqual(state.y.item(Float.self), 2.0)
+        #expect(state.y.item(Float.self) == 2.0)
 
         // make sure it consumed the captured state
         state.y = MLXArray(3)
         let r1 = testState([MLXArray(2)])
-        XCTAssertEqual(r1[0].item(Float.self), 5.0)
+        #expect(r1[0].item(Float.self) == 5.0)
     }
 
-    func testCompiledStateReadOnly() {
+    @Test func compiledStateReadOnly() {
         // tests of the function & state without using compile
         let state = CompileTestState()
 
@@ -183,21 +175,21 @@ class TransformTests: XCTestCase {
 
         // compiled function uses the state
         let r1 = compiled([MLXArray(5)])
-        XCTAssertEqual(r1[0].item(Float.self), 7.0)
+        #expect(r1[0].item(Float.self) == 7.0)
 
         // state is not mutated
-        XCTAssertEqual(state.y.item(Float.self), 2.0)
+        #expect(state.y.item(Float.self) == 2.0)
 
         // and uses the captured state and passed argument
         state.y = MLXArray(8)
         let r2 = compiled([MLXArray(3)])
-        XCTAssertEqual(r2[0].item(Float.self), 11.0)
+        #expect(r2[0].item(Float.self) == 11.0)
 
         // state is not mutated
-        XCTAssertEqual(state.y.item(Float.self), 8.0)
+        #expect(state.y.item(Float.self) == 8.0)
     }
 
-    func testCompiledStateMutation() {
+    @Test func compiledStateMutation() {
         let state = CompileTestState()
 
         func testState(_ x: [MLXArray]) -> [MLXArray] {
@@ -209,13 +201,13 @@ class TransformTests: XCTestCase {
 
         // input state is only on array but output state is 2
         let r1 = compiled([MLXArray(3)])
-        XCTAssertEqual(r1[0].item(Float.self), 3)
-        XCTAssertEqual(state.o!.item(Float.self), 6)
+        #expect(r1[0].item(Float.self) == 3)
+        #expect(state.o!.item(Float.self) == 6)
 
         // mutates the state
         let r2 = compiled([MLXArray(-11)])
-        XCTAssertEqual(r2[0].item(Float.self), 11)
-        XCTAssertEqual(state.o!.item(Float.self), -8)
+        #expect(r2[0].item(Float.self) == 11)
+        #expect(state.o!.item(Float.self) == -8)
     }
 
     // https://github.com/ml-explore/mlx-swift-lm/issues/586 --
@@ -232,7 +224,7 @@ class TransformTests: XCTestCase {
         }
     }
 
-    func testCompileCapturesModuleParameterWithoutState() {
+    @Test func compileCapturesModuleParameterWithoutState() {
         // verify that compile captures all values used if not
         // passed as inputs.
 
@@ -245,7 +237,7 @@ class TransformTests: XCTestCase {
         }
 
         let r1 = compiled(MLXArray(Float(3)))
-        XCTAssertEqual(r1.item(Float.self), 6)
+        #expect(r1.item(Float.self) == 6)
 
         // simulate a LoRA-style in place update of the module's weights
         model.update(parameters: .unflattened([("scale", MLXArray(Float(10)))]))
@@ -253,12 +245,12 @@ class TransformTests: XCTestCase {
 
         // Verify capture of Module parameters -- it doesn't see the update
         let r2 = compiled(MLXArray(Float(3)))
-        XCTAssertEqual(
-            r2.item(Float.self), 6,
+        #expect(
+            r2.item(Float.self) == 6,
             "compiled function saw the update and it should not")
     }
 
-    func testCompileWithStateObservesModuleParameterUpdates() {
+    @Test func compileWithStateObservesModuleParameterUpdates() {
         // verify inputs correctly handles updated
         // Module parameters
 
@@ -269,7 +261,7 @@ class TransformTests: XCTestCase {
         }
 
         let r1 = compiled(MLXArray(Float(3)))
-        XCTAssertEqual(r1.item(Float.self), 6)
+        #expect(r1.item(Float.self) == 6)
 
         // simulate a LoRA-style in place update of the module's weights
         model.update(parameters: .unflattened([("scale", MLXArray(Float(10)))]))
@@ -277,10 +269,10 @@ class TransformTests: XCTestCase {
 
         // with state:, the compiled function observes the updated parameter
         let r2 = compiled(MLXArray(Float(3)))
-        XCTAssertEqual(r2.item(Float.self), 30)
+        #expect(r2.item(Float.self) == 30)
     }
 
-    func testCompiledRandom() {
+    @Test func compiledRandom() {
         @Sendable
         func f(_ bias: MLXArray) -> MLXArray {
             MLXRandom.uniform(0 ..< 1, [4]) + bias
@@ -288,32 +280,39 @@ class TransformTests: XCTestCase {
 
         let bias = MLXArray(0)
 
-        // without capturing state this won't mutate the random state
-        let c1 = compile(f)
+        // use a task-local random state rather than MLXRandom.globalState: tests run
+        // in parallel and while c2 is traced/called the captured state holds tracers,
+        // which other tests drawing from the global state would pick up
+        let state = MLXRandom.RandomState()
+        withRandomState(state) {
+            // without capturing state this won't mutate the random state
+            let c1 = compile(f)
 
-        let c1a = c1(bias)
-        let c1b = c1(bias)
-        XCTAssertTrue(allClose(c1a, c1b).item())
+            let c1a = c1(bias)
+            let c1b = c1(bias)
+            #expect(allClose(c1a, c1b).item())
 
-        // now cature the random state and the random numbers should change per call
-        let c2 = compile(inputs: [MLXRandom.globalState], outputs: [MLXRandom.globalState], f)
+            // now cature the random state and the random numbers should change per call
+            let c2 = compile(inputs: [state], outputs: [state], f)
 
-        let c2a = c2(bias)
-        let c2b = c2(bias)
-        XCTAssertFalse(allClose(c2a, c2b).item())
+            let c2a = c2(bias)
+            let c2b = c2(bias)
+            #expect(!allClose(c2a, c2b).item())
+        }
     }
 
-    func testCompilePerformance() {
-        // this is the code from compilation.md
+    @Test func compilePerformance() {
+        // this is the code from compilation.md, sized
+        // sensibly for a test
 
         func measure(_ f: (MLXArray) -> MLXArray, _ x: MLXArray) {
             // warm up
-            for _ in 0 ..< 10 {
+            for _ in 0 ..< 3 {
                 eval(f(x))
             }
 
             let start = Date.timeIntervalSinceReferenceDate
-            let iterations = 100
+            let iterations = 10
             for _ in 0 ..< iterations {
                 eval(f(x))
             }
@@ -324,13 +323,18 @@ class TransformTests: XCTestCase {
             print("Time per iteration \(timePerIteration.formatted()) ms")
         }
 
-        let x = MLXRandom.uniform(0 ..< 1, [32, 1000, 4096])
+        let x = MLXRandom.uniform(0 ..< 1, [16, 250, 1024])
 
-        measure(gelu, x)
-        measure(compile(gelu), x)
+        // gelu() is already compiled, so use a local copy that is not
+        func localGelu(_ x: MLXArray) -> MLXArray {
+            x * (1 + erf(x / sqrt(2))) / 2
+        }
+
+        measure(localGelu, x)
+        measure(compile(localGelu), x)
     }
 
-    func testVmapSimple() {
+    @Test func vmapSimple() {
         func f(_ x: MLXArray) -> MLXArray { x * 2 }
 
         let x = MLXArray(0 ..< 6, [3, 2])
@@ -338,10 +342,10 @@ class TransformTests: XCTestCase {
 
         let expected = stacked((0 ..< 3).map { f(x[$0]) }, axis: 0)
 
-        assertEqual(vf(x), expected)
+        expectEqual(vf(x), expected)
     }
 
-    func testVmapSendableSimple() async {
+    @Test func vmapSendableSimple() async {
         @Sendable
         func f(_ x: MLXArray) -> MLXArray { x * 2 }
 
@@ -353,13 +357,13 @@ class TransformTests: XCTestCase {
         let t = Task {
             let expected = stacked((0 ..< 3).map { f(x[$0]) }, axis: 0)
 
-            assertEqual(vf(x), expected)
+            expectEqual(vf(x), expected)
         }
 
         _ = await t.value
     }
 
-    func testVmapTwoInputs() {
+    @Test func vmapTwoInputs() {
         @Sendable
         func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
 
@@ -369,10 +373,10 @@ class TransformTests: XCTestCase {
 
         let expected = stacked((0 ..< 3).map { f(x[$0], y[$0]) }, axis: 0)
 
-        assertEqual(vf(x, y), expected)
+        expectEqual(vf(x, y), expected)
     }
 
-    func testVmapAxisPermutations() {
+    @Test func vmapAxisPermutations() {
         @Sendable
         func f(_ x: MLXArray) -> MLXArray { x * 2 }
 
@@ -380,18 +384,18 @@ class TransformTests: XCTestCase {
 
         let map1 = vmap(f, inAxes: 1, outAxes: 0)
         let expected1 = stacked((0 ..< 3).map { f(x[.ellipsis, $0]) }, axis: 0)
-        assertEqual(map1(x), expected1)
+        expectEqual(map1(x), expected1)
 
         let map2 = vmap(f, inAxes: 0, outAxes: 1)
         let expected2 = stacked((0 ..< 2).map { f(x[$0]) }, axis: 1)
-        assertEqual(map2(x), expected2)
+        expectEqual(map2(x), expected2)
 
         let map3 = vmap(f, outAxes: 1)
         let expected3 = stacked((0 ..< 2).map { f(x[$0]) }, axis: 1)
-        assertEqual(map3(x), expected3)
+        expectEqual(map3(x), expected3)
     }
 
-    func testVmapTwoInputsAxisPermutations() {
+    @Test func vmapTwoInputsAxisPermutations() {
         @Sendable
         func f(_ x: MLXArray, _ y: MLXArray) -> MLXArray { x + y }
 
@@ -400,14 +404,14 @@ class TransformTests: XCTestCase {
 
         let map1 = vmap(f, inAxes: (0, 1), outAxes: 0)
         let expected1 = stacked((0 ..< 2).map { i in f(x[i], y[.ellipsis, i]) }, axis: 0)
-        assertEqual(map1(x, y), expected1)
+        expectEqual(map1(x, y), expected1)
 
         let map2 = vmap(f, inAxes: (0, 1), outAxes: 1)
         let expected2 = stacked((0 ..< 2).map { i in f(x[i], y[.ellipsis, i]) }, axis: 1)
-        assertEqual(map2(x, y), expected2)
+        expectEqual(map2(x, y), expected2)
     }
 
-    func testVmapWithCompile() {
+    @Test func vmapWithCompile() {
         @Sendable
         func f(_ x: MLXArray) -> MLXArray { x.square() }
 
@@ -415,28 +419,28 @@ class TransformTests: XCTestCase {
 
         let compiled = compile(f)
         let mapCompile = vmap(compiled)
-        assertEqual(mapCompile(x), vmap(f)(x))
+        expectEqual(mapCompile(x), vmap(f)(x))
 
         // use a non-Sendable version of compile because vmap doesn't produce
         // a Sendable function
         let compiledMap = compile(inputs: [], vmap(f))
-        assertEqual(compiledMap(x), vmap(f)(x))
+        expectEqual(compiledMap(x), vmap(f)(x))
     }
 
-    func testVmapWithGrad() {
+    @Test func vmapWithGrad() {
         func f(_ x: MLXArray) -> MLXArray { x.square().sum() }
 
         let x = MLXArray(0 ..< 6, [3, 2])
 
         let gradF = grad(f)
         let vg = vmap(gradF)
-        assertEqual(vg(x), x * 2)
+        expectEqual(vg(x), x * 2)
 
         let gv = grad { vmap(f)($0).sum() }
-        assertEqual(gv(x), x * 2)
+        expectEqual(gv(x), x * 2)
     }
 
-    func testCompileThreadSafety() async throws {
+    @Test func compileThreadSafety() async throws {
 
         @Sendable
         func swiglu(_ xLinear: MLXArray, _ xGlu: MLXArray, alpha: Float = 1.702, limit: Float = 7.0)
@@ -477,7 +481,7 @@ class TransformTests: XCTestCase {
         }
     }
 
-    func testVmapThreadSafety() async throws {
+    @Test func vmapThreadSafety() async throws {
         await withTaskGroup(of: Void.self) { group in
             for _ in 0 ..< 10 {
                 group.addTask {
@@ -487,7 +491,7 @@ class TransformTests: XCTestCase {
 
                     let gradF = grad(f)
                     let vg = vmap(gradF)
-                    assertEqual(vg(x), x * 2)
+                    expectEqual(vg(x), x * 2)
 
                     let _ = grad { vmap(f)($0).sum() }
                 }
@@ -501,7 +505,7 @@ class TransformTests: XCTestCase {
 
     // Note: OptimizerTests contains additional integration tests of compile()
 
-    func testCompileSingleArrayErrorPropagatesViaWithError() throws {
+    @Test func compileSingleArrayErrorPropagatesViaWithError() throws {
         // A compiled function that produces a broadcast shape mismatch at evaluation time.
         // The constant has shape [3]; passing an input with shape [2] triggers an MLX error
         // inside mlx_closure_apply.
@@ -518,16 +522,14 @@ class TransformTests: XCTestCase {
         }
         let x = MLXArray([Float](repeating: 0, count: 2))
 
-        XCTAssertThrowsError(
+        #expect(throws: MLXError.self) {
             try withError {
                 eval(compiled(x))
             }
-        ) { error in
-            XCTAssertTrue(error is MLXError, "expected MLXError, got \(error)")
         }
     }
 
-    func testCompileMultiArrayErrorPropagatesViaWithError() throws {
+    @Test func compileMultiArrayErrorPropagatesViaWithError() throws {
         // Same scenario with the [MLXArray] -> [MLXArray] overload.
         let compiled = compile { (inputs: [MLXArray]) -> [MLXArray] in
             let constant = MLXArray([Float](repeating: 1, count: 3))
@@ -535,16 +537,14 @@ class TransformTests: XCTestCase {
         }
         let x = MLXArray([Float](repeating: 0, count: 2))
 
-        XCTAssertThrowsError(
+        #expect(throws: MLXError.self) {
             try withError {
                 eval(compiled([x]))
             }
-        ) { error in
-            XCTAssertTrue(error is MLXError, "expected MLXError, got \(error)")
         }
     }
 
-    func testCompileTwoArrayErrorPropagatesViaWithError() throws {
+    @Test func compileTwoArrayErrorPropagatesViaWithError() throws {
         // Same scenario with the (MLXArray, MLXArray) -> MLXArray overload.
         let compiled = compile { (a: MLXArray, _: MLXArray) -> MLXArray in
             let constant = MLXArray([Float](repeating: 1, count: 3))
@@ -553,16 +553,14 @@ class TransformTests: XCTestCase {
         let x = MLXArray([Float](repeating: 0, count: 2))
         let y = MLXArray([Float](repeating: 0, count: 2))
 
-        XCTAssertThrowsError(
+        #expect(throws: MLXError.self) {
             try withError {
                 eval(compiled(x, y))
             }
-        ) { error in
-            XCTAssertTrue(error is MLXError, "expected MLXError, got \(error)")
         }
     }
 
-    func testCustomFunctionVJP2() {
+    @Test func customFunctionVJP2() {
         // Custom function with 2-parameter VJP: (primals, cotangents)
         let customSquare = CustomFunction {
             Forward { inputs in
@@ -576,16 +574,16 @@ class TransformTests: XCTestCase {
 
         let x = MLXArray(3.0)
         let forwardOut = customSquare([x])
-        assertEqual(forwardOut[0], MLXArray(9.0))
+        expectEqual(forwardOut[0], MLXArray(9.0))
 
         let gradFn = grad { inputs in
             customSquare(inputs)
         }
         let grads = gradFn([x])
-        assertEqual(grads[0], MLXArray(6.0))
+        expectEqual(grads[0], MLXArray(6.0))
     }
 
-    func testCustomFunctionVJP3WithOutputs() {
+    @Test func customFunctionVJP3WithOutputs() {
         // Custom function with 3-parameter VJP: (primals, cotangents, outputs)
         // For sigmoid: s(x) = output, and ds/dx = s * (1 - s) = output * (1 - output)
         // This directly exercises the 3rd parameter `outputs`
@@ -601,17 +599,17 @@ class TransformTests: XCTestCase {
 
         let x = MLXArray(0.0)
         let forwardOut = customSigmoid([x])
-        assertEqual(forwardOut[0], MLXArray(0.5))
+        expectEqual(forwardOut[0], MLXArray(0.5))
 
         let gradFn = grad { inputs in
             customSigmoid(inputs)
         }
         let grads = gradFn([x])
         // At x = 0, sigmoid(0) = 0.5, grad = 0.5 * (1 - 0.5) = 0.25
-        assertEqual(grads[0], MLXArray(0.25))
+        expectEqual(grads[0], MLXArray(0.25))
     }
 
-    func testCustomFunctionSendable() async {
+    @Test func customFunctionSendable() async {
         // Verify Sendable closures and Sendable return from CustomFunction
         let fn: @Sendable ([MLXArray]) -> [MLXArray] = CustomFunction {
             Forward { inputs in
@@ -629,7 +627,7 @@ class TransformTests: XCTestCase {
             return result[0].item(Float.self)
         }.value
 
-        XCTAssertEqual(val, 6.0)
+        #expect(val == 6.0)
     }
 
 }

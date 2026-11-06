@@ -2,9 +2,13 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-final class WiredMemoryTests: XCTestCase {
+/// Serialized: the GPU tests each apply (and restore) the process-wide wired
+/// limit from their own isolated manager, which knows nothing of the others, so
+/// running them in parallel would have them overwrite each other's limits.
+@Suite(.serialized)
+struct WiredMemoryTests {
     enum TestError: Error {
         case missingInfo
         case timeout
@@ -40,14 +44,10 @@ final class WiredMemoryTests: XCTestCase {
 
     /// Ensures that the manager can coordinate multiple policy groups and that
     /// the applied limit reflects the max across those groups.
-    func testWiredMemoryPolicyStackingAndCustomPolicies() async throws {
-        guard Device.defaultDevice().deviceType == .gpu else {
-            throw XCTSkip("Wired memory control only available on GPU devices.")
-        }
-
+    @Test(.wiredMemoryControl) func wiredMemoryPolicyStackingAndCustomPolicies() async throws {
         let maxBytes = GPU.deviceInfo().maxRecommendedWorkingSetSize
         guard maxBytes > 0 else {
-            throw XCTSkip("No recommended working set size available.")
+            try Test.cancel("No recommended working set size available.")
         }
 
         let manager = WiredMemoryManager.makeForTesting()
@@ -72,11 +72,11 @@ final class WiredMemoryTests: XCTestCase {
 
         let events = try await collectedEvents
         guard !events.isEmpty else {
-            throw XCTSkip("Wired memory events not available in this build.")
+            try Test.cancel("Wired memory events not available in this build.")
         }
 
         if events.contains(where: { $0.kind == .limitApplyFailed }) {
-            throw XCTSkip("Wired limit updates failed on this device.")
+            try Test.cancel("Wired limit updates failed on this device.")
         }
 
         guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline else {
@@ -132,22 +132,18 @@ final class WiredMemoryTests: XCTestCase {
                     sawCustomDominant = true
                 }
 
-                XCTAssertEqual(event.appliedLimit, expected)
+                #expect(event.appliedLimit == expected)
             default:
                 break
             }
         }
 
-        XCTAssertTrue(sawCustomDominant, "Expected custom policy to influence the applied limit.")
-        XCTAssertTrue(sawTwoPoliciesActive, "Expected tickets from two policies to overlap.")
+        #expect(sawCustomDominant, "Expected custom policy to influence the applied limit.")
+        #expect(sawTwoPoliciesActive, "Expected tickets from two policies to overlap.")
     }
 
     /// Reservation-only tickets should not keep the wired limit elevated.
-    func testReservationOnlyKeepsLimitAtBaseline() async throws {
-        guard Device.defaultDevice().deviceType == .gpu else {
-            throw XCTSkip("Wired memory control only available on GPU devices.")
-        }
-
+    @Test(.wiredMemoryControl) func reservationOnlyKeepsLimitAtBaseline() async throws {
         let manager = WiredMemoryManager.makeForTesting()
         let policy = SumPolicy()
 
@@ -168,11 +164,11 @@ final class WiredMemoryTests: XCTestCase {
 
         let events = try await collectedEvents
         guard !events.isEmpty else {
-            throw XCTSkip("Wired memory events not available in this build.")
+            try Test.cancel("Wired memory events not available in this build.")
         }
 
         if events.contains(where: { $0.kind == .limitApplyFailed }) {
-            throw XCTSkip("Wired limit updates failed on this device.")
+            try Test.cancel("Wired limit updates failed on this device.")
         }
 
         guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline else {
@@ -181,16 +177,12 @@ final class WiredMemoryTests: XCTestCase {
 
         // Reservation tickets can trigger limit application, but it should match baseline.
         for event in events where event.kind == .limitApplied {
-            XCTAssertEqual(event.appliedLimit, baseline)
+            #expect(event.appliedLimit == baseline)
         }
     }
 
     /// Reservation + active tickets should raise the limit, then restore baseline when active ends.
-    func testReservationPlusActiveRaisesAndRestoresBaseline() async throws {
-        guard Device.defaultDevice().deviceType == .gpu else {
-            throw XCTSkip("Wired memory control only available on GPU devices.")
-        }
-
+    @Test(.wiredMemoryControl) func reservationPlusActiveRaisesAndRestoresBaseline() async throws {
         let manager = WiredMemoryManager.makeForTesting()
         let policy = SumPolicy()
 
@@ -219,11 +211,11 @@ final class WiredMemoryTests: XCTestCase {
 
         let events = try await collectedEvents
         guard !events.isEmpty else {
-            throw XCTSkip("Wired memory events not available in this build.")
+            try Test.cancel("Wired memory events not available in this build.")
         }
 
         if events.contains(where: { $0.kind == .limitApplyFailed }) {
-            throw XCTSkip("Wired limit updates failed on this device.")
+            try Test.cancel("Wired limit updates failed on this device.")
         }
 
         guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline else {
@@ -234,22 +226,18 @@ final class WiredMemoryTests: XCTestCase {
         let sawRaised = events.contains {
             $0.kind == .limitApplied && $0.appliedLimit == expectedRaised
         }
-        XCTAssertTrue(sawRaised, "Expected a limit increase while active work runs.")
+        #expect(sawRaised, "Expected a limit increase while active work runs.")
 
         // After active work ends, the manager should restore baseline even if reservations remain.
         if let restore = events.last(where: { $0.kind == .baselineRestored }) {
-            XCTAssertEqual(restore.appliedLimit, baseline)
+            #expect(restore.appliedLimit == baseline)
         } else {
-            XCTFail("Expected baseline restore event after active work ended.")
+            Issue.record("Expected baseline restore event after active work ended.")
         }
     }
 
     /// Hysteresis should suppress small decreases while active work is running.
-    func testHysteresisPreventsSmallShrinkWhileActive() async throws {
-        guard Device.defaultDevice().deviceType == .gpu else {
-            throw XCTSkip("Wired memory control only available on GPU devices.")
-        }
-
+    @Test(.wiredMemoryControl) func hysteresisPreventsSmallShrinkWhileActive() async throws {
         let manager = WiredMemoryManager.makeForTesting(
             configuration: .init(shrinkThresholdRatio: 0.5, shrinkCooldown: 0)
         )
@@ -270,11 +258,11 @@ final class WiredMemoryTests: XCTestCase {
 
         let events = try await collectedEvents
         guard !events.isEmpty else {
-            throw XCTSkip("Wired memory events not available in this build.")
+            try Test.cancel("Wired memory events not available in this build.")
         }
 
         if events.contains(where: { $0.kind == .limitApplyFailed }) {
-            throw XCTSkip("Wired limit updates failed on this device.")
+            try Test.cancel("Wired limit updates failed on this device.")
         }
 
         guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline else {
@@ -304,20 +292,16 @@ final class WiredMemoryTests: XCTestCase {
         let shrinkApplied = events[smallEnd ..< largeEnd].contains {
             $0.kind == .limitApplied && $0.appliedLimit == lowLimit
         }
-        XCTAssertFalse(shrinkApplied, "Expected hysteresis to suppress the small shrink.")
+        #expect(!shrinkApplied, "Expected hysteresis to suppress the small shrink.")
 
         // Ensure we actually reached the higher limit while both tickets were active.
         let sawHigh = events.contains { $0.kind == .limitApplied && $0.appliedLimit == highLimit }
-        XCTAssertTrue(
+        #expect(
             sawHigh, "Expected the higher limit to be applied while both tickets were active.")
     }
 
     /// Cooldown should delay shrink while active work is running, then allow a later shrink.
-    func testCooldownPreventsRapidOscillationWhileActive() async throws {
-        guard Device.defaultDevice().deviceType == .gpu else {
-            throw XCTSkip("Wired memory control only available on GPU devices.")
-        }
-
+    @Test(.wiredMemoryControl) func cooldownPreventsRapidOscillationWhileActive() async throws {
         let manager = WiredMemoryManager.makeForTesting(
             configuration: .init(shrinkThresholdRatio: 0, shrinkCooldown: 0.5)
         )
@@ -348,11 +332,11 @@ final class WiredMemoryTests: XCTestCase {
 
         let events = try await collectedEvents
         guard !events.isEmpty else {
-            throw XCTSkip("Wired memory events not available in this build.")
+            try Test.cancel("Wired memory events not available in this build.")
         }
 
         if events.contains(where: { $0.kind == .limitApplyFailed }) {
-            throw XCTSkip("Wired limit updates failed on this device.")
+            try Test.cancel("Wired limit updates failed on this device.")
         }
 
         guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline else {
@@ -371,28 +355,24 @@ final class WiredMemoryTests: XCTestCase {
             let immediateShrink = events[bEndIndex ..< cStartIndex].contains {
                 $0.kind == .limitApplied && $0.appliedLimit == lowLimit
             }
-            XCTAssertFalse(immediateShrink, "Expected cooldown to suppress immediate shrink.")
+            #expect(!immediateShrink, "Expected cooldown to suppress immediate shrink.")
         }
 
         if let cStartIndex, let cEndIndex {
             let delayedShrink = events[cStartIndex ..< cEndIndex].contains {
                 $0.kind == .limitApplied && $0.appliedLimit == midLimit
             }
-            XCTAssertTrue(delayedShrink, "Expected a later shrink once cooldown elapsed.")
+            #expect(delayedShrink, "Expected a later shrink once cooldown elapsed.")
         }
 
         let sawHigh = events.contains { $0.kind == .limitApplied && $0.appliedLimit == highLimit }
-        XCTAssertTrue(
+        #expect(
             sawHigh, "Expected the higher limit to be applied while both tickets were active.")
     }
 
     /// Admission should account for reservation sizes so that long-lived weights
     /// participate in capacity checks.
-    func testAdmissionUsesReservationSizesAndActiveSizes() async throws {
-        guard Device.defaultDevice().deviceType == .gpu else {
-            throw XCTSkip("Wired memory control only available on GPU devices.")
-        }
-
+    @Test(.wiredMemoryControl) func admissionUsesReservationSizesAndActiveSizes() async throws {
         let manager = WiredMemoryManager.makeForTesting()
         let policy = CappedSumPolicy(capDelta: 150 * mib)
 
@@ -432,7 +412,7 @@ final class WiredMemoryTests: XCTestCase {
         }
 
         guard admissionEvents.contains(where: { $0.kind == .admissionWait }) else {
-            XCTFail("Expected admission wait for the blocked ticket.")
+            Issue.record("Expected admission wait for the blocked ticket.")
             return
         }
 
@@ -443,16 +423,16 @@ final class WiredMemoryTests: XCTestCase {
 
         let events = try await collectedEvents
         guard !events.isEmpty else {
-            throw XCTSkip("Wired memory events not available in this build.")
+            try Test.cancel("Wired memory events not available in this build.")
         }
 
         if events.contains(where: { $0.kind == .limitApplyFailed }) {
-            throw XCTSkip("Wired limit updates failed on this device.")
+            try Test.cancel("Wired limit updates failed on this device.")
         }
     }
 
     /// Policy-only mode should still enforce admission when wired limits are unsupported.
-    func testPolicyOnlyModeEnforcesAdmissionOnCPU() async throws {
+    @Test func policyOnlyModeEnforcesAdmissionOnCPU() async throws {
         try await Device.withDefaultDevice(.cpu) {
             let manager = WiredMemoryManager.makeForTesting(
                 configuration: .init(
@@ -499,7 +479,7 @@ final class WiredMemoryTests: XCTestCase {
             }
 
             guard admissionEvents.contains(where: { $0.kind == .admissionWait }) else {
-                XCTFail("Expected admission wait for the blocked ticket.")
+                Issue.record("Expected admission wait for the blocked ticket.")
                 return
             }
 
@@ -510,23 +490,23 @@ final class WiredMemoryTests: XCTestCase {
 
             let events = try await collectedEvents
             guard !events.isEmpty else {
-                throw XCTSkip("Wired memory events not available in this build.")
+                try Test.cancel("Wired memory events not available in this build.")
             }
 
             if events.contains(where: { $0.kind == .limitApplyFailed }) {
-                throw XCTSkip("Wired limit updates failed on this device.")
+                try Test.cancel("Wired limit updates failed on this device.")
             }
 
             guard let baseline = events.first(where: { $0.kind == .baselineCaptured })?.baseline
             else {
                 throw TestError.missingBaseline
             }
-            XCTAssertEqual(baseline, 1024)
+            #expect(baseline == 1024)
         }
     }
 
     /// Cancelling a task while `withWiredLimit` is running must not double-end the ticket.
-    func testWithWiredLimitCancellationDoesNotDoubleEnd() async throws {
+    @Test func withWiredLimitCancellationDoesNotDoubleEnd() async throws {
         try await Device.withDefaultDevice(.cpu) {
             let manager = WiredMemoryManager.makeForTesting(
                 configuration: .init(
@@ -572,8 +552,8 @@ final class WiredMemoryTests: XCTestCase {
             let ignoredCount = events.filter { $0.kind == .ticketEndIgnored }.count
 
             // Exactly one end should have occurred; no double-end.
-            XCTAssertEqual(endedCount, 1, "Expected exactly one ticketEnded event.")
-            XCTAssertEqual(ignoredCount, 0, "Expected no ticketEndIgnored (double-end) events.")
+            #expect(endedCount == 1, "Expected exactly one ticketEnded event.")
+            #expect(ignoredCount == 0, "Expected no ticketEndIgnored (double-end) events.")
 
             // Verify the ticket is no longer active by starting a fresh ticket on the same manager.
             let ticket2 = WiredMemoryTicket(
@@ -614,5 +594,14 @@ final class WiredMemoryTests: XCTestCase {
             group.cancelAll()
             return result ?? []
         }
+    }
+}
+
+extension Trait where Self == ConditionTrait {
+    /// Wired memory control is only available on GPU devices.
+    fileprivate static var wiredMemoryControl: Self {
+        .enabled(
+            if: Device.defaultDevice().deviceType == .gpu,
+            "Wired memory control only available on GPU devices.")
     }
 }
