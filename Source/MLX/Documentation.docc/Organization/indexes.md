@@ -34,6 +34,6 @@ let sorted = array[sortIndexes]
 
 ### Index Consuming Functions
 
-- ``MLXArray/subscript(_:stream:)-(MLXArrayIndex,StreamOrDevice)``
+- ``MLXArray/subscript(_:stream:)-(MLXArrayIndex...,_)``
 - ``MLXArray/take(_:axis:stream:)``
 - ``takeAlong(_:_:axis:stream:)``
