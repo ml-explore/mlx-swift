@@ -5,6 +5,11 @@ cd "$(dirname "$0")/.."
 
 export MLX_SWIFT_BUILD_DOC=1
 
+# The default Swift Build backend runs clang -extract-api over every header in
+# Cmlx (a dependency of every documented target) in Objective-C mode, and its
+# vendored C++ headers (fmt, mlx) fail to parse.  Same fix as mlx-swift-lm.
+BUILD_SYSTEM=(--build-system native)
+
 # Targets to exclude from documentation verification
 SKIP_TARGETS="Cmlx"
 
@@ -30,7 +35,7 @@ FAILED=0
 
 while IFS= read -r TARGET; do
     echo "Building documentation for $TARGET..."
-    if ! swift package generate-documentation --target "$TARGET" --warnings-as-errors; then
+    if ! swift package "${BUILD_SYSTEM[@]}" generate-documentation --target "$TARGET" --warnings-as-errors; then
         FAILED=1
     fi
     echo ""
