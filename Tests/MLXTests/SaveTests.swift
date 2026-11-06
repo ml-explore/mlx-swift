@@ -47,9 +47,6 @@ private final class ProgressRecorder: @unchecked Sendable {
     }
 }
 
-/// A class rather than a struct so that `deinit` can clean up -- Swift Testing
-/// creates a new instance per test, so `init` / `deinit` take the place of
-/// XCTest's `setUpWithError` / `tearDownWithError`.
 @Suite
 final class SaveTests {
 
