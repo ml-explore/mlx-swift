@@ -81,6 +81,24 @@ enum EvalLockOwnership {
         /// fired".
         static func recordCompileErase() {
             counterLock.withLock { compileEraseCount += 1 }
+            pthread_setspecific(
+                compileEraseKey, UnsafeRawPointer(bitPattern: compileErasesOnCurrentThread + 1))
+        }
+
+        private static let compileEraseKey: pthread_key_t = {
+            var key = pthread_key_t()
+            pthread_key_create(&key, nil)
+            return key
+        }()
+
+        /// Compiler-cache erases run by the current thread (never reset).
+        ///
+        /// Unlike ``compileErases`` this is not affected by other threads, e.g.
+        /// tests running in parallel that drop their own compiled functions, so
+        /// a test can take the difference around a call to see whether that
+        /// call ran an erase.
+        static var compileErasesOnCurrentThread: Int {
+            Int(bitPattern: pthread_getspecific(compileEraseKey))
         }
 
         /// (checks, violations) since ``resetCounters()``.
