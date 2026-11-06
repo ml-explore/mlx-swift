@@ -1054,7 +1054,7 @@ public func linspace<T: HasDType>(
 ///
 /// The result dtype follows the bounds (`Float` -> `float32`,
 /// `Float16` -> `float16`) except that `Double` produces `float32`, matching
-/// ``MLXArray/init(_:)`` and python's `mx.linspace` -- `float64` is not
+/// ``MLXArray/init(_:)-(Float)`` and python's `mx.linspace` -- `float64` is not
 /// supported on the GPU.  Pass `dtype:` to be explicit.
 ///
 /// ```swift
