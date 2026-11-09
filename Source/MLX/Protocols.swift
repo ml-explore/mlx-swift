@@ -4,8 +4,9 @@ import Foundation
 
 /// An object that can provide a list of the ``MLXArray`` in its inner state.
 ///
-/// Note that the array itself is not a reference to the inner state, but the ``MLXArray`` instances
-/// can be ``MLXArray/_updateInternal(_:)`` to mutate the inner state.  The exact working is an
+/// Note that the array itself is not a reference to the inner state,
+/// but the ``MLXArray`` instances have `_updateInternal()` which
+/// can mutate the inner state. The exact working is an
 /// implemention detail for MLX and should not be depended on by outside callers.
 ///
 /// ### See Also

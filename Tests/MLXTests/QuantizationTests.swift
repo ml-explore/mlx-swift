@@ -3,25 +3,23 @@
 import Foundation
 import MLX
 import MLXNN
-import XCTest
+import Testing
 
-class QuantizationTests: XCTestCase {
+@Suite
+struct QuantizationTests {
 
-    func testQuantizationError() {
+    @Test func quantizationError() {
         let a = MLXRandom.uniform(low: 0, high: 1, [23, 18])
-        do {
+        #expect(throws: MLXError.self) {
             try withError {
                 let _ = quantized(a, groupSize: 123, bits: 7)
                 // note: at this point the return values from quantized
                 // are mlxNone and unusable
             }
-            XCTFail("should have thrown an error")
-        } catch {
-            // expected
         }
     }
 
-    func testQuantizedLinearAppliesNVFP4GlobalScaleOnMetal() {
+    @Test func quantizedLinearAppliesNVFP4GlobalScaleOnMetal() {
         let (input, quantizedWeight, scales, biases, globalScale, bias, expected) =
             Device.withDefaultDevice(.cpu) {
                 withRandomState(MLXRandom.RandomState(seed: 7)) {
@@ -51,10 +49,10 @@ class QuantizationTests: XCTestCase {
                 groupSize: 16, bits: 4, mode: .nvfp4, globalScale: globalScale)(input)
         }
 
-        assertEqual(actual, expected, rtol: 1e-5, atol: 1e-5)
+        expectEqual(actual, expected, rtol: 1e-5, atol: 1e-5)
     }
 
-    func testQuantizedEmbeddingAppliesNVFP4GlobalScaleOnMetal() {
+    @Test func quantizedEmbeddingAppliesNVFP4GlobalScaleOnMetal() {
         let (
             input, indices, quantizedWeight, scales, biases, globalScale, expectedLinear,
             expectedLookup
@@ -88,45 +86,48 @@ class QuantizationTests: XCTestCase {
             return (embedding.asLinear(input), embedding(indices))
         }
 
-        assertEqual(actualLinear, expectedLinear, rtol: 1e-5, atol: 1e-5)
-        assertEqual(actualLookup, expectedLookup, rtol: 1e-5, atol: 1e-5)
+        expectEqual(actualLinear, expectedLinear, rtol: 1e-5, atol: 1e-5)
+        expectEqual(actualLookup, expectedLookup, rtol: 1e-5, atol: 1e-5)
     }
 
-    func testQuantizedLinearShapeDesc() {
+    @Test func quantizedLinearShapeDesc() {
         let linear1 = Linear(512, 1024)
         let quantized1 = linear1.toQuantized(groupSize: 64, bits: 4)
-        XCTAssertEqual(
-            quantized1.describeExtra(0), "(inputDimensions=512, outputDimensions=1024, bias=true)")
+        #expect(
+            quantized1.describeExtra(0) == "(inputDimensions=512, outputDimensions=1024, bias=true)"
+        )
         let linear2 = Linear(1024, 512, bias: false)
         let quantized2 = linear2.toQuantized(groupSize: 128, bits: 8)
-        XCTAssertEqual(
-            quantized2.describeExtra(0), "(inputDimensions=1024, outputDimensions=512, bias=false)")
+        #expect(
+            quantized2.describeExtra(0)
+                == "(inputDimensions=1024, outputDimensions=512, bias=false)")
         let linear3 = Linear(512, 1024)
         let quantized3 = linear3.toQuantized(groupSize: 32, bits: 4, mode: .mxfp4)
-        XCTAssertEqual(
-            quantized3.describeExtra(0), "(inputDimensions=512, outputDimensions=1024, bias=true)")
+        #expect(
+            quantized3.describeExtra(0) == "(inputDimensions=512, outputDimensions=1024, bias=true)"
+        )
     }
 
-    func testQuantizedEmbeddingShapeDesc() {
+    @Test func quantizedEmbeddingShapeDesc() {
         let embedding1 = Embedding(embeddingCount: 512, dimensions: 1024)
         let quantized1 = embedding1.toQuantized(groupSize: 64, bits: 4)
-        XCTAssertEqual(quantized1.describeExtra(0), "(embeddingCount=512, dimensions=1024)")
+        #expect(quantized1.describeExtra(0) == "(embeddingCount=512, dimensions=1024)")
         let embedding2 = Embedding(embeddingCount: 1024, dimensions: 512)
         let quantized2 = embedding2.toQuantized(groupSize: 128, bits: 8)
-        XCTAssertEqual(
-            quantized2.describeExtra(0), "(embeddingCount=1024, dimensions=512)")
+        #expect(
+            quantized2.describeExtra(0) == "(embeddingCount=1024, dimensions=512)")
         let embedding3 = Embedding(embeddingCount: 512, dimensions: 1024)
         let quantized3 = embedding3.toQuantized(groupSize: 32, bits: 4, mode: .mxfp4)
-        XCTAssertEqual(
-            quantized3.describeExtra(0), "(embeddingCount=512, dimensions=1024)")
+        #expect(
+            quantized3.describeExtra(0) == "(embeddingCount=512, dimensions=1024)")
     }
 
-    func testQuantizedLinearMxfp4DoesNotCreateAffineBiases() {
+    @Test func quantizedLinearMxfp4DoesNotCreateAffineBiases() {
         let quantized = QuantizedLinear(64, 64, groupSize: 32, bits: 4, mode: .mxfp4)
-        XCTAssertNil(quantized.biases)
+        #expect(quantized.biases == nil)
     }
 
-    func testQuantizedLinearStoresGlobalScale() {
+    @Test func quantizedLinearStoresGlobalScale() {
         let globalScale = MLXArray(1.0, dtype: .float32)
         let quantized = QuantizedLinear(
             weight: MLXArray.zeros([8, 4], dtype: .uint32),
@@ -138,13 +139,13 @@ class QuantizationTests: XCTestCase {
             mode: .nvfp4,
             globalScale: globalScale)
 
-        XCTAssertNotNil(quantized.globalScale)
-        XCTAssertEqual(quantized.globalScale?.dtype, .float32)
-        XCTAssertNotNil(quantized.parameters()["global_scale"])
-        XCTAssertNil(quantized.parameters()["globalScale"])
+        #expect(quantized.globalScale != nil)
+        #expect(quantized.globalScale?.dtype == .float32)
+        #expect(quantized.parameters()["global_scale"] != nil)
+        #expect(quantized.parameters()["globalScale"] == nil)
     }
 
-    func testQuantizedEmbeddingStoresGlobalScale() {
+    @Test func quantizedEmbeddingStoresGlobalScale() {
         let globalScale = MLXArray(1.0, dtype: .float32)
         let quantized = QuantizedEmbedding(
             weight: MLXArray.zeros([8, 2], dtype: .uint32),
@@ -155,13 +156,13 @@ class QuantizationTests: XCTestCase {
             mode: .nvfp4,
             globalScale: globalScale)
 
-        XCTAssertNotNil(quantized.globalScale)
-        XCTAssertEqual(quantized.globalScale?.dtype, .float32)
-        XCTAssertNotNil(quantized.parameters()["global_scale"])
-        XCTAssertNil(quantized.parameters()["globalScale"])
+        #expect(quantized.globalScale != nil)
+        #expect(quantized.globalScale?.dtype == .float32)
+        #expect(quantized.parameters()["global_scale"] != nil)
+        #expect(quantized.parameters()["globalScale"] == nil)
     }
 
-    func testQuantizedGlobalScaleIsOptionalParameter() {
+    @Test func quantizedGlobalScaleIsOptionalParameter() {
         let linear = QuantizedLinear(
             weight: MLXArray.zeros([8, 4], dtype: .uint32),
             bias: nil,
@@ -178,9 +179,9 @@ class QuantizationTests: XCTestCase {
             bits: 4,
             mode: .nvfp4)
 
-        XCTAssertNil(linear.globalScale)
-        XCTAssertNil(linear.parameters()["global_scale"])
-        XCTAssertNil(embedding.globalScale)
-        XCTAssertNil(embedding.parameters()["global_scale"])
+        #expect(linear.globalScale == nil)
+        #expect(linear.parameters()["global_scale"] == nil)
+        #expect(embedding.globalScale == nil)
+        #expect(embedding.parameters()["global_scale"] == nil)
     }
 }

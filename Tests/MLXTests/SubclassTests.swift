@@ -4,7 +4,6 @@ import Foundation
 import MLX
 import MLXNN
 import MLXOptimizers
-import XCTest
 
 // not tests that run -- these are tests to make sure we can
 // compile subclasses outside the package they are defined in

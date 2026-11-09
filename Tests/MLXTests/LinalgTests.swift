@@ -54,11 +54,9 @@ struct LinalgTests {
     @Test func svdOverload() {
         let a = MLXRandom.uniform(0 ..< 1, [10, 10])
 
-        Stream.withNewDefaultStream(device: .cpu) {
-            let (_, s, _) = MLXLinalg.svd(a)
-            let s2 = MLXLinalg.svd(a)
+        let (_, s, _) = MLXLinalg.svd(a, stream: .cpu)
+        let s2 = MLXLinalg.svd(a, stream: .cpu)
 
-            #expect(s.shape == s2.shape)
-        }
+        #expect(s.shape == s2.shape)
     }
 }

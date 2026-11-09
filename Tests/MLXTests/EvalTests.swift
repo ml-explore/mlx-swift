@@ -119,27 +119,35 @@ private func timed(_ body: () -> Void) -> TimeInterval {
 
 // MARK: - Tests
 
-/// Behavior of ``eval(_:)-(MLXArray...)``, ``asyncEval(_:)-(Collection<MLXArray>)`` and the
-/// other `evalLock` holders when called from several threads at once.
-///
-/// `eval` schedules under `evalLock` (via `mlx_async_eval`) and then waits
-/// *outside* it (via `mlx_eval`), so two properties need coverage:
-///
-/// - it is still synchronous -- results are available when it returns; and
-/// - it no longer serializes the waiting, so unrelated work on other threads
-///   makes progress while an eval is in flight.
-///
-/// Note what is *not* claimed: an individual `MLXArray` is not thread safe, so
-/// each thread here owns the arrays it creates and only scalar results cross
-/// threads.  What is under test is the shared global state behind eval --
-/// the stream/scheduler, the compiler cache, the tracing state -- which
-/// `evalLock` guards.
-///
-/// The suite is `.serialized` because several tests are stress or timing
-/// shaped: running them against each other would make each one's measurement
-/// depend on the others.
-@Suite("eval + evalLock", .serialized)
-struct EvalTests {
+extension EvalLockSuites {
+
+    /// Behavior of ``eval(_:)-(MLXArray...)``, ``asyncEval(_:)-(Collection<MLXArray>)`` and the
+    /// other `evalLock` holders when called from several threads at once.
+    ///
+    /// `eval` schedules under `evalLock` (via `mlx_async_eval`) and then waits
+    /// *outside* it (via `mlx_eval`), so two properties need coverage:
+    ///
+    /// - it is still synchronous -- results are available when it returns; and
+    /// - it no longer serializes the waiting, so unrelated work on other threads
+    ///   makes progress while an eval is in flight.
+    ///
+    /// Note what is *not* claimed: an individual `MLXArray` is not thread safe, so
+    /// each thread here owns the arrays it creates and only scalar results cross
+    /// threads.  What is under test is the shared global state behind eval --
+    /// the stream/scheduler, the compiler cache, the tracing state -- which
+    /// `evalLock` guards.
+    ///
+    /// The suite is `.serialized` because several tests are stress or timing
+    /// shaped: running them against each other would make each one's measurement
+    /// depend on the others.
+    ///
+    /// Part of ``EvalLockSuites`` so it never runs alongside the other suites there,
+    /// e.g. ``EvalLockSuites/CompileLockOrderingTests``: both reset and read the
+    /// process-wide `EvalLockOwnership` counters.
+    @Suite("eval + evalLock", .serialized) struct EvalTests {}
+}
+
+extension EvalLockSuites.EvalTests {
 
     // MARK: Semantics
 

@@ -2,9 +2,10 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
-final class WiredMemoryLifecycleTests: XCTestCase {
+@Suite
+struct WiredMemoryLifecycleTests {
     private enum Failure: Error { case expected }
     private struct Policy: WiredMemoryPolicy, Hashable {
         let capacity: Int
@@ -34,6 +35,28 @@ final class WiredMemoryLifecycleTests: XCTestCase {
         }
     }
 
+    /// Wait for `signal` to yield, giving up after `timeout`.
+    ///
+    /// - Returns: `true` if the signal arrived in time
+    private static func wait(
+        for signal: AsyncStream<Void>, timeout: Duration = .seconds(5)
+    ) async -> Bool {
+        await withTaskGroup(of: Bool.self) { group in
+            group.addTask {
+                // iteration ends (returning nil) if this task is cancelled
+                for await _ in signal { return true }
+                return false
+            }
+            group.addTask {
+                try? await Task.sleep(for: timeout)
+                return false
+            }
+            let result = await group.next() ?? false
+            group.cancelAll()
+            return result
+        }
+    }
+
     private static func manager() -> WiredMemoryManager {
         .makeForTesting(
             configuration: .init(
@@ -41,7 +64,7 @@ final class WiredMemoryLifecycleTests: XCTestCase {
                 useRecommendedWorkingSetWhenUnsupported: false))
     }
 
-    func testDuplicateStartAndUnmatchedEndAreIdempotent() async {
+    @Test func duplicateStartAndUnmatchedEndAreIdempotent() async {
         await Device.withDefaultDevice(.cpu) {
             let manager = Self.manager()
             let ticket = WiredMemoryTicket(size: 64, policy: Policy(capacity: 64), manager: manager)
@@ -66,20 +89,20 @@ final class WiredMemoryLifecycleTests: XCTestCase {
                 }
                 if ignoredEnds == 2 { break }
             }
-            XCTAssertEqual(started, 1)
-            XCTAssertEqual(ignoredStarts, 1)
-            XCTAssertEqual(ended, 1)
+            #expect(started == 1)
+            #expect(ignoredStarts == 1)
+            #expect(ended == 1)
         }
     }
 
-    func testCancellationWhileAdmissionIsDeniedStillRunsCleanup() async {
+    @Test func cancellationWhileAdmissionIsDeniedStillRunsCleanup() async {
         await Device.withDefaultDevice(.cpu) {
             let manager = Self.manager()
             let ticket = WiredMemoryTicket(size: 1, policy: Policy(capacity: 0), manager: manager)
             let events = await manager.events()
             let task = Task {
                 await ticket.withWiredLimit {
-                    XCTAssertTrue(Task.isCancelled)
+                    #expect(Task.isCancelled)
                     return 123
                 }
             }
@@ -88,41 +111,40 @@ final class WiredMemoryLifecycleTests: XCTestCase {
             }
             task.cancel()
             let result = await task.value
-            XCTAssertEqual(result, 123)
+            #expect(result == 123)
             // The cancelled waiter must be removed before the scope returns.
             await manager.updateConfiguration { $0.baselineOverride = 2048 }
         }
     }
 
-    func testCancellationKeepsTicketUntilBodyFinishes() async {
+    @Test func cancellationKeepsTicketUntilBodyFinishes() async {
         await Device.withDefaultDevice(.cpu) {
             let manager = Self.manager()
             let ticket = WiredMemoryTicket(size: 64, policy: Policy(capacity: 64), manager: manager)
             let events = await manager.events()
             let gate = Gate()
-            let started = expectation(description: "body started")
-            let endedEarly = expectation(description: "ticket ended before body completed")
-            endedEarly.isInverted = true
+            let started = AsyncStream<Void>.makeStream()
+            // true if the ticket ended before the observer was cancelled
             let observer = Task {
-                for await event in events {
-                    if event.kind == .ticketEnded {
-                        endedEarly.fulfill()
-                        break
-                    }
+                for await event in events where event.kind == .ticketEnded {
+                    return true
                 }
+                return false
             }
             let task = Task {
                 await ticket.withWiredLimit {
-                    started.fulfill()
+                    started.continuation.yield()
                     await gate.wait()
-                    XCTAssertTrue(Task.isCancelled)
+                    #expect(Task.isCancelled)
                 }
             }
-            await fulfillment(of: [started], timeout: 5)
+            #expect(await Self.wait(for: started.stream), "body started")
             task.cancel()
-            await fulfillment(of: [endedEarly], timeout: 0.2)
+            // give a premature end a chance to show up
+            try? await Task.sleep(for: .milliseconds(200))
             observer.cancel()
-            await observer.value
+            let endedEarly = await observer.value
+            #expect(!endedEarly, "ticket ended before body completed")
             await gate.open()
             await task.value
             // End is awaited; no active ticket may remain after task.value.
@@ -130,38 +152,35 @@ final class WiredMemoryLifecycleTests: XCTestCase {
         }
     }
 
-    func testThrowingBodyReleasesTicketBeforeReturning() async {
+    @Test func throwingBodyReleasesTicketBeforeReturning() async {
         await Device.withDefaultDevice(.cpu) {
             let manager = Self.manager()
             let ticket = WiredMemoryTicket(size: 64, policy: Policy(capacity: 64), manager: manager)
-            do {
+            await #expect(throws: Failure.self, "Expected the body's error") {
                 try await ticket.withWiredLimit { throw Failure.expected }
-                XCTFail("Expected the body's error")
-            } catch {
-                XCTAssertTrue(error is Failure)
             }
             await manager.updateConfiguration { $0.baselineOverride = 2048 }
         }
     }
 
-    func testAlreadyCancelledScopeCanCleanUpWithoutAdmission() async {
+    @Test func alreadyCancelledScopeCanCleanUpWithoutAdmission() async {
         await Device.withDefaultDevice(.cpu) {
             let manager = Self.manager()
             let ticket = WiredMemoryTicket(size: 1, policy: Policy(capacity: 0), manager: manager)
             let task = Task {
                 withUnsafeCurrentTask { $0?.cancel() }
                 return await ticket.withWiredLimit {
-                    XCTAssertTrue(Task.isCancelled)
+                    #expect(Task.isCancelled)
                     return 123
                 }
             }
             let result = await task.value
-            XCTAssertEqual(result, 123)
+            #expect(result == 123)
             await manager.updateConfiguration { $0.baselineOverride = 2048 }
         }
     }
 
-    func testCancellationRacingCompletionAlwaysFinishesCleanup() async {
+    @Test func cancellationRacingCompletionAlwaysFinishesCleanup() async {
         await Device.withDefaultDevice(.cpu) {
             let manager = Self.manager()
             for index in 0 ..< 100 {
@@ -176,17 +195,17 @@ final class WiredMemoryLifecycleTests: XCTestCase {
                 if index.isMultiple(of: 2) { await Task.yield() }
                 task.cancel()
                 let result = await task.value
-                XCTAssertEqual(result, index)
+                #expect(result == index)
                 await manager.updateConfiguration { $0.baselineOverride = 1024 }
             }
         }
     }
 
-    func testConcurrentStartsOfWaitingTicketDoNotLoseWaiters() async {
+    @Test func concurrentStartsOfWaitingTicketDoNotLoseWaiters() async {
         await checkConcurrentStarts(cancelFirst: false)
     }
 
-    func testCancellingOneStartDoesNotCancelAnotherWaiterForSameTicket() async {
+    @Test func cancellingOneStartDoesNotCancelAnotherWaiterForSameTicket() async {
         await checkConcurrentStarts(cancelFirst: true)
     }
 
@@ -198,11 +217,11 @@ final class WiredMemoryLifecycleTests: XCTestCase {
             let ticket = WiredMemoryTicket(size: 32, policy: policy, manager: manager)
             _ = await blocker.start()
             let events = await manager.events()
-            let firstFinished = expectation(description: "first start returned")
-            let secondFinished = expectation(description: "second start returned")
+            let firstFinished = AsyncStream<Void>.makeStream()
+            let secondFinished = AsyncStream<Void>.makeStream()
             let first = Task {
                 _ = await ticket.start()
-                firstFinished.fulfill()
+                firstFinished.continuation.yield()
             }
             // Ensure the first waiter is installed before adding the second.
             for await event in events {
@@ -211,26 +230,26 @@ final class WiredMemoryLifecycleTests: XCTestCase {
             let secondEvents = await manager.events()
             let second = Task {
                 _ = await ticket.start()
-                secondFinished.fulfill()
+                secondFinished.continuation.yield()
             }
             for await event in secondEvents {
                 if event.kind == .admissionWait { break }
             }
             if cancelFirst {
                 first.cancel()
-                let result = await XCTWaiter.fulfillment(of: [firstFinished], timeout: 5)
-                guard result == .completed else {
-                    XCTFail("Cancelling the first start did not resume its continuation")
+                guard await Self.wait(for: firstFinished.stream) else {
+                    Issue.record("Cancelling the first start did not resume its continuation")
                     second.cancel()
                     _ = await blocker.end()
                     return
                 }
             }
             _ = await blocker.end()
-            let expected = cancelFirst ? [secondFinished] : [firstFinished, secondFinished]
-            let result = await XCTWaiter.fulfillment(of: expected, timeout: 5)
-            guard result == .completed else {
-                XCTFail("A duplicate start lost an admission continuation")
+            // when cancelFirst the first start already finished above
+            let firstCompleted = cancelFirst ? true : await Self.wait(for: firstFinished.stream)
+            let secondCompleted = await Self.wait(for: secondFinished.stream)
+            guard firstCompleted && secondCompleted else {
+                Issue.record("A duplicate start lost an admission continuation")
                 first.cancel()
                 second.cancel()
                 return

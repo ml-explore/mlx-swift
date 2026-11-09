@@ -20,7 +20,7 @@ buffers after they are disposed. The limit on this cache is determined by
 Metal's [recommendedMaxWorkingSetSize()](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize),
 but you may wish to limit this further.
 
-For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache via ``Memory/CacheLimit``.
+For example, to evaluate an LLM you might allow up to 20 megabytes of buffer cache via ``Memory/cacheLimit``.
 
 ```swift
 MLX.Memory.cacheLimit = 20 * 1024 * 1024
