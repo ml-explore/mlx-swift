@@ -58,7 +58,7 @@ let noMetalCmlxExcludes = [
     "mlx/mlx/backend/metal/compiled.cpp",
     "mlx/mlx/backend/metal/conv.cpp",
     "mlx/mlx/backend/metal/copy.cpp",
-    "mxl/mlx/backend/metal/cross_entropy.cpp",
+    "mlx/mlx/backend/metal/cross_entropy.cpp",
     "mlx/mlx/backend/metal/custom_kernel.cpp",
     "mlx/mlx/backend/metal/device.cpp",
     "mlx/mlx/backend/metal/device_info.cpp",
