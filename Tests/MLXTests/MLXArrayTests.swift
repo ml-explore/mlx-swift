@@ -1,6 +1,7 @@
 // Copyright © 2024 Apple Inc.
 
 import Foundation
+import Metal
 import Testing
 
 @testable import MLX
@@ -64,6 +65,22 @@ struct MLXArrayTests {
             #expect(data.shape == [0, 200])
         }
         #expect(b.T.asData(access: .copy).data.count == 0)
+    }
+
+    @Test func asMTLBufferEmpty() {
+        // an empty array has no backing pointer and Metal cannot make a
+        // zero-length buffer, so asMTLBuffer returns nil (see issue #520)
+        guard let device = MTLCreateSystemDefaultDevice() else { return }
+        let arrays = [
+            MLXArray([Float](), [0]),
+            MLXArray.ones([1, 200])[128...],
+            MLXArray.zeros([1, 0, 3, 448]),
+        ]
+        for a in arrays {
+            #expect(a.size == 0)
+            #expect(a.asMTLBuffer(device: device, noCopy: false) == nil)
+            #expect(a.asMTLBuffer(device: device, noCopy: true) == nil)
+        }
     }
 
     @Test func asArrayScalar() {
