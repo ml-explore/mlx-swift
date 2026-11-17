@@ -269,16 +269,18 @@ public enum MLXFast {
     /// - Parameters:
     ///   - x: input array
     ///   - weight: A multiplicative weight to scale the result by. The `weight` should be one-dimensional
-    ///     with the same size as the last axis of `x`.
+    ///     with the same size as the last axis of `x`.  If not given no scaling will occur and the
+    ///     result will have the same dtype as `x`.
     ///   - eps: A small additive constant for numerical stability
     ///   - stream: stream or device to evaluate on
     public static func rmsNorm(
-        _ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default
+        _ x: MLXArray, weight: MLXArray? = nil, eps: Float,
+        stream: StreamOrDevice = .default
     )
         -> MLXArray
     {
         var result = mlx_array_new()
-        mlx_fast_rms_norm(&result, x.ctx, weight.ctx, eps, stream.ctx)
+        mlx_fast_rms_norm(&result, x.ctx, (weight ?? .mlxNone).ctx, eps, stream.ctx)
         return MLXArray(result)
     }
 
@@ -401,12 +403,14 @@ public func scaledDotProductAttention(
 /// - Parameters:
 ///   - x: input array
 ///   - weight: A multiplicative weight to scale the result by. The `weight` should be one-dimensional
-///     with the same size as the last axis of `x`.
+///     with the same size as the last axis of `x`.  If not given no scaling will occur and the
+///     result will have the same dtype as `x`.
 ///   - eps: A small additive constant for numerical stability
 ///   - stream: stream or device to evaluate on
-public func rmsNorm(_ x: MLXArray, weight: MLXArray, eps: Float, stream: StreamOrDevice = .default)
-    -> MLXArray
-{
+public func rmsNorm(
+    _ x: MLXArray, weight: MLXArray? = nil, eps: Float,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
     return MLXFast.rmsNorm(x, weight: weight, eps: eps, stream: stream)
 }
 
