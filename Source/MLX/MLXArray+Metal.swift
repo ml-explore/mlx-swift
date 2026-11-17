@@ -14,12 +14,20 @@ extension MLXArray {
     /// the array will not be mutated (e.g. using indexing or other means) it is possible to pass `noCopy: true`
     /// to reference the backing bytes.
     ///
+    /// Returns `nil` if the array has no elements (Metal cannot create a zero-length buffer).
+    ///
     /// ### See Also
     /// - <doc:conversion>
     /// - ``asArray(_:)``
     /// - ``asData(access:)``
     public func asMTLBuffer(device: some MTLDevice, noCopy: Bool = false) -> (any MTLBuffer)? {
         self.eval()
+
+        // an empty array has no backing pointer and Metal cannot make a
+        // zero-length buffer
+        if self.size == 0 {
+            return nil
+        }
 
         if noCopy && self.contiguousToDimension() == 0 {
             // the backing is contiguous, we can provide a wrapper
@@ -29,7 +37,8 @@ extension MLXArray {
         } else {
             let data = asDataCopy()
             return data.data.withUnsafeBytes { ptr in
-                device.makeBuffer(bytes: ptr.baseAddress!, length: ptr.count)
+                guard let base = ptr.baseAddress else { return nil }
+                return device.makeBuffer(bytes: base, length: ptr.count)
             }
         }
     }
