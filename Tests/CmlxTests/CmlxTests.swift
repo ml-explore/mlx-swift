@@ -5,13 +5,14 @@
 //
 
 import Foundation
-import XCTest
+import Testing
 
 @testable import Cmlx
 
-class CmlxTests: XCTestCase {
+@Suite
+struct CmlxTests {
 
-    func testMinimal() throws {
+    @Test func minimal() throws {
         // smoke test making sure we can build, link & call C api
         //
         // note: there are convenience wrappers in MLX + the entire
@@ -28,7 +29,8 @@ class CmlxTests: XCTestCase {
         defer { mlx_string_free(str) }
         let description = String(cString: mlx_string_data(str))
 
-        print(description)
+        #expect(description.hasPrefix("array("))
+        #expect(description.hasSuffix(", dtype=float32)"))
     }
 
 }

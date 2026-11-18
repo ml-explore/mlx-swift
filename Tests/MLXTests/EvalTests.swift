@@ -70,6 +70,31 @@ private final class Collected<Element: Sendable>: @unchecked Sendable {
     }
 }
 
+/// Sums the `EvalLockOwnership` counts of the threads a test runs work on.
+///
+/// The counts are per thread, so this only sees work done inside ``counting(_:)``
+/// -- not other suites running in parallel.  In release builds there is nothing
+/// to count and ``counting(_:)`` just runs the body.
+private final class ThreadCounts: @unchecked Sendable {
+    #if DEBUG
+        private let lock = NSLock()
+        private var sum = EvalLockOwnership.Counts()
+
+        var total: EvalLockOwnership.Counts {
+            lock.withLock { sum }
+        }
+    #endif
+
+    func counting(_ body: () -> Void) {
+        #if DEBUG
+            let counts = EvalLockOwnership.counting(body)
+            lock.withLock { sum = sum + counts }
+        #else
+            body()
+        #endif
+    }
+}
+
 /// A `Bool` that can be set on one thread and read on another.
 private final class Flag: @unchecked Sendable {
     private let lock = NSLock()
@@ -119,27 +144,36 @@ private func timed(_ body: () -> Void) -> TimeInterval {
 
 // MARK: - Tests
 
-/// Behavior of ``eval(_:)-(MLXArray...)``, ``asyncEval(_:)-(Collection<MLXArray>)`` and the
-/// other `evalLock` holders when called from several threads at once.
-///
-/// `eval` schedules under `evalLock` (via `mlx_async_eval`) and then waits
-/// *outside* it (via `mlx_eval`), so two properties need coverage:
-///
-/// - it is still synchronous -- results are available when it returns; and
-/// - it no longer serializes the waiting, so unrelated work on other threads
-///   makes progress while an eval is in flight.
-///
-/// Note what is *not* claimed: an individual `MLXArray` is not thread safe, so
-/// each thread here owns the arrays it creates and only scalar results cross
-/// threads.  What is under test is the shared global state behind eval --
-/// the stream/scheduler, the compiler cache, the tracing state -- which
-/// `evalLock` guards.
-///
-/// The suite is `.serialized` because several tests are stress or timing
-/// shaped: running them against each other would make each one's measurement
-/// depend on the others.
-@Suite("eval + evalLock", .serialized)
-struct EvalTests {
+extension EvalLockSuites {
+
+    /// Behavior of ``eval(_:)-(MLXArray...)``, ``asyncEval(_:)-(Collection<MLXArray>)`` and the
+    /// other `evalLock` holders when called from several threads at once.
+    ///
+    /// `eval` schedules under `evalLock` (via `mlx_async_eval`) and then waits
+    /// *outside* it (via `mlx_eval`), so two properties need coverage:
+    ///
+    /// - it is still synchronous -- results are available when it returns; and
+    /// - it no longer serializes the waiting, so unrelated work on other threads
+    ///   makes progress while an eval is in flight.
+    ///
+    /// Note what is *not* claimed: an individual `MLXArray` is not thread safe, so
+    /// each thread here owns the arrays it creates and only scalar results cross
+    /// threads.  What is under test is the shared global state behind eval --
+    /// the stream/scheduler, the compiler cache, the tracing state -- which
+    /// `evalLock` guards.
+    ///
+    /// The suite is `.serialized` because several tests are stress or timing
+    /// shaped: running them against each other would make each one's measurement
+    /// depend on the others.
+    ///
+    /// Part of ``EvalLockSuites`` so it never runs alongside the other suites there,
+    /// e.g. ``EvalLockSuites/StreamTests``, which inspects the process-wide stream
+    /// pool these tests draw from.  (The `EvalLockOwnership` counters do not need
+    /// this: they are per thread, and each test counts only its own threads.)
+    @Suite("eval + evalLock", .serialized) struct EvalTests {}
+}
+
+extension EvalLockSuites.EvalTests {
 
     // MARK: Semantics
 
@@ -360,39 +394,38 @@ struct EvalTests {
     /// against plain evals, including stateful compiled functions whose state
     /// is evaluated concurrently.
     @Test func concurrentCompiledCallsAndEval() {
-        #if DEBUG
-            EvalLockOwnership.resetCounters()
-        #endif
-
         let threads = 6
         let rounds = 40
         let results = Collected<[Float]>()
         let statelessResults = Collected<[Float]>()
+        let counts = ThreadCounts()
 
         let finished = onThreads(threads) { t in
-            // per-thread state and per-thread compiled function: sharing either
-            // across threads would be a user-level data race on non-Sendable
-            // values, not a lock bug
-            let state = MLXArray(Float(t + 1))
-            func body(_ x: [MLXArray]) -> [MLXArray] {
-                [x[0] * 2 + state]
-            }
-            let compiled = compile(inputs: [state], outputs: [state], body(_:))
-            let stateless = MLX.compile { (x: MLXArray) in x * 3 }
+            counts.counting {
+                // per-thread state and per-thread compiled function: sharing either
+                // across threads would be a user-level data race on non-Sendable
+                // values, not a lock bug
+                let state = MLXArray(Float(t + 1))
+                func body(_ x: [MLXArray]) -> [MLXArray] {
+                    [x[0] * 2 + state]
+                }
+                let compiled = compile(inputs: [state], outputs: [state], body(_:))
+                let stateless = MLX.compile { (x: MLXArray) in x * 3 }
 
-            var values = [Float]()
-            var statelessValues = [Float]()
-            for round in 0 ..< rounds {
-                let r = compiled([MLXArray(Float(round))])
-                eval(r)
-                values.append(r[0].item(Float.self))
+                var values = [Float]()
+                var statelessValues = [Float]()
+                for round in 0 ..< rounds {
+                    let r = compiled([MLXArray(Float(round))])
+                    eval(r)
+                    values.append(r[0].item(Float.self))
 
-                let s = stateless(MLXArray(Float(round)))
-                eval(s, state)
-                statelessValues.append(s.item(Float.self))
+                    let s = stateless(MLXArray(Float(round)))
+                    eval(s, state)
+                    statelessValues.append(s.item(Float.self))
+                }
+                results.append(values)
+                statelessResults.append(statelessValues)
             }
-            results.append(values)
-            statelessResults.append(statelessValues)
         }
 
         #expect(finished, "a thread wedged in a compiled call")
@@ -412,7 +445,7 @@ struct EvalTests {
         #expect(Set(all) == expected, "compiled results were mixed up across threads")
 
         #if DEBUG
-            let counters = EvalLockOwnership.counters
+            let counters = counts.total
             #expect(
                 counters.checks > 0,
                 "no lock ordering check was reached, so this test proves nothing")
@@ -426,38 +459,37 @@ struct EvalTests {
     /// it for the whole wait; tracing must still be mutually exclusive, and a
     /// trace on one thread must not pick up another thread's graph.
     @Test func concurrentTracingAndEval() {
-        #if DEBUG
-            EvalLockOwnership.resetCounters()
-        #endif
-
         let gradients = Collected<Float>()
         let vjps = Collected<Float>()
         let vmaps = Collected<Float>()
+        let counts = ThreadCounts()
 
         let finished = onThreads(6) { t in
-            for round in 0 ..< 25 {
-                switch t % 3 {
-                case 0:
-                    // d/dx (x^2) at x = 3 is 6, regardless of what any other
-                    // thread is tracing
-                    let g = MLX.grad { (x: MLXArray) in (x * x).sum() }
-                    let d = g(MLXArray(Float(3)))
-                    eval(d)
-                    gradients.append(d.item(Float.self))
+            counts.counting {
+                for round in 0 ..< 25 {
+                    switch t % 3 {
+                    case 0:
+                        // d/dx (x^2) at x = 3 is 6, regardless of what any other
+                        // thread is tracing
+                        let g = MLX.grad { (x: MLXArray) in (x * x).sum() }
+                        let d = g(MLXArray(Float(3)))
+                        eval(d)
+                        gradients.append(d.item(Float.self))
 
-                case 1:
-                    let (_, cotangentProducts) = MLX.vjp(
-                        { (x: [MLXArray]) in [x[0] * 3] },
-                        primals: [MLXArray(Float(round))],
-                        cotangents: [MLXArray(Float(1))])
-                    eval(cotangentProducts)
-                    vjps.append(cotangentProducts[0].item(Float.self))
+                    case 1:
+                        let (_, cotangentProducts) = MLX.vjp(
+                            { (x: [MLXArray]) in [x[0] * 3] },
+                            primals: [MLXArray(Float(round))],
+                            cotangents: [MLXArray(Float(1))])
+                        eval(cotangentProducts)
+                        vjps.append(cotangentProducts[0].item(Float.self))
 
-                default:
-                    let mapped = MLX.vmap { (x: MLXArray) in x * 2 }
-                    let r = mapped(MLXArray(0 ..< 8).asType(.float32))
-                    eval(r)
-                    vmaps.append(r.sum().item(Float.self))
+                    default:
+                        let mapped = MLX.vmap { (x: MLXArray) in x * 2 }
+                        let r = mapped(MLXArray(0 ..< 8).asType(.float32))
+                        eval(r)
+                        vmaps.append(r.sum().item(Float.self))
+                    }
                 }
             }
         }
@@ -469,7 +501,7 @@ struct EvalTests {
         #expect(!gradients.all.isEmpty && !vjps.all.isEmpty && !vmaps.all.isEmpty)
 
         #if DEBUG
-            #expect(EvalLockOwnership.counters.violations == 0)
+            #expect(counts.total.violations == 0)
         #endif
     }
 

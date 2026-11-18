@@ -1,55 +1,63 @@
 // Copyright © 2026 Apple Inc.
 
 import Foundation
-import XCTest
+import Testing
 
 @testable import MLX
 
 // The ownership bookkeeping these tests read is debug-only.
 #if DEBUG
 
-    /// The `evalLock` → `CompiledFunction.lock` ordering invariant.
-    ///
-    /// `Source/CompileLockRepro` shows that the reverse order deadlocks.  It
-    /// lives in its own executable because a failure wedges the process, and a
-    /// passing run of it only shows that the race did not fire -- not that the
-    /// ordering is right.  These tests assert the ordering itself, cannot hang,
-    /// and are safe to run in the shared test process.
-    ///
-    /// A violation trips an `assert` at the point of acquisition, so a
-    /// regression traps there rather than reaching the counter assertions
-    /// below.  The counters are what make a *pass* meaningful: they show the
-    /// check was reached at all, rather than the code path never running.
-    class CompileLockOrderingTests: XCTestCase {
+    extension EvalLockSuites {
 
-        override class func setUp() {
-        }
+        /// The `evalLock` → `CompiledFunction.lock` ordering invariant.
+        ///
+        /// `Source/CompileLockRepro` shows that the reverse order deadlocks.  It
+        /// lives in its own executable because a failure wedges the process, and a
+        /// passing run of it only shows that the race did not fire -- not that the
+        /// ordering is right.  These tests assert the ordering itself, cannot hang,
+        /// and are safe to run in the shared test process.
+        ///
+        /// A violation trips an `assert` at the point of acquisition, so a
+        /// regression traps there rather than reaching the counter assertions
+        /// below.  The counters are what make a *pass* meaningful: they show the
+        /// check was reached at all, rather than the code path never running.
+        ///
+        /// The counters are per thread (see `EvalLockOwnership.Counts`), and each
+        /// test counts only the work done on its own threads, so other suites
+        /// running in parallel cannot make a vacuous test pass.  Serialized, and
+        /// part of ``EvalLockSuites``, because the deinit tests are timing shaped
+        /// and compete for the same `evalLock` as ``EvalLockSuites/EvalTests``.
+        @Suite(.serialized) struct CompileLockOrderingTests {}
+    }
+
+    extension EvalLockSuites.CompileLockOrderingTests {
 
         /// The instrumentation must be able to report "not held", otherwise a
         /// violation count of zero would mean nothing.
-        func testOwnershipTrackingIsNotVacuous() {
-            XCTAssertFalse(EvalLockOwnership.isHeldByCurrentThread)
-            XCTAssertEqual(EvalLockOwnership.depth, 0)
+        @Test func ownershipTrackingIsNotVacuous() {
+            #expect(!EvalLockOwnership.isHeldByCurrentThread)
+            #expect(EvalLockOwnership.depth == 0)
 
             withEvalLock {
-                XCTAssertTrue(EvalLockOwnership.isHeldByCurrentThread)
-                XCTAssertEqual(EvalLockOwnership.depth, 1)
+                #expect(EvalLockOwnership.isHeldByCurrentThread)
+                #expect(EvalLockOwnership.depth == 1)
 
                 // evalLock is recursive; nesting is expected and must be counted
                 withEvalLock {
-                    XCTAssertEqual(EvalLockOwnership.depth, 2)
+                    #expect(EvalLockOwnership.depth == 2)
                 }
-                XCTAssertEqual(EvalLockOwnership.depth, 1)
+                #expect(EvalLockOwnership.depth == 1)
             }
 
-            XCTAssertFalse(EvalLockOwnership.isHeldByCurrentThread)
-            XCTAssertEqual(EvalLockOwnership.depth, 0)
+            #expect(!EvalLockOwnership.isHeldByCurrentThread)
+            #expect(EvalLockOwnership.depth == 0)
         }
 
         /// Ownership is per thread: another thread must not believe it holds the
         /// lock this one is holding.  (The other thread only reads its own
         /// bookkeeping -- it never waits on `evalLock` -- so this cannot hang.)
-        func testOwnershipIsPerThread() {
+        @Test func ownershipIsPerThread() {
             final class Result: @unchecked Sendable {
                 var heldOnOtherThread = true
             }
@@ -62,34 +70,33 @@ import XCTest
                     done.signal()
                 }
                 thread.start()
-                XCTAssertEqual(done.wait(timeout: .now() + 10), .success)
+                #expect(done.wait(timeout: .now() + 10) == .success)
             }
 
-            XCTAssertFalse(result.heldOnOtherThread)
+            #expect(!result.heldOnOtherThread)
         }
 
         /// A compiled function with observed state really takes the per-instance
         /// lock -- a stateless one has nothing to guard and skips it -- so this
         /// exercises the checked acquisition.
-        func testEvalLockIsHeldWhenTheInstanceLockIsTaken() {
-            EvalLockOwnership.resetCounters()
-
+        @Test func evalLockIsHeldWhenTheInstanceLockIsTaken() {
             let state = MLXArray(2)
             func body(_ x: [MLXArray]) -> [MLXArray] {
                 [x[0] + state]
             }
             let compiled = compile(inputs: [state], outputs: [state], body(_:))
 
-            let r = compiled([MLXArray(5)])
-            eval(r)
-            XCTAssertEqual(r[0].item(Float.self), 7)
+            let counters = EvalLockOwnership.counting {
+                let r = compiled([MLXArray(5)])
+                eval(r)
+                #expect(r[0].item(Float.self) == 7)
+            }
 
-            let counters = EvalLockOwnership.counters
-            XCTAssertGreaterThan(
-                counters.checks, 0,
+            #expect(
+                counters.checks > 0,
                 "the ordering invariant was never checked, so this test proves nothing")
-            XCTAssertEqual(
-                counters.violations, 0,
+            #expect(
+                counters.violations == 0,
                 "CompiledFunction.lock was taken without evalLock held")
         }
 
@@ -97,9 +104,7 @@ import XCTest
         /// from inside another's trace.  The nested acquisition happens while an
         /// outer `evalLock` is already held, which is exactly the ordering the
         /// invariant describes.
-        func testNestedCompiledCallKeepsTheOrdering() {
-            EvalLockOwnership.resetCounters()
-
+        @Test func nestedCompiledCallKeepsTheOrdering() {
             let innerState = MLXArray(1)
             func innerBody(_ x: [MLXArray]) -> [MLXArray] {
                 [x[0] * 2 + innerState]
@@ -114,18 +119,20 @@ import XCTest
             }
             let outer = compile(inputs: [outerState], outputs: [outerState], outerBody(_:))
 
-            let r = outer([MLXArray(5)])
-            eval(r)
-            XCTAssertEqual(r[0].item(Float.self), 14)
+            let counters = EvalLockOwnership.counting {
+                let r = outer([MLXArray(5)])
+                eval(r)
+                #expect(r[0].item(Float.self) == 14)
+            }
 
-            XCTAssertTrue(
+            #expect(
                 tracedNested,
                 "the traced body never ran, so no nested compiled call was exercised")
 
-            let counters = EvalLockOwnership.counters
-            XCTAssertGreaterThan(counters.checks, 0)
-            XCTAssertEqual(
-                counters.violations, 0,
+            // the outer call and the nested inner call both take an instance lock
+            #expect(counters.checks >= 2)
+            #expect(
+                counters.violations == 0,
                 "a nested CompiledFunction.lock was taken without evalLock held")
         }
 
@@ -168,9 +175,7 @@ import XCTest
         /// be what C is waiting for -- so R blocks for the length of the traced
         /// body and no longer.  The deadline turns a regression into a failure
         /// rather than a hung lane.
-        func testDeinitEraseSerializesAgainstATraceInFlight() {
-            EvalLockOwnership.resetCounters()
-
+        @Test func deinitEraseSerializesAgainstATraceInFlight() {
             final class Shared: @unchecked Sendable {
                 let lock = NSLock()
                 private var _insideTrace = false
@@ -180,7 +185,8 @@ import XCTest
                 }
                 var tracedRan = false
                 var insideTraceAfterErase = true
-                var erasesAroundRelease = 0
+                var cCounts = EvalLockOwnership.Counts()
+                var rCounts = EvalLockOwnership.Counts()
                 var result: Float = .nan
             }
             let shared = Shared()
@@ -214,9 +220,11 @@ import XCTest
             let cCompiled = compile(inputs: [state], outputs: [state], body(_:))
 
             let c = Thread {
-                let r = cCompiled([MLXArray(Float(6))])
-                eval(r)
-                shared.result = r[0].item(Float.self)
+                shared.cCounts = EvalLockOwnership.counting {
+                    let r = cCompiled([MLXArray(Float(6))])
+                    eval(r)
+                    shared.result = r[0].item(Float.self)
+                }
                 cDone.signal()
             }
 
@@ -226,40 +234,41 @@ import XCTest
                     rDone.signal()
                     return
                 }
-                let before = EvalLockOwnership.compileErases
-                victim.release()
-                let after = EvalLockOwnership.compileErases
-                // Read the flag the instant the erase returns.  With the erase
-                // under `evalLock` this can only be observed false: R cannot
-                // have acquired the lock until C left the traced body.
-                shared.insideTraceAfterErase = shared.insideTrace
-                shared.erasesAroundRelease = after - before
+                shared.rCounts = EvalLockOwnership.counting {
+                    victim.release()
+                    // Read the flag the instant the erase returns.  With the
+                    // erase under `evalLock` this can only be observed false: R
+                    // cannot have acquired the lock until C left the traced body.
+                    shared.insideTraceAfterErase = shared.insideTrace
+                }
                 rDone.signal()
             }
 
             c.start()
             r.start()
 
-            XCTAssertEqual(cDone.wait(timeout: .now() + 60), .success, "the compiled call wedged")
-            XCTAssertEqual(rDone.wait(timeout: .now() + 60), .success, "the deinit erase wedged")
+            #expect(cDone.wait(timeout: .now() + 60) == .success, "the compiled call wedged")
+            #expect(rDone.wait(timeout: .now() + 60) == .success, "the deinit erase wedged")
 
-            XCTAssertTrue(shared.tracedRan, "the traced body never ran, so nothing was interleaved")
-            XCTAssertEqual(
-                shared.erasesAroundRelease, 1,
-                "dropping the last reference did not run CompiledFunction.deinit, "
-                    + "so no erase was interleaved with the trace")
-            XCTAssertFalse(
-                shared.insideTraceAfterErase,
-                "the compiler-cache erase completed while another thread was still inside "
-                    + "compile_trace -- the erase is not serialized against find/insert")
+            #expect(shared.tracedRan, "the traced body never ran, so nothing was interleaved")
+            #expect(
+                shared.rCounts.compileErases == 1,
+                "dropping the last reference did not run CompiledFunction.deinit, so no erase was interleaved with the trace"
+            )
+            #expect(
+                !shared.insideTraceAfterErase,
+                "the compiler-cache erase completed while another thread was still inside compile_trace -- the erase is not serialized against find/insert"
+            )
 
-            XCTAssertEqual(shared.result, 10)
+            #expect(shared.result == 10)
             withExtendedLifetime(cCompiled) {}
 
-            let counters = EvalLockOwnership.counters
-            XCTAssertGreaterThan(counters.checks, 0)
-            XCTAssertEqual(
-                counters.violations, 0,
+            // C takes cCompiled's instance lock; R's erase is checked too
+            #expect(shared.cCounts.checks > 0, "C's instance lock acquisition was never checked")
+            #expect(shared.rCounts.checks > 0, "R's deinit erase was never checked")
+            let counters = shared.cCounts + shared.rCounts
+            #expect(
+                counters.violations == 0,
                 "the compiler cache was mutated without evalLock held")
         }
 
@@ -270,9 +279,7 @@ import XCTest
         /// This one is a stress loop, so a pass is not by itself proof.  What it
         /// adds is that it cannot pass *vacuously*: the counters assert the
         /// erases happened and that every checked acquisition held `evalLock`.
-        func testConcurrentDeinitErasesAndCompiledCalls() {
-            EvalLockOwnership.resetCounters()
-
+        @Test func concurrentDeinitErasesAndCompiledCalls() {
             let rounds = 200
             let start = DispatchSemaphore(value: 0)
             let ready = DispatchSemaphore(value: 0)
@@ -281,6 +288,8 @@ import XCTest
             final class Outcome: @unchecked Sendable {
                 var callerValues = [Float]()
                 var releases = 0
+                var callerCounts = EvalLockOwnership.Counts()
+                var releaserCounts = EvalLockOwnership.Counts()
             }
             let outcome = Outcome()
 
@@ -288,14 +297,17 @@ import XCTest
                 ready.signal()
                 start.wait()
                 var values = [Float]()
-                for i in 0 ..< rounds {
-                    // A fresh compile each round keeps the cache cold, so every
-                    // round really performs an insert.
-                    let compiled = MLX.compile { (x: MLXArray) in x * 2 + MLXArray(Float(i))
+                outcome.callerCounts = EvalLockOwnership.counting {
+                    for i in 0 ..< rounds {
+                        // A fresh compile each round keeps the cache cold, so
+                        // every round really performs an insert.
+                        let compiled = MLX.compile { (x: MLXArray) in
+                            x * 2 + MLXArray(Float(i))
+                        }
+                        let r = compiled(MLXArray(Float(1)))
+                        eval(r)
+                        values.append(r.item(Float.self))
                     }
-                    let r = compiled(MLXArray(Float(1)))
-                    eval(r)
-                    values.append(r.item(Float.self))
                 }
                 outcome.callerValues = values
                 done.signal()
@@ -305,11 +317,13 @@ import XCTest
                 ready.signal()
                 start.wait()
                 var released = 0
-                for _ in 0 ..< rounds {
-                    let victim = Victim()
-                    victim.warm()
-                    victim.release()
-                    released += 1
+                outcome.releaserCounts = EvalLockOwnership.counting {
+                    for _ in 0 ..< rounds {
+                        let victim = Victim()
+                        victim.warm()
+                        victim.release()
+                        released += 1
+                    }
                 }
                 outcome.releases = released
                 done.signal()
@@ -322,29 +336,29 @@ import XCTest
             start.signal()
             start.signal()
 
-            XCTAssertEqual(done.wait(timeout: .now() + 300), .success, "a thread wedged")
-            XCTAssertEqual(done.wait(timeout: .now() + 300), .success, "a thread wedged")
+            #expect(done.wait(timeout: .now() + 300) == .success, "a thread wedged")
+            #expect(done.wait(timeout: .now() + 300) == .success, "a thread wedged")
 
-            XCTAssertEqual(outcome.releases, rounds)
-            XCTAssertEqual(outcome.callerValues.count, rounds)
+            #expect(outcome.releases == rounds)
+            #expect(outcome.callerValues.count == rounds)
             // Results must survive the erase traffic: a clobbered cache entry
             // would show up as a wrong value rather than only as a crash.
             for (i, value) in outcome.callerValues.enumerated() {
-                XCTAssertEqual(value, Float(2 + i), "round \(i) produced \(value)")
+                #expect(value == Float(2 + i), "round \(i) produced \(value)")
             }
 
-            XCTAssertGreaterThanOrEqual(
-                EvalLockOwnership.compileErases, rounds,
-                "the deinit erase path was never exercised")
+            #expect(
+                outcome.releaserCounts.compileErases == rounds,
+                "the releaser's deinit erase path was not exercised every round")
 
-            // Everything compiled here is stateless, so it skips the
-            // per-instance lock: these checks all come from the erase path.
-            let counters = EvalLockOwnership.counters
-            XCTAssertGreaterThan(
-                counters.checks, 0,
+            // Every erase is checked; the victims' `warm()` calls add checks of
+            // their own (they have state, so they take the per-instance lock).
+            let counters = outcome.callerCounts + outcome.releaserCounts
+            #expect(
+                counters.checks >= counters.compileErases,
                 "no erase was checked for evalLock ownership, so this proves nothing")
-            XCTAssertEqual(
-                counters.violations, 0,
+            #expect(
+                counters.violations == 0,
                 "the compiler cache was mutated without evalLock held")
         }
     }

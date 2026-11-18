@@ -76,6 +76,11 @@ jobs:
     needs: lint
     if: github.repository == 'ml-explore/mlx-swift'
     runs-on: [self-hosted, macos]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode-latest.app/Contents/Developer
+      # xcodebuild does not forward DEVELOPER_DIR to xctest. MLX's CPU JIT runs g++
+      # from inside the tests, so pass it with the TEST_RUNNER_ prefix.
+      TEST_RUNNER_DEVELOPER_DIR: /Applications/Xcode-latest.app/Contents/Developer
     steps:
       - uses: actions/checkout@v6
         with:
@@ -84,11 +89,14 @@ jobs:
       - name: List XCodes
         shell: bash
         run: |
+          xcodebuild -version
+          xcode-select -p
+          xcrun --sdk macosx --show-sdk-path
+          swift --version
           ls -l /Applications/Xcode-latest.app
           ls /Applications | grep -i xcode
-          swift --version
 
-      - name: Verify MetalToolchain installed
+      - name: "Infra: verify MetalToolchain installed"
         shell: bash
         run: xcodebuild -showComponent MetalToolchain
 
@@ -105,28 +113,42 @@ jobs:
       - name: Verify documentation
         run: scripts/verify-docs.sh
 
-      - name: Build SwiftPM (Xcode, iOS)
-        shell: sh
+      # The build steps tee their output into $RUNNER_TEMP/build-logs so that a
+      # failure can be inspected from the uploaded artifact (see the end of the job)
+      # rather than by scrolling the (very long) step log.
+      - name: Prepare build log directory
+        shell: bash
         run: |
+          rm -rf "$RUNNER_TEMP/build-logs" "$RUNNER_TEMP/MLXSwiftTests.xcresult"
+          mkdir -p "$RUNNER_TEMP/build-logs"
+
+      - name: Build SwiftPM (Xcode, iOS)
+        shell: bash
+        run: |
+          set -o pipefail
           xcodebuild -version
           swift --version
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
-          xcodebuild build -scheme mlx-swift-Package -destination 'generic/platform=iOS'
+          xcodebuild build -scheme mlx-swift-Package -destination 'generic/platform=iOS' \
+            2>&1 | tee "$RUNNER_TEMP/build-logs/spm-ios.log"
 
       - name: Build SwiftPM (Xcode, macOS)
-        shell: sh
+        shell: bash
         run: |
+          set -o pipefail
           xcodebuild -version
           swift --version
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
-          xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS'
+          xcodebuild build-for-testing -scheme mlx-swift-Package -destination 'platform=macOS' \
+            2>&1 | tee "$RUNNER_TEMP/build-logs/spm-macos.log"
 
       - name: Run Tests SwiftPM (Xcode, macOS)
-        shell: sh
+        shell: bash
         run: |
-          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/CmlxTests.xctest
-          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
-          xcrun xctest ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXIntegrationTests.xctest
+          set -o pipefail
+          xcodebuild test -skipPackagePluginValidation -scheme mlx-swift-Package \
+            -destination 'platform=macOS' -resultBundlePath "$RUNNER_TEMP/MLXSwiftTests.xcresult" \
+            2>&1 | tee "$RUNNER_TEMP/build-logs/spm-macos-test.log"
 
       - name: Run Distributed Tests SwiftPM (Xcode, macOS)
         shell: sh
@@ -135,30 +157,22 @@ jobs:
           MLX_TEST_DISTRIBUTED=1 xcrun xctest -XCTest DistributedNNRingTests ~/Library/Developer/Xcode/DerivedData/mlx-swift-*/Build/Products/Debug/MLXTests.xctest
 
       - name: Build xcodeproj (Xcode, macOS)
-        shell: sh
+        shell: bash
         run: |
+          set -o pipefail
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           cd xcode
-          xcodebuild build-for-testing -scheme MLX -destination 'platform=macOS'
+          xcodebuild build-for-testing -scheme MLX -destination 'platform=macOS' \
+            2>&1 | tee "$RUNNER_TEMP/build-logs/xcodeproj-macos.log"
 
       - name: Run Tests xcodeproj (Xcode, macOS)
         working-directory: xcode
         run: ../.github/scripts/run-xcode-tests.sh
 
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
-            /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
-            ~/Library/Logs/DiagnosticReports/*
-          retention-days: 7
-
       - name: Build (cmake)
-        shell: sh
+        shell: bash
         run: |
+          set -o pipefail
           # Without an explicit SDK, /usr/bin/cc (xcrun) may pick the
           # CommandLineTools SDK, which can be newer than the active Xcode's
           # compiler/linker understands.  Use the SDK that ships with Xcode.
@@ -167,8 +181,31 @@ jobs:
           rm -rf build
           mkdir build
           cd build
-          cmake .. -G Ninja
-          ninja
+          cmake .. -G Ninja 2>&1 | tee "$RUNNER_TEMP/build-logs/cmake-configure.log"
+          ninja 2>&1 | tee "$RUNNER_TEMP/build-logs/cmake-build.log"
+
+      # Last in the job so that it also covers a failure in any step above,
+      # including the cmake build.  The later Xcode builds clear DerivedData,
+      # but the job stops at the first failing step, so the logs of the build
+      # that failed are still there.
+      - name: Upload build logs and test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs-and-test-results
+          path: |
+            ${{ runner.temp }}/build-logs/
+            ${{ runner.temp }}/MLXSwiftTests.xcresult
+            build/CMakeFiles/CMakeOutput.log
+            build/CMakeFiles/CMakeError.log
+            build/CMakeFiles/CMakeConfigureLog.yaml
+            ~/Library/Developer/Xcode/DerivedData/**/Logs/Build/*.xcactivitylog
+            ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+            /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Build/*.xcactivitylog
+            /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+            ~/Library/Logs/DiagnosticReports/*
+          if-no-files-found: ignore
+          retention-days: 7
 
   linux_build_cmake_container:
     name: Linux Container CMake Swift Build (${{ matrix.container }} ${{ matrix.arch }})

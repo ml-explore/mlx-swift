@@ -106,6 +106,31 @@ func expectEqual<T: FloatingPoint>(
     return true
 }
 
+// MARK: - Shared state
+
+/// Parent of suites that depend on process-wide eval / stream state and must not run
+/// alongside each other:
+///
+/// - `EvalTests` and `CompileLockOrderingTests` are stress and timing shaped tests
+///   that contend for `evalLock`; running them against each other would make each
+///   one's measurement depend on the others
+/// - `StreamTests` checks exactly which streams come back out of the process-wide
+///   stream pool, which `EvalTests` also draws from
+///
+/// Note this does *not* isolate these suites from the rest of the test run: every
+/// other suite still runs in parallel with them, and creates, calls and drops
+/// compiled functions.  That is why the `EvalLockOwnership` counters those tests
+/// assert on are per thread (`EvalLockOwnership.Counts`): each test counts only
+/// the work done on its own threads, so other suites cannot make a "was this path
+/// exercised" assertion pass vacuously.
+///
+/// `.serialized` only orders the tests within a suite -- separate suites still run
+/// in parallel -- so the suites are nested here.  Each suite is declared inside an
+/// `extension EvalLockSuites { ... }` and its tests are added in a separate
+/// `extension EvalLockSuites.SuiteName { ... }` to avoid an extra level of indentation.
+@Suite(.serialized)
+enum EvalLockSuites {}
+
 // MARK: - Random state
 
 /// Run a test with a task-local random state seeded with `seed`, e.g.:

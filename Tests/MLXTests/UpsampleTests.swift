@@ -2,20 +2,21 @@
 
 import Foundation
 import MLX
-import XCTest
+import Testing
 
 @testable import MLXNN
 
-class UpsampleTests: XCTestCase {
+@Suite
+struct UpsampleTests {
 
-    func testNearest() {
+    @Test func nearest() {
         // BHWC
         let input = MLXArray([1, 2, 3, 4], [1, 2, 2, 1])
 
         let up = Upsample(scaleFactor: 2.0, mode: .nearest)
         let result = up(input).squeezed()
 
-        XCTAssertEqual(result.shape, [4, 4])
+        #expect(result.shape == [4, 4])
 
         // array([[1, 1, 2, 2],
         //        [1, 1, 2, 2],
@@ -23,17 +24,17 @@ class UpsampleTests: XCTestCase {
         //        [3, 3, 4, 4]], dtype=int32)
         let expected = MLXArray([1, 1, 2, 2, 1, 1, 2, 2, 3, 3, 4, 4, 3, 3, 4, 4], [4, 4])
             .asType(.int32)
-        assertEqual(result, expected)
+        expectEqual(result, expected)
     }
 
-    func testLinear() {
+    @Test func linear() {
         // BHWC
         let input = MLXArray([1, 2, 3, 4], [1, 2, 2, 1])
 
         let up = Upsample(scaleFactor: 2.0, mode: .linear())
         let result = up(input).squeezed()
 
-        XCTAssertEqual(result.shape, [4, 4])
+        #expect(result.shape == [4, 4])
 
         // array([[1, 1.25, 1.75, 2],
         //        [1.5, 1.75, 2.25, 2.5],
@@ -44,7 +45,7 @@ class UpsampleTests: XCTestCase {
                 1.0, 1.25, 1.75, 2.0, 1.5, 1.75, 2.25, 2.5,
                 2.5, 2.75, 3.25, 3.5, 3.0, 3.25, 3.75, 4.0,
             ], [4, 4])
-        assertEqual(result, expected)
+        expectEqual(result, expected)
     }
 
 }

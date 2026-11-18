@@ -235,7 +235,7 @@ there are specific initializers to request it:
 ### MLXArray Array Initializers
 
 - ``MLXArray/init(_:_:)-([T],_)``
-- ``MLXArray/init(_:_:)-(Sequence,_)``
+- ``MLXArray/init(_:_:)-(S,_)``
 - ``MLXArray/init(_:_:)-([Int],_)``
 - ``MLXArray/init(converting:_:)``
 - ``MLXArray/init(_:_:type:)-(UnsafeRawBufferPointer,_,_)``
@@ -255,17 +255,17 @@ there are specific initializers to request it:
 ### MLXArray Factory Methods
 
 - ``MLXArray/zeros(_:type:stream:)``
-- ``MLXArray/zeros(like:stream:)``
+- ``MLXArray/zeros(like:dtype:stream:)``
 - ``MLXArray/zeros(_:dtype:stream:)``
 - ``MLXArray/ones(_:type:stream:)``
-- ``MLXArray/ones(like:stream:)``
+- ``MLXArray/ones(like:dtype:stream:)``
 - ``MLXArray/ones(_:dtype:stream:)``
 - ``MLXArray/eye(_:m:k:type:stream:)``
 - ``MLXArray/full(_:values:type:stream:)``
 - ``MLXArray/full(_:values:stream:)``
 - ``MLXArray/identity(_:type:stream:)``
-- ``MLXArray/linspace(_:_:count:dtype:stream:)-(Int,Int,Int,DType?,StreamOrDevice)``
-- ``MLXArray/linspace(_:_:count:dtype:stream:)-(Double,Double,Int,DType?,StreamOrDevice)``
+- ``MLXArray/linspace(_:_:count:dtype:stream:)-3fx01``
+- ``MLXArray/linspace(_:_:count:dtype:stream:)-9yqai``
 - ``MLXArray/repeated(_:count:axis:stream:)``
 - ``MLXArray/repeated(_:count:stream:)``
 - ``MLXArray/repeat(_:count:axis:stream:)``

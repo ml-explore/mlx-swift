@@ -73,19 +73,19 @@ Note: some of the symbols are not linkable.
 `dtype` | ``MLXArray/dtype``
 `item` | ``MLXArray/item(_:)``
 `tolist` | ``MLXArray/asArray(_:)``
-`astype` | ``MLXArray/asType(_:stream:)-(HasDType.Type,StreamOrDevice)`` or ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
-`__getitem__` | ``MLXArray/subscript(_:stream:)-(MLXArrayIndex,StreamOrDevice)``
+`astype` | ``MLXArray/asType(_:stream:)-4eqoc`` or ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
+`__getitem__` | ``MLXArray/subscript(_:stream:)-(MLXArrayIndex...,_)``
 `__len__` | ``MLXArray/count``
 `__iter__` | implements `Sequence`
 `__add__` | ``MLXArray/+(_:_:)-(MLXArray,MLXArray)``
-`__iadd__` | ``MLXArray/+=(_:_:)-(inout_MLXArray,MLXArray)``
+`__iadd__` | ``MLXArray/+=(_:_:)-6c7kn``
 `__sub__` | ``MLXArray/-(_:_:)-(MLXArray,MLXArray)``
-`__isub__` | ``MLXArray/-=(_:_:)-(inout_MLXArray,MLXArray)``
+`__isub__` | ``MLXArray/-=(_:_:)-6t2l4``
 `__mul__` | ``MLXArray/*(_:_:)-(MLXArray,MLXArray)``
-`__imul__` | ``MLXArray/*=(_:_:)-(inout_MLXArray,MLXArray)``
+`__imul__` | ``MLXArray/*=(_:_:)-p75g``
 `__truediv__` | ``MLXArray//(_:_:)-(MLXArray,MLXArray)``
 `__div__` | ``MLXArray//(_:_:)-(MLXArray,MLXArray)``
-`__idiv__` | ``MLXArray//=(_:_:)-(inout_MLXArray,MLXArray)``
+`__idiv__` | ``MLXArray//=(_:_:)-si8w``
 `__floordiv__` | ``MLXArray/floorDivide(_:stream:)``
 `__mod__` | ``MLXArray/%(_:_:)-(MLXArray,MLXArray)``
 `__eq__` | ``MLXArray/.==(_:_:)-(MLXArray,MLXArray)``
@@ -190,7 +190,7 @@ This is a mapping of `mx` free functions to their ``MLX`` counterparts.
 `identity` | ``MLXArray/identity(_:type:stream:)``
 `less` | ``MLX/less(_:_:stream:)``
 `less_equal` | ``MLX/lessEqual(_:_:stream:)``
-`linspace` | ``MLXArray/linspace(_:_:count:dtype:stream:)-(Int,Int,Int,DType?,StreamOrDevice)``
+`linspace` | ``MLXArray/linspace(_:_:count:dtype:stream:)-3fx01``
 `load` | ``MLX/loadArray(url:stream:)`` and ``MLX/loadArrays(url:stream:)``
 `log` | ``MLX/log(_:stream:)``
 `log10` | ``MLX/log10(_:stream:)``

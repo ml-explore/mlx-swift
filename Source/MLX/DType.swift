@@ -22,7 +22,7 @@ import Numerics
 /// ### See Also
 /// - ``HasDType``
 /// - ``MLXArray/asType(_:stream:)-(DType,StreamOrDevice)``
-/// - ``MLXArray/asType(_:stream:)-(HasDType.Type,StreamOrDevice)``
+/// - ``MLXArray/asType(_:stream:)-4eqoc``
 /// - ``MLXArray/init(_:dtype:)``
 public enum DType: Hashable, Sendable, CaseIterable {
     case bool

@@ -2,7 +2,7 @@
 
 import Cmlx
 import Foundation
-import XCTest
+import Testing
 
 @testable import MLX
 
@@ -15,65 +15,66 @@ import XCTest
 ///
 /// Multi process behaviour is verified by launching several copies of a
 /// program with a hostfile, matching how the Python tests are run.
-class DistributedTests: XCTestCase {
-
-    /// The assertions here describe a group of size one, so they are not valid
-    /// in a multi process run -- see ``DistributedRingTests``.
-    override func setUpWithError() throws {
-        try XCTSkipIf(
-            ProcessInfo.processInfo.environment["MLX_TEST_DISTRIBUTED"] == "1",
-            "Single process assertions; skipped during a multi process run.")
-    }
+///
+/// The assertions here describe a group of size one, so they are not valid in a
+/// multi process run -- see ``DistributedRingTests``.
+///
+/// Serialized because the tests share process-wide state: the environment
+/// (``initializeThrowsWhenConfiguredBackendFails()`` sets `MLX_HOSTFILE` /
+/// `MLX_RANK`, which `initialize()` reads) and the registered backends
+/// (``defaultGroupIsSingleton()`` calls `clearBackends()`).
+@Suite(
+    .serialized,
+    .disabled(
+        if: ProcessInfo.processInfo.environment["MLX_TEST_DISTRIBUTED"] == "1",
+        "Single process assertions; skipped during a multi process run."))
+struct DistributedTests {
 
     // MARK: - Availability
 
-    func testIsAvailableLinks() {
+    @Test func isAvailableLinks() {
         for backend in MLXDistributed.Backend.allCases {
             _ = MLXDistributed.isAvailable(backend)
         }
     }
 
     /// The ring backend is built on all platforms -- it needs only TCP sockets.
-    func testRingIsAvailable() {
-        XCTAssertTrue(MLXDistributed.isAvailable(.ring))
+    @Test func ringIsAvailable() {
+        #expect(MLXDistributed.isAvailable(.ring))
 
         // `any` is true when at least one backend is available
-        XCTAssertTrue(MLXDistributed.isAvailable(.any))
+        #expect(MLXDistributed.isAvailable(.any))
     }
 
     /// Backends that are not compiled in report `false` rather than trapping.
-    func testUnavailableBackendsReportFalse() {
-        XCTAssertFalse(MLXDistributed.isAvailable(.mpi))
+    @Test func unavailableBackendsReportFalse() {
+        #expect(!MLXDistributed.isAvailable(.mpi))
         #if !os(macOS)
-            XCTAssertFalse(MLXDistributed.isAvailable(.jaccl))
+            #expect(!MLXDistributed.isAvailable(.jaccl))
         #endif
 
         // nccl is CUDA-only and is never built on Apple platforms
         #if !os(Linux)
-            XCTAssertFalse(MLXDistributed.isAvailable(.nccl))
+            #expect(!MLXDistributed.isAvailable(.nccl))
         #endif
     }
 
     // MARK: - Group
 
-    func testDefaultGroupIsSingleton() throws {
+    @Test func defaultGroupIsSingleton() throws {
         let group = try MLXDistributed.initialize()
-        XCTAssertEqual(try group.rank, 0)
-        XCTAssertEqual(try group.size, 1)
+        #expect(try group.rank == 0)
+        #expect(try group.size == 1)
 
         try MLXDistributed.clearBackends()
-        XCTAssertEqual(try group.size, 1)
+        #expect(try group.size == 1)
     }
 
-    func testEmptyGroupGettersReportErrors() {
+    @Test func emptyGroupGettersReportErrors() {
         let group = MLXDistributed.Group(mlx_distributed_group_new())
 
-        XCTAssertThrowsError(try group.rank) { error in
-            XCTAssertTrue(error is MLXError)
-        }
-        XCTAssertThrowsError(try group.size) { error in
-            XCTAssertTrue(error is MLXError)
-        }
+        #expect(throws: MLXError.self) { try group.rank }
+        #expect(throws: MLXError.self) { try group.size }
     }
 
     /// A strict init throws when no backend can form a group.
@@ -81,18 +82,20 @@ class DistributedTests: XCTestCase {
     /// Note this uses `.any`: MLX caches successfully registered groups per
     /// backend name, but never caches under "any" when initialization fails,
     /// so this is independent of the order the tests run in.
-    func testStrictInitializeThrows() {
-        XCTAssertThrowsError(try MLXDistributed.initialize(backend: .any, strict: true))
+    @Test func strictInitializeThrows() {
+        #expect(throws: MLXError.self) {
+            try MLXDistributed.initialize(backend: .any, strict: true)
+        }
     }
 
     /// A backend that is configured but cannot form its group throws even when
     /// the init is not strict -- here the ring backend with a missing hostfile.
-    func testInitializeThrowsWhenConfiguredBackendFails() throws {
-        let environment = ProcessInfo.processInfo.environment
-        try XCTSkipIf(
-            environment["MLX_HOSTFILE"] != nil || environment["MLX_RANK"] != nil,
-            "MLX_HOSTFILE or MLX_RANK is already set")
-
+    @Test(
+        .disabled(
+            if: ProcessInfo.processInfo.environment["MLX_HOSTFILE"] != nil
+                || ProcessInfo.processInfo.environment["MLX_RANK"] != nil,
+            "MLX_HOSTFILE or MLX_RANK is already set"))
+    func initializeThrowsWhenConfiguredBackendFails() throws {
         let hostfile = FileManager.default.temporaryDirectory
             .appendingPathComponent("missing-hostfile-\(UUID().uuidString).json")
         setenv("MLX_HOSTFILE", hostfile.path, 1)
@@ -102,23 +105,25 @@ class DistributedTests: XCTestCase {
             unsetenv("MLX_RANK")
         }
 
-        XCTAssertThrowsError(try MLXDistributed.initialize(backend: .any))
+        #expect(throws: MLXError.self) {
+            try MLXDistributed.initialize(backend: .any)
+        }
     }
 
-    func testSplitSingletonGroupThrows() throws {
+    @Test func splitSingletonGroupThrows() throws {
         let group = try MLXDistributed.initialize()
-        XCTAssertThrowsError(try group.split(color: 0))
+        #expect(throws: MLXError.self) { try group.split(color: 0) }
     }
 
     // MARK: - Metadata all-gather initialization
 
-    func testMetadataAllGatherBridgeForwardsBorrowedBuffers() {
+    @Test func metadataAllGatherBridgeForwardsBorrowedBuffers() {
         let expected: [UInt8] = [0, 255, 127, 128]
         let bridge = makeMetadataAllGatherBridge { rank, size, source, destination in
-            XCTAssertEqual(rank, 1)
-            XCTAssertEqual(size, 2)
-            XCTAssertEqual(Array(source), [0, 255])
-            XCTAssertEqual(destination.count, expected.count)
+            #expect(rank == 1)
+            #expect(size == 2)
+            #expect(Array(source) == [0, 255])
+            #expect(destination.count == expected.count)
             guard destination.count == expected.count else { return }
             destination.copyBytes(from: expected)
         }
@@ -133,11 +138,11 @@ class DistributedTests: XCTestCase {
             }
         }
 
-        XCTAssertEqual(status, 0)
-        XCTAssertEqual(destination.map { UInt8(bitPattern: $0) }, expected)
+        #expect(status == 0)
+        #expect(destination.map { UInt8(bitPattern: $0) } == expected)
     }
 
-    func testMetadataAllGatherBridgeConvertsThrownErrorToFailureStatus() {
+    @Test func metadataAllGatherBridgeConvertsThrownErrorToFailureStatus() {
         let bridge = makeMetadataAllGatherBridge { _, _, _, destination in
             destination[0] = 42
             throw MetadataAllGatherTestError.callbackFailure
@@ -153,64 +158,65 @@ class DistributedTests: XCTestCase {
             }
         }
 
-        XCTAssertNotEqual(status, 0)
-        XCTAssertEqual(destination, [42, -2])
+        #expect(status != 0)
+        #expect(destination == [42, -2])
     }
 
-    func testMetadataAllGatherFailureReleasesCapture() {
+    @Test func metadataAllGatherFailureReleasesCapture() {
         weak var captured: MetadataAllGatherCapture?
         do {
             let capture = MetadataAllGatherCapture()
             captured = capture
-            XCTAssertThrowsError(
+            #expect(throws: MLXError.self) {
                 try MLXDistributed.initialize(backend: .ring) { [capture] _, _, _, _ in
-                    withExtendedLifetime(capture) {
-                        XCTFail("Callback should not run when initialization fails")
+                    let _ = withExtendedLifetime(capture) {
+                        Issue.record("Callback should not run when initialization fails")
                     }
                 }
-            ) { error in
-                XCTAssertTrue(error is MLXError)
             }
         }
-        XCTAssertNil(captured)
+        #expect(captured == nil)
     }
 
     // MARK: - Collectives
 
     /// In a group of size one the collectives return their input unchanged.
-    func testCollectivesAreIdentityInSingletonGroup() {
+    @Test func collectivesAreIdentityInSingletonGroup() {
         let x = MLXArray([1, 2, 3, 4], [2, 2])
 
-        assertEqual(MLXDistributed.allSum(x), x)
-        assertEqual(MLXDistributed.allMax(x), x)
-        assertEqual(MLXDistributed.allMin(x), x)
-        assertEqual(MLXDistributed.allGather(x), x)
-        assertEqual(MLXDistributed.sumScatter(x), x)
+        expectEqual(MLXDistributed.allSum(x), x)
+        expectEqual(MLXDistributed.allMax(x), x)
+        expectEqual(MLXDistributed.allMin(x), x)
+        expectEqual(MLXDistributed.allGather(x), x)
+        expectEqual(MLXDistributed.sumScatter(x), x)
     }
 
     // MARK: - Point to point
 
-    func testSendInSingletonGroupReportsError() {
+    @Test func sendInSingletonGroupReportsError() {
         let x = MLXArray([1, 2, 3])
-        XCTAssertThrowsError(
+        #expect(throws: MLXError.self) {
             try withError {
                 MLXDistributed.send(x, to: 0)
-            })
+            }
+        }
     }
 
-    func testRecvInSingletonGroupReportsError() {
-        XCTAssertThrowsError(
+    @Test func recvInSingletonGroupReportsError() {
+        #expect(throws: MLXError.self) {
             try withError {
                 MLXDistributed.recv([3], dtype: .int32, from: 0)
-            })
+            }
+        }
     }
 
-    func testRecvLikeInSingletonGroupReportsError() {
+    @Test func recvLikeInSingletonGroupReportsError() {
         let x = MLXArray([1, 2, 3])
-        XCTAssertThrowsError(
+        #expect(throws: MLXError.self) {
             try withError {
                 MLXDistributed.recvLike(x, from: 0)
-            })
+            }
+        }
     }
 }
 
