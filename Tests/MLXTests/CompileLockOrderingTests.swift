@@ -23,9 +23,11 @@ import Testing
         /// below.  The counters are what make a *pass* meaningful: they show the
         /// check was reached at all, rather than the code path never running.
         ///
-        /// Serialized because the tests reset and read the process-wide
-        /// `EvalLockOwnership` counters -- for the same reason it is part of
-        /// ``EvalLockSuites`` so it does not run alongside ``EvalLockSuites/EvalTests``.
+        /// The counters are per thread (see `EvalLockOwnership.Counts`), and each
+        /// test counts only the work done on its own threads, so other suites
+        /// running in parallel cannot make a vacuous test pass.  Serialized, and
+        /// part of ``EvalLockSuites``, because the deinit tests are timing shaped
+        /// and compete for the same `evalLock` as ``EvalLockSuites/EvalTests``.
         @Suite(.serialized) struct CompileLockOrderingTests {}
     }
 
@@ -78,19 +80,18 @@ import Testing
         /// lock -- a stateless one has nothing to guard and skips it -- so this
         /// exercises the checked acquisition.
         @Test func evalLockIsHeldWhenTheInstanceLockIsTaken() {
-            EvalLockOwnership.resetCounters()
-
             let state = MLXArray(2)
             func body(_ x: [MLXArray]) -> [MLXArray] {
                 [x[0] + state]
             }
             let compiled = compile(inputs: [state], outputs: [state], body(_:))
 
-            let r = compiled([MLXArray(5)])
-            eval(r)
-            #expect(r[0].item(Float.self) == 7)
+            let counters = EvalLockOwnership.counting {
+                let r = compiled([MLXArray(5)])
+                eval(r)
+                #expect(r[0].item(Float.self) == 7)
+            }
 
-            let counters = EvalLockOwnership.counters
             #expect(
                 counters.checks > 0,
                 "the ordering invariant was never checked, so this test proves nothing")
@@ -104,8 +105,6 @@ import Testing
         /// outer `evalLock` is already held, which is exactly the ordering the
         /// invariant describes.
         @Test func nestedCompiledCallKeepsTheOrdering() {
-            EvalLockOwnership.resetCounters()
-
             let innerState = MLXArray(1)
             func innerBody(_ x: [MLXArray]) -> [MLXArray] {
                 [x[0] * 2 + innerState]
@@ -120,16 +119,18 @@ import Testing
             }
             let outer = compile(inputs: [outerState], outputs: [outerState], outerBody(_:))
 
-            let r = outer([MLXArray(5)])
-            eval(r)
-            #expect(r[0].item(Float.self) == 14)
+            let counters = EvalLockOwnership.counting {
+                let r = outer([MLXArray(5)])
+                eval(r)
+                #expect(r[0].item(Float.self) == 14)
+            }
 
             #expect(
                 tracedNested,
                 "the traced body never ran, so no nested compiled call was exercised")
 
-            let counters = EvalLockOwnership.counters
-            #expect(counters.checks > 0)
+            // the outer call and the nested inner call both take an instance lock
+            #expect(counters.checks >= 2)
             #expect(
                 counters.violations == 0,
                 "a nested CompiledFunction.lock was taken without evalLock held")
@@ -175,8 +176,6 @@ import Testing
         /// body and no longer.  The deadline turns a regression into a failure
         /// rather than a hung lane.
         @Test func deinitEraseSerializesAgainstATraceInFlight() {
-            EvalLockOwnership.resetCounters()
-
             final class Shared: @unchecked Sendable {
                 let lock = NSLock()
                 private var _insideTrace = false
@@ -186,7 +185,8 @@ import Testing
                 }
                 var tracedRan = false
                 var insideTraceAfterErase = true
-                var erasesAroundRelease = 0
+                var cCounts = EvalLockOwnership.Counts()
+                var rCounts = EvalLockOwnership.Counts()
                 var result: Float = .nan
             }
             let shared = Shared()
@@ -220,9 +220,11 @@ import Testing
             let cCompiled = compile(inputs: [state], outputs: [state], body(_:))
 
             let c = Thread {
-                let r = cCompiled([MLXArray(Float(6))])
-                eval(r)
-                shared.result = r[0].item(Float.self)
+                shared.cCounts = EvalLockOwnership.counting {
+                    let r = cCompiled([MLXArray(Float(6))])
+                    eval(r)
+                    shared.result = r[0].item(Float.self)
+                }
                 cDone.signal()
             }
 
@@ -232,16 +234,13 @@ import Testing
                     rDone.signal()
                     return
                 }
-                // count only this thread's erases -- other tests running in
-                // parallel may drop their own compiled functions meanwhile
-                let before = EvalLockOwnership.compileErasesOnCurrentThread
-                victim.release()
-                let after = EvalLockOwnership.compileErasesOnCurrentThread
-                // Read the flag the instant the erase returns.  With the erase
-                // under `evalLock` this can only be observed false: R cannot
-                // have acquired the lock until C left the traced body.
-                shared.insideTraceAfterErase = shared.insideTrace
-                shared.erasesAroundRelease = after - before
+                shared.rCounts = EvalLockOwnership.counting {
+                    victim.release()
+                    // Read the flag the instant the erase returns.  With the
+                    // erase under `evalLock` this can only be observed false: R
+                    // cannot have acquired the lock until C left the traced body.
+                    shared.insideTraceAfterErase = shared.insideTrace
+                }
                 rDone.signal()
             }
 
@@ -253,7 +252,7 @@ import Testing
 
             #expect(shared.tracedRan, "the traced body never ran, so nothing was interleaved")
             #expect(
-                shared.erasesAroundRelease == 1,
+                shared.rCounts.compileErases == 1,
                 "dropping the last reference did not run CompiledFunction.deinit, so no erase was interleaved with the trace"
             )
             #expect(
@@ -264,8 +263,10 @@ import Testing
             #expect(shared.result == 10)
             withExtendedLifetime(cCompiled) {}
 
-            let counters = EvalLockOwnership.counters
-            #expect(counters.checks > 0)
+            // C takes cCompiled's instance lock; R's erase is checked too
+            #expect(shared.cCounts.checks > 0, "C's instance lock acquisition was never checked")
+            #expect(shared.rCounts.checks > 0, "R's deinit erase was never checked")
+            let counters = shared.cCounts + shared.rCounts
             #expect(
                 counters.violations == 0,
                 "the compiler cache was mutated without evalLock held")
@@ -279,8 +280,6 @@ import Testing
         /// adds is that it cannot pass *vacuously*: the counters assert the
         /// erases happened and that every checked acquisition held `evalLock`.
         @Test func concurrentDeinitErasesAndCompiledCalls() {
-            EvalLockOwnership.resetCounters()
-
             let rounds = 200
             let start = DispatchSemaphore(value: 0)
             let ready = DispatchSemaphore(value: 0)
@@ -289,6 +288,8 @@ import Testing
             final class Outcome: @unchecked Sendable {
                 var callerValues = [Float]()
                 var releases = 0
+                var callerCounts = EvalLockOwnership.Counts()
+                var releaserCounts = EvalLockOwnership.Counts()
             }
             let outcome = Outcome()
 
@@ -296,14 +297,17 @@ import Testing
                 ready.signal()
                 start.wait()
                 var values = [Float]()
-                for i in 0 ..< rounds {
-                    // A fresh compile each round keeps the cache cold, so every
-                    // round really performs an insert.
-                    let compiled = MLX.compile { (x: MLXArray) in x * 2 + MLXArray(Float(i))
+                outcome.callerCounts = EvalLockOwnership.counting {
+                    for i in 0 ..< rounds {
+                        // A fresh compile each round keeps the cache cold, so
+                        // every round really performs an insert.
+                        let compiled = MLX.compile { (x: MLXArray) in
+                            x * 2 + MLXArray(Float(i))
+                        }
+                        let r = compiled(MLXArray(Float(1)))
+                        eval(r)
+                        values.append(r.item(Float.self))
                     }
-                    let r = compiled(MLXArray(Float(1)))
-                    eval(r)
-                    values.append(r.item(Float.self))
                 }
                 outcome.callerValues = values
                 done.signal()
@@ -313,11 +317,13 @@ import Testing
                 ready.signal()
                 start.wait()
                 var released = 0
-                for _ in 0 ..< rounds {
-                    let victim = Victim()
-                    victim.warm()
-                    victim.release()
-                    released += 1
+                outcome.releaserCounts = EvalLockOwnership.counting {
+                    for _ in 0 ..< rounds {
+                        let victim = Victim()
+                        victim.warm()
+                        victim.release()
+                        released += 1
+                    }
                 }
                 outcome.releases = released
                 done.signal()
@@ -342,14 +348,14 @@ import Testing
             }
 
             #expect(
-                EvalLockOwnership.compileErases >= rounds,
-                "the deinit erase path was never exercised")
+                outcome.releaserCounts.compileErases == rounds,
+                "the releaser's deinit erase path was not exercised every round")
 
-            // Everything compiled here is stateless, so it skips the
-            // per-instance lock: these checks all come from the erase path.
-            let counters = EvalLockOwnership.counters
+            // Every erase is checked; the victims' `warm()` calls add checks of
+            // their own (they have state, so they take the per-instance lock).
+            let counters = outcome.callerCounts + outcome.releaserCounts
             #expect(
-                counters.checks > 0,
+                counters.checks >= counters.compileErases,
                 "no erase was checked for evalLock ownership, so this proves nothing")
             #expect(
                 counters.violations == 0,

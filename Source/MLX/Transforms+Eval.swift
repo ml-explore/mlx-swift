@@ -57,22 +57,85 @@ enum EvalLockOwnership {
 
     extension EvalLockOwnership {
 
-        // Counters, so a test can assert both that the invariant held and that
-        // it was actually exercised -- a check count of zero would mean the test
-        // proved nothing.
-        private static let counterLock = NSLock()
-        nonisolated(unsafe) private static var checkCount = 0
-        nonisolated(unsafe) private static var violationCount = 0
-        nonisolated(unsafe) private static var compileEraseCount = 0
+        /// Counters, so a test can assert both that the invariant held and that
+        /// it was actually exercised -- a check count of zero would mean the test
+        /// proved nothing.
+        ///
+        /// The counters are per *thread* and never reset.  A process-wide
+        /// counter would be bumped by any other code running concurrently --
+        /// e.g. other test suites creating and dropping compiled functions --
+        /// which would let a "was this exercised" assertion pass even if the
+        /// code under test never reached the checked path.  Instead a test
+        /// takes the difference around its own work (see ``counting(_:)``) on
+        /// each thread it runs work on, and sums them.
+        ///
+        /// Per thread rather than `@TaskLocal` for the same reason as the
+        /// ownership depth: the checks fire on whichever thread takes the lock
+        /// or runs a `deinit`, including plain `Thread`s that inherit no task
+        /// locals.
+        struct Counts: Sendable, Equatable {
+            /// Checks that `evalLock` was held where an inner lock is taken.
+            var checks = 0
+            /// Checks that found `evalLock` not held.
+            var violations = 0
+            /// `CompiledFunction.deinit` erases of the compiler cache.
+            var compileErases = 0
+
+            static func + (lhs: Counts, rhs: Counts) -> Counts {
+                Counts(
+                    checks: lhs.checks + rhs.checks,
+                    violations: lhs.violations + rhs.violations,
+                    compileErases: lhs.compileErases + rhs.compileErases)
+            }
+
+            static func - (lhs: Counts, rhs: Counts) -> Counts {
+                Counts(
+                    checks: lhs.checks - rhs.checks,
+                    violations: lhs.violations - rhs.violations,
+                    compileErases: lhs.compileErases - rhs.compileErases)
+            }
+        }
+
+        private static let countsKey: pthread_key_t = {
+            var key = pthread_key_t()
+            pthread_key_create(&key) { free($0) }
+            return key
+        }()
+
+        /// This thread's counters, allocated on first use and freed when the
+        /// thread exits.
+        private static var countsStorage: UnsafeMutablePointer<Counts> {
+            if let p = pthread_getspecific(countsKey) {
+                return p.assumingMemoryBound(to: Counts.self)
+            }
+            // malloc rather than `allocate`, so the C destructor can `free` it
+            let p = malloc(MemoryLayout<Counts>.size)!.bindMemory(to: Counts.self, capacity: 1)
+            p.initialize(to: Counts())
+            pthread_setspecific(countsKey, p)
+            return p
+        }
+
+        /// Everything counted on the current thread so far.  Only meaningful
+        /// as a difference; see ``counting(_:)``.
+        static var countsOnCurrentThread: Counts {
+            countsStorage.pointee
+        }
+
+        /// Run `body` and return what it counted on the current thread.  Work
+        /// `body` hands to other threads is not included; collect it there.
+        static func counting(_ body: () throws -> Void) rethrows -> Counts {
+            let before = countsOnCurrentThread
+            try body()
+            return countsOnCurrentThread - before
+        }
 
         /// Records, and in debug builds asserts, that `evalLock` is held by the
         /// current thread at a point where an inner lock is about to be taken.
         static func requireHeldByCurrentThread(_ message: @autoclosure () -> String) {
             let held = isHeldByCurrentThread
-            counterLock.withLock {
-                checkCount += 1
-                if !held { violationCount += 1 }
-            }
+            let counts = countsStorage
+            counts.pointee.checks += 1
+            if !held { counts.pointee.violations += 1 }
             assert(held, message())
         }
 
@@ -80,43 +143,7 @@ enum EvalLockOwnership {
         /// test can tell "the erase ran under the lock" from "the deinit never
         /// fired".
         static func recordCompileErase() {
-            counterLock.withLock { compileEraseCount += 1 }
-            pthread_setspecific(
-                compileEraseKey, UnsafeRawPointer(bitPattern: compileErasesOnCurrentThread + 1))
-        }
-
-        private static let compileEraseKey: pthread_key_t = {
-            var key = pthread_key_t()
-            pthread_key_create(&key, nil)
-            return key
-        }()
-
-        /// Compiler-cache erases run by the current thread (never reset).
-        ///
-        /// Unlike ``compileErases`` this is not affected by other threads, e.g.
-        /// tests running in parallel that drop their own compiled functions, so
-        /// a test can take the difference around a call to see whether that
-        /// call ran an erase.
-        static var compileErasesOnCurrentThread: Int {
-            Int(bitPattern: pthread_getspecific(compileEraseKey))
-        }
-
-        /// (checks, violations) since ``resetCounters()``.
-        static var counters: (checks: Int, violations: Int) {
-            counterLock.withLock { (checkCount, violationCount) }
-        }
-
-        /// Compiler-cache erases since ``resetCounters()``.
-        static var compileErases: Int {
-            counterLock.withLock { compileEraseCount }
-        }
-
-        static func resetCounters() {
-            counterLock.withLock {
-                checkCount = 0
-                violationCount = 0
-                compileEraseCount = 0
-            }
+            countsStorage.pointee.compileErases += 1
         }
     }
 
