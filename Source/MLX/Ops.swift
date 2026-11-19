@@ -670,6 +670,34 @@ public func conv2d(
     return MLXArray(result)
 }
 
+/// 2D convolution with a per-output-channel bias add and SiLU activation fused
+/// into the conv epilogue (one cuDNN graph instead of three kernels).
+///
+/// CUDA-only fast path; unimplemented on Metal/CPU (inference use only).
+///
+/// - Parameters:
+///     - array: input array of shape `[N, H, W, C_in]`
+///     - weight: weight array of shape `[C_out, kH, kW, C_in / groups]`
+///     - bias: 1-D array of length `C_out`
+///     - stride: kernel stride
+///     - padding: input padding
+///     - dilation: kernel dilation
+///     - groups: input feature groups
+///     - stream: stream or device to evaluate on
+public func conv2dBiasSiLU(
+    _ array: MLXArray, _ weight: MLXArray, bias: MLXArray, stride: IntOrPair = 1,
+    padding: IntOrPair = 0, dilation: IntOrPair = 1, groups: Int = 1,
+    stream: StreamOrDevice = .default
+) -> MLXArray {
+    var result = mlx_array_new()
+    mlx_conv2d_bias_silu(
+        &result,
+        array.ctx, weight.ctx, bias.ctx, stride.first.int32, stride.second.int32,
+        padding.first.int32, padding.second.int32, dilation.first.int32, dilation.second.int32,
+        groups.int32, stream.ctx)
+    return MLXArray(result)
+}
+
 /// 3D convolution over an input with several channels.
 ///
 /// > Only the default `groups=1` is currently supported.
