@@ -81,6 +81,110 @@ public func vjp(
     )
 }
 
+/// Holds the `mlx_closure` produced by `mlx_checkpoint` for the lifetime of the
+/// Swift function returned by ``checkpoint(_:)-(([MLXArray])->[MLXArray])``.
+final class _CheckpointState: @unchecked Sendable {
+
+    private let checkpointed: mlx_closure
+
+    init(_ f: @escaping ([MLXArray]) -> [MLXArray]) {
+        let inner = new_mlx_closure(f)
+        defer { mlx_closure_free(inner) }
+
+        // mlx_checkpoint copies the underlying std::function, so `inner` can be
+        // released once the checkpointed closure has been built.
+        //
+        // On failure mlx_error has already been dispatched (fatalError, or the
+        // ErrorBox inside withError) and `result` stays an empty closure, which
+        // deinit can still free.
+        var result = mlx_closure_new()
+        _ = withEvalLock {
+            mlx_checkpoint(&result, inner)
+        }
+        self.checkpointed = result
+    }
+
+    deinit {
+        mlx_closure_free(checkpointed)
+    }
+
+    func call(_ inputs: [MLXArray], expected: Int) -> [MLXArray] {
+        let inputVector = new_mlx_vector_array(inputs)
+        defer { mlx_vector_array_free(inputVector) }
+
+        var resultVector = mlx_vector_array_new()
+        defer { mlx_vector_array_free(resultVector) }
+
+        // mlx_error was already dispatched on failure:
+        //   • outside withError — fatalError was called; we won't reach here
+        //   • inside withError  — error is stored in the ErrorBox; the result is
+        //                         padded with `mlxNone` so callers can index
+        //                         safely and withError can throw
+        _ = withEvalLock {
+            mlx_closure_apply(&resultVector, checkpointed, inputVector)
+        }
+
+        return mlx_vector_array_values(resultVector, count: expected)
+    }
+}
+
+/// Transform `f` into a function that performs gradient checkpointing with
+/// respect to its inputs.
+///
+/// The returned function produces the same output as `f`.  When a gradient is
+/// taken through it (``grad(_:)-r8dv``, ``valueAndGrad(_:)``,
+/// ``vjp(_:primals:cotangents:)``, ...) the intermediate arrays computed inside
+/// `f` are not kept alive for the backward pass; instead `f` is evaluated again
+/// during the backward pass to recompute them.
+///
+/// Use this to reduce memory use for gradient computations at the expense of
+/// increased computation, e.g. by checkpointing each transformer block of a
+/// model being fine tuned.
+///
+/// ```swift
+/// func block(_ inputs: [MLXArray]) -> [MLXArray] {
+///     [square(inputs[0] * inputs[1] + inputs[0] + inputs[1])]
+/// }
+///
+/// let checkpointed = checkpoint(block)
+///
+/// // same result as block(), but the backward pass recomputes block()
+/// let (value, gradients) = vjp(checkpointed, primals: [x, y], cotangents: [MLXArray(1.0)])
+/// ```
+///
+/// - Parameters:
+///   - f: function which takes an array of ``MLXArray`` and returns an array of ``MLXArray``
+/// - Returns: a function that produces the same output as `f` and recomputes
+///   intermediate values during gradient computation
+///
+/// ### See Also
+/// - ``checkpoint(_:)-((MLXArray)->MLXArray)``
+/// - ``grad(_:)-r8dv``
+/// - ``vjp(_:primals:cotangents:)``
+public func checkpoint(
+    _ f: @escaping ([MLXArray]) -> [MLXArray]
+) -> ([MLXArray]) -> [MLXArray] {
+    let state = _CheckpointState(f)
+
+    return { arrays in
+        state.call(arrays, expected: 0)
+    }
+}
+
+/// Overload of ``checkpoint(_:)-(([MLXArray])->[MLXArray])`` that takes a
+/// single ``MLXArray`` and returns a single ``MLXArray``.
+public func checkpoint(
+    _ f: @escaping (MLXArray) -> MLXArray
+) -> (MLXArray) -> MLXArray {
+    let state = _CheckpointState { arrays in
+        [f(arrays[0])]
+    }
+
+    return { array in
+        state.call([array], expected: 1)[0]
+    }
+}
+
 /// Returns a function that computes the gradient and result of `f`, computing the gradient with respect to the ``NestedDictionary``.
 ///
 /// Note that this allows any parameters `<T>` s they will not be part of the gradient.

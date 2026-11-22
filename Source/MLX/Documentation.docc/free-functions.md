@@ -222,6 +222,8 @@ operations as methods for convenience.
 - ``stopGradient(_:stream:)``
 - ``jvp(_:primals:tangents:)``
 - ``vjp(_:primals:cotangents:)``
+- ``checkpoint(_:)-(([MLXArray])->[MLXArray])``
+- ``checkpoint(_:)-((MLXArray)->MLXArray)``
 
 ### Concurrency
 
